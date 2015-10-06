@@ -49,19 +49,19 @@ DEEP is using [microservices architecture](https://en.wikipedia.org/wiki/Microse
 
 DEEP Abstracted Library | Description | AWS Abstracted Service(s)
 -------------|---------------------|--------------------------
-[deep-asset](https://docs.deep.mg/deep-asset) | Assets Management Library | Amazon S3
-[deep-cache](https://docs.deep.mg/deep-cache) | Cache Management Library | Amazon ElastiCache
-[deep-core](https://docs.deep.mg/deep-core) | Core Management Library | -
-[deep-db](https://docs.deep.mg/deep-db) | Database Management Library | Amazon DynamoDB, Amazon SQS
-[deep-di](https://docs.deep.mg/deep-di) | Dependency Injection Management Library | -
-[deep-event](https://docs.deep.mg/deep-event) | Events Management Library | Amazon Kinesis
-[deep-fs](https://docs.deep.mg/deep-fs) | File System Management Library | Amazon S3
-[deep-kernel](https://docs.deep.mg/deep-kernel) | Kernel Management Library | -
-[deep-log](https://docs.deep.mg/deep-log) | Logs Management Library | Amazon CloudWatch Logs
-[deep-notification](https://docs.deep.mg/deep-notification) | Notifications Management Library | Amazon SNS
-[deep-resource](https://docs.deep.mg/deep-resource) | Resouces Management Library | AWS Lambda, Amazon API Gateway
-[deep-security](https://docs.deep.mg/deep-security) | Security Management Library | AWS IAM, Amazon Cognito
-[deep-validation](https://docs.deep.mg/deep-validation) | Validation Management Library | -
+[deep-asset](http://docs.deep.mg/deep-asset) | Assets Management Library | Amazon S3
+[deep-cache](http://docs.deep.mg/deep-cache) | Cache Management Library | Amazon ElastiCache
+[deep-core](http://docs.deep.mg/deep-core) | Core Management Library | -
+[deep-db](http://docs.deep.mg/deep-db) | Database Management Library | Amazon DynamoDB, Amazon SQS
+[deep-di](http://docs.deep.mg/deep-di) | Dependency Injection Management Library | -
+[deep-event](http://docs.deep.mg/deep-event) | Events Management Library | Amazon Kinesis
+[deep-fs](http://docs.deep.mg/deep-fs) | File System Management Library | Amazon S3
+[deep-kernel](http://docs.deep.mg/deep-kernel) | Kernel Management Library | -
+[deep-log](http://docs.deep.mg/deep-log) | Logs Management Library | Amazon CloudWatch Logs
+[deep-notification](http://docs.deep.mg/deep-notification) | Notifications Management Library | Amazon SNS
+[deep-resource](http://docs.deep.mg/deep-resource) | Resouces Management Library | AWS Lambda, Amazon API Gateway
+[deep-security](http://docs.deep.mg/deep-security) | Security Management Library | AWS IAM, Amazon Cognito
+[deep-validation](http://docs.deep.mg/deep-validation) | Validation Management Library | -
 
 ## Feedback
 
