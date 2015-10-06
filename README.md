@@ -1,6 +1,8 @@
 Digital Enterprise End-to-end Platform
 ======================================
 
+[![Join the chat at https://gitter.im/MitocGroup/deep-framework](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/MitocGroup/deep-framework?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 [![NPM Version](https://img.shields.io/npm/v/deep-framework.svg)](https://npmjs.org/package/deep-framework)
 [![Build Status](https://travis-ci.org/MitocGroup/deep-framework.svg)](https://travis-ci.org/MitocGroup/deep-framework)
 [![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github)](https://coveralls.io/github/MitocGroup/deep-framework)
