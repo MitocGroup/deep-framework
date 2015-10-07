@@ -31,23 +31,6 @@ To start local development server you have to run
 
 For more details read [documentation](tools/server.md)
 
-Dependencies management locally
--------------------------------
-
-In order to push microservices from local machine use `deepify push-deps` command,
-as well as to pull - use `deepify pull-deps` command. Dependencies are uploaded to
-or downloaded from specified S3 bucket.
-
-```bash
-~#: deepify push-deps path/to/web_app
-```
-
-```bash
-~#: deepify pull-deps path/to/web_app
-```
-
-For more details read [documentation](tools/deps.md)
-
 Creating/Updating web apps on local machine
 -------------------------------------------
 
@@ -82,3 +65,20 @@ In order to remove provision created for `path/to/web_app` run the following com
 ```
 
 For more details read [documentation](tools/undeploy.md)
+
+Dependencies management locally
+-------------------------------
+
+In order to push microservices from local machine use `deepify push-deps` command,
+as well as to pull - use `deepify pull-deps` command. Dependencies are uploaded to
+or downloaded from specified S3 bucket.
+
+```bash
+~#: deepify push-deps path/to/web_app
+```
+
+```bash
+~#: deepify pull-deps path/to/web_app
+```
+
+For more details read [documentation](tools/deps.md)
