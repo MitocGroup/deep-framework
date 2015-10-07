@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl">
+  <title data-ice="title">DEEP Validation Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ObjectToJoi.js~ObjectToJoi.html">ObjectToJoi</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Validation.js~Validation.html">Validation</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidSchemaException.js~InvalidSchemaException.html">InvalidSchemaException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html">ModelNotFoundException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException.html">ObjectValidationFailedException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Helpers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Helpers/Joi.js~Joi.html">Joi</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="deep-validation">deep-validation</h1>
+<p><a href="https://npmjs.org/package/deep-validation"><img src="https://img.shields.io/npm/v/deep-validation.svg" alt="NPM Version"></a>
+<a href="https://travis-ci.org/MitocGroup/deep-framework"><img src="https://travis-ci.org/MitocGroup/deep-framework.svg" alt="Build Status"></a>
+<a href="https://coveralls.io/github/MitocGroup/deep-framework"><img src="https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github&amp;t=3QEkFa" alt="Coverage Status"></a>
+<a href="https://www.codacy.com/app/MitocGroup/deep-framework"><img src="https://api.codacy.com/project/badge/630b5f0024334dc09fd0299b1a8a0ed5" alt="Codacy Badge"></a>
+<a href="http://docs.deep.mg/deep-validation/"><img src="http://docs.deep.mg/deep-validation/badge.svg" alt="API Docs"></a></p>
+<p><a href="https://www.npmjs.com/package/deep-validation">deep-validation</a> is a node.js library, part of <a href="https://github.com/MitocGroup/deep-framework">DEEP Framework</a>.</p>
+<p><img src="https://github.com/MitocGroup/deep-framework/blob/master/docs/deep-ecosystem.png" alt="Digital Enterprise End-to-end Platform, aka DEEP"></p>
+<p>Digital Enterprise End-to-end Platform (also known as DEEP) is low cost and low maintenance digital platform powered by abstracted services from AWS. We enable businesses and developers to achieve more by doing less.</p>
+<h2 id="deep-for-businesses-join-char-on-gitter-im-https-img-shields-io-badge-e2-8a-aa-20gitter-20-join-20chat-20-e2-86-92-brightgreen-svg-https-gitter-im-mitocgroup-deep-framework-">DEEP for Businesses <a href="https://gitter.im/MitocGroup/deep-framework"><img src="https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg" alt="Join char on gitter.im"></a></h2>
+<h4 id="user-guide-documentation-to-be-updated-later-">User Guide Documentation (to be updated later)</h4>
+<p>DEEP is enabling small and medium businesses, as well as enterprises to:</p>
+<ul>
+<li>Rent applications on a monthly basis by needed functionality from <a href="https://www.deep.mg">DEEP Marketplace</a></li>
+<li>Choose applications by desired features and deploy them securely in their own accounts from cloud providers like AWS</li>
+<li>Pay only for subscribed applications and stop paying when unsubscribing and not using anymore</li>
+<li>Run secured, self-service applications with beautiful user interfaces and intuitively simple user experiences</li>
+<li>Empower none technical teams to solve business problems through technology, without waiting on technical teams&apos; availability</li>
+</ul>
+<blockquote>
+<p><a href="https://www.deep.mg">DEEP Marketplace</a> (aka <a href="https://www.deep.mg">www.deep.mg</a>) is a web application built using DEEP and published on serverless environment from <a href="https://aws.amazon.com">Amazon Web Services</a> (aka <a href="https://aws.amazon.com">aws.amazon.com</a>). We make it faster and easier for developers to build and publish their software, as well as for businesses to discover and test applications they are looking for. Our goal is to connect businesses with developers, and empower technical teams to build self-service software that none technical teams could use. The marketplace is like Apple&apos;s App Store for web applications that run natively on cloud providers like AWS.</p>
+</blockquote>
+<h2 id="deep-for-developers-join-char-on-gitter-im-https-img-shields-io-badge-e2-8a-aa-20gitter-20-join-20chat-20-e2-86-92-brightgreen-svg-https-gitter-im-mitocgroup-deep-framework-">DEEP for Developers <a href="https://gitter.im/MitocGroup/deep-framework"><img src="https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg" alt="Join char on gitter.im"></a></h2>
+<h4 id="-api-guide-documentation-http-docs-deep-mg-"><a href="http://docs.deep.mg">API Guide Documentation</a></h4>
+<h4 id="-developer-guide-documentation-https-github-com-mitocgroup-deep-framework-blob-master-docs-index-md-"><a href="https://github.com/MitocGroup/deep-framework/blob/master/docs/index.md">Developer Guide Documentation</a></h4>
+<p>DEEP is enabling developers and architects to:</p>
+<ul>
+<li>Design microservices architecture on top of serverless environments from cloud providers like AWS</li>
+<li>Build distributed software that combines and manages hardware and software in the same microservice</li>
+<li>Use the framework&apos;s abstracted approach to build applications that could be cloud agnostic</li>
+<li>Build cloud native JavaScript applications that combine and manage frontend, backend and database layers in the same <a href="https://github.com/MitocGroup/deep-framework/blob/master/docs/microservice.md">DEEP Microservice</a></li>
+<li>Run in the cloud the software that was built by distributed teams and served self-service in large organizations</li>
+<li>Monetize their work of art by uploading microservices to <a href="https://www.deep.mg">DEEP Marketplace</a></li>
+</ul>
+<blockquote>
+<p><a href="https://github.com/MitocGroup/deep-framework/blob/master/docs/microservice.md">DEEP Microservice</a> is the predefined structure of a microservice (an application) in DEEP. There is clear separation between frontend, backend and database, as well as unit tests and documentation. Developers are encoraged to get started with <a href="https://github.com/MitocGroup/deep-microservices-helloworld">DEEP Microservices HelloWorld</a> or <a href="https://github.com/MitocGroup/deep-microservices-todo-app">DEEP Microservices ToDo App</a>, as well as <a href="https://www.npmjs.com/package/deepify">DEEP CLI</a> (aka <code>deepify</code>).</p>
+<p><a href="https://www.deep.mg">DEEP Marketplace</a> (aka <a href="https://www.deep.mg">www.deep.mg</a>) is a web application built using DEEP and published on serverless environment from <a href="https://aws.amazon.com">Amazon Web Services</a> (aka <a href="https://aws.amazon.com">aws.amazon.com</a>). We make it faster and easier for developers to build and publish their software, as well as for businesses to discover and test applications they are looking for. Our goal is to connect businesses with developers, and empower technical teams to build self-service software that none technical teams could use. The marketplace is like Apple&apos;s App Store for web applications that run natively on cloud providers like AWS.</p>
+</blockquote>
+<h2 id="deep-architecture-on-aws-join-char-on-gitter-im-https-img-shields-io-badge-e2-8a-aa-20gitter-20-join-20chat-20-e2-86-92-brightgreen-svg-https-gitter-im-mitocgroup-deep-framework-">DEEP Architecture on AWS <a href="https://gitter.im/MitocGroup/deep-framework"><img src="https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg" alt="Join char on gitter.im"></a></h2>
+<p><img src="https://github.com/MitocGroup/deep-framework/blob/master/docs/deep-architecture.png" alt="Digital Enterprise End-to-end Platform, aka DEEP"></p>
+<p>DEEP is using <a href="https://en.wikipedia.org/wiki/Microservices">microservices architecture</a> on serverless environments from cloud providers like AWS. DEEP Framework abstracts the functionality and makes it completely developer friendly. We have the following abstracted libraries:</p>
+<table>
+<thead>
+<tr>
+<th>DEEP Abstracted Library</th>
+<th>Description</th>
+<th>AWS Abstracted Service(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="http://docs.deep.mg/deep-asset">deep-asset</a></td>
+<td>Assets Management Library</td>
+<td>Amazon S3</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-cache">deep-cache</a></td>
+<td>Cache Management Library</td>
+<td>Amazon ElastiCache</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-core">deep-core</a></td>
+<td>Core Management Library</td>
+<td>-</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-db">deep-db</a></td>
+<td>Database Management Library</td>
+<td>Amazon DynamoDB, Amazon SQS</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-di">deep-di</a></td>
+<td>Dependency Injection Management Library</td>
+<td>-</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-event">deep-event</a></td>
+<td>Events Management Library</td>
+<td>Amazon Kinesis</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-fs">deep-fs</a></td>
+<td>File System Management Library</td>
+<td>Amazon S3</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-kernel">deep-kernel</a></td>
+<td>Kernel Management Library</td>
+<td>-</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-log">deep-log</a></td>
+<td>Logs Management Library</td>
+<td>Amazon CloudWatch Logs</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-notification">deep-notification</a></td>
+<td>Notifications Management Library</td>
+<td>Amazon SNS</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-resource">deep-resource</a></td>
+<td>Resouces Management Library</td>
+<td>AWS Lambda, Amazon API Gateway</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-security">deep-security</a></td>
+<td>Security Management Library</td>
+<td>AWS IAM, Amazon Cognito</td>
+</tr>
+<tr>
+<td><a href="http://docs.deep.mg/deep-validation">deep-validation</a></td>
+<td>Validation Management Library</td>
+<td>-</td>
+</tr>
+</tbody>
+</table>
+<h2 id="feedback">Feedback</h2>
+<p>We are eager to get your feedback, so please use whatever communication channel you prefer:</p>
+<ul>
+<li><a href="https://github.com/MitocGroup/deep-framework/issues">github issues</a></li>
+<li><a href="https://gitter.im/MitocGroup/deep-framework">gitter chat room</a></li>
+<li><a href="mailto:feedback@deep.mg">deep email address</a></li>
+</ul>
+<h2 id="license">License</h2>
+<p>This repository can be used under the MIT license.</p>
+<blockquote>
+<p>See <a href="https://github.com/MitocGroup/deep-framework/blob/master/LICENSE">LICENSE</a> for more details.</p>
+</blockquote>
+<h2 id="sponsors">Sponsors</h2>
+<p>This repository is being sponsored by:</p>
+<blockquote>
+<p><a href="http://www.mitocgroup.com">Mitoc Group</a></p>
+</blockquote>
+</div>
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

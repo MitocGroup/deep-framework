@@ -1,0 +1,5606 @@
+[
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/IAM/Action.js",
+    "memberof": null,
+    "longname": "lib/AWS/IAM/Action.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {Policy} from './Policy';\n\n/**\n * Iam statement action\n */\nexport class Action extends Extractable {\n  constructor() {\n    super();\n\n    this._service = Policy.ANY;\n    this._action = Policy.ANY;\n  }\n\n  /**\n   * @param {String} action\n   */\n  set action(action) {\n    this._action = action;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let action = this._action;\n\n    return `${service}:${action}`;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Action",
+    "memberof": "lib/AWS/IAM/Action.js",
+    "longname": "lib/AWS/IAM/Action.js~Action",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/IAM/Action.js",
+    "importStyle": "{Action}",
+    "description": "Iam statement action",
+    "lineNumber": 15,
+    "interface": false,
+    "extends": [
+      "lib/AWS/IAM/Extractable~Extractable"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_service",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#_service",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_action",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#_action",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "action",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#action",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "action",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_action",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#_action",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "action",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#action",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "service",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#service",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_service",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#_service",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "service",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#service",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "extract",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#extract",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/IAM/Collection.js",
+    "memberof": null,
+    "longname": "lib/AWS/IAM/Collection.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\n\n/**\n * Collection of something\n */\nexport class Collection extends Extractable {\n  /**\n   * @param {Object} prototype\n   */\n  constructor(prototype) {\n    super();\n\n    if (prototype.__proto__ !== Extractable) {\n      throw new InvalidArgumentException(prototype, Extractable);\n    }\n\n    this._prototype = prototype;\n    this._vector = [];\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get prototype() {\n    return this._prototype;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {Object}\n   */\n  create(...args) {\n    return new this._prototype(...args);\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {Object}\n   */\n  add(...args) {\n    let instance = args.length === 1 && args[0] instanceof this._prototype\n      ? args[0]\n      : this.create(...args);\n\n    this._vector.push(instance);\n\n    return instance;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  count() {\n    return this._vector.length;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  list() {\n    return this._vector;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  extract() {\n    let vector = [];\n\n    for (let itemKey in this._vector) {\n      if (!this._vector.hasOwnProperty(itemKey)) {\n        continue;\n      }\n\n      let item = this._vector[itemKey];\n\n      vector.push(item.extract());\n    }\n\n    return vector;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Collection",
+    "memberof": "lib/AWS/IAM/Collection.js",
+    "longname": "lib/AWS/IAM/Collection.js~Collection",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/IAM/Collection.js",
+    "importStyle": "{Collection}",
+    "description": "Collection of something",
+    "lineNumber": 13,
+    "interface": false,
+    "extends": [
+      "lib/AWS/IAM/Extractable~Extractable"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "prototype",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_prototype",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#_prototype",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_vector",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#_vector",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "prototype",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#prototype",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "create",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#create",
+    "access": null,
+    "description": null,
+    "lineNumber": 39,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "add",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#add",
+    "access": null,
+    "description": null,
+    "lineNumber": 47,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "count",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#count",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "list",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#list",
+    "access": null,
+    "description": null,
+    "lineNumber": 67,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "extract",
+    "memberof": "lib/AWS/IAM/Collection.js~Collection",
+    "longname": "lib/AWS/IAM/Collection.js~Collection#extract",
+    "access": null,
+    "description": null,
+    "lineNumber": 74,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/IAM/Exception/InvalidArnException.js",
+    "memberof": null,
+    "longname": "lib/AWS/IAM/Exception/InvalidArnException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/12/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when ARN is invalid\n */\nexport class InvalidArnException extends Exception {\n  /**\n   * @param {String} arn\n   */\n  constructor(arn) {\n    super(`Invalid arn string \"${arn}\".`);\n  }\n}\n\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "InvalidArnException",
+    "memberof": "lib/AWS/IAM/Exception/InvalidArnException.js",
+    "longname": "lib/AWS/IAM/Exception/InvalidArnException.js~InvalidArnException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/IAM/Exception/InvalidArnException.js",
+    "importStyle": "{InvalidArnException}",
+    "description": "Thrown when ARN is invalid",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/IAM/Exception/InvalidArnException.js~InvalidArnException",
+    "longname": "lib/AWS/IAM/Exception/InvalidArnException.js~InvalidArnException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "arn",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/IAM/Extractable.js",
+    "memberof": null,
+    "longname": "lib/AWS/IAM/Extractable.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\n\n/**\n * Extractable helper\n */\nexport class Extractable extends Interface {\n  constructor() {\n    super(['extract']);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Extractable",
+    "memberof": "lib/AWS/IAM/Extractable.js",
+    "longname": "lib/AWS/IAM/Extractable.js~Extractable",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/IAM/Extractable.js",
+    "importStyle": "{Extractable}",
+    "description": "Extractable helper",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/OOP/Interface~Interface"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/IAM/Extractable.js~Extractable",
+    "longname": "lib/AWS/IAM/Extractable.js~Extractable#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/IAM/Factory.js",
+    "memberof": null,
+    "longname": "lib/AWS/IAM/Factory.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/2/15.\n */\n\n'use strict';\n\nimport {Resource} from './Resource';\nimport {Collection} from './Collection';\nimport {Action} from './Action';\nimport {Policy} from './Policy';\nimport {Statement} from './Statement';\n\n/**\n *  AWS IAM factory\n */\nexport class Factory {\n  /**\n   * @param {Function|*} Prototype\n   * @param {Array} args\n   * @returns {Object}\n   */\n  static create(Prototype, ...args) {\n    Prototype = Factory._assurePrototype(Prototype);\n\n    return new Prototype(...args);\n  }\n\n  /**\n   * @param {Function|*} Prototype\n   * @returns {Collection}\n   */\n  static createCollection(Prototype) {\n    Prototype = Factory._assurePrototype(Prototype);\n\n    return new Collection(Prototype);\n  }\n\n  /**\n   * @param {Function|*} Prototype\n   * @returns {Function}\n   * @private\n   */\n  static _assurePrototype(Prototype) {\n    if (typeof Prototype === 'string') {\n      Prototype = Factory[Prototype.toUpperCase()];\n    }\n\n    return Prototype;\n  }\n\n  /**\n   * @returns {Policy}\n   * @constructor\n   */\n  static get POLICY() {\n    return Policy;\n  }\n\n  /**\n   * @returns {Action}\n   * @constructor\n   */\n  static get RESOURCE() {\n    return Resource;\n  }\n\n  /**\n   * @returns {Resource}\n   * @constructor\n   */\n  static get ACTION() {\n    return Action;\n  }\n\n  /**\n   * @returns {Statement}\n   * @constructor\n   */\n  static get STATEMENT() {\n    return Statement;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Factory",
+    "memberof": "lib/AWS/IAM/Factory.js",
+    "longname": "lib/AWS/IAM/Factory.js~Factory",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/IAM/Factory.js",
+    "importStyle": "{Factory}",
+    "description": " AWS IAM factory",
+    "lineNumber": 16,
+    "interface": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "create",
+    "memberof": "lib/AWS/IAM/Factory.js~Factory",
+    "longname": "lib/AWS/IAM/Factory.js~Factory.create",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "Prototype",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "createCollection",
+    "memberof": "lib/AWS/IAM/Factory.js~Factory",
+    "longname": "lib/AWS/IAM/Factory.js~Factory.createCollection",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Collection}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "Prototype",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Collection"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_assurePrototype",
+    "memberof": "lib/AWS/IAM/Factory.js~Factory",
+    "longname": "lib/AWS/IAM/Factory.js~Factory._assurePrototype",
+    "access": "private",
+    "description": null,
+    "lineNumber": 43,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Function}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "Prototype",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "POLICY",
+    "memberof": "lib/AWS/IAM/Factory.js~Factory",
+    "longname": "lib/AWS/IAM/Factory.js~Factory.POLICY",
+    "access": null,
+    "description": null,
+    "lineNumber": 55,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Policy}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Policy"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "RESOURCE",
+    "memberof": "lib/AWS/IAM/Factory.js~Factory",
+    "longname": "lib/AWS/IAM/Factory.js~Factory.RESOURCE",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Action}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Action"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ACTION",
+    "memberof": "lib/AWS/IAM/Factory.js~Factory",
+    "longname": "lib/AWS/IAM/Factory.js~Factory.ACTION",
+    "access": null,
+    "description": null,
+    "lineNumber": 71,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Resource}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Resource"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "STATEMENT",
+    "memberof": "lib/AWS/IAM/Factory.js~Factory",
+    "longname": "lib/AWS/IAM/Factory.js~Factory.STATEMENT",
+    "access": null,
+    "description": null,
+    "lineNumber": 79,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Statement}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Statement"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/IAM/Policy.js",
+    "memberof": null,
+    "longname": "lib/AWS/IAM/Policy.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Collection} from './Collection';\nimport {Statement} from './Statement';\n\n/**\n * IAM policy\n */\nexport class Policy extends Extractable {\n  constructor() {\n    super();\n\n    this._version = Policy.DEFAULT_VERSION;\n    this._statement = new Collection(Statement);\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_VERSION() {\n    return '2012-10-17';\n  }\n\n  /**\n   * @param {String} version\n   */\n  set version(version) {\n    this._version = version;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get version() {\n    return this._version;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get statement() {\n    return this._statement;\n  }\n\n  /**\n   * @return {Object}\n   */\n  extract() {\n    return {\n      Version: this._version,\n      Statement: this._statement.extract(),\n    };\n  }\n\n  /**\n   * @return {String}\n   */\n  toString() {\n    return JSON.stringify(this.extract());\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Policy",
+    "memberof": "lib/AWS/IAM/Policy.js",
+    "longname": "lib/AWS/IAM/Policy.js~Policy",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/IAM/Policy.js",
+    "importStyle": "{Policy}",
+    "description": "IAM policy",
+    "lineNumber": 14,
+    "interface": false,
+    "extends": [
+      "lib/AWS/IAM/Extractable~Extractable"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_version",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#_version",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statement",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#_statement",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ANY",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy.ANY",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DEFAULT_VERSION",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy.DEFAULT_VERSION",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "version",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#version",
+    "access": null,
+    "description": null,
+    "lineNumber": 39,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "version",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_version",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#_version",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "version",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#version",
+    "access": null,
+    "description": null,
+    "lineNumber": 46,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "statement",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#statement",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Collection}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Collection"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "extract",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#extract",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "toString",
+    "memberof": "lib/AWS/IAM/Policy.js~Policy",
+    "longname": "lib/AWS/IAM/Policy.js~Policy#toString",
+    "access": null,
+    "description": null,
+    "lineNumber": 70,
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/IAM/Resource.js",
+    "memberof": null,
+    "longname": "lib/AWS/IAM/Resource.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Region} from '../Region';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {InvalidArnException} from './Exception/InvalidArnException';\n\n/**\n * IAM statement resource\n */\nexport class Resource extends Extractable {\n  constructor() {\n    super();\n\n    this._service = '';\n    this._region = '';\n    this._accountId = '';\n    this._descriptor = '';\n  }\n\n  /**\n   * @param {String} identifier\n   */\n  set accountId(identifier) {\n    this._accountId = identifier;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get accountId() {\n    return this._accountId;\n  }\n\n  /**\n   * @param {String} descriptor\n   */\n  set descriptor(descriptor) {\n    this._descriptor = descriptor;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get descriptor() {\n    return this._descriptor;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set region(name) {\n    if (!Region.exists(name)) {\n      throw new InvalidArgumentException(name, Region);\n    }\n\n    this._region = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @see - http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\n   *\n   * @param {string} arn\n   * @returns {Resource}\n   */\n  updateFromArn(arn) {\n    let arnParts = arn.split(':');\n\n    if (arnParts.length < 6) {\n      throw new InvalidArnException(arn);\n    }\n\n    this.service = arnParts[2];\n    this.region = arnParts[3];\n    this.accountId = arnParts[4];\n    this.descriptor = arnParts.slice(5).join(':');\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let region = this._region;\n    let accountId = this._accountId;\n    let descriptor = this._descriptor;\n\n    return `arn:aws:${service}:${region}:${accountId}:${descriptor}`;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Resource",
+    "memberof": "lib/AWS/IAM/Resource.js",
+    "longname": "lib/AWS/IAM/Resource.js~Resource",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/IAM/Resource.js",
+    "importStyle": "{Resource}",
+    "description": "IAM statement resource",
+    "lineNumber": 16,
+    "interface": false,
+    "extends": [
+      "lib/AWS/IAM/Extractable~Extractable"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_service",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_service",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_region",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_region",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_accountId",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_accountId",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_descriptor",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_descriptor",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "accountId",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identifier",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_accountId",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_accountId",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "accountId",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "descriptor",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
+    "access": null,
+    "description": null,
+    "lineNumber": 43,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "descriptor",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_descriptor",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_descriptor",
+    "access": null,
+    "description": null,
+    "lineNumber": 44,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "descriptor",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
+    "access": null,
+    "description": null,
+    "lineNumber": 50,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "region",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#region",
+    "access": null,
+    "description": null,
+    "lineNumber": 57,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_region",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_region",
+    "access": null,
+    "description": null,
+    "lineNumber": 62,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "region",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#region",
+    "access": null,
+    "description": null,
+    "lineNumber": 68,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "service",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#service",
+    "access": null,
+    "description": null,
+    "lineNumber": 75,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_service",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_service",
+    "access": null,
+    "description": null,
+    "lineNumber": 80,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "service",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#service",
+    "access": null,
+    "description": null,
+    "lineNumber": 86,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "updateFromArn",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#updateFromArn",
+    "access": null,
+    "description": null,
+    "see": [
+      "- http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html"
+    ],
+    "lineNumber": 96,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Resource}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "arn",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Resource"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "service",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#service",
+    "access": null,
+    "description": null,
+    "lineNumber": 103,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "region",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#region",
+    "access": null,
+    "description": null,
+    "lineNumber": 104,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "accountId",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
+    "access": null,
+    "description": null,
+    "lineNumber": 105,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "descriptor",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
+    "access": null,
+    "description": null,
+    "lineNumber": 106,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "extract",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#extract",
+    "access": null,
+    "description": null,
+    "lineNumber": 114,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/IAM/Statement.js",
+    "memberof": null,
+    "longname": "lib/AWS/IAM/Statement.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Resource} from './Resource';\nimport {Collection} from './Collection';\nimport {Action} from './Action';\nimport {Policy} from './Policy';\nimport {Extractable} from './Extractable';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\n\n/**\n * IAM policy statement\n */\nexport class Statement extends Extractable {\n  constructor() {\n    super();\n\n    this._effect = Statement.ALLOW;\n    this._action = new Collection(Action);\n    this._notAction = new Collection(Action);\n    this._resource = new Collection(Resource);\n    this._notResource = new Collection(Resource);\n    this._condition = null;\n    this._principal = null;\n  }\n\n  /**\n   * @param {String} effect\n   */\n  set effect(effect) {\n    if ([Statement.ALLOW, Statement.DENY].indexOf(effect) === -1) {\n      throw new InvalidArgumentException(effect, '[Statement.ALLOW, Statement.DENY]');\n    }\n\n    this._effect = effect;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get effect() {\n    return this._effect;\n  }\n\n  /**\n   * @param {Object} condition\n   */\n  set condition(condition) {\n    this._condition = condition;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get condition() {\n    return this._condition;\n  }\n\n  /**\n   * @param {*} principal\n   */\n  set principal(principal) {\n    this._principal = principal;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get principal() {\n    return this._principal;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get notResource() {\n    return this._notResource;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get resource() {\n    return this._resource;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get notAction() {\n    return this._notAction;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ALLOW() {\n    return 'Allow';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DENY() {\n    return 'Deny';\n  }\n\n  /**\n   * @returns {Object}\n   */\n  extract() {\n    let actions = this._action.count() > 0 ? this._action.extract() : Policy.ANY;\n    let resources = this._resource.count() > 0 ? this._resource.extract() : null;\n\n    let statement = {\n      Effect: this._effect,\n      Action: actions,\n    };\n\n    if (resources !== null) {\n      statement.Resource = resources;\n    }\n\n    if (this._condition !== null && this._condition instanceof Object) {\n      statement.Condition = this._condition;\n    }\n\n    // @todo - create separate class for Principal\n    if (this._principal != null) {\n      statement.Principal = this._principal;\n    }\n\n    if (this._notAction.count() > 0) {\n      statement.NotAction = this._notAction.extract();\n    }\n\n    if (this._notResource.count() > 0) {\n      statement.NotResource = this._notResource.extract();\n    }\n\n    return statement;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Statement",
+    "memberof": "lib/AWS/IAM/Statement.js",
+    "longname": "lib/AWS/IAM/Statement.js~Statement",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/IAM/Statement.js",
+    "importStyle": "{Statement}",
+    "description": "IAM policy statement",
+    "lineNumber": 17,
+    "interface": false,
+    "extends": [
+      "lib/AWS/IAM/Extractable~Extractable"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_effect",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_effect",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_action",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_action",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_notAction",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_notAction",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_resource",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_resource",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_notResource",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_notResource",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_condition",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_condition",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_principal",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_principal",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "effect",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#effect",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "effect",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_effect",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_effect",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "effect",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#effect",
+    "access": null,
+    "description": null,
+    "lineNumber": 44,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "condition",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#condition",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "condition",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_condition",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_condition",
+    "access": null,
+    "description": null,
+    "lineNumber": 52,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "condition",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#condition",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "principal",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#principal",
+    "access": null,
+    "description": null,
+    "lineNumber": 65,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "principal",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_principal",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#_principal",
+    "access": null,
+    "description": null,
+    "lineNumber": 66,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "principal",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#principal",
+    "access": null,
+    "description": null,
+    "lineNumber": 72,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "notResource",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#notResource",
+    "access": null,
+    "description": null,
+    "lineNumber": 79,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Collection}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Collection"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "resource",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#resource",
+    "access": null,
+    "description": null,
+    "lineNumber": 86,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Collection}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Collection"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "notAction",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#notAction",
+    "access": null,
+    "description": null,
+    "lineNumber": 93,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Collection}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Collection"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "action",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#action",
+    "access": null,
+    "description": null,
+    "lineNumber": 100,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Collection}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Collection"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ALLOW",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement.ALLOW",
+    "access": null,
+    "description": null,
+    "lineNumber": 107,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DENY",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement.DENY",
+    "access": null,
+    "description": null,
+    "lineNumber": 114,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "extract",
+    "memberof": "lib/AWS/IAM/Statement.js~Statement",
+    "longname": "lib/AWS/IAM/Statement.js~Statement#extract",
+    "access": null,
+    "description": null,
+    "lineNumber": 121,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/Lambda/ErrorResponse.js",
+    "memberof": null,
+    "longname": "lib/AWS/Lambda/ErrorResponse.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\n/**\n * Error response sent to the lambda context\n */\nexport class ErrorResponse extends Response {\n  /**\n   * @param {*} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @returns {String}\n   */\n  get contextMethod() {\n    return 'fail';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ErrorResponse",
+    "memberof": "lib/AWS/Lambda/ErrorResponse.js",
+    "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Lambda/ErrorResponse.js",
+    "importStyle": "{ErrorResponse}",
+    "description": "Error response sent to the lambda context",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/AWS/Lambda/Response~Response"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse",
+    "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "contextMethod",
+    "memberof": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse",
+    "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse#contextMethod",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js",
+    "memberof": null,
+    "longname": "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/12/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when missing runtime lambda context\n */\nexport class MissingRuntimeContextException extends Exception {\n  constructor() {\n    super('Missing Lambda runtime context');\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MissingRuntimeContextException",
+    "memberof": "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js",
+    "longname": "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js",
+    "importStyle": "{MissingRuntimeContextException}",
+    "description": "Thrown when missing runtime lambda context",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException",
+    "longname": "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/Lambda/Request.js",
+    "memberof": null,
+    "longname": "lib/AWS/Lambda/Request.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\n/**\n * Request received by the lambda context\n */\nexport class Request {\n  /**\n   * @param {*} data\n   */\n  constructor(data) {\n    this._data = data || {};\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @param {String} name\n   * @param {String|Object|null} defaultValue\n   *\n   * @returns {String|Object|null}\n   */\n  getParam(name, defaultValue = null) {\n    return this.data.hasOwnProperty(name) ? this.data[name] : defaultValue;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Request",
+    "memberof": "lib/AWS/Lambda/Request.js",
+    "longname": "lib/AWS/Lambda/Request.js~Request",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Lambda/Request.js",
+    "importStyle": "{Request}",
+    "description": "Request received by the lambda context",
+    "lineNumber": 10,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/Lambda/Request.js~Request",
+    "longname": "lib/AWS/Lambda/Request.js~Request#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/AWS/Lambda/Request.js~Request",
+    "longname": "lib/AWS/Lambda/Request.js~Request#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "data",
+    "memberof": "lib/AWS/Lambda/Request.js~Request",
+    "longname": "lib/AWS/Lambda/Request.js~Request#data",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getParam",
+    "memberof": "lib/AWS/Lambda/Request.js~Request",
+    "longname": "lib/AWS/Lambda/Request.js~Request#getParam",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String|Object|null}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String",
+          "Object",
+          "null"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "defaultValue",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String",
+        "Object",
+        "null"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/Lambda/Response.js",
+    "memberof": null,
+    "longname": "lib/AWS/Lambda/Response.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {MissingRuntimeContextException} from './Exception/MissingRuntimeContextException';\n\n/**\n * Response sent to the lambda context\n */\nexport class Response {\n  /**\n   * @param {*} data\n   */\n  constructor(data) {\n    this._data = data;\n    this._runtimeContext = null;\n  }\n\n  /**\n   * @param {Object} context\n   */\n  set runtimeContext(context) {\n    this._runtimeContext = context;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get runtimeContext() {\n    return this._runtimeContext;\n  }\n\n  /**\n   * @returns {Response}\n   */\n  send() {\n    if (!this._runtimeContext) {\n      throw new MissingRuntimeContextException();\n    }\n\n    this._runtimeContext[this.contextMethod](this._data);\n\n    return this;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get contextMethod() {\n    return 'succeed';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Response",
+    "memberof": "lib/AWS/Lambda/Response.js",
+    "longname": "lib/AWS/Lambda/Response.js~Response",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Lambda/Response.js",
+    "importStyle": "{Response}",
+    "description": "Response sent to the lambda context",
+    "lineNumber": 12,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_runtimeContext",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#_runtimeContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "runtimeContext",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#runtimeContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "context",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_runtimeContext",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#_runtimeContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "runtimeContext",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#runtimeContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "send",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#send",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Response}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Response"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "data",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#data",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "contextMethod",
+    "memberof": "lib/AWS/Lambda/Response.js~Response",
+    "longname": "lib/AWS/Lambda/Response.js~Response#contextMethod",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/Lambda/Runtime.js",
+    "memberof": null,
+    "longname": "lib/AWS/Lambda/Runtime.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 4,
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {Request} from './Request';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {*} event\n   * @param {*} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._addExceptionListener();\n\n    this._context = context;\n    this._request = new Request(event);\n    this.handle(this._request);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _addExceptionListener() {\n    process.removeAllListeners('uncaughtException');\n    process.on('uncaughtException', function(error) {\n      return this.createError(error).send();\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} iError\n   */\n  createError(iError) {\n    let oError = {};\n\n    if (typeof iError === 'string') {\n      oError = {\n        errorType: 'Error',\n        errorMessage: iError,\n        errorStack: (new Error(iError)).stack,\n      };\n    } else {\n      oError = {\n        errorType: iError.name,\n        errorMessage: iError.message,\n        errorStack: iError.stack,\n      };\n    }\n\n    let response = new Response(oError);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    let response = new Response(data);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Runtime",
+    "memberof": "lib/AWS/Lambda/Runtime.js",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Lambda/Runtime.js",
+    "importStyle": "{Runtime}",
+    "description": "Lambda runtime context",
+    "lineNumber": 13,
+    "interface": false,
+    "extends": [
+      "lib/OOP/Interface~Interface"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "kernel",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_kernel",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_kernel",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_request",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_request",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_context",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_context",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "kernel",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#kernel",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "lambda",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#lambda",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Function}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "run",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#run",
+    "access": null,
+    "description": null,
+    "lineNumber": 48,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Runtime}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "context",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Runtime"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_context",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_context",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_request",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_request",
+    "access": null,
+    "description": null,
+    "lineNumber": 52,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_addExceptionListener",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_addExceptionListener",
+    "access": "private",
+    "description": null,
+    "lineNumber": 61,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createError",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createError",
+    "access": null,
+    "description": null,
+    "lineNumber": 71,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "iError",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createResponse",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createResponse",
+    "access": null,
+    "description": null,
+    "lineNumber": 97,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "request",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#request",
+    "access": null,
+    "description": null,
+    "lineNumber": 107,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/Region.js",
+    "memberof": null,
+    "longname": "lib/AWS/Region.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS regions\n */\nexport class Region {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_TOKYO() {\n    return 'ap-northeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SINGAPORE() {\n    return 'ap-southeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SYDNEY() {\n    return 'ap-southeast-2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_FRANKFURT() {\n    return 'eu-central-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_IRELAND() {\n    return 'eu-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SOUTH_AMERICA_SAO_PAULO() {\n    return 'sa-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_EAST_N_VIRGINIA() {\n    return 'us-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_N_CALIFORNIA() {\n    return 'us-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_OREGON() {\n    return 'us-west-2';\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Region.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Region.ANY,\n      Region.ASIA_PACIFIC_TOKYO,\n      Region.ASIA_PACIFIC_SYDNEY,\n      Region.ASIA_PACIFIC_SINGAPORE,\n      Region.EU_FRANKFURT,\n      Region.EU_IRELAND,\n      Region.SOUTH_AMERICA_SAO_PAULO,\n      Region.US_EAST_N_VIRGINIA,\n      Region.US_WEST_N_CALIFORNIA,\n      Region.US_WEST_OREGON,\n    ];\n  }\n\n  /**\n   * List method alias\n   *\n   * @returns {String[]}\n   */\n  static all() {\n    return Region.list();\n  }\n\n  /**\n   * @param {string} defaultRegion\n   * @param {array} availableRegions\n   * @returns {string}\n   */\n  static getAppropriateAwsRegion(defaultRegion, availableRegions) {\n    if (availableRegions.indexOf(defaultRegion) !== -1) {\n      return defaultRegion;\n    }\n\n    let regionContinent = defaultRegion.split('-')[0];\n\n    for (let regionKey in availableRegions) {\n      if (!availableRegions.hasOwnProperty(regionKey)) {\n        continue;\n      }\n\n      let region = availableRegions[regionKey];\n\n      if (region === Region.ANY) {\n        return defaultRegion;\n      }\n\n      if (region.split('-')[0] === regionContinent) {\n        return region;\n      }\n    }\n\n    return availableRegions[0]; // fallback to first available region\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Region",
+    "memberof": "lib/AWS/Region.js",
+    "longname": "lib/AWS/Region.js~Region",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Region.js",
+    "importStyle": "{Region}",
+    "description": "Available AWS regions",
+    "lineNumber": 10,
+    "interface": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ANY",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.ANY",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ASIA_PACIFIC_TOKYO",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.ASIA_PACIFIC_TOKYO",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ASIA_PACIFIC_SINGAPORE",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.ASIA_PACIFIC_SINGAPORE",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ASIA_PACIFIC_SYDNEY",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.ASIA_PACIFIC_SYDNEY",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "EU_FRANKFURT",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.EU_FRANKFURT",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "EU_IRELAND",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.EU_IRELAND",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "SOUTH_AMERICA_SAO_PAULO",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.SOUTH_AMERICA_SAO_PAULO",
+    "access": null,
+    "description": null,
+    "lineNumber": 56,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "US_EAST_N_VIRGINIA",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.US_EAST_N_VIRGINIA",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "US_WEST_N_CALIFORNIA",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.US_WEST_N_CALIFORNIA",
+    "access": null,
+    "description": null,
+    "lineNumber": 70,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "US_WEST_OREGON",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.US_WEST_OREGON",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "exists",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.exists",
+    "access": null,
+    "description": null,
+    "lineNumber": 85,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "list",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.list",
+    "access": null,
+    "description": null,
+    "lineNumber": 92,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "all",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.all",
+    "access": null,
+    "description": "List method alias",
+    "lineNumber": 112,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "getAppropriateAwsRegion",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.getAppropriateAwsRegion",
+    "access": null,
+    "description": null,
+    "lineNumber": 121,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "string"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "defaultRegion",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "availableRegions",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/Service.js",
+    "memberof": null,
+    "longname": "lib/AWS/Service.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n    ];\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Service",
+    "memberof": "lib/AWS/Service.js",
+    "longname": "lib/AWS/Service.js~Service",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Service.js",
+    "importStyle": "{Service}",
+    "description": "Available AWS services",
+    "lineNumber": 10,
+    "interface": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "LAMBDA",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.LAMBDA",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "SIMPLE_STORAGE_SERVICE",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.SIMPLE_STORAGE_SERVICE",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DYNAMO_DB",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.DYNAMO_DB",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "SIMPLE_NOTIFICATION_SERVICE",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.SIMPLE_NOTIFICATION_SERVICE",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "COGNITO_IDENTITY",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.COGNITO_IDENTITY",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "COGNITO_SYNC",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.COGNITO_SYNC",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ELASTIC_CACHE",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.ELASTIC_CACHE",
+    "access": null,
+    "description": null,
+    "lineNumber": 56,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "IDENTITY_AND_ACCESS_MANAGEMENT",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.IDENTITY_AND_ACCESS_MANAGEMENT",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "KINESIS",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.KINESIS",
+    "access": null,
+    "description": null,
+    "lineNumber": 70,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "CLOUD_FRONT",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.CLOUD_FRONT",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "SECURITY_TOKEN_SERVICE",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.SECURITY_TOKEN_SERVICE",
+    "access": null,
+    "description": null,
+    "lineNumber": 84,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "CLOUD_WATCH_LOGS",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.CLOUD_WATCH_LOGS",
+    "access": null,
+    "description": null,
+    "lineNumber": 91,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "API_GATEWAY",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.API_GATEWAY",
+    "access": null,
+    "description": null,
+    "lineNumber": 98,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "identifier",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.identifier",
+    "access": null,
+    "description": null,
+    "lineNumber": 106,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "service",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "exists",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.exists",
+    "access": null,
+    "description": null,
+    "lineNumber": 114,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "list",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.list",
+    "access": null,
+    "description": null,
+    "lineNumber": 121,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/DatabaseOperationException.js",
+    "memberof": null,
+    "longname": "lib/Exception/DatabaseOperationException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when operation on the database failed\n */\nexport class DatabaseOperationException extends Exception {\n\n  /**\n   * @param {String} error\n   */\n  constructor(error) {\n    super(`Database operation failed. ${error}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "DatabaseOperationException",
+    "memberof": "lib/Exception/DatabaseOperationException.js",
+    "longname": "lib/Exception/DatabaseOperationException.js~DatabaseOperationException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Exception/DatabaseOperationException.js",
+    "importStyle": "{DatabaseOperationException}",
+    "description": "Thrown when operation on the database failed",
+    "lineNumber": 8,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/DatabaseOperationException.js~DatabaseOperationException",
+    "longname": "lib/Exception/DatabaseOperationException.js~DatabaseOperationException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/Exception.js",
+    "memberof": null,
+    "longname": "lib/Exception/Exception.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\n/**\n * Base exception\n */\nexport class Exception extends Error {\n  /**\n   * @param {String} message\n   */\n  constructor(message) {\n    super();\n\n    if (Error.hasOwnProperty('captureStackTrace')) {\n      Error.captureStackTrace(this, this.constructor);\n    } else {\n      Object.defineProperty(this, 'stack', {\n        value: (new Error()).stack,\n      });\n    }\n\n    Object.defineProperty(this, 'message', {\n      value: message,\n    });\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this.constructor.name;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Exception",
+    "memberof": "lib/Exception/Exception.js",
+    "longname": "lib/Exception/Exception.js~Exception",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Exception/Exception.js",
+    "importStyle": "{Exception}",
+    "description": "Base exception",
+    "lineNumber": 10,
+    "interface": false,
+    "extends": [
+      "Error"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "message",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "name",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception#name",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/InvalidArgumentException.js",
+    "memberof": null,
+    "longname": "lib/Exception/InvalidArgumentException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when invalid argument provided\n */\nexport class InvalidArgumentException extends Exception {\n  /**\n   * @param {*} argument\n   * @param {String} meantType\n   */\n  constructor(argument, meantType) {\n    let argumentType = typeof argument;\n\n    super(`Invalid argument ${argument} of type ${argumentType} provided (meant ${meantType}).`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "InvalidArgumentException",
+    "memberof": "lib/Exception/InvalidArgumentException.js",
+    "longname": "lib/Exception/InvalidArgumentException.js~InvalidArgumentException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Exception/InvalidArgumentException.js",
+    "importStyle": "{InvalidArgumentException}",
+    "description": "Thrown when invalid argument provided",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/InvalidArgumentException.js~InvalidArgumentException",
+    "longname": "lib/Exception/InvalidArgumentException.js~InvalidArgumentException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "argument",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "meantType",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/MethodsNotImplementedException.js",
+    "memberof": null,
+    "longname": "lib/Exception/MethodsNotImplementedException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\nimport {InvalidArgumentException} from './InvalidArgumentException';\n\n/**\n * Thrown when methods from interface or abstract class are not implemented\n */\nexport class MethodsNotImplementedException extends Exception {\n  /**\n   * @param {Array} methods\n   */\n  constructor(methods) {\n    if (!Array.isArray(methods)) {\n      throw new InvalidArgumentException(methods, 'Array');\n    }\n\n    let methodPlain = methods.join(', ');\n\n    super(`One or more method are not implemented (${methodPlain}).`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MethodsNotImplementedException",
+    "memberof": "lib/Exception/MethodsNotImplementedException.js",
+    "longname": "lib/Exception/MethodsNotImplementedException.js~MethodsNotImplementedException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Exception/MethodsNotImplementedException.js",
+    "importStyle": "{MethodsNotImplementedException}",
+    "description": "Thrown when methods from interface or abstract class are not implemented",
+    "lineNumber": 13,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/MethodsNotImplementedException.js~MethodsNotImplementedException",
+    "longname": "lib/Exception/MethodsNotImplementedException.js~MethodsNotImplementedException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "methods",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Generic/ObjectStorage.js",
+    "memberof": null,
+    "longname": "lib/Generic/ObjectStorage.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Simple object storage implementation\n */\nexport class ObjectStorage {\n  /**\n   * @param {Array} objects\n   */\n  constructor(...objects) {\n    if (objects.length === 1 && objects[0] instanceof Array) {\n      objects = objects[0];\n    }\n\n    this._vector = objects;\n  }\n\n  /**\n   * @param {*} object\n   * @returns {ObjectStorage}\n   */\n  add(object) {\n    this._vector.push(object);\n\n    return this;\n  }\n\n  /**\n   * @param {*} thing\n   * @param {Boolean} strict\n   * @returns {*}\n   */\n  find(thing, strict = false) {\n    for (let objectKey in this._vector) {\n      if (!this._vector.hasOwnProperty(objectKey)) {\n        continue;\n      }\n\n      let object = this._vector[objectKey];\n\n      if ((strict && object === thing) || (!strict && object instanceof thing)) {\n        return object;\n      }\n    }\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get iterator() {\n    return this._vector;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ObjectStorage",
+    "memberof": "lib/Generic/ObjectStorage.js",
+    "longname": "lib/Generic/ObjectStorage.js~ObjectStorage",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Generic/ObjectStorage.js",
+    "importStyle": "{ObjectStorage}",
+    "description": "Simple object storage implementation",
+    "lineNumber": 10,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Generic/ObjectStorage.js~ObjectStorage",
+    "longname": "lib/Generic/ObjectStorage.js~ObjectStorage#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "objects",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_vector",
+    "memberof": "lib/Generic/ObjectStorage.js~ObjectStorage",
+    "longname": "lib/Generic/ObjectStorage.js~ObjectStorage#_vector",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "add",
+    "memberof": "lib/Generic/ObjectStorage.js~ObjectStorage",
+    "longname": "lib/Generic/ObjectStorage.js~ObjectStorage#add",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{ObjectStorage}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "object",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ObjectStorage"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "find",
+    "memberof": "lib/Generic/ObjectStorage.js~ObjectStorage",
+    "longname": "lib/Generic/ObjectStorage.js~ObjectStorage#find",
+    "access": null,
+    "description": null,
+    "lineNumber": 37,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "thing",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "strict",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "iterator",
+    "memberof": "lib/Generic/ObjectStorage.js~ObjectStorage",
+    "longname": "lib/Generic/ObjectStorage.js~ObjectStorage#iterator",
+    "access": null,
+    "description": null,
+    "lineNumber": 54,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Generic/ObjectVector.js",
+    "memberof": null,
+    "longname": "lib/Generic/ObjectVector.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 1,
+    "content": "'use strict';\n\nexport class ObjectVector {\n\n  /**\n   * @param {Function} proto\n   * @param {Object[]|*} instances\n   */\n  constructor(proto, ...instances) {\n    this._proto = proto;\n    this._vector = [];\n\n    this.add(...instances);\n  }\n\n  /**\n   * Add new instances to collection\n   * @param {Object[]|*} instances\n   */\n  add(...instances) {\n    for (let instance of instances) {\n      if (!(instance instanceof this._proto)) {\n        throw new Error(\n          `The object ${instance.constructor.name} is not an instance of ${this._proto.name}`\n        );\n      }\n\n      this._vector.push(instance);\n    }\n\n    return this;\n  }\n\n  /**\n   * Get collection of instances\n   * @returns {Object[]}\n   */\n  get collection() {\n    return this._vector;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ObjectVector",
+    "memberof": "lib/Generic/ObjectVector.js",
+    "longname": "lib/Generic/ObjectVector.js~ObjectVector",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Generic/ObjectVector.js",
+    "importStyle": "{ObjectVector}",
+    "description": null,
+    "lineNumber": 3,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Generic/ObjectVector.js~ObjectVector",
+    "longname": "lib/Generic/ObjectVector.js~ObjectVector#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 9,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "proto",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object[]",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "instances",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_proto",
+    "memberof": "lib/Generic/ObjectVector.js~ObjectVector",
+    "longname": "lib/Generic/ObjectVector.js~ObjectVector#_proto",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_vector",
+    "memberof": "lib/Generic/ObjectVector.js~ObjectVector",
+    "longname": "lib/Generic/ObjectVector.js~ObjectVector#_vector",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "add",
+    "memberof": "lib/Generic/ObjectVector.js~ObjectVector",
+    "longname": "lib/Generic/ObjectVector.js~ObjectVector#add",
+    "access": null,
+    "description": "Add new instances to collection",
+    "lineNumber": 20,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object[]",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "instances",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "collection",
+    "memberof": "lib/Generic/ObjectVector.js~ObjectVector",
+    "longname": "lib/Generic/ObjectVector.js~ObjectVector#collection",
+    "access": null,
+    "description": "Get collection of instances",
+    "lineNumber": 38,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/OOP/Interface.js",
+    "memberof": null,
+    "longname": "lib/OOP/Interface.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {MethodsNotImplementedException} from '../Exception/MethodsNotImplementedException';\nimport {InvalidArgumentException} from '../Exception/InvalidArgumentException';\n\n/**\n * Interface implementation\n */\nexport class Interface {\n  /**\n   * @param {String[]|String} abstractMethods\n   */\n  constructor(...abstractMethods) {\n    let methods = abstractMethods.length === 1 && abstractMethods[0] instanceof Array\n      ? abstractMethods[0]\n      : abstractMethods;\n\n    let notImplementedMethods = [];\n\n    for (let abstractMethodKey in methods) {\n      if (!methods.hasOwnProperty(abstractMethodKey)) {\n        continue;\n      }\n\n      let abstractMethod = methods[abstractMethodKey];\n      if (!(this[abstractMethod] instanceof Function)) {\n        notImplementedMethods.push(abstractMethod);\n      }\n    }\n\n    if (notImplementedMethods.length > 0) {\n      throw new MethodsNotImplementedException(notImplementedMethods);\n    }\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Interface",
+    "memberof": "lib/OOP/Interface.js",
+    "longname": "lib/OOP/Interface.js~Interface",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/OOP/Interface.js",
+    "importStyle": "{Interface}",
+    "description": "Interface implementation",
+    "lineNumber": 13,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/OOP/Interface.js~Interface",
+    "longname": "lib/OOP/Interface.js~Interface#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String[]",
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "abstractMethods",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/bootstrap.js",
+    "memberof": null,
+    "longname": "lib/bootstrap.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Interface as OOPInterface} from './OOP/Interface';\nimport {Runtime as AWSLambdaRuntime} from './AWS/Lambda/Runtime';\nimport {Region as AWSRegion} from './AWS/Region';\nimport {Service as AWSService} from './AWS/Service';\nimport {Policy as AWSIAMPolicy} from './AWS/IAM/Policy';\nimport {Factory as AWSIAMFactory} from './AWS/IAM/Factory';\nimport {ObjectStorage as GenericObjectStorage} from './Generic/ObjectStorage';\nimport {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';\nimport {Exception as ExceptionException} from './Exception/Exception';\nimport {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';\nimport {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';\nimport {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';\n\nlet exports = module.exports = {\n  IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,\n  Exception: {\n    Exception: ExceptionException,\n    InvalidArgumentException: ExceptionInvalidArgumentException,\n    MethodsNotImplementedException: ExceptionMethodsNotImplementedException,\n    DatabaseOperationException: ExceptionDatabaseOperationException,\n  },\n  OOP: {\n    Interface: OOPInterface,\n  },\n  Generic: {\n    ObjectStorage: GenericObjectStorage,\n    ObjectVector: GenericObjectVector,\n  },\n  AWS: {\n    Region: AWSRegion,\n    Service: AWSService,\n    IAM: {\n      Factory: AWSIAMFactory,\n      Policy: AWSIAMPolicy,\n    },\n    Lambda: {\n      Runtime: AWSLambdaRuntime,\n    },\n  },\n};\n"
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "exports",
+    "memberof": "lib/bootstrap.js",
+    "longname": "lib/bootstrap.js~exports",
+    "access": null,
+    "export": false,
+    "importPath": "deep-core/lib/bootstrap.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  }
+]

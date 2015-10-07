@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/Validation.js | DEEP Validation Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ObjectToJoi.js~ObjectToJoi.html">ObjectToJoi</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Validation.js~Validation.html">Validation</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidSchemaException.js~InvalidSchemaException.html">InvalidSchemaException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html">ModelNotFoundException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException.html">ObjectValidationFailedException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Helpers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Helpers/Joi.js~Joi.html">Joi</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Validation.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 6/15/15.
+ */
+
+&apos;use strict&apos;;
+
+import Kernel from &apos;deep-kernel&apos;;
+import {ObjectToJoi} from &apos;./ObjectToJoi&apos;;
+import {ModelNotFoundException} from &apos;./Exception/ModelNotFoundException&apos;;
+import Joi from &apos;joi&apos;;
+import {ObjectValidationFailedException} from &apos;./Exception/ObjectValidationFailedException&apos;;
+import {Exception} from &apos;./Exception/Exception&apos;;
+
+/**
+ * Validation engine
+ */
+export class Validation extends Kernel.ContainerAware {
+  /**
+   * @param {Array} models
+   */
+  constructor(models = []) {
+    super();
+
+    this._immutable = false;
+    this._models = this._rawModelsToSchemas(models);
+  }
+
+  /**
+   * @param {Boolean} state
+   */
+  set immutable(state) {
+    this._assureImmutable();
+
+    this._immutable = state;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get immutable() {
+    return this._immutable;
+  }
+
+  /**
+   * @param {String} modelName
+   * @param {*} valueObject
+   * @returns {*}
+   */
+  validate(modelName, valueObject) {
+    let model = this.get(modelName);
+    let result = Joi.validate(valueObject, Joi.object().keys(model));
+
+    if (result.error) {
+      throw new ObjectValidationFailedException(modelName, result.error);
+    }
+
+    return result.value;
+  }
+
+  /**
+   * @returns {Object[]}
+   */
+  get models() {
+    return this._models;
+  }
+
+  /**
+   * @param {String} modelName
+   * @param {Object} schema
+   * @returns {Validation}
+   */
+  setRaw(modelName, schema) {
+    this._assureImmutable();
+
+    this._models[modelName] = Validation.normalizeSchema(schema);
+
+    return this;
+  }
+
+  /**
+   * @param {String} modelName
+   * @param {Object} schema
+   * @returns {Validation}
+   */
+  set(modelName, schema) {
+    this._assureImmutable();
+
+    this._models[modelName] = schema;
+
+    return this;
+  }
+
+  /**
+   * @param {String} modelName
+   * @returns {Boolean}
+   */
+  has(modelName) {
+    return typeof this._models[modelName] !== &apos;undefined&apos;;
+  }
+
+  /**
+   * @param {String} modelName
+   * @returns {Object}
+   */
+  get(modelName) {
+    if (!this.has(modelName)) {
+      throw new ModelNotFoundException(modelName);
+    }
+
+    return this._models[modelName];
+  }
+
+  /**
+   * Booting a certain service
+   *
+   * @param {Kernel} kernel
+   * @param {Function} callback
+   */
+  boot(kernel, callback) {
+    this._assureImmutable();
+
+    this._models = this._rawModelsToSchemas(kernel.config.models);
+
+    callback();
+  }
+
+  /**
+   * @param {Array} rawModels
+   * @returns {Object}
+   * @private
+   */
+  _rawModelsToSchemas(rawModels) {
+    let modelsSchema = {};
+
+    for (let modelKey in rawModels) {
+      if (!rawModels.hasOwnProperty(modelKey)) {
+        continue;
+      }
+
+      let backendModels = rawModels[modelKey];
+
+      for (let modelName in backendModels) {
+        if (!backendModels.hasOwnProperty(modelName)) {
+          continue;
+        }
+
+        let schema = backendModels[modelName];
+
+        // @todo: move this sh*t into DB somehow...
+        schema.Id = schema.Id || &apos;timeUUID&apos;;
+
+        modelsSchema[modelName] = Validation.normalizeSchema(schema);
+      }
+    }
+
+    return modelsSchema;
+  }
+
+  /**
+   * @private
+   */
+  _assureImmutable() {
+    if (this._immutable) {
+      throw new Exception(&apos;You are not abble to alter the state after setting it immutable&apos;);
+    }
+  }
+
+  /**
+   * @param {Object} rawSchema
+   * @returns {Object}
+   */
+  static normalizeSchema(rawSchema) {
+    return new ObjectToJoi(rawSchema).transform();
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

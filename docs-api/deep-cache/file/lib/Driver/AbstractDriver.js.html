@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/Driver/AbstractDriver.js | DEEP Cache Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Driver/AbstractDriver.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 6/16/15.
+ */
+
+&apos;use strict&apos;;
+
+import Core from &apos;deep-core&apos;;
+import {MissingCacheException} from &apos;./Exception/MissingCacheException&apos;;
+import {NoFlushException} from &apos;./Exception/NoFlushException&apos;;
+import {DriverException} from &apos;./Exception/DriverException&apos;;
+
+/**
+ * Abstract driver implementation
+ */
+export class AbstractDriver extends Core.OOP.Interface {
+  constructor() {
+    super([
+      &apos;_get&apos;, &apos;_has&apos;,
+      &apos;_set&apos;, &apos;_invalidate&apos;,
+    ]);
+
+    this._buildId = &apos;&apos;;
+    this._namespace = &apos;&apos;;
+    this._silent = false;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get buildId() {
+    return this._buildId;
+  }
+
+  /**
+   * @param {String} id
+   */
+  set buildId(id) {
+    this._buildId = id;
+  }
+
+  /**
+   * @param {String} key
+   * @param {Function|null} callback
+   * @returns {AbstractDriver}
+   */
+  has(key, callback = null) {
+    callback = callback || function() {
+      };
+
+    try {
+      this._has(this._buildKey(key), function(result) {
+        callback(undefined, result);
+      }.bind(this));
+    } catch (e) {
+      callback(new DriverException(e), undefined);
+    }
+
+    return this;
+  }
+
+  /**
+   * @param {String} key
+   * @param {Function|null} callback
+   * @returns {AbstractDriver}
+   */
+  get(key, callback = null) {
+    callback = callback || function() {
+      };
+
+    try {
+      this.has(key, function(exception, result) {
+        if (exception) {
+          throw exception;
+        }
+
+        if (!result &amp;&amp; !this._silent) {
+          throw new MissingCacheException(key);
+        }
+
+        this._get(this._buildKey(key), function(result) {
+          callback(undefined, result);
+        }.bind(this));
+      }.bind(this));
+    } catch (e) {
+      callback(new DriverException(e), undefined);
+    }
+
+    return this;
+  }
+
+  /**
+   * @param {String} key
+   * @param {*} value
+   * @param {Number} ttl
+   * @param {Function} callback
+   */
+  set(key, value, ttl = 0, callback = null) {
+    callback = callback || function() {
+      };
+
+    try {
+      this._set(this._buildKey(key), value, ttl, function(result) {
+        callback(undefined, result);
+      }.bind(this));
+    } catch (e) {
+      callback(new DriverException(e), undefined);
+    }
+  }
+
+  /**
+   * @param {String} key
+   * @param {Number} timeout
+   * @param {Function|null} callback
+   * @returns {AbstractDriver}
+   */
+  invalidate(key, timeout = 0, callback = null) {
+    callback = callback || function() {
+      };
+
+    try {
+      this.has(key, function(exception, result) {
+        if (exception) {
+          throw exception;
+        }
+
+        if (!result) {
+          throw new MissingCacheException(key);
+        }
+
+        this._invalidate(this._buildKey(key), timeout, function(result) {
+          callback(undefined, result);
+        }.bind(this));
+      }.bind(this));
+    } catch (e) {
+      callback(new DriverException(e), undefined);
+    }
+
+    return this;
+  }
+
+  /**
+   * @param {Function|null} callback
+   * @returns {AbstractDriver}
+   */
+  flush(callback = null) {
+    callback = callback || function() {
+      };
+
+    try {
+      if (typeof this._flush === &apos;undefined&apos;) {
+        throw new NoFlushException();
+      }
+
+      this._flush(function(result) {
+        callback(undefined, result);
+      }.bind(this));
+    } catch (e) {
+      callback(new DriverException(e), undefined);
+    }
+
+    return this;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get namespace() {
+    return this._namespace;
+  }
+
+  /**
+   * @param {String} ns
+   */
+  set namespace(ns) {
+    this._namespace = ns;
+  }
+
+  /**
+   * @param {Boolean} value
+   */
+  set silent(value) {
+    this._silent = value;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get silent() {
+    return this._silent;
+  }
+
+  /**
+   * @param {String} key
+   * @returns {String}
+   * @private
+   */
+  _buildKey(key) {
+    return `${this._buildId}:${this._namespace}#${key}`;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

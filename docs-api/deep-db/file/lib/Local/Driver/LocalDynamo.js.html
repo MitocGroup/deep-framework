@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">lib/Local/Driver/LocalDynamo.js | DEEP Database Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/DB.js~DB.html">DB</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/FailedToCreateTableException.js~FailedToCreateTableException.html">FailedToCreateTableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/FailedToCreateTablesException.js~FailedToCreateTablesException.html">FailedToCreateTablesException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html">ModelNotFoundException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/DBServer.js~DBServer.html">DBServer</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local/Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Dynalite.js~Dynalite.html">Dynalite</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html">LocalDynamo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html">PathAwareDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local/Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/FailedToStartServerException.js~FailedToStartServerException.html">FailedToStartServerException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/ServerAlreadyRunningException.js~ServerAlreadyRunningException.html">ServerAlreadyRunningException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/ServerTtsExceededException.js~ServerTtsExceededException.html">ServerTtsExceededException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Vogels</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/ExtendModel.js~ExtendModel.html">ExtendModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Vogels/Exceptions</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/InvalidArgumentException.js~InvalidArgumentException.html">InvalidArgumentException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/UndefinedMethodException.js~UndefinedMethodException.html">UndefinedMethodException</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Local/Driver/LocalDynamo.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 9/23/15.
+ */
+
+&apos;use strict&apos;;
+
+import {PathAwareDriver} from &apos;./PathAwareDriver&apos;;
+import LocalDynamoServer from &apos;local-dynamo&apos;;
+import {FailedToStartServerException} from &apos;./Exception/FailedToStartServerException&apos;;
+
+export class LocalDynamo extends PathAwareDriver {
+  /**
+   * @param {Object} options
+   * @param {String} path
+   * @param {Number} port
+   */
+  constructor(options = LocalDynamo.DEFAULT_OPTIONS, path = LocalDynamo.DBPath, port = LocalDynamo.DEFAULT_PORT) {
+    super(path, port);
+
+    this._options = options;
+    this._process = null;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get options() {
+    return this._options;
+  }
+
+  /**
+   * @param {Function} cb
+   * @private
+   */
+  _start(cb) {
+    let cbTriggered = false;
+
+    this._options.dir = this.path;
+
+    this._process = LocalDynamoServer.launch(this._options, this.port);
+
+    // This hook fixes DynamoDB startup delay by waiting an empty stdout dataset
+    // @todo: remove this hook after fixing issue!
+    this._process.stdout.on(&apos;data&apos;, (data) =&gt; {
+      if (!data.toString().replace(/\s+/, &apos;&apos;) &amp;&amp; !cbTriggered) {
+        cbTriggered = true;
+        cb(null);
+      }
+    });
+
+    let onError = (error) =&gt; {
+      this._stop(() =&gt; &apos;&apos;);
+
+      if (!cbTriggered) {
+        cbTriggered = true;
+        cb(new FailedToStartServerException(this, error));
+      }
+    };
+
+    this._process.on(&apos;uncaughtException&apos;, onError);
+    this._process.on(&apos;error&apos;, onError);
+    this._process.on(&apos;exit&apos;, () =&gt; {
+      this.stop(() =&gt; &apos;&apos;);
+    });
+  }
+
+  /**
+   * @param {Function} cb
+   * @private
+   */
+  _stop(cb) {
+    if (this._process) {
+      this._process.kill();
+      this._process = null;
+    }
+
+    cb(null);
+  }
+
+  /**
+   * @returns {Object}
+   */
+  static get DEFAULT_OPTIONS() {
+    return {
+      stdio: &apos;pipe&apos;,
+    };
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

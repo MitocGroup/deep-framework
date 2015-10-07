@@ -1,0 +1,138 @@
+/**
+ * Created by AlexanderC on 5/27/15.
+ */
+
+'use strict';
+
+/**
+ * Available AWS services
+ */
+export class Service {
+  /**
+   * @returns {String}
+   */
+  static get LAMBDA() {
+    return 'lambda';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SIMPLE_STORAGE_SERVICE() {
+    return 's3';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DYNAMO_DB() {
+    return 'dynamodb';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SIMPLE_NOTIFICATION_SERVICE() {
+    return 'sns';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get COGNITO_IDENTITY() {
+    return 'cognito-identity';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get COGNITO_SYNC() {
+    return 'cognito-sync';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ELASTIC_CACHE() {
+    return 'elasticache';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get IDENTITY_AND_ACCESS_MANAGEMENT() {
+    return 'iam';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get KINESIS() {
+    return 'kinesis';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get CLOUD_FRONT() {
+    return 'cloudfront';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SECURITY_TOKEN_SERVICE() {
+    return 'sts';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get CLOUD_WATCH_LOGS() {
+    return 'logs';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get API_GATEWAY() {
+    return 'apigateway';
+  }
+
+  /**
+   * @param {String} service
+   * @returns {String}
+   */
+  static identifier(service) {
+    return `${service}.amazonaws.com`;
+  }
+
+  /**
+   * @param {String} name
+   * @returns {Boolean}
+   */
+  static exists(name) {
+    return -1 !== Service.list().indexOf(name);
+  }
+
+  /**
+   * @returns {String[]}
+   */
+  static list() {
+    return [
+      Service.LAMBDA,
+      Service.SIMPLE_STORAGE_SERVICE,
+      Service.DYNAMO_DB,
+      Service.SIMPLE_NOTIFICATION_SERVICE,
+      Service.COGNITO_IDENTITY,
+      Service.COGNITO_SYNC,
+      Service.ELASTIC_CACHE,
+      Service.IDENTITY_AND_ACCESS_MANAGEMENT,
+      Service.KINESIS,
+      Service.CLOUD_FRONT,
+      Service.SECURITY_TOKEN_SERVICE,
+      Service.CLOUD_WATCH_LOGS,
+      Service.API_GATEWAY,
+    ];
+  }
+}

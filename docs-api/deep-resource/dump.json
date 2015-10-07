@@ -1,0 +1,4736 @@
+[
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/Exception.js",
+    "memberof": null,
+    "longname": "lib/Exception/Exception.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Exception",
+    "memberof": "lib/Exception/Exception.js",
+    "longname": "lib/Exception/Exception.js~Exception",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Exception/Exception.js",
+    "importStyle": "{Exception}",
+    "description": "Thrown when any exception occurs",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "deep-core~Core.Exception.Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/MissingResourceException.js",
+    "memberof": null,
+    "longname": "lib/Exception/MissingResourceException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when requested resource not found\n */\nexport class MissingResourceException extends Exception {\n  /**\n   * @param {String} microserviceIdentifier\n   * @param {String} resourceIdentifier\n   */\n  constructor(microserviceIdentifier, resourceIdentifier) {\n    super(`Missing resource ${resourceIdentifier} in ${microserviceIdentifier}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MissingResourceException",
+    "memberof": "lib/Exception/MissingResourceException.js",
+    "longname": "lib/Exception/MissingResourceException.js~MissingResourceException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Exception/MissingResourceException.js",
+    "importStyle": "{MissingResourceException}",
+    "description": "Thrown when requested resource not found",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/MissingResourceException.js~MissingResourceException",
+    "longname": "lib/Exception/MissingResourceException.js~MissingResourceException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "microserviceIdentifier",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "resourceIdentifier",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Action.js",
+    "memberof": null,
+    "longname": "lib/Resource/Action.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 8/4/15.\n */\n\n'use strict';\n\nimport {UnknownMethodException} from './Exception/UnknownMethodException';\nimport {Request} from './Request';\nimport {LocalRequest} from './LocalRequest';\n\n/**\n * Resource action\n */\nexport class Action {\n  /**\n   * @param {Instance} resource\n   * @param {String} name\n   * @param {String} type\n   * @param {Array} methods\n   * @param {String} source\n   * @param {String} region\n   */\n  constructor(resource, name, type, methods, source, region) {\n    this._resource = resource;\n    this._name = name;\n    this._type = type;\n    this._methods = methods;\n    this._source = source;\n    this._region = region;\n  }\n\n  /**\n   * @param {Object} payload\n   * @param {String} method\n   */\n  request(payload = {}, method = null) {\n    method = method || (this._methods.length > 0 ? this._methods[0] : Instance.HTTP_VERBS[0]);\n\n    if (this._methods.length > 0 && this._methods.indexOf(method) === -1) {\n      throw new UnknownMethodException(method, this._methods);\n    }\n\n    let RequestImplementation = this._resource.localBackend ? LocalRequest : Request;\n    let requestObject = new RequestImplementation(this, payload, method);\n\n    if (this._resource.cache) {\n      requestObject.cacheImpl = this._resource.cache;\n    }\n\n    return requestObject;\n  }\n\n  /**\n   * @returns {Instance}\n   */\n  get resource() {\n    return this._resource;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get type() {\n    return this._type;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get methods() {\n    return this._methods;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get source() {\n    return this._source;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get HTTP_VERBS() {\n    return ['GET', 'POST', 'DELETE', 'HEAD', 'PUT', 'OPTIONS', 'PATCH'];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EXTERNAL() {\n    return 'external';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Action",
+    "memberof": "lib/Resource/Action.js",
+    "longname": "lib/Resource/Action.js~Action",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Action.js",
+    "importStyle": "{Action}",
+    "description": "Resource action",
+    "lineNumber": 14,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Instance"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "resource",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "type",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "methods",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "source",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "region",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_resource",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#_resource",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_name",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#_name",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_type",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#_type",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_methods",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#_methods",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_source",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#_source",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_region",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#_region",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "request",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#request",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "payload",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "method",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "resource",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#resource",
+    "access": null,
+    "description": null,
+    "lineNumber": 56,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Instance}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Instance"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "name",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#name",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "type",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#type",
+    "access": null,
+    "description": null,
+    "lineNumber": 70,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "methods",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#methods",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "source",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#source",
+    "access": null,
+    "description": null,
+    "lineNumber": 84,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "region",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#region",
+    "access": null,
+    "description": null,
+    "lineNumber": 91,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "HTTP_VERBS",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action.HTTP_VERBS",
+    "access": null,
+    "description": null,
+    "lineNumber": 98,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "LAMBDA",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action.LAMBDA",
+    "access": null,
+    "description": null,
+    "lineNumber": 105,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "EXTERNAL",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action.EXTERNAL",
+    "access": null,
+    "description": null,
+    "lineNumber": 112,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Exception/CachedRequestException.js",
+    "memberof": null,
+    "longname": "lib/Resource/Exception/CachedRequestException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 8/21/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class CachedRequestException extends Exception {\n  /**\n   * @param {String} exception\n   */\n  constructor(exception) {\n    super(`Error while working with cached response: ${exception}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "CachedRequestException",
+    "memberof": "lib/Resource/Exception/CachedRequestException.js",
+    "longname": "lib/Resource/Exception/CachedRequestException.js~CachedRequestException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Exception/CachedRequestException.js",
+    "importStyle": "{CachedRequestException}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Exception/CachedRequestException.js~CachedRequestException",
+    "longname": "lib/Resource/Exception/CachedRequestException.js~CachedRequestException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "exception",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Exception/MissingActionException.js",
+    "memberof": null,
+    "longname": "lib/Resource/Exception/MissingActionException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 8/04/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\n/**\n * Thrown when requested resource action not found\n */\nexport class MissingActionException extends Exception {\n  /**\n   * @param {String} resourceName\n   * @param {String} actionName\n   */\n  constructor(resourceName, actionName) {\n    super(`Missing action ${actionName} in ${resourceName} resource.`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MissingActionException",
+    "memberof": "lib/Resource/Exception/MissingActionException.js",
+    "longname": "lib/Resource/Exception/MissingActionException.js~MissingActionException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Exception/MissingActionException.js",
+    "importStyle": "{MissingActionException}",
+    "description": "Thrown when requested resource action not found",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Exception/MissingActionException.js~MissingActionException",
+    "longname": "lib/Resource/Exception/MissingActionException.js~MissingActionException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "resourceName",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "actionName",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Exception/MissingCacheImplementationException.js",
+    "memberof": null,
+    "longname": "lib/Resource/Exception/MissingCacheImplementationException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class MissingCacheImplementationException extends Exception {\n  constructor() {\n    super(`Missing cache implementation in Request object`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MissingCacheImplementationException",
+    "memberof": "lib/Resource/Exception/MissingCacheImplementationException.js",
+    "longname": "lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Exception/MissingCacheImplementationException.js",
+    "importStyle": "{MissingCacheImplementationException}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException",
+    "longname": "lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Exception/UnknownMethodException.js",
+    "memberof": null,
+    "longname": "lib/Resource/Exception/UnknownMethodException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\n/**\n * Thrown when requested method is missing from allowed vector\n */\nexport class UnknownMethodException extends Exception {\n  /**\n   * @param {String} requestedMethod\n   * @param {Array} availableMethods\n   */\n  constructor(requestedMethod, availableMethods) {\n    let availableList = availableMethods.join(', ');\n\n    super(`Requested method ${requestedMethod} must be one of ${availableList}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "UnknownMethodException",
+    "memberof": "lib/Resource/Exception/UnknownMethodException.js",
+    "longname": "lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Exception/UnknownMethodException.js",
+    "importStyle": "{UnknownMethodException}",
+    "description": "Thrown when requested method is missing from allowed vector",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException",
+    "longname": "lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "requestedMethod",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "availableMethods",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Instance.js",
+    "memberof": null,
+    "longname": "lib/Resource/Instance.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {MissingActionException} from './Exception/MissingActionException';\nimport {Action} from './Action';\n\n/**\n * Resource instance\n */\nexport class Instance {\n  /**\n   * @param {String} name\n   * @param {Object} rawActions\n   */\n  constructor(name, rawActions) {\n    this._name = name;\n    this._rawActions = rawActions;\n    this._actions = null;\n    this._localBackend = false;\n    this._cache = null;\n\n    this._securityCredentials = {\n      accessKeyId: null,\n      secretAccessKey: null,\n      sessionToken: null,\n    };\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityCredentials() {\n    return this._securityCredentials;\n  }\n\n  /**\n   * @param {Object} credentials\n   */\n  set securityCredentials(credentials) {\n    this._securityCredentials = credentials;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cache() {\n    return this._cache;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cache(cache) {\n    this._cache = cache;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get actions() {\n    if (this._actions === null) {\n      this._actions = {};\n\n      for (let actionName in this._rawActions) {\n        if (!this._rawActions.hasOwnProperty(actionName)) {\n          continue;\n        }\n\n        let actionMetadata = this._rawActions[actionName];\n\n        this._actions[actionName] = new Action(\n          this,\n          actionName,\n          actionMetadata.type,\n          actionMetadata.methods,\n          actionMetadata.source,\n          actionMetadata.region\n        );\n      }\n    }\n\n    return this._actions;\n  }\n\n  /**\n   * @param {String} actionName\n   * @returns {boolean}\n   */\n  has(actionName) {\n    return this.actions.hasOwnProperty(actionName);\n  }\n\n  /**\n   * @param actionName\n   * @returns {Action}\n   */\n  action(actionName) {\n    if (!this.has(actionName)) {\n      throw new MissingActionException(this.name, actionName);\n    }\n\n    return this.actions[actionName];\n  }\n\n  /**\n   * @param {String} actionName\n   * @param {*} args\n   */\n  request(actionName, ...args) {\n    return this.action(actionName).request(...args);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Instance",
+    "memberof": "lib/Resource/Instance.js",
+    "longname": "lib/Resource/Instance.js~Instance",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Instance.js",
+    "importStyle": "{Instance}",
+    "description": "Resource instance",
+    "lineNumber": 13,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "rawActions",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_name",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_name",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_rawActions",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_rawActions",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_actions",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_actions",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_localBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_localBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cache",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_cache",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_securityCredentials",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_securityCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "securityCredentials",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#securityCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "securityCredentials",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#securityCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "credentials",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_securityCredentials",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_securityCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 43,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "name",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#name",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "cache",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#cache",
+    "access": null,
+    "description": null,
+    "lineNumber": 56,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "cache",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#cache",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cache",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cache",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_cache",
+    "access": null,
+    "description": null,
+    "lineNumber": 64,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "localBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#localBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 70,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "localBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#localBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "state",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_localBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_localBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 78,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "actions",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#actions",
+    "access": null,
+    "description": null,
+    "lineNumber": 84,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_actions",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_actions",
+    "access": null,
+    "description": null,
+    "lineNumber": 86,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "has",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#has",
+    "access": null,
+    "description": null,
+    "lineNumber": 113,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "actionName",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "action",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#action",
+    "access": null,
+    "description": null,
+    "lineNumber": 121,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Action}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "actionName",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Action"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "request",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#request",
+    "access": null,
+    "description": null,
+    "lineNumber": 133,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "actionName",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/LambdaResponse.js",
+    "memberof": null,
+    "longname": "lib/Resource/LambdaResponse.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\n/**\n * Response object\n */\nexport class LambdaResponse extends Response {\n  /**\n   * @param {Request} request\n   * @param {Object} data\n   * @param {String} error\n   */\n  constructor(request, data, error) {\n    super(...arguments);\n\n    this._errorType = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get data() {\n    if (this._data) {\n      return this._data;\n    }\n\n    if (this._rawData) {\n      var response = JSON.parse(this._rawData.Payload);\n      if (response && typeof response.errorMessage === 'undefined') {\n        this._data = response;\n      }\n    }\n\n    return this._data;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get error() {\n    if (this._error) {\n      return this._error;\n    }\n\n    if (this._rawError) {\n      this._error = this._rawError;\n    } else {\n      var response = JSON.parse(this._rawData.Payload);\n      if (response && typeof response.errorMessage !== 'undefined') {\n        this._error = response.errorMessage;\n      }\n    }\n\n    return this._error;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get errorType() {\n    if (this._errorType) {\n      return this._errorType;\n    }\n\n    if (this._rawError) {\n      this._errorType = (this._rawError && this._rawError.name) ? this._rawError.name : 'Error';\n    } else {\n      var response = JSON.parse(this._rawData.Payload);\n      if (response && typeof response.errorType !== 'undefined') {\n        this._errorType = response.errorType;\n      } else {\n        this._errorType = 'Error';\n      }\n    }\n\n    return this._errorType;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get statusCode() {\n    if (this._statusCode) {\n      return this._statusCode;\n    }\n\n    if (this._rawData) {\n      this._statusCode = this._rawData.StatusCode;\n    }\n\n    return this._statusCode;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "LambdaResponse",
+    "memberof": "lib/Resource/LambdaResponse.js",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/LambdaResponse.js",
+    "importStyle": "{LambdaResponse}",
+    "description": "Response object",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Resource/Response~Response"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Request"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "request",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_errorType",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "data",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#data",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "error",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#error",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 55,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "errorType",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#errorType",
+    "access": null,
+    "description": null,
+    "lineNumber": 65,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_errorType",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
+    "access": null,
+    "description": null,
+    "lineNumber": 71,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_errorType",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
+    "access": null,
+    "description": null,
+    "lineNumber": 75,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_errorType",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "undocument": true,
+    "type": {
+      "types": [
+        "string"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "statusCode",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 87,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statusCode",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 93,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/LocalRequest.js",
+    "memberof": null,
+    "longname": "lib/Resource/LocalRequest.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {SuperagentResponse} from './SuperagentResponse';\nimport {Request} from './Request';\nimport {Action} from './Action';\nimport Http from 'superagent';\n\n/**\n * Resource request instance\n */\nexport class LocalRequest extends Request {\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {LocalRequest|*}\n   */\n  _send(callback = null) {\n    let actionType = this._action.type;\n\n    if (actionType === Action.LAMBDA) {\n      let data = {\n        lambda: this._action.source.original,\n        payload: this.payload,\n        method: this._method,\n      };\n\n      Http.post(LocalRequest.LOCAL_LAMBDA_ENDPOINT)\n        .send(data)\n        .end(function(error, response) {\n          callback && callback(new SuperagentResponse(this, response, error));\n        }.bind(this));\n    } else {\n      return this.prototype.useNative()._send(...arguments);\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LOCAL_LAMBDA_ENDPOINT() {\n    return '/_/lambda';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "LocalRequest",
+    "memberof": "lib/Resource/LocalRequest.js",
+    "longname": "lib/Resource/LocalRequest.js~LocalRequest",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/LocalRequest.js",
+    "importStyle": "{LocalRequest}",
+    "description": "Resource request instance",
+    "lineNumber": 15,
+    "interface": false,
+    "extends": [
+      "lib/Resource/Request~Request"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/LocalRequest.js~LocalRequest",
+    "longname": "lib/Resource/LocalRequest.js~LocalRequest#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "params": [
+      {
+        "name": "args",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_send",
+    "memberof": "lib/Resource/LocalRequest.js~LocalRequest",
+    "longname": "lib/Resource/LocalRequest.js~LocalRequest#_send",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{LocalRequest|*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "LocalRequest",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "LOCAL_LAMBDA_ENDPOINT",
+    "memberof": "lib/Resource/LocalRequest.js~LocalRequest",
+    "longname": "lib/Resource/LocalRequest.js~LocalRequest.LOCAL_LAMBDA_ENDPOINT",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Request.js",
+    "memberof": null,
+    "longname": "lib/Resource/Request.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {SuperagentResponse} from './SuperagentResponse';\nimport {LambdaResponse} from './LambdaResponse';\nimport {Response} from './Response';\nimport {Exception} from '../Exception/Exception';\nimport {Action} from './Action';\nimport Http from 'superagent';\nimport AWS from 'aws-sdk';\nimport {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';\nimport {CachedRequestException} from './Exception/CachedRequestException';\nimport aws4 from 'aws4';\nimport parseUrl from 'parse-url';\n\n/**\n * Action request instance\n */\nexport class Request {\n  /**\n   * @param {Action} action\n   * @param {Object} payload\n   * @param {String} method\n   */\n  constructor(action, payload, method) {\n    this._action = action;\n    this._payload = payload;\n    this._method = method;\n    this._lambda = null;\n\n    this._cacheImpl = null;\n    this._cacheTtl = Request.TTL_FOREVER;\n    this._cached = false;\n\n    this._native = true; // @todo: change to false on an stable API Gateway version\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get native() {\n    return this._native;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  useDirectCall() {\n    this._native = true;\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isCached() {\n    return this._cacheImpl && this._cached;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  enableCache() {\n    this._cached = true;\n    return this;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  disableCache() {\n    this._cached = false;\n    return this;\n  }\n\n  /**\n   * @param {Number} ttl\n   * @returns {Request}\n   */\n  cache(ttl = Request.TTL_FOREVER) {\n    if (!this._cacheImpl) {\n      throw new MissingCacheImplementationException();\n    }\n\n    this._cacheTtl = ttl;\n    this.enableCache();\n\n    return this;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get cacheTtl() {\n    return this._cacheTtl;\n  }\n\n  /**\n   * @param {Number} ttl\n   */\n  set cacheTtl(ttl) {\n    this._cacheTtl = ttl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cacheImpl() {\n    return this._cacheImpl;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cacheImpl(cache) {\n    this._cacheImpl = cache;\n\n    // @todo: do we really have to force it?\n    this.cache(Request.TTL_DEFAULT);\n  }\n\n  /**\n   * @returns {String}\n   * @private\n   */\n  _buildCacheKey() {\n    let payload = JSON.stringify(this._payload);\n\n    return `${this._method}:${this._action.type}:${this._action.source}#${payload}`;\n  }\n\n  /**\n   * @param {Response} response\n   * @returns {String}\n   * @private\n   */\n  static _stringifyResponse(response) {\n    return JSON.stringify({\n      _class: response.constructor.name,\n      data: response.rawData,\n      error: response.rawError,\n    });\n  }\n\n  /**\n   * @param {String} rawData\n   * @returns {Response}\n   * @private\n   */\n  _rebuildResponse(rawData) {\n    let response = JSON.parse(rawData);\n\n    if (!response) {\n      throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);\n    }\n\n    let ResponseImpl = Request._chooseResponseImpl(response._class);\n\n    if (!ResponseImpl) {\n      throw new Exception(`Unknown Response implementation ${response._class}`);\n    }\n\n    return new ResponseImpl(this, response.data, response.error);\n  }\n\n  /**\n   * @param {String} className\n   * @returns {*}\n   * @private\n   */\n  static _chooseResponseImpl(className) {\n    let implMap = {};\n\n    implMap[Response.name] = Response;\n    implMap[LambdaResponse.name] = LambdaResponse;\n    implMap[SuperagentResponse.name] = SuperagentResponse;\n\n    return implMap[className];\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  invalidateCache(callback = null) {\n    if (!this.isCached) {\n      callback && callback(true);\n\n      return this;\n    }\n\n    let cache = this._cacheImpl;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, function(error, result) {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result) {\n        cache.invalidate(cacheKey, 0, function(error, result) {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback && callback(result);\n        }.bind(this));\n\n        return;\n      }\n\n      callback && callback(true);\n    }.bind(this));\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  send(callback = null) {\n    if (!this.isCached) {\n      return this._send(callback);\n    }\n\n    let cache = this._cacheImpl;\n    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, function(error, result) {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result && !invalidateCache) {\n        cache.get(cacheKey, function(error, result) {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback && callback(this._rebuildResponse(result));\n        }.bind(this));\n\n        return;\n      }\n\n      this._send(function(response) {\n        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, function(error, result) {\n          if (!result) {\n            error = `Unable to persist request cache under key ${cacheKey}`;\n          }\n\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n        }.bind(this));\n\n        // @todo: do it synchronous?\n        callback && callback(response);\n      }.bind(this));\n    }.bind(this));\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   */\n  _send(callback = () => null) {\n    if (!this._native) {\n      return this._sendThroughApi(callback);\n    }\n\n    switch (this._action.type) {\n      case Action.LAMBDA:\n        this._sendLambda(callback);\n        break;\n      case Action.EXTERNAL:\n        this._sendExternal(callback);\n        break;\n      default: throw new Exception(`Request of type ${this._action.type} is not implemented`);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendThroughApi(callback = () => null) {\n    let urlParts = parseUrl(this._action.source.api);\n\n    let apiHost = urlParts.resource;\n    let apiPath = urlParts.pathname ? urlParts.pathname : '/';\n    let apiQueryString = urlParts.search ? `?${urlParts.search}` : '';\n\n    let signature = aws4.sign({\n      host: apiHost,\n      path: `${apiPath}${apiQueryString}`,\n    }, this._action.resource.securityCredentials);\n\n    Http[this._method.toLowerCase()](this._action.source.api)\n      .set('Host', signature.headers.Host)\n      .set('X-Amz-Date', signature.headers['X-Amz-Date'])\n      .set('Authorization', signature.headers.Authorization)\n      .send(this.payload)\n      .end(function(error, response) {\n        callback(new SuperagentResponse(this, response, error));\n      }.bind(this));\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendLambda(callback = () => null) {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    this._lambda = new AWS.Lambda({\n      region: this._action.region,\n    });\n\n    let invocationParameters = {\n      FunctionName: this._action.source.original,\n      Payload: JSON.stringify(this.payload),\n    };\n\n    this._lambda.invoke(invocationParameters, function(error, data) {\n      callback(new LambdaResponse(this, data, error));\n    }.bind(this));\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendExternal(callback = () => null) {\n    Http[this._method.toLowerCase()](this._action.source.original)\n      .send(this.payload)\n      .end(function(error, response) {\n        callback(new SuperagentResponse(this, response, error));\n      }.bind(this));\n\n    return this;\n  }\n\n  /**\n   * @returns {Action}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get payload() {\n    return this._payload;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get method() {\n    return this._method;\n  }\n\n  /**\n   * @returns {Number}\n   * @constructor\n   */\n  static get TTL_DEFAULT() {\n    return 10;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_INVALIDATE() {\n    return -1;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_FOREVER() {\n    return 0;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Request",
+    "memberof": "lib/Resource/Request.js",
+    "longname": "lib/Resource/Request.js~Request",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Request.js",
+    "importStyle": "{Request}",
+    "description": "Action request instance",
+    "lineNumber": 22,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Action"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "action",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "payload",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "method",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_action",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_action",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_payload",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_payload",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_method",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_method",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_lambda",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_lambda",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cacheImpl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_cacheImpl",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cacheTtl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_cacheTtl",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cached",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_cached",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_native",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_native",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "native",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#native",
+    "access": null,
+    "description": null,
+    "lineNumber": 44,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "useDirectCall",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#useDirectCall",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_native",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_native",
+    "access": null,
+    "description": null,
+    "lineNumber": 52,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "isCached",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#isCached",
+    "access": null,
+    "description": null,
+    "lineNumber": 59,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "enableCache",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#enableCache",
+    "access": null,
+    "description": null,
+    "lineNumber": 66,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cached",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_cached",
+    "access": null,
+    "description": null,
+    "lineNumber": 67,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "disableCache",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#disableCache",
+    "access": null,
+    "description": null,
+    "lineNumber": 74,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cached",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_cached",
+    "access": null,
+    "description": null,
+    "lineNumber": 75,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "cache",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#cache",
+    "access": null,
+    "description": null,
+    "lineNumber": 83,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ttl",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cacheTtl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_cacheTtl",
+    "access": null,
+    "description": null,
+    "lineNumber": 88,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "cacheTtl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#cacheTtl",
+    "access": null,
+    "description": null,
+    "lineNumber": 97,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "cacheTtl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#cacheTtl",
+    "access": null,
+    "description": null,
+    "lineNumber": 104,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ttl",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cacheTtl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_cacheTtl",
+    "access": null,
+    "description": null,
+    "lineNumber": 105,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "cacheImpl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#cacheImpl",
+    "access": null,
+    "description": null,
+    "lineNumber": 111,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "cacheImpl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#cacheImpl",
+    "access": null,
+    "description": null,
+    "lineNumber": 118,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cache",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cacheImpl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_cacheImpl",
+    "access": null,
+    "description": null,
+    "lineNumber": 119,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_buildCacheKey",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_buildCacheKey",
+    "access": "private",
+    "description": null,
+    "lineNumber": 129,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_stringifyResponse",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request._stringifyResponse",
+    "access": "private",
+    "description": null,
+    "lineNumber": 140,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Response"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "response",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_rebuildResponse",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_rebuildResponse",
+    "access": "private",
+    "description": null,
+    "lineNumber": 153,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Response}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "rawData",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Response"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_chooseResponseImpl",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request._chooseResponseImpl",
+    "access": "private",
+    "description": null,
+    "lineNumber": 174,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "className",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "invalidateCache",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#invalidateCache",
+    "access": null,
+    "description": null,
+    "lineNumber": 187,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "send",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#send",
+    "access": null,
+    "description": null,
+    "lineNumber": 223,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_send",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_send",
+    "access": null,
+    "description": null,
+    "lineNumber": 272,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_sendThroughApi",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_sendThroughApi",
+    "access": "private",
+    "description": null,
+    "lineNumber": 295,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_sendLambda",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_sendLambda",
+    "access": "private",
+    "description": null,
+    "lineNumber": 324,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_lambda",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_lambda",
+    "access": null,
+    "description": null,
+    "lineNumber": 328,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_sendExternal",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_sendExternal",
+    "access": "private",
+    "description": null,
+    "lineNumber": 349,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "action",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#action",
+    "access": null,
+    "description": null,
+    "lineNumber": 362,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Action}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Action"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "payload",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#payload",
+    "access": null,
+    "description": null,
+    "lineNumber": 369,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "method",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#method",
+    "access": null,
+    "description": null,
+    "lineNumber": 376,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "TTL_DEFAULT",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request.TTL_DEFAULT",
+    "access": null,
+    "description": null,
+    "lineNumber": 384,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "number"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "TTL_INVALIDATE",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request.TTL_INVALIDATE",
+    "access": null,
+    "description": null,
+    "lineNumber": 391,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "TTL_FOREVER",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request.TTL_FOREVER",
+    "access": null,
+    "description": null,
+    "lineNumber": 398,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "number"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Response.js",
+    "memberof": null,
+    "longname": "lib/Resource/Response.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\n/**\n * Response object\n */\nexport class Response {\n  /**\n   * @param {Request} request\n   * @param {Object} data\n   * @param {String} error\n   */\n  constructor(request, data, error) {\n    this._request = request;\n\n    this._rawError = error;\n    this._rawData = data;\n\n    this._statusCode = null;\n    this._data = null;\n    this._error = null;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get rawData() {\n    return this._rawData;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get rawError() {\n    return this._rawError;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get data() {\n    if (this._data) {\n      return this._data;\n    }\n\n    if (this._rawData) {\n      var response = JSON.parse(this._rawData.Payload);\n      if (response && typeof response.errorMessage === 'undefined') {\n        this._data = response;\n      }\n    }\n\n    return this._data;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isError() {\n    return typeof this.error === 'string';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get error() {\n    if (this._error) {\n      return this._error;\n    }\n\n    if (this._rawError) {\n      this._error = this._rawError;\n    } else {\n      var response = JSON.parse(this._rawData.Payload);\n      if (response && typeof response.errorMessage !== 'undefined') {\n        this._error = response.errorMessage;\n      }\n    }\n\n    return this._error;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get statusCode() {\n    if (this._statusCode) {\n      return this._statusCode;\n    }\n\n    if (this._rawData) {\n      this._statusCode = this._rawData.StatusCode;\n    }\n\n    return this._statusCode;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Response",
+    "memberof": "lib/Resource/Response.js",
+    "longname": "lib/Resource/Response.js~Response",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Response.js",
+    "importStyle": "{Response}",
+    "description": "Response object",
+    "lineNumber": 10,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Request"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "request",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_request",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_request",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_rawError",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_rawError",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_rawData",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_rawData",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statusCode",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "rawData",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#rawData",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "rawError",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#rawError",
+    "access": null,
+    "description": null,
+    "lineNumber": 37,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "request",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#request",
+    "access": null,
+    "description": null,
+    "lineNumber": 44,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "data",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#data",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 59,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "isError",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#isError",
+    "access": null,
+    "description": null,
+    "lineNumber": 69,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "error",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#error",
+    "access": null,
+    "description": null,
+    "lineNumber": 76,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 82,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 86,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "statusCode",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 96,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statusCode",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 102,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/SuperagentResponse.js",
+    "memberof": null,
+    "longname": "lib/Resource/SuperagentResponse.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\nexport class SuperagentResponse extends Response {\n  /**\n   * @param {Request} request\n   * @param {Object} data\n   * @param {String} error\n   */\n  constructor(request, data, error) {\n    super(...arguments);\n\n    this._data = this._parseResponse(data);\n    this._error = error;\n  }\n\n  /**\n   * Parse response given by superagent library\n   *\n   * @param {Object} response\n   * @returns {Object}\n   * @private\n   */\n  _parseResponse(response) {\n    if (response.error) {\n      this._error = response.error;\n    }\n\n    this._statusCode = response.status;\n\n    return response.body;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isError() {\n    return !!this._error;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get error() {\n    return this._error;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get statusCode() {\n    return this._statusCode;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "SuperagentResponse",
+    "memberof": "lib/Resource/SuperagentResponse.js",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/SuperagentResponse.js",
+    "importStyle": "{SuperagentResponse}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Resource/Response~Response"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Request"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "request",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_parseResponse",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_parseResponse",
+    "access": "private",
+    "description": "Parse response given by superagent library",
+    "lineNumber": 29,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "response",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statusCode",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "data",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#data",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "isError",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#isError",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "error",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#error",
+    "access": null,
+    "description": null,
+    "lineNumber": 56,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "statusCode",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource.js",
+    "memberof": null,
+    "longname": "lib/Resource.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {Instance as ResourceInstance} from './Resource/Instance';\nimport {MissingResourceException} from './Exception/MissingResourceException';\n\n/**\n * Bundle resource\n */\nexport class Resource extends Kernel.ContainerAware {\n  /**\n   * @param {Object} resources\n   */\n  constructor(resources = {}) {\n    super();\n\n    this._resources = resources;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Boolean}\n   */\n  has(identifier) {\n    return this._resources[this.microservice.identifier].hasOwnProperty(identifier);\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {ResourceInstance}\n   */\n  get(identifier) {\n    identifier = this._resolvePath(identifier);\n\n    let microserviceIdentifier = this.microservice.identifier;\n\n    if (!this.has(identifier)) {\n      throw new MissingResourceException(microserviceIdentifier, identifier);\n    }\n\n    return this._resources[microserviceIdentifier][identifier];\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get list() {\n    let map = {};\n\n    for (let microservice in this._resources) {\n      if (!this._resources.hasOwnProperty(microservice)) {\n        continue;\n      }\n\n      map[microservice] = Object.keys(this._resources[microservice]);\n    }\n\n    return map;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let cache = kernel.container.get('cache');\n    let security = kernel.container.get('security');\n\n    let resourcesVector = [];\n\n    for (let microserviceKey in kernel.microservices) {\n      if (!kernel.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = kernel.microservices[microserviceKey];\n\n      this._resources[microservice.identifier] = {};\n\n      for (let resourceName in microservice.rawResources) {\n        if (!microservice.rawResources.hasOwnProperty(resourceName)) {\n          continue;\n        }\n\n        let resource = new ResourceInstance(\n          resourceName,\n          microservice.rawResources[resourceName]\n        );\n\n        resource.cache = cache;\n        resource.localBackend = this._localBackend;\n\n        this._resources[microservice.identifier][resourceName] = resource;\n\n        resourcesVector.push(resource);\n      }\n    }\n\n    security.onTokenAvailable((token) => {\n      let credentials = token.credentials;\n\n      for (let resourceKey in resourcesVector) {\n        if (!resourcesVector.hasOwnProperty(resourceKey)) {\n          continue;\n        }\n\n        let resource = resourcesVector[resourceKey];\n\n        resource.securityCredentials = credentials;\n      }\n    });\n\n    callback();\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Resource",
+    "memberof": "lib/Resource.js",
+    "longname": "lib/Resource.js~Resource",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource.js",
+    "importStyle": "{Resource}",
+    "description": "Bundle resource",
+    "lineNumber": 14,
+    "interface": false,
+    "extends": [
+      "deep-kernel~Kernel.ContainerAware"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "resources",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_resources",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#_resources",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "has",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#has",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identifier",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "get",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#get",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{ResourceInstance}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identifier",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ResourceInstance"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "list",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#list",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "boot",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#boot",
+    "access": null,
+    "description": "Booting a certain service",
+    "lineNumber": 71,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Kernel"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "kernel",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/bootstrap.js",
+    "memberof": null,
+    "longname": "lib/bootstrap.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 7,
+    "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Resource} from './Resource';\n\nlet exports = module.exports = Resource;\n"
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "exports",
+    "memberof": "lib/bootstrap.js",
+    "longname": "lib/bootstrap.js~exports",
+    "access": null,
+    "export": false,
+    "importPath": "deep-resource/lib/bootstrap.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Infinity",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Infinity",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Infinity",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NaN",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/NaN",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~NaN",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "undefined",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/undefined",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~undefined",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "null",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~null",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "object",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~object",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "function",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~function",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "boolean",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~boolean",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Symbol",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Symbol",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Error",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Error",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "EvalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/EvalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~EvalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "InternalError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/InternalError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~InternalError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RangeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RangeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RangeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ReferenceError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ReferenceError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "SyntaxError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~SyntaxError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "TypeError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypeError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~TypeError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "URIError",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/URIError",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~URIError",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "number",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~number",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Date",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Date",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "String",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~String",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "string",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~string",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "RegExp",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/RegExp",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~RegExp",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint8ClampedArray",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint8ClampedArray",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint16Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint16Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint16Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Int32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Int32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Int32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Uint32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Uint32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float32Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float32Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float32Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Float64Array",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Float64Array",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Float64Array",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Map",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Map",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Map",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Set",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Set",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakMap",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakMap",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "WeakSet",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakSet",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~WeakSet",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "ArrayBuffer",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~ArrayBuffer",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DataView",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~DataView",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "JSON",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~JSON",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Promise",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Promise",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Generator",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Generator",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "GeneratorFunction",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/GeneratorFunction",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~GeneratorFunction",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Reflect",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Reflect",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Reflect",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Proxy",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy",
+    "memberof": "BuiltinExternal/ECMAScriptExternal.js",
+    "longname": "BuiltinExternal/ECMAScriptExternal.js~Proxy",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "CanvasRenderingContext2D",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "DocumentFragment",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/DocumentFragment",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~DocumentFragment",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Element",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Element",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Element",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Event",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Event",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Event",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "Node",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/Node",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~Node",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "NodeList",
+    "externalLink": "https://developer.mozilla.org/en-US/docs/Web/API/NodeList",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~NodeList",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "XMLHttpRequest",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  }
+]

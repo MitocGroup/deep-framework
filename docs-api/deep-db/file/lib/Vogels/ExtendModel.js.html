@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/Vogels/ExtendModel.js | DEEP Database Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/DB.js~DB.html">DB</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/FailedToCreateTableException.js~FailedToCreateTableException.html">FailedToCreateTableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/FailedToCreateTablesException.js~FailedToCreateTablesException.html">FailedToCreateTablesException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html">ModelNotFoundException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/DBServer.js~DBServer.html">DBServer</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local/Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Dynalite.js~Dynalite.html">Dynalite</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html">LocalDynamo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html">PathAwareDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local/Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/FailedToStartServerException.js~FailedToStartServerException.html">FailedToStartServerException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/ServerAlreadyRunningException.js~ServerAlreadyRunningException.html">ServerAlreadyRunningException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/ServerTtsExceededException.js~ServerTtsExceededException.html">ServerTtsExceededException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Vogels</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/ExtendModel.js~ExtendModel.html">ExtendModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Vogels/Exceptions</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/InvalidArgumentException.js~InvalidArgumentException.html">InvalidArgumentException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/UndefinedMethodException.js~UndefinedMethodException.html">UndefinedMethodException</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Vogels/ExtendModel.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by Stefan Hariton on 6/26/15.
+ */
+
+&apos;use strict&apos;;
+
+import UndefinedMethodException from &apos;./Exceptions/UndefinedMethodException&apos;;
+
+/**
+ * Extends standard Vogels models
+ */
+export class ExtendModel {
+  /**
+   * @param {Object} model
+   */
+  constructor(model) {
+    this._model = model;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get model() {
+    return this._model;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get DEFAULT_LIMIT() {
+    return 10;
+  }
+
+  /**
+   * @returns {number}
+   */
+  static get DEFAULT_SEGMENTS_NUMBER() {
+    return 4;
+  }
+
+  /**
+   * Makes filterExpression, filtersExpressionValues and filterExpressionNames from an object, that are used to make
+   * a DynamoDb scan
+   *
+   * @param {Object} params
+   * @returns {Object}
+   */
+  static buildScanParameters(params) {
+    let filterExpression = &apos;&apos;;
+    let filterExpressionValues = {};
+    let filterExpressionNames = {};
+    let first = true;
+
+    for (let key in params) {
+      if (!params.hasOwnProperty(key)) {
+        continue;
+      }
+
+      let fieldValue = params[key];
+
+      let fieldName = `#${key}`;
+      let fieldValueName = `:${key}`;
+
+      if (!first) {
+        filterExpression += &apos; AND &apos;;
+      }
+
+      filterExpression += `${fieldName} = ${fieldValueName}`;
+      filterExpressionValues[fieldValueName] = fieldValue;
+      filterExpressionNames[fieldName] = key;
+      first = false;
+    }
+
+    return {
+      filterExpression: filterExpression,
+      filterExpressionValues: filterExpressionValues,
+      filterExpressionNames: filterExpressionNames,
+    };
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get methods() {
+    let _this = this;
+
+    return {
+      findAll: function(cb) {
+        return _this.model.scan().loadAll().exec(cb);
+      },
+
+      findAllPaginated: function(startKey, limit, cb) {
+        return _this.model
+          .scan()
+          .startKey(startKey)
+          .limit(limit)
+          .exec(cb);
+      },
+
+      findOneById: function(id, cb) {
+        return _this.model.get(id, cb);
+      },
+
+      findOneBy: function(fieldName, value, cb) {
+        return _this.model
+          .scan()
+          .where(fieldName).equals(value)
+          .limit(1)
+          .exec(cb);
+      },
+
+      findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {
+        return _this.model
+          .scan()
+          .where(fieldName).equals(value)
+          .limit(limit)
+          .exec(cb);
+      },
+
+      findAllBy: function(fieldName, value, cb) {
+        return _this.model
+          .scan()
+          .where(fieldName).equals(value)
+          .loadAll()
+          .exec(cb);
+      },
+
+      findAllByPaginated: function(fieldName, value, startKey, limit, cb) {
+        return _this.model
+          .scan()
+          .where(fieldName).equals(value)
+          .startKey(startKey)
+          .limit(limit)
+          .exec(cb);
+      },
+
+      findMatching: function(params, cb, limit = ExtendModel.DEFAULT_LIMIT) {
+        let scanParams = ExtendModel.buildScanParameters(params);
+
+        return _this.model
+          .scan()
+          .filterExpression(scanParams.filterExpression)
+          .expressionAttributeValues(scanParams.filterExpressionValues)
+          .expressionAttributeNames(scanParams.filterExpressionNames)
+          .limit(limit)
+          .exec(cb);
+      },
+
+      findOneMatching: function(params, cb) {
+        let scanParams = ExtendModel.buildScanParameters(params);
+
+        return _this.model
+          .scan()
+          .filterExpression(scanParams.filterExpression)
+          .expressionAttributeValues(scanParams.filterExpressionValues)
+          .expressionAttributeNames(scanParams.filterExpressionNames)
+          .limit(1)
+          .exec(cb);
+      },
+
+      findAllMatching: function(params, cb) {
+        let scanParams = ExtendModel.buildScanParameters(params);
+
+        return _this.model
+          .scan()
+          .filterExpression(scanParams.filterExpression)
+          .expressionAttributeValues(scanParams.filterExpressionValues)
+          .expressionAttributeNames(scanParams.filterExpressionNames)
+          .loadAll()
+          .exec(cb);
+      },
+
+      findAllMatchingPaginated: function(params, startKey, limit, cb) {
+        let scanParams = ExtendModel.buildScanParameters(params);
+
+        return _this.model
+          .scan()
+          .filterExpression(scanParams.filterExpression)
+          .expressionAttributeValues(scanParams.filterExpressionValues)
+          .expressionAttributeNames(scanParams.filterExpressionNames)
+          .startKey(startKey)
+          .limit(limit)
+          .exec(cb);
+      },
+
+      deleteById: function(id, cb) {
+        return _this.model.destroy(id, cb);
+      },
+
+      deleteByIdConditional: function(id, condition, cb) {
+        return _this.model.destroy(id, condition, cb);
+      },
+
+      createItem: function(data, cb) {
+        return _this.model.create(data, cb);
+      },
+
+      createUniqueOnFields: function(fields, data, cb) {
+        let scanCb = function(err, data) {
+          if (err) {
+            return cb(err, data);
+          }
+
+          if (data.Count) {
+            return cb(`Item like ${data} already exists`);
+          }
+
+          return _this.model.create(data, cb);
+        };
+
+        let scanParams = {};
+        for (let fieldKey in fields) {
+          if (!fields.hasOwnProperty(fieldKey)) {
+            continue;
+          }
+
+          let field = fields[fieldKey];
+
+          scanParams[field] = data[field];
+        }
+
+        scanParams = ExtendModel.buildScanParameters(scanParams);
+
+        return _this.model
+          .scan()
+          .filterExpression(scanParams.filterExpression)
+          .expressionAttributeValues(scanParams.filterExpressionValues)
+          .expressionAttributeNames(scanParams.filterExpressionNames)
+          .limit(1)
+          .exec(scanCb);
+      },
+
+      updateItem: function(id, data, cb) {
+        data.Id = id;
+
+        return _this.model.update(data, cb);
+      },
+
+      updateItemConditional: function(id, data, condition, cb) {
+        data.Id = id;
+
+        return _this.model.update(data, condition, cb);
+      },
+    };
+  }
+
+  /**
+   * Injects the specified methods or all
+   *
+   * @param {Array} methods
+   */
+  inject(methods = null) {
+    let predefinedMethods = this.methods;
+    let predefinedMethodsNames = Object.keys(predefinedMethods);
+
+    methods = methods || predefinedMethodsNames;
+
+    for (let methodKey in methods) {
+      if (!methods.hasOwnProperty(methodKey)) {
+        continue;
+      }
+
+      let methodName = methods[methodKey];
+
+      if (!predefinedMethods.hasOwnProperty(methodName)) {
+        throw new UndefinedMethodException(methodName, predefinedMethodsNames);
+      }
+
+      this._model[methodName] = predefinedMethods[methodName];
+    }
+
+    return this._model;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

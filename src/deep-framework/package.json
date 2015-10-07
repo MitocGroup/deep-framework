@@ -1,0 +1,109 @@
+{
+  "name": "deep-framework",
+  "version": "1.0.1",
+  "description": "DEEP Framework",
+  "keywords": [
+    "Digital End-To-End Enterprise Platform",
+    "Amazon Web Services",
+    "Platform-as-a-Service",
+    "DEEP",
+    "AWS",
+    "PaaS",
+    "Cloud",
+    "Computing",
+    "Microservices",
+    "Architecture",
+    "Serverless",
+    "Abstracted",
+    "Core",
+    "Library",
+    "Framework"
+  ],
+  "homepage": "https://github.com/MitocGroup/deep",
+  "bugs": {
+    "url": "https://github.com/MitocGroup/deep/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Mitoc Group",
+    "email": "hello@mitocgroup.com",
+    "url": "http://www.mitocgroup.com"
+  },
+  "contributors": [
+    {
+      "name": "AlexanderC",
+      "email": "alexanderc@mitocgroup.com"
+    },
+    {
+      "name": "Marcel Goria",
+      "email": "mgoria@mitocgroup.com"
+    },
+    {
+      "name": "Veaceslav Cotruta",
+      "email": "vcotruta@mitocgroup.com"
+    },
+    {
+      "name": "Max Ponomariov",
+      "email": "mponomariov@mitocgroup.com"
+    },
+    {
+      "name": "Alexandru Scripnic",
+      "email": "ascripnic@mitocgroup.com"
+    },
+    {
+      "name": "Stefan Hariton",
+      "email": "shariton@mitocgroup.com"
+    },
+    {
+      "name": "Dragos Palade",
+      "email": "dpalade@mitocgroup.com"
+    }
+  ],
+  "main": "lib.compiled/bootstrap.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MitocGroup/deep.git"
+  },
+  "scripts": {
+    "coverage": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
+    "postinstall": "hooks/assure_deep_dev.js",
+    "prepare-browserify": "npm run compile",
+    "test": "mocha --ui tdd --compilers js:mocha-babel --recursive --reporter spec",
+    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
+    "prepublish": "npm run compile && if [ -d 'test/' ]; then npm run test; fi && npm run browser-build",
+    "browser-build": "if [ -d 'scripts/' ]; then scripts/browser_build.sh; fi"
+  },
+  "dependencies": {
+    "deep-log": "1.0.*",
+    "deep-core": "1.0.*",
+    "deep-asset": "1.0.*",
+    "deep-cache": "1.0.*",
+    "deep-db": "1.0.*",
+    "deep-validation": "1.0.*",
+    "deep-di": "1.0.*",
+    "deep-event": "1.0.*",
+    "deep-fs": "1.0.*",
+    "deep-kernel": "1.0.*",
+    "deep-resource": "1.0.*",
+    "deep-security": "1.0.*",
+    "deep-notification": "1.0.*",
+    "inherits": "2.0.*"
+  },
+  "devDependencies": {
+    "chai": "3.2.*",
+    "sinon": "1.17.0",
+    "sinon-chai": "2.8.0"
+  },
+  "engines": {
+    "node": ">=0.12",
+    "npm": ">=2.10"
+  },
+  "os": [
+    "!win32"
+  ],
+  "preferGlobal": true,
+  "analyze": true,
+  "jspm": {
+    "main": "browser/framework.js"
+  }
+}

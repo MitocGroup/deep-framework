@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/Log.js | DEEP Log Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Log.js~Log.html">Log</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html">ConsoleDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver.html">RavenBrowserDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenDriver.js~RavenDriver.html">RavenDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Log.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 6/15/15.
+ */
+
+&apos;use strict&apos;;
+
+import Kernel from &apos;deep-kernel&apos;;
+import Core from &apos;deep-core&apos;;
+import {ConsoleDriver} from &apos;./Driver/ConsoleDriver&apos;;
+import {RavenDriver} from &apos;./Driver/RavenDriver&apos;;
+import {RavenBrowserDriver} from &apos;./Driver/RavenBrowserDriver&apos;;
+import {AbstractDriver} from &apos;./Driver/AbstractDriver&apos;;
+
+/**
+ * Logging manager
+ */
+export class Log extends Kernel.ContainerAware {
+  /**
+   * @param {Object} drivers
+   */
+  constructor(drivers = {}) {
+    super();
+
+    this._drivers = new Core.Generic.ObjectStorage();
+
+    for (let driverName in drivers) {
+      if (!drivers.hasOwnProperty(driverName)) {
+        continue;
+      }
+
+      this.register(driverName, drivers[driverName]);
+    }
+  }
+
+  /**
+   * Booting a certain service
+   *
+   * @param {Kernel} kernel
+   * @param {Function} callback
+   */
+  boot(kernel, callback) {
+    // @todo: remove this compatibility hook
+    let globals = kernel.config.globals || kernel.config;
+
+    let drivers = globals.logDrivers;
+
+    for (let driverName in drivers) {
+      if (!drivers.hasOwnProperty(driverName)) {
+        continue;
+      }
+
+      this.register(driverName, drivers[driverName]);
+    }
+
+    callback();
+  }
+
+  /**
+   *
+   * @param {String} type
+   * @param {Array} args
+   * @returns {AbstractDriver}
+   */
+  create(type, ...args) {
+    var driver;
+
+    switch (type.toLowerCase()) {
+      case &apos;console&apos;:
+        driver = new ConsoleDriver(...args);
+        break;
+      case &apos;raven&apos;:
+      case &apos;sentry&apos;:
+        let DriverPrototype = this.container.get(Kernel.CONTEXT).isFrontend ? RavenBrowserDriver : RavenDriver;
+
+        driver = new DriverPrototype(args[0].dsn);
+        break;
+      default:
+        throw new Core.Exception.InvalidArgumentException(
+          type,
+          &apos;[Console, Raven, Sentry]&apos;
+        );
+    }
+
+    return driver;
+  }
+
+  /**
+   * @param {AbstractDriver|String} driver
+   * @param {Array} args
+   * @returns {Log}
+   */
+  register(driver, ...args) {
+    if (typeof driver === &apos;string&apos;) {
+      driver = this.create(driver, ...args);
+    }
+
+    if (!(driver instanceof AbstractDriver)) {
+      throw new Core.Exception.InvalidArgumentException(driver, &apos;AbstractDriver&apos;);
+    }
+
+    this._drivers.add(driver);
+
+    return this;
+  }
+
+  /**
+   * @returns {Core.Generic.ObjectStorage}
+   */
+  get drivers() {
+    return this._drivers;
+  }
+
+  /**
+   * @param {String} msg
+   * @param {String} level
+   * @param {*} context
+   * @returns Log
+   */
+  log(msg, level = Log.INFO, context = {}) {
+    let driversArr = this.drivers.iterator;
+
+    for (let driverKey in driversArr) {
+      if (!driversArr.hasOwnProperty(driverKey)) {
+        continue;
+      }
+
+      let driver = driversArr[driverKey];
+
+      driver.log(msg, level, context);
+    }
+
+    return this;
+  }
+
+  /**
+   * @returns {Array}
+   */
+  static get LEVELS() {
+    return [
+      Log.EMERGENCY,
+      Log.ALERT,
+      Log.CRITICAL,
+      Log.ERROR,
+      Log.WARNING,
+      Log.NOTICE,
+      Log.INFO,
+      Log.DEBUG,
+    ];
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get EMERGENCY() {
+    return &apos;emergency&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ALERT() {
+    return &apos;alert&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get CRITICAL() {
+    return &apos;critical&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ERROR() {
+    return &apos;error&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get WARNING() {
+    return &apos;warning&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get NOTICE() {
+    return &apos;notice&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get INFO() {
+    return &apos;info&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEBUG() {
+    return &apos;debug&apos;;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

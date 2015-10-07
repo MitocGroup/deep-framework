@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/Security.js | DEEP Security Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/LocalToken.js~LocalToken.html">LocalToken</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Security.js~Security.html">Security</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Token.js~Token.html">Token</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/UserProvider.js~UserProvider.html">UserProvider</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/AuthException.js~AuthException.html">AuthException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/LoadUserException.js~LoadUserException.html">LoadUserException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingLoginProviderException.js~MissingLoginProviderException.html">MissingLoginProviderException</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Security.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by mgoria on 6/17/15.
+ */
+
+&apos;use strict&apos;;
+
+import Kernel from &apos;deep-kernel&apos;;
+import {MissingLoginProviderException} from &apos;./Exception/MissingLoginProviderException&apos;;
+import {Token} from &apos;./Token&apos;;
+import {LocalToken} from &apos;./LocalToken&apos;;
+import {UserProvider} from &apos;./UserProvider&apos;;
+
+/**
+ * Deep Security implementation
+ */
+export class Security extends Kernel.ContainerAware {
+  /**
+   * Defines all class private properties
+   *
+   * @param {String} identityPoolId
+   * @param {Object} identityProviders
+   */
+  constructor(identityPoolId = null, identityProviders = {}) {
+    super();
+
+    this._identityPoolId = identityPoolId;
+    this._identityProviders = identityProviders;
+    this._token = null;
+    this._userProvider = null;
+    this._userProviderEndpoint = null;
+
+    this._onTokenAvailable = [];
+  }
+
+  /**
+   * @param {Function} callback
+   * @returns {Security}
+   */
+  onTokenAvailable(callback) {
+    this._onTokenAvailable.push(callback);
+
+    return this;
+  }
+
+  /**
+   * @returns {string}
+   */
+  static get PROVIDER_AMAZON() {
+    return &apos;www.amazon.com&apos;;
+  }
+
+  /**
+   * @returns {string}
+   */
+  static get PROVIDER_FACEBOOK() {
+    return &apos;graph.facebook.com&apos;;
+  }
+
+  /**
+   * @returns {string}
+   */
+  static get PROVIDER_GOOGLE() {
+    return &apos;accounts.google.com&apos;;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get identityProviders() {
+    return this._identityProviders;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get identityPoolId() {
+    return this._identityPoolId;
+  }
+
+  /**
+   * @returns {UserProvider}
+   */
+  get userProvider() {
+    if (!this._userProvider) {
+      this._userProvider = new UserProvider(this._userProviderEndpoint, this.container.get(&apos;resource&apos;));
+    }
+
+    return this._userProvider;
+  }
+
+  /**
+   * Booting a certain service
+   *
+   * @param {Kernel} kernel
+   * @param {Function} callback
+   */
+  boot(kernel, callback) {
+    // @todo: remove this compatibility hook
+    let globals = kernel.config.globals || kernel.config;
+
+    this._identityProviders = globals.security.identityProviders;
+    this._userProviderEndpoint = globals.security.userProviderEndpoint;
+
+    this._identityPoolId = kernel.config.identityPoolId;
+
+    callback();
+  }
+
+  /**
+   * @param {String} name
+   * @returns {Object}
+   */
+  getLoginProviderConfig(name) {
+    for (let providerName in this._identityProviders) {
+      if (!this._identityProviders.hasOwnProperty(providerName)) {
+        continue;
+      }
+
+      if (providerName === name) {
+        return this._identityProviders[providerName];
+      }
+    }
+
+    throw new MissingLoginProviderException(name);
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get amazonLoginProviderConfig() {
+    return this.getLoginProviderConfig(Security.PROVIDER_AMAZON);
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get facebookLoginProviderConfig() {
+    return this.getLoginProviderConfig(Security.PROVIDER_FACEBOOK);
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get googleLoginProviderConfig() {
+    return this.getLoginProviderConfig(Security.PROVIDER_GOOGLE);
+  }
+
+  /**
+   * @returns {null|Token}
+   */
+  get token() {
+    return this._token;
+  }
+
+  /**
+   * @param {String} providerName
+   * @param {String} userToken
+   * @param {String} userId
+   * @param {Function} callback
+   * @returns {Token}
+   */
+  login(providerName, userToken, userId, callback) {
+    // check if providerName is defined
+    this.getLoginProviderConfig(providerName);
+
+    let TokenImplementation = this._localBackend ? LocalToken : Token;
+
+    this._token = new TokenImplementation(this._identityPoolId, providerName, userToken, userId);
+
+    this._token.userProvider = this.userProvider;
+
+    this._token.getCredentials((...args) =&gt; {
+      for (let hookKey in this._onTokenAvailable) {
+        if (!this._onTokenAvailable.hasOwnProperty(hookKey)) {
+          continue;
+        }
+
+        this._onTokenAvailable[hookKey](this._token);
+      }
+
+      callback(...args);
+    });
+
+    return this._token;
+  }
+
+  /**
+   * @param {Function} callback
+   * @returns {Token}
+   */
+  anonymousLogin(callback) {
+    let TokenImplementation = this._localBackend ? LocalToken : Token;
+
+    this._token = new TokenImplementation(this._identityPoolId);
+
+    this._token.userProvider = this.userProvider;
+
+    this._token.getCredentials((...args) =&gt; {
+      for (let hookKey in this._onTokenAvailable) {
+        if (!this._onTokenAvailable.hasOwnProperty(hookKey)) {
+          continue;
+        }
+
+        this._onTokenAvailable[hookKey](this._token);
+      }
+
+      callback(...args);
+    });
+
+    return this._token;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

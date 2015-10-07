@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/FS.js | DEEP File System Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/FS.js~FS.html">FS</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html">UnknownFolderException</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/FS.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by mgoria on 5/28/15.
+ */
+
+&apos;use strict&apos;;
+
+import S3FS from &apos;s3fs&apos;;
+import Kernel from &apos;deep-kernel&apos;;
+import {UnknownFolderException} from &apos;./Exception/UnknownFolderException&apos;;
+import OS from &apos;os&apos;;
+import Path from &apos;path&apos;;
+
+/**
+ * Deep FS implementation
+ */
+export class FS extends Kernel.ContainerAware {
+  /**
+   * Defines all class private properties
+   *
+   * @param {String} tmpFsBucket
+   * @param {String} publicFsBucket
+   * @param {String} systemFsBucket
+   */
+  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null) {
+    super();
+
+    this._mountedFolders = {};
+    this._buckets = {};
+
+    this._buckets[FS.TMP] = tmpFsBucket;
+    this._buckets[FS.PUBLIC] = publicFsBucket;
+    this._buckets[FS.SYSTEM] = systemFsBucket;
+  }
+
+  /**
+   * @returns {string}
+   */
+  static get TMP() {
+    return &apos;temp&apos;;
+  }
+
+  /**
+   * @returns {string}
+   */
+  static get PUBLIC() {
+    return &apos;public&apos;;
+  }
+
+  /**
+   * @returns {string}
+   */
+  static get SYSTEM() {
+    return &apos;system&apos;;
+  }
+
+  /**
+   * @returns {Array}
+   */
+  static get FOLDERS() {
+    return [
+      FS.TMP,
+      FS.PUBLIC,
+      FS.SYSTEM,
+    ];
+  }
+
+  /**
+   * Booting a certain service
+   *
+   * @param {Kernel} kernel
+   * @param {Function} callback
+   */
+  boot(kernel, callback) {
+    let bucketsConfig = kernel.config.buckets;
+
+    for (let folderKey in FS.FOLDERS) {
+      if (!FS.FOLDERS.hasOwnProperty(folderKey)) {
+        continue;
+      }
+
+      let folder = FS.FOLDERS[folderKey];
+
+      this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
+    }
+
+    callback();
+  }
+
+  /**
+   * Returns mounted file system folder (tmp, public or system)
+   *
+   * @param name
+   * @returns {*}
+   */
+  getFolder(name) {
+    if (FS.FOLDERS.indexOf(name) === -1) {
+      throw new UnknownFolderException(name, FS.FOLDERS);
+    }
+
+    if (typeof this._mountedFolders[name] === &apos;undefined&apos;) {
+      if (this._localBackend) {
+        let rootFolder = FS._getTmpDir(this._buckets[name]);
+
+        this._mountedFolders[name] = require(&apos;relative-fs&apos;).relativeTo(rootFolder);
+
+        this._mountedFolders[name]._rootFolder = rootFolder;
+      } else {
+        let options = {
+          params: {
+            Bucket: this._buckets[name],
+          },
+        };
+
+        this._mountedFolders[name] = new S3FS(this._buckets[name], options);
+      }
+    }
+
+    return this._mountedFolders[name];
+  }
+
+  /**
+   * @param {String} subpath
+   * @returns {String}
+   * @private
+   */
+  static _getTmpDir(subpath) {
+    let dir = Path.join(OS.tmpdir(), subpath);
+
+    require(&apos;fs-extra&apos;).mkdirpSync(dir);
+
+    return dir;
+  }
+
+  /**
+   * Returns mounted tmp folder
+   *
+   * @returns {*}
+   */
+  get tmp() {
+    return this.getFolder(FS.TMP);
+  }
+
+  /**
+   * Returns mounted public folder
+   *
+   * @returns {*}
+   */
+  get public() {
+    return this.getFolder(FS.PUBLIC);
+  }
+
+  /**
+   * Returns mounted sys folder
+   *
+   * @returns {*}
+   */
+  get system() {
+    return this.getFolder(FS.SYSTEM);
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+{
+  "name": "deep-security",
+  "version": "0.0.53",
+  "description": "DEEP Security Library",
+  "keywords": [
+    "Digital End-To-End Enterprise Platform",
+    "Amazon Web Services",
+    "Platform-as-a-Service",
+    "DEEP",
+    "AWS",
+    "PaaS",
+    "Cloud",
+    "Computing",
+    "Microservices",
+    "Architecture",
+    "Serverless",
+    "Abstracted",
+    "Core",
+    "Library",
+    "Security",
+    "Auth"
+  ],
+  "homepage": "https://github.com/MitocGroup/deep",
+  "bugs": {
+    "url": "https://github.com/MitocGroup/deep/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Mitoc Group",
+    "email": "hello@mitocgroup.com",
+    "url": "http://www.mitocgroup.com"
+  },
+  "contributors": [
+    {
+      "name": "AlexanderC",
+      "email": "alexanderc@mitocgroup.com"
+    },
+    {
+      "name": "Marcel Goria",
+      "email": "mgoria@mitocgroup.com"
+    },
+    {
+      "name": "Stefan Hariton",
+      "email": "shariton@mitocgroup.com"
+    },
+    {
+      "name": "Dragos Palade",
+      "email": "dpalade@mitocgroup.com"
+    }
+  ],
+  "main": "lib.compiled/bootstrap.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MitocGroup/deep.git"
+  },
+  "scripts": {
+    "coverage": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
+    "test": "mocha --ui tdd --compilers js:mocha-babel --recursive --reporter spec",
+    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
+    "prepublish": "npm run compile"
+  },
+  "dependencies": {
+    "deep-kernel": "*",
+    "deep-core": "*"
+  },
+  "devDependencies": {
+    "aws-sdk": "2.1.*",
+    "chai": "3.2.*",
+    "sinon": "1.17.0",
+    "sinon-chai": "2.8.0"
+  },
+  "preferGlobal": false,
+  "analyze": true
+}

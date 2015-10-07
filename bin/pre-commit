@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+files=$(git diff --cached --name-only --diff-filter=ACM | egrep "^lib/(.)+/lib/(.)+\.js$|^microservice/(.)+/Backend/src/(.)+\.es6$|^src/(.)+/lib/(.)+\.js$")
+
+if [ "$files" = "" ]; then
+    exit 0
+fi
+
+pass=true
+
+echo -e "\nValidating JavaScript:\n"
+
+for file in ${files}; do
+    output=$(jscs ${file} --config=./.jscs.json)
+
+    jscs_run_result=$(echo $?)
+
+    if [ ${jscs_run_result} -eq 0 ]; then
+        echo -e "\t\033[32mJSCS Passed: ${file}\033[0m"
+    else
+        echo -e "\t\033[31mJSCS Failed: ${file}\033[0m"
+        pass=false
+    fi
+done
+
+echo -e "\nJavaScript validation complete\n"
+
+if ! $pass; then
+    echo -e "\033[41mCOMMIT FAILED:\033[0m Your commit contains files that should pass JSCS but do not. Please fix the JSCS errors and try again.\n"
+    exit 1
+else
+    echo -e "\033[42mCOMMIT SUCCEEDED\033[0m\n"
+fi
