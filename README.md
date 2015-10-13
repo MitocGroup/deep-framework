@@ -3,11 +3,11 @@ Digital Enterprise End-to-end Platform
 
 [![NPM Version](https://img.shields.io/npm/v/deep-framework.svg)](https://npmjs.org/package/deep-framework)
 [![Build Status](https://travis-ci.org/MitocGroup/deep-framework.svg)](https://travis-ci.org/MitocGroup/deep-framework)
-[![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github&t=3QEkFa)](https://coveralls.io/github/MitocGroup/deep-framework)
 [![Codacy Badge](https://api.codacy.com/project/badge/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
+[![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github&t=3QEkFa)](https://coveralls.io/github/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-![Digital Enterprise End-to-end Platform, aka DEEP](https://github.com/MitocGroup/deep-framework/blob/master/docs/deep-ecosystem.png)
+![Digital Enterprise End-to-end Platform, aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png)
 
 Digital Enterprise End-to-end Platform (also known as DEEP) is low cost and low maintenance digital platform powered by abstracted services from AWS. We enable businesses and developers to achieve more by doing less.
 
@@ -43,7 +43,7 @@ DEEP is enabling developers and architects to:
 
 ## DEEP Architecture on AWS [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-![Digital Enterprise End-to-end Platform, aka DEEP](https://github.com/MitocGroup/deep-framework/blob/master/docs/deep-architecture.png)
+![Digital Enterprise End-to-end Platform, aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-architecture.png)
 
 DEEP is using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) on serverless environments from cloud providers like AWS. DEEP Framework abstracts the functionality and makes it completely developer friendly. We have the following abstracted libraries:
 
@@ -69,6 +69,16 @@ We are eager to get your feedback, so please use whatever communication channel 
 - [github issues](https://github.com/MitocGroup/deep-framework/issues)
 - [gitter chat room](https://gitter.im/MitocGroup/deep-framework)
 - [deep email address](mailto:feedback@deep.mg)
+
+## Contribution
+
+This project is open source, and we encourage developers to contribute. Here below is the easiest way to do so:
+
+1. [Fork](http://help.github.com/forking/) this repository in GitHub.
+2. Develop the feature in your repository. Make one or more commits to your repository in GitHub.
+3. Perform a [pull request](http://help.github.com/pull-requests/) from your repository back into original repository in GitHub.
+
+Make sure you update `package.json` (or `deepkg.json`, depends on the use case) and put your name and contact information in contributors section. We would like to recognize the work and empower every contributor in creative ways :)
 
 ## License
 

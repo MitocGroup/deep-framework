@@ -20,7 +20,7 @@ Quick start
 
 - Open terminal (console)
 - Install `git` and `nodejs`
-- Execute `npm install deepify -g` in order to setup [DEEP Development Tools](https://github.com/MitocGroup/deep/blob/dev/docs/tools.md)
+- Execute `npm install deepify -g` in order to setup [DEEP Development Tools](tools.md)
 - Execute `deepify helloworld path/to/web_app` to dump the basic `Hello World` example
 - Execute `deepify server path/to/web_app -o` to run your web app locally
 - Execute `deepify deploy path/to/web_app` to run your web app on AWS
