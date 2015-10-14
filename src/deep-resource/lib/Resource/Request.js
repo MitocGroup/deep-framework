@@ -15,6 +15,7 @@ import {MissingCacheImplementationException} from './Exception/MissingCacheImple
 import {CachedRequestException} from './Exception/CachedRequestException';
 import aws4 from 'aws4';
 import parseUrl from 'parse-url';
+import queryString from 'query-string';
 
 /**
  * Action request instance
@@ -293,20 +294,12 @@ export class Request {
    * @private
    */
   _sendThroughApi(callback = () => null) {
-    let urlParts = parseUrl(this._action.source.api);
+    let endpoint = this._action.source.api;
+    let signature = this._aws4SignRequest(endpoint, this.method, this.payload);
 
-    let apiHost = urlParts.resource;
-    let apiPath = urlParts.pathname ? urlParts.pathname : '/';
-    let apiQueryString = urlParts.search ? `?${urlParts.search}` : '';
-
-    let signature = aws4.sign({
-      host: apiHost,
-      path: `${apiPath}${apiQueryString}`,
-    }, this._action.resource.securityCredentials);
-
-    Http[this._method.toLowerCase()](this._action.source.api)
-      .set('Host', signature.headers.Host)
+    Http[this.method.toLowerCase()](endpoint)
       .set('X-Amz-Date', signature.headers['X-Amz-Date'])
+      .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
       .set('Authorization', signature.headers.Authorization)
       .send(this.payload)
       .end(function(error, response) {
@@ -354,6 +347,63 @@ export class Request {
       }.bind(this));
 
     return this;
+  }
+
+  /**
+   * @param {String} url
+   * @param {String} httpMethod
+   * @param {Object} payload
+   * @private
+   */
+  _aws4SignRequest(url, httpMethod, payload) {
+    let urlParts = parseUrl(url);
+    let apiHost = urlParts.resource;
+    let apiPath = urlParts.pathname ? urlParts.pathname : '/';
+    let apiQueryString = urlParts.search ? `?${urlParts.search}` : '';
+
+    let opsToSign = {
+      service: 'execute-api',
+      region: this.getEndpointHostRegion(apiHost),
+      host: apiHost,
+      method: httpMethod,
+      path: `${apiPath}${apiQueryString}`,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    };
+
+    switch (httpMethod.toLowerCase()) {
+      case 'get':
+      case 'delete':
+        opsToSign.path += (apiQueryString ? '&' : '?') + queryString.stringify(payload);
+        break;
+      case 'post':
+      case 'put':
+      case 'patch':
+        opsToSign.body = JSON.stringify(payload);
+        break;
+    }
+
+    return aws4.sign(opsToSign, this._getSecurityCredentials());
+  }
+
+  /**
+   * @returns {Object}
+   * @private
+   */
+  _getSecurityCredentials() {
+    return this._action.resource.securityCredentials;
+  }
+
+  /**
+   * @param {String} endpointHost
+   * @returns {String}
+   */
+  getEndpointHostRegion(endpointHost) {
+    let regionParts = endpointHost.match(/\.([^\.]+)\.amazonaws\.com$/i);
+
+    // @todo - expose API region into config provision section
+    return regionParts ? regionParts[1] : this._action.region; // use action region as fallback
   }
 
   /**
