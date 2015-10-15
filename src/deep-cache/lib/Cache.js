@@ -28,7 +28,7 @@ export class Cache extends Kernel.ContainerAware {
    * @returns {AbstractDriver}
    */
   static createDriver(name, ...args) {
-    var DriverPrototype;
+    let DriverPrototype = null;
 
     switch (name) {
       case 'memory':
