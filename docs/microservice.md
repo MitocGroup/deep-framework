@@ -86,6 +86,7 @@ Resources file (`resources.json`)
             "description": "Retrieves a user", // description of the functionality
             "type": "lambda", // resource type (supported: `lambda`, `external`)
             "methods": ["GET"], // supported HTTP methods
+            "cacheTtl": -1, // cache TTL in seconds applied to "GET" method only (default -1 means no cache, 0 cache permanently, 1...*). On the lowest level caching is managed by AWS ApiGateway.
             "source": "src/User/Retrieve", // the source of the resource (ex. for external type: http://example.com/api/v1/users)
             "engine": { // only available for `"type": "lambda"`
                 "memory": 512, // max. amount of RAM allocated to a lambda (default 128, max. 1536) 
