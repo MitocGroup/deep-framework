@@ -36,7 +36,7 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
-    this._native = true; // @todo: change to false on an stable API Gateway version
+    this._native = false;
   }
 
   /**
