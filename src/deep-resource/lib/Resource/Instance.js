@@ -99,7 +99,7 @@ export class Instance {
           actionMetadata.methods,
           actionMetadata.source,
           actionMetadata.region,
-          actionMetadata.forceUserIdentity,
+          actionMetadata.forceUserIdentity
         );
       }
     }
