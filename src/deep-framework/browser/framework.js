@@ -1,5 +1,5 @@
-/** Built on Fri Oct 16 16:39:07 EEST 2015
-deep-framework@1.0.4
+/** Built on Fri Oct 16 20:09:43 EEST 2015
+deep-framework@1.0.5
 ├── deep-asset@1.0.3
 ├── deep-cache@1.0.3
 ├── deep-core@1.0.4
@@ -10,7 +10,7 @@ deep-framework@1.0.4
 ├── deep-kernel@1.0.3
 ├── deep-log@1.0.3
 ├── deep-notification@1.0.3
-├── deep-resource@1.0.6
+├── deep-resource@1.0.7
 ├── deep-security@1.0.3
 ├── deep-validation@1.0.3
 */
