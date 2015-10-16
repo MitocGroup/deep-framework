@@ -64,8 +64,8 @@ suite('AWS/Service', function() {
     chai.expect(Service.CLOUD_WATCH_LOGS).to.be.equal('logs');
   });
 
-  test('Check API_GATEWAY static getter returns \'apigateway\'', function() {
-    chai.expect(Service.API_GATEWAY).to.be.equal('apigateway');
+  test('Check API_GATEWAY static getter returns \'execute-api\'', function() {
+    chai.expect(Service.API_GATEWAY).to.be.equal('execute-api');
   });
 
   test(`Check identifier() static method returns ${serviceName}.amazonaws.com`, function() {
