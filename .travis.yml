@@ -1,7 +1,7 @@
 language: node_js
 sudo: false
 node_js:
-- '0.12'
+  - '0.12'
 cache:
   directories:
   - $(npm root -g)
@@ -12,18 +12,17 @@ branches:
   - test
   - dev
 before_install:
-- npm install -g babel
-- npm install -g browserify
-- npm install -g mocha
-- npm install -g mocha-babel
-- npm install -g istanbul
-- npm install -g coveralls
-- npm install -g codacy-coverage
-- npm install -g istanbul-combine
-- cp test/package.json .
-- test/bin/setup_npm.sh
+  - npm install -g babel
+  - npm install -g browserify
+  - npm install -g mocha
+  - npm install -g mocha-babel
+  - npm install -g istanbul
+  - npm install -g coveralls
+  - npm install -g codacy-coverage
+  - npm install -g istanbul-combine
+  - cp test/package.json .
 after_success:
-- npm run coverage
+  - npm run coverage
 env:
   global:
   #JSPM_GITHUB_AUTH_TOKEN=[secured]
