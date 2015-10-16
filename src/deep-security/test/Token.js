@@ -65,8 +65,7 @@ suite('Token', function() {
     chai.expect(Token._getRegionFromIdentityPoolId(identityPoolId)).to.be.equal(expectedResult);
   });
 
-  //todo - TBD with Alex
-  test('Check getUser() method for isAnonymous and !_user', function() {
+  test('Check getUser() method for !_user', function() {
     let error = null;
     let userProvider = null;
     let spyCallback = sinon.spy();
@@ -93,6 +92,7 @@ suite('Token', function() {
     };
 
     try {
+      token._isAnonymous = false;
       userProvider = new UserProvider(null, deepResourceServiceMock);
       token.userProvider = userProvider;
       token.getUser(spyCallback);
@@ -104,12 +104,13 @@ suite('Token', function() {
     chai.expect(spyCallback).to.have.been.calledWith(JSON.parse(response.data.Payload));
   });
 
-  test('Check getUser() method for isAnonymous and _user', function() {
+  test('Check getUser() method for _user', function() {
     let error = null;
     let spyCallback = sinon.spy();
     let user = { user: 'testUser' };
 
     try {
+      token._isAnonymous = false;
       token._user = user;
       token.getUser(spyCallback);
     } catch (e) {
@@ -118,6 +119,21 @@ suite('Token', function() {
 
     chai.expect(error).to.be.equal(null);
     chai.expect(spyCallback).to.have.been.calledWith(user);
+  });
+
+  test('Check getUser() method for _isAnonymous', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+
+    try {
+      token._isAnonymous = true;
+      token.getUser(spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.equal(null);
+    chai.expect(spyCallback).to.have.been.calledWith();
   });
 
   test('Check getCredentials() method', function() {

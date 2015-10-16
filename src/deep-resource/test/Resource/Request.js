@@ -124,7 +124,13 @@ class CacheNegativeHasTest extends Cache {
 }
 
 suite('Resource/Request', function() {
-  let action = { type:'lambda', source: 'testLambda'};
+  let action = {
+    type: 'lambda',
+    source: {
+      original: 'originalTest',
+      api: 'apiTest',
+    },
+  };
   let payload = '{"body":"bodyData"}';
   let method = 'method';
   let request = new Request(action, payload, method);
@@ -243,7 +249,7 @@ suite('Resource/Request', function() {
 
   test(`Check _buildCacheKey() method returns ${method}:${action.type}:${action.source}#${payload}`, function() {
     let actualResult = request._buildCacheKey();
-    let expectedResult = `${method}:${action.type}:${action.source}#${JSON.stringify(payload)}`;
+    let expectedResult = `${method}:${action.type}:${action.source.original}#${JSON.stringify(payload)}`;
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
 
@@ -536,7 +542,7 @@ suite('Resource/Request', function() {
       error = e;
     }
 
-    //todo - need to add smart checks
+    //@todo - need to add smart checks
     chai.expect(error).to.be.not.equal(null);
   });
 });
