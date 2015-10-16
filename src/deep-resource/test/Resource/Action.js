@@ -91,7 +91,7 @@ suite('Resource/Action', function() {
       _cacheImpl: null,
       _cacheTtl: 0,
       _cached: false,
-      _native: true,
+      _native: false,
       _lambda: null,
       _method: 'GET',
       _payload: {},

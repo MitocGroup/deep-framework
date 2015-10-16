@@ -130,8 +130,9 @@ export class Request {
    */
   _buildCacheKey() {
     let payload = JSON.stringify(this._payload);
+    let endpoint = this.native ? this._action.source.original : this._action.source.api;
 
-    return `${this._method}:${this._action.type}:${this._action.source.original}#${payload}`;
+    return `${this._method}:${this._action.type}:${endpoint}#${payload}`;
   }
 
   /**

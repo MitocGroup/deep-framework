@@ -9,7 +9,14 @@ import {CachedRequestException} from '../../lib.compiled/Resource/Exception/Cach
 
 
 suite('Resource/Request', function() {
-  let action = { type:'lambda', source: 'testLambda'};
+  let action = {
+    type: 'lambda',
+    source: {
+      original: 'testLambda',
+      api: 'testApiEndpoint',
+    },
+  };
+
   let payload = '{"body":"bodyData"}';
   let method = 'method';
   let request = new Request(action, payload, method);
@@ -122,9 +129,17 @@ suite('Resource/Request', function() {
 
   });
 
-  test(`Check _buildCacheKey() method returns ${method}:${action.type}:${action.source}#${payload}`, function() {
+  test(`Check _buildCacheKey() method returns ${method}:${action.type}:${action.source.api}#${payload} for api calls`, function() {
+    request._native = false;
     let actualResult = request._buildCacheKey();
-    let expectedResult = `${method}:${action.type}:${action.source}#${JSON.stringify(payload)}`;
+    let expectedResult = `${method}:${action.type}:${action.source.api}#${JSON.stringify(payload)}`;
+    chai.expect(actualResult).to.be.equal(expectedResult);
+  });
+
+  test(`Check _buildCacheKey() method returns ${method}:${action.type}:${action.source.original}#${payload} for native calls`, function() {
+    request._native = true;
+    let actualResult = request._buildCacheKey();
+    let expectedResult = `${method}:${action.type}:${action.source.original}#${JSON.stringify(payload)}`;
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
 
@@ -172,7 +187,13 @@ suite('Resource/Request', function() {
   });
 
   test('Check _send() for external', function() {
-    let externalAction = { type:'external', source: 'testLambda'};
+    let externalAction = {
+      type: 'external',
+      source: {
+        original: 'testLambda',
+        api: 'testApiEndpoint',
+      },
+    };
     let externalPayload = '{"body":"bodyData"}';
     let externalMethod = 'method';
     let externalRequest = new Request(externalAction, externalPayload, externalMethod);
@@ -185,7 +206,13 @@ suite('Resource/Request', function() {
   });
 
   test('Check _send() throws \'Exception\'', function() {
-    let invalidAction = { type:'invalidAction', source: 'testLambda'};
+    let invalidAction = {
+      type: 'invalidAction',
+      source: {
+        original: 'testLambda',
+        api: 'testApiEndpoint',
+      },
+    };
     let payload = '{"body":"bodyData"}';
     let method = 'method';
     let invalidRequest = new Request(invalidAction, payload, method);
