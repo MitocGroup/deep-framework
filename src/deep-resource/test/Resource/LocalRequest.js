@@ -6,7 +6,7 @@ import sinonChai from 'sinon-chai';
 import {LocalRequest} from '../../lib.compiled/Resource/LocalRequest';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Resource} from '../../lib.compiled/Resource';
-import Cache from 'deep-cache';
+import CacheMock from '../Mock/CacheMock';
 
 chai.use(sinonChai);
 
@@ -65,9 +65,8 @@ suite('Resource/LocalRequest', function() {
   test('Check _send() method for acctionType=\'lambda\'', function() {
     let error = null;
     let spyCallback = sinon.spy();
-
     let actionName = 'UpdateTest';
-    let cache = new Cache();
+    let cache = new CacheMock();
     let resource = {name: 'resourceTest', cache: cache};
     let type = 'lambda';
     let methods = ['GET', 'POST'];
@@ -94,9 +93,8 @@ suite('Resource/LocalRequest', function() {
   test('Check _send() method for acctionType!=\'lambda\'', function() {
     let error = null;
     let spyCallback = sinon.spy();
-
+    let cache = new CacheMock();
     let actionName = 'UpdateTest';
-    let cache = new Cache();
     let resource = {name: 'resourceTest', cache: cache};
     let type = 'testType';
     let methods = ['GET', 'POST'];

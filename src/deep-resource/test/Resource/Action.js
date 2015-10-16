@@ -4,7 +4,6 @@ import chai from 'chai';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Resource} from '../../lib.compiled/Resource';
 import {UnknownMethodException} from '../../lib.compiled/Resource/Exception/UnknownMethodException';
-import Cache from 'deep-cache';
 
 suite('Resource/Action', function() {
   let testResources = {

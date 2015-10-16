@@ -10,7 +10,7 @@ import {Response} from '../../lib.compiled/Resource/Response';
 import {MissingCacheImplementationException} from '../../lib.compiled/Resource/Exception/MissingCacheImplementationException';
 import {Exception} from '../../lib.compiled/Exception/Exception';
 import {CachedRequestException} from '../../lib.compiled/Resource/Exception/CachedRequestException';
-import Cache from 'deep-cache';
+import CacheMock from '../Mock/CacheMock';
 
 chai.use(sinonChai);
 
@@ -25,7 +25,7 @@ class RequestTest extends Request {
   }
 }
 
-class CachePositiveTest extends Cache {
+class CachePositiveTest extends CacheMock {
   constructor(...args) {
     super(...args);
   }
@@ -47,7 +47,7 @@ class CachePositiveTest extends Cache {
   }
 }
 
-class CacheNoResultsTest extends Cache {
+class CacheNoResultsTest extends CacheMock {
   constructor(...args) {
     super(...args);
   }
@@ -69,7 +69,7 @@ class CacheNoResultsTest extends Cache {
   }
 }
 
-class CachePositiveSetTest extends Cache {
+class CachePositiveSetTest extends CacheMock {
   constructor(...args) {
     super(...args);
   }
@@ -91,7 +91,7 @@ class CachePositiveSetTest extends Cache {
   }
 }
 
-class CacheNegativeInvalidateTest extends Cache {
+class CacheNegativeInvalidateTest extends CacheMock {
   constructor(...args) {
     super(...args);
   }
@@ -113,7 +113,7 @@ class CacheNegativeInvalidateTest extends Cache {
   }
 }
 
-class CacheNegativeHasTest extends Cache {
+class CacheNegativeHasTest extends CacheMock {
   constructor(...args) {
     super(...args);
   }
@@ -287,7 +287,7 @@ suite('Resource/Request', function() {
   });
 
   test('Check cacheImpl() setter sets valid value', function() {
-    let cache = {cacheIml: 'cacheImlTest'};
+    let cache = new CacheMock();
     request.cacheImpl = cache;
     chai.expect(request.cacheImpl).to.be.equal(cache);
     chai.expect(request.cacheTtl).to.be.equal(Request.TTL_DEFAULT);
@@ -558,7 +558,7 @@ suite('Resource/Request', function() {
     let spyCallback = sinon.spy();
 
     let actionName = 'UpdateTest';
-    let cache = new Cache();
+    let cache = new CacheMock();
     let resource = {name: 'resourceTest', cache: cache};
     let type = 'lambda';
     let methods = ['GET', 'POST'];
