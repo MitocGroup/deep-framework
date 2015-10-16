@@ -17,6 +17,7 @@ import aws4 from 'aws4';
 import parseUrl from 'parse-url';
 import queryString from 'query-string';
 import Core from 'deep-core';
+import {DirectLambdaCallDeniedException} from './Exception/DirectLambdaCallDeniedException';
 
 /**
  * Action request instance
@@ -51,6 +52,10 @@ export class Request {
    * @returns {Request}
    */
   useDirectCall() {
+    if (this._action.forceUserIdentity) {
+      throw new DirectLambdaCallDeniedException(this);
+    }
+
     this._native = true;
     return this;
   }
