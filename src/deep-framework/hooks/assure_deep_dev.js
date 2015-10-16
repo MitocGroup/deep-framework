@@ -74,7 +74,7 @@ if (process.env[npmEnvKey] !== 'true') {
               if (pckgsToInstall.length > 0) {
                 var installCmd = 'cd ' + modulePath + ' && npm install ' + pckgsToInstall.join(' ');
 
-                console.log((new Date().toTimeString()) + ' Running ' + installCmd);
+                console.log((new Date().toTimeString()) + ' Running: ' + installCmd);
 
                 exec(installCmd, function (error, stdout, stderr) {
                     if (error) {
