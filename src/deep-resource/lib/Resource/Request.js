@@ -16,6 +16,7 @@ import {CachedRequestException} from './Exception/CachedRequestException';
 import aws4 from 'aws4';
 import parseUrl from 'parse-url';
 import queryString from 'query-string';
+import Core from 'deep-core';
 
 /**
  * Action request instance
@@ -362,7 +363,7 @@ export class Request {
     let apiQueryString = urlParts.search ? `?${urlParts.search}` : '';
 
     let opsToSign = {
-      service: 'execute-api',
+      service: Core.AWS.Service.API_GATEWAY,
       region: this.getEndpointHostRegion(apiHost),
       host: apiHost,
       method: httpMethod,
