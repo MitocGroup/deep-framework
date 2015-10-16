@@ -25,4 +25,5 @@ let services = {
 let exports = module.exports = {
   Kernel: new Kernel(services, Kernel.BACKEND_CONTEXT),
   Core: require('deep-core'),
+  version: require('../package.json').version,
 };

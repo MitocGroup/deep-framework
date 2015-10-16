@@ -2,13 +2,45 @@
 
 import chai from 'chai';
 import {Action} from '../../lib.compiled/Resource/Action';
+import {Resource} from '../../lib.compiled/Resource';
 import {UnknownMethodException} from '../../lib.compiled/Resource/Exception/UnknownMethodException';
 import Cache from 'deep-cache';
 
 suite('Resource/Action', function() {
+  let testResources = {
+    'deep.test': {
+      test: {
+        create: {
+          description: 'Lambda for creating test',
+          type: 'lambda',
+          methods: [
+            'POST',
+          ],
+          source: 'src/Test/Create',
+        },
+        retrieve: {
+          description: 'Retrieves test',
+          type: 'lambda',
+          methods: ['GET'],
+          source: 'src/Test/Retrieve',
+        },
+        delete: {
+          description: 'Lambda for deleting test',
+          type: 'lambda',
+          methods: ['DELETE'],
+          source: 'src/Test/Delete',
+        },
+        update: {
+          description: 'Update test',
+          type: 'lambda',
+          methods: ['PUT'],
+          source: 'src/Test/Update',
+        },
+      },
+    },
+  };
   let actionName = 'UpdateTest';
-  let cache = new Cache();
-  let resource = {name: 'resourceTest', cache: cache};
+  let resource = new Resource(testResources);
   let type = 'typeTest';
   let methods = ['GET', 'POST'];
   let source = 'sourceTest';
@@ -87,25 +119,17 @@ suite('Resource/Action', function() {
         _name: 'UpdateTest',
         _region: 'us-west-2',
         _resource: {
-          cache: {
-            _container: null,
-            _driver: null,
-            _localBackend: false,
-            _microservice: null,
-          },
-          name: 'resourceTest',
+          _container: null,
+          _localBackend: false,
+          _microservice: null,
+          _resources: testResources,
         },
         _source: 'sourceTest',
         _type: 'typeTest',
       },
-      _cacheImpl: {
-        _container: null,
-        _driver: null,
-        _localBackend: false,
-        _microservice: null,
-      },
-      _cacheTtl: 10,
-      _cached: true,
+      _cacheImpl: null,
+      _cacheTtl: 0,
+      _cached: false,
       _native: true,
       _lambda: null,
       _method: 'GET',
