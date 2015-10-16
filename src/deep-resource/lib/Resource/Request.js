@@ -130,7 +130,7 @@ export class Request {
   _buildCacheKey() {
     let payload = JSON.stringify(this._payload);
 
-    return `${this._method}:${this._action.type}:${this._action.source}#${payload}`;
+    return `${this._method}:${this._action.type}:${this._action.source.original}#${payload}`;
   }
 
   /**
