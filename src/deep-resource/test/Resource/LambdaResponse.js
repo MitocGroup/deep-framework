@@ -2,12 +2,55 @@
 
 import chai from 'chai';
 import {LambdaResponse} from '../../lib.compiled/Resource/LambdaResponse';
+import {Resource} from '../../lib.compiled/Resource';
+import {Action} from '../../lib.compiled/Resource/Action';
+import {Request} from '../../lib.compiled/Resource/Request';
 
 suite('Resource/LambdaResponse', function() {
-  let request = 'requestTest';
+  let testResources = {
+    'deep.test': {
+      test: {
+        create: {
+          description: 'Lambda for creating test',
+          type: 'lambda',
+          methods: [
+            'POST',
+          ],
+          source: 'src/Test/Create',
+        },
+        retrieve: {
+          description: 'Retrieves test',
+          type: 'lambda',
+          methods: ['GET'],
+          source: 'src/Test/Retrieve',
+        },
+        delete: {
+          description: 'Lambda for deleting test',
+          type: 'lambda',
+          methods: ['DELETE'],
+          source: 'src/Test/Delete',
+        },
+        update: {
+          description: 'Update test',
+          type: 'lambda',
+          methods: ['PUT'],
+          source: 'src/Test/Update',
+        },
+      },
+    },
+  };
+  let resource = new Resource(testResources);
+  let actionName = 'UpdateTest';
+  let type = 'lambda';
+  let methods = ['GET', 'POST'];
+  let source = 'sourceTest';
+  let region = 'us-west-2';
+  let action = new Action(resource, actionName, type, methods, source, region);
+  let payload = '{"body":"bodyData"}';
+  let method = 'method';
+  let request = new Request(action, payload, method);
   let rawData = {Payload: '{"dataKey":"testValue"}', StatusCode:201};
   let rawError = '{"message":"errorMessage", "name":"RuntimeException"}';
-
   let lambdaResponse = new LambdaResponse(request, rawData, rawError);
 
   test('Class LambdaResponse exists in Resource/LambdaResponse', function() {
