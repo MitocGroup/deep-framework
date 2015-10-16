@@ -3,10 +3,12 @@
 import chai from 'chai';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {UnknownMethodException} from '../../lib.compiled/Resource/Exception/UnknownMethodException';
+import Cache from 'deep-cache';
 
 suite('Resource/Action', function() {
   let actionName = 'UpdateTest';
-  let resource = 'resourceTest';
+  let cache = new Cache();
+  let resource = {name: 'resourceTest', cache: cache};
   let type = 'typeTest';
   let methods = ['GET', 'POST'];
   let source = 'sourceTest';
@@ -18,7 +20,7 @@ suite('Resource/Action', function() {
   });
 
   test('Check constructor sets _resource', function() {
-    chai.expect(action._resource).to.be.equal(resource);
+    chai.expect(action.resource).to.be.equal(resource);
   });
 
   test('Check constructor sets _name', function() {
@@ -84,13 +86,26 @@ suite('Resource/Action', function() {
         ],
         _name: 'UpdateTest',
         _region: 'us-west-2',
-        _resource: 'resourceTest',
+        _resource: {
+          cache: {
+            _container: null,
+            _driver: null,
+            _localBackend: false,
+            _microservice: null,
+          },
+          name: 'resourceTest',
+        },
         _source: 'sourceTest',
         _type: 'typeTest',
       },
-      _cacheImpl: null,
-      _cacheTtl: 0,
-      _cached: false,
+      _cacheImpl: {
+        _container: null,
+        _driver: null,
+        _localBackend: false,
+        _microservice: null,
+      },
+      _cacheTtl: 10,
+      _cached: true,
       _native: true,
       _lambda: null,
       _method: 'GET',

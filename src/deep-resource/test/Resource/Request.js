@@ -1,12 +1,127 @@
 'use strict';
 
 import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+import {Action} from '../../lib.compiled/Resource/Action';
 import {Request} from '../../lib.compiled/Resource/Request';
 import {Response} from '../../lib.compiled/Resource/Response';
 import {MissingCacheImplementationException} from '../../lib.compiled/Resource/Exception/MissingCacheImplementationException';
 import {Exception} from '../../lib.compiled/Exception/Exception';
 import {CachedRequestException} from '../../lib.compiled/Resource/Exception/CachedRequestException';
+import Cache from 'deep-cache';
 
+chai.use(sinonChai);
+
+class RequestTest extends Request {
+  constructor(...args) {
+    super(...args);
+  }
+
+  _send(cb) {
+    super._send(cb);
+    return cb('reponse', null);
+  }
+}
+
+class CachePositiveTest extends Cache {
+  constructor(...args) {
+    super(...args);
+  }
+
+  has(cacheKey, cb) {
+    return cb(null, 'called has');
+  }
+
+  invalidate(cacheKey, number, cb) {
+    return cb(null, 'called invalidate');
+  }
+
+  get(cacheKey, cb) {
+    return cb(null, 'called get');
+  }
+
+  set(cacheKey, response, ttl, cb) {
+    return cb(null, 'set get');
+  }
+}
+
+class CacheNoResultsTest extends Cache {
+  constructor(...args) {
+    super(...args);
+  }
+
+  has(cacheKey, cb) {
+    return cb(null, null);
+  }
+
+  invalidate(cacheKey, number, cb) {
+    return cb(null, null);
+  }
+
+  get(cacheKey, cb) {
+    return cb(null, null);
+  }
+
+  set(cacheKey, response, ttl, cb) {
+    return cb(null, null);
+  }
+}
+
+class CachePositiveSetTest extends Cache {
+  constructor(...args) {
+    super(...args);
+  }
+
+  has(cacheKey, cb) {
+    return cb(null, null);
+  }
+
+  invalidate(cacheKey, number, cb) {
+    return cb(null, null);
+  }
+
+  get(cacheKey, cb) {
+    return cb(null, null);
+  }
+
+  set(cacheKey, response, ttl, cb) {
+    return cb(null, 'set called');
+  }
+}
+
+class CacheNegativeInvalidateTest extends Cache {
+  constructor(...args) {
+    super(...args);
+  }
+
+  has(cacheKey, cb) {
+    return cb(null, 'called has');
+  }
+
+  invalidate(cacheKey, number, cb) {
+    return cb('invalidate error', null);
+  }
+
+  get(cacheKey, cb) {
+    return cb('get error', null);
+  }
+
+  set(cacheKey, response, ttl, cb) {
+    return cb('set error', null);
+  }
+}
+
+class CacheNegativeHasTest extends Cache {
+  constructor(...args) {
+    super(...args);
+  }
+
+  has(cacheKey, cb) {
+    return cb('cache error', null);
+  }
+
+}
 
 suite('Resource/Request', function() {
   let action = { type:'lambda', source: 'testLambda'};
@@ -32,6 +147,10 @@ suite('Resource/Request', function() {
 
   test('Check constructor sets valid value for _lambda=null', function() {
     chai.expect(request._lambda).to.be.equal(null);
+  });
+
+  test('Check constructor sets valid value for _native=true', function() {
+    chai.expect(request.native).to.be.equal(true);
   });
 
   test('Check constructor sets valid value for _cacheImpl=null', function() {
@@ -211,8 +330,11 @@ suite('Resource/Request', function() {
     }
   });
 
-  test('Check send() isCached', function() {
+  test('Check send() isCached throws \'CachedRequestException\' exception in has() method', function() {
     let error = null;
+    let spyCallback = sinon.spy();
+    let cache = new CacheNegativeHasTest();
+    request.cacheImpl = cache;
     request.enableCache();
     chai.expect(request.isCached).to.be.equal(true);
     try {
@@ -220,5 +342,201 @@ suite('Resource/Request', function() {
     } catch (e) {
       error = e;
     }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
+    chai.expect(spyCallback).to.not.have.been.calledWith();
+  });
+
+  test('Check send() isCached throws \'CachedRequestException\' exception in get() method', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    let cache = new CacheNegativeInvalidateTest();
+    request.cacheImpl = cache;
+    request.enableCache();
+    chai.expect(request.isCached).to.be.equal(true);
+    try {
+      request.send();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
+    chai.expect(spyCallback).to.not.have.been.calledWith();
+  });
+
+  test('Check send() isCached', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    let cache = new CachePositiveTest();
+    request.cacheImpl = cache;
+    request.enableCache();
+    chai.expect(request.isCached).to.be.equal(true);
+    try {
+      request.send();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.equal(null);
+    chai.expect(request._cacheTtl).to.be.not.equal(Request.TTL_INVALIDATE);
+    chai.expect(spyCallback).to.not.have.been.calledWith('set called');
+  });
+
+  test('Check send() isCached with calling _send()', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    let testRequest = new RequestTest(action, payload, method);
+    let cache = new CachePositiveSetTest();
+    testRequest.cacheImpl = cache;
+    testRequest.enableCache();
+    chai.expect(testRequest.isCached).to.be.equal(true);
+
+    try {
+      testRequest.send();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.equal(null);
+    chai.expect(testRequest._cacheTtl).to.be.not.equal(Request.TTL_INVALIDATE);
+    chai.expect(spyCallback).to.not.have.been.calledWith('called');
+  });
+
+  test('Check _send() is called from send() method and throws exception', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    let testRequest = new RequestTest(action, payload, method);
+    let cache = new CacheNoResultsTest();
+    testRequest.cacheImpl = cache;
+    testRequest.enableCache();
+    chai.expect(testRequest.isCached).to.be.equal(true);
+
+    try {
+      testRequest.send();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.expect(testRequest._cacheTtl).to.be.not.equal(Request.TTL_INVALIDATE);
+    chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
+    chai.expect(spyCallback).to.not.have.been.calledWith();
+  });
+
+  test('Check useDirectCall() method sets native=true', function() {
+    chai.expect(request.useDirectCall().native).to.be.equal(true);
+  });
+
+  test('Check invalidateCache() !isCached', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    request.disableCache();
+    chai.expect(request.isCached).to.be.equal(false);
+    try {
+      request.invalidateCache(spyCallback);
+      chai.expect(spyCallback).to.have.been.calledWith(true);
+    } catch (e) {
+      error = e;
+    }
+  });
+
+  test('Check invalidateCache() throws \'CachedRequestException\' exception in has() method', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    let cache = new CacheNegativeHasTest();
+    request.cacheImpl = cache;
+    request.enableCache();
+    chai.expect(request.isCached).to.be.equal(true);
+    try {
+      request.invalidateCache(spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
+  });
+
+  test('Check invalidateCache() throws \'CachedRequestException\' exception in invalidate() method', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    let cache = new CacheNegativeInvalidateTest();
+    request.cacheImpl = cache;
+    request.enableCache();
+    chai.expect(request.isCached).to.be.equal(true);
+    try {
+      request.invalidateCache(spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
+  });
+
+  test('Check invalidateCache() isCached', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    let cache = new CachePositiveTest();
+    request.cacheImpl = cache;
+    request.enableCache();
+    chai.expect(request.isCached).to.be.equal(true);
+    try {
+      request.invalidateCache(spyCallback);
+      chai.expect(spyCallback).to.have.been.calledWith('called invalidate');
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.equal(null);
+  });
+
+  test('Check invalidateCache() isCached with no results in validate and has methods', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+    let cache = new CacheNoResultsTest();
+    request.cacheImpl = cache;
+    request.enableCache();
+    chai.expect(request.isCached).to.be.equal(true);
+    try {
+      request.invalidateCache(spyCallback);
+      chai.expect(spyCallback).to.have.been.calledWith(true);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.equal(null);
+  });
+
+  test('Check _send() calls _sendThroughApi() method', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+
+    let actionName = 'UpdateTest';
+    let cache = new Cache();
+    let resource = {name: 'resourceTest', cache: cache};
+    let type = 'lambda';
+    let methods = ['GET', 'POST'];
+    let source = {
+      api: 'http://tets:8888/foo/bar?user=tj&pet=new',
+    };
+    let region = 'us-west-2';
+    let action = new Action(resource, actionName, type, methods, source, region);
+    let testRequest = new RequestTest(action, payload, method);
+    testRequest.cacheImpl = cache;
+    testRequest.enableCache();
+    testRequest._native = false;
+    chai.expect(testRequest.isCached).to.be.equal(true);
+
+    try {
+      testRequest._send(spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    //todo - need to add smart checks
+    chai.expect(error).to.be.not.equal(null);
   });
 });
