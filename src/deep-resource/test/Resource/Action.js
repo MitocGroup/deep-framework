@@ -23,7 +23,7 @@ suite('Resource/Action', function() {
           methods: ['GET'],
           source: 'src/Test/Retrieve',
         },
-        delete: {
+        'delete': {
           description: 'Lambda for deleting test',
           type: 'lambda',
           methods: ['DELETE'],
@@ -44,7 +44,7 @@ suite('Resource/Action', function() {
   let methods = ['GET', 'POST'];
   let source = 'sourceTest';
   let region = 'us-west-2';
-  let action = new Action(resource, actionName, type, methods, source, region);
+  let action = new Action(resource, actionName, type, methods, source, region, true);
 
   test('Class Action exists in Resource/Action', function() {
     chai.expect(typeof Action).to.equal('function');
@@ -111,6 +111,7 @@ suite('Resource/Action', function() {
     let actualResult = null;
     let expectedResult = {
       _action: {
+        _forceUserIdentity: true,
         _methods: [
           'GET',
           'POST',
