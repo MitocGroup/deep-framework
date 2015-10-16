@@ -24,7 +24,7 @@ suite('UserProvider', function() {
   test('Check constructor sets default values', function() {
     userProvider = new UserProvider();
     chai.expect(userProvider._retrieveUserResource).to.be.equal(undefined);
-    chai.expect(userProvider._deepResource).to.be.eql(undefined);
+    chai.expect(userProvider._deepResource).to.be.equal(undefined);
   });
 
   test('Check loadUserByIdentityId() method throws \'LoadUserException\' exception', function() {

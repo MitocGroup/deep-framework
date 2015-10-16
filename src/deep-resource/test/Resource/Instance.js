@@ -84,17 +84,4 @@ suite('Resource/Instance', function() {
     chai.expect(error).to.be.not.equal(null);
     chai.expect(error.message).to.be.equal(`Missing action ${testAction} in UpdateData resource.`);
   });
-
-  test('Check action() method returns', function() {
-    let error = null;
-    //let testAction = instance.actions[0];
-    try {
-      //instance.action(testAction);
-    } catch (e) {
-      error = e;
-    }
-
-    //chai.expect(error).to.be.not.equal(null);
-    //chai.expect(error.message).to.be.equal(`Missing action ${testAction} in UpdateData resource.`);
-  });
 });

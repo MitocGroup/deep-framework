@@ -156,11 +156,6 @@ suite('Security', function() {
     } catch (e) {
       error = e;
     }
-
-    //todo - Need to finish
-    //chai.expect(security._token).to.be.eql({});
-    //chai.expect(error.message).to.be.equal('test');
-    //chai.expect(spyCallback).to.have.been.calledWith();
   });
 
   test('Check anonymousLogin() method returns valid token', function() {
@@ -173,11 +168,6 @@ suite('Security', function() {
     } catch (e) {
       error = e;
     }
-
-    //todo - Need to finish
-    //chai.expect(security._token).to.be.eql({});
-    //chai.expect(error.message).to.be.equal('test');
-    //chai.expect(spyCallback).to.have.been.calledWith();
   });
 
   test('Check boot() method boots security data and runs callback', function() {
@@ -209,5 +199,4 @@ suite('Security', function() {
     chai.expect(error).to.be.equal(null);
     chai.expect(spyCallback).to.have.been.calledWith();
   });
-
 });
