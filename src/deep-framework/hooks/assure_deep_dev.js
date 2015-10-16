@@ -5,6 +5,7 @@
 
 // hook to make jscs tests pass!
 var npmEnvKey = 'npm_config_production';
+var skipModules = ['mocha', 'chai', 'sinon', 'sinon-chai'];
 
 if (process.env[npmEnvKey] !== 'true') {
   var path = require('path');
@@ -51,6 +52,10 @@ if (process.env[npmEnvKey] !== 'true') {
 
               for (var depName in devDependencies) {
                 if (!devDependencies.hasOwnProperty(depName)) {
+                  continue;
+                }
+
+                if (skipModules.indexOf(depName) !== -1) {
                   continue;
                 }
 
