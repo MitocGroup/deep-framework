@@ -220,6 +220,14 @@ suite('Resource/Request', function() {
         original: 'testLambda',
         api: 'testApiEndpoint',
       },
+      resource: {
+        securityCredentials: {
+          "AccessKeyId": "ASIAEGERGRE44U2N3YA",
+          "Expiration": 87462874658273651,
+          "SecretKey": "GkV5SVGRE5fe5m36bSr/zgJmFz14VC/fXomjwlN4H",
+          "SessionToken": "AQoDYXdzEEMasAUS4x0+3bzHSergeERBERT4334tB6ScEehiEaPzlyuA7mVDVmWGLmlShoVNFZ0T/YMtmq0z3GB2wxaUAYmbsdQxutMBFGDtvnysM6f7nCJ+1F1c8pIb5vY0S4VM/jWgORq3oGPdsma8S9SbSUz2sHpliC53bMKNXKVknKOu9UiUube4+TQE6ryesNeab2SCiCB//3zISswtNcQdoifjUOWLPVDYRiiDg2A/KFu2CcM/CYgdxsU+QK+omgNGoKY2EcjZF7QZClcR0RhAFrGBLn7vaWxOA+Q0PUh7Pr/awIXGvvjiQl8u47cFQw2UzC9QOS3zNsvIJ2OYQ0L9jG905gVHgVuMMsHYqWfsQLp2zmxkC3YMsFXAcSJvsEdhI/nsXtz4KM4DW7Nm0AhMLRfv65TQz/zrm7mC4B9pH3NK1SAYGjRxGEtAcbHntj4zwKdgurUxPcNSf1lEwDi9jJbGz2fquSdlB21mOGxEwp2UNGc3b81TSTdB9ExXEqyFhGSgQbKH8EwDA6cIlR/85bxmsnU014J+N+dm0kawXdhvlK0hXnvti1mHyUMgrQ8VzaKpODP+zFsFuyX1aS5Y2ol2FlZo1HBB/AGFOMw3p4rlLL9x6aPT4qK8B1lZkWgapwZSQUaxCbfcPGkruSQqbOVlcBMk2TR8s83fHjOfoboRQ0W1PTcqo9hrn9i7lxoePb0Wqadb1h/azwJ3hepEaokanCOYEN7pNa7RbIqJB+AN3EjelEQKlHrnqYE/uqCrWN+sZtZ1SyxBqZyj+iVzbrtcvIg2azIVIC6SzrJfNdyNKgUiQIzHejH+yUMKnjENdldyOzf4RM60jg+hKbXjWLzVbmmfkpwqDxHAouO5N59nRpV39bZtMyTW3Qxk1MBVKOSYotfpJn6sYAtxRHZ3CO8IL2Hg7EF",
+        },
+      },
     };
     let payload = '{"body":"bodyData"}';
     let method = 'method';
