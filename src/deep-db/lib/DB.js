@@ -160,6 +160,7 @@ export class DB extends Kernel.ContainerAware {
    * @param {Function} callback
    * @param {String} driver
    * @param {Number} tts
+   * @returns {AbstractDriver}
    */
   static startLocalDynamoDBServer(callback, driver = 'LocalDynamo', tts = AbstractDriver.DEFAULT_TTS) {
     let LocalDBServer = require('./Local/DBServer').DBServer;
@@ -167,6 +168,8 @@ export class DB extends Kernel.ContainerAware {
     let server = LocalDBServer.create(driver);
 
     server.start(callback, tts);
+
+    return server;
   }
 
   /**
