@@ -188,8 +188,8 @@ suite('Resource/Request', function() {
     chai.expect(request._lambda).to.be.equal(null);
   });
 
-  test('Check constructor sets valid value for _native=true', function() {
-    chai.expect(request.native).to.be.equal(true);
+  test('Check constructor sets valid value for _native=false', function() {
+    chai.expect(request.native).to.be.equal(false);
   });
 
   test('Check constructor sets valid value for _cacheImpl=null', function() {
@@ -343,19 +343,21 @@ suite('Resource/Request', function() {
   });
 
   test('Check _send() throws \'Exception\'', function() {
-    let invalidAction = { type:'invalidAction', source: 'testLambda'};
+    let invalidActionType = 'invalidAction';
+    let invalidAction = new Action(resource, actionName, invalidActionType, methods, source, region);
     let payload = '{"body":"bodyData"}';
     let method = 'method';
     let invalidRequest = new Request(invalidAction, payload, method);
     let error = null;
     try {
+      invalidRequest.useDirectCall();
       invalidRequest._send();
     } catch (e) {
       error = e;
     }
 
     chai.assert.instanceOf(error, Exception, 'result is an instance of Exception');
-    chai.expect(error.message).to.be.equal('Request of type invalidAction is not implemented');
+    chai.expect(error.message).to.be.equal(`Request of type ${invalidActionType} is not implemented`);
   });
 
   test('Check send() !isCached', function() {
@@ -430,6 +432,7 @@ suite('Resource/Request', function() {
     let cache = new CachePositiveSetTest();
     testRequest.cacheImpl = cache;
     testRequest.enableCache();
+    testRequest.useDirectCall();
     chai.expect(testRequest.isCached).to.be.equal(true);
 
     try {
@@ -450,6 +453,7 @@ suite('Resource/Request', function() {
     let cache = new CacheNoResultsTest();
     testRequest.cacheImpl = cache;
     testRequest.enableCache();
+    testRequest.useDirectCall();
     chai.expect(testRequest.isCached).to.be.equal(true);
 
     try {
