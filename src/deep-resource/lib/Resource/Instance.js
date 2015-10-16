@@ -98,7 +98,8 @@ export class Instance {
           actionMetadata.type,
           actionMetadata.methods,
           actionMetadata.source,
-          actionMetadata.region
+          actionMetadata.region,
+          actionMetadata.forceUserIdentity
         );
       }
     }
