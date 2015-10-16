@@ -52,7 +52,6 @@ suite('Resource/LocalRequest', function() {
   let action = new Action(resource, actionName, type, methods, source, region);
   let payload = '{"body":"bodyData"}';
   let method = 'method';
-  let request = new LocalRequest(action, payload, method);
 
   test('Class LocalRequest exists in Resource/LocalRequest', function() {
     chai.expect(typeof LocalRequest).to.equal('function');
