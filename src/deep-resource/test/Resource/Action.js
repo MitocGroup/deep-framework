@@ -2,23 +2,56 @@
 
 import chai from 'chai';
 import {Action} from '../../lib.compiled/Resource/Action';
+import {Resource} from '../../lib.compiled/Resource';
 import {UnknownMethodException} from '../../lib.compiled/Resource/Exception/UnknownMethodException';
 
 suite('Resource/Action', function() {
+  let testResources = {
+    'deep.test': {
+      test: {
+        create: {
+          description: 'Lambda for creating test',
+          type: 'lambda',
+          methods: [
+            'POST',
+          ],
+          source: 'src/Test/Create',
+        },
+        retrieve: {
+          description: 'Retrieves test',
+          type: 'lambda',
+          methods: ['GET'],
+          source: 'src/Test/Retrieve',
+        },
+        'delete': {
+          description: 'Lambda for deleting test',
+          type: 'lambda',
+          methods: ['DELETE'],
+          source: 'src/Test/Delete',
+        },
+        update: {
+          description: 'Update test',
+          type: 'lambda',
+          methods: ['PUT'],
+          source: 'src/Test/Update',
+        },
+      },
+    },
+  };
   let actionName = 'UpdateTest';
-  let resource = 'resourceTest';
+  let resource = new Resource(testResources);
   let type = 'typeTest';
   let methods = ['GET', 'POST'];
   let source = 'sourceTest';
   let region = 'us-west-2';
-  let action = new Action(resource, actionName, type, methods, source, region);
+  let action = new Action(resource, actionName, type, methods, source, region, true);
 
   test('Class Action exists in Resource/Action', function() {
     chai.expect(typeof Action).to.equal('function');
   });
 
   test('Check constructor sets _resource', function() {
-    chai.expect(action._resource).to.be.equal(resource);
+    chai.expect(action.resource).to.be.equal(resource);
   });
 
   test('Check constructor sets _name', function() {
@@ -78,20 +111,26 @@ suite('Resource/Action', function() {
     let actualResult = null;
     let expectedResult = {
       _action: {
+        _forceUserIdentity: true,
         _methods: [
           'GET',
           'POST',
         ],
         _name: 'UpdateTest',
         _region: 'us-west-2',
-        _resource: 'resourceTest',
+        _resource: {
+          _container: null,
+          _localBackend: false,
+          _microservice: null,
+          _resources: testResources,
+        },
         _source: 'sourceTest',
         _type: 'typeTest',
       },
       _cacheImpl: null,
       _cacheTtl: 0,
       _cached: false,
-      _native: true,
+      _native: false,
       _lambda: null,
       _method: 'GET',
       _payload: {},

@@ -6,6 +6,9 @@
 // hook to make jscs tests pass!
 var npmEnvKey = 'npm_config_production';
 
+// @todo: populate ignores this dynamically
+var skipModules = ['mocha', 'chai', 'sinon', 'sinon-chai'];
+
 if (process.env[npmEnvKey] !== 'true') {
   var path = require('path');
   var fs = require('fs');
@@ -15,7 +18,7 @@ if (process.env[npmEnvKey] !== 'true') {
 
   fs.readdir(deepModulePath, function (error, files) {
     if (error) {
-      console.error('Error while listing deep modules: ' + error);
+      console.error((new Date().toTimeString()) + ' Error while listing deep modules: ' + error);
       process.exit(1);
     }
 
@@ -27,7 +30,7 @@ if (process.env[npmEnvKey] !== 'true') {
 
         fs.stat(modulePath, function (modulePath, error, stats) {
           if (error) {
-            console.error('Error while getting stats of ' + modulePath + ': ' + error);
+            console.error((new Date().toTimeString()) + ' Error while getting stats of ' + modulePath + ': ' + error);
             process.exit(1);
           }
 
@@ -36,16 +39,18 @@ if (process.env[npmEnvKey] !== 'true') {
 
             fs.readFile(packageFile, function (error, data) {
               if (error) {
-                console.error('Error while reading ' + packageFile + ': ' + error);
+                console.error((new Date().toTimeString()) + ' Error while reading ' + packageFile + ': ' + error);
                 process.exit(1);
               }
 
               var packageConfig = JSON.parse(data.toString());
 
               if (!packageConfig) {
-                console.error('Broken JSON string in ' + packageFile + ': ' + error);
+                console.error((new Date().toTimeString()) + ' Broken JSON string in ' + packageFile + ': ' + error);
                 process.exit(1);
               }
+
+              var pckgsToInstall = [];
 
               var devDependencies = packageConfig.devDependencies || {};
 
@@ -54,21 +59,31 @@ if (process.env[npmEnvKey] !== 'true') {
                   continue;
                 }
 
+                if (skipModules.indexOf(depName) !== -1) {
+                  continue;
+                }
+
                 var depVersion = devDependencies[depName];
                 var depString = depName + '@' + depVersion;
 
-                console.log('Installing ' + depString);
+                console.log((new Date().toTimeString()) + ' Adding NPM package ' + depString + ' to installation queue');
 
-                exec(
-                  'cd ' + modulePath + ' && npm install ' + depString,
-                  function (depString, error, stdout, stderr) {
+                pckgsToInstall.push(depString);
+              }
+
+              if (pckgsToInstall.length > 0) {
+                var installCmd = 'cd ' + modulePath + ' && npm install ' + pckgsToInstall.join(' ');
+
+                console.log((new Date().toTimeString()) + ' Running: ' + installCmd);
+
+                exec(installCmd, function (error, stdout, stderr) {
                     if (error) {
-                      console.error('Error while installing ' + depString + ': ' + stderr);
+                      console.error((new Date().toTimeString()) + ' Error while installing npm packages ' + pckgsToInstall.join(', ') + ': ' + stderr);
+                      return;
                     }
 
-                    console.log('Dependency ' + depString + ' installed!');
-                  }.bind(this, depString)
-                );
+                    console.log((new Date().toTimeString()) + ' The following NPM packages have been installed ' + pckgsToInstall.join(', '));
+                }.bind(this));
               }
             }.bind(this));
           }

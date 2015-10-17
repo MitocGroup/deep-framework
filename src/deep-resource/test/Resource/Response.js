@@ -2,9 +2,53 @@
 
 import chai from 'chai';
 import {Response} from '../../lib.compiled/Resource/Response';
+import {Resource} from '../../lib.compiled/Resource';
+import {Request} from '../../lib.compiled/Resource/Request';
+import {Action} from '../../lib.compiled/Resource/Action';
 
 suite('Resource/Response', function() {
-  let request = 'requestTest';
+  let testResources = {
+    'deep.test': {
+      test: {
+        create: {
+          description: 'Lambda for creating test',
+          type: 'lambda',
+          methods: [
+            'POST',
+          ],
+          source: 'src/Test/Create',
+        },
+        retrieve: {
+          description: 'Retrieves test',
+          type: 'lambda',
+          methods: ['GET'],
+          source: 'src/Test/Retrieve',
+        },
+        delete: {
+          description: 'Lambda for deleting test',
+          type: 'lambda',
+          methods: ['DELETE'],
+          source: 'src/Test/Delete',
+        },
+        update: {
+          description: 'Update test',
+          type: 'lambda',
+          methods: ['PUT'],
+          source: 'src/Test/Update',
+        },
+      },
+    },
+  };
+  let resource = new Resource(testResources);
+  let actionName = 'UpdateTest';
+  let type = 'lambda';
+  let methods = ['GET', 'POST'];
+  let source = 'sourceTest';
+  let region = 'us-west-2';
+  let action = new Action(resource, actionName, type, methods, source, region);
+  let payload = '{"body":"bodyData"}';
+  let method = 'method';
+  let request = new Request(action, payload, method);
   let rawData = {Payload: '{"dataKey":"testValue"}', StatusCode:201};
   let rawError = '{ "message":"errorMessage"}';
   let response = new Response(request, rawData, rawError);

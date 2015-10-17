@@ -96,7 +96,7 @@ export class Service {
    * @returns {String}
    */
   static get API_GATEWAY() {
-    return 'apigateway';
+    return 'execute-api'; // @todo replace legacy name with new one 'apigateway' when it will be available
   }
 
   /**

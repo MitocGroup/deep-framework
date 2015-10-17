@@ -19,14 +19,16 @@ export class Action {
    * @param {Array} methods
    * @param {String} source
    * @param {String} region
+   * @param {Boolean} forceUserIdentity
    */
-  constructor(resource, name, type, methods, source, region) {
+  constructor(resource, name, type, methods, source, region, forceUserIdentity) {
     this._resource = resource;
     this._name = name;
     this._type = type;
     this._methods = methods;
     this._source = source;
     this._region = region;
+    this._forceUserIdentity = forceUserIdentity;
   }
 
   /**
@@ -48,6 +50,13 @@ export class Action {
     }
 
     return requestObject;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get forceUserIdentity() {
+    return this._forceUserIdentity;
   }
 
   /**
