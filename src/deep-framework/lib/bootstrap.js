@@ -22,6 +22,12 @@ let services = {
   //Event: require('deep-event'),
 };
 
+let testHoundVar = 'thing';
+
+if (testHoundVar != 0) {
+  console.log('wat?');
+}
+
 let exports = module.exports = {
   Kernel: new Kernel(services, Kernel.BACKEND_CONTEXT),
   Core: require('deep-core'),
