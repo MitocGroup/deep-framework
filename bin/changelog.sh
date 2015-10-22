@@ -37,4 +37,3 @@ echo "# deepify" >> "$LATEST_CHANGELOG_PATH"
 echo "### TBD" >> "$LATEST_CHANGELOG_PATH"
 #${ghchangelog} --username "$GITHUB_USER" --password "$GITHUB_PWD" --header "$HEADER" --owner "$USER" --repo "$PM_REPOSITORY" --since "$LAST_MODIFIED" >> "$LATEST_CHANGELOG_PATH"
 #${ghchangelog} --username "$GITHUB_USER" --password "$GITHUB_PWD" --header "$HEADER" --owner "$USER" --repo "$DF_REPOSITORY" --since "$LAST_MODIFIED" >> "$LATEST_CHANGELOG_PATH"
-
