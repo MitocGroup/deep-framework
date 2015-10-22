@@ -303,16 +303,11 @@ export class Request {
    */
   _sendThroughApi(callback = () => null) {
     let endpoint = this._action.source.api;
-    let signature = this._aws4SignRequest(endpoint, this.method, this.payload);
+    let signedRequest = this._createAws4SignedRequest(endpoint, this.method, this.payload);
 
-    Http[this.method.toLowerCase()](endpoint)
-      .set('X-Amz-Date', signature.headers['X-Amz-Date'])
-      .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
-      .set('Authorization', signature.headers.Authorization)
-      .send(this.payload)
-      .end(function(error, response) {
-        callback(new SuperagentResponse(this, response, error));
-      }.bind(this));
+    signedRequest.end(function(error, response) {
+      callback(new SuperagentResponse(this, response, error));
+    }.bind(this));
 
     return this;
   }
@@ -363,7 +358,7 @@ export class Request {
    * @param {Object} payload
    * @private
    */
-  _aws4SignRequest(url, httpMethod, payload) {
+  _createAws4SignedRequest(url, httpMethod, payload) {
     let urlParts = parseUrl(url);
     let apiHost = urlParts.resource;
     let apiPath = urlParts.pathname ? urlParts.pathname : '/';
@@ -380,7 +375,8 @@ export class Request {
       },
     };
 
-    switch (httpMethod.toLowerCase()) {
+    httpMethod = httpMethod.toLowerCase();
+    switch (httpMethod) {
       case 'get':
       case 'delete':
         opsToSign.path += (apiQueryString ? '&' : '?') + queryString.stringify(payload);
@@ -392,7 +388,14 @@ export class Request {
         break;
     }
 
-    return aws4.sign(opsToSign, this._getSecurityCredentials());
+    let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
+
+    let request = Http[httpMethod](url, payload)
+      .set('X-Amz-Date', signature.headers['X-Amz-Date'])
+      .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
+      .set('Authorization', signature.headers.Authorization);
+
+    return request;
   }
 
   /**
