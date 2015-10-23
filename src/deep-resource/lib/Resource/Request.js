@@ -391,6 +391,7 @@ export class Request {
     let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
 
     let request = Http[httpMethod](url, payload)
+      .set('Content-Type', 'application/json')
       .set('X-Amz-Date', signature.headers['X-Amz-Date'])
       .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
       .set('Authorization', signature.headers.Authorization);
