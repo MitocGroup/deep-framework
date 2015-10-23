@@ -63,6 +63,12 @@ DEEP Abstracted Library | Description | AWS Abstracted Service(s)
 [deep-security](http://docs.deep.mg/deep-security) | Security Management Library | AWS IAM, Amazon Cognito
 [deep-validation](http://docs.deep.mg/deep-validation) | Validation Management Library | -
 
+## Changelog
+
+Changelog files are located in `/changelog`
+
+> See the latest [changelog](changelog/latest.md)
+
 ## Feedback
 
 We are eager to get your feedback, so please use whatever communication channel you prefer:
