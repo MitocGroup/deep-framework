@@ -303,7 +303,11 @@ export class Request {
    */
   _sendThroughApi(callback = () => null) {
     let endpoint = this._action.source.api;
-    let signedRequest = this._createAws4SignedRequest(endpoint, this.method, this.payload);
+    let signedRequest = this._createAws4SignedRequest(
+      endpoint, 
+      this.method, 
+      this.payload
+    );
 
     signedRequest.end(function(error, response) {
       callback(new SuperagentResponse(this, response, error));
