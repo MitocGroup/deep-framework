@@ -64,7 +64,11 @@ suite('AWS/Service', function() {
     chai.expect(Service.CLOUD_WATCH_LOGS).to.be.equal('logs');
   });
 
-  test('Check API_GATEWAY static getter returns \'execute-api\'', function() {
+  test('Check API_GATEWAY static getter returns \'apigateway\'', function() {
+    chai.expect(Service.API_GATEWAY).to.be.equal('apigateway');
+  });
+
+  test('Check API_GATEWAY_EXECUTE static getter returns \'execute-api\'', function() {
     chai.expect(Service.API_GATEWAY).to.be.equal('execute-api');
   });
 
@@ -73,7 +77,7 @@ suite('AWS/Service', function() {
   });
 
   test('Check all() static method returns array of Service alias', function() {
-    chai.expect(Service.list().length).to.be.equal(13);
+    chai.expect(Service.list().length).to.be.equal(14);
     chai.expect(Service.list()).to.be.include(Service.LAMBDA);
     chai.expect(Service.list()).to.be.include(Service.SIMPLE_STORAGE_SERVICE);
     chai.expect(Service.list()).to.be.include(Service.DYNAMO_DB);
@@ -87,6 +91,7 @@ suite('AWS/Service', function() {
     chai.expect(Service.list()).to.be.include(Service.SECURITY_TOKEN_SERVICE);
     chai.expect(Service.list()).to.be.include(Service.CLOUD_WATCH_LOGS);
     chai.expect(Service.list()).to.be.include(Service.API_GATEWAY);
+    chai.expect(Service.list()).to.be.include(Service.API_GATEWAY_EXECUTE);
   });
 
   test('Check exists() static method returns true if Service exists', function() {
