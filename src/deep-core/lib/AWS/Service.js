@@ -96,7 +96,14 @@ export class Service {
    * @returns {String}
    */
   static get API_GATEWAY() {
-    return 'execute-api'; // @todo replace legacy name with new one 'apigateway' when it will be available
+    return 'apigateway';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get API_GATEWAY_EXECUTE() {
+    return 'execute-api';
   }
 
   /**
@@ -133,6 +140,7 @@ export class Service {
       Service.SECURITY_TOKEN_SERVICE,
       Service.CLOUD_WATCH_LOGS,
       Service.API_GATEWAY,
+      Service.API_GATEWAY_EXECUTE,
     ];
   }
 }
