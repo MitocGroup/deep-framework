@@ -38,7 +38,7 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
-    this._native = false;
+    this._native = true; // @todo: set it to false
   }
 
   /**
@@ -303,7 +303,11 @@ export class Request {
    */
   _sendThroughApi(callback = () => null) {
     let endpoint = this._action.source.api;
-    let signedRequest = this._createAws4SignedRequest(endpoint, this.method, this.payload);
+    let signedRequest = this._createAws4SignedRequest(
+      endpoint, 
+      this.method, 
+      this.payload
+    );
 
     signedRequest.end(function(error, response) {
       callback(new SuperagentResponse(this, response, error));
