@@ -68,9 +68,12 @@ suite('AWS/Service', function() {
     chai.expect(Service.API_GATEWAY).to.be.equal('apigateway');
   });
 
-  test('Check API_GATEWAY_EXECUTE static getter returns \'execute-api\'', function() {
-    chai.expect(Service.API_GATEWAY).to.be.equal('execute-api');
-  });
+  test(
+    'Check API_GATEWAY_EXECUTE static getter returns \'execute-api\'',
+    function() {
+      chai.expect(Service.API_GATEWAY_EXECUTE).to.be.equal('execute-api');
+    }
+  );
 
   test(`Check identifier() static method returns ${serviceName}.amazonaws.com`, function() {
     chai.expect(Service.identifier(serviceName)).to.be.equal(`${serviceName}.amazonaws.com`);
