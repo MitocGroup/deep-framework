@@ -64,7 +64,7 @@ Alternatively, if used as dependency, include it in `package.json` file. For exa
 }
 ```
 
-## Examples
+## Examples [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 There are couple of web apps that are using `DEEP Framework` at their core:
 
@@ -86,14 +86,16 @@ to choose functionality from listed microservices and deploy them together as an
 AWS accounts with just few clicks; as well as empowers developers to create and publish their microservices 
 and monetize them in similar approach to Apple's App Store.
 
-## Feedback
+## Help Wanted [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+
+### Feedback
 
 We are eager to get your feedback, so please use whatever communication channel you prefer:
 - [github issues](https://github.com/MitocGroup/deep-framework/issues)
 - [gitter chat room](https://gitter.im/MitocGroup/deep-framework)
 - [deep email address](mailto:feedback@deep.mg)
 
-## Contribution
+### Contribution
 
 This project is open source, and we encourage developers to contribute. Here below is the easiest way to do so:
 
@@ -103,17 +105,17 @@ This project is open source, and we encourage developers to contribute. Here bel
 
 Make sure you update `package.json` (or `deepkg.json`, depends on the use case) and put your name and contact information in contributors section. We would like to recognize the work and empower every contributor in creative ways :)
 
-## Changelog
+### Changelog
 
 Changelog files are located in `/changelog` folder.
 > See [CHANGELOG.md](https://github.com/MitocGroup/deep-framework/blob/master/CHANGELOG.md) for latest changelog.
 
-## License
+### License
 
 This repository can be used under the MIT license.
 > See [LICENSE](https://github.com/MitocGroup/deep-framework/blob/master/LICENSE) for more details.
 
-## Sponsors
+### Sponsors
 
 This repository is being sponsored by:
 > [Mitoc Group](http://www.mitocgroup.com)
