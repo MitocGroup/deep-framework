@@ -7,9 +7,10 @@ Digital Enterprise End-to-end Platform
 [![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github)](https://coveralls.io/github/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-`Digital Enterprise End-to-end Platform`, also known as `DEEP`, is low cost and low maintenance **Platform-as-a-Service** 
-powered by abstracted services from `Amazon Web Services`, also known as `AWS`. Lately, this approach have been labeled as
-[**Serverless Architecture**](https://aws.amazon.com/blogs/compute/microservices-without-the-servers/).
+`Digital Enterprise End-to-end Platform`, also known as `DEEP`, is low cost and low maintenance 
+[Platform-as-a-Service](https://en.wikipedia.org/wiki/Platform_as_a_service) powered by abstracted services 
+from cloud providers like [Amazon Web Services](https://aws.amazon.com). Lately, this approach has been labeled as
+[Serverless Architecture](https://aws.amazon.com/blogs/compute/microservices-without-the-servers/).
 
 `DEEP Framework` is a component of `DEEP` that abstracts web services from specific cloud providers. At this moment,
 it only supports `Amazon Web Services`, and we would like to encourage other developers to add support for `Microsoft Azure`,
