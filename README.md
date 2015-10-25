@@ -19,7 +19,8 @@ and `Google Cloud Platform`, and so on.
 
 ## Introduction [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-`DEEP Framework` is a nodejs package that is published on [npmjs.com](https://www.npmjs.com/package/deep-framework).
+`DEEP Framework` is a nodejs package that is published on npmjs.com:
+[https://www.npmjs.com/package/deep-framework](https://www.npmjs.com/package/deep-framework).
 If you are new to node and npm, check out [this tutorial](http://howtonode.org/how-to-install-nodejs) to learn more.
 
 `DEEP Framework` is a nodejs package. In fact it's a collection of nodejs packages, also known as
