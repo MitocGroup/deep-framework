@@ -9,12 +9,13 @@ Digital Enterprise End-to-end Platform
 
 `Digital Enterprise End-to-end Platform`, also known as `DEEP`, is low cost and low maintenance 
 [Platform-as-a-Service](https://en.wikipedia.org/wiki/Platform_as_a_service) powered by abstracted web services 
-from cloud providers like [Amazon Web Services](https://aws.amazon.com). Lately, this approach has been labeled as
-[Serverless Architecture](https://aws.amazon.com/blogs/compute/microservices-without-the-servers/).
+from cloud providers like [Amazon Web Services](https://aws.amazon.com). This approach has been labeled as
+[Serverless Architecture](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-a-serverless-architecture).
 
-`DEEP Framework` is a component of `DEEP` that abstracts web services from specific cloud providers. At this moment
-it only supports `Amazon Web Services`. Therefore we would like to encourage other developers to add support for 
-`Microsoft Azure`, and `Google Cloud Platform`, and so on.
+`DEEP Framework` is a [core component](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-components)
+of the Platform-as-a-Service that abstracts web services from specific cloud providers. At this moment 
+only `Amazon Web Services` is supported. Developers are encouraged to add support for `Microsoft Azure`,
+and `Google Cloud Platform`, and so on.
 
 ## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
@@ -37,8 +38,8 @@ Alternatively, if used as dependency, include it in `package.json` file:
 }
 ```
 
-`DEEP Framework` is a nodejs package, but in fact it's a collection of nodejs packages, also known as abstracted libraries.
-Here below is the complete list:
+`DEEP Framework` is a nodejs package, but in fact it's a collection of nodejs packages, also known as
+`DEEP Abstracted Libraries`. Here below is the complete list:
 
 DEEP Abstracted Library | Description of DEEP Library | Abstracted Web Service(s)
 ------------------------|-----------------------------|--------------------------
