@@ -17,28 +17,12 @@ of the Platform-as-a-Service that abstracts web services from specific cloud pro
 only `Amazon Web Services` is supported. Developers are encouraged to add support for `Microsoft Azure`,
 and `Google Cloud Platform`, and so on.
 
-## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+## Introduction [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 `DEEP Framework` is a nodejs package that is published on [npmjs.com](https://www.npmjs.com/package/deep-framework).
 If you are new to node and npm, check out [this tutorial](http://howtonode.org/how-to-install-nodejs) to learn more.
 
-If `DEEP Framework` is intended to be used globally, just run `npm install deep-framework -g` in command line.
-Alternatively, if used as dependency, include it in `package.json` file. For example:
-
-```
-{
-  "name": "say-hello-world",
-  "version": "0.0.1",
-  "description": "AWS Lambda that says hello to the world",
-  "dependencies": {
-    "deep-framework": "1.0.*",
-    ...
-  },
-  ...
-}
-```
-
-`DEEP Framework` is a nodejs package, but in fact it's a collection of nodejs packages, also known as
+`DEEP Framework` is a nodejs package. In fact it's a collection of nodejs packages, also known as
 `DEEP Abstracted Libraries`. Here below is the complete list:
 
 DEEP Abstracted Library | Description of DEEP Library | Abstracted Web Service(s)
@@ -56,6 +40,24 @@ DEEP Abstracted Library | Description of DEEP Library | Abstracted Web Service(s
 [deep-resource](http://docs.deep.mg/deep-resource) | Resouces Management Library | AWS Lambda, Amazon API Gateway
 [deep-security](http://docs.deep.mg/deep-security) | Security Management Library | AWS IAM, Amazon Cognito
 [deep-validation](http://docs.deep.mg/deep-validation) | Validation Management Library | -
+
+## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+
+If `DEEP Framework` is intended to be used globally, just run `npm install deep-framework -g` in command line.
+Alternatively, if used as dependency, include it in `package.json` file. For example:
+
+```
+{
+  "name": "say-hello-world",
+  "version": "0.0.1",
+  "description": "AWS Lambda that says hello to the world",
+  "dependencies": {
+    "deep-framework": "1.0.*",
+    ...
+  },
+  ...
+}
+```
 
 ## DEEP for Businesses [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
