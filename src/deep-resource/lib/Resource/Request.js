@@ -38,7 +38,7 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
-    this._native = false;
+    this._native = true; // @todo: set it to false
   }
 
   /**
