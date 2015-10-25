@@ -7,9 +7,17 @@ Digital Enterprise End-to-end Platform
 [![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github)](https://coveralls.io/github/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-Digital Enterprise End-to-end Platform (also known as DEEP) is low cost and low maintenance **Platform-as-a-Service** 
-powered by abstracted services from AWS (also known as **Serverless AWS**). We enable businesses and developers to provide
-high value products and services in a constantly changing digital world.
+`Digital Enterprise End-to-end Platform`, also known as `DEEP`, is low cost and low maintenance **Platform-as-a-Service** 
+powered by abstracted services from `Amazon Web Services`, also known as `AWS`. Lately, this approach have been labeled as
+[**Serverless Architecture**](https://aws.amazon.com/blogs/compute/microservices-without-the-servers/).
+
+`DEEP Framework` is a component of `DEEP` that abstracts web services from specific cloud providers. At this moment,
+it only supports `Amazon Web Services`, and we would like to encourage other developers to add support for `Microsoft Azure`,
+and `Google Cloud Platform`, and so on.
+
+## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+
+To be updated.
 
 ## DEEP for Businesses [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
@@ -95,7 +103,7 @@ This repository is being sponsored by:
 
 ## Appendix A: Diagrams
 
-### DEEP Architecture
+### Serverless Architecture
 
 ![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-architecture.png)
 
