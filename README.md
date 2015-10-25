@@ -59,6 +59,28 @@ Alternatively, if used as dependency, include it in `package.json` file. For exa
 }
 ```
 
+## Examples
+
+There are couple of web apps that are using `DEEP Framework` at their core:
+
+### DEEP Microservices Hello World
+> DEEP Microservices Hello World (https://github.com/MitocGroup/deep-microservices-helloworld) is a web app
+that show cases a full stack example of using DEEP Microservices in the context of Platform-as-a-Service.
+Developers can either fork this repository or `npm install deepify -g` (https://www.npmjs.com/package/deepify)
+and run in the command line `deepify helloworld ~/deep-hello-world`.
+
+### DEEP Microservices Todo App
+> DEEP Microservices Todo App (https://github.com/MitocGroup/deep-microservices-todo-app) is a web app
+inspired from AngularJS TodoMVC Example (https://github.com/tastejs/todomvc/tree/master/examples/angularjs).
+It reuses AngularJS module and integrates using `DEEP Framework` to streamline development and deployment
+using cloud-based web services.
+
+### DEEP Marketplace
+> DEEP Marketplace (https://www.deep.mg) is Software-as-a-Service, built on top of DEEP, that empowers customers
+to choose functionality from listed microservices and deploy them together as an web app into their own 
+AWS accounts with just few clicks; as well as empowers developers to create and publish their microservices 
+and monetize them in similar approach to Apple's App Store.
+
 ## Feedback
 
 We are eager to get your feedback, so please use whatever communication channel you prefer:
