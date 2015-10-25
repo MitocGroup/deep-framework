@@ -86,7 +86,7 @@ to choose functionality from listed microservices and deploy them together as an
 AWS accounts with just few clicks; as well as empowers developers to create and publish their microservices 
 and monetize them in similar approach to Apple's App Store.
 
-## Help Wanted [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+## Involvement && Help [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 ### Feedback
 
