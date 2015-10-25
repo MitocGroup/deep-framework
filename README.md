@@ -43,7 +43,12 @@ DEEP Abstracted Library | Description and Documentation | Abstracted Web Service
 
 ## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-If `DEEP Framework` is intended to be used globally, just run `npm install deep-framework -g` in command line.
+If `DEEP Framework` is intended to be used globally, just run in command line:
+
+```
+npm install deep-framework -g
+```
+
 Alternatively, if used as dependency, include it in `package.json` file. For example:
 
 ```
