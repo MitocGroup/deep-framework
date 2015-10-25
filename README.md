@@ -7,9 +7,9 @@ Digital Enterprise End-to-end Platform
 [![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github)](https://coveralls.io/github/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-![Digital Enterprise End-to-end Platform, aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png)
-
-Digital Enterprise End-to-end Platform (also known as DEEP) is low cost and low maintenance digital platform powered by abstracted services from AWS. We enable businesses and developers to achieve more by doing less.
+Digital Enterprise End-to-end Platform (also known as DEEP) is low cost and low maintenance **Platform-as-a-Service** 
+powered by abstracted services from AWS (also known as **Serverless AWS**). We enable businesses and developers to provide
+high value products and services in a constantly changing digital world.
 
 ## DEEP for Businesses [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
@@ -43,8 +43,6 @@ DEEP is enabling developers and architects to:
 
 ## DEEP Architecture on AWS [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-![Digital Enterprise End-to-end Platform, aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-architecture.png)
-
 DEEP is using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) on serverless environments from cloud providers like AWS. DEEP Framework abstracts the functionality and makes it completely developer friendly. We have the following abstracted libraries:
 
 DEEP Abstracted Library | Description | AWS Abstracted Service(s)
@@ -63,12 +61,6 @@ DEEP Abstracted Library | Description | AWS Abstracted Service(s)
 [deep-security](http://docs.deep.mg/deep-security) | Security Management Library | AWS IAM, Amazon Cognito
 [deep-validation](http://docs.deep.mg/deep-validation) | Validation Management Library | -
 
-## Changelog
-
-Changelog files are located in `/changelog`
-
-> See the latest [changelog](changelog/latest.md)
-
 ## Feedback
 
 We are eager to get your feedback, so please use whatever communication channel you prefer:
@@ -86,6 +78,11 @@ This project is open source, and we encourage developers to contribute. Here bel
 
 Make sure you update `package.json` (or `deepkg.json`, depends on the use case) and put your name and contact information in contributors section. We would like to recognize the work and empower every contributor in creative ways :)
 
+## Changelog
+
+Changelog files are located in `/changelog` folder.
+> See [CHANGELOG.md](https://github.com/MitocGroup/deep-framework/blob/master/CHANGELOG.md) for latest changelog.
+
 ## License
 
 This repository can be used under the MIT license.
@@ -95,3 +92,13 @@ This repository can be used under the MIT license.
 
 This repository is being sponsored by:
 > [Mitoc Group](http://www.mitocgroup.com)
+
+## Appendix A: Diagrams
+
+### DEEP Architecture
+
+![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-architecture.png)
+
+### DEEP Components
+
+![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png)
