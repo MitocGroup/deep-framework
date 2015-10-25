@@ -23,7 +23,7 @@ and `Google Cloud Platform`, and so on.
 If you are new to node and npm, check out [this tutorial](http://howtonode.org/how-to-install-nodejs) to learn more.
 
 If `DEEP Framework` is intended to be used globally, just run `npm install deep-framework -g` in command line.
-Alternatively, if used as dependency, include it in `package.json` file:
+Alternatively, if used as dependency, include it in `package.json` file. For example:
 
 ```
 {
