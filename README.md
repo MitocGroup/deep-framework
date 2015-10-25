@@ -122,12 +122,12 @@ This repository can be used under the MIT license.
 This repository is being sponsored by:
 > [Mitoc Group](http://www.mitocgroup.com)
 
-## Appendix A: Diagrams
+## Appendices
 
-### Serverless Architecture
+### Appendix A: Serverless Architecture
 
 ![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-architecture.png)
 
-### DEEP Components
+### Appendix B: DEEP Components
 
 ![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png)
