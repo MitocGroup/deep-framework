@@ -25,21 +25,21 @@ If you are new to node and npm, check out [this tutorial](http://howtonode.org/h
 `DEEP Framework` is a nodejs package. In fact it's a collection of nodejs packages, also known as
 `DEEP Abstracted Libraries`. Here below is the complete list:
 
-DEEP Abstracted Library | DEEP Library Description | Abstracted Web Service(s) | Related Links
-------------------------|--------------------------|---------------------------|--------------
-deep-asset | Assets Management Library | Amazon S3 | [npmjs](https://www.npmjs.com/package/deep-asset), [docs](http://docs.deep.mg/deep-asset)
-deep-cache | Cache Management Library | Amazon ElastiCache | [npmjs](https://www.npmjs.com/package/deep-cache), [docs](http://docs.deep.mg/deep-cache)
-deep-core | Core Management Library | - | [npmjs](https://www.npmjs.com/package/deep-core), [docs](http://docs.deep.mg/deep-core)
-deep-db | Database Management Library | Amazon DynamoDB, Amazon SQS | [npmjs](https://www.npmjs.com/package/deep-db), [docs](http://docs.deep.mg/deep-db)
-deep-di | Dependency Injection Management Library | - | [npmjs](https://www.npmjs.com/package/deep-di), [docs](http://docs.deep.mg/deep-di)
-deep-event | Events Management Library | Amazon Kinesis | [npmjs](https://www.npmjs.com/package/deep-event), [docs](http://docs.deep.mg/deep-event)
-deep-fs | File System Management Library | Amazon S3 | [npmjs](https://www.npmjs.com/package/deep-fs), [docs](http://docs.deep.mg/deep-fs)
-deep-kernel | Kernel Management Library | - | [npmjs](https://www.npmjs.com/package/deep-kernel), [docs](http://docs.deep.mg/deep-kernel)
-deep-log | Logs Management Library | Amazon CloudWatch Logs | [npmjs](https://www.npmjs.com/package/deep-log), [docs](http://docs.deep.mg/deep-log)
-deep-notification | Notifications Management Library | Amazon SNS | [npmjs](https://www.npmjs.com/package/deep-notification), [docs](http://docs.deep.mg/deep-notification)
-deep-resource | Resouces Management Library | AWS Lambda, Amazon API Gateway | [npmjs](https://www.npmjs.com/package/deep-resource), [docs](http://docs.deep.mg/deep-resource)
-deep-security | Security Management Library | AWS IAM, Amazon Cognito | [npmjs](https://www.npmjs.com/package/deep-security), [docs](http://docs.deep.mg/deep-security)
-deep-validation | Validation Management Library | - | [npmjs](https://www.npmjs.com/package/deep-validation), [docs](http://docs.deep.mg/deep-validation)
+DEEP Abstracted Library | Description and Documentation | Abstracted Web Service(s)
+------------------------|-------------------------------|--------------------------
+[deep-asset](https://www.npmjs.com/package/deep-asset) | [Assets Management Library](http://docs.deep.mg/deep-asset) | Amazon S3
+[deep-cache](https://www.npmjs.com/package/deep-cache) | [Cache Management Library](http://docs.deep.mg/deep-cache) | Amazon ElastiCache
+[deep-core](https://www.npmjs.com/package/deep-core) | [Core Management Library](http://docs.deep.mg/deep-core) | -
+[deep-db](https://www.npmjs.com/package/deep-db) | [Database Management Library](http://docs.deep.mg/deep-db) | Amazon DynamoDB, Amazon SQS
+[deep-di](https://www.npmjs.com/package/deep-di) | [Dependency Injection Management Library](http://docs.deep.mg/deep-di) | -
+[deep-event](https://www.npmjs.com/package/deep-event) | [Events Management Library](http://docs.deep.mg/deep-event) | Amazon Kinesis
+[deep-fs](https://www.npmjs.com/package/deep-fs) | [File System Management Library](http://docs.deep.mg/deep-fs) | Amazon S3
+[deep-kernel](https://www.npmjs.com/package/deep-kernel) | [Kernel Management Library](http://docs.deep.mg/deep-kernel) | -
+[deep-log](https://www.npmjs.com/package/deep-log) | [Logs Management Library](http://docs.deep.mg/deep-log) | Amazon CloudWatch Logs
+[deep-notification](https://www.npmjs.com/package/deep-notification) | [Notifications Management Library](http://docs.deep.mg/deep-notification) | Amazon SNS
+[deep-resource](https://www.npmjs.com/package/deep-resource) | [Resouces Management Library](http://docs.deep.mg/deep-resource) | AWS Lambda, Amazon API Gateway
+[deep-security](https://www.npmjs.com/package/deep-security) | [Security Management Library](http://docs.deep.mg/deep-security) | AWS IAM, Amazon Cognito
+[deep-validation](https://www.npmjs.com/package/deep-validation) | [Validation Management Library](http://docs.deep.mg/deep-validation) | -
 
 ## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
