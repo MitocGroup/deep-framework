@@ -8,17 +8,53 @@ Digital Enterprise End-to-end Platform
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
 `Digital Enterprise End-to-end Platform`, also known as `DEEP`, is low cost and low maintenance 
-[Platform-as-a-Service](https://en.wikipedia.org/wiki/Platform_as_a_service) powered by abstracted services 
+[Platform-as-a-Service](https://en.wikipedia.org/wiki/Platform_as_a_service) powered by abstracted web services 
 from cloud providers like [Amazon Web Services](https://aws.amazon.com). Lately, this approach has been labeled as
 [Serverless Architecture](https://aws.amazon.com/blogs/compute/microservices-without-the-servers/).
 
-`DEEP Framework` is a component of `DEEP` that abstracts web services from specific cloud providers. At this moment,
-it only supports `Amazon Web Services`, and we would like to encourage other developers to add support for `Microsoft Azure`,
-and `Google Cloud Platform`, and so on.
+`DEEP Framework` is a component of `DEEP` that abstracts web services from specific cloud providers. At this moment
+it only supports `Amazon Web Services`. Therefore we would like to encourage other developers to add support for 
+`Microsoft Azure`, and `Google Cloud Platform`, and so on.
 
 ## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-To be updated.
+`DEEP Framework` is a nodejs package that is published on [npmjs.com](https://www.npmjs.com/package/deep-framework).
+If you are new to node and npm, check out [this tutorial](http://howtonode.org/how-to-install-nodejs) to learn more.
+
+If `DEEP Framework` is intended to be used globally, just run `npm install deep-framework -g` in command line.
+Alternatively, if used as dependency, include it in `package.json` file:
+
+```
+{
+  "name": "say-hello-world",
+  "version": "0.0.1",
+  "description": "AWS Lambda that says hello to the world",
+  "dependencies": {
+    "deep-framework": "1.0.*",
+    ...
+  },
+  ...
+}
+```
+
+`DEEP Framework` is a nodejs package, but in fact it's a collection of nodejs packages, also known as abstracted libraries.
+Here below is the complete list:
+
+DEEP Abstracted Library | Description of DEEP Library | AWS Abstracted Service(s)
+------------------------|-----------------------------|--------------------------
+[deep-asset](http://docs.deep.mg/deep-asset) | Assets Management Library | Amazon S3
+[deep-cache](http://docs.deep.mg/deep-cache) | Cache Management Library | Amazon ElastiCache
+[deep-core](http://docs.deep.mg/deep-core) | Core Management Library | -
+[deep-db](http://docs.deep.mg/deep-db) | Database Management Library | Amazon DynamoDB, Amazon SQS
+[deep-di](http://docs.deep.mg/deep-di) | Dependency Injection Management Library | -
+[deep-event](http://docs.deep.mg/deep-event) | Events Management Library | Amazon Kinesis
+[deep-fs](http://docs.deep.mg/deep-fs) | File System Management Library | Amazon S3
+[deep-kernel](http://docs.deep.mg/deep-kernel) | Kernel Management Library | -
+[deep-log](http://docs.deep.mg/deep-log) | Logs Management Library | Amazon CloudWatch Logs
+[deep-notification](http://docs.deep.mg/deep-notification) | Notifications Management Library | Amazon SNS
+[deep-resource](http://docs.deep.mg/deep-resource) | Resouces Management Library | AWS Lambda, Amazon API Gateway
+[deep-security](http://docs.deep.mg/deep-security) | Security Management Library | AWS IAM, Amazon Cognito
+[deep-validation](http://docs.deep.mg/deep-validation) | Validation Management Library | -
 
 ## DEEP for Businesses [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
@@ -52,23 +88,7 @@ DEEP is enabling developers and architects to:
 
 ## DEEP Architecture on AWS [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-DEEP is using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) on serverless environments from cloud providers like AWS. DEEP Framework abstracts the functionality and makes it completely developer friendly. We have the following abstracted libraries:
-
-DEEP Abstracted Library | Description | AWS Abstracted Service(s)
--------------|---------------------|--------------------------
-[deep-asset](http://docs.deep.mg/deep-asset) | Assets Management Library | Amazon S3
-[deep-cache](http://docs.deep.mg/deep-cache) | Cache Management Library | Amazon ElastiCache
-[deep-core](http://docs.deep.mg/deep-core) | Core Management Library | -
-[deep-db](http://docs.deep.mg/deep-db) | Database Management Library | Amazon DynamoDB, Amazon SQS
-[deep-di](http://docs.deep.mg/deep-di) | Dependency Injection Management Library | -
-[deep-event](http://docs.deep.mg/deep-event) | Events Management Library | Amazon Kinesis
-[deep-fs](http://docs.deep.mg/deep-fs) | File System Management Library | Amazon S3
-[deep-kernel](http://docs.deep.mg/deep-kernel) | Kernel Management Library | -
-[deep-log](http://docs.deep.mg/deep-log) | Logs Management Library | Amazon CloudWatch Logs
-[deep-notification](http://docs.deep.mg/deep-notification) | Notifications Management Library | Amazon SNS
-[deep-resource](http://docs.deep.mg/deep-resource) | Resouces Management Library | AWS Lambda, Amazon API Gateway
-[deep-security](http://docs.deep.mg/deep-security) | Security Management Library | AWS IAM, Amazon Cognito
-[deep-validation](http://docs.deep.mg/deep-validation) | Validation Management Library | -
+DEEP is using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) on serverless environments from cloud providers like AWS. DEEP Framework abstracts the functionality and makes it completely developer friendly. 
 
 ## Feedback
 
