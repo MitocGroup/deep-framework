@@ -86,6 +86,31 @@ to choose functionality from listed microservices and deploy them together as an
 AWS accounts with just few clicks; as well as empowers developers to create and publish their microservices 
 and monetize them in similar approach to Apple's App Store.
 
+## Continuous Integration
+
+### Travis CI
+
+[Travis CI](https://travis-ci.org/MitocGroup/deep-framework) is a continuous integration service used to build and 
+testprojects hosted on GitHub. Travis CI is configured by adding a file named 
+[.travis.yml](https://github.com/MitocGroup/deep-framework/blob/master/.travis.yml), which is a YAML format text file,
+to the root directory of the GitHub repository.
+
+### Coveralls
+
+[Coveralls](https://coveralls.io/github/MitocGroup/deep-framework) provides constant updates on your project's 
+automated test coverage. It is now available for open source projectsto start tracking code coverage on project.
+
+### Codacy
+
+[Codacy](https://www.codacy.com/app/MitocGroup/deep-framework) offers an automated code review tool for developers 
+that continuously monitors code for problematic patterns, with the aim being to reduce the amount of time spent 
+poring over code style.
+
+### ESDoc
+
+[ESDoc](https://esdoc.org) is a documentation generator for JavaScript(ES6). It produces a practical documentation, 
+measures the coverage, integrates the test code and more.
+
 ## Involvement && Help [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 ### Feedback
