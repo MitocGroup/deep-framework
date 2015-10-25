@@ -40,8 +40,8 @@ Alternatively, if used as dependency, include it in `package.json` file:
 `DEEP Framework` is a nodejs package, but in fact it's a collection of nodejs packages, also known as abstracted libraries.
 Here below is the complete list:
 
-DEEP Abstracted Library | Description of DEEP Library | AWS Abstracted Service(s)
-------------------------|-----------------------------|--------------------------
+DEEP Abstracted Library | Description of DEEP Library | AWS Abstracted Web Service(s)
+------------------------|-----------------------------|------------------------------
 [deep-asset](http://docs.deep.mg/deep-asset) | Assets Management Library | Amazon S3
 [deep-cache](http://docs.deep.mg/deep-cache) | Cache Management Library | Amazon ElastiCache
 [deep-core](http://docs.deep.mg/deep-core) | Core Management Library | -
