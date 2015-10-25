@@ -14,8 +14,8 @@ from cloud providers like [Amazon Web Services](https://aws.amazon.com). This ap
 
 `DEEP Framework` is a [core component](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-components)
 of the Platform-as-a-Service that abstracts web services from specific cloud providers. At this moment 
-only `Amazon Web Services` is supported. Developers are encouraged to add support for `Microsoft Azure`,
-and `Google Cloud Platform`, and so on.
+only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are encouraged to add support for
+[Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](https://cloud.google.com/), and so on.
 
 ## Introduction [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
