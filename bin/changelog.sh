@@ -19,7 +19,7 @@ USER=${GIT_REMOTE_PARTS[0]}
 REPOSITORY=${GIT_REMOTE_PARTS[1]}
 
 if [ -z ${USER} ] || [ -z ${REPOSITORY} ]; then
-    echo "Seems like you did not set up a GitHub remote origin"
+    echo "Seems like you did not set up a GitHub remote origin!"
     exit 1
 fi
 
@@ -30,7 +30,8 @@ if [ "$NPM_EXISTS" == 0 ]; then
 fi
 
 if [ -z ${LAST_MODIFIED} ]; then
-    echo "Missing NPM package to pick up time.modified."
+    echo "Missing NPM package to pick up time.modified!"
+    echo ""
     echo "You must provide last modified datetime string manually (ex. ./changelog.sh 2015-10-26T10:06:58.407Z)"
     exit 1
 fi
