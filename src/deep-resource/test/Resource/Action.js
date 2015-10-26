@@ -130,7 +130,7 @@ suite('Resource/Action', function() {
       _cacheImpl: null,
       _cacheTtl: 0,
       _cached: false,
-      _native: false,
+      _native: true,
       _lambda: null,
       _method: 'GET',
       _payload: {},
