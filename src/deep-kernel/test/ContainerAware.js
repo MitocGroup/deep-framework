@@ -48,23 +48,23 @@ suite('ContainerAware', function() {
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
-  test('Check _resolvePath() method for string', function() {
+  test('Check _resolveIdentifier() method for string', function() {
     let inputData = '@mitocgroup.test:resource';
     let error = null;
     let actualResult = null;
     try {
-      actualResult = containerAware._resolvePath(inputData);
+      actualResult = containerAware._resolveIdentifier(inputData);
     } catch (e) {
       error = e;
     }
   });
 
-  test('Check _resolvePath() method for object', function() {
+  test('Check _resolveIdentifier() method for object', function() {
     let inputData = {testKey: 'testValue'};
     let error = null;
     let actualResult = null;
     try {
-      actualResult = containerAware._resolvePath(inputData);
+      actualResult = containerAware._resolveIdentifier(inputData);
     } catch (e) {
       error = e;
     }

@@ -6,6 +6,7 @@
 
 import {Injectable as MicroserviceInjectable} from './Microservice/Injectable';
 import {Kernel} from './Kernel';
+import {InvalidDeepIdentifierException} from 'Exception/InvalidDeepIdentifierException'
 
 /**
  * Container aware instance
@@ -71,22 +72,23 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
-   * @param {String} object
+   * @param {String} identifier (e.g. @microservice_identifier:resource_identifier)
    * @returns {String}
+   *
    * @private
    */
-  _resolvePath(object) {
-    if (typeof object === 'string' && object.indexOf('@') === 0) {
-      let parts = object.match(/^@\s*([^:]+)\s*:\s*([^\s]+)\s*$/);
+  _resolveIdentifier(identifier) {
+    let regExp = /^@\s*([^:]+)\s*:\s*([^\s]+)\s*$/;
 
-      if (parts.length === 3) {
-        this.bind(parts[1]);
+    if (typeof identifier === 'string' && regExp.test(identifier)) {
+      let parts = identifier.match(regExp);
 
-        return parts[2];
-      }
+      this.bind(parts[1]); // microservice identifier
+
+      return parts[2]; // resource identifier
+    } else {
+      throw new InvalidDeepIdentifierException(identifier, regExp);
     }
-
-    return object;
   }
 
   /**

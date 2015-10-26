@@ -30,11 +30,11 @@ export class Resource extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {String} identifier
+   * @param {String} identifier (e.g @microservice_identifier:resource_name[:action_name])
    * @returns {ResourceInstance}
    */
   get(identifier) {
-    identifier = this._resolvePath(identifier);
+    identifier = this._resolveIdentifier(identifier);
 
     let microserviceIdentifier = this.microservice.identifier;
 
