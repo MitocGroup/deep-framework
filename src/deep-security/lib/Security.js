@@ -99,7 +99,7 @@ export class Security extends Kernel.ContainerAware {
     let globals = kernel.config.globals || kernel.config;
 
     this._identityProviders = globals.security.identityProviders;
-    this._userProviderEndpoint = globals.security.userProviderEndpoint;
+    this._userProviderEndpoint = globals.userProviderEndpoint;
 
     this._identityPoolId = kernel.config.identityPoolId;
 
