@@ -83,12 +83,12 @@ export class S3FSRelativeFSExtender {
         let absDestinationPath = path.join(this.cwd, destinationPath);
 
         if (callback) {
-          fse.copy(sourcePath, destinationPath, callback);
+          fse.copy(absSourcePath, absDestinationPath, callback);
           return;
         }
 
         return new Promise((resolve, reject) => {
-          fse.copy(sourcePath, destinationPath, (error) => {
+          fse.copy(absSourcePath, absDestinationPath, (error) => {
             if (error) {
               reject(error);
               return;
@@ -122,7 +122,7 @@ export class S3FSRelativeFSExtender {
        * @returns {Promise|undefined}
        */
       destroy: (callback = null) => {
-        let error = new Error(`You do not have rights for this operation on bucket ${options.Bucket}`);
+        let error = new Error(`You do not have rights for this operation`);
 
         if (callback) {
           fse.remove(this.cwd, () => {
@@ -165,7 +165,7 @@ export class S3FSRelativeFSExtender {
           return;
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           resolve(responseObj);
         });
       },
@@ -204,8 +204,6 @@ export class S3FSRelativeFSExtender {
         };
 
         if (callback) {
-          let items = [];
-
           fse.walk(absPath)
             .on('data', (item) => {
               globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));
@@ -217,7 +215,7 @@ export class S3FSRelativeFSExtender {
           return;
         }
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           fse.walk(absPath)
             .on('data', (item) => {
               globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));
