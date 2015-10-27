@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/Local/S3FSRelativeFSExtender.js | DEEP File System Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/FS.js~FS.html">FS</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html">UnknownFolderException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html">S3FSRelativeFSExtender</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Local/S3FSRelativeFSExtender.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 10/27/15.
+ */
+
+&apos;use strict&apos;;
+
+import path from &apos;path&apos;;
+import relativeFs from &apos;relative-fs&apos;;
+import fse from &apos;fs-extra&apos;;
+import fs from &apos;fs&apos;;
+import {_extend as extend} from &apos;util&apos;;
+
+export class S3FSRelativeFSExtender {
+  /**
+   * @param {Object|String} relativeFsPath
+   */
+  constructor(relativeFsPath) {
+    let relativeFsObject = relativeFsPath;
+
+    if (typeof relativeFsObject !== &apos;object&apos;) {
+      relativeFsObject = relativeFs.relativeTo(relativeFsPath);
+      relativeFsObject._rootFolder = relativeFsPath;
+    } else if(!relativeFsObject.hasOwnProperty(&apos;_rootFolder&apos;)) {
+      throw new Error(&apos;Missing _rootFolder property from RelativeFS object&apos;);
+    }
+
+    this._relativeFsObject = relativeFsObject;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get relativeFs() {
+    return this._relativeFsObject;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get relativeFsExtended() {
+    return extend(this._relativeFsObject, this.EXTEND_OBJECT);
+  }
+
+  /**
+   * @returns {String}
+   */
+  get cwd() {
+    return this._relativeFsObject._rootFolder || process.cwd();
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get EXTEND_OBJECT() {
+    let extendObject = {
+
+      /**
+       * @param {String} pathStr
+       * @returns {String}
+       */
+      getPath: (pathStr = &apos;&apos;) =&gt; {
+        return path.join(this.cwd, pathStr);
+      },
+
+      /**
+       * @param {String} pathStr
+       * @returns {Object}
+       */
+      clone: (pathStr) =&gt; {
+        let newCwd = path.join(this.cwd, pathStr);
+
+        return new S3FSRelativeFSExtender(newCwd).relativeFsExtended;
+      },
+
+      /**
+       * @param {String} sourcePath
+       * @param {String} destinationPath
+       * @param {Function|null} callback
+       * @returns {Promise|undefined}
+       */
+      copyFile: (sourcePath, destinationPath, callback = null) =&gt; {
+        let absSourcePath = path.join(this.cwd, sourcePath);
+        let absDestinationPath = path.join(this.cwd, destinationPath);
+
+        if (callback) {
+          fse.copy(absSourcePath, absDestinationPath, callback);
+          return;
+        }
+
+        return new Promise((resolve, reject) =&gt; {
+          fse.copy(absSourcePath, absDestinationPath, (error) =&gt; {
+            if (error) {
+              reject(error);
+              return;
+            }
+
+            resolve();
+          });
+        });
+      },
+
+      /**
+       * @param {Object} options
+       * @param {Function|null} callback
+       * @returns {Promise|undefined}
+       */
+      create: (options, callback = null) =&gt; {
+        let error = new Error(`You do not have rights for this operation on bucket ${options.Bucket}`);
+
+        if (callback) {
+          callback(error);
+          return;
+        }
+
+        return new Promise((resolve, reject) =&gt; {
+          reject(error);
+        });
+      },
+
+      /**
+       * @param {Function|null} callback
+       * @returns {Promise|undefined}
+       */
+      destroy: (callback = null) =&gt; {
+        let error = new Error(`You do not have rights for this operation`);
+
+        if (callback) {
+          fse.remove(this.cwd, () =&gt; {
+            callback(error);
+          });
+          return;
+        }
+
+        return new Promise((resolve, reject) =&gt; {
+          fse.remove(this.cwd, (nativeError) =&gt; {
+            if (nativeError) {
+              reject(nativeError);
+              return;
+            }
+
+            reject(error);
+          });
+        });
+      },
+
+      /**
+       * @param {String} pathStr
+       * @param {Function|null} callback
+       * @returns {Promise|undefined}
+       */
+      headObject: (pathStr, callback = null) =&gt; {
+        let responseObj = {
+          AcceptRanges: &apos;&apos;,
+          Restore: &apos;&apos;,
+          LastModified: new Date().getTime(),
+          ContentLength: 0,
+          ETag: &apos;55ad340609f4b302&apos;,
+          MissingMeta: 0,
+          VersionId: &apos;55ad340609f4b302&apos;,
+          StorageClass: &apos;REDUCED_REDUNDANCY&apos;,
+        };
+
+        if (callback) {
+          callback(responseObj);
+          return;
+        }
+
+        return new Promise((resolve) =&gt; {
+          resolve(responseObj);
+        });
+      },
+
+      /**
+       * @param {String} pathStr
+       * @param {String} marker
+       * @param {Function|null} callback
+       * @returns {Promise|undefined}
+       */
+      listContents: (pathStr, marker, callback = null) =&gt; {
+        let absPath = path.join(this.cwd, pathStr);
+
+        let globResponseObj = {
+          Marker: marker,
+          IsTruncated: false,
+          Contents: [],
+          Name: this.cwd,
+          Prefix: pathStr,
+          Delimiter: &apos;/&apos;,
+          MaxKeys: 1000000000,
+          CommonPrefixes: [],
+          EncodingType: &apos;url&apos;,
+        };
+
+        let responseObj = {
+          Key: null,
+          LastModified: new Date().getTime(),
+          Size: 0,
+          ETag: &apos;55ad340609f4b302&apos;,
+          StorageClass: &apos;REDUCED_REDUNDANCY&apos;,
+          Owner: {
+            DisplayName: &apos;s3fs&apos;,
+            ID: &apos;55ad340609f4b302&apos;,
+          },
+        };
+
+        if (callback) {
+          fse.walk(absPath)
+            .on(&apos;data&apos;, (item) =&gt; {
+              globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));
+            })
+            .on(&apos;end&apos;, () =&gt; {
+              callback(globResponseObj);
+            });
+
+          return;
+        }
+
+        return new Promise((resolve) =&gt; {
+          fse.walk(absPath)
+            .on(&apos;data&apos;, (item) =&gt; {
+              globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));
+            })
+            .on(&apos;end&apos;, () =&gt; {
+              resolve(globResponseObj);
+            });
+        });
+      },
+
+      /**
+       * @param {String} pathStr
+       * @param {Function|null} callback
+       * @returns {Promise|undefined}
+       */
+      readdirp: (pathStr, callback = null) =&gt; {
+        let absPath = path.join(this.cwd, pathStr);
+
+        if (callback) {
+          fs.readdir(absPath, callback);
+          return;
+        }
+
+        return new Promise((resolve, reject) =&gt; {
+          fs.readdir(absPath, (error, files) =&gt; {
+            if (error) {
+              reject(error);
+              return;
+            }
+
+            resolve(files);
+          });
+        });
+      },
+
+      /**
+       * @param {String} pathStr
+       * @param {Function|null} callback
+       * @returns {Promise|undefined}
+       */
+      mkdirp: (pathStr, callback = null) =&gt; {
+        let absPath = path.join(this.cwd, pathStr);
+
+        if (callback) {
+          fse.mkdirp(absPath, callback);
+          return;
+        }
+
+        return new Promise((resolve, reject) =&gt; {
+          fse.mkdirp(absPath, (error) =&gt; {
+            if (error) {
+              reject(error);
+              return;
+            }
+
+            resolve();
+          });
+        });
+      },
+
+      /**
+       * @param {String} pathStr
+       * @param {Function|null} callback
+       * @returns {Promise|undefined}
+       */
+      rmdirp: (pathStr, callback = null) =&gt; {
+        let absPath = path.join(this.cwd, pathStr);
+
+        if (callback) {
+          fse.remove(absPath, callback);
+          return;
+        }
+
+        return new Promise((resolve, reject) =&gt; {
+          fse.remove(absPath, (error) =&gt; {
+            if (error) {
+              reject(error);
+              return;
+            }
+
+            resolve();
+          });
+        });
+      }
+    };
+
+    extendObject.copyDir = extendObject.copyFile;
+    extendObject.delete = extendObject.create;
+    extendObject.putBucketLifecycle = extendObject.create;
+
+    return extendObject;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

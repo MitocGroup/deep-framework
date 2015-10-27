@@ -5,7 +5,7 @@ deep-fs
 [![Build Status](https://travis-ci.org/MitocGroup/deep-framework.svg)](https://travis-ci.org/MitocGroup/deep-framework)
 [![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github&t=3QEkFa)](https://coveralls.io/github/MitocGroup/deep-framework)
 [![Codacy Badge](https://api.codacy.com/project/badge/630b5f0024334dc09fd0299b1a8a0ed5)](https://www.codacy.com/app/MitocGroup/deep-framework)
-[![API Docs](http://docs.deep.mg/deep-s.svg)](http://docs.deep.mg/deep-fs/)
+[![API Docs](http://docs.deep.mg/deep-fs/badge.svg)](http://docs.deep.mg/deep-fs/)
 
 [deep-fs](https://www.npmjs.com/package/deep-fs) is a node.js library, part of [DEEP Framework](https://github.com/MitocGroup/deep-framework).
 

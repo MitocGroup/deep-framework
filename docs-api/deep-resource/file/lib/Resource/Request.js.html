@@ -41,6 +41,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
@@ -66,6 +67,9 @@ import {MissingCacheImplementationException} from &apos;./Exception/MissingCache
 import {CachedRequestException} from &apos;./Exception/CachedRequestException&apos;;
 import aws4 from &apos;aws4&apos;;
 import parseUrl from &apos;parse-url&apos;;
+import queryString from &apos;query-string&apos;;
+import Core from &apos;deep-core&apos;;
+import {DirectLambdaCallDeniedException} from &apos;./Exception/DirectLambdaCallDeniedException&apos;;
 
 /**
  * Action request instance
@@ -86,7 +90,7 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
-    this._native = true; // @todo: change to false on an stable API Gateway version
+    this._native = true; // @todo: set it to false
   }
 
   /**
@@ -100,6 +104,10 @@ export class Request {
    * @returns {Request}
    */
   useDirectCall() {
+    if (this._action.forceUserIdentity) {
+      throw new DirectLambdaCallDeniedException(this);
+    }
+
     this._native = true;
     return this;
   }
@@ -179,8 +187,9 @@ export class Request {
    */
   _buildCacheKey() {
     let payload = JSON.stringify(this._payload);
+    let endpoint = this.native ? this._action.source.original : this._action.source.api;
 
-    return `${this._method}:${this._action.type}:${this._action.source}#${payload}`;
+    return `${this._method}:${this._action.type}:${endpoint}#${payload}`;
   }
 
   /**
@@ -297,6 +306,7 @@ export class Request {
         return;
       }
 
+      //todo -TBD
       this._send(function(response) {
         cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, function(error, result) {
           if (!result) {
@@ -344,25 +354,16 @@ export class Request {
    * @private
    */
   _sendThroughApi(callback = () =&gt; null) {
-    let urlParts = parseUrl(this._action.source.api);
+    let endpoint = this._action.source.api;
+    let signedRequest = this._createAws4SignedRequest(
+      endpoint, 
+      this.method, 
+      this.payload
+    );
 
-    let apiHost = urlParts.resource;
-    let apiPath = urlParts.pathname ? urlParts.pathname : &apos;/&apos;;
-    let apiQueryString = urlParts.search ? `?${urlParts.search}` : &apos;&apos;;
-
-    let signature = aws4.sign({
-      host: apiHost,
-      path: `${apiPath}${apiQueryString}`,
-    }, this._action.resource.securityCredentials);
-
-    Http[this._method.toLowerCase()](this._action.source.api)
-      .set(&apos;Host&apos;, signature.headers.Host)
-      .set(&apos;X-Amz-Date&apos;, signature.headers[&apos;X-Amz-Date&apos;])
-      .set(&apos;Authorization&apos;, signature.headers.Authorization)
-      .send(this.payload)
-      .end(function(error, response) {
-        callback(new SuperagentResponse(this, response, error));
-      }.bind(this));
+    signedRequest.end(function(error, response) {
+      callback(new SuperagentResponse(this, response, error));
+    }.bind(this));
 
     return this;
   }
@@ -405,6 +406,72 @@ export class Request {
       }.bind(this));
 
     return this;
+  }
+
+  /**
+   * @param {String} url
+   * @param {String} httpMethod
+   * @param {Object} payload
+   * @private
+   */
+  _createAws4SignedRequest(url, httpMethod, payload) {
+    let urlParts = parseUrl(url);
+    let apiHost = urlParts.resource;
+    let apiPath = urlParts.pathname ? urlParts.pathname : &apos;/&apos;;
+    let apiQueryString = urlParts.search ? `?${urlParts.search}` : &apos;&apos;;
+
+    let opsToSign = {
+      service: Core.AWS.Service.API_GATEWAY,
+      region: this.getEndpointHostRegion(apiHost),
+      host: apiHost,
+      method: httpMethod,
+      path: `${apiPath}${apiQueryString}`,
+      headers: {
+        &apos;Content-Type&apos;: &apos;application/json&apos;,
+      },
+    };
+
+    httpMethod = httpMethod.toLowerCase();
+    switch (httpMethod) {
+      case &apos;get&apos;:
+      case &apos;delete&apos;:
+        opsToSign.path += (apiQueryString ? &apos;&amp;&apos; : &apos;?&apos;) + queryString.stringify(payload);
+        break;
+      case &apos;post&apos;:
+      case &apos;put&apos;:
+      case &apos;patch&apos;:
+        opsToSign.body = JSON.stringify(payload);
+        break;
+    }
+
+    let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
+
+    let request = Http[httpMethod](url, payload)
+      .set(&apos;Content-Type&apos;, &apos;application/json&apos;)
+      .set(&apos;X-Amz-Date&apos;, signature.headers[&apos;X-Amz-Date&apos;])
+      .set(&apos;X-Amz-Security-Token&apos;, signature.headers[&apos;X-Amz-Security-Token&apos;])
+      .set(&apos;Authorization&apos;, signature.headers.Authorization);
+
+    return request;
+  }
+
+  /**
+   * @returns {Object}
+   * @private
+   */
+  _getSecurityCredentials() {
+    return this._action.resource.securityCredentials;
+  }
+
+  /**
+   * @param {String} endpointHost
+   * @returns {String}
+   */
+  getEndpointHostRegion(endpointHost) {
+    let regionParts = endpointHost.match(/\.([^\.]+)\.amazonaws\.com$/i);
+
+    // @todo - expose API region into config provision section
+    return regionParts ? regionParts[1] : this._action.region; // use action region as fallback
   }
 
   /**
