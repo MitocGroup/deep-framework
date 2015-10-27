@@ -37,7 +37,7 @@ export class Asset extends Kernel.ContainerAware {
           continue;
         }
 
-        loadVector.push(this.bind(microservice).locate('bootstrap.js'));
+        loadVector.push(this.locate(`@${microservice.identifier}:bootstrap.js`));
       }
 
       kernel.container.addParameter(

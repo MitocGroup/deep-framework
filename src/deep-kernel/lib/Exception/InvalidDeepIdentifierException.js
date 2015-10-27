@@ -12,9 +12,8 @@ import {Exception} from './Exception';
 export class InvalidDeepIdentifierException extends Exception {
   /**
    * @param {String} identifier
-   * @param {RegExp} regExp
    */
-  constructor(identifier, regExp) {
-    super(`Invalid deep identifier "${identifier}". It should pass "${regExp.toString()}" regExp.`);
+  constructor(identifier) {
+    super(`Invalid deep identifier "${identifier}". It should conform to the following format: @microservice_identifier:resource_identifier.`);
   }
 }
