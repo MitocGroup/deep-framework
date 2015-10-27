@@ -35,6 +35,23 @@ Alternatively, if used as dependency, include it in `package.json` file. For exa
 }
 ```
 
+Also, when needed, consider specifying only some libraries instead of entire framework. For example:
+
+```
+{
+  "name": "say-hello-world",
+  "version": "0.0.1",
+  "description": "AWS Lambda that says hello to the world",
+  "dependencies": {
+    "deep-db": "1.0.*",
+    "deep-event": "1.0.*",
+    "deep-resource": "1.0.*",
+    ...
+  },
+  ...
+}
+```
+
 ## What is DEEP Framework? [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 `DEEP Framework` is a nodejs package that is published on npmjs: https://www.npmjs.com/package/deep-framework.
@@ -115,7 +132,7 @@ This repository can be used under the MIT license.
 This repository is being sponsored by:
 > [Mitoc Group](http://www.mitocgroup.com)
 
-## Appendices
+## What else is relevant? [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 `Digital Enterprise End-to-end Platform`, also known as `DEEP`, is low cost and low maintenance 
 [Platform-as-a-Service](https://en.wikipedia.org/wiki/Platform_as_a_service) powered by abstracted web services 
