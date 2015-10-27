@@ -49,7 +49,8 @@ export class S3FSRelativeFSExtender {
   }
 
   /**
-   * @returns {Object}
+   * @returns {{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}}
+   * @constructor
    */
   get EXTEND_OBJECT() {
     let extendObject = {
