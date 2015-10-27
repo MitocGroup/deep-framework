@@ -100,10 +100,9 @@ export class FS extends Kernel.ContainerAware {
     if (typeof this._mountedFolders[name] === 'undefined') {
       if (this._localBackend) {
         let rootFolder = FS._getTmpDir(this._buckets[name]);
+        let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;
 
-        this._mountedFolders[name] = require('relative-fs').relativeTo(rootFolder);
-
-        this._mountedFolders[name]._rootFolder = rootFolder;
+        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;
       } else {
         let options = {
           params: {
