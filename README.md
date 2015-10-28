@@ -15,14 +15,36 @@ only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are 
 
 ## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-If `DEEP Framework` is intended to be used globally, just run in command line:
+`DEEP Framework` can be used as a module in front-end or back-end. To learn more, scroll down to 
+[What is DEEP Framework?](https://github.com/MitocGroup/deep-framework/blob/master/README.md#what-is-deep-framework-)
 
+To see the power of `DEEP Framework`, execute the following 4 simple steps in command line:
+
+1. Install DEEP CLI, also known as deepify: `npm install deepify -g`
+> deepify is a collection of tools that empower developers and devops engineers to automate
+the management of web apps built on top of DEEP ecosystem.
+
+2. Using deepify, dump locally the helloworld example: `deepify helloworld ~/deep-hello-world`
+> deepify will clone the repository from GitHub and pull all the dependencies in one place.
+
+3. Using deepify, run locally the helloworld example: `deepify server ~/deep-hello-world -o`
+> deepify launches a web server that can be used for local development, without making calls
+to web services from cloud providers like AWS.
+
+4. Using deepify, deploy to AWS the helloworld example: `deepify deploy ~/deep-hello-world`
+> deepify provisions the infrastructure and deploys the web app, empowering developers and
+devops engineers to automate the process.
+
+To learn more about helloworld example, or other web apps that run in production, scroll down to 
+[Who is using DEEP Framework?](https://github.com/MitocGroup/deep-framework/blob/master/README.md#who-is-using-deep-framework-)
+
+### Additional Notes
+Note 1: To use `DEEP Framework` globally, just run in command line:
 ```
 npm install deep-framework -g
 ```
 
-Alternatively, if used as dependency, include it in `package.json` file. For example:
-
+Note 2: Alternatively, to use `DEEP Framework` as dependency, include it in `package.json` file. For example:
 ```
 {
   "name": "say-hello-world",
@@ -36,8 +58,7 @@ Alternatively, if used as dependency, include it in `package.json` file. For exa
 }
 ```
 
-Also, when needed, consider specifying only some libraries instead of entire framework. For example:
-
+Note 3: Also, when needed, consider specifying only some libraries instead of entire framework. For example:
 ```
 {
   "name": "say-hello-world",
@@ -78,7 +99,7 @@ DEEP Abstracted Library | Description and Documentation | Abstracted Web Service
 [deep-security](https://www.npmjs.com/package/deep-security) | [Security Management Library](http://docs.deep.mg/deep-security) | AWS IAM, Amazon Cognito
 [deep-validation](https://www.npmjs.com/package/deep-validation) | [Validation Management Library](http://docs.deep.mg/deep-validation) | -
 
-## Who uses DEEP Framework? [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+## Who is using DEEP Framework? [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 There are couple examples / web apps that are using `DEEP Framework` at their core:
 
