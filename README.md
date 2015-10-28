@@ -103,15 +103,15 @@ DEEP Abstracted Library | Description and Documentation | Abstracted Web Service
 
 There are couple examples / web apps that are using `DEEP Framework` at their core:
 
-### DEEP Microservices Hello World
-> DEEP Microservices Hello World (https://github.com/MitocGroup/deep-microservices-helloworld) is a web app
+### DEEP Hello World
+> DEEP Hello World (https://github.com/MitocGroup/deep-microservices-helloworld) is a web app
 that show cases a full stack example of using DEEP Microservices in the context of Platform-as-a-Service.
 Developers can either fork this repository or `npm install deepify -g` (https://www.npmjs.com/package/deepify)
 and run in the command line `deepify helloworld ~/deep-hello-world`.
 
-### DEEP Microservices Todo App
-> DEEP Microservices Todo App (https://github.com/MitocGroup/deep-microservices-todo-app) is a web app
-inspired from AngularJS TodoMVC Example (https://github.com/tastejs/todomvc/tree/master/examples/angularjs).
+### DEEP Todo App
+> DEEP Todo App (https://github.com/MitocGroup/deep-microservices-todo-app) is a web app inspired from 
+AngularJS TodoMVC Example (https://github.com/tastejs/todomvc/tree/master/examples/angularjs).
 It reuses AngularJS module and integrates using `DEEP Framework` to streamline development and deployment
 using cloud-based web services.
 
@@ -200,4 +200,4 @@ does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, ver
 (let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
 as web apps into their own accounts on AWS (or other cloud providers).
 
-> Therefore, in summary: DEEP empowers lego consumers to rent curated lego pieces from lego producers.
+> In summary: DEEP empowers lego consumers to rent curated lego pieces from lego producers.
