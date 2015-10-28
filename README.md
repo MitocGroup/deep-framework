@@ -144,6 +144,19 @@ from cloud providers like [Amazon Web Services](https://aws.amazon.com). This ap
 
 ![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-architecture.png)
 
+`DEEP` is an ecosystem of [DEEP Marketplace](https://www.deep.mg), 
+[DEEP Framework](https://github.com/MitocGroup/deep-framework) and [DEEP CLI](https://www.npmjs.com/package/deepify),
+also known as [deepify](https://www.npmjs.com/package/deepify). It enables developers build serverless applications 
+using abstracted web services from cloud providers like [Amazon Web Services](https://aws.amazon.com).
+
 ### Appendix B: DEEP Components
 
 ![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png)
+
+`DEEP` aims to remove the heavy lifting from content management software through microservices architecture, 
+where developers (let’s label them `lego producers`) focus only to build microservices (let’s label them `lego pieces`), 
+while the platform does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, very secure and very fast. 
+Customers (let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
+as web apps into their own accounts on AWS (or other cloud providers).
+
+> Therefore, in summary: DEEP provides lego pieces to lego consumers from lego producers.
