@@ -55,7 +55,8 @@ Also, when needed, consider specifying only some libraries instead of entire fra
 ## What is DEEP Framework? [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 `DEEP Framework` is a nodejs package that is published on npmjs: https://www.npmjs.com/package/deep-framework.
-If you are new to node and npm, check out [this tutorial](http://howtonode.org/how-to-install-nodejs) to learn more.
+
+> If you are new to node and npm, check out [how to install nodejs](http://howtonode.org/how-to-install-nodejs) tutorial.
 
 `DEEP Framework` is a nodejs package. In fact it's a collection of nodejs packages, also known as
 `DEEP Abstracted Libraries`. Here below is the complete list:
