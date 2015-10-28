@@ -6,7 +6,7 @@
 
 import {Injectable as MicroserviceInjectable} from './Microservice/Injectable';
 import {Kernel} from './Kernel';
-import {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException'
+import {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException';
 
 /**
  * Container aware instance
