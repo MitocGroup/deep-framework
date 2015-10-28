@@ -118,7 +118,7 @@ suite('Resource', function() {
     let error = null;
     let actualResult = null;
     try {
-      actualResult = resource.get(resourceName);
+      actualResult = resource.get(`@${microserviceIdentifier}:${resourceName}`);
     } catch (e) {
       error = e;
     }
@@ -130,7 +130,7 @@ suite('Resource', function() {
   test('Check get() method throws \'MissingResourceException\' exception', function() {
     let error = null;
     try {
-      resource.get('identifier');
+      resource.get(`@${microserviceIdentifier}:invalid_resource_name`);
     } catch (e) {
       error = e;
     }
