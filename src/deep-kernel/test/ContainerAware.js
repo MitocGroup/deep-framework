@@ -59,20 +59,6 @@ suite('ContainerAware', function() {
     }
   });
 
-  test('Check _resolveIdentifier() method for object', function() {
-    let inputData = {testKey: 'testValue'};
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = containerAware._resolveIdentifier(inputData);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(actualResult).to.be.eql(inputData);
-  });
-
   test('Check container setter sets object correctly', function() {
     let container =  {
       _bottle: {
