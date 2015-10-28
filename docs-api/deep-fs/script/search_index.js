@@ -12,6 +12,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-fs/lib/local/s3fsrelativefsextender.js~s3fsrelativefsextender",
+    "class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html",
+    "<span>S3FSRelativeFSExtender</span> <span class=\"search-result-import-path\">deep-fs/lib/Local/S3FSRelativeFSExtender.js</span>",
+    "class"
+  ],
+  [
     "deep-fs/lib/exception/unknownfolderexception.js~unknownfolderexception",
     "class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html",
     "<span>UnknownFolderException</span> <span class=\"search-result-import-path\">deep-fs/lib/Exception/UnknownFolderException.js</span>",
@@ -429,6 +435,42 @@ window.esdocSearchIndex = [
     "lib/fs.js~fs.tmp",
     "class/lib/FS.js~FS.html#static-get-TMP",
     "lib/FS.js~FS.TMP",
+    "member"
+  ],
+  [
+    "lib/local/s3fsrelativefsextender.js",
+    "file/lib/Local/S3FSRelativeFSExtender.js.html",
+    "lib/Local/S3FSRelativeFSExtender.js",
+    "file"
+  ],
+  [
+    "lib/local/s3fsrelativefsextender.js~s3fsrelativefsextender#extend_object",
+    "class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html#instance-get-EXTEND_OBJECT",
+    "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#EXTEND_OBJECT",
+    "member"
+  ],
+  [
+    "lib/local/s3fsrelativefsextender.js~s3fsrelativefsextender#constructor",
+    "class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html#instance-constructor-constructor",
+    "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#constructor",
+    "method"
+  ],
+  [
+    "lib/local/s3fsrelativefsextender.js~s3fsrelativefsextender#cwd",
+    "class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html#instance-get-cwd",
+    "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#cwd",
+    "member"
+  ],
+  [
+    "lib/local/s3fsrelativefsextender.js~s3fsrelativefsextender#relativefs",
+    "class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html#instance-get-relativeFs",
+    "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#relativeFs",
+    "member"
+  ],
+  [
+    "lib/local/s3fsrelativefsextender.js~s3fsrelativefsextender#relativefsextended",
+    "class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html#instance-get-relativeFsExtended",
+    "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#relativeFsExtended",
     "member"
   ],
   [
