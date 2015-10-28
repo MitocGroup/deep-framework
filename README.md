@@ -140,6 +140,21 @@ This project is open source, and we encourage developers to contribute. Here bel
 
 Make sure you update `package.json` (or `deepkg.json`, depends on the use case) and put your name and contact information in contributors section. We would like to recognize the work and empower every contributor in creative ways :)
 
+### Roadmap
+
+Our short-to-medium-term roadmap items, in order of descending priority:
+
+Feature | Details | Owner
+--------|---------|------
+Implement provisioning update | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement single microservice update | To be updated | [@alexanderc](https://github.com/alexanderc)
+Prepare frontend by adding deploy ID to the assets (html, css) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement deployment rollbacks | To be updated | [@alexanderc](https://github.com/alexanderc)
+Optimize frontend code (browserify, minimize, reduce nr of calls, etc) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Consolidate all logs / outputs / debugging info into deep-log | To be updated | [@alexanderc](https://github.com/alexanderc)
+Add caching option to the resource actions (via api gateway) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Add choice of AWS credentials when generating them (server/deploy cmds) | To be updated | [@alexanderc](https://github.com/alexanderc)
+
 ### Changelog
 
 Changelog files are located in `/changelog` folder.
@@ -181,4 +196,4 @@ does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, ver
 (let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
 as web apps into their own accounts on AWS (or other cloud providers).
 
-> Therefore, in summary: DEEP rents lego pieces to lego consumers from lego producers.
+> Therefore, in summary: DEEP empowers lego consumers to rent curated lego pieces from lego producers.
