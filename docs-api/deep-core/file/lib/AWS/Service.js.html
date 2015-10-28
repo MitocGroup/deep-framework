@@ -159,6 +159,13 @@ export class Service {
   }
 
   /**
+   * @returns {String}
+   */
+  static get API_GATEWAY_EXECUTE() {
+    return &apos;execute-api&apos;;
+  }
+
+  /**
    * @param {String} service
    * @returns {String}
    */
@@ -192,6 +199,7 @@ export class Service {
       Service.SECURITY_TOKEN_SERVICE,
       Service.CLOUD_WATCH_LOGS,
       Service.API_GATEWAY,
+      Service.API_GATEWAY_EXECUTE,
     ];
   }
 }

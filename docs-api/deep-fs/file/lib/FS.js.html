@@ -33,6 +33,7 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/FS.js~FS.html">FS</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html">UnknownFolderException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html">S3FSRelativeFSExtender</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -140,10 +141,9 @@ export class FS extends Kernel.ContainerAware {
     if (typeof this._mountedFolders[name] === &apos;undefined&apos;) {
       if (this._localBackend) {
         let rootFolder = FS._getTmpDir(this._buckets[name]);
+        let SimulatedS3FS = require(&apos;./Local/S3FSRelativeFSExtender&apos;).S3FSRelativeFSExtender;
 
-        this._mountedFolders[name] = require(&apos;relative-fs&apos;).relativeTo(rootFolder);
-
-        this._mountedFolders[name]._rootFolder = rootFolder;
+        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;
       } else {
         let options = {
           params: {
