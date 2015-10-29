@@ -15,14 +15,36 @@ only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are 
 
 ## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-If `DEEP Framework` is intended to be used globally, just run in command line:
+`DEEP Framework` can be used as a module in front-end or back-end. To learn more, scroll down to 
+[What is DEEP Framework?](https://github.com/MitocGroup/deep-framework/blob/master/README.md#what-is-deep-framework-)
 
+To see the power of `DEEP Framework`, execute the following 4 simple steps in command line:
+
+1. `npm install deepify -g` # Install DEEP CLI, also known as deepify
+> deepify is a collection of tools that empower developers and devops engineers to automate
+the management of web apps built on top of DEEP ecosystem.
+
+2. `deepify helloworld ~/deep-hello-world` # Using deepify, dump locally the helloworld example
+> deepify will clone the repository from GitHub and pull all the dependencies in one place.
+
+3. `deepify server ~/deep-hello-world -o` # Using deepify, run locally the helloworld example
+> deepify launches a web server that can be used for local development, without making calls
+to web services from cloud providers like AWS.
+
+4. `deepify deploy ~/deep-hello-world` # Using deepify, deploy to AWS the helloworld example
+> deepify provisions the infrastructure and deploys the web app, empowering developers and
+devops engineers to automate the process.
+
+To learn more about helloworld example, or other web apps that run in production, scroll down to 
+[Who is using DEEP Framework?](https://github.com/MitocGroup/deep-framework/blob/master/README.md#who-is-using-deep-framework-)
+
+### Additional Notes
+Note 1: To use `DEEP Framework` globally, just run in command line:
 ```
 npm install deep-framework -g
 ```
 
-Alternatively, if used as dependency, include it in `package.json` file. For example:
-
+Note 2: Alternatively, to use `DEEP Framework` as dependency, include it in `package.json` file. For example:
 ```
 {
   "name": "say-hello-world",
@@ -36,8 +58,7 @@ Alternatively, if used as dependency, include it in `package.json` file. For exa
 }
 ```
 
-Also, when needed, consider specifying only some libraries instead of entire framework. For example:
-
+Note 3: Also, when needed, consider specifying only some libraries instead of entire framework. For example:
 ```
 {
   "name": "say-hello-world",
@@ -78,19 +99,19 @@ DEEP Abstracted Library | Description and Documentation | Abstracted Web Service
 [deep-security](https://www.npmjs.com/package/deep-security) | [Security Management Library](http://docs.deep.mg/deep-security) | AWS IAM, Amazon Cognito
 [deep-validation](https://www.npmjs.com/package/deep-validation) | [Validation Management Library](http://docs.deep.mg/deep-validation) | -
 
-## Who uses DEEP Framework? [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+## Who is using DEEP Framework? [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 There are couple examples / web apps that are using `DEEP Framework` at their core:
 
-### DEEP Microservices Hello World
-> DEEP Microservices Hello World (https://github.com/MitocGroup/deep-microservices-helloworld) is a web app
+### DEEP Hello World
+> DEEP Hello World (https://github.com/MitocGroup/deep-microservices-helloworld) is a web app
 that show cases a full stack example of using DEEP Microservices in the context of Platform-as-a-Service.
 Developers can either fork this repository or `npm install deepify -g` (https://www.npmjs.com/package/deepify)
 and run in the command line `deepify helloworld ~/deep-hello-world`.
 
-### DEEP Microservices Todo App
-> DEEP Microservices Todo App (https://github.com/MitocGroup/deep-microservices-todo-app) is a web app
-inspired from AngularJS TodoMVC Example (https://github.com/tastejs/todomvc/tree/master/examples/angularjs).
+### DEEP Todo App
+> DEEP Todo App (https://github.com/MitocGroup/deep-microservices-todo-app) is a web app inspired from 
+AngularJS TodoMVC Example (https://github.com/tastejs/todomvc/tree/master/examples/angularjs).
 It reuses AngularJS module and integrates using `DEEP Framework` to streamline development and deployment
 using cloud-based web services.
 
@@ -118,6 +139,25 @@ This project is open source, and we encourage developers to contribute. Here bel
 3. Perform a [pull request](http://help.github.com/pull-requests/) from your repository back into original repository in GitHub.
 
 Make sure you update `package.json` (or `deepkg.json`, depends on the use case) and put your name and contact information in contributors section. We would like to recognize the work and empower every contributor in creative ways :)
+
+### Roadmap
+
+Our short-to-medium-term roadmap items, in order of descending priority:
+
+Feature | Details | Owner
+--------|---------|------
+Implement deep-security base | To be updated | [@mgoria](https://github.com/mgoria)
+Implement deep-security UI | To be updated | [@mgoria](https://github.com/mgoria)
+Implement deep-event library (Lambda scheduling, Kinesis stream, Dynamo stream, SQS, etc) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement deep-db "eventual consistency" by offloading data to SQS as the default option | To be updated | [@alexanderc](https://github.com/alexanderc)
+Improve deep-db "strong consistency" by adding R/W increases in runtime (as other option for special DB operations) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Integrate deep-db with deep-cache natively (blocked by VPC support in Lambda) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement deep-cache powered by Elasticache (redis) inside Lambdas (blocked by VPC support in Lambda) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement deep-search on top of Amazon CloudSearch + Amazon Elasticsearch Service | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement RUM as part of deep-logs (realtime user monitoring) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Optimize the framework to reduce the size of Lambda functions | To be updated | [@alexanderc](https://github.com/alexanderc)
+Improve documentation for each deep-* library | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement backend > frontend notifications as part of deep-notification on top of SNS | To be updated | [@alexanderc](https://github.com/alexanderc)
 
 ### Changelog
 
@@ -160,4 +200,4 @@ does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, ver
 (let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
 as web apps into their own accounts on AWS (or other cloud providers).
 
-> Therefore, in summary: DEEP rents lego pieces to lego consumers from lego producers.
+> In summary: DEEP empowers lego consumers to rent curated lego pieces from lego producers.
