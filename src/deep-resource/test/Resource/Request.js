@@ -188,8 +188,8 @@ suite('Resource/Request', function() {
     chai.expect(request._lambda).to.be.equal(null);
   });
 
-  test('Check constructor sets valid value for _native=true', function() {
-    chai.expect(request.native).to.be.equal(true);
+  test('Check constructor sets valid value for _native=false', function() {
+    chai.expect(request.native).to.be.equal(false);
   });
 
   test('Check constructor sets valid value for _cacheImpl=null', function() {
