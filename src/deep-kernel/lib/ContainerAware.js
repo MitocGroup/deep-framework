@@ -72,7 +72,7 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
-   * @param {String} identifier (e.g. @microservice_identifier:resource_identifier)
+   * @param {String} identifier (e.g. @microservice_identifier:resource)
    * @returns {String}
    *
    * @private

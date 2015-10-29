@@ -52,12 +52,12 @@ suite('Resource', function() {
   let resource = null;
   let resourceName = 'sample';
 
-  test('Class Resource exists in Resource', function () {
+  test('Class Resource exists in Resource', function() {
     resource = new Resource(testResources);
     chai.expect(typeof Resource).to.equal('function');
   });
 
-  test('Load Kernel by using Kernel.loadFromFile()', function (done) {
+  test('Load Kernel by using Kernel.loadFromFile()', function(done) {
     let error = null;
     let backendKernelInstanse = null;
 
@@ -81,13 +81,13 @@ suite('Resource', function() {
     }
   });
 
-  test('Check constructor sets _resources', function () {
+  test('Check constructor sets _resources', function() {
     chai.expect(Object.keys(resource._resources)).to.be.eql(['hello.world.example', 'deep.ng.root']);
     chai.expect(resource._resources).to.be.not.eql({});
   });
 
 
-  test('Check has() method returns false', function () {
+  test('Check has() method returns false', function() {
     let error = null;
     let actualResult = null;
     try {
@@ -101,7 +101,7 @@ suite('Resource', function() {
     chai.expect(actualResult).to.be.equal(false);
   });
 
-  test('Check has() method returns true', function () {
+  test('Check has() method returns true', function() {
     let error = null;
     let actualResult = null;
     try {
@@ -115,7 +115,7 @@ suite('Resource', function() {
     chai.expect(actualResult).to.be.equal(true);
   });
 
-  test('Check get() method returns valid object', function () {
+  test('Check get() method returns valid object', function() {
     let error = null;
     let actualResult = null;
     try {
@@ -130,7 +130,7 @@ suite('Resource', function() {
       contains(Object.keys(testResources[microserviceIdentifier][resourceName])[0]);
   });
 
-  test('Check get() method throws \'MissingResourceException\' exception', function () {
+  test('Check get() method throws \'MissingResourceException\' exception', function() {
     let error = null;
     try {
       resource.get(`@${microserviceIdentifier}:invalid_resource_name`);
@@ -142,7 +142,7 @@ suite('Resource', function() {
     chai.assert.instanceOf(error, MissingResourceException, 'error is an instance of MissingResourceException');
   });
 
-  test('Check list() getter returns', function () {
+  test('Check list() getter returns', function() {
     let error = null;
     let actualResult = null;
     try {
