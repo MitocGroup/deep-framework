@@ -6,9 +6,6 @@ import sinonChai from 'sinon-chai';
 import {Resource} from '../lib.compiled/Resource';
 import {MissingResourceException} from '../lib.compiled/Exception/MissingResourceException';
 import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance';
-import {DI} from '../node_modules/deep-kernel/node_modules/deep-di/lib.compiled/DI';
-import backendConfig from "./common/backend-cfg-json";
-
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Core from 'deep-core';
