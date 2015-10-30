@@ -1,83 +1,156 @@
-deep-validation
-===============
+DEEP Validation Library (deep-validation)
+======================================
 
-[![NPM Version](https://img.shields.io/npm/v/deep-validation.svg)](https://npmjs.org/package/deep-validation)
+[![NPM Version](https://img.shields.io/npm/v/deep-framework.svg)](https://npmjs.org/package/deep-framework)
 [![Build Status](https://travis-ci.org/MitocGroup/deep-framework.svg)](https://travis-ci.org/MitocGroup/deep-framework)
-[![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github&t=3QEkFa)](https://coveralls.io/github/MitocGroup/deep-framework)
-[![Codacy Badge](https://api.codacy.com/project/badge/630b5f0024334dc09fd0299b1a8a0ed5)](https://www.codacy.com/app/MitocGroup/deep-framework)
-[![API Docs](http://docs.deep.mg/deep-validation/badge.svg)](http://docs.deep.mg/deep-validation/)
+[![Codacy Badge](https://api.codacy.com/project/badge/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
+[![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github)](https://coveralls.io/github/MitocGroup/deep-framework)
+[![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-[deep-validation](https://www.npmjs.com/package/deep-validation) is a node.js library, part of [DEEP Framework](https://github.com/MitocGroup/deep-framework).
+`Digital Enterprise End-to-end Platform`, also known as `DEEP`, is low cost and low maintenance 
+[Platform-as-a-Service](https://en.wikipedia.org/wiki/Platform_as_a_service) powered by abstracted web services 
+from cloud providers like [Amazon Web Services](https://aws.amazon.com). This approach has been labeled as
+[Serverless Architecture](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-a-serverless-architecture).
 
-![Digital Enterprise End-to-end Platform, aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png)
+`DEEP Framework` is a [core component](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-components)
+of the Platform-as-a-Service that abstracts web services from specific cloud providers. At this moment 
+only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are encouraged to add support for
+[Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](https://cloud.google.com/), and so on.
 
-Digital Enterprise End-to-end Platform (also known as DEEP) is low cost and low maintenance digital platform powered by abstracted services from AWS. We enable businesses and developers to achieve more by doing less.
+## Introduction [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-## DEEP for Businesses [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+`DEEP Framework` is a nodejs package that is published on npmjs: https://www.npmjs.com/package/deep-framework.
+If you are new to node and npm, check out [this tutorial](http://howtonode.org/how-to-install-nodejs) to learn more.
 
-#### User Guide Documentation (to be updated later)
+`DEEP Framework` is a nodejs package. In fact it's a collection of nodejs packages, also known as
+`DEEP Abstracted Libraries`. Here below is the complete list:
 
-DEEP is enabling small and medium businesses, as well as enterprises to:
-- Rent applications on a monthly basis by needed functionality from [DEEP Marketplace](https://www.deep.mg)
-- Choose applications by desired features and deploy them securely in their own accounts from cloud providers like AWS
-- Pay only for subscribed applications and stop paying when unsubscribing and not using anymore
-- Run secured, self-service applications with beautiful user interfaces and intuitively simple user experiences
-- Empower none technical teams to solve business problems through technology, without waiting on technical teams' availability
+DEEP Abstracted Library | Description and Documentation | Abstracted Web Service(s)
+------------------------|-------------------------------|--------------------------
+[deep-asset](https://www.npmjs.com/package/deep-asset) | [Assets Management Library](http://docs.deep.mg/deep-asset) | Amazon S3
+[deep-cache](https://www.npmjs.com/package/deep-cache) | [Cache Management Library](http://docs.deep.mg/deep-cache) | Amazon ElastiCache
+[deep-core](https://www.npmjs.com/package/deep-core) | [Core Management Library](http://docs.deep.mg/deep-core) | -
+[deep-db](https://www.npmjs.com/package/deep-db) | [Database Management Library](http://docs.deep.mg/deep-db) | Amazon DynamoDB, Amazon SQS
+[deep-di](https://www.npmjs.com/package/deep-di) | [Dependency Injection Management Library](http://docs.deep.mg/deep-di) | -
+[deep-event](https://www.npmjs.com/package/deep-event) | [Events Management Library](http://docs.deep.mg/deep-event) | Amazon Kinesis
+[deep-fs](https://www.npmjs.com/package/deep-fs) | [File System Management Library](http://docs.deep.mg/deep-fs) | Amazon S3
+[deep-kernel](https://www.npmjs.com/package/deep-kernel) | [Kernel Management Library](http://docs.deep.mg/deep-kernel) | -
+[deep-log](https://www.npmjs.com/package/deep-log) | [Logs Management Library](http://docs.deep.mg/deep-log) | Amazon CloudWatch Logs
+[deep-notification](https://www.npmjs.com/package/deep-notification) | [Notifications Management Library](http://docs.deep.mg/deep-notification) | Amazon SNS
+[deep-resource](https://www.npmjs.com/package/deep-resource) | [Resouces Management Library](http://docs.deep.mg/deep-resource) | AWS Lambda, Amazon API Gateway
+[deep-security](https://www.npmjs.com/package/deep-security) | [Security Management Library](http://docs.deep.mg/deep-security) | AWS IAM, Amazon Cognito
+[deep-validation](https://www.npmjs.com/package/deep-validation) | [Validation Management Library](http://docs.deep.mg/deep-validation) | -
 
-> [DEEP Marketplace](https://www.deep.mg) (aka [www.deep.mg](https://www.deep.mg)) is a web application built using DEEP and published on serverless environment from [Amazon Web Services](https://aws.amazon.com) (aka [aws.amazon.com](https://aws.amazon.com)). We make it faster and easier for developers to build and publish their software, as well as for businesses to discover and test applications they are looking for. Our goal is to connect businesses with developers, and empower technical teams to build self-service software that none technical teams could use. The marketplace is like Apple's App Store for web applications that run natively on cloud providers like AWS.
+## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-## DEEP for Developers [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+If `DEEP Framework` is intended to be used globally, just run in command line:
 
-#### [API Guide Documentation](http://docs.deep.mg)
-#### [Developer Guide Documentation](https://github.com/MitocGroup/deep-framework/blob/master/docs/index.md)
+```
+npm install deep-framework -g
+```
 
-DEEP is enabling developers and architects to:
-- Design microservices architecture on top of serverless environments from cloud providers like AWS
-- Build distributed software that combines and manages hardware and software in the same microservice
-- Use the framework's abstracted approach to build applications that could be cloud agnostic
-- Build cloud native JavaScript applications that combine and manage frontend, backend and database layers in the same [DEEP Microservice](https://github.com/MitocGroup/deep-framework/blob/master/docs/microservice.md)
-- Run in the cloud the software that was built by distributed teams and served self-service in large organizations
-- Monetize their work of art by uploading microservices to [DEEP Marketplace](https://www.deep.mg)
+Alternatively, if used as dependency, include it in `package.json` file. For example:
 
-> [DEEP Microservice](https://github.com/MitocGroup/deep-framework/blob/master/docs/microservice.md) is the predefined structure of a microservice (an application) in DEEP. There is clear separation between frontend, backend and database, as well as unit tests and documentation. Developers are encoraged to get started with [DEEP Microservices HelloWorld](https://github.com/MitocGroup/deep-microservices-helloworld) or [DEEP Microservices ToDo App](https://github.com/MitocGroup/deep-microservices-todo-app), as well as [DEEP CLI](https://www.npmjs.com/package/deepify) (aka `deepify`).
+```
+{
+  "name": "say-hello-world",
+  "version": "0.0.1",
+  "description": "AWS Lambda that says hello to the world",
+  "dependencies": {
+    "deep-framework": "1.0.*",
+    ...
+  },
+  ...
+}
+```
 
-> [DEEP Marketplace](https://www.deep.mg) (aka [www.deep.mg](https://www.deep.mg)) is a web application built using DEEP and published on serverless environment from [Amazon Web Services](https://aws.amazon.com) (aka [aws.amazon.com](https://aws.amazon.com)). We make it faster and easier for developers to build and publish their software, as well as for businesses to discover and test applications they are looking for. Our goal is to connect businesses with developers, and empower technical teams to build self-service software that none technical teams could use. The marketplace is like Apple's App Store for web applications that run natively on cloud providers like AWS.
+## Examples [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
-## DEEP Architecture on AWS [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+There are couple of web apps that are using `DEEP Framework` at their core:
 
-![Digital Enterprise End-to-end Platform, aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-architecture.png)
+### DEEP Microservices Hello World
+> DEEP Microservices Hello World (https://github.com/MitocGroup/deep-microservices-helloworld) is a web app
+that show cases a full stack example of using DEEP Microservices in the context of Platform-as-a-Service.
+Developers can either fork this repository or `npm install deepify -g` (https://www.npmjs.com/package/deepify)
+and run in the command line `deepify helloworld ~/deep-hello-world`.
 
-DEEP is using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) on serverless environments from cloud providers like AWS. DEEP Framework abstracts the functionality and makes it completely developer friendly. We have the following abstracted libraries:
+### DEEP Microservices Todo App
+> DEEP Microservices Todo App (https://github.com/MitocGroup/deep-microservices-todo-app) is a web app
+inspired from AngularJS TodoMVC Example (https://github.com/tastejs/todomvc/tree/master/examples/angularjs).
+It reuses AngularJS module and integrates using `DEEP Framework` to streamline development and deployment
+using cloud-based web services.
 
-DEEP Abstracted Library | Description | AWS Abstracted Service(s)
--------------|---------------------|--------------------------
-[deep-asset](http://docs.deep.mg/deep-asset) | Assets Management Library | Amazon S3
-[deep-cache](http://docs.deep.mg/deep-cache) | Cache Management Library | Amazon ElastiCache
-[deep-core](http://docs.deep.mg/deep-core) | Core Management Library | -
-[deep-db](http://docs.deep.mg/deep-db) | Database Management Library | Amazon DynamoDB, Amazon SQS
-[deep-di](http://docs.deep.mg/deep-di) | Dependency Injection Management Library | -
-[deep-event](http://docs.deep.mg/deep-event) | Events Management Library | Amazon Kinesis
-[deep-fs](http://docs.deep.mg/deep-fs) | File System Management Library | Amazon S3
-[deep-kernel](http://docs.deep.mg/deep-kernel) | Kernel Management Library | -
-[deep-log](http://docs.deep.mg/deep-log) | Logs Management Library | Amazon CloudWatch Logs
-[deep-notification](http://docs.deep.mg/deep-notification) | Notifications Management Library | Amazon SNS
-[deep-resource](http://docs.deep.mg/deep-resource) | Resouces Management Library | AWS Lambda, Amazon API Gateway
-[deep-security](http://docs.deep.mg/deep-security) | Security Management Library | AWS IAM, Amazon Cognito
-[deep-validation](http://docs.deep.mg/deep-validation) | Validation Management Library | -
+### DEEP Marketplace
+> DEEP Marketplace (https://www.deep.mg) is Software-as-a-Service, built on top of DEEP, that empowers customers
+to choose functionality from listed microservices and deploy them together as an web app into their own 
+AWS accounts with just few clicks; as well as empowers developers to create and publish their microservices 
+and monetize them in similar approach to Apple's App Store.
 
-## Feedback
+## Continuous Integration [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+
+### Travis CI [![Build Status](https://travis-ci.org/MitocGroup/deep-framework.svg)](https://travis-ci.org/MitocGroup/deep-framework)
+
+[Travis CI](https://travis-ci.org/MitocGroup/deep-framework) is a continuous integration service used to build and 
+testprojects hosted on GitHub. Travis CI is configured by adding a file named 
+[.travis.yml](https://github.com/MitocGroup/deep-framework/blob/master/.travis.yml), which is a YAML format text file,
+to the root directory of the GitHub repository.
+
+### Codacy [![Codacy Badge](https://api.codacy.com/project/badge/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
+
+[Codacy](https://www.codacy.com/app/MitocGroup/deep-framework) offers an automated code review tool for developers 
+that continuously monitors code for problematic patterns, with the aim being to reduce the amount of time spent 
+poring over code style.
+
+### Coveralls [![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github)](https://coveralls.io/github/MitocGroup/deep-framework)
+
+[Coveralls](https://coveralls.io/github/MitocGroup/deep-framework) provides constant updates on your project's 
+automated test coverage. It is now available for open source projectsto start tracking code coverage on project.
+
+### ESDoc [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
+
+[ESDoc](https://esdoc.org) is a documentation generator for JavaScript(ES6). It produces a practical documentation, 
+measures the coverage, integrates the test code and more.
+
+## Involvement && Help [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
+
+### Feedback
 
 We are eager to get your feedback, so please use whatever communication channel you prefer:
 - [github issues](https://github.com/MitocGroup/deep-framework/issues)
 - [gitter chat room](https://gitter.im/MitocGroup/deep-framework)
 - [deep email address](mailto:feedback@deep.mg)
 
-## License
+### Contribution
+
+This project is open source, and we encourage developers to contribute. Here below is the easiest way to do so:
+
+1. [Fork](http://help.github.com/forking/) this repository in GitHub.
+2. Develop the feature in your repository. Make one or more commits to your repository in GitHub.
+3. Perform a [pull request](http://help.github.com/pull-requests/) from your repository back into original repository in GitHub.
+
+Make sure you update `package.json` (or `deepkg.json`, depends on the use case) and put your name and contact information in contributors section. We would like to recognize the work and empower every contributor in creative ways :)
+
+### Changelog
+
+Changelog files are located in `/changelog` folder.
+> See [CHANGELOG.md](https://github.com/MitocGroup/deep-framework/blob/master/CHANGELOG.md) for latest changelog.
+
+### License
 
 This repository can be used under the MIT license.
 > See [LICENSE](https://github.com/MitocGroup/deep-framework/blob/master/LICENSE) for more details.
 
-## Sponsors
+### Sponsors
 
 This repository is being sponsored by:
 > [Mitoc Group](http://www.mitocgroup.com)
+
+## Appendices
+
+### Appendix A: Serverless Architecture
+
+![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-architecture.png)
+
+### Appendix B: DEEP Components
+
+![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png)

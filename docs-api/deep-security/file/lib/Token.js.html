@@ -185,19 +185,22 @@ export class Token {
   getUser(callback) {
     if (this.isAnonymous) {
       callback(null);
+      return;
     }
 
-    if (this._user === null) {
-      this._userProvider.loadUserByIdentityId(this.identityId, function(user) {
+    if (!this._user) {
+      this._userProvider.loadUserByIdentityId(this.identityId, (user) =&gt; {
         if (user) {
           this._user = user;
         }
 
         callback(user);
-      }.bind(this));
-    } else {
-      callback(this._user);
+      });
+
+      return;
     }
+
+    callback(this._user);
   }
 }
 </code></pre>

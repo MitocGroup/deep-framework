@@ -14,10 +14,13 @@ console.log(resource.list);
 // accessing one resource
 let userResource = resource.get('@deep.microservices.helloworld:user');
 
+// accessing one action
+let retrieveUserAction = resource.get('@deep.microservices.helloworld:user:retrieve');
+
 // listing resource actions
 console.log(userResource.actions);
 
-// accessing one action
+// accessing one resource action
 if (userResource.has('retrieve')) {
     let retrieveUserAction = userResource.action('retrieve');
 }

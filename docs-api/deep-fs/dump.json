@@ -127,7 +127,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport S3FS from 's3fs';\nimport Kernel from 'deep-kernel';\nimport {UnknownFolderException} from './Exception/UnknownFolderException';\nimport OS from 'os';\nimport Path from 'path';\n\n/**\n * Deep FS implementation\n */\nexport class FS extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} tmpFsBucket\n   * @param {String} publicFsBucket\n   * @param {String} systemFsBucket\n   */\n  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null) {\n    super();\n\n    this._mountedFolders = {};\n    this._buckets = {};\n\n    this._buckets[FS.TMP] = tmpFsBucket;\n    this._buckets[FS.PUBLIC] = publicFsBucket;\n    this._buckets[FS.SYSTEM] = systemFsBucket;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get TMP() {\n    return 'temp';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PUBLIC() {\n    return 'public';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get SYSTEM() {\n    return 'system';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get FOLDERS() {\n    return [\n      FS.TMP,\n      FS.PUBLIC,\n      FS.SYSTEM,\n    ];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let bucketsConfig = kernel.config.buckets;\n\n    for (let folderKey in FS.FOLDERS) {\n      if (!FS.FOLDERS.hasOwnProperty(folderKey)) {\n        continue;\n      }\n\n      let folder = FS.FOLDERS[folderKey];\n\n      this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;\n    }\n\n    callback();\n  }\n\n  /**\n   * Returns mounted file system folder (tmp, public or system)\n   *\n   * @param name\n   * @returns {*}\n   */\n  getFolder(name) {\n    if (FS.FOLDERS.indexOf(name) === -1) {\n      throw new UnknownFolderException(name, FS.FOLDERS);\n    }\n\n    if (typeof this._mountedFolders[name] === 'undefined') {\n      if (this._localBackend) {\n        let rootFolder = FS._getTmpDir(this._buckets[name]);\n\n        this._mountedFolders[name] = require('relative-fs').relativeTo(rootFolder);\n\n        this._mountedFolders[name]._rootFolder = rootFolder;\n      } else {\n        let options = {\n          params: {\n            Bucket: this._buckets[name],\n          },\n        };\n\n        this._mountedFolders[name] = new S3FS(this._buckets[name], options);\n      }\n    }\n\n    return this._mountedFolders[name];\n  }\n\n  /**\n   * @param {String} subpath\n   * @returns {String}\n   * @private\n   */\n  static _getTmpDir(subpath) {\n    let dir = Path.join(OS.tmpdir(), subpath);\n\n    require('fs-extra').mkdirpSync(dir);\n\n    return dir;\n  }\n\n  /**\n   * Returns mounted tmp folder\n   *\n   * @returns {*}\n   */\n  get tmp() {\n    return this.getFolder(FS.TMP);\n  }\n\n  /**\n   * Returns mounted public folder\n   *\n   * @returns {*}\n   */\n  get public() {\n    return this.getFolder(FS.PUBLIC);\n  }\n\n  /**\n   * Returns mounted sys folder\n   *\n   * @returns {*}\n   */\n  get system() {\n    return this.getFolder(FS.SYSTEM);\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport S3FS from 's3fs';\nimport Kernel from 'deep-kernel';\nimport {UnknownFolderException} from './Exception/UnknownFolderException';\nimport OS from 'os';\nimport Path from 'path';\n\n/**\n * Deep FS implementation\n */\nexport class FS extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} tmpFsBucket\n   * @param {String} publicFsBucket\n   * @param {String} systemFsBucket\n   */\n  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null) {\n    super();\n\n    this._mountedFolders = {};\n    this._buckets = {};\n\n    this._buckets[FS.TMP] = tmpFsBucket;\n    this._buckets[FS.PUBLIC] = publicFsBucket;\n    this._buckets[FS.SYSTEM] = systemFsBucket;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get TMP() {\n    return 'temp';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PUBLIC() {\n    return 'public';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get SYSTEM() {\n    return 'system';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get FOLDERS() {\n    return [\n      FS.TMP,\n      FS.PUBLIC,\n      FS.SYSTEM,\n    ];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let bucketsConfig = kernel.config.buckets;\n\n    for (let folderKey in FS.FOLDERS) {\n      if (!FS.FOLDERS.hasOwnProperty(folderKey)) {\n        continue;\n      }\n\n      let folder = FS.FOLDERS[folderKey];\n\n      this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;\n    }\n\n    callback();\n  }\n\n  /**\n   * Returns mounted file system folder (tmp, public or system)\n   *\n   * @param name\n   * @returns {*}\n   */\n  getFolder(name) {\n    if (FS.FOLDERS.indexOf(name) === -1) {\n      throw new UnknownFolderException(name, FS.FOLDERS);\n    }\n\n    if (typeof this._mountedFolders[name] === 'undefined') {\n      if (this._localBackend) {\n        let rootFolder = FS._getTmpDir(this._buckets[name]);\n        let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;\n\n        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;\n      } else {\n        let options = {\n          params: {\n            Bucket: this._buckets[name],\n          },\n        };\n\n        this._mountedFolders[name] = new S3FS(this._buckets[name], options);\n      }\n    }\n\n    return this._mountedFolders[name];\n  }\n\n  /**\n   * @param {String} subpath\n   * @returns {String}\n   * @private\n   */\n  static _getTmpDir(subpath) {\n    let dir = Path.join(OS.tmpdir(), subpath);\n\n    require('fs-extra').mkdirpSync(dir);\n\n    return dir;\n  }\n\n  /**\n   * Returns mounted tmp folder\n   *\n   * @returns {*}\n   */\n  get tmp() {\n    return this.getFolder(FS.TMP);\n  }\n\n  /**\n   * Returns mounted public folder\n   *\n   * @returns {*}\n   */\n  get public() {\n    return this.getFolder(FS.PUBLIC);\n  }\n\n  /**\n   * Returns mounted sys folder\n   *\n   * @returns {*}\n   */\n  get system() {\n    return this.getFolder(FS.SYSTEM);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -430,7 +430,7 @@
     "longname": "lib/FS.js~FS._getTmpDir",
     "access": "private",
     "description": null,
-    "lineNumber": 126,
+    "lineNumber": 125,
     "unknown": [
       {
         "tagName": "@returns",
@@ -468,7 +468,7 @@
     "longname": "lib/FS.js~FS#tmp",
     "access": null,
     "description": "Returns mounted tmp folder",
-    "lineNumber": 139,
+    "lineNumber": 138,
     "unknown": [
       {
         "tagName": "@returns",
@@ -499,7 +499,7 @@
     "longname": "lib/FS.js~FS#public",
     "access": null,
     "description": "Returns mounted public folder",
-    "lineNumber": 148,
+    "lineNumber": 147,
     "unknown": [
       {
         "tagName": "@returns",
@@ -530,7 +530,7 @@
     "longname": "lib/FS.js~FS#system",
     "access": null,
     "description": "Returns mounted sys folder",
-    "lineNumber": 157,
+    "lineNumber": 156,
     "unknown": [
       {
         "tagName": "@returns",
@@ -541,6 +541,204 @@
       "nullable": null,
       "types": [
         "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Local/S3FSRelativeFSExtender.js",
+    "memberof": null,
+    "longname": "lib/Local/S3FSRelativeFSExtender.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 10/27/15.\n */\n\n'use strict';\n\nimport path from 'path';\nimport relativeFs from 'relative-fs';\nimport fse from 'fs-extra';\nimport fs from 'fs';\nimport {_extend as extend} from 'util';\n\nexport class S3FSRelativeFSExtender {\n  /**\n   * @param {Object|String} relativeFsPath\n   */\n  constructor(relativeFsPath) {\n    let relativeFsObject = relativeFsPath;\n\n    if (typeof relativeFsObject !== 'object') {\n      relativeFsObject = relativeFs.relativeTo(relativeFsPath);\n      relativeFsObject._rootFolder = relativeFsPath;\n    } else if(!relativeFsObject.hasOwnProperty('_rootFolder')) {\n      throw new Error('Missing _rootFolder property from RelativeFS object');\n    }\n\n    this._relativeFsObject = relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFs() {\n    return this._relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFsExtended() {\n    return extend(this._relativeFsObject, this.EXTEND_OBJECT);\n  }\n\n  /**\n   * @returns {String}\n   */\n  get cwd() {\n    return this._relativeFsObject._rootFolder || process.cwd();\n  }\n\n  /**\n   * @returns {{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}}\n   * @constructor\n   */\n  get EXTEND_OBJECT() {\n    let extendObject = {\n\n      /**\n       * @param {String} pathStr\n       * @returns {String}\n       */\n      getPath: (pathStr = '') => {\n        return path.join(this.cwd, pathStr);\n      },\n\n      /**\n       * @param {String} pathStr\n       * @returns {Object}\n       */\n      clone: (pathStr) => {\n        let newCwd = path.join(this.cwd, pathStr);\n\n        return new S3FSRelativeFSExtender(newCwd).relativeFsExtended;\n      },\n\n      /**\n       * @param {String} sourcePath\n       * @param {String} destinationPath\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      copyFile: (sourcePath, destinationPath, callback = null) => {\n        let absSourcePath = path.join(this.cwd, sourcePath);\n        let absDestinationPath = path.join(this.cwd, destinationPath);\n\n        if (callback) {\n          fse.copy(absSourcePath, absDestinationPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.copy(absSourcePath, absDestinationPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {Object} options\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      create: (options, callback = null) => {\n        let error = new Error(`You do not have rights for this operation on bucket ${options.Bucket}`);\n\n        if (callback) {\n          callback(error);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          reject(error);\n        });\n      },\n\n      /**\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      destroy: (callback = null) => {\n        let error = new Error(`You do not have rights for this operation`);\n\n        if (callback) {\n          fse.remove(this.cwd, () => {\n            callback(error);\n          });\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(this.cwd, (nativeError) => {\n            if (nativeError) {\n              reject(nativeError);\n              return;\n            }\n\n            reject(error);\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      headObject: (pathStr, callback = null) => {\n        let responseObj = {\n          AcceptRanges: '',\n          Restore: '',\n          LastModified: new Date().getTime(),\n          ContentLength: 0,\n          ETag: '55ad340609f4b302',\n          MissingMeta: 0,\n          VersionId: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n        };\n\n        if (callback) {\n          callback(responseObj);\n          return;\n        }\n\n        return new Promise((resolve) => {\n          resolve(responseObj);\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {String} marker\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      listContents: (pathStr, marker, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        let globResponseObj = {\n          Marker: marker,\n          IsTruncated: false,\n          Contents: [],\n          Name: this.cwd,\n          Prefix: pathStr,\n          Delimiter: '/',\n          MaxKeys: 1000000000,\n          CommonPrefixes: [],\n          EncodingType: 'url',\n        };\n\n        let responseObj = {\n          Key: null,\n          LastModified: new Date().getTime(),\n          Size: 0,\n          ETag: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n          Owner: {\n            DisplayName: 's3fs',\n            ID: '55ad340609f4b302',\n          },\n        };\n\n        if (callback) {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));\n            })\n            .on('end', () => {\n              callback(globResponseObj);\n            });\n\n          return;\n        }\n\n        return new Promise((resolve) => {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));\n            })\n            .on('end', () => {\n              resolve(globResponseObj);\n            });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      readdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fs.readdir(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fs.readdir(absPath, (error, files) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve(files);\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      mkdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.mkdirp(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.mkdirp(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      rmdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.remove(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      }\n    };\n\n    extendObject.copyDir = extendObject.copyFile;\n    extendObject.delete = extendObject.create;\n    extendObject.putBucketLifecycle = extendObject.create;\n\n    return extendObject;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "S3FSRelativeFSExtender",
+    "memberof": "lib/Local/S3FSRelativeFSExtender.js",
+    "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender",
+    "access": null,
+    "export": true,
+    "importPath": "deep-fs/lib/Local/S3FSRelativeFSExtender.js",
+    "importStyle": "{S3FSRelativeFSExtender}",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender",
+    "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object",
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "relativeFsPath",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_relativeFsObject",
+    "memberof": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender",
+    "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#_relativeFsObject",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "relativeFs",
+    "memberof": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender",
+    "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#relativeFs",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "relativeFsExtended",
+    "memberof": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender",
+    "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#relativeFsExtended",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "cwd",
+    "memberof": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender",
+    "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#cwd",
+    "access": null,
+    "description": null,
+    "lineNumber": 47,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "EXTEND_OBJECT",
+    "memberof": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender",
+    "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#EXTEND_OBJECT",
+    "access": null,
+    "description": null,
+    "lineNumber": 55,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}"
       ],
       "spread": false,
       "description": ""

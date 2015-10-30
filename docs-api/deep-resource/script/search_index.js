@@ -12,6 +12,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-resource/lib/resource/exception/directlambdacalldeniedexception.js~directlambdacalldeniedexception",
+    "class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html",
+    "<span>DirectLambdaCallDeniedException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/DirectLambdaCallDeniedException.js</span>",
+    "class"
+  ],
+  [
     "deep-resource/lib/exception/exception.js~exception",
     "class/lib/Exception/Exception.js~Exception.html",
     "<span>Exception</span> <span class=\"search-result-import-path\">deep-resource/lib/Exception/Exception.js</span>",
@@ -480,6 +486,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/action.js~action#forceuseridentity",
+    "class/lib/Resource/Action.js~Action.html#instance-get-forceUserIdentity",
+    "lib/Resource/Action.js~Action#forceUserIdentity",
+    "member"
+  ],
+  [
     "lib/resource/action.js~action#methods",
     "class/lib/Resource/Action.js~Action.html#instance-get-methods",
     "lib/Resource/Action.js~Action#methods",
@@ -549,6 +561,18 @@ window.esdocSearchIndex = [
     "lib/resource/exception/cachedrequestexception.js~cachedrequestexception#constructor",
     "class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html#instance-constructor-constructor",
     "lib/Resource/Exception/CachedRequestException.js~CachedRequestException#constructor",
+    "method"
+  ],
+  [
+    "lib/resource/exception/directlambdacalldeniedexception.js",
+    "file/lib/Resource/Exception/DirectLambdaCallDeniedException.js.html",
+    "lib/Resource/Exception/DirectLambdaCallDeniedException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/directlambdacalldeniedexception.js~directlambdacalldeniedexception#constructor",
+    "class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException#constructor",
     "method"
   ],
   [
@@ -631,13 +655,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
@@ -655,13 +679,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#securitycredentials",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-securityCredentials",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-securityCredentials",
     "lib/Resource/Instance.js~Instance#securityCredentials",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#securitycredentials",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-securityCredentials",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-securityCredentials",
     "lib/Resource/Instance.js~Instance#securityCredentials",
     "member"
   ],
@@ -739,25 +763,25 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/request.js~request#cacheimpl",
-    "class/lib/Resource/Request.js~Request.html#instance-get-cacheImpl",
-    "lib/Resource/Request.js~Request#cacheImpl",
-    "member"
-  ],
-  [
-    "lib/resource/request.js~request#cacheimpl",
     "class/lib/Resource/Request.js~Request.html#instance-set-cacheImpl",
     "lib/Resource/Request.js~Request#cacheImpl",
     "member"
   ],
   [
-    "lib/resource/request.js~request#cachettl",
-    "class/lib/Resource/Request.js~Request.html#instance-set-cacheTtl",
-    "lib/Resource/Request.js~Request#cacheTtl",
+    "lib/resource/request.js~request#cacheimpl",
+    "class/lib/Resource/Request.js~Request.html#instance-get-cacheImpl",
+    "lib/Resource/Request.js~Request#cacheImpl",
     "member"
   ],
   [
     "lib/resource/request.js~request#cachettl",
     "class/lib/Resource/Request.js~Request.html#instance-get-cacheTtl",
+    "lib/Resource/Request.js~Request#cacheTtl",
+    "member"
+  ],
+  [
+    "lib/resource/request.js~request#cachettl",
+    "class/lib/Resource/Request.js~Request.html#instance-set-cacheTtl",
     "lib/Resource/Request.js~Request#cacheTtl",
     "member"
   ],
@@ -777,6 +801,12 @@ window.esdocSearchIndex = [
     "lib/resource/request.js~request#enablecache",
     "class/lib/Resource/Request.js~Request.html#instance-method-enableCache",
     "lib/Resource/Request.js~Request#enableCache",
+    "method"
+  ],
+  [
+    "lib/resource/request.js~request#getendpointhostregion",
+    "class/lib/Resource/Request.js~Request.html#instance-method-getEndpointHostRegion",
+    "lib/Resource/Request.js~Request#getEndpointHostRegion",
     "method"
   ],
   [

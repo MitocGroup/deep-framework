@@ -6,7 +6,7 @@
 
 import {Injectable as MicroserviceInjectable} from './Microservice/Injectable';
 import {Kernel} from './Kernel';
-import {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException'
+import {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException';
 
 /**
  * Container aware instance
@@ -72,7 +72,7 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
-   * @param {String} identifier (e.g. @microservice_identifier:resource_identifier)
+   * @param {String} identifier (e.g. @microservice_identifier:resource)
    * @returns {String}
    *
    * @private

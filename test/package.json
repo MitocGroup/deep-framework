@@ -1,6 +1,18 @@
 {
   "name": "deep",
   "version": "0.0.1",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "babel": "5.8.19",
+    "browserify": "11.2.0",
+    "mocha": "2.3.3",
+    "mocha-babel": "3.0.0",
+    "istanbul": "0.3.21",
+    "istanbul-combine": "0.3.0",
+    "coveralls": "2.11.4",
+    "codacy-coverage": "1.1.3"
+  },
   "scripts": {
     "install": "if [ -f '.travis.yml' ]; then test/bin/install.sh; else bin/install.sh; fi",
     "test": "if [ -f '.travis.yml' ]; then test/bin/test.sh; else bin/test.sh; fi",
