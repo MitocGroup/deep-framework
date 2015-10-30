@@ -4,12 +4,47 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {ContainerAware} from '../lib.compiled/ContainerAware';
+import {Instance} from '../lib.compiled/Microservice/Instance';
+import {DI} from '../node_modules/deep-di/lib.compiled/DI';
 
 chai.use(sinonChai);
 
 suite('ContainerAware', function() {
 
   let containerAware = new ContainerAware();
+  let testResources = {
+    'deep-test': {
+      test: {
+        create: {
+          description: 'Lambda for creating test',
+          type: 'lambda',
+          methods: [
+            'POST',
+          ],
+          source: 'src/Test/Create',
+        },
+        retrieve: {
+          description: 'Retrieves test',
+          type: 'lambda',
+          methods: ['GET'],
+          source: 'src/Test/Retrieve',
+        },
+        delete: {
+          description: 'Lambda for deleting test',
+          type: 'lambda',
+          methods: ['DELETE'],
+          source: 'src/Test/Delete',
+        },
+        update: {
+          description: 'Update test',
+          type: 'lambda',
+          methods: ['PUT'],
+          source: 'src/Test/Update',
+        },
+      },
+    },
+  };
+  let microserviceIdentifier = 'deep-test';
 
   test('Class ContainerAware exists in ContainerAware', function() {
     chai.expect(typeof ContainerAware).to.equal('function');
@@ -48,52 +83,48 @@ suite('ContainerAware', function() {
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
-  test('Check _resolvePath() method for string', function() {
+  test('Check _resolveIdentifier() method for string', function() {
     let inputData = '@mitocgroup.test:resource';
     let error = null;
     let actualResult = null;
     try {
-      actualResult = containerAware._resolvePath(inputData);
+      actualResult = containerAware._resolveIdentifier(inputData);
     } catch (e) {
       error = e;
     }
   });
 
-  test('Check _resolvePath() method for object', function() {
-    let inputData = {testKey: 'testValue'};
+  test('Check container setter sets object correctly', function() {
     let error = null;
-    let actualResult = null;
+    let di = null;
     try {
-      actualResult = containerAware._resolvePath(inputData);
+      //create dependency injection micro container
+      di = new DI();
+
+      //add microservice
+      di.addService(microserviceIdentifier, testResources[microserviceIdentifier]);
+      containerAware.container = di;
     } catch (e) {
       error = e;
     }
 
     chai.expect(error).to.be.equal(null);
-    chai.expect(actualResult).to.be.eql(inputData);
+    chai.expect(containerAware.container).to.be.eql(di);
+    chai.expect(containerAware.container.get(microserviceIdentifier)).to.be.eql(testResources[microserviceIdentifier]);
   });
 
-  test('Check container setter sets object correctly', function() {
-    let container =  {
-      _bottle: {
-        container: {
-        },
-        id: 0,
-      },
-      testKey: 'test',
-    };
-    containerAware.container = container;
-    chai.expect(containerAware.container).to.eql(container);
-  });
-
-  test('Check bind() method executes super.bind()', function() {
-    let inputData = 'testMicroservice';
+  test('Check bind(microservice) method when microservice is not a string', function() {
     let error = null;
-    let actualResult = null;
+    let microservice = null;
     try {
-      actualResult = containerAware.bind(inputData);
+      //create microservice instance to bind
+      microservice = new Instance(microserviceIdentifier, testResources[microserviceIdentifier]);
+      containerAware.bind(microservice);
     } catch (e) {
       error = e;
     }
+
+    chai.expect(error).to.equal(null);
+    chai.expect(containerAware.container._bottle).to.be.not.eql({});
   });
 });

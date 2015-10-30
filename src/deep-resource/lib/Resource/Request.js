@@ -304,8 +304,8 @@ export class Request {
   _sendThroughApi(callback = () => null) {
     let endpoint = this._action.source.api;
     let signedRequest = this._createAws4SignedRequest(
-      endpoint, 
-      this.method, 
+      endpoint,
+      this.method,
       this.payload
     );
 

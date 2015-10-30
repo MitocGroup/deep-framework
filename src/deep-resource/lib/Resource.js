@@ -30,19 +30,26 @@ export class Resource extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {String} identifier
+   * @param {String} identifier (e.g @microservice_identifier:resource_name[:action_name])
    * @returns {ResourceInstance}
    */
   get(identifier) {
-    identifier = this._resolvePath(identifier);
+    let parsedIdentifier = this._parseResourceIdentifier(
+      this._resolveIdentifier(identifier) // it also binds 'working' microservice to this instance
+    );
+
+    let resourceIdentifier = parsedIdentifier.resource;
+    let actionIdentifier = parsedIdentifier.action;
 
     let microserviceIdentifier = this.microservice.identifier;
 
-    if (!this.has(identifier)) {
-      throw new MissingResourceException(microserviceIdentifier, identifier);
+    if (!this.has(resourceIdentifier)) {
+      throw new MissingResourceException(microserviceIdentifier, resourceIdentifier);
     }
 
-    return this._resources[microserviceIdentifier][identifier];
+    let resource = this._resources[microserviceIdentifier][resourceIdentifier];
+
+    return actionIdentifier ? resource.action(actionIdentifier) : resource;
   }
 
   /**
@@ -60,6 +67,22 @@ export class Resource extends Kernel.ContainerAware {
     }
 
     return map;
+  }
+
+  /**
+   * @param {String} identifier
+   * @returns {Object}
+   * @private
+   */
+  _parseResourceIdentifier(identifier) {
+    let parts = identifier.split(':').map((part) => {
+      return part.trim();
+    });
+
+    return {
+      resource: parts.shift(),
+      action: parts.length > 0 ? parts.join(':') : null,
+    };
   }
 
   /**
