@@ -38,7 +38,7 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
-    this._native = true; // @todo: set it to false
+    this._native = false;
   }
 
   /**
@@ -304,8 +304,8 @@ export class Request {
   _sendThroughApi(callback = () => null) {
     let endpoint = this._action.source.api;
     let signedRequest = this._createAws4SignedRequest(
-      endpoint, 
-      this.method, 
+      endpoint,
+      this.method,
       this.payload
     );
 
@@ -369,7 +369,7 @@ export class Request {
     let apiQueryString = urlParts.search ? `?${urlParts.search}` : '';
 
     let opsToSign = {
-      service: Core.AWS.Service.API_GATEWAY,
+      service: Core.AWS.Service.API_GATEWAY_EXECUTE,
       region: this.getEndpointHostRegion(apiHost),
       host: apiHost,
       method: httpMethod,

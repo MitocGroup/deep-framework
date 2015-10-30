@@ -20,18 +20,18 @@ only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are 
 
 To see the power of `DEEP Framework`, execute the following 4 simple steps in command line:
 
-1. Install DEEP CLI, also known as deepify: `npm install deepify -g`
+1. `npm install deepify -g` # Install DEEP CLI, also known as deepify
 > deepify is a collection of tools that empower developers and devops engineers to automate
 the management of web apps built on top of DEEP ecosystem.
 
-2. Using deepify, dump locally the helloworld example: `deepify helloworld ~/deep-hello-world`
+2. `deepify helloworld ~/deep-hello-world` # Using deepify, dump locally the helloworld example
 > deepify will clone the repository from GitHub and pull all the dependencies in one place.
 
-3. Using deepify, run locally the helloworld example: `deepify server ~/deep-hello-world -o`
+3. `deepify server ~/deep-hello-world -o` # Using deepify, run locally the helloworld example
 > deepify launches a web server that can be used for local development, without making calls
 to web services from cloud providers like AWS.
 
-4. Using deepify, deploy to AWS the helloworld example: `deepify deploy ~/deep-hello-world`
+4. `deepify deploy ~/deep-hello-world` # Using deepify, deploy to AWS the helloworld example
 > deepify provisions the infrastructure and deploys the web app, empowering developers and
 devops engineers to automate the process.
 

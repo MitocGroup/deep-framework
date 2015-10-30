@@ -49,11 +49,7 @@ app.loadFromFile("_config.json", function() {
     let helloWorldMicroservice = app.microservice('deep.microservices.helloworld'); // microservice instance
     let currentMicroservice = app.microservice(); // current microservice instance
     
-    let microserviceAwareAsset = asset.bind(helloWorldMicroservice);
-    microserviceAwareAsset = asset.bind('deep.microservices.helloworld');
-    
-    let iconPath = microserviceAwareAsset.locate('images/icon.png');
-    let sameIconPath = asset.locate('@deep.microservices.helloworld:images/icon.png');
+    let iconPath = asset.locate('@deep.microservices.helloworld:images/icon.png');
 });
 ```
 
