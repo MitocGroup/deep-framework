@@ -146,18 +146,17 @@ Our short-to-medium-term roadmap items, in order of descending priority:
 
 Feature | Details | Owner
 --------|---------|------
-Implement deep-security base | To be updated | [@mgoria](https://github.com/mgoria)
-Implement deep-security UI | To be updated | [@mgoria](https://github.com/mgoria)
+Implement deep-security | To be updated | [@mgoria](https://github.com/mgoria)
+Implement backend > frontend notifications as part of deep-notification on top of SNS | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement deep-search on top of Amazon CloudSearch + Amazon Elasticsearch Service | To be updated | [@alexanderc](https://github.com/alexanderc)
 Implement deep-event library (Lambda scheduling, Kinesis stream, Dynamo stream, SQS, etc) | To be updated | [@alexanderc](https://github.com/alexanderc)
 Implement deep-db "eventual consistency" by offloading data to SQS as the default option | To be updated | [@alexanderc](https://github.com/alexanderc)
 Improve deep-db "strong consistency" by adding R/W increases in runtime (as other option for special DB operations) | To be updated | [@alexanderc](https://github.com/alexanderc)
 Integrate deep-db with deep-cache natively (blocked by VPC support in Lambda) | To be updated | [@alexanderc](https://github.com/alexanderc)
 Implement deep-cache powered by Elasticache (redis) inside Lambdas (blocked by VPC support in Lambda) | To be updated | [@alexanderc](https://github.com/alexanderc)
-Implement deep-search on top of Amazon CloudSearch + Amazon Elasticsearch Service | To be updated | [@alexanderc](https://github.com/alexanderc)
 Implement RUM as part of deep-logs (realtime user monitoring) | To be updated | [@alexanderc](https://github.com/alexanderc)
 Optimize the framework to reduce the size of Lambda functions | To be updated | [@alexanderc](https://github.com/alexanderc)
 Improve documentation for each deep-* library | To be updated | [@alexanderc](https://github.com/alexanderc)
-Implement backend > frontend notifications as part of deep-notification on top of SNS | To be updated | [@alexanderc](https://github.com/alexanderc)
 
 ### Changelog
 
