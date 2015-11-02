@@ -55,25 +55,6 @@ The steps
 
 ![User list](assets/user-list.png)
 
- - Click on the `Attach Policy` button from the `Permissions` section
-
-![Attach Policy button](assets/attach-policy-button.png)
-
- - Select the following items from the list of `Policy Name`s:
-   - [AWSLambdaFullAccess](https://console.aws.amazon.com/iam/home?region=us-west-2#policies/arn:aws:iam::aws:policy/AWSLambdaFullAccess)
-   - [AmazonElastiCacheFullAccess](https://console.aws.amazon.com/iam/home?region=us-west-2#policies/arn:aws:iam::aws:policy/AmazonElastiCacheFullAccess)
-   - [AmazonS3FullAccess](https://console.aws.amazon.com/iam/home?region=us-west-2#policies/arn:aws:iam::aws:policy/AmazonS3FullAccess)
-   - [AmazonDynamoDBFullAccess](https://console.aws.amazon.com/iam/home?region=us-west-2#policies/arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess)
-   - [CloudFrontFullAccess](https://console.aws.amazon.com/iam/home?region=us-west-2#policies/arn:aws:iam::aws:policy/CloudFrontFullAccess)
-   - [AmazonAPIGatewayAdministrator](https://console.aws.amazon.com/iam/home?region=us-west-2#policies/arn:aws:iam::aws:policy/AmazonAPIGatewayAdministrator)
-   - [AmazonCognitoPowerUser](https://console.aws.amazon.com/iam/home?region=us-west-2#policies/arn:aws:iam::aws:policy/AmazonCognitoPowerUser)
-   
-![Policy Names list](assets/policy-names-list.png) 
-
- - Click on the `Attach Policy` button at the bottom of the page
-
-![Attach Policy button](assets/attach-policy-list-button.png)
-
  - Go to the `Inline Policies` section and click on the arrow from the right side to open the spoiler
 
 ![Inline Policies section](assets/inline-policies-section.png)
