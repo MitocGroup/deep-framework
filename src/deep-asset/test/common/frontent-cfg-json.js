@@ -1,4 +1,4 @@
-{
+export default {
   "env": "dev",
   "deployId": "65ab34689468924b655ae66fcdf31eae",
   "awsRegion": "us-west-2",
@@ -72,24 +72,5 @@
         "www.amazon.com": "amzn1.application.3b5k2jb65432352gfd5b23kj5hb"
       }
     }
-  },
-  "microserviceIdentifier": "hello.world.example",
-  "awsAccountId": 389615756922,
-  "appIdentifier": "45asd88620d1e4eea543",
-  "timestamp": 1445867176360,
-  "buckets": {
-    "temp": {
-      "name": "deep.dev.temp.32f3705a"
-    },
-    "public": {
-      "website": "deep.dev.public.32f3705a.s3-website-us-west-2.amazonaws.com",
-      "name": "deep.dev.public.32f3705a"
-    },
-    "system": {
-      "name": "deep.dev.system.32f3705a"
-    }
-  },
-  "tablesNames": {
-    "Name": "DeepDevName32f3705a"
   }
 }
