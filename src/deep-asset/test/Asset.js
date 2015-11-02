@@ -5,7 +5,8 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Asset} from './../lib.compiled/Asset';
 import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance';
-import KernelFactory from "./common/KernelFactory";
+import Kernel from 'deep-kernel';
+import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
 
@@ -34,7 +35,7 @@ suite('Asset', function() {
     };
 
     try {
-      KernelFactory.create({'Asset': Asset}, callback);
+      KernelFactory.create({Asset: Asset}, callback);
     } catch (e) {
       error = e;
     }
@@ -57,19 +58,28 @@ suite('Asset', function() {
   test('Check boot() method  for kernel.isFrontend', function() {
     let error = null;
     let spyCallback = sinon.spy();
+    let expectedResult = ['hello.world.example/bootstrap.js'];
 
-    {
+    try {
       assetService.boot(frontendKernelInstance, spyCallback);
     } catch (e) {
       error = e;
     }
 
-    // @todo - check if FRONTEND_BOOTSTRAP_VECTOR was created instead of checking for exceptions
+    chai.expect(frontendKernelInstance.get(Kernel.FRONTEND_BOOTSTRAP_VECTOR)).to.be.eql(expectedResult);
     chai.expect(error).to.be.equal(null);
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
-  test('Check locate() method returns valid string', function() {
+  test('Check locate() method returns valid string for isRoot', function() {
+    let spyCallback = sinon.spy();
+    assetService.boot(frontendKernelInstance, spyCallback);
+    let expectedResult = 'bootstrap.js';
+    let actualResult = assetService.locate('@deep.ng.root:bootstrap.js');
+    chai.expect(actualResult).to.be.equal(expectedResult);
+  });
+
+  test('Check locate() method returns valid string for !isRoot', function() {
     let spyCallback = sinon.spy();
     assetService.boot(frontendKernelInstance, spyCallback);
     let expectedResult = 'hello.world.example/bootstrap.js';

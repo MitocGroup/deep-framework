@@ -9,7 +9,7 @@ import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/In
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
-import backendConfig from "./common/backend.cfg.json";
+import backendConfig from './common/backend-cfg-json';
 
 chai.use(sinonChai);
 
@@ -75,7 +75,7 @@ suite('Resource', function() {
         Security: Security,
         Resource: Resource,
       }, Kernel.BACKEND_CONTEXT);
-
+      console.log('Backend: ', backendConfig);
       backendKernelInstanse.load(backendConfig, callback);
       //backendKernelInstanse.loadFromFile('./test/common/backend.cfg.json', callback);
     } catch (e) {
