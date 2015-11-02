@@ -147,10 +147,9 @@ Our short-to-medium-term roadmap items, in order of descending priority:
 Feature | Details | Owner
 --------|---------|------
 Implement deep-security | Security service on top of [IAM](https://aws.amazon.com/iam/) | [@mgoria](https://github.com/mgoria)
-Implement deep-notification | Push notification service on top of [SNS](https://aws.amazon.com/sns/) that supports 
-push to mobile devices, web browsers, email and sms. | [@alexanderc](https://github.com/alexanderc)
+Implement deep-notification | Push notification service on top of [SNS](https://aws.amazon.com/sns/) that supports push to mobile devices, web browsers, email and sms. | [@alexanderc](https://github.com/alexanderc)
 Implement deep-search | Full text search service on top of [Amazon CloudSearch](https://aws.amazon.com/cloudsearch/) + [Amazon Elasticsearch Service](https://aws.amazon.com/elasticsearch-service/) | [@alexanderc](https://github.com/alexanderc)
-Implement deep-event library (Lambda scheduling, Kinesis stream, Dynamo stream, SQS, etc) | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement deep-event | Event manager service using Lambda scheduling, Kinesis stream, Dynamo stream, SQS, etc) | [@alexanderc](https://github.com/alexanderc)
 Implement deep-db "eventual consistency" | Achieve "eventual consistency" by offloading data to [SQS](https://aws.amazon.com/sqs/) as the default option | [@alexanderc](https://github.com/alexanderc)
 Improve deep-db "strong consistency" | Achieve "strong consistency" by increasing Reads/Writes per second in runtime (as other option for special DB operations) | [@alexanderc](https://github.com/alexanderc)
 Integrate deep-db with deep-cache natively (blocked by VPC support in Lambda) | To be updated | [@alexanderc](https://github.com/alexanderc)
