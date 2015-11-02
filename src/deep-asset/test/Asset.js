@@ -72,16 +72,12 @@ suite('Asset', function() {
   });
 
   test('Check locate() method returns valid string for isRoot', function() {
-    let spyCallback = sinon.spy();
-    assetService.boot(frontendKernelInstance, spyCallback);
     let expectedResult = 'bootstrap.js';
     let actualResult = assetService.locate('@deep.ng.root:bootstrap.js');
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
 
   test('Check locate() method returns valid string for !isRoot', function() {
-    let spyCallback = sinon.spy();
-    assetService.boot(frontendKernelInstance, spyCallback);
     let expectedResult = 'hello.world.example/bootstrap.js';
     let actualResult = assetService.locate('@hello.world.example:bootstrap.js');
     chai.expect(actualResult).to.be.equal(expectedResult);
