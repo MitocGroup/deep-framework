@@ -1,4 +1,4 @@
-{
+export default {
   "env": "dev",
   "deployId": "57ab88586908711b772ea66fcdf31eae",
   "awsRegion": "us-west-2",

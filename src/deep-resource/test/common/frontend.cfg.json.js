@@ -10,50 +10,50 @@ export default {
       }
     }
   ],
-  "identityPoolId": "us-east-1:51ecb374-d0f0-469e-955b-12da264525ef",
-  "identityProviders": {
+    "identityPoolId": "us-east-1:51ecb374-d0f0-469e-955b-12da264525ef",
+    "identityProviders": {
     "www.amazon.com": "amzn1.application.3b5k2jb53252352kjh5b23kj5hb"
   },
-  "microservices": {
+    "microservices": {
     "hello.world.example": {
       "isRoot": false,
-      "parameters": {},
+        "parameters": {},
       "resources": {
         "sample": {
           "say-hello": {
             "type": "lambda",
-            "methods": [
+              "methods": [
               "POST"
             ],
-            "forceUserIdentity": true,
-            "region": "us-west-2",
-            "source": {
+              "forceUserIdentity": true,
+              "region": "us-west-2",
+              "source": {
               "api": "https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello",
-              "original": "arn:aws:lambda:us-west-2:389617777922:function:DeepDevSampleSayHello64211f3705a"
+                "original": "arn:aws:lambda:us-west-2:389617777922:function:DeepDevSampleSayHello64211f3705a"
             }
           },
           "say-bye": {
             "type": "lambda",
-            "methods": [
+              "methods": [
               "GET"
             ],
-            "forceUserIdentity": true,
-            "region": "us-west-2",
-            "source": {
+              "forceUserIdentity": true,
+              "region": "us-west-2",
+              "source": {
               "api": "https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-bye",
-              "original": "arn:aws:lambda:us-west-2:389617777922:function:DeepDevSampleSayBye64211f3705a"
+                "original": "arn:aws:lambda:us-west-2:389617777922:function:DeepDevSampleSayBye64211f3705a"
             }
           },
           "say-test": {
             "type": "external",
-            "methods": [
+              "methods": [
               "GET"
             ],
-            "forceUserIdentity": true,
-            "region": "us-west-2",
-            "source": {
+              "forceUserIdentity": true,
+              "region": "us-west-2",
+              "source": {
               "api": "https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-test",
-              "original": "http://petstore.swagger.io/v2/store/inventory"
+                "original": "http://petstore.swagger.io/v2/store/inventory"
             }
           }
         }
@@ -61,13 +61,13 @@ export default {
     },
     "deep.ng.root": {
       "isRoot": true,
-      "parameters": {},
+        "parameters": {},
       "resources": {}
     }
   },
-  "globals": {
+    "globals": {
     "userProviderEndpoint": "@deep.auth:user-retrieve",
-    "security": {
+      "security": {
       "identityProviders": {
         "www.amazon.com": "amzn1.application.3b5k2jb53252352kjh5b23kj5hb"
       }
