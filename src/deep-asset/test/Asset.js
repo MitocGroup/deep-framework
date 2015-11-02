@@ -20,54 +20,30 @@ suite('Asset', function() {
   });
 
   test('Load Kernels by using Kernel.load()', function(done) {
-    let error = null;
-
     let callback = (frontendKernel, backendKernel) => {
-      chai.expect(error).to.be.eql(null);
-      chai.expect(backendKernel).to.be.not.eql({});
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
       backendKernelInstance = backendKernel;
-      chai.expect(frontendKernel).to.be.not.eql({});
+      chai.assert.instanceOf(frontendKernel, Kernel, 'frontendKernel is an instance of Kernel');
       frontendKernelInstance = frontendKernel;
       assetService = frontendKernel.get('asset');
 
       // complete the async
       done();
     };
-
-    try {
-      KernelFactory.create({Asset: Asset}, callback);
-    } catch (e) {
-      error = e;
-    }
+    KernelFactory.create({Asset: Asset}, callback);
   });
 
   test('Check boot() method for !kernel.isFrontend', function() {
-    let error = null;
     let spyCallback = sinon.spy();
-
-    try {
-      assetService.boot(backendKernelInstance, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    assetService.boot(backendKernelInstance, spyCallback);
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
   test('Check boot() method  for kernel.isFrontend', function() {
-    let error = null;
     let spyCallback = sinon.spy();
     let expectedResult = ['hello.world.example/bootstrap.js'];
-
-    try {
-      assetService.boot(frontendKernelInstance, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
+    assetService.boot(frontendKernelInstance, spyCallback);
     chai.expect(frontendKernelInstance.get(Kernel.FRONTEND_BOOTSTRAP_VECTOR)).to.be.eql(expectedResult);
-    chai.expect(error).to.be.equal(null);
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
