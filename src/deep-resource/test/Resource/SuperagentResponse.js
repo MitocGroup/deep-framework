@@ -49,7 +49,7 @@ suite('Resource/SuperagentResponse', function () {
   let payload = '{"body":"bodyData"}';
   let method = 'method';
   let request = new Request(action, payload, method);
-  let rawData = {status: 201, body: 'bodyTest', error: 'errorMessage',};
+  let rawData = {status: 500, body: 'bodyTest', error: 'errorMessage',};
   let rawError = {message: 'errorMessage'};
 
   let superagentResponse = new SuperagentResponse(request, rawData, rawError);
@@ -59,7 +59,7 @@ suite('Resource/SuperagentResponse', function () {
   });
 
   test('Check constructor sets _data', function() {
-    chai.expect(superagentResponse.data).to.be.equal(rawData.body);
+    chai.expect(superagentResponse.data).to.be.equal(null);
   });
 
   test('Check constructor sets _error', function() {
