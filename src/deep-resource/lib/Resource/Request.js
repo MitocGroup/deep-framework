@@ -275,6 +275,15 @@ export class Request {
   }
 
   /**
+   * @returns {Boolean}
+   *
+   * @todo: remove this?
+   */
+  get isLambda() {
+    return this._action.type === Action.LAMBDA;
+  }
+
+  /**
    * @param {Function} callback
    * @returns {Request}
    */
