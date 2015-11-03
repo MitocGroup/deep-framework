@@ -4,6 +4,7 @@ import chai from 'chai';
 import {Factory} from '../../../lib.compiled/AWS/IAM/Factory';
 import {Statement} from '../../../lib.compiled/AWS/IAM/Statement';
 import {Collection} from '../../../lib.compiled/AWS/IAM/Collection';
+import {Policy} from '../../../lib.compiled/AWS/IAM/Policy';
 import {Extractor} from './Extractable';
 
 suite('AWS/IAM/Factory', function() {
@@ -26,9 +27,10 @@ suite('AWS/IAM/Factory', function() {
     chai.expect(Factory._assurePrototype(Extractor)).to.be.equal(Extractor);
   });
 
-  test('Check _assurePrototype static method returns string prototype', function() {
-    // todo - TBD with Marcel
-    //chai.expect(Factory._assurePrototype('test')).to.be.equal('testString');
+  test('Check _assurePrototype static method returns valid prototype by string', function() {
+    let actualResult = Factory._assurePrototype('POLICY');
+    chai.expect(actualResult).to.be.eql(Policy);
+    chai.expect(typeof actualResult.__proto__).to.be.equal('function');
   });
 
   test('Check create() static method returns new prototype', function() {
