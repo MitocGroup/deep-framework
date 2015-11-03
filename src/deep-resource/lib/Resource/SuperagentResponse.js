@@ -15,11 +15,11 @@ export class SuperagentResponse extends Response {
   constructor(request, data, error) {
     super(...arguments);
 
+    this._error = error;
+
     this._data = request.isLambda
       ? this._parseLambdaResponse(data)
       : this._parseResponse(data);
-
-    this._error = error;
   }
 
   /**
