@@ -28,18 +28,6 @@ export class Security extends Kernel.ContainerAware {
     this._token = null;
     this._userProvider = null;
     this._userProviderEndpoint = null;
-
-    this._onTokenAvailable = [];
-  }
-
-  /**
-   * @param {Function} callback
-   * @returns {Security}
-   */
-  onTokenAvailable(callback) {
-    this._onTokenAvailable.push(callback);
-
-    return this;
   }
 
   /**
@@ -169,17 +157,7 @@ export class Security extends Kernel.ContainerAware {
 
     this._token.userProvider = this.userProvider;
 
-    this._token.getCredentials((...args) => {
-      for (let hookKey in this._onTokenAvailable) {
-        if (!this._onTokenAvailable.hasOwnProperty(hookKey)) {
-          continue;
-        }
-
-        this._onTokenAvailable[hookKey](this._token);
-      }
-
-      callback(...args);
-    });
+    this._token.getCredentials(callback);
 
     return this._token;
   }
@@ -195,17 +173,7 @@ export class Security extends Kernel.ContainerAware {
 
     this._token.userProvider = this.userProvider;
 
-    this._token.getCredentials((...args) => {
-      for (let hookKey in this._onTokenAvailable) {
-        if (!this._onTokenAvailable.hasOwnProperty(hookKey)) {
-          continue;
-        }
-
-        this._onTokenAvailable[hookKey](this._token);
-      }
-
-      callback(...args);
-    });
+    this._token.getCredentials(callback);
 
     return this._token;
   }
