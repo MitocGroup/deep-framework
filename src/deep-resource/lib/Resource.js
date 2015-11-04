@@ -49,6 +49,10 @@ export class Resource extends Kernel.ContainerAware {
 
     let resource = this._resources[microserviceIdentifier][resourceIdentifier];
 
+    // inject dependencies
+    resource.cache = this.container.get('cache');
+    resource.security = this.container.get('security');
+
     return actionIdentifier ? resource.action(actionIdentifier) : resource;
   }
 
@@ -92,9 +96,6 @@ export class Resource extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    let cache = kernel.container.get('cache');
-    let security = kernel.container.get('security');
-
     let resourcesVector = [];
 
     for (let microserviceKey in kernel.microservices) {
@@ -116,7 +117,6 @@ export class Resource extends Kernel.ContainerAware {
           microservice.rawResources[resourceName]
         );
 
-        resource.cache = cache;
         resource.localBackend = this._localBackend;
 
         this._resources[microservice.identifier][resourceName] = resource;
@@ -124,20 +124,6 @@ export class Resource extends Kernel.ContainerAware {
         resourcesVector.push(resource);
       }
     }
-
-    security.onTokenAvailable((token) => {
-      let credentials = token.credentials;
-
-      for (let resourceKey in resourcesVector) {
-        if (!resourcesVector.hasOwnProperty(resourceKey)) {
-          continue;
-        }
-
-        let resource = resourcesVector[resourceKey];
-
-        resource.securityCredentials = credentials;
-      }
-    });
 
     callback();
   }
