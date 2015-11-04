@@ -42,8 +42,6 @@ suite('AWS/Lambda/Response', function() {
   });
 
   test(`Check send() method returns valid object`, function() {
-    let error = null;
-    let actualResult = null;
     let expectedResult = {
       _data: {
         firstKey: 'firstValue',
@@ -57,13 +55,6 @@ suite('AWS/Lambda/Response', function() {
     response.runtimeContext = runtimeContext;
     expectedResult._runtimeContext.succeed = response.runtimeContext.succeed;
     chai.expect(response.runtimeContext).to.be.eql(runtimeContext);
-    try {
-      actualResult = response.send();
-    } catch (e) {
-      error = e;
-      chai.expect(error).to.be.equal(null);
-    }
-
-    chai.expect(actualResult).to.be.eql(expectedResult);
+    chai.expect(response.send()).to.be.eql(expectedResult);
   });
 });
