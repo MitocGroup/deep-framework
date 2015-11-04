@@ -88,22 +88,6 @@ suite('Security', function() {
     chai.expect(error).to.be.an.instanceof(MissingLoginProviderException);
   });
 
-  test('Check onTokenAvailable() method add callbacks to _onTokenAvailable[]', function() {
-    let error = null;
-    let testCallback = () => { return 'testCallback'; };
-
-    chai.expect(security._onTokenAvailable.length).to.equal(0);
-    try {
-      security.onTokenAvailable(testCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.equal(null);
-    chai.expect(security._onTokenAvailable.length).to.equal(1);
-    chai.expect(security._onTokenAvailable).to.contains(testCallback);
-  });
-
   test('Check amazonLoginProviderConfig getter returns amazon provider', function() {
     let error = null;
     let actualResult = null;
