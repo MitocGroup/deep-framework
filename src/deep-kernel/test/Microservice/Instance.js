@@ -4,10 +4,11 @@ import chai from 'chai';
 import {Instance} from '../../lib.compiled/Microservice/Instance';
 import {Injectable} from '../../lib.compiled/Microservice/Injectable';
 import Core from 'deep-core';
+import backendConfig from '../common/backend-cfg-json';
 
 suite('Microservice/Instance', function() {
-  let rawResources = 'rawResources';
-  let identifier = 'identifier';
+  let identifier = 'hello.world.example';
+  let rawResources = backendConfig.microservices[identifier].resources;
   let instance = new Instance(identifier, rawResources);
 
   test('Class Instance exists in Microservice/Instance', function() {
