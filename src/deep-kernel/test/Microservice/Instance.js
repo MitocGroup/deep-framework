@@ -43,13 +43,14 @@ suite('Microservice/Instance', function() {
     let actualResult = Instance.createVector(backendConfig);
 
     //check if all items are objects of Instance
-    chai.expect(actualResult.length).to.be.equal(3);
+    chai.expect(actualResult.length).to.be.equal(2);
     for (let result of actualResult) {
       chai.assert.instanceOf(result, Instance, ' is an instance of Instance');
     }
   });
 
-  test('Check inject() method throws \'Core.Exception.InvalidArgumentException\' exception', function() {
+  test('Check inject() method throws "Core.Exception.InvalidArgumentException" ' +
+    'exception for invalid args', function() {
     let error = null;
     let invalidInstance = 'invalidInstance';
     try {
@@ -64,16 +65,8 @@ suite('Microservice/Instance', function() {
   });
 
   test('Check inject() method returns valid object', function() {
-    let error = null;
-    let validInstance = new Injectable();
-    let actualResult = null;
-    try {
-      actualResult = instance.inject(validInstance);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    let injectable = new Injectable();
+    let actualResult = instance.inject(injectable);
     chai.assert.instanceOf(actualResult, Injectable, 'is an instance of Injectable');
     chai.assert.instanceOf(actualResult.microservice, Instance, 'is an instance of Instance');
   });
