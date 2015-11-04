@@ -139,6 +139,8 @@ export class Runtime extends Interface {
   }
 
   /**
+   * Retrieves logged user id from lambda context
+   *
    * @returns {String|null}
    */
   get loggedUserId() {
@@ -157,9 +159,9 @@ export class Runtime extends Interface {
         throw new InvalidCognitoIdentityException(identityPoolId);
       }
 
-      this._loggedUser = this._context.identity.cognitoIdentityId;
+      this._loggedUserId = this._context.identity.cognitoIdentityId;
     }
 
-    return this._loggedUser;
+    return this._loggedUserId;
   }
 }
