@@ -17,9 +17,15 @@ export class SuperagentResponse extends Response {
 
     this._error = error;
 
-    this._data = request.isLambda
-      ? this._parseLambdaResponse(data)
-      : this._parseResponse(data);
+    // @todo: treat the empty body somehow else?
+    if (!data.body) {
+      this._error = data.error || 'Unexpected error occurred';
+      this._statusCode = data.status || 500;
+    } else {
+      this._data = request.isLambda
+        ? this._parseLambdaResponse(data)
+        : this._parseResponse(data);
+    }
   }
 
   /**
