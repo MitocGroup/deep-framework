@@ -14,7 +14,7 @@ suite('AWS/IAM/Policy', function() {
     chai.expect(typeof Policy).to.equal('function');
   });
 
-  test(`Check constructor sets _version=\'2012-10-17\'`, function() {
+  test('Check constructor sets _version="2012-10-17"', function() {
     chai.expect(policy.version).to.be.equal('2012-10-17');
   });
 
@@ -22,11 +22,11 @@ suite('AWS/IAM/Policy', function() {
     chai.assert.typeOf(policy.statement, 'object', 'created Statement object');
   });
 
-  test('Check ANY static getter return \'*\'', function() {
+  test('Check ANY static getter return "*"', function() {
     chai.expect(Policy.ANY).to.be.equal('*');
   });
 
-  test('Check DEFAULT_VERSION static getter return \'2012-10-17\'', function() {
+  test('Check DEFAULT_VERSION static getter return "2012-10-17"', function() {
     chai.expect(Policy.DEFAULT_VERSION).to.be.equal('2012-10-17');
   });
 

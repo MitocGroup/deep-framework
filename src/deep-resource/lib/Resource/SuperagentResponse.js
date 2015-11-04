@@ -15,8 +15,35 @@ export class SuperagentResponse extends Response {
   constructor(request, data, error) {
     super(...arguments);
 
-    this._data = this._parseResponse(data);
     this._error = error;
+
+    // @todo: treat the empty body somehow else?
+    if (!data.body) {
+      this._error = data.error || 'Unexpected error occurred';
+      this._statusCode = data.status || 500;
+    } else {
+      this._data = request.isLambda
+        ? this._parseLambdaResponse(data)
+        : this._parseResponse(data);
+    }
+  }
+
+  /**
+   * Parse response given by superagent library
+   * for Lambdas proxied through ApiGateway
+   *
+   * @param {Object} response
+   * @returns {Object}
+   * @private
+   */
+  _parseLambdaResponse(response) {
+    if (typeof response.body.errorMessage === 'string') {
+      this._error = response.body.errorMessage;
+    }
+
+    this._statusCode = this._error ? 500 : response.status;
+
+    return this._error ? null : response.body;
   }
 
   /**

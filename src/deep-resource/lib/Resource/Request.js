@@ -18,6 +18,8 @@ import parseUrl from 'parse-url';
 import queryString from 'query-string';
 import Core from 'deep-core';
 import {DirectLambdaCallDeniedException} from './Exception/DirectLambdaCallDeniedException';
+import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
+import Security from 'deep-security';
 
 /**
  * Action request instance
@@ -275,6 +277,15 @@ export class Request {
   }
 
   /**
+   * @returns {Boolean}
+   *
+   * @todo: remove this?
+   */
+  get isLambda() {
+    return this._action.type === Action.LAMBDA;
+  }
+
+  /**
    * @param {Function} callback
    * @returns {Request}
    */
@@ -408,7 +419,11 @@ export class Request {
    * @private
    */
   _getSecurityCredentials() {
-    return this._action.resource.securityCredentials;
+    if (!(this._action.resource.security instanceof Security)) {
+      throw new MissingSecurityServiceException();
+    }
+
+    return this._action.resource.security.token.credentials;
   }
 
   /**

@@ -160,14 +160,6 @@ suite('Resource', function() {
     let kernelMock = {
       container: {
         get: function(name) {
-          if (name === 'security') {
-            return {
-              onTokenAvailable: function(cb) {
-                return cb({credentials: 'testCredentials'});
-              },
-            };
-          }
-
           return {serviceName: name};
         },
       },

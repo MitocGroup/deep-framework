@@ -16,60 +16,60 @@ suite('AWS/Service', function() {
     chai.expect(typeof service).to.equal('object');
   });
 
-  test('Check LAMBDA static getter returns \'lambda\'', function() {
+  test('Check LAMBDA static getter returns "lambda"', function() {
     chai.expect(Service.LAMBDA).to.be.equal('lambda');
   });
 
-  test('Check SIMPLE_STORAGE_SERVICE static getter returns \'s3\'', function() {
+  test('Check SIMPLE_STORAGE_SERVICE static getter returns "s3"', function() {
     chai.expect(Service.SIMPLE_STORAGE_SERVICE).to.be.equal('s3');
   });
 
-  test('Check DYNAMO_DB static getter returns \'dynamodb\'', function() {
+  test('Check DYNAMO_DB static getter returns "dynamodb"', function() {
     chai.expect(Service.DYNAMO_DB).to.be.equal('dynamodb');
   });
 
-  test('Check SIMPLE_NOTIFICATION_SERVICE static getter returns \'sns\'', function() {
+  test('Check SIMPLE_NOTIFICATION_SERVICE static getter returns "sns"', function() {
     chai.expect(Service.SIMPLE_NOTIFICATION_SERVICE).to.be.equal('sns');
   });
 
-  test('Check COGNITO_IDENTITY static getter returns \'cognito-identity\'', function() {
+  test('Check COGNITO_IDENTITY static getter returns "cognito-identity"', function() {
     chai.expect(Service.COGNITO_IDENTITY).to.be.equal('cognito-identity');
   });
 
-  test('Check COGNITO_SYNC static getter returns \'cognito-sync\'', function() {
+  test('Check COGNITO_SYNC static getter returns "cognito-sync"', function() {
     chai.expect(Service.COGNITO_SYNC).to.be.equal('cognito-sync');
   });
 
-  test('Check ELASTIC_CACHE static getter returns \'elasticache\'', function() {
+  test('Check ELASTIC_CACHE static getter returns "elasticache"', function() {
     chai.expect(Service.ELASTIC_CACHE).to.be.equal('elasticache');
   });
 
-  test('Check IDENTITY_AND_ACCESS_MANAGEMENT static getter returns \'iam\'', function() {
+  test('Check IDENTITY_AND_ACCESS_MANAGEMENT static getter returns "iam"', function() {
     chai.expect(Service.IDENTITY_AND_ACCESS_MANAGEMENT).to.be.equal('iam');
   });
 
-  test('Check KINESIS static getter returns \'kinesis\'', function() {
+  test('Check KINESIS static getter returns "kinesis"', function() {
     chai.expect(Service.KINESIS).to.be.equal('kinesis');
   });
 
-  test('Check CLOUD_FRONT static getter returns \'cloudfront\'', function() {
+  test('Check CLOUD_FRONT static getter returns "cloudfront"', function() {
     chai.expect(Service.CLOUD_FRONT).to.be.equal('cloudfront');
   });
 
-  test('Check SECURITY_TOKEN_SERVICE static getter returns \'sts\'', function() {
+  test('Check SECURITY_TOKEN_SERVICE static getter returns "sts"', function() {
     chai.expect(Service.SECURITY_TOKEN_SERVICE).to.be.equal('sts');
   });
 
-  test('Check CLOUD_WATCH_LOGS static getter returns \'logs\'', function() {
+  test('Check CLOUD_WATCH_LOGS static getter returns "logs"', function() {
     chai.expect(Service.CLOUD_WATCH_LOGS).to.be.equal('logs');
   });
 
-  test('Check API_GATEWAY static getter returns \'apigateway\'', function() {
+  test('Check API_GATEWAY static getter returns "apigateway"', function() {
     chai.expect(Service.API_GATEWAY).to.be.equal('apigateway');
   });
 
   test(
-    'Check API_GATEWAY_EXECUTE static getter returns \'execute-api\'',
+    'Check API_GATEWAY_EXECUTE static getter returns "execute-api"',
     function() {
       chai.expect(Service.API_GATEWAY_EXECUTE).to.be.equal('execute-api');
     }

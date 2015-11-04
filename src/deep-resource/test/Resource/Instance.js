@@ -9,11 +9,6 @@ suite('Resource/Instance', function() {
   let actionName = 'UpdateData';
   let rawActions = ['find', 'update'];
   let instance = new Instance(actionName, rawActions);
-  let defaultSecurityCredentials = {
-    accessKeyId: null,
-    secretAccessKey: null,
-    sessionToken: null,
-  };
 
   test('Class Instance exists in Resource/Instance', function() {
     chai.expect(typeof Instance).to.equal('function');
@@ -27,8 +22,8 @@ suite('Resource/Instance', function() {
     chai.expect(instance._rawActions).to.be.equal(rawActions);
   });
 
-  test('Check constructor sets securityCredentials', function() {
-    chai.expect(instance.securityCredentials).to.be.eql(defaultSecurityCredentials);
+  test('Check constructor sets _security=null', function() {
+    chai.expect(instance.security).to.be.eql(null);
   });
 
   test('Check constructor sets _actions', function() {
@@ -50,22 +45,18 @@ suite('Resource/Instance', function() {
     chai.expect(instance.cache).to.be.eql({});
   });
 
-  test('Check localBackend() setter sets _cache={}', function() {
+  test('Check localBackend() setter sets _localBackend=true', function() {
     instance.localBackend = false;
     chai.expect(instance.localBackend).to.be.equal(false);
     instance.localBackend = true;
     chai.expect(instance.localBackend).to.be.equal(true);
   });
 
-  test('Check cache() setter sets securityCredentials={}', function() {
-    let securityCredentials = {
-      accessKeyId: 'test_accessKeyId',
-      secretAccessKey: 'test_secretAccessKey',
-      sessionToken: 'test_sessionToken',
-    };
-    chai.expect(instance.securityCredentials).to.be.eql(defaultSecurityCredentials);
-    instance.securityCredentials = securityCredentials;
-    chai.expect(instance.securityCredentials).to.be.eql(securityCredentials);
+  test('Check security() setter sets _security={}', function() {
+    instance.security = null;
+    chai.expect(instance.security).to.be.equal(null);
+    instance.security = {};
+    chai.expect(instance.security).to.be.eql({});
   });
 
   test('Check has() method returns false', function() {

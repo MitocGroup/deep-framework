@@ -18,7 +18,7 @@ suite('AWS/Lambda/ErrorResponse', function() {
     chai.expect(typeof ErrorResponse).to.equal('function');
   });
 
-  test('Check constructor sets _runtimeContext=null', function() {
+  test('Check constructor sets _runtimeContext = null', function() {
     chai.expect(errorResponse.runtimeContext).to.be.equal(null);
   });
 
@@ -26,11 +26,11 @@ suite('AWS/Lambda/ErrorResponse', function() {
     chai.expect(errorResponse.data).to.be.equal(data);
   });
 
-  test('Check contextMethod getter returns \'fail\'', function() {
+  test('Check contextMethod getter returns "fail"', function() {
     chai.expect(errorResponse.contextMethod).to.be.equal('fail');
   });
 
-  test(`Check send() method throws MissingRuntimeContextException exception for empty _runtimeContext`, function() {
+  test('Check send() method throws MissingRuntimeContextException exception for empty _runtimeContext', function() {
     let error = null;
     try {
       errorResponse.send();
@@ -41,9 +41,7 @@ suite('AWS/Lambda/ErrorResponse', function() {
     chai.expect(error).to.be.an.instanceof(MissingRuntimeContextException);
   });
 
-  test(`Check send() method returns valid object`, function() {
-    let error = null;
-    let actualResult = null;
+  test('Check send() method returns valid object', function() {
     let expectedResult = {
       _data: {
         firstKey: 'firstValue',
@@ -57,13 +55,6 @@ suite('AWS/Lambda/ErrorResponse', function() {
     errorResponse.runtimeContext = runtimeContext;
     expectedResult._runtimeContext.fail = errorResponse.runtimeContext.fail;
     chai.expect(errorResponse.runtimeContext).to.be.eql(runtimeContext);
-    try {
-      actualResult = errorResponse.send();
-    } catch (e) {
-      error = e;
-      chai.expect(error).to.be.equal(null);
-    }
-
-    chai.expect(actualResult).to.be.eql(expectedResult);
+    chai.expect(errorResponse.send()).to.be.eql(expectedResult);
   });
 });
