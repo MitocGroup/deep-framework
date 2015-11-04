@@ -40,14 +40,7 @@ suite('Microservice/Instance', function() {
   });
 
   test('Check createVector() static method returns valid vector', function() {
-    let globalConfig = {
-      microservices: {
-        deepRoot: 'CoreRoot',
-        deepAuth: 'Auth',
-        deepBilling: 'Billing',
-      },
-    };
-    let actualResult = Instance.createVector(globalConfig);
+    let actualResult = Instance.createVector(backendConfig);
 
     //check if all items are objects of Instance
     chai.expect(actualResult.length).to.be.equal(3);
