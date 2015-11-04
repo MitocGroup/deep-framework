@@ -4,12 +4,12 @@ import chai from 'chai';
 import {ObjectVector} from '../../lib.compiled/Generic/ObjectVector';
 
 suite('Generic/ObjectVector', function() {
-  var testProto = () => {
+  var TestProto = () => {
     return 'test';
   };
-  let firstItemToAdd = new testProto();
+  let firstItemToAdd = new TestProto();
   firstItemToAdd.testData = 'firstItemToAdd';
-  let secondItemToAdd = new testProto();
+  let secondItemToAdd = new TestProto();
   secondItemToAdd.testData = 'secondItemToAdd';
   let thirdItemToAdd = {testData: 'thirdItemToAdd'};
   let objectVector = null;
