@@ -3,8 +3,8 @@ DEEP Framework
 
 [![NPM Version](https://img.shields.io/npm/v/deep-framework.svg)](https://npmjs.org/package/deep-framework)
 [![Build Status](https://travis-ci.org/MitocGroup/deep-framework.svg)](https://travis-ci.org/MitocGroup/deep-framework)
-[![Codacy Badge](https://api.codacy.com/project/badge/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
-[![Coverage Status](https://coveralls.io/repos/MitocGroup/deep-framework/badge.svg?service=github)](https://coveralls.io/github/MitocGroup/deep-framework)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
+[![Codacy Badge](https://api.codacy.com/project/badge/coverage/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
 `DEEP Framework` is a 
@@ -20,18 +20,18 @@ only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are 
 
 To see the power of `DEEP Framework`, execute the following 4 simple steps in command line:
 
-1. Install DEEP CLI, also known as deepify: `npm install deepify -g`
+1. `npm install deepify -g` # Install DEEP CLI, also known as deepify
 > deepify is a collection of tools that empower developers and devops engineers to automate
 the management of web apps built on top of DEEP ecosystem.
 
-2. Using deepify, dump locally the helloworld example: `deepify helloworld ~/deep-hello-world`
+2. `deepify helloworld ~/deep-hello-world` # Using deepify, dump locally the helloworld example
 > deepify will clone the repository from GitHub and pull all the dependencies in one place.
 
-3. Using deepify, run locally the helloworld example: `deepify server ~/deep-hello-world -o`
+3. `deepify server ~/deep-hello-world -o` # Using deepify, run locally the helloworld example
 > deepify launches a web server that can be used for local development, without making calls
 to web services from cloud providers like AWS.
 
-4. Using deepify, deploy to AWS the helloworld example: `deepify deploy ~/deep-hello-world`
+4. `deepify deploy ~/deep-hello-world` # Using deepify, deploy to AWS the helloworld example
 > deepify provisions the infrastructure and deploys the web app, empowering developers and
 devops engineers to automate the process.
 
@@ -146,18 +146,17 @@ Our short-to-medium-term roadmap items, in order of descending priority:
 
 Feature | Details | Owner
 --------|---------|------
-Implement deep-security base | To be updated | [@mgoria](https://github.com/mgoria)
-Implement deep-security UI | To be updated | [@mgoria](https://github.com/mgoria)
-Implement deep-event library (Lambda scheduling, Kinesis stream, Dynamo stream, SQS, etc) | To be updated | [@alexanderc](https://github.com/alexanderc)
-Implement deep-db "eventual consistency" by offloading data to SQS as the default option | To be updated | [@alexanderc](https://github.com/alexanderc)
-Improve deep-db "strong consistency" by adding R/W increases in runtime (as other option for special DB operations) | To be updated | [@alexanderc](https://github.com/alexanderc)
-Integrate deep-db with deep-cache natively (blocked by VPC support in Lambda) | To be updated | [@alexanderc](https://github.com/alexanderc)
-Implement deep-cache powered by Elasticache (redis) inside Lambdas (blocked by VPC support in Lambda) | To be updated | [@alexanderc](https://github.com/alexanderc)
-Implement deep-search on top of Amazon CloudSearch + Amazon Elasticsearch Service | To be updated | [@alexanderc](https://github.com/alexanderc)
-Implement RUM as part of deep-logs (realtime user monitoring) | To be updated | [@alexanderc](https://github.com/alexanderc)
-Optimize the framework to reduce the size of Lambda functions | To be updated | [@alexanderc](https://github.com/alexanderc)
-Improve documentation for each deep-* library | To be updated | [@alexanderc](https://github.com/alexanderc)
-Implement backend > frontend notifications as part of deep-notification on top of SNS | To be updated | [@alexanderc](https://github.com/alexanderc)
+Implement deep-security | Security service on top of [IAM](https://aws.amazon.com/iam/) | [@mgoria](https://github.com/mgoria)
+Implement deep-notification | Push notification service on top of [SNS](https://aws.amazon.com/sns/) that supports push to mobile devices, web browsers, email and sms. | [@alexanderc](https://github.com/alexanderc)
+Implement deep-search | Full text search service on top of [Amazon CloudSearch](https://aws.amazon.com/cloudsearch/) | [@alexanderc](https://github.com/alexanderc)
+Implement deep-event | Event manager service using Lambda scheduling, Kinesis stream, Dynamo streaming, SQS, etc. | ...
+Implement deep-db "eventual consistency" | Achieve "eventual consistency" by offloading data to [SQS](https://aws.amazon.com/sqs/) as the default option | [@alexanderc](https://github.com/alexanderc)
+Improve deep-db "strong consistency" | Achieve "strong consistency" by increasing Reads/Writes per second in runtime (as other option for special DB operations) | ...
+Integrate deep-db with deep-cache natively (blocked by VPC support in Lambda) | Cache fetched data by default using deep-cache library | ...
+Implement deep-cache | Cache service on top of [Elasticache](https://aws.amazon.com/elasticache/) ([Redis](http://redis.io)) inside Lambdas (blocked by VPC support in Lambda) | ...
+Implement [RUM](https://en.wikipedia.org/wiki/Real_user_monitoring) as part of deep-logs | Achieve real user monitoring by logging all user actions and visualize them with an [ELK stack](https://www.elastic.co/webinars/introduction-elk-stack) | ...
+Optimize the framework to reduce the size of Lambda functions | Optimize deps and packing as well as browserify process to reduce framework size | [@alexanderc](https://github.com/alexanderc)
+Improve documentation for each deep-* library | Update docs for deep libraries and development tools | [@alexanderc](https://github.com/alexanderc) [@mgoria](https://github.com/mgoria)
 
 ### Changelog
 

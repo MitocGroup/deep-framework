@@ -24,7 +24,6 @@ suite('AWS/Lambda/Runtime', function() {
   let event = {event: 'runLambda'};
   let context = {context: 'simpleContext'};
   let data = {data: 'responseData'};
-
   let runtimeTest = new RuntimeTest(kernel);
 
   test('Class Runtime exists in AWS/Lambda/Runtime', function() {
@@ -83,6 +82,4 @@ suite('AWS/Lambda/Runtime', function() {
     chai.expect(typeof functionResult).to.be.equal('function');
     let actualResult = functionResult(event, context);
   });
-
-  //todo - Need to add test for _addExceptionListener
 });

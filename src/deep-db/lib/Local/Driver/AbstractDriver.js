@@ -157,10 +157,12 @@ export class AbstractDriver extends Core.OOP.Interface {
   }
 
   /**
+   * @todo: decrease it when local-dynamo fixed
+   *
    * @returns {Number}
    */
   static get DEFAULT_TTS() {
-    return 20;
+    return 60;
   }
 
   /**

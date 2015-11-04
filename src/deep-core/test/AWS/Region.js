@@ -10,43 +10,43 @@ suite('AWS/Region', function() {
     chai.expect(typeof Region).to.equal('function');
   });
 
-  test('Check ANY static getter returns \'*\'', function() {
+  test('Check ANY static getter returns "*"', function() {
     chai.expect(Region.ANY).to.be.equal('*');
   });
 
-  test('Check ASIA_PACIFIC_TOKYO static getter returns \'ap-northeast-1\'', function() {
+  test('Check ASIA_PACIFIC_TOKYO static getter returns "ap-northeast-1"', function() {
     chai.expect(Region.ASIA_PACIFIC_TOKYO).to.be.equal('ap-northeast-1');
   });
 
-  test('Check ASIA_PACIFIC_SINGAPORE static getter returns \'ap-southeast-1\'', function() {
+  test('Check ASIA_PACIFIC_SINGAPORE static getter returns "ap-southeast-1"', function() {
     chai.expect(Region.ASIA_PACIFIC_SINGAPORE).to.be.equal('ap-southeast-1');
   });
 
-  test('Check ASIA_PACIFIC_SYDNEY static getter returns \'ap-southeast-2\'', function() {
+  test('Check ASIA_PACIFIC_SYDNEY static getter returns "ap-southeast-2"', function() {
     chai.expect(Region.ASIA_PACIFIC_SYDNEY).to.be.equal('ap-southeast-2');
   });
 
-  test('Check EU_FRANKFURT static getter returns \'eu-central-1\'', function() {
+  test('Check EU_FRANKFURT static getter returns "eu-central-1"', function() {
     chai.expect(Region.EU_FRANKFURT).to.be.equal('eu-central-1');
   });
 
-  test('Check EU_IRELAND static getter returns \'eu-west-1\'', function() {
+  test('Check EU_IRELAND static getter returns "eu-west-1"', function() {
     chai.expect(Region.EU_IRELAND).to.be.equal('eu-west-1');
   });
 
-  test('Check SOUTH_AMERICA_SAO_PAULO static getter returns \'sa-east-1\'', function() {
+  test('Check SOUTH_AMERICA_SAO_PAULO static getter returns "sa-east-1"', function() {
     chai.expect(Region.SOUTH_AMERICA_SAO_PAULO).to.be.equal('sa-east-1');
   });
 
-  test('Check US_EAST_N_VIRGINIA static getter returns \'us-east-1\'', function() {
+  test('Check US_EAST_N_VIRGINIA static getter returns "us-east-1"', function() {
     chai.expect(Region.US_EAST_N_VIRGINIA).to.be.equal('us-east-1');
   });
 
-  test('Check US_WEST_N_CALIFORNIA static getter returns \'us-west-1\'', function() {
+  test('Check US_WEST_N_CALIFORNIA static getter returns "us-west-1"', function() {
     chai.expect(Region.US_WEST_N_CALIFORNIA).to.be.equal('us-west-1');
   });
 
-  test('Check US_WEST_OREGON static getter returns \'us-west-2\'', function() {
+  test('Check US_WEST_OREGON static getter returns "us-west-2"', function() {
     chai.expect(Region.US_WEST_OREGON).to.be.equal('us-west-2');
   });
 
@@ -97,11 +97,15 @@ suite('AWS/Region', function() {
     chai.expect(Region.getAppropriateAwsRegion('eu-region-1', [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA, Region.EU_FRANKFURT])).to.be.equal(Region.EU_FRANKFURT);
   });
 
-  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as ANY for default', function() {
+  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as US_EAST_N_VIRGINIA for default', function() {
     chai.expect(Region.getAppropriateAwsRegion(Region.US_EAST_N_VIRGINIA, [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA, Region.EU_FRANKFURT, Region.ANY])).to.be.equal(Region.US_EAST_N_VIRGINIA);
   });
 
-  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as ANY for default', function() {
+  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as "eu-region-1" for default', function() {
     chai.expect(Region.getAppropriateAwsRegion('eu-region-1', [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA])).to.be.equal(Region.US_WEST_N_CALIFORNIA);
+  });
+
+  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as "default" for default', function() {
+    chai.expect(Region.getAppropriateAwsRegion('default', [Region.US_EAST_N_VIRGINIA, Region.ANY])).to.be.equal('default');
   });
 });

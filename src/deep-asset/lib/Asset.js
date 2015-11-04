@@ -37,7 +37,7 @@ export class Asset extends Kernel.ContainerAware {
           continue;
         }
 
-        loadVector.push(this.bind(microservice).locate('bootstrap.js'));
+        loadVector.push(this.locate(`@${microservice.identifier}:bootstrap.js`));
       }
 
       kernel.container.addParameter(
@@ -50,13 +50,12 @@ export class Asset extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {String} object
+   * @param {String} assetIdentifier (e.g. @microservice_identifier:asset_path)
    * @param {String} suffix
    * @returns {String}
    */
-  locate(object, suffix = '') {
-    // binds working microservice if specified in object parameter
-    let path = this._resolvePath(object);
+  locate(assetIdentifier, suffix = '') {
+    let path = this._resolveIdentifier(assetIdentifier);
 
     if (this.microservice.isRoot) {
       return Path.join(path) + suffix;

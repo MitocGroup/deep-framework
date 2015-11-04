@@ -9,7 +9,7 @@ suite('AWS/IAM/Action', function() {
   let action = new Action();
   let actionName = 'GET';
   let validServiceName = 'sns';
-  let invalidServiceName = 'invalidServiceTest'
+  let invalidServiceName = 'invalidServiceTest';
 
   test('Class Action exists in AWS/IAM/Action', function() {
     chai.expect(typeof Action).to.equal('function');

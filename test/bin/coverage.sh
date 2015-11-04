@@ -15,10 +15,9 @@ COVERAGE_PATH=${__SCRIPT_PATH}"/../coverage"
 istanbul-combine -d ${COVERAGE_PATH} -r lcov -p none \
   ${__SRC_PATH}/*/coverage/*.json
 
-### Upload Coverage info to Codacy and Coveralls ###
+### Upload Coverage info to Codacy ###
 
 cat ${COVERAGE_PATH}"/lcov.info" | codacy-coverage
-cat ${COVERAGE_PATH}"/lcov.info" | coveralls
 
 ### Cleanup! ###
 
