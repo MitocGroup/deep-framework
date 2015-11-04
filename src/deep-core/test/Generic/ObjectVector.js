@@ -21,7 +21,7 @@ suite('Generic/ObjectVector', function() {
   test('Check constructor throws exception for invalid input', function() {
     let error = null;
     try {
-      new ObjectVector(testProto, firstItemToAdd, secondItemToAdd, thirdItemToAdd);
+      new ObjectVector(TestProto, firstItemToAdd, secondItemToAdd, thirdItemToAdd);
     } catch (e) {
       error = e;
     }
@@ -30,7 +30,7 @@ suite('Generic/ObjectVector', function() {
   });
 
   test('Check constructor for valid input', function() {
-    objectVector = new ObjectVector(testProto, firstItemToAdd, secondItemToAdd);
+    objectVector = new ObjectVector(TestProto, firstItemToAdd, secondItemToAdd);
     chai.expect(objectVector.collection).to.be.eql([firstItemToAdd, secondItemToAdd]);
   });
 });
