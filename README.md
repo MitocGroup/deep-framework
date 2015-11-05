@@ -3,15 +3,17 @@ DEEP Framework
 
 [![NPM Version](https://img.shields.io/npm/v/deep-framework.svg)](https://npmjs.org/package/deep-framework)
 [![Build Status](https://travis-ci.org/MitocGroup/deep-framework.svg)](https://travis-ci.org/MitocGroup/deep-framework)
-[![Codacy Badge](https://api.codacy.com/project/badge/grade/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![Codacy Badge](https://api.codacy.com/project/badge/coverage/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-`DEEP Framework` is a 
-[core component](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem)
-of the Platform-as-a-Service that abstracts web services from specific cloud providers. At this moment 
-only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are encouraged to add support for
-[Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](https://cloud.google.com/), and so on.
+`DEEP Framework` is a core component of the 
+[Platform-as-a-Service](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem) 
+that abstracts web services from specific cloud providers. This framework enables developers build web applications 
+or platforms using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) in a completely 
+[serverless approach](https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture). 
+
+> At this moment only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are encouraged to add support 
+for [Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](https://cloud.google.com/), and so on.
 
 ## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
@@ -199,4 +201,4 @@ does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, ver
 (let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
 as web apps into their own accounts on AWS (or other cloud providers).
 
-> In summary: DEEP empowers lego consumers to rent curated lego pieces from lego producers.
+> In summary: We empowers lego consumers to license curated lego pieces from lego producers.
