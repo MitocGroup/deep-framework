@@ -6,6 +6,7 @@
 import {Interface} from '../../OOP/Interface';
 import {Response} from './Response';
 import {Request} from './Request';
+import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';
 
 /**
  * Lambda runtime context
@@ -20,6 +21,8 @@ export class Runtime extends Interface {
     this._kernel = kernel;
     this._request = null;
     this._context = null;
+
+    this._loggedUserId = null;
   }
 
   /**
@@ -106,5 +109,39 @@ export class Runtime extends Interface {
    */
   get request() {
     return this._request;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get securityService() {
+    return this.kernel.get('security');
+  }
+
+  /**
+   * Retrieves logged user id from lambda context
+   *
+   * @returns {String|null}
+   */
+  get loggedUserId() {
+    if (this._loggedUserId) {
+      return this._loggedUserId;
+    }
+
+    if (this._context &&
+      this._context.hasOwnProperty('identity') &&
+      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&
+      this._context.identity.hasOwnProperty('cognitoIdentityId')
+    ) {
+      let identityPoolId = this._context.identity.cognitoIdentityPoolId;
+
+      if (this.securityService.identityPoolId !== identityPoolId) {
+        throw new InvalidCognitoIdentityException(identityPoolId);
+      }
+
+      this._loggedUserId = this._context.identity.cognitoIdentityId;
+    }
+
+    return this._loggedUserId;
   }
 }
