@@ -23,7 +23,6 @@ export class Runtime extends Interface {
     this._context = null;
 
     this._loggedUserId = null;
-    this._loggedUser = null;
   }
 
   /**
@@ -117,25 +116,6 @@ export class Runtime extends Interface {
    */
   get securityService() {
     return this.kernel.get('security');
-  }
-
-  /**
-   * @param {Function} callback
-   * @returns {Object|null}
-   */
-  loadLoggedUser(callback) {
-    if (this._loggedUser) {
-      return callback(this._loggedUser);
-    }
-
-    if (this.loggedUserId) {
-      this.securityService.userProvider.loadUserByIdentityId(this.loggedUserId, (user) => {
-        this._loggedUser = user;
-        callback(this._loggedUser);
-      });
-    } else {
-      callback(null);
-    }
   }
 
   /**
