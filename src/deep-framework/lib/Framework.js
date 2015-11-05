@@ -10,11 +10,20 @@ import DeepCore from 'deep-core';
 export class Framework {
   /**
    * @param {Object} servicesMap
+   * @param {String} context
    */
-  constructor(servicesMap) {
+  constructor(servicesMap, context) {
+    this._context = context;
     this._services = this._resolveServicesMap(servicesMap);
-    this._version = Framework._rawRersion;
+    this._version = require('../../package.json').version;
     this._kernelsMap = {};
+  }
+
+  /**
+   * @returns {String}
+   */
+  get context() {
+    return this._context;
   }
 
   /**
@@ -53,7 +62,7 @@ export class Framework {
       return this._kernelsMap[id];
     }
 
-    this._kernelsMap[id] = this.Kernel;
+    this._kernelsMap[id] = this._createKernel();
 
     return this._kernelsMap[id];
   }
@@ -65,7 +74,7 @@ export class Framework {
    * @constructor
    */
   get Kernel() {
-    return Framework._createKernel(this._services);
+    return this.KernelCached('');
   }
 
   /**
@@ -77,18 +86,10 @@ export class Framework {
   }
 
   /**
-   * @param {Object} services
+   * @returns {Kernel}
    * @private
    */
-  static _createKernel(services) {
-    return new Kernel(services, Kernel.BACKEND_CONTEXT);
-  }
-
-  /**
-   * @returns {String}
-   * @private
-   */
-  static get _rawRersion() {
-    return require('../../package.json').version;
+  _createKernel() {
+    return new Kernel(this._services, this._context);
   }
 }

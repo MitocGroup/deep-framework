@@ -1,29 +1,21 @@
 /**
  * Created by AlexanderC on 5/22/15.
- *
- * Bootstrap file loaded by npm as main
  */
 
 'use strict';
 
-let Kernel = require('deep-kernel');
+import {Framework} from './Framework';
 
-let services = {
-  Asset: require('deep-asset'),
-  Cache: require('deep-cache'),
-  DB: require('deep-db'),
-  FS: require('deep-fs'),
-  Security: require('deep-security'),
-  Resource: require('deep-resource'),
-  Log: require('deep-log'),
-  Validation: require('deep-validation'),
+let exports = module.exports = new Framework({
+  Asset: 'deep-asset',
+  Cache: 'deep-cache',
+  DB: 'deep-db',
+  FS: 'deep-fs',
+  Security: 'deep-security',
+  Resource: 'deep-resource',
+  Log: 'deep-log',
+  Validation: 'deep-validation',
 
-  //Notification: require('deep-notification'),
-  //Event: require('deep-event'),
-};
-
-let exports = module.exports = {
-  Kernel: new Kernel(services, Kernel.BACKEND_CONTEXT),
-  Core: require('deep-core'),
-  version: require('../package.json').version,
-};
+  //Notification: 'deep-notification',
+  //Event: 'deep-event',
+}, Kernel.BACKEND_CONTEXT);
