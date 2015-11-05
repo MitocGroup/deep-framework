@@ -20,6 +20,25 @@ export class Runtime extends Interface {
     this._kernel = kernel;
     this._request = null;
     this._context = null;
+    this._allowMissingUserContext = false;
+
+    this._fillDenyMissingUserContextOption();
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get allowMissingUserContext() {
+    return this._allowMissingUserContext;
+  }
+
+  /**
+   * @private
+   */
+  _fillDenyMissingUserContextOption() {
+    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {
+      this._allowMissingUserContext = this._kernel.config.forceUserIdentity;
+    }
   }
 
   /**
@@ -50,6 +69,11 @@ export class Runtime extends Interface {
 
     this._context = context;
     this._request = new Request(event);
+
+    if (!this._allowMissingUserContext) {
+
+    }
+
     this.handle(this._request);
 
     return this;
@@ -86,6 +110,7 @@ export class Runtime extends Interface {
     }
 
     let response = new Response(oError);
+
     response.runtimeContext = this._context;
 
     return response;
