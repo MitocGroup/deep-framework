@@ -21,26 +21,21 @@ export class Instance {
     this._actions = null;
     this._localBackend = false;
     this._cache = null;
-
-    this._securityCredentials = {
-      accessKeyId: null,
-      secretAccessKey: null,
-      sessionToken: null,
-    };
+    this._security = null;
   }
 
   /**
    * @returns {Object}
    */
-  get securityCredentials() {
-    return this._securityCredentials;
+  get security() {
+    return this._security;
   }
 
   /**
-   * @param {Object} credentials
+   * @param {Object} security
    */
-  set securityCredentials(credentials) {
-    this._securityCredentials = credentials;
+  set security(security) {
+    this._security = security;
   }
 
   /**

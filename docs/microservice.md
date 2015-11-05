@@ -7,6 +7,7 @@ Structure
 - `DeepHelloWorld`/
     - `Frontend`/ # @see [structure](structure/frontend.md)
         - `.deepignore` # @see [docs](config/.deepignore.md)
+        - `.deepinjectignore` # @see [docs](config/.deepinjectignore.md)
         - `_build` # If exists, DEEP uses this folder by default and ignores everything else in `Frontend`
         - `bootstrap.js` # **required**
         - `index.html` # **required** for root microservice
