@@ -15,7 +15,7 @@ export class Framework {
   constructor(servicesMap, context) {
     this._context = context;
     this._services = this._resolveServicesMap(servicesMap);
-    this._version = require('../../package.json').version;
+    this._version = require('../package.json').version;
     this._kernelsMap = {};
   }
 
@@ -50,14 +50,14 @@ export class Framework {
    * @sample:
    * ```
    * exports.handler = function (event, context) {
-   *   DeepFramework.KernelFromLambdaContext(context).loadFromFile("_config.json", function (deepKernel) {
+   *   DeepFramework.Kernel(context).loadFromFile("_config.json", function (deepKernel) {
    *     new Handler(deepKernel).run(event, context);
    *   });
    * };
-   * KernelFromLambdaContext
+   * Kernel
    * ```
    */
-  KernelFromLambdaContext(context) {
+  Kernel(context) {
     let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
 
     if (context.hasOwnProperty('identity')
