@@ -27,25 +27,6 @@ export class Framework {
   }
 
   /**
-   * @param {Object} servicesMap
-   * @returns {Object}
-   * @private
-   */
-  _resolveServicesMap(servicesMap) {
-    let services = {};
-
-    for (let serviceName in servicesMap) {
-      if (!servicesMap.hasOwnProperty(serviceName)) {
-        continue;
-      }
-
-      services[serviceName] = require(servicesMap[serviceName]);
-    }
-
-    return services;
-  }
-
-  /**
    * @returns {String}
    */
   get version() {
@@ -83,6 +64,25 @@ export class Framework {
    */
   get Core() {
     return DeepCore;
+  }
+
+  /**
+   * @param {Object} servicesMap
+   * @returns {Object}
+   * @private
+   */
+  _resolveServicesMap(servicesMap) {
+    let services = {};
+
+    for (let serviceName in servicesMap) {
+      if (!servicesMap.hasOwnProperty(serviceName)) {
+        continue;
+      }
+
+      services[serviceName] = require(servicesMap[serviceName]);
+    }
+
+    return services;
   }
 
   /**
