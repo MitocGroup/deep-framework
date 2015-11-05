@@ -15,4 +15,4 @@ let exports = module.exports = new Framework({
   Validation: 'deep-validation',
 
   //Notification: 'deep-notification',
-}, Kernel.FRONTEND_CONTEXT);
+}, Framework.FRONTEND_CONTEXT);

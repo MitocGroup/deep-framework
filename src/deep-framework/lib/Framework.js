@@ -122,4 +122,18 @@ export class Framework {
   _createKernel() {
     return new Kernel(this._services, this._context);
   }
+
+  /**
+   * @returns {String}
+   */
+  static get BACKEND_CONTEXT() {
+    return Kernel.BACKEND_CONTEXT;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get FRONTEND_CONTEXT() {
+    return Kernel.FRONTEND_CONTEXT;
+  }
 }

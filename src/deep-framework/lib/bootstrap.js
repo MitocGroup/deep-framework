@@ -18,4 +18,4 @@ let exports = module.exports = new Framework({
 
   //Notification: 'deep-notification',
   //Event: 'deep-event',
-}, Kernel.BACKEND_CONTEXT);
+}, Framework.BACKEND_CONTEXT);
