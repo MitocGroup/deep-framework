@@ -20,6 +20,13 @@ export class Framework {
   }
 
   /**
+   * @returns {string}
+   */
+  static get ANONYMOUS_IDENTITY_KEY() {
+    return 'anonymous';
+  }
+
+  /**
    * @returns {String}
    */
   get context() {
@@ -51,16 +58,16 @@ export class Framework {
    * ```
    */
   KernelFromLambdaContext(context) {
-    let kernelId = '';
+    let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
 
     if (context.hasOwnProperty('identity')
       && context.identity.hasOwnProperty('cognitoIdentityPoolId')
       && context.identity.hasOwnProperty('cognitoIdentityId')) {
 
-      kernelId = this._context.identity.cognitoIdentityPoolId;
+      identityId = this._context.identity.cognitoIdentityId;
     }
 
-    return this.KernelCached(kernelId);
+    return this._kernelCached(identityId);
   }
 
   /**
@@ -68,7 +75,7 @@ export class Framework {
    * @returns {Kernel}
    * @constructor
    */
-  KernelCached(id) {
+  _kernelCached(id) {
     if (this._kernelsMap.hasOwnProperty(id)) {
       return this._kernelsMap[id];
     }
@@ -85,7 +92,7 @@ export class Framework {
    * @constructor
    */
   get Kernel() {
-    return this.KernelCached('');
+    return this._kernelCached(Framework.ANONYMOUS_IDENTITY_KEY);
   }
 
   /**
