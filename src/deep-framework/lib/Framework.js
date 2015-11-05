@@ -34,10 +34,21 @@ export class Framework {
   }
 
   /**
+   *
    * @todo: improve it
    *
    * @param {Object} context
    * @returns {Kernel}
+   *
+   * @sample:
+   * ```
+   * exports.handler = function (event, context) {
+   *   DeepFramework.KernelFromLambdaContext(context).loadFromFile("_config.json", function (deepKernel) {
+   *     new Handler(deepKernel).run(event, context);
+   *   });
+   * };
+   * KernelFromLambdaContext
+   * ```
    */
   KernelFromLambdaContext(context) {
     let kernelId = '';
