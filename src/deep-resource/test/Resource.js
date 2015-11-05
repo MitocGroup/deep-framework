@@ -14,7 +14,7 @@ chai.use(sinonChai);
 
 suite('Resource', function() {
   let testResources = {
-    'hello.world.example': {
+    'hello_world_example': {
       sample: {
         'say-bye': {
           type: 'lambda',
@@ -46,7 +46,7 @@ suite('Resource', function() {
       },
     },
   };
-  let microserviceIdentifier = 'hello.world.example';
+  let microserviceIdentifier = 'hello_world_example';
   let microserviceInstance = new Instance(microserviceIdentifier, testResources[microserviceIdentifier]);
   let resource = null;
   let resourceName = 'sample';
@@ -81,7 +81,7 @@ suite('Resource', function() {
   });
 
   test('Check constructor sets _resources', function() {
-    chai.expect(Object.keys(resource._resources)).to.be.eql(['hello.world.example', 'deep.ng.root']);
+    chai.expect(Object.keys(resource._resources)).to.be.eql(['hello_world_example', 'deep_ng_root']);
     chai.expect(resource._resources).to.be.not.eql({});
   });
 

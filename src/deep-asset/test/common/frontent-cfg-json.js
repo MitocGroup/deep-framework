@@ -15,7 +15,7 @@ export default {
     "www.amazon.com": "amzn1.application.5g5k2jb86379368kjh5b23kj5hb"
   },
   "microservices": {
-    "hello.world.example": {
+    "hello_world_example": {
       "isRoot": false,
       "parameters": {},
       "resources": {
@@ -59,7 +59,7 @@ export default {
         }
       }
     },
-    "deep.ng.root": {
+    "deep_ng_root": {
       "isRoot": true,
       "parameters": {},
       "resources": {}

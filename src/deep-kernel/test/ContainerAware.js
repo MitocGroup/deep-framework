@@ -6,6 +6,7 @@ import sinonChai from 'sinon-chai';
 import {ContainerAware} from '../lib.compiled/ContainerAware';
 import {Instance} from '../lib.compiled/Microservice/Instance';
 import {DI} from '../node_modules/deep-di/lib.compiled/DI';
+import {InvalidDeepIdentifierException} from '../lib.compiled/Exception/InvalidDeepIdentifierException';
 import backendConfig from './common/backend-cfg-json';
 
 chai.use(sinonChai);
@@ -13,7 +14,7 @@ chai.use(sinonChai);
 suite('ContainerAware', function() {
 
   let containerAware = new ContainerAware();
-  let microserviceIdentifier = 'hello.world.example';
+  let microserviceIdentifier = 'hello_world_example';
   let testResources = backendConfig.microservices;
 
   test('Class ContainerAware exists in ContainerAware', function() {
@@ -53,8 +54,21 @@ suite('ContainerAware', function() {
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
+  test('Check _resolveIdentifier() throws InvalidDeepIdentifierException ' +
+    'for invalid identifier', function() {
+    let error = null;
+    try {
+      containerAware._resolveIdentifier('invalid.identifier:resource');
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(error, InvalidDeepIdentifierException,
+      'error is an instance of InvalidDeepIdentifierException');
+  });
+
   //test('Check _resolveIdentifier() method for string', function() {
-  //  let inputData = '@mitocgroup.test:resource';
+  //  let inputData = '@hello_world_example:sample';
   //  let error = null;
   //  let actualResult = null;
   //  try {
@@ -66,38 +80,52 @@ suite('ContainerAware', function() {
   //  chai.expect(error).to.equal(null);
   //  chai.expect(actualResult).to.eql('fdsfsd');
   //});
-  //
-  //test('Check container setter sets object correctly', function() {
-  //  let error = null;
-  //  let di = null;
-  //  try {
-  //    //create dependency injection micro container
-  //    di = new DI();
-  //
-  //    //add microservice
-  //    di.addService(microserviceIdentifier, testResources[microserviceIdentifier]);
-  //    containerAware.container = di;
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(containerAware.container).to.be.eql(di);
-  //  chai.expect(containerAware.container.get(microserviceIdentifier)).to.be.eql(testResources[microserviceIdentifier]);
-  //});
 
-  //test('Check bind(microservice) method when microservice is not a string', function() {
-  //  let error = null;
-  //  let microservice = null;
-  //  try {
-  //    //create microservice instance to bind
-  //    microservice = new Instance(microserviceIdentifier, testResources[microserviceIdentifier]);
-  //    containerAware.bind(microservice);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.equal(null);
-  //  chai.expect(containerAware.container._bottle).to.be.not.eql({});
-  //});
+  test('Check container setter sets object correctly', function() {
+    let error = null;
+    let di = null;
+    let actualResult = null;
+    try {
+      //create dependency injection micro container
+      di = new DI();
+
+      //add microservice
+      di.addService(microserviceIdentifier, testResources[microserviceIdentifier]);
+
+      containerAware.container = di;
+      actualResult = containerAware.container.get('hello_world_example');
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.equal(null);
+    //chai.expect(di._bottle.container).to.be.eql({});
+    chai.expect(actualResult).to.eql(testResources[microserviceIdentifier]);
+  });
+
+
+  test('Check bind(microservice) method when microservice is not a string',
+    function() {
+      let resourcesToBind = {
+        'deep-test': {
+          test: {
+            create: {
+              description: 'Lambda for creating test',
+              type: 'lambda',
+              methods: [
+                'POST',
+              ],
+              source: 'src/Test/Create',
+            },
+          },
+        },
+      };
+      let microserviceIdentifierToBind = 'deep-test';
+
+      //create microservice instance to bind
+      let microservice = new Instance(microserviceIdentifierToBind,
+        resourcesToBind[microserviceIdentifierToBind]);
+      containerAware.bind(microservice);
+      chai.expect(containerAware.microservice).to.be.eql(microservice);
+    });
 });

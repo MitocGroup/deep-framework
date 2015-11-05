@@ -222,7 +222,6 @@ suite('Kernel', function() {
     chai.expect(spyCallback).to.have.been.calledWith(kernel);
   });
 
-
   test('Check loadFromFile() !_isLoaded', function() {
     let error = null;
     let spyCallback = sinon.spy();
