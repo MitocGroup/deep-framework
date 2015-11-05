@@ -60,9 +60,9 @@ export class Framework {
   KernelFromLambdaContext(lambdaContext) {
     let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
 
-    if (lambdaContext.hasOwnProperty('identity')
-      && lambdaContext.identity.hasOwnProperty('cognitoIdentityPoolId')
-      && lambdaContext.identity.hasOwnProperty('cognitoIdentityId')) {
+    if (lambdaContext.hasOwnProperty('identity') &&
+      lambdaContext.identity.hasOwnProperty('cognitoIdentityPoolId') &&
+      lambdaContext.identity.hasOwnProperty('cognitoIdentityId')) {
 
       identityId = lambdaContext.identity.cognitoIdentityId;
     }
