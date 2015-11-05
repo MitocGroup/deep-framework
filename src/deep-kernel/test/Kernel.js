@@ -181,8 +181,8 @@ suite('Kernel', function() {
     backendKernelFromFile.loadFromFile('./test/common/backend-cfg.json', callback);
   });
 
-  test('Check microservice() method return microservice for "hello_world_example"', function() {
-    let actualResult = backendKernelInstance.microservice('hello_world_example');
+  test('Check microservice() method return microservice for "hello.world.example"', function() {
+    let actualResult = backendKernelInstance.microservice('hello.world.example');
     chai.assert.instanceOf(actualResult, Instance, 'result is an instance of Microservice');
   });
 

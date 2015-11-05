@@ -15,7 +15,7 @@ export default {
     "www.amazon.com": "amzn1.application.5g5k2jb86379368kjh5b23kj5hb"
   },
   "microservices": {
-    "hello_world_example": {
+    "hello.world.example": {
       "isRoot": false,
       "parameters": {},
       "resources": {
@@ -59,7 +59,7 @@ export default {
         }
       }
     },
-    "deep_ng_root": {
+    "deep.ng.root": {
       "isRoot": true,
       "parameters": {},
       "resources": {}
@@ -73,7 +73,7 @@ export default {
       }
     }
   },
-  "microserviceIdentifier": "hello_world_example",
+  "microserviceIdentifier": "hello.world.example",
   "awsAccountId": 389615756922,
   "appIdentifier": "45asd88620d1e4eea543",
   "timestamp": 1445867176360,

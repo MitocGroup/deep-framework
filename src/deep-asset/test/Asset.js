@@ -41,7 +41,7 @@ suite('Asset', function() {
 
   test('Check boot() method  for kernel.isFrontend', function() {
     let spyCallback = sinon.spy();
-    let expectedResult = ['hello_world_example/bootstrap.js'];
+    let expectedResult = ['hello.world.example/bootstrap.js'];
     assetService.boot(frontendKernelInstance, spyCallback);
     chai.expect(frontendKernelInstance.get(Kernel.FRONTEND_BOOTSTRAP_VECTOR)).to.be.eql(expectedResult);
     chai.expect(spyCallback).to.have.been.calledWith();
@@ -49,13 +49,13 @@ suite('Asset', function() {
 
   test('Check locate() method returns valid string for isRoot', function() {
     let expectedResult = 'bootstrap.js';
-    let actualResult = assetService.locate('@deep_ng_root:bootstrap.js');
+    let actualResult = assetService.locate('@deep.ng.root:bootstrap.js');
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
 
   test('Check locate() method returns valid string for !isRoot', function() {
-    let expectedResult = 'hello_world_example/bootstrap.js';
-    let actualResult = assetService.locate('@hello_world_example:bootstrap.js');
+    let expectedResult = 'hello.world.example/bootstrap.js';
+    let actualResult = assetService.locate('@hello.world.example:bootstrap.js');
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
 });

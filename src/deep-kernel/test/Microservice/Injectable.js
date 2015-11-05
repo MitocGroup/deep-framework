@@ -49,7 +49,7 @@ suite('Microservice/Injectable', function() {
   });
 
   test('Check microservice setter sets _microservice', function() {
-    let identifier = 'hello_world_example';
+    let identifier = 'hello.world.example';
     let rawResources = backendConfig.microservices[identifier].resources;
     instance = new Instance(identifier, rawResources);
     injectable.microservice = instance;
@@ -58,7 +58,7 @@ suite('Microservice/Injectable', function() {
   });
 
   test('Check bind() method sets _microservice', function() {
-    let identifier = 'deep_ng_root';
+    let identifier = 'deep.ng.root';
     let rawResources = backendConfig.microservices[identifier].resources;
     instance = new Instance(identifier, rawResources);
     injectable.bind(instance);

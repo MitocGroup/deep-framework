@@ -109,7 +109,7 @@ suite('ContainerAware', function() {
     });
 
   test('Check _resolveIdentifier() method for string', function() {
-    chai.expect(containerAware._resolveIdentifier('@hello_world_example:sample')).to.eql('sample');
+    chai.expect(containerAware._resolveIdentifier('@hello.world.example:sample')).to.eql('sample');
   });
 
   test('Check get() method returns valid array', function() {
