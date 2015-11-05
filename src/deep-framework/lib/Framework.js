@@ -44,27 +44,27 @@ export class Framework {
    *
    * @todo: improve it
    *
-   * @param {Object} context
+   * @param {Object} lambdaContext
    * @returns {Kernel}
    *
    * @sample:
    * ```
    * exports.handler = function (event, context) {
-   *   DeepFramework.Kernel(context).loadFromFile("_config.json", function (deepKernel) {
+   *   DeepFramework.KernelFromLambdaContext(context).loadFromFile("_config.json", function (deepKernel) {
    *     new Handler(deepKernel).run(event, context);
    *   });
    * };
-   * Kernel
+   * KernelFromLambdaContext
    * ```
    */
-  Kernel(context) {
+  KernelFromLambdaContext(lambdaContext) {
     let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
 
-    if (context.hasOwnProperty('identity')
-      && context.identity.hasOwnProperty('cognitoIdentityPoolId')
-      && context.identity.hasOwnProperty('cognitoIdentityId')) {
+    if (lambdaContext.hasOwnProperty('identity')
+      && lambdaContext.identity.hasOwnProperty('cognitoIdentityPoolId')
+      && lambdaContext.identity.hasOwnProperty('cognitoIdentityId')) {
 
-      identityId = this._context.identity.cognitoIdentityId;
+      identityId = lambdaContext.identity.cognitoIdentityId;
     }
 
     return this._kernelCached(identityId);
