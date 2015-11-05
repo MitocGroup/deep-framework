@@ -29,7 +29,7 @@ suite('DI', function() {
     chai.assert.instanceOf(di._bottle, Bottle, 'this._bottle is an instance of Bottle');
   });
 
-  test('Check get method throws \'MissingServiceException\' exception for invalid service or parameter', function() {
+  test('Check get method throws "MissingServiceException" exception for invalid service or parameter', function() {
     let error = null;
     try {
       di.get('invalidValue');
@@ -41,7 +41,7 @@ suite('DI', function() {
     chai.expect(error).to.be.an.instanceof(MissingServiceException);
   });
 
-  test('Check addService method throws \'Core.Exception.InvalidArgumentException\' exception for invalid service', function() {
+  test('Check addService method throws "Core.Exception.InvalidArgumentException" exception for invalid service', function() {
     let error = null;
     try {
       di.addService('serviceName', 'invalidService');
@@ -54,61 +54,31 @@ suite('DI', function() {
   });
 
   test('Check addService method adds an instantiated service into container', function() {
-    let error = null;
     let service = {
       name: 'serviceName',
       value: {
         data: 'testServiceObject',
       },
     };
-    try {
-      di.addService(service.name, service.value);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    di.addService(service.name, service.value);
     chai.expect(di.get(service.name)).to.be.eql(service.value);
   });
 
   test('Check addParameter method adds a parameter into container', function() {
-    let error = null;
     let parameter = {
       name: 'parameterName',
       value: 'parameterValue',
     };
-    try {
-      di.addParameter(parameter.name, parameter.value);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(di.get(parameter.name)).to.be.eql(parameter.value);
-  });
-
-  test('Check factory method creates a service', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = di.factory('testService', FactoryClass);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    di.addParameter(parameter.name, parameter.value);
   });
 
   test('Check register method registers a service to container', function() {
-    let error = null;
-    let actualResult = null;
-    let dependencies = ['dep1','dep2','dep3'];
-    try {
-      actualResult = di.register('testService', ServiceClass, dependencies);
-    } catch (e) {
-      error = e;
-    }
+    let dependencies = ['dep1', 'dep2', 'dep3'];
+    chai.expect(di.register('testServiceWithDeps', ServiceClass, dependencies)).
+      to.be.equal(undefined);
+  });
 
-    chai.expect(error).to.be.equal(null);
+  test('Check factory method creates a service', function() {
+    chai.expect(di.factory('testService', FactoryClass)).to.be.equal(undefined);
   });
 });
