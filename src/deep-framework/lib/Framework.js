@@ -15,8 +15,15 @@ export class Framework {
   constructor(servicesMap, context) {
     this._context = context;
     this._services = this._resolveServicesMap(servicesMap);
-    this._version = require('../../package.json').version;
+    this._version = require('../package.json').version;
     this._kernelsMap = {};
+  }
+
+  /**
+   * @returns {string}
+   */
+  static get ANONYMOUS_IDENTITY_KEY() {
+    return 'anonymous';
   }
 
   /**
@@ -43,24 +50,24 @@ export class Framework {
    * @sample:
    * ```
    * exports.handler = function (event, context) {
-   *   DeepFramework.KernelFromLambdaContext(context).loadFromFile("_config.json", function (deepKernel) {
+   *   DeepFramework.Kernel(context).loadFromFile("_config.json", function (deepKernel) {
    *     new Handler(deepKernel).run(event, context);
    *   });
    * };
-   * KernelFromLambdaContext
+   * Kernel
    * ```
    */
-  KernelFromLambdaContext(context) {
-    let kernelId = '';
+  Kernel(context) {
+    let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
 
     if (context.hasOwnProperty('identity')
       && context.identity.hasOwnProperty('cognitoIdentityPoolId')
       && context.identity.hasOwnProperty('cognitoIdentityId')) {
 
-      kernelId = this._context.identity.cognitoIdentityPoolId;
+      identityId = this._context.identity.cognitoIdentityId;
     }
 
-    return this.KernelCached(kernelId);
+    return this._kernelCached(identityId);
   }
 
   /**
@@ -68,7 +75,7 @@ export class Framework {
    * @returns {Kernel}
    * @constructor
    */
-  KernelCached(id) {
+  _kernelCached(id) {
     if (this._kernelsMap.hasOwnProperty(id)) {
       return this._kernelsMap[id];
     }
@@ -85,7 +92,7 @@ export class Framework {
    * @constructor
    */
   get Kernel() {
-    return this.KernelCached('');
+    return this._kernelCached(Framework.ANONYMOUS_IDENTITY_KEY);
   }
 
   /**
