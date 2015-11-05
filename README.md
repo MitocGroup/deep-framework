@@ -201,4 +201,4 @@ does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, ver
 (let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
 as web apps into their own accounts on AWS (or other cloud providers).
 
-> In summary: DEEP empowers lego consumers to rent curated lego pieces from lego producers.
+> In summary: We empowers lego consumers to license curated lego pieces from lego producers.
