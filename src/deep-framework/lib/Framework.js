@@ -34,6 +34,25 @@ export class Framework {
   }
 
   /**
+   * @todo: improve it
+   *
+   * @param {Object} context
+   * @returns {Kernel}
+   */
+  KernelFromLambdaContext(context) {
+    let kernelId = '';
+
+    if (context.hasOwnProperty('identity')
+      && context.identity.hasOwnProperty('cognitoIdentityPoolId')
+      && context.identity.hasOwnProperty('cognitoIdentityId')) {
+
+      kernelId = this._context.identity.cognitoIdentityPoolId;
+    }
+
+    return this.KernelCached(kernelId);
+  }
+
+  /**
    * @param {String} id
    * @returns {Kernel}
    * @constructor
