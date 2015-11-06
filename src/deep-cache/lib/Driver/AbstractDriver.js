@@ -43,10 +43,7 @@ export class AbstractDriver extends Core.OOP.Interface {
    * @param {Function|null} callback
    * @returns {AbstractDriver}
    */
-  has(key, callback = null) {
-    callback = callback || function() {
-      };
-
+  has(key, callback = () => {}) {
     try {
       this._has(this._buildKey(key), function(result) {
         callback(undefined, result);
@@ -63,10 +60,7 @@ export class AbstractDriver extends Core.OOP.Interface {
    * @param {Function|null} callback
    * @returns {AbstractDriver}
    */
-  get(key, callback = null) {
-    callback = callback || function() {
-      };
-
+  get(key, callback = () => {}) {
     try {
       this.has(key, function(exception, result) {
         if (exception) {
@@ -94,10 +88,7 @@ export class AbstractDriver extends Core.OOP.Interface {
    * @param {Number} ttl
    * @param {Function} callback
    */
-  set(key, value, ttl = 0, callback = null) {
-    callback = callback || function() {
-      };
-
+  set(key, value, ttl = 0, callback = () => {}) {
     try {
       this._set(this._buildKey(key), value, ttl, function(result) {
         callback(undefined, result);
@@ -113,10 +104,7 @@ export class AbstractDriver extends Core.OOP.Interface {
    * @param {Function|null} callback
    * @returns {AbstractDriver}
    */
-  invalidate(key, timeout = 0, callback = null) {
-    callback = callback || function() {
-      };
-
+  invalidate(key, timeout = 0, callback = () => {}) {
     try {
       this.has(key, function(exception, result) {
         if (exception) {
@@ -132,7 +120,7 @@ export class AbstractDriver extends Core.OOP.Interface {
         }.bind(this));
       }.bind(this));
     } catch (e) {
-      callback(new DriverException(e), undefined);
+      callback(new DriverException(e), null);
     }
 
     return this;
@@ -142,23 +130,21 @@ export class AbstractDriver extends Core.OOP.Interface {
    * @param {Function|null} callback
    * @returns {AbstractDriver}
    */
-  flush(callback = null) {
-    callback = callback || function() {
-      };
-
+  flush(callback = () => {}) {
     try {
-      if (typeof this._flush === 'undefined') {
-        throw new NoFlushException();
-      }
-
-      this._flush(function(result) {
-        callback(undefined, result);
-      }.bind(this));
+      this._flush(callback);
     } catch (e) {
-      callback(new DriverException(e), undefined);
+      callback(new DriverException(e), null);
     }
 
     return this;
+  }
+
+  /**
+   * @private
+   */
+  _flush() {
+    throw new NoFlushException();
   }
 
   /**
