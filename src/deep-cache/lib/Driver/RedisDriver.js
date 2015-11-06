@@ -68,7 +68,7 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    * @returns {Boolean}
    */
-  _set(key, value, ttl = 0,callback = () => {}) {
+  _set(key, value, ttl = 0, callback = () => {}) {
     this._client.set(key, value, ttl, (error) => {
       if (error) {
         callback(new RedisClusterException(error), null);
