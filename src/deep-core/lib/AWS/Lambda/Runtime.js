@@ -27,7 +27,6 @@ export class Runtime extends Interface {
     this._forceUserIdentity = false;
 
     this._fillDenyMissingUserContextOption();
-    this._fillUserContext();
   }
 
   /**
@@ -68,10 +67,12 @@ export class Runtime extends Interface {
    * @returns {Runtime}
    */
   run(event, context) {
-    this._addExceptionListener();
-
     this._context = context;
+    this._addExceptionListener();
+    
     this._request = new Request(event);
+    
+    this._fillUserContext();
 
     if (!this._loggedUserId && this._forceUserIdentity) {
       throw new MissingUserContextException();
