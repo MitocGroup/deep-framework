@@ -44,6 +44,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 </ul>
 </div>
@@ -70,6 +71,8 @@ import parseUrl from &apos;parse-url&apos;;
 import queryString from &apos;query-string&apos;;
 import Core from &apos;deep-core&apos;;
 import {DirectLambdaCallDeniedException} from &apos;./Exception/DirectLambdaCallDeniedException&apos;;
+import {MissingSecurityServiceException} from &apos;./Exception/MissingSecurityServiceException&apos;;
+import Security from &apos;deep-security&apos;;
 
 /**
  * Action request instance
@@ -90,7 +93,7 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
-    this._native = true; // @todo: set it to false
+    this._native = false;
   }
 
   /**
@@ -327,6 +330,15 @@ export class Request {
   }
 
   /**
+   * @returns {Boolean}
+   *
+   * @todo: remove this?
+   */
+  get isLambda() {
+    return this._action.type === Action.LAMBDA;
+  }
+
+  /**
    * @param {Function} callback
    * @returns {Request}
    */
@@ -356,8 +368,8 @@ export class Request {
   _sendThroughApi(callback = () =&gt; null) {
     let endpoint = this._action.source.api;
     let signedRequest = this._createAws4SignedRequest(
-      endpoint, 
-      this.method, 
+      endpoint,
+      this.method,
       this.payload
     );
 
@@ -421,7 +433,7 @@ export class Request {
     let apiQueryString = urlParts.search ? `?${urlParts.search}` : &apos;&apos;;
 
     let opsToSign = {
-      service: Core.AWS.Service.API_GATEWAY,
+      service: Core.AWS.Service.API_GATEWAY_EXECUTE,
       region: this.getEndpointHostRegion(apiHost),
       host: apiHost,
       method: httpMethod,
@@ -460,7 +472,11 @@ export class Request {
    * @private
    */
   _getSecurityCredentials() {
-    return this._action.resource.securityCredentials;
+    if (!(this._action.resource.security instanceof Security)) {
+      throw new MissingSecurityServiceException();
+    }
+
+    return this._action.resource.security.token.credentials;
   }
 
   /**

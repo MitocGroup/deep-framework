@@ -60,6 +60,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-core/lib/aws/lambda/exception/invalidcognitoidentityexception.js~invalidcognitoidentityexception",
+    "class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html",
+    "<span>InvalidCognitoIdentityException</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js</span>",
+    "class"
+  ],
+  [
     "deep-core/lib/exception/methodsnotimplementedexception.js~methodsnotimplementedexception",
     "class/lib/Exception/MethodsNotImplementedException.js~MethodsNotImplementedException.html",
     "<span>MethodsNotImplementedException</span> <span class=\"search-result-import-path\">deep-core/lib/Exception/MethodsNotImplementedException.js</span>",
@@ -69,6 +75,12 @@ window.esdocSearchIndex = [
     "deep-core/lib/aws/lambda/exception/missingruntimecontextexception.js~missingruntimecontextexception",
     "class/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException.html",
     "<span>MissingRuntimeContextException</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js</span>",
+    "class"
+  ],
+  [
+    "deep-core/lib/aws/lambda/exception/missingusercontextexception.js~missingusercontextexception",
+    "class/lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException.html",
+    "<span>MissingUserContextException</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/Lambda/Exception/MissingUserContextException.js</span>",
     "class"
   ],
   [
@@ -643,13 +655,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
@@ -721,13 +733,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#service",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-service",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-service",
     "lib/AWS/IAM/Resource.js~Resource#service",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#service",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-service",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-service",
     "lib/AWS/IAM/Resource.js~Resource#service",
     "member"
   ],
@@ -751,13 +763,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
@@ -846,6 +858,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/aws/lambda/exception/invalidcognitoidentityexception.js",
+    "file/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js.html",
+    "lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js",
+    "file"
+  ],
+  [
+    "lib/aws/lambda/exception/invalidcognitoidentityexception.js~invalidcognitoidentityexception#constructor",
+    "class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html#instance-constructor-constructor",
+    "lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException#constructor",
+    "method"
+  ],
+  [
     "lib/aws/lambda/exception/missingruntimecontextexception.js",
     "file/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js.html",
     "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js",
@@ -855,6 +879,18 @@ window.esdocSearchIndex = [
     "lib/aws/lambda/exception/missingruntimecontextexception.js~missingruntimecontextexception#constructor",
     "class/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException.html#instance-constructor-constructor",
     "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException#constructor",
+    "method"
+  ],
+  [
+    "lib/aws/lambda/exception/missingusercontextexception.js",
+    "file/lib/AWS/Lambda/Exception/MissingUserContextException.js.html",
+    "lib/AWS/Lambda/Exception/MissingUserContextException.js",
+    "file"
+  ],
+  [
+    "lib/aws/lambda/exception/missingusercontextexception.js~missingusercontextexception#constructor",
+    "class/lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException.html#instance-constructor-constructor",
+    "lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException#constructor",
     "method"
   ],
   [
@@ -907,13 +943,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/lambda/response.js~response#runtimecontext",
-    "class/lib/AWS/Lambda/Response.js~Response.html#instance-set-runtimeContext",
+    "class/lib/AWS/Lambda/Response.js~Response.html#instance-get-runtimeContext",
     "lib/AWS/Lambda/Response.js~Response#runtimeContext",
     "member"
   ],
   [
     "lib/aws/lambda/response.js~response#runtimecontext",
-    "class/lib/AWS/Lambda/Response.js~Response.html#instance-get-runtimeContext",
+    "class/lib/AWS/Lambda/Response.js~Response.html#instance-set-runtimeContext",
     "lib/AWS/Lambda/Response.js~Response#runtimeContext",
     "member"
   ],
@@ -948,6 +984,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/aws/lambda/runtime.js~runtime#forceuseridentity",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-forceUserIdentity",
+    "lib/AWS/Lambda/Runtime.js~Runtime#forceUserIdentity",
+    "member"
+  ],
+  [
     "lib/aws/lambda/runtime.js~runtime#kernel",
     "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-kernel",
     "lib/AWS/Lambda/Runtime.js~Runtime#kernel",
@@ -957,6 +999,12 @@ window.esdocSearchIndex = [
     "lib/aws/lambda/runtime.js~runtime#lambda",
     "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-lambda",
     "lib/AWS/Lambda/Runtime.js~Runtime#lambda",
+    "member"
+  ],
+  [
+    "lib/aws/lambda/runtime.js~runtime#loggeduserid",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-loggedUserId",
+    "lib/AWS/Lambda/Runtime.js~Runtime#loggedUserId",
     "member"
   ],
   [
@@ -970,6 +1018,12 @@ window.esdocSearchIndex = [
     "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-method-run",
     "lib/AWS/Lambda/Runtime.js~Runtime#run",
     "method"
+  ],
+  [
+    "lib/aws/lambda/runtime.js~runtime#securityservice",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-securityService",
+    "lib/AWS/Lambda/Runtime.js~Runtime#securityService",
+    "member"
   ],
   [
     "lib/aws/region.js",

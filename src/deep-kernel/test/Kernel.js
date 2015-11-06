@@ -4,25 +4,48 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Kernel} from '../lib.compiled/Kernel';
+import {Instance} from '../lib.compiled/Microservice/Instance';
 import {Exception} from '../lib.compiled/Exception/Exception';
 import {MissingMicroserviceException} from '../lib.compiled/Exception/MissingMicroserviceException';
-import DI from 'deep-di';
+import {DI} from '../node_modules/deep-di/lib.compiled/DI';
+import {Asset} from '../node_modules/deep-asset/lib.compiled/Asset';
+import KernelFactory from './common/KernelFactory';
+import backendConfig from './common/backend-cfg-json';
+import frontendConfig from './common/frontent-cfg-json';
 
 chai.use(sinonChai);
 
 suite('Kernel', function() {
-  let deepServices = { serviceName: function() { return 'testService'; }, };
-  let kernel = null;
+  let deepServices = {
+    serviceName: function() {
+      return 'testService';
+    },
+  };
+  let backendKernelInstance = null;
+  let frontendKernelInstance = null;
 
   test('Class Kernel exists in Kernel', function() {
     chai.expect(typeof Kernel).to.equal('function');
   });
 
-  test('Check constructor of Kernel throws \'Exception\' exception for invalid context', function() {
+  test('Load Kernels by using Kernel.load()', function(done) {
+    let callback = (frontendKernel, backendKernel) => {
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+      backendKernelInstance = backendKernel;
+      chai.assert.instanceOf(frontendKernel, Kernel, 'frontendKernel is an instance of Kernel');
+      frontendKernelInstance = frontendKernel;
+
+      // complete the async
+      done();
+    };
+    KernelFactory.create({}, callback);
+  });
+
+  test('Check constructor of Kernel throws "Exception" exception for invalid context', function() {
     let error = null;
     let context = 'invalid context';
     try {
-      kernel = new Kernel(deepServices, context);
+      let invalidKernel = new Kernel({}, context);
     } catch (e) {
       error = e;
     }
@@ -32,82 +55,78 @@ suite('Kernel', function() {
     chai.expect(error.message).to.be.equal(`Undefined context "${context}"`);
   });
 
-  test('Check instance of Kernel was created successfully', function() {
-    let error = null;
-    try {
-      kernel = new Kernel(deepServices, Kernel.FRONTEND_CONTEXT);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(kernel).to.be.an.instanceof(Kernel);
-    chai.assert.instanceOf(kernel, Kernel, 'kernel is an instance of Kernel');
+  test('Check constructor sets _config', function() {
+    chai.expect(backendKernelInstance.config).to.be.eql(backendConfig);
+    chai.expect(frontendKernelInstance.config).to.be.eql(frontendConfig);
   });
 
-  test('Check constructor sets _config', function() {
-    chai.expect(kernel.config).to.be.eql({});
+  test('Check build getter returns', function() {
+    chai.expect(backendKernelInstance.buildId).to.be.eql(backendConfig.deployId);
+    chai.expect(frontendKernelInstance.buildId).to.be.eql(frontendConfig.deployId);
   });
 
   test('Check constructor sets _services', function() {
-    chai.expect(kernel.services).to.be.eql(deepServices);
+    chai.expect(backendKernelInstance.services).to.be.eql({});
+    chai.expect(frontendKernelInstance.services).to.be.eql({});
   });
 
   test('Check constructor sets _context', function() {
-    chai.expect(kernel.context).to.be.equal(Kernel.FRONTEND_CONTEXT);
+    chai.expect(backendKernelInstance.context).to.be.equal(Kernel.BACKEND_CONTEXT);
+    chai.expect(frontendKernelInstance.context).to.be.equal(Kernel.FRONTEND_CONTEXT);
   });
 
   test('Check constructor sets _env', function() {
-    chai.expect(kernel.env).to.be.equal(null);
+    chai.expect(backendKernelInstance.env).to.be.equal(backendConfig.env);
+    chai.expect(frontendKernelInstance.env).to.be.equal(frontendConfig.env);
   });
 
   test('Check constructor sets _isLoaded', function() {
-    chai.expect(kernel.isLoaded).to.be.equal(false);
+    chai.expect(backendKernelInstance.isLoaded).to.be.equal(true);
+    chai.expect(frontendKernelInstance.isLoaded).to.be.equal(true);
   });
 
   test('Check constructor sets _container', function() {
-    chai.expect(typeof kernel.container).to.be.equal('object');
-    chai.assert.instanceOf(kernel.container, DI, 'kernel is an instance of DI');
+    chai.expect(typeof backendKernelInstance.container).to.be.equal('object');
+    chai.expect(typeof frontendKernelInstance.container).to.be.equal('object');
+    chai.assert.instanceOf(backendKernelInstance.container, DI, 'kernel is an instance of DI');
+    chai.assert.instanceOf(frontendKernelInstance.container, DI, 'kernel is an instance of DI');
   });
 
   test('Check isBackend getter returns false', function() {
-    chai.expect(kernel.isBackend).to.be.equal(false);
+    chai.expect(backendKernelInstance.isBackend).to.be.equal(true);
+    chai.expect(frontendKernelInstance.isBackend).to.be.equal(false);
   });
 
   test('Check isFrontend getter returns true', function() {
-    chai.expect(kernel.isFrontend).to.be.equal(true);
+    chai.expect(backendKernelInstance.isFrontend).to.be.equal(false);
+    chai.expect(frontendKernelInstance.isFrontend).to.be.equal(true);
   });
 
-  test('Check isLocalhost getter returns valid object', function() {
-    //todo - ReferenceError: window is not defined
-    //chai.expect(kernel.isLocalhost).to.be.eql({});
-  });
-
-  test('Check FRONTEND_BOOTSTRAP_VECTOR static getter returns value \'deep_frontend_bootstrap_vector\'', function() {
+  test('Check FRONTEND_BOOTSTRAP_VECTOR static getter returns value "deep_frontend_bootstrap_vector"', function() {
     chai.expect(Kernel.FRONTEND_BOOTSTRAP_VECTOR).to.be.equal('deep_frontend_bootstrap_vector');
   });
 
-  test('Check CONFIG static getter returns value \'deep_config\'', function() {
+  test('Check CONFIG static getter returns value "deep_config"', function() {
     chai.expect(Kernel.CONFIG).to.be.equal('deep_config');
   });
 
-  test('Check KERNEL static getter returns value \'deep_kernel\'', function() {
+  test('Check KERNEL static getter returns value "deep_kernel"', function() {
     chai.expect(Kernel.KERNEL).to.be.equal('deep_kernel');
   });
 
-  test('Check CONTEXT static getter returns value \'deep_context\'', function() {
+  test('Check CONTEXT static getter returns value "deep_context"', function() {
     chai.expect(Kernel.CONTEXT).to.be.equal('deep_context');
   });
 
-  test('Check MICROSERVICES static getter returns value \'deep_microservices\'', function() {
+  test('Check MICROSERVICES static getter returns value "deep_microservices"', function() {
     chai.expect(Kernel.MICROSERVICES).to.be.equal('deep_microservices');
   });
 
-  test('Check FRONTEND_CONTEXT static getter returns value \'frontend-ctx\'', function() {
+  test('Check FRONTEND_CONTEXT static getter returns value "frontend-ctx"', function() {
     chai.expect(Kernel.FRONTEND_CONTEXT).to.be.equal('frontend-ctx');
   });
 
-  test('Check BACKEND_CONTEXT static getter returns value \'backend-ctx\'', function() {
+  test('Check BACKEND_CONTEXT static getter returns value "backend-ctx"', function() {
     chai.expect(Kernel.BACKEND_CONTEXT).to.be.equal('backend-ctx');
   });
 
@@ -115,10 +134,6 @@ suite('Kernel', function() {
     chai.expect(Kernel.ALL_CONTEXTS.length).to.be.equal(2);
     chai.expect(Kernel.ALL_CONTEXTS).to.be.contains(Kernel.FRONTEND_CONTEXT);
     chai.expect(Kernel.ALL_CONTEXTS).to.be.contains(Kernel.BACKEND_CONTEXT);
-  });
-
-  test('Check buildId getter returns value \'\'', function() {
-    chai.expect(kernel.buildId).to.be.equal('');
   });
 
   test('Check MicroserviceInjectable static getter return MicroserviceInjectable class', function() {
@@ -130,115 +145,61 @@ suite('Kernel', function() {
   });
 
   test('Check load() _isLoaded=true', function() {
-    let error = null;
-    let spyCallback = sinon.spy();
-    kernel._isLoaded = true;
-
-    try {
-      kernel.load({}, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(spyCallback).to.have.been.calledWith(kernel);
-  });
-
-  test('Check load() !_isLoaded', function() {
-    let configData = {
-      microservices: {
-        deepRoot: 'CoreRoot',
-        deepAuth: 'Auth',
-        deepBilling: 'Billing',
-      },
-      env: 'dev',
-    };
-    let error = null;
-    let spyCallback = sinon.spy();
-    kernel._isLoaded = false;
-
-    try {
-      kernel.load(configData, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-  });
-
-  test('Check microservice() method throws \'MissingMicroserviceException\'exception for invalid identifier', function() {
-    let error = null;
-    try {
-      kernel.microservice();
-    } catch (e) {
-      error = e;
-    }
-
-    //todo - TBD
-    chai.expect(error).to.be.not.equal(null);
-    //chai.expect(error).to.be.an.instanceof(MissingMicroserviceException);
-    //chai.expect(error.message).to.be.equal(`Undefined context`);
+    let frontendSpyCallback = sinon.spy();
+    let backendSpyCallback = sinon.spy();
+    frontendKernelInstance._isLoaded = true;
+    backendKernelInstance._isLoaded = true;
+    frontendKernelInstance.load({}, frontendSpyCallback);
+    backendKernelInstance.load({}, backendSpyCallback);
+    chai.expect(frontendSpyCallback).to.have.been.calledWith(frontendKernelInstance);
+    chai.expect(backendSpyCallback).to.have.been.calledWith(backendKernelInstance);
   });
 
   test('Check get() method returns valid statement', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = kernel.get();
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(actualResult).to.be.not.eql({});
-  });
-
-  test('Check _buildContainer() method returns valid statement', function() {
-    let error = null;
-    let actualResult = null;
-    let expectedResult = {};
-    let spyCallback = sinon.spy();
-    try {
-      actualResult = kernel._buildContainer(spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(actualResult).to.be.not.eql(expectedResult);
+    chai.expect(backendKernelInstance.get('deep_kernel')).to.be.eql(backendKernelInstance);
+    chai.expect(frontendKernelInstance.get('deep_kernel')).to.be.eql(frontendKernelInstance);
   });
 
   test('Check loadFromFile() _isLoaded=true', function() {
-    let error = null;
     let spyCallback = sinon.spy();
-    kernel._isLoaded = true;
-    chai.expect(kernel._isLoaded).to.be.equal(true);
-
-    try {
-      kernel.loadFromFile('no file', spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(spyCallback).to.have.been.calledWith(kernel);
+    frontendKernelInstance._isLoaded = true;
+    chai.expect(frontendKernelInstance._isLoaded).to.be.equal(true);
+    frontendKernelInstance.loadFromFile('no file', spyCallback);
+    chai.expect(spyCallback).to.have.been.calledWith(frontendKernelInstance);
   });
 
+  test('Check loadFromFile() for backend with !_isLoaded', function (done) {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel')
 
-  test('Check loadFromFile() !_isLoaded', function() {
+      // complete the async
+      done();
+    };
+    let backendKernelFromFile = new Kernel({
+      Asset: Asset,
+    }, Kernel.BACKEND_CONTEXT);
+    backendKernelFromFile.loadFromFile('./test/common/backend-cfg.json', callback);
+  });
+
+  test('Check microservice() method return microservice for "hello.world.example"', function() {
+    let actualResult = backendKernelInstance.microservice('hello.world.example');
+    chai.assert.instanceOf(actualResult, Instance, 'result is an instance of Microservice');
+  });
+
+  test('Check microservice() method throws "MissingMicroserviceException" exception for invalid identifier', function() {
     let error = null;
-    let spyCallback = sinon.spy();
-    kernel._isLoaded = false;
-    chai.expect(kernel._isLoaded).to.be.equal(false);
     try {
-      kernel.loadFromFile('no file', spyCallback);
+      backendKernelInstance.microservice('test');
     } catch (e) {
       error = e;
     }
 
-    //todo - TBD
-    // AssertionError: expected [ReferenceError: XMLHttpRequest is not defined] to equal null
-    //chai.expect(error).to.be.equal(null);
-    //chai.expect(spyCallback).to.have.been.called;
-    //chai.expect(error).to.be.an.instanceof(MissingMicroserviceException);
-    //chai.expect(error.message).to.be.equal(`Undefined context`);
+    chai.expect(error).to.be.not.equal(null);
+    chai.assert.instanceOf(error, MissingMicroserviceException, 'error is an instance of MissingMicroserviceException');
+  });
+
+  test('Check microservice() method without args', function() {
+    let actualResult = backendKernelInstance.microservice();
+    chai.assert.instanceOf(actualResult, Instance, 'result is an instance of Microservice');
   });
 });

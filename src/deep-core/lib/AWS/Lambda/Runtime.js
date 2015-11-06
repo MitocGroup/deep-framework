@@ -6,6 +6,8 @@
 import {Interface} from '../../OOP/Interface';
 import {Response} from './Response';
 import {Request} from './Request';
+import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';
+import {MissingUserContextException} from './Exception/MissingUserContextException';
 
 /**
  * Lambda runtime context
@@ -20,6 +22,26 @@ export class Runtime extends Interface {
     this._kernel = kernel;
     this._request = null;
     this._context = null;
+
+    this._loggedUserId = null;
+    this._forceUserIdentity = false;
+
+    this._fillDenyMissingUserContextOption();
+    this._fillUserContext();
+  }
+
+  /**
+   * @returns {String}
+   */
+  get loggedUserId() {
+    return this._loggedUserId;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get forceUserIdentity() {
+    return this._forceUserIdentity;
   }
 
   /**
@@ -50,6 +72,11 @@ export class Runtime extends Interface {
 
     this._context = context;
     this._request = new Request(event);
+
+    if (!this._loggedUserId && this._forceUserIdentity) {
+      throw new MissingUserContextException();
+    }
+
     this.handle(this._request);
 
     return this;
@@ -106,5 +133,42 @@ export class Runtime extends Interface {
    */
   get request() {
     return this._request;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get securityService() {
+    return this.kernel.get('security');
+  }
+
+  /**
+   * @private
+   */
+  _fillDenyMissingUserContextOption() {
+    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {
+      this._forceUserIdentity = this._kernel.config.forceUserIdentity;
+    }
+  }
+
+  /**
+   * Retrieves logged user id from lambda context
+   *
+   * @private
+   */
+  _fillUserContext() {
+    if (this._context &&
+      this._context.hasOwnProperty('identity') &&
+      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&
+      this._context.identity.hasOwnProperty('cognitoIdentityId')
+    ) {
+      let identityPoolId = this._context.identity.cognitoIdentityPoolId;
+
+      if (this.securityService.identityPoolId !== identityPoolId) {
+        throw new InvalidCognitoIdentityException(identityPoolId);
+      }
+
+      this._loggedUserId = this._context.identity.cognitoIdentityId;
+    }
   }
 }

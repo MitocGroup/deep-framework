@@ -504,12 +504,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/security.js~security#ontokenavailable",
-    "class/lib/Security.js~Security.html#instance-method-onTokenAvailable",
-    "lib/Security.js~Security#onTokenAvailable",
-    "method"
-  ],
-  [
     "lib/security.js~security#token",
     "class/lib/Security.js~Security.html#instance-get-token",
     "lib/Security.js~Security#token",

@@ -33,6 +33,7 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ContainerAware.js~ContainerAware.html">ContainerAware</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException.html">InvalidDeepIdentifierException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingMicroserviceException.js~MissingMicroserviceException.html">MissingMicroserviceException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Microservice</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Microservice/Injectable.js~Injectable.html">Injectable</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Microservice/Instance.js~Instance.html">Instance</a></span></span></li>
@@ -50,6 +51,7 @@
 
 import {Injectable as MicroserviceInjectable} from &apos;./Microservice/Injectable&apos;;
 import {Kernel} from &apos;./Kernel&apos;;
+import {InvalidDeepIdentifierException} from &apos;./Exception/InvalidDeepIdentifierException&apos;;
 
 /**
  * Container aware instance
@@ -115,22 +117,23 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
-   * @param {String} object
+   * @param {String} identifier (e.g. @microservice_identifier:resource)
    * @returns {String}
+   *
    * @private
    */
-  _resolvePath(object) {
-    if (typeof object === &apos;string&apos; &amp;&amp; object.indexOf(&apos;@&apos;) === 0) {
-      let parts = object.match(/^@\s*([^:]+)\s*:\s*([^\s]+)\s*$/);
+  _resolveIdentifier(identifier) {
+    let regExp = /^@\s*([^:]+)\s*:\s*([^\s]+)\s*$/;
 
-      if (parts.length === 3) {
-        this.bind(parts[1]);
+    if (typeof identifier === &apos;string&apos; &amp;&amp; regExp.test(identifier)) {
+      let parts = identifier.match(regExp);
 
-        return parts[2];
-      }
+      this.bind(parts[1]); // microservice identifier
+
+      return parts[2]; // resource identifier
+    } else {
+      throw new InvalidDeepIdentifierException(identifier);
     }
-
-    return object;
   }
 
   /**

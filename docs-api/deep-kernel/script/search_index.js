@@ -24,6 +24,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-kernel/lib/exception/invaliddeepidentifierexception.js~invaliddeepidentifierexception",
+    "class/lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException.html",
+    "<span>InvalidDeepIdentifierException</span> <span class=\"search-result-import-path\">deep-kernel/lib/Exception/InvalidDeepIdentifierException.js</span>",
+    "class"
+  ],
+  [
     "deep-kernel/lib/kernel.js~kernel",
     "class/lib/Kernel.js~Kernel.html",
     "<span>Kernel</span> <span class=\"search-result-import-path\">deep-kernel/lib/Kernel.js</span>",
@@ -409,13 +415,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/containeraware.js~containeraware#localbackend",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-localBackend",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-localBackend",
     "lib/ContainerAware.js~ContainerAware#localBackend",
     "member"
   ],
   [
     "lib/containeraware.js~containeraware#localbackend",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-localBackend",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-localBackend",
     "lib/ContainerAware.js~ContainerAware#localBackend",
     "member"
   ],
@@ -441,6 +447,18 @@ window.esdocSearchIndex = [
     "lib/exception/exception.js~exception#constructor",
     "class/lib/Exception/Exception.js~Exception.html#instance-constructor-constructor",
     "lib/Exception/Exception.js~Exception#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/invaliddeepidentifierexception.js",
+    "file/lib/Exception/InvalidDeepIdentifierException.js.html",
+    "lib/Exception/InvalidDeepIdentifierException.js",
+    "file"
+  ],
+  [
+    "lib/exception/invaliddeepidentifierexception.js~invaliddeepidentifierexception#constructor",
+    "class/lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException.html#instance-constructor-constructor",
+    "lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException#constructor",
     "method"
   ],
   [
@@ -685,13 +703,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/microservice/instance.js~instance#isroot",
-    "class/lib/Microservice/Instance.js~Instance.html#instance-set-isRoot",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-get-isRoot",
     "lib/Microservice/Instance.js~Instance#isRoot",
     "member"
   ],
   [
     "lib/microservice/instance.js~instance#isroot",
-    "class/lib/Microservice/Instance.js~Instance.html#instance-get-isRoot",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-set-isRoot",
     "lib/Microservice/Instance.js~Instance#isRoot",
     "member"
   ],

@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {Kernel} from './Kernel';\n\n/**\n * Container aware instance\n */\nexport class ContainerAware extends MicroserviceInjectable {\n  constructor() {\n    super();\n\n    this._container = null;\n    this._localBackend = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this.constructor.name.toLowerCase();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get service() {\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: override in child service\n    callback();\n  }\n\n  /**\n   * @param {Instance} microservice\n   * @returns {Injectable}\n   */\n  bind(microservice) {\n    // @todo: find more smart way of doing this...\n    if (typeof microservice === 'string') {\n      microservice = this._container.get(Kernel.KERNEL).microservice(microservice);\n    }\n\n    return super.bind(microservice);\n  }\n\n  /**\n   * @param {String} object\n   * @returns {String}\n   * @private\n   */\n  _resolvePath(object) {\n    if (typeof object === 'string' && object.indexOf('@') === 0) {\n      let parts = object.match(/^@\\s*([^:]+)\\s*:\\s*([^\\s]+)\\s*$/);\n\n      if (parts.length === 3) {\n        this.bind(parts[1]);\n\n        return parts[2];\n      }\n    }\n\n    return object;\n  }\n\n  /**\n   * @param {DI} container\n   */\n  set container(container) {\n    this._container = container;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {Kernel} from './Kernel';\nimport {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException';\n\n/**\n * Container aware instance\n */\nexport class ContainerAware extends MicroserviceInjectable {\n  constructor() {\n    super();\n\n    this._container = null;\n    this._localBackend = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this.constructor.name.toLowerCase();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get service() {\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: override in child service\n    callback();\n  }\n\n  /**\n   * @param {Instance} microservice\n   * @returns {Injectable}\n   */\n  bind(microservice) {\n    // @todo: find more smart way of doing this...\n    if (typeof microservice === 'string') {\n      microservice = this._container.get(Kernel.KERNEL).microservice(microservice);\n    }\n\n    return super.bind(microservice);\n  }\n\n  /**\n   * @param {String} identifier (e.g. @microservice_identifier:resource)\n   * @returns {String}\n   *\n   * @private\n   */\n  _resolveIdentifier(identifier) {\n    let regExp = /^@\\s*([^:]+)\\s*:\\s*([^\\s]+)\\s*$/;\n\n    if (typeof identifier === 'string' && regExp.test(identifier)) {\n      let parts = identifier.match(regExp);\n\n      this.bind(parts[1]); // microservice identifier\n\n      return parts[2]; // resource identifier\n    } else {\n      throw new InvalidDeepIdentifierException(identifier);\n    }\n  }\n\n  /**\n   * @param {DI} container\n   */\n  set container(container) {\n    this._container = container;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -23,7 +23,7 @@
     "importPath": "deep-kernel/lib/ContainerAware.js",
     "importStyle": "{ContainerAware}",
     "description": "Container aware instance",
-    "lineNumber": 13,
+    "lineNumber": 14,
     "interface": false,
     "extends": [
       "lib/Microservice/Injectable~MicroserviceInjectable"
@@ -38,7 +38,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 15,
     "undocument": true,
     "params": [],
     "generator": false
@@ -52,7 +52,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#_container",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 18,
     "undocument": true,
     "type": {
       "types": [
@@ -69,7 +69,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#_localBackend",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 19,
     "undocument": true,
     "type": {
       "types": [
@@ -86,7 +86,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#localBackend",
     "access": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 25,
     "unknown": [
       {
         "tagName": "@returns",
@@ -117,7 +117,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#localBackend",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 32,
     "params": [
       {
         "nullable": null,
@@ -146,7 +146,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#_localBackend",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -163,7 +163,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#name",
     "access": null,
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 39,
     "unknown": [
       {
         "tagName": "@returns",
@@ -194,7 +194,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#service",
     "access": null,
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 46,
     "unknown": [
       {
         "tagName": "@returns",
@@ -225,7 +225,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 55,
+    "lineNumber": 56,
     "params": [
       {
         "nullable": null,
@@ -259,7 +259,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#bind",
     "access": null,
     "description": null,
-    "lineNumber": 64,
+    "lineNumber": 65,
     "unknown": [
       {
         "tagName": "@returns",
@@ -292,12 +292,12 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "_resolvePath",
+    "name": "_resolveIdentifier",
     "memberof": "lib/ContainerAware.js~ContainerAware",
-    "longname": "lib/ContainerAware.js~ContainerAware#_resolvePath",
+    "longname": "lib/ContainerAware.js~ContainerAware#_resolveIdentifier",
     "access": "private",
     "description": null,
-    "lineNumber": 78,
+    "lineNumber": 80,
     "unknown": [
       {
         "tagName": "@returns",
@@ -312,8 +312,8 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "object",
-        "description": ""
+        "name": "identifier",
+        "description": "(e.g. @microservice_identifier:resource)"
       }
     ],
     "return": {
@@ -335,7 +335,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#container",
     "access": null,
     "description": null,
-    "lineNumber": 95,
+    "lineNumber": 97,
     "params": [
       {
         "nullable": null,
@@ -364,7 +364,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#_container",
     "access": null,
     "description": null,
-    "lineNumber": 96,
+    "lineNumber": 98,
     "undocument": true,
     "type": {
       "types": [
@@ -381,7 +381,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#container",
     "access": null,
     "description": null,
-    "lineNumber": 102,
+    "lineNumber": 104,
     "unknown": [
       {
         "tagName": "@returns",
@@ -412,7 +412,7 @@
     "longname": "lib/ContainerAware.js~ContainerAware#get",
     "access": null,
     "description": null,
-    "lineNumber": 110,
+    "lineNumber": 112,
     "unknown": [
       {
         "tagName": "@returns",
@@ -490,6 +490,60 @@
         "spread": false,
         "optional": false,
         "name": "args",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/InvalidDeepIdentifierException.js",
+    "memberof": null,
+    "longname": "lib/Exception/InvalidDeepIdentifierException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when trying to parse an invalid deep identifier\n */\nexport class InvalidDeepIdentifierException extends Exception {\n  /**\n   * @param {String} identifier\n   */\n  constructor(identifier) {\n    super(`Invalid deep identifier \"${identifier}\". It should conform to the following format: @microservice_identifier:resource_identifier.`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "InvalidDeepIdentifierException",
+    "memberof": "lib/Exception/InvalidDeepIdentifierException.js",
+    "longname": "lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Exception/InvalidDeepIdentifierException.js",
+    "importStyle": "{InvalidDeepIdentifierException}",
+    "description": "Thrown when trying to parse an invalid deep identifier",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException",
+    "longname": "lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identifier",
         "description": ""
       }
     ],

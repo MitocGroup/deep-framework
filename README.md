@@ -3,6 +3,7 @@ DEEP Framework
 
 [![NPM Version](https://img.shields.io/npm/v/deep-framework.svg)](https://npmjs.org/package/deep-framework)
 [![Build Status](https://travis-ci.org/MitocGroup/deep-framework.svg?branch=master)](https://travis-ci.org/MitocGroup/deep-framework)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![Codacy Badge](https://api.codacy.com/project/badge/coverage/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
@@ -85,7 +86,7 @@ Note 3: Also, when needed, consider specifying only some libraries instead of en
 `DEEP Framework` is a nodejs package. In fact it's a collection of nodejs packages, also known as
 `DEEP Abstracted Libraries`. Here below is the complete list:
 
-DEEP Abstracted Library | Description and Documentation | Abstracted Web Service(s)
+DEEP Abstracted Library | [Api Docs](http://docs.deep.mg/) | Abstracted Web Service(s)
 ------------------------|-------------------------------|--------------------------
 [deep-asset](https://www.npmjs.com/package/deep-asset) | [Assets Management Library](http://docs.deep.mg/deep-asset) | Amazon S3
 [deep-cache](https://www.npmjs.com/package/deep-cache) | [Cache Management Library](http://docs.deep.mg/deep-cache) | Amazon ElastiCache
