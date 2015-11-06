@@ -44,6 +44,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 </ul>
 </div>
@@ -67,8 +68,39 @@ export class SuperagentResponse extends Response {
   constructor(request, data, error) {
     super(...arguments);
 
-    this._data = this._parseResponse(data);
     this._error = error;
+
+    // @todo: treat the empty body somehow else?
+    if (!data.body) {
+      if (!data.status || data.status &gt; 300) {
+        this._error = data.error || &apos;Unexpected error occurred&apos;;
+        this._statusCode = data.status || 500;
+      } else {
+        this._statusCode = data.status;
+      }
+    } else {
+      this._data = request.isLambda
+        ? this._parseLambdaResponse(data)
+        : this._parseResponse(data);
+    }
+  }
+
+  /**
+   * Parse response given by superagent library
+   * for Lambdas proxied through ApiGateway
+   *
+   * @param {Object} response
+   * @returns {Object}
+   * @private
+   */
+  _parseLambdaResponse(response) {
+    if (typeof response.body.errorMessage === &apos;string&apos;) {
+      this._error = response.body.errorMessage;
+    }
+
+    this._statusCode = this._error ? 500 : response.status;
+
+    return this._error ? null : response.body;
   }
 
   /**

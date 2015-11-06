@@ -44,6 +44,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 </ul>
 </div>
@@ -73,26 +74,21 @@ export class Instance {
     this._actions = null;
     this._localBackend = false;
     this._cache = null;
-
-    this._securityCredentials = {
-      accessKeyId: null,
-      secretAccessKey: null,
-      sessionToken: null,
-    };
+    this._security = null;
   }
 
   /**
    * @returns {Object}
    */
-  get securityCredentials() {
-    return this._securityCredentials;
+  get security() {
+    return this._security;
   }
 
   /**
-   * @param {Object} credentials
+   * @param {Object} security
    */
-  set securityCredentials(credentials) {
-    this._securityCredentials = credentials;
+  set security(security) {
+    this._security = security;
   }
 
   /**

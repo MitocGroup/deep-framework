@@ -2468,6 +2468,60 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js",
+    "memberof": null,
+    "longname": "lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 10/31/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when context identity pool id does not much identity pool id from security service\n */\nexport class InvalidCognitoIdentityException extends Exception {\n  /**\n   * @param {String} identityPoolId\n   */\n  constructor(identityPoolId) {\n    super(`Invalid cognito identity pool \"${identityPoolId}\".`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "InvalidCognitoIdentityException",
+    "memberof": "lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js",
+    "longname": "lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js",
+    "importStyle": "{InvalidCognitoIdentityException}",
+    "description": "Thrown when context identity pool id does not much identity pool id from security service",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException",
+    "longname": "lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityPoolId",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js",
     "memberof": null,
     "longname": "lib/AWS/Lambda/Exception/MissingRuntimeContextException.js",
@@ -2504,6 +2558,51 @@
     "access": null,
     "description": null,
     "lineNumber": 13,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/AWS/Lambda/Exception/MissingUserContextException.js",
+    "memberof": null,
+    "longname": "lib/AWS/Lambda/Exception/MissingUserContextException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 10/31/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\nexport class MissingUserContextException extends Exception {\n  constructor() {\n    super('Missing user context in the Lambda runtime');\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MissingUserContextException",
+    "memberof": "lib/AWS/Lambda/Exception/MissingUserContextException.js",
+    "longname": "lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/AWS/Lambda/Exception/MissingUserContextException.js",
+    "importStyle": "{MissingUserContextException}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException",
+    "longname": "lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
     "undocument": true,
     "params": [],
     "generator": false
@@ -2920,7 +3019,7 @@
     "access": null,
     "description": null,
     "lineNumber": 4,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {Request} from './Request';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {*} event\n   * @param {*} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._addExceptionListener();\n\n    this._context = context;\n    this._request = new Request(event);\n    this.handle(this._request);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _addExceptionListener() {\n    process.removeAllListeners('uncaughtException');\n    process.on('uncaughtException', function(error) {\n      return this.createError(error).send();\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} iError\n   */\n  createError(iError) {\n    let oError = {};\n\n    if (typeof iError === 'string') {\n      oError = {\n        errorType: 'Error',\n        errorMessage: iError,\n        errorStack: (new Error(iError)).stack,\n      };\n    } else {\n      oError = {\n        errorType: iError.name,\n        errorMessage: iError.message,\n        errorStack: iError.stack,\n      };\n    }\n\n    let response = new Response(oError);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    let response = new Response(data);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n\n    this._fillDenyMissingUserContextOption();\n    this._fillUserContext();\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {*} event\n   * @param {*} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._addExceptionListener();\n\n    this._context = context;\n    this._request = new Request(event);\n\n    if (!this._loggedUserId && this._forceUserIdentity) {\n      throw new MissingUserContextException();\n    }\n\n    this.handle(this._request);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _addExceptionListener() {\n    process.removeAllListeners('uncaughtException');\n    process.on('uncaughtException', function(error) {\n      return this.createError(error).send();\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} iError\n   */\n  createError(iError) {\n    let oError = {};\n\n    if (typeof iError === 'string') {\n      oError = {\n        errorType: 'Error',\n        errorMessage: iError,\n        errorStack: (new Error(iError)).stack,\n      };\n    } else {\n      oError = {\n        errorType: iError.name,\n        errorMessage: iError.message,\n        errorStack: iError.stack,\n      };\n    }\n\n    let response = new Response(oError);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    let response = new Response(data);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.hasOwnProperty('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2934,7 +3033,7 @@
     "importPath": "deep-core/lib/AWS/Lambda/Runtime.js",
     "importStyle": "{Runtime}",
     "description": "Lambda runtime context",
-    "lineNumber": 13,
+    "lineNumber": 15,
     "interface": false,
     "extends": [
       "lib/OOP/Interface~Interface"
@@ -2949,7 +3048,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 19,
     "params": [
       {
         "nullable": null,
@@ -2973,7 +3072,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_kernel",
     "access": null,
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 22,
     "undocument": true,
     "type": {
       "types": [
@@ -2990,7 +3089,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_request",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -3007,13 +3106,109 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_context",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
         "*"
       ]
     }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_loggedUserId",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_forceUserIdentity",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_forceUserIdentity",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "loggedUserId",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#loggedUserId",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "forceUserIdentity",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#forceUserIdentity",
+    "access": null,
+    "description": null,
+    "lineNumber": 43,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
   },
   {
     "kind": "get",
@@ -3024,7 +3219,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#kernel",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 50,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3055,7 +3250,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#lambda",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 57,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3086,7 +3281,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#run",
     "access": null,
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3134,7 +3329,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_context",
     "access": null,
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 73,
     "undocument": true,
     "type": {
       "types": [
@@ -3151,7 +3346,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_request",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 74,
     "undocument": true,
     "type": {
       "types": [
@@ -3168,7 +3363,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_addExceptionListener",
     "access": "private",
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 88,
     "params": [],
     "generator": false
   },
@@ -3181,7 +3376,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createError",
     "access": null,
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 98,
     "params": [
       {
         "nullable": null,
@@ -3210,7 +3405,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createResponse",
     "access": null,
     "description": null,
-    "lineNumber": 97,
+    "lineNumber": 124,
     "params": [
       {
         "nullable": null,
@@ -3239,7 +3434,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#request",
     "access": null,
     "description": null,
-    "lineNumber": 107,
+    "lineNumber": 134,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3260,6 +3455,97 @@
       ]
     },
     "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "securityService",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#securityService",
+    "access": null,
+    "description": null,
+    "lineNumber": 141,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_fillDenyMissingUserContextOption",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillDenyMissingUserContextOption",
+    "access": "private",
+    "description": null,
+    "lineNumber": 148,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_forceUserIdentity",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_forceUserIdentity",
+    "access": null,
+    "description": null,
+    "lineNumber": 150,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_fillUserContext",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillUserContext",
+    "access": "private",
+    "description": "Retrieves logged user id from lambda context",
+    "lineNumber": 159,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_loggedUserId",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
+    "access": null,
+    "description": null,
+    "lineNumber": 171,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
   },
   {
     "kind": "file",

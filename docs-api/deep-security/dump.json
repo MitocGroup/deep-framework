@@ -330,7 +330,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 6/17/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {MissingLoginProviderException} from './Exception/MissingLoginProviderException';\nimport {Token} from './Token';\nimport {LocalToken} from './LocalToken';\nimport {UserProvider} from './UserProvider';\n\n/**\n * Deep Security implementation\n */\nexport class Security extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} identityPoolId\n   * @param {Object} identityProviders\n   */\n  constructor(identityPoolId = null, identityProviders = {}) {\n    super();\n\n    this._identityPoolId = identityPoolId;\n    this._identityProviders = identityProviders;\n    this._token = null;\n    this._userProvider = null;\n    this._userProviderEndpoint = null;\n\n    this._onTokenAvailable = [];\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Security}\n   */\n  onTokenAvailable(callback) {\n    this._onTokenAvailable.push(callback);\n\n    return this;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_AMAZON() {\n    return 'www.amazon.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_FACEBOOK() {\n    return 'graph.facebook.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_GOOGLE() {\n    return 'accounts.google.com';\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get identityProviders() {\n    return this._identityProviders;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get identityPoolId() {\n    return this._identityPoolId;\n  }\n\n  /**\n   * @returns {UserProvider}\n   */\n  get userProvider() {\n    if (!this._userProvider) {\n      this._userProvider = new UserProvider(this._userProviderEndpoint, this.container.get('resource'));\n    }\n\n    return this._userProvider;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: remove this compatibility hook\n    let globals = kernel.config.globals || kernel.config;\n\n    this._identityProviders = globals.security.identityProviders;\n    this._userProviderEndpoint = globals.userProviderEndpoint;\n\n    this._identityPoolId = kernel.config.identityPoolId;\n\n    callback();\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   */\n  getLoginProviderConfig(name) {\n    for (let providerName in this._identityProviders) {\n      if (!this._identityProviders.hasOwnProperty(providerName)) {\n        continue;\n      }\n\n      if (providerName === name) {\n        return this._identityProviders[providerName];\n      }\n    }\n\n    throw new MissingLoginProviderException(name);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get amazonLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_AMAZON);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get facebookLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_FACEBOOK);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get googleLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_GOOGLE);\n  }\n\n  /**\n   * @returns {null|Token}\n   */\n  get token() {\n    return this._token;\n  }\n\n  /**\n   * @param {String} providerName\n   * @param {String} userToken\n   * @param {String} userId\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  login(providerName, userToken, userId, callback) {\n    // check if providerName is defined\n    this.getLoginProviderConfig(providerName);\n\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = new TokenImplementation(this._identityPoolId, providerName, userToken, userId);\n\n    this._token.userProvider = this.userProvider;\n\n    this._token.getCredentials((...args) => {\n      for (let hookKey in this._onTokenAvailable) {\n        if (!this._onTokenAvailable.hasOwnProperty(hookKey)) {\n          continue;\n        }\n\n        this._onTokenAvailable[hookKey](this._token);\n      }\n\n      callback(...args);\n    });\n\n    return this._token;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  anonymousLogin(callback) {\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = new TokenImplementation(this._identityPoolId);\n\n    this._token.userProvider = this.userProvider;\n\n    this._token.getCredentials((...args) => {\n      for (let hookKey in this._onTokenAvailable) {\n        if (!this._onTokenAvailable.hasOwnProperty(hookKey)) {\n          continue;\n        }\n\n        this._onTokenAvailable[hookKey](this._token);\n      }\n\n      callback(...args);\n    });\n\n    return this._token;\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 6/17/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {MissingLoginProviderException} from './Exception/MissingLoginProviderException';\nimport {Token} from './Token';\nimport {LocalToken} from './LocalToken';\nimport {UserProvider} from './UserProvider';\n\n/**\n * Deep Security implementation\n */\nexport class Security extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} identityPoolId\n   * @param {Object} identityProviders\n   */\n  constructor(identityPoolId = null, identityProviders = {}) {\n    super();\n\n    this._identityPoolId = identityPoolId;\n    this._identityProviders = identityProviders;\n    this._token = null;\n    this._userProvider = null;\n    this._userProviderEndpoint = null;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_AMAZON() {\n    return 'www.amazon.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_FACEBOOK() {\n    return 'graph.facebook.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_GOOGLE() {\n    return 'accounts.google.com';\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get identityProviders() {\n    return this._identityProviders;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get identityPoolId() {\n    return this._identityPoolId;\n  }\n\n  /**\n   * @returns {UserProvider}\n   */\n  get userProvider() {\n    if (!this._userProvider) {\n      this._userProvider = new UserProvider(this._userProviderEndpoint, this.container.get('resource'));\n    }\n\n    return this._userProvider;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: remove this compatibility hook\n    let globals = kernel.config.globals || kernel.config;\n\n    this._identityProviders = globals.security.identityProviders;\n    this._userProviderEndpoint = globals.userProviderEndpoint;\n\n    this._identityPoolId = kernel.config.identityPoolId;\n\n    callback();\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   */\n  getLoginProviderConfig(name) {\n    for (let providerName in this._identityProviders) {\n      if (!this._identityProviders.hasOwnProperty(providerName)) {\n        continue;\n      }\n\n      if (providerName === name) {\n        return this._identityProviders[providerName];\n      }\n    }\n\n    throw new MissingLoginProviderException(name);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get amazonLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_AMAZON);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get facebookLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_FACEBOOK);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get googleLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_GOOGLE);\n  }\n\n  /**\n   * @returns {null|Token}\n   */\n  get token() {\n    return this._token;\n  }\n\n  /**\n   * @param {String} providerName\n   * @param {String} userToken\n   * @param {String} userId\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  login(providerName, userToken, userId, callback) {\n    // check if providerName is defined\n    this.getLoginProviderConfig(providerName);\n\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = new TokenImplementation(this._identityPoolId, providerName, userToken, userId);\n\n    this._token.userProvider = this.userProvider;\n\n    this._token.getCredentials(callback);\n\n    return this._token;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  anonymousLogin(callback) {\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = new TokenImplementation(this._identityPoolId);\n\n    this._token.userProvider = this.userProvider;\n\n    this._token.getCredentials(callback);\n\n    return this._token;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -470,61 +470,6 @@
     }
   },
   {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_onTokenAvailable",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security#_onTokenAvailable",
-    "access": null,
-    "description": null,
-    "lineNumber": 32,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "onTokenAvailable",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security#onTokenAvailable",
-    "access": null,
-    "description": null,
-    "lineNumber": 39,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Security}"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Function"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "callback",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Security"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
     "kind": "get",
     "static": true,
     "variation": null,
@@ -533,7 +478,7 @@
     "longname": "lib/Security.js~Security.PROVIDER_AMAZON",
     "access": null,
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 36,
     "unknown": [
       {
         "tagName": "@returns",
@@ -564,7 +509,7 @@
     "longname": "lib/Security.js~Security.PROVIDER_FACEBOOK",
     "access": null,
     "description": null,
-    "lineNumber": 55,
+    "lineNumber": 43,
     "unknown": [
       {
         "tagName": "@returns",
@@ -595,7 +540,7 @@
     "longname": "lib/Security.js~Security.PROVIDER_GOOGLE",
     "access": null,
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 50,
     "unknown": [
       {
         "tagName": "@returns",
@@ -626,7 +571,7 @@
     "longname": "lib/Security.js~Security#identityProviders",
     "access": null,
     "description": null,
-    "lineNumber": 69,
+    "lineNumber": 57,
     "unknown": [
       {
         "tagName": "@returns",
@@ -657,7 +602,7 @@
     "longname": "lib/Security.js~Security#identityPoolId",
     "access": null,
     "description": null,
-    "lineNumber": 76,
+    "lineNumber": 64,
     "unknown": [
       {
         "tagName": "@returns",
@@ -688,7 +633,7 @@
     "longname": "lib/Security.js~Security#userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 71,
     "unknown": [
       {
         "tagName": "@returns",
@@ -719,7 +664,7 @@
     "longname": "lib/Security.js~Security#_userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 85,
+    "lineNumber": 73,
     "undocument": true,
     "type": {
       "types": [
@@ -736,7 +681,7 @@
     "longname": "lib/Security.js~Security#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 97,
+    "lineNumber": 85,
     "params": [
       {
         "nullable": null,
@@ -770,7 +715,7 @@
     "longname": "lib/Security.js~Security#_identityProviders",
     "access": null,
     "description": null,
-    "lineNumber": 101,
+    "lineNumber": 89,
     "undocument": true,
     "type": {
       "types": [
@@ -787,7 +732,7 @@
     "longname": "lib/Security.js~Security#_userProviderEndpoint",
     "access": null,
     "description": null,
-    "lineNumber": 102,
+    "lineNumber": 90,
     "undocument": true,
     "type": {
       "types": [
@@ -804,7 +749,7 @@
     "longname": "lib/Security.js~Security#_identityPoolId",
     "access": null,
     "description": null,
-    "lineNumber": 104,
+    "lineNumber": 92,
     "undocument": true,
     "type": {
       "types": [
@@ -821,7 +766,7 @@
     "longname": "lib/Security.js~Security#getLoginProviderConfig",
     "access": null,
     "description": null,
-    "lineNumber": 113,
+    "lineNumber": 101,
     "unknown": [
       {
         "tagName": "@returns",
@@ -859,7 +804,7 @@
     "longname": "lib/Security.js~Security#amazonLoginProviderConfig",
     "access": null,
     "description": null,
-    "lineNumber": 130,
+    "lineNumber": 118,
     "unknown": [
       {
         "tagName": "@returns",
@@ -890,7 +835,7 @@
     "longname": "lib/Security.js~Security#facebookLoginProviderConfig",
     "access": null,
     "description": null,
-    "lineNumber": 137,
+    "lineNumber": 125,
     "unknown": [
       {
         "tagName": "@returns",
@@ -921,7 +866,7 @@
     "longname": "lib/Security.js~Security#googleLoginProviderConfig",
     "access": null,
     "description": null,
-    "lineNumber": 144,
+    "lineNumber": 132,
     "unknown": [
       {
         "tagName": "@returns",
@@ -952,7 +897,7 @@
     "longname": "lib/Security.js~Security#token",
     "access": null,
     "description": null,
-    "lineNumber": 151,
+    "lineNumber": 139,
     "unknown": [
       {
         "tagName": "@returns",
@@ -984,7 +929,7 @@
     "longname": "lib/Security.js~Security#login",
     "access": null,
     "description": null,
-    "lineNumber": 162,
+    "lineNumber": 150,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1052,7 +997,7 @@
     "longname": "lib/Security.js~Security#_token",
     "access": null,
     "description": null,
-    "lineNumber": 168,
+    "lineNumber": 156,
     "undocument": true,
     "type": {
       "types": [
@@ -1069,7 +1014,7 @@
     "longname": "lib/Security.js~Security#anonymousLogin",
     "access": null,
     "description": null,
-    "lineNumber": 191,
+    "lineNumber": 169,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1107,7 +1052,7 @@
     "longname": "lib/Security.js~Security#_token",
     "access": null,
     "description": null,
-    "lineNumber": 194,
+    "lineNumber": 172,
     "undocument": true,
     "type": {
       "types": [

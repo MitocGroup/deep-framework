@@ -60,6 +60,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-resource/lib/resource/exception/missingsecurityserviceexception.js~missingsecurityserviceexception",
+    "class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html",
+    "<span>MissingSecurityServiceException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/MissingSecurityServiceException.js</span>",
+    "class"
+  ],
+  [
     "deep-resource/lib/resource/request.js~request",
     "class/lib/Resource/Request.js~Request.html",
     "<span>Request</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Request.js</span>",
@@ -600,6 +606,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/exception/missingsecurityserviceexception.js",
+    "file/lib/Resource/Exception/MissingSecurityServiceException.js.html",
+    "lib/Resource/Exception/MissingSecurityServiceException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/missingsecurityserviceexception.js~missingsecurityserviceexception#constructor",
+    "class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException#constructor",
+    "method"
+  ],
+  [
     "lib/resource/exception/unknownmethodexception.js",
     "file/lib/Resource/Exception/UnknownMethodException.js.html",
     "lib/Resource/Exception/UnknownMethodException.js",
@@ -631,13 +649,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#cache",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-cache",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-cache",
     "lib/Resource/Instance.js~Instance#cache",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#cache",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-cache",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-cache",
     "lib/Resource/Instance.js~Instance#cache",
     "member"
   ],
@@ -655,13 +673,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
@@ -678,15 +696,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/resource/instance.js~instance#securitycredentials",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-securityCredentials",
-    "lib/Resource/Instance.js~Instance#securityCredentials",
+    "lib/resource/instance.js~instance#security",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-security",
+    "lib/Resource/Instance.js~Instance#security",
     "member"
   ],
   [
-    "lib/resource/instance.js~instance#securitycredentials",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-securityCredentials",
-    "lib/Resource/Instance.js~Instance#securityCredentials",
+    "lib/resource/instance.js~instance#security",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-security",
+    "lib/Resource/Instance.js~Instance#security",
     "member"
   ],
   [
@@ -819,6 +837,12 @@ window.esdocSearchIndex = [
     "lib/resource/request.js~request#iscached",
     "class/lib/Resource/Request.js~Request.html#instance-get-isCached",
     "lib/Resource/Request.js~Request#isCached",
+    "member"
+  ],
+  [
+    "lib/resource/request.js~request#islambda",
+    "class/lib/Resource/Request.js~Request.html#instance-get-isLambda",
+    "lib/Resource/Request.js~Request#isLambda",
     "member"
   ],
   [
