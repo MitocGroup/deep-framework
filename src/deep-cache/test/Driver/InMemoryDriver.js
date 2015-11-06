@@ -29,7 +29,7 @@ suite('Driver/InMemoryDriver', function() {
   test('Check has() method executes without error and calls callback(false)', function() {
     let spyCallback = sinon.spy();
     inMemoryDriver._has(testKey, spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWithExactly(false);
+    chai.expect(spyCallback).to.have.been.calledWith(null, false);
   });
 
   test('Check has() method executes without error and calls callback(true)', function() {

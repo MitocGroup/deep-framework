@@ -27,9 +27,10 @@ export class InMemoryDriver extends AbstractDriver {
    * @param {String} key
    * @param {Function} callback
    */
-  _has(key, callback = () => '') {
-    if (typeof this._storage[key] === 'undefined' || this._storage[key][1] === false) {
-      callback(false);
+  _has(key, callback = () => {}) {
+    if (this._storage.hasOwnProperty(key) || this._storage[key][1] === false) {
+      callback(null, false);
+
       return;
     }
 
@@ -37,17 +38,21 @@ export class InMemoryDriver extends AbstractDriver {
 
     if (!result) {
       this._invalidate(key);
+
+      callback(null, false);
+
+      return;
     }
 
-    callback(result);
+    callback(null, result);
   }
 
   /**
    * @param {String} key
    * @param {Function} callback
    */
-  _get(key, callback = () => undefined) {
-    callback(this._storage[key]);
+  _get(key, callback = () => {}) {
+    callback(null, this._storage[key]);
   }
 
   /**
@@ -57,10 +62,10 @@ export class InMemoryDriver extends AbstractDriver {
    * @param {Function} callback
    * @returns {Boolean}
    */
-  _set(key, value, ttl = 0, callback = () => undefined) {
+  _set(key, value, ttl = 0, callback = () => {}) {
     this._storage[key] = [value, ttl <= 0 ? false : (InMemoryDriver._now + ttl)];
 
-    callback(true);
+    callback(null, true);
   }
 
   /**
@@ -68,27 +73,28 @@ export class InMemoryDriver extends AbstractDriver {
    * @param {Number} timeout
    * @param {Function} callback
    */
-  _invalidate(key, timeout = 0, callback = () => undefined) {
+  _invalidate(key, timeout = 0, callback = () => {}) {
     if (timeout <= 0) {
       delete this._storage[key];
 
-      callback(true);
+      callback(null, true);
+
       return;
     }
 
     this._storage[key][1] = InMemoryDriver._now + timeout;
 
-    callback(true);
+    callback(null, true);
   }
 
   /**
    * @param {Function} callback
    * @returns {AbstractDriver}
    */
-  _flush(callback = () => undefined) {
+  _flush(callback = () => {}) {
     this._storage = {};
 
-    callback(true);
+    callback(null, true);
   }
 
   /**
