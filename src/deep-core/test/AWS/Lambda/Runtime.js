@@ -19,7 +19,9 @@ class RuntimeTest extends Runtime {
 
 suite('AWS/Lambda/Runtime', function() {
   let kernel = {
-    kernelKey: 'kernelValue',
+    config: {
+      forceUserIdentity: false,
+    },
   };
   let event = {event: 'runLambda'};
   let context = {context: 'simpleContext'};
