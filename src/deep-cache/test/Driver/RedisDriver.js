@@ -69,7 +69,7 @@ suite('Driver/RedisDriver', function() {
     chai.assert.instanceOf(redisDriver.client, Redis, 'redisDriver.client is an instance of Redis');
   });
 
-  test('Check _has() method throws \'RedisClusterException\' exception and doesn\'t call callback', function() {
+  test('Check _has() method throws "RedisClusterException" exception and doesn\'t call callback', function() {
     let redisDriverWrapper = new RedisDriverNegativeTest();
     let error = null;
     let spyCallback = sinon.spy();
@@ -84,7 +84,7 @@ suite('Driver/RedisDriver', function() {
     chai.expect(spyCallback).to.not.have.been.called;
   });
 
-  test('Check _get() method throws \'RedisClusterException\' exception and doesn\'t call callback', function() {
+  test('Check _get() method throws "RedisClusterException" exception and doesn\'t call callback', function() {
     let redisDriverWrapper = new RedisDriverNegativeTest();
     let error = null;
     let spyCallback = sinon.spy();
@@ -99,7 +99,7 @@ suite('Driver/RedisDriver', function() {
     chai.expect(spyCallback).to.not.have.been.called;
   });
 
-  test('Check _set() method throws \'RedisClusterException\' exception and doesn\'t call callback', function() {
+  test('Check _set() method throws "RedisClusterException" exception and doesn\'t call callback', function() {
     let redisDriverWrapper = new RedisDriverNegativeTest();
     let error = null;
     let spyCallback = sinon.spy();
@@ -114,7 +114,7 @@ suite('Driver/RedisDriver', function() {
     chai.expect(spyCallback).to.not.have.been.called;
   });
 
-  test('Check _invalidate() method throws \'RedisClusterException\' exception and doesn\'t call callback', function() {
+  test('Check _invalidate() method throws "RedisClusterException" exception and doesn\'t call callback', function() {
     let redisDriverWrapper = new RedisDriverNegativeTest();
     let error = null;
     let spyCallback = sinon.spy();
@@ -129,7 +129,7 @@ suite('Driver/RedisDriver', function() {
     chai.expect(spyCallback).to.not.have.been.called;
   });
 
-  test('Check _flush() method throws \'RedisClusterException\' exception and doesn\'t call callback', function() {
+  test('Check _flush() method throws "RedisClusterException" exception and doesn\'t call callback', function() {
     let redisDriverWrapper = new RedisDriverNegativeTest();
     let error = null;
     let spyCallback = sinon.spy();

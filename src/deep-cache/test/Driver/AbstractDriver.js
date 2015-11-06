@@ -98,15 +98,15 @@ suite('Driver/AbstractDriver', function() {
     chai.expect(typeof AbstractDriver).to.equal('function');
   });
 
-  test('Check constructor sets by default _buildId=\'\'', function() {
+  test('Check constructor sets by default _buildId=""', function() {
     chai.expect(abstractDriver.buildId).to.be.equal('');
   });
 
-  test('Check constructor sets by default _namespace=\'\'', function() {
+  test('Check constructor sets by default _namespace=""', function() {
     chai.expect(abstractDriver.namespace).to.be.equal('');
   });
 
-  test('Check constructor sets by default _silent=\'\'', function() {
+  test('Check constructor sets by default _silent=""', function() {
     chai.expect(abstractDriver.silent).to.be.equal(false);
   });
 
@@ -259,7 +259,7 @@ suite('Driver/AbstractDriver', function() {
     chai.expect(spyCallback).to.have.been.calledWith(undefined, 'exception');
   });
 
-  test('Check flush() method throws \'NoFlushException\' exception for invalid _flush value', function () {
+  test('Check flush() method throws "NoFlushException" exception for invalid _flush value', function () {
     let error = null;
     let spyCallback = sinon.spy();
     try {
