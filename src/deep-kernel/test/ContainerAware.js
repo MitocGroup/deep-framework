@@ -6,48 +6,29 @@ import sinonChai from 'sinon-chai';
 import {ContainerAware} from '../lib.compiled/ContainerAware';
 import {Instance} from '../lib.compiled/Microservice/Instance';
 import {DI} from '../node_modules/deep-di/lib.compiled/DI';
+import {InvalidDeepIdentifierException} from '../lib.compiled/Exception/InvalidDeepIdentifierException';
+import KernelFactory from './common/KernelFactory';
+import {Kernel} from '../lib.compiled/Kernel';
 
 chai.use(sinonChai);
 
 suite('ContainerAware', function() {
-
   let containerAware = new ContainerAware();
-  let testResources = {
-    'deep-test': {
-      test: {
-        create: {
-          description: 'Lambda for creating test',
-          type: 'lambda',
-          methods: [
-            'POST',
-          ],
-          source: 'src/Test/Create',
-        },
-        retrieve: {
-          description: 'Retrieves test',
-          type: 'lambda',
-          methods: ['GET'],
-          source: 'src/Test/Retrieve',
-        },
-        delete: {
-          description: 'Lambda for deleting test',
-          type: 'lambda',
-          methods: ['DELETE'],
-          source: 'src/Test/Delete',
-        },
-        update: {
-          description: 'Update test',
-          type: 'lambda',
-          methods: ['PUT'],
-          source: 'src/Test/Update',
-        },
-      },
-    },
-  };
-  let microserviceIdentifier = 'deep-test';
+  let backendKernelInstance = null;
 
   test('Class ContainerAware exists in ContainerAware', function() {
     chai.expect(typeof ContainerAware).to.equal('function');
+  });
+
+  test('Load Kernels by using Kernel.load()', function(done) {
+    let callback = (frontendKernel, backendKernel) => {
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+      backendKernelInstance = backendKernel;
+
+      // complete the async
+      done();
+    };
+    KernelFactory.create({}, callback);
   });
 
   test('Check localBackend getter returns valid default value [false]', function() {
@@ -83,48 +64,55 @@ suite('ContainerAware', function() {
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
-  test('Check _resolveIdentifier() method for string', function() {
-    let inputData = '@mitocgroup.test:resource';
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = containerAware._resolveIdentifier(inputData);
-    } catch (e) {
-      error = e;
-    }
-  });
-
   test('Check container setter sets object correctly', function() {
-    let error = null;
-    let di = null;
-    try {
-      //create dependency injection micro container
-      di = new DI();
-
-      //add microservice
-      di.addService(microserviceIdentifier, testResources[microserviceIdentifier]);
-      containerAware.container = di;
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(containerAware.container).to.be.eql(di);
-    chai.expect(containerAware.container.get(microserviceIdentifier)).to.be.eql(testResources[microserviceIdentifier]);
+    containerAware.container = backendKernelInstance._container;
+    chai.assert.instanceOf(containerAware.container, DI, 'container is an instance of DI');
+    chai.expect(containerAware.container).to.eql(backendKernelInstance._container);
   });
 
-  test('Check bind(microservice) method when microservice is not a string', function() {
+  test('Check _resolveIdentifier() throws InvalidDeepIdentifierException ' +
+    'for invalid identifier', function() {
     let error = null;
-    let microservice = null;
     try {
-      //create microservice instance to bind
-      microservice = new Instance(microserviceIdentifier, testResources[microserviceIdentifier]);
-      containerAware.bind(microservice);
+      containerAware._resolveIdentifier('invalid.identifier:resource');
     } catch (e) {
       error = e;
     }
 
-    chai.expect(error).to.equal(null);
-    chai.expect(containerAware.container._bottle).to.be.not.eql({});
+    chai.assert.instanceOf(error, InvalidDeepIdentifierException,
+      'error is an instance of InvalidDeepIdentifierException');
+  });
+
+  test('Check bind(microservice) method when microservice is not a string',
+    function() {
+      let resourcesToBind = {
+        'deep-test': {
+          test: {
+            create: {
+              description: 'Lambda for creating test',
+              type: 'lambda',
+              methods: [
+                'POST',
+              ],
+              source: 'src/Test/Create',
+            },
+          },
+        },
+      };
+      let microserviceIdentifierToBind = 'deep-test';
+
+      //create microservice instance to bind
+      let microservice = new Instance(microserviceIdentifierToBind,
+        resourcesToBind[microserviceIdentifierToBind]);
+      containerAware.bind(microservice);
+      chai.expect(containerAware.microservice).to.be.eql(microservice);
+    });
+
+  test('Check _resolveIdentifier() method for string', function() {
+    chai.expect(containerAware._resolveIdentifier('@hello.world.example:sample')).to.eql('sample');
+  });
+
+  test('Check get() method returns valid array', function() {
+    chai.expect(containerAware.get('deep_kernel')).to.eql(backendKernelInstance);
   });
 });
