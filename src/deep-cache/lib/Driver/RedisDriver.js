@@ -5,7 +5,6 @@
 'use strict';
 
 import {AbstractDriver} from './AbstractDriver';
-import Redis from 'ioredis';
 import {RedisClusterException} from './Exception/RedisClusterException';
 
 /**
@@ -18,7 +17,9 @@ export class RedisDriver extends AbstractDriver {
   constructor(dsn) {
     super();
 
-    this._client = dsn ? new Redis(dsn) : new Redis();
+    let nativeDriver = RedisDriver.NATIVE_DRIVER;
+
+    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();
   }
 
   /**
@@ -110,5 +111,13 @@ export class RedisDriver extends AbstractDriver {
 
       callback(null, true);
     });
+  }
+
+  /**
+   * @returns {Function}
+   * @constructor
+   */
+  static get NATIVE_DRIVER() {
+    return require('ioredis');
   }
 }
