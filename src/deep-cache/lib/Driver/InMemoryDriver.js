@@ -28,7 +28,7 @@ export class InMemoryDriver extends AbstractDriver {
    * @param {Function} callback
    */
   _has(key, callback = () => {}) {
-    if (this._storage.hasOwnProperty(key) || this._storage[key][1] === false) {
+    if (!this._storage.hasOwnProperty(key) || this._storage[key][1] === false) {
       callback(null, false);
 
       return;

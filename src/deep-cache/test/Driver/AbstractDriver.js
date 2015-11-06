@@ -15,19 +15,19 @@ class AbstractDriverPositiveTest extends AbstractDriver {
   }
 
   _get(key, callback = null) {
-    return callback(null, '_get was called');
+    return callback(null, '_get was executed successfully');
   }
 
   _has(key, callback = null) {
-    return callback(null, '_has was called');
+    return callback(null, '_has was executed successfully');
   }
 
   _invalidate(key, timeout = 0, callback = null) {
-    return callback(null, '_invalidate was called');
+    return callback(null, '_invalidate was executed successfully');
   }
 
   _set(key, value, ttl = 0, callback = null) {
-    return callback(null, '_set was called');
+    return callback(null, '_set was executed successfully');
   }
 }
 
@@ -37,11 +37,11 @@ class AbstractDriverTest extends AbstractDriver {
   }
 
   has(key, callback = null) {
-    return callback(null, '_has was called');
+    return callback(null, '_has was executed successfully');
   }
 
   _invalidate(key, timeout = 0, callback = null) {
-    return callback(null, '_invalidate was called');
+    return callback(null, '_invalidate was executed successfully');
   }
 
   _get(key, callback = null) {
@@ -142,7 +142,7 @@ suite('Driver/AbstractDriver', function() {
     chai.expect(actualResult.buildId).to.be.equal(buildId);
     chai.expect(actualResult.silent).to.be.equal(silent);
     chai.expect(actualResult.namespace).to.be.equal(namespace);
-    chai.expect(spyCallback).to.have.been.calledWith();
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, '_has was executed successfully');
   });
 
   test('Check get() method returns valid AbstractDriver object', function() {
@@ -152,7 +152,7 @@ suite('Driver/AbstractDriver', function() {
     chai.expect(actualResult.buildId).to.be.equal(buildId);
     chai.expect(actualResult.silent).to.be.equal(silent);
     chai.expect(actualResult.namespace).to.be.equal(namespace);
-    chai.expect(spyCallback).to.have.been.calledWith(undefined, null);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, '_get was executed successfully');
   });
 
   test('Check get() method throws exception', function() {

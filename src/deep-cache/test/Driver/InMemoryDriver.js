@@ -29,18 +29,17 @@ suite('Driver/InMemoryDriver', function() {
   test('Check has() method executes without error and calls callback(false)', function() {
     let spyCallback = sinon.spy();
     inMemoryDriver._has(testKey, spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWith(null, false);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, false);
   });
 
   test('Check has() method executes without error and calls callback(true)', function() {
     let spySetCallback = sinon.spy();
     let spyHasCallback = sinon.spy();
     inMemoryDriver._set(testKey, testValue, 100000, spySetCallback);
-    chai.expect(spySetCallback).to.have.been.calledWithExactly(true);
-    inMemoryDriver._has(testKey, spySetCallback);
+    chai.expect(spySetCallback).to.have.been.calledWithExactly(null, true);
+    inMemoryDriver._has(testKey, spyHasCallback);
 
-    //@todo - uncomment after fix issue
-    //chai.expect(spyHasCallback).to.have.been.calledWithExactly(true);
+    chai.expect(spyHasCallback).to.have.been.calledWithExactly(null, true);
   });
 
   test('Check _get() method executes without error and calls callback', function() {
