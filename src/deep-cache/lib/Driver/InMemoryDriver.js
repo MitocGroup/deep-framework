@@ -34,9 +34,9 @@ export class InMemoryDriver extends AbstractDriver {
       return;
     }
 
-    let result = this._storage[key][1] < InMemoryDriver._now;
+    let timedOut = this._storage[key][1] < InMemoryDriver._now;
 
-    if (!result) {
+    if (timedOut) {
       this._invalidate(key);
 
       callback(null, false);
@@ -44,7 +44,7 @@ export class InMemoryDriver extends AbstractDriver {
       return;
     }
 
-    callback(null, result);
+    callback(null, true);
   }
 
   /**
