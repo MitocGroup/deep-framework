@@ -68,9 +68,10 @@ export class Runtime extends Interface {
    */
   run(event, context) {
     this._context = context;
-    this._request = new Request(event);
-
     this._addExceptionListener();
+    
+    this._request = new Request(event);
+    
     this._fillUserContext();
 
     if (!this._loggedUserId && this._forceUserIdentity) {
