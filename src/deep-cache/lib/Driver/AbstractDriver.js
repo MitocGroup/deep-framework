@@ -87,6 +87,7 @@ export class AbstractDriver extends Core.OOP.Interface {
    * @param {*} value
    * @param {Number} ttl
    * @param {Function} callback
+   * @returns {AbstractDriver}
    */
   set(key, value, ttl = 0, callback = () => {}) {
     try {
@@ -94,6 +95,8 @@ export class AbstractDriver extends Core.OOP.Interface {
     } catch (e) {
       callback(new DriverException(e), null);
     }
+
+    return this;
   }
 
   /**
