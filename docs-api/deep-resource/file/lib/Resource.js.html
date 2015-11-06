@@ -44,6 +44,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 </ul>
 </div>
@@ -82,19 +83,30 @@ export class Resource extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {String} identifier
+   * @param {String} identifier (e.g @microservice_identifier:resource_name[:action_name])
    * @returns {ResourceInstance}
    */
   get(identifier) {
-    identifier = this._resolvePath(identifier);
+    let parsedIdentifier = this._parseResourceIdentifier(
+      this._resolveIdentifier(identifier) // it also binds &apos;working&apos; microservice to this instance
+    );
+
+    let resourceIdentifier = parsedIdentifier.resource;
+    let actionIdentifier = parsedIdentifier.action;
 
     let microserviceIdentifier = this.microservice.identifier;
 
-    if (!this.has(identifier)) {
-      throw new MissingResourceException(microserviceIdentifier, identifier);
+    if (!this.has(resourceIdentifier)) {
+      throw new MissingResourceException(microserviceIdentifier, resourceIdentifier);
     }
 
-    return this._resources[microserviceIdentifier][identifier];
+    let resource = this._resources[microserviceIdentifier][resourceIdentifier];
+
+    // inject dependencies
+    resource.cache = this.container.get(&apos;cache&apos;);
+    resource.security = this.container.get(&apos;security&apos;);
+
+    return actionIdentifier ? resource.action(actionIdentifier) : resource;
   }
 
   /**
@@ -115,15 +127,28 @@ export class Resource extends Kernel.ContainerAware {
   }
 
   /**
+   * @param {String} identifier
+   * @returns {Object}
+   * @private
+   */
+  _parseResourceIdentifier(identifier) {
+    let parts = identifier.split(&apos;:&apos;).map((part) =&gt; {
+      return part.trim();
+    });
+
+    return {
+      resource: parts.shift(),
+      action: parts.length &gt; 0 ? parts.join(&apos;:&apos;) : null,
+    };
+  }
+
+  /**
    * Booting a certain service
    *
    * @param {Kernel} kernel
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    let cache = kernel.container.get(&apos;cache&apos;);
-    let security = kernel.container.get(&apos;security&apos;);
-
     let resourcesVector = [];
 
     for (let microserviceKey in kernel.microservices) {
@@ -145,7 +170,6 @@ export class Resource extends Kernel.ContainerAware {
           microservice.rawResources[resourceName]
         );
 
-        resource.cache = cache;
         resource.localBackend = this._localBackend;
 
         this._resources[microservice.identifier][resourceName] = resource;
@@ -153,20 +177,6 @@ export class Resource extends Kernel.ContainerAware {
         resourcesVector.push(resource);
       }
     }
-
-    security.onTokenAvailable((token) =&gt; {
-      let credentials = token.credentials;
-
-      for (let resourceKey in resourcesVector) {
-        if (!resourcesVector.hasOwnProperty(resourceKey)) {
-          continue;
-        }
-
-        let resource = resourcesVector[resourceKey];
-
-        resource.securityCredentials = credentials;
-      }
-    });
 
     callback();
   }

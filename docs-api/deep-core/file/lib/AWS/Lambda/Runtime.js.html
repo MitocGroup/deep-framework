@@ -44,7 +44,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html">Runtime</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException.html">MissingRuntimeContextException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html">InvalidCognitoIdentityException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException.html">MissingRuntimeContextException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException.html">MissingUserContextException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DatabaseOperationException.js~DatabaseOperationException.html">DatabaseOperationException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidArgumentException.js~InvalidArgumentException.html">InvalidArgumentException</a></span></span></li>
@@ -65,6 +67,8 @@
 import {Interface} from &apos;../../OOP/Interface&apos;;
 import {Response} from &apos;./Response&apos;;
 import {Request} from &apos;./Request&apos;;
+import {InvalidCognitoIdentityException} from &apos;./Exception/InvalidCognitoIdentityException&apos;;
+import {MissingUserContextException} from &apos;./Exception/MissingUserContextException&apos;;
 
 /**
  * Lambda runtime context
@@ -79,6 +83,26 @@ export class Runtime extends Interface {
     this._kernel = kernel;
     this._request = null;
     this._context = null;
+
+    this._loggedUserId = null;
+    this._forceUserIdentity = false;
+
+    this._fillDenyMissingUserContextOption();
+    this._fillUserContext();
+  }
+
+  /**
+   * @returns {String}
+   */
+  get loggedUserId() {
+    return this._loggedUserId;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get forceUserIdentity() {
+    return this._forceUserIdentity;
   }
 
   /**
@@ -109,6 +133,11 @@ export class Runtime extends Interface {
 
     this._context = context;
     this._request = new Request(event);
+
+    if (!this._loggedUserId &amp;&amp; this._forceUserIdentity) {
+      throw new MissingUserContextException();
+    }
+
     this.handle(this._request);
 
     return this;
@@ -165,6 +194,43 @@ export class Runtime extends Interface {
    */
   get request() {
     return this._request;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get securityService() {
+    return this.kernel.get(&apos;security&apos;);
+  }
+
+  /**
+   * @private
+   */
+  _fillDenyMissingUserContextOption() {
+    if (this._kernel.config.hasOwnProperty(&apos;forceUserIdentity&apos;)) {
+      this._forceUserIdentity = this._kernel.config.forceUserIdentity;
+    }
+  }
+
+  /**
+   * Retrieves logged user id from lambda context
+   *
+   * @private
+   */
+  _fillUserContext() {
+    if (this._context &amp;&amp;
+      this._context.hasOwnProperty(&apos;identity&apos;) &amp;&amp;
+      this._context.identity.hasOwnProperty(&apos;cognitoIdentityPoolId&apos;) &amp;&amp;
+      this._context.identity.hasOwnProperty(&apos;cognitoIdentityId&apos;)
+    ) {
+      let identityPoolId = this._context.identity.cognitoIdentityPoolId;
+
+      if (this.securityService.identityPoolId !== identityPoolId) {
+        throw new InvalidCognitoIdentityException(identityPoolId);
+      }
+
+      this._loggedUserId = this._context.identity.cognitoIdentityId;
+    }
   }
 }
 </code></pre>

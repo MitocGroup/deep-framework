@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Path from 'path';\n\n/**\n * @temp Asset class definition\n */\nexport class Asset extends Kernel.ContainerAware {\n  constructor() {\n    super();\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    if (kernel.isFrontend) {\n      let loadVector = [];\n      let microservices = kernel.microservices;\n\n      for (let microserviceKey in microservices) {\n        if (!microservices.hasOwnProperty(microserviceKey)) {\n          continue;\n        }\n\n        let microservice = microservices[microserviceKey];\n\n        if (microservice.isRoot) {\n          continue;\n        }\n\n        loadVector.push(this.bind(microservice).locate('bootstrap.js'));\n      }\n\n      kernel.container.addParameter(\n        Kernel.FRONTEND_BOOTSTRAP_VECTOR,\n        loadVector\n      );\n    }\n\n    callback();\n  }\n\n  /**\n   * @param {String} object\n   * @param {String} suffix\n   * @returns {String}\n   */\n  locate(object, suffix = '') {\n    // binds working microservice if specified in object parameter\n    let path = this._resolvePath(object);\n\n    if (this.microservice.isRoot) {\n      return Path.join(path) + suffix;\n    } else {\n      return Path.join(this.microservice.toString(), path) + suffix;\n    }\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Path from 'path';\n\n/**\n * @temp Asset class definition\n */\nexport class Asset extends Kernel.ContainerAware {\n  constructor() {\n    super();\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    if (kernel.isFrontend) {\n      let loadVector = [];\n      let microservices = kernel.microservices;\n\n      for (let microserviceKey in microservices) {\n        if (!microservices.hasOwnProperty(microserviceKey)) {\n          continue;\n        }\n\n        let microservice = microservices[microserviceKey];\n\n        if (microservice.isRoot) {\n          continue;\n        }\n\n        loadVector.push(this.locate(`@${microservice.identifier}:bootstrap.js`));\n      }\n\n      kernel.container.addParameter(\n        Kernel.FRONTEND_BOOTSTRAP_VECTOR,\n        loadVector\n      );\n    }\n\n    callback();\n  }\n\n  /**\n   * @param {String} assetIdentifier (e.g. @microservice_identifier:asset_path)\n   * @param {String} suffix\n   * @returns {String}\n   */\n  locate(assetIdentifier, suffix = '') {\n    let path = this._resolveIdentifier(assetIdentifier);\n\n    if (this.microservice.isRoot) {\n      return Path.join(path) + suffix;\n    } else {\n      return Path.join(this.microservice.toString(), path) + suffix;\n    }\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -107,8 +107,8 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "object",
-        "description": ""
+        "name": "assetIdentifier",
+        "description": "(e.g. @microservice_identifier:asset_path)"
       },
       {
         "nullable": null,
