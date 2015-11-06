@@ -13,9 +13,13 @@ class FactoryClass {
 }
 
 class ServiceClass {
-  constructor() {
+  constructor(firstDependencyArg, secondDependencyArg, thirdDependencyArg) {
     this.name = 'ServiceClass';
   }
+}
+
+function factoryFunction() {
+  return new FactoryClass();
 }
 
 suite('DI', function() {
@@ -73,12 +77,19 @@ suite('DI', function() {
   });
 
   test('Check register method registers a service to container', function() {
-    let dependencies = ['dep1', 'dep2', 'dep3'];
-    chai.expect(di.register('testServiceWithDeps', ServiceClass, dependencies)).
+    let expectedResult = new ServiceClass('dep1', 'dep2', 'dep3');
+    chai.expect(di.register('testServiceWithDeps', ServiceClass, ['dep1', 'dep2', 'dep3'])).
       to.be.equal(undefined);
+    let actualResult = di.get('testServiceWithDeps');
+    chai.expect(actualResult).to.be.eql(expectedResult);
+    chai.assert.instanceOf(actualResult, ServiceClass, 'result is an instance of ServiceClass');
   });
 
   test('Check factory method creates a service', function() {
-    chai.expect(di.factory('testService', FactoryClass)).to.be.equal(undefined);
+    let expectedResult = factoryFunction();
+    chai.expect(di.factory('testFactory', factoryFunction)).to.be.equal(undefined);
+    let actualResult = di.get('testFactory');
+    chai.expect(actualResult).to.be.eql(expectedResult);
+    chai.assert.instanceOf(actualResult, FactoryClass, 'result is an instance of FactoryClass');
   });
 });
