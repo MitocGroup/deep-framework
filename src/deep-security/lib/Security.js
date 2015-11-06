@@ -157,7 +157,7 @@ export class Security extends Kernel.ContainerAware {
 
     this._token.userProvider = this.userProvider;
 
-    this._token.getCredentials(callback);
+    this._token.loadCredentials(callback);
 
     return this._token;
   }
@@ -173,7 +173,7 @@ export class Security extends Kernel.ContainerAware {
 
     this._token.userProvider = this.userProvider;
 
-    this._token.getCredentials(callback);
+    this._token.loadCredentials(callback);
 
     return this._token;
   }

@@ -9,13 +9,15 @@ import {Kernel} from './Kernel';
 import {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException';
 
 /**
+ * @todo - rename it to AbstractService (ContainerAware doesn't make sense anymore)
+ *
  * Container aware instance
  */
 export class ContainerAware extends MicroserviceInjectable {
   constructor() {
     super();
 
-    this._container = null;
+    this._kernel = null;
     this._localBackend = false;
   }
 
@@ -59,13 +61,13 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
-   * @param {Instance} microservice
+   * @param {Object|String} microservice
    * @returns {Injectable}
    */
   bind(microservice) {
     // @todo: find more smart way of doing this...
     if (typeof microservice === 'string') {
-      microservice = this._container.get(Kernel.KERNEL).microservice(microservice);
+      microservice = this.kernel.microservice(microservice);
     }
 
     return super.bind(microservice);
@@ -92,17 +94,24 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
-   * @param {DI} container
-   */
-  set container(container) {
-    this._container = container;
-  }
-
-  /**
    * @returns {DI}
    */
   get container() {
-    return this._container;
+    return this._kernel.container;
+  }
+
+  /**
+   * @param {Kernel} kernel
+   */
+  set kernel(kernel) {
+    this._kernel = kernel;
+  }
+
+  /**
+   * @returns {Kernel}
+   */
+  get kernel() {
+    return this._kernel;
   }
 
   /**
@@ -110,6 +119,6 @@ export class ContainerAware extends MicroserviceInjectable {
    * @returns {*}
    */
   get(...args) {
-    return this._container.get(...args);
+    return this.container.get(...args);
   }
 }

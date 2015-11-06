@@ -34,7 +34,7 @@ export class Token {
   /**
    * @param {Function} callback
    */
-  getCredentials(callback = () => null) {
+  loadCredentials(callback = () => null) {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
