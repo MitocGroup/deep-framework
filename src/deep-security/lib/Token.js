@@ -32,9 +32,10 @@ export class Token {
   }
 
   /**
+   * @param {Boolean} updateAwsCreds
    * @param {Function} callback
    */
-  loadCredentials(callback = () => null) {
+  loadCredentials(updateAwsCreds = true, callback = () => null) {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
@@ -56,8 +57,7 @@ export class Token {
 
     this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 
-    // update AWS credentials
-    AWS.config.credentials = this._credentials.refresh(function(error) {
+    this._credentials.refresh((error) => {
       if (error) {
         callback(new AuthException(error));
         return;
@@ -65,15 +65,19 @@ export class Token {
 
       this._identityId = this._credentials.identityId;
 
-      AWS.config.update({
-        accessKeyId: this._credentials.accessKeyId,
-        secretAccessKey: this._credentials.secretAccessKey,
-        sessionToken: this._credentials.sessionToken,
-        region: defaultRegion, // restore to default region
-      });
+      // update AWS credentials
+      if (updateAwsCreds) {
+        AWS.config.credentials = this._credentials;
+        AWS.config.update({
+          accessKeyId: this._credentials.accessKeyId,
+          secretAccessKey: this._credentials.secretAccessKey,
+          sessionToken: this._credentials.sessionToken,
+          region: defaultRegion, // restore to default region
+        });
+      }
 
       callback(null, this);
-    }.bind(this));
+    });
   }
 
   /**
