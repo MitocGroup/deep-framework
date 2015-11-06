@@ -136,34 +136,18 @@ suite('Driver/AbstractDriver', function() {
   });
 
   test('Check has() method returns valid AbstractDriver object', function() {
-    let error = null;
-    let actualResult = null;
     let spyCallback = sinon.spy();
-    try {
-      actualResult = abstractDriver.has(key, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    let actualResult = abstractDriver.has(key, spyCallback);
     chai.assert.instanceOf(actualResult, AbstractDriver, 'result of has() is an instance of AbstractDriver');
     chai.expect(actualResult.buildId).to.be.equal(buildId);
     chai.expect(actualResult.silent).to.be.equal(silent);
     chai.expect(actualResult.namespace).to.be.equal(namespace);
-    chai.expect(spyCallback).to.have.been.called;
+    chai.expect(spyCallback).to.have.been.calledWith();
   });
 
   test('Check get() method returns valid AbstractDriver object', function() {
-    let error = null;
-    let actualResult = null;
     let spyCallback = sinon.spy();
-    try {
-      actualResult = abstractDriver.get(key, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    let actualResult = abstractDriver.get(key, spyCallback);
     chai.assert.instanceOf(actualResult, AbstractDriver, 'result of get() is an instance of AbstractDriver');
     chai.expect(actualResult.buildId).to.be.equal(buildId);
     chai.expect(actualResult.silent).to.be.equal(silent);
@@ -186,16 +170,8 @@ suite('Driver/AbstractDriver', function() {
   });
 
   test('Check set() method returns valid AbstractDriver object: ', function() {
-    let error = null;
-    let actualResult = null;
     let spyCallback = sinon.spy();
-    try {
-      actualResult = abstractDriver.set(key, 'testValue', 1, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    let actualResult = abstractDriver.set(key, 'testValue', 1, spyCallback);
     chai.expect(spyCallback).to.have.been.calledWith(undefined, null);
   });
 
@@ -233,29 +209,15 @@ suite('Driver/AbstractDriver', function() {
 
   test('Check invalidate() method returns valid AbstractDriver object', function() {
     let abstractDriverNegativeTest = new AbstractDriverTest();
-    let error = null;
     let spyCallback = sinon.spy();
-    try {
-      abstractDriverNegativeTest.invalidate(key, 1, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(spyCallback).to.have.been.called;
+    abstractDriverNegativeTest.invalidate(key, 1, spyCallback);
+    chai.expect(spyCallback).to.have.been.calledWith();
   });
 
   test('Check flush() method with valid _flush value', function() {
     let abstractDriverNegativeTest = new AbstractDriverNegativeTest();
-    let error = null;
     let spyCallback = sinon.spy();
-    try {
-      abstractDriverNegativeTest.flush(spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    abstractDriverNegativeTest.flush(spyCallback);
     chai.expect(spyCallback).to.have.been.calledWith(undefined, 'exception');
   });
 
