@@ -92,7 +92,9 @@ suite('Driver/AbstractDriver', function() {
   let buildId = 'testId1';
   let namespace = 'abstractDriverNamespace';
   let silent = true;
-  let key = 'key_test';
+  let testKey = 'test_key';
+  let testValue = {value: 'test_value'};
+  let ttl = 100;
 
   test('Class AbstractDriver exists in Driver/AbstractDriver', function() {
     chai.expect(typeof AbstractDriver).to.equal('function');
@@ -131,13 +133,13 @@ suite('Driver/AbstractDriver', function() {
     chai.expect(abstractDriver.silent).to.be.equal(silent);
   });
 
-  test(`Check _buildKey() method returns: ${abstractDriver.buildId}:${abstractDriver.namespace}#${key}`, function() {
-    chai.expect(abstractDriver._buildKey(key)).to.be.equal(`${abstractDriver.buildId}:${abstractDriver.namespace}#${key}`);
+  test(`Check _buildKey() method returns: ${abstractDriver.buildId}:${abstractDriver.namespace}#${testKey}`, function() {
+    chai.expect(abstractDriver._buildKey(testKey)).to.be.equal(`${abstractDriver.buildId}:${abstractDriver.namespace}#${testKey}`);
   });
 
   test('Check has() method returns valid AbstractDriver object', function() {
     let spyCallback = sinon.spy();
-    let actualResult = abstractDriver.has(key, spyCallback);
+    let actualResult = abstractDriver.has(testKey, spyCallback);
     chai.assert.instanceOf(actualResult, AbstractDriver, 'result of has() is an instance of AbstractDriver');
     chai.expect(actualResult.buildId).to.be.equal(buildId);
     chai.expect(actualResult.silent).to.be.equal(silent);
@@ -147,7 +149,7 @@ suite('Driver/AbstractDriver', function() {
 
   test('Check get() method returns valid AbstractDriver object', function() {
     let spyCallback = sinon.spy();
-    let actualResult = abstractDriver.get(key, spyCallback);
+    let actualResult = abstractDriver.get(testKey, spyCallback);
     chai.assert.instanceOf(actualResult, AbstractDriver, 'result of get() is an instance of AbstractDriver');
     chai.expect(actualResult.buildId).to.be.equal(buildId);
     chai.expect(actualResult.silent).to.be.equal(silent);
@@ -160,7 +162,7 @@ suite('Driver/AbstractDriver', function() {
     let error = null;
     let spyCallback = sinon.spy();
     try {
-      abstractDriverNegativeTest.get(key, spyCallback);
+      abstractDriverNegativeTest.get(testKey, spyCallback);
     } catch (e) {
       error = e;
     }
@@ -171,8 +173,8 @@ suite('Driver/AbstractDriver', function() {
 
   test('Check set() method returns valid AbstractDriver object: ', function() {
     let spyCallback = sinon.spy();
-    let actualResult = abstractDriver.set(key, 'testValue', 1, spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWith(undefined, null);
+    let actualResult = abstractDriver.set(testKey, testValue, 1, spyCallback);
+    chai.expect(spyCallback).to.have.been.calledWith(null, '_set was executed successfully');
   });
 
   test('Check set() method throws exception', function() {
@@ -180,7 +182,7 @@ suite('Driver/AbstractDriver', function() {
     let error = null;
     let spyCallback = sinon.spy();
     try {
-      abstractDriverNegativeTest.set(key, 'testValue', spyCallback);
+      abstractDriverNegativeTest.set(testKey, testValue, spyCallback);
     } catch (e) {
       error = e;
     }
@@ -194,7 +196,7 @@ suite('Driver/AbstractDriver', function() {
     let actualResult = null;
     let spyCallback = sinon.spy();
     try {
-      actualResult = abstractDriver.invalidate(key, 1, spyCallback);
+      actualResult = abstractDriver.invalidate(testKey, 1, spyCallback);
     } catch (e) {
       error = e;
     }
@@ -210,7 +212,7 @@ suite('Driver/AbstractDriver', function() {
   test('Check invalidate() method returns valid AbstractDriver object', function() {
     let abstractDriverNegativeTest = new AbstractDriverTest();
     let spyCallback = sinon.spy();
-    abstractDriverNegativeTest.invalidate(key, 1, spyCallback);
+    abstractDriverNegativeTest.invalidate(testKey, 1, spyCallback);
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
@@ -218,7 +220,7 @@ suite('Driver/AbstractDriver', function() {
     let abstractDriverNegativeTest = new AbstractDriverNegativeTest();
     let spyCallback = sinon.spy();
     abstractDriverNegativeTest.flush(spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWith(undefined, 'exception');
+    chai.expect(spyCallback).to.have.been.calledWith('exception', null);
   });
 
   test('Check flush() method throws "NoFlushException" exception for invalid _flush value', function () {

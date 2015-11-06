@@ -26,13 +26,13 @@ suite('Driver/InMemoryDriver', function() {
     chai.expect(InMemoryDriver._now.toString()).to.be.contains(approxTime);
   });
 
-  test('Check has() method executes without error and calls callback(false)', function() {
+  test('Check has() method executes without error and calls callback(null, false)', function() {
     let spyCallback = sinon.spy();
     inMemoryDriver._has(testKey, spyCallback);
     chai.expect(spyCallback).to.have.been.calledWithExactly(null, false);
   });
 
-  test('Check has() method executes without error and calls callback(true)', function() {
+  test('Check has() method executes without error and calls callback(null, true)', function() {
     let spySetCallback = sinon.spy();
     let spyHasCallback = sinon.spy();
     inMemoryDriver._set(testKey, testValue, 100000, spySetCallback);
