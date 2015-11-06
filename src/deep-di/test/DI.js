@@ -65,7 +65,8 @@ suite('DI', function() {
       },
     };
     di.addService(service.name, service.value);
-    chai.expect(di.get(service.name)).to.be.eql(service.value);
+    chai.expect(di.get(service.name)).to.be
+      .eql(service.value);
   });
 
   test('Check addParameter method adds a parameter into container', function() {
