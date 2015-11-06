@@ -34,9 +34,9 @@ export class RedisDriver extends AbstractDriver {
    */
   _has(key, callback = () => {}) {
     this._client.exists(key, (error, results) => {
-      if (error && error !== null) {
+      if (error) {
         callback(new RedisClusterException(error), null);
-        
+
         return;
       }
 
@@ -50,7 +50,7 @@ export class RedisDriver extends AbstractDriver {
    */
   _get(key, callback = () => {}) {
     this._client.get(key, (error, results) => {
-      if (error && error !== null) {
+      if (error) {
         callback(new RedisClusterException(error), null);
 
         return;
@@ -69,7 +69,7 @@ export class RedisDriver extends AbstractDriver {
    */
   _set(key, value, ttl = 0,callback = () => {}) {
     this._client.set(key, value, ttl, (error) => {
-      if (error && error !== null) {
+      if (error) {
         callback(new RedisClusterException(error), null);
 
         return;
@@ -86,7 +86,7 @@ export class RedisDriver extends AbstractDriver {
    */
   _invalidate(key, timeout = 0, callback = () => {}) {
     this._client.del(key, timeout, (error) => {
-      if (error && error !== null) {
+      if (error) {
         callback(new RedisClusterException(error), null);
 
         return;
@@ -102,7 +102,7 @@ export class RedisDriver extends AbstractDriver {
    */
   _flush(callback = () => {}) {
     this._client.flushall((error) => {
-      if (error && error !== null) {
+      if (error) {
         callback(new RedisClusterException(error), null);
 
         return;

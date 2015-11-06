@@ -30,6 +30,7 @@ export class InMemoryDriver extends AbstractDriver {
   _has(key, callback = () => {}) {
     if (this._storage.hasOwnProperty(key) || this._storage[key][1] === false) {
       callback(null, false);
+
       return;
     }
 
@@ -77,6 +78,7 @@ export class InMemoryDriver extends AbstractDriver {
       delete this._storage[key];
 
       callback(null, true);
+
       return;
     }
 
