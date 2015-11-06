@@ -44,34 +44,35 @@ suite('Driver/InMemoryDriver', function() {
 
   test('Check _get() method executes without error and calls callback', function() {
     let spyCallback = sinon.spy();
-    inMemoryDriver._set(testKey, testValue, ttl);
+    inMemoryDriver._set(testKey, testValue, 10000);
     inMemoryDriver._get(testKey, spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWith();
+    chai.expect(spyCallback).to.have.been.calledWith(null);
 
     //check value from args passed to callback
-    chai.expect(spyCallback.args[0][0][0]).to.be.eql(testValue);
+    chai.expect(spyCallback.args[0][1][0]).to.be.eql(testValue);
   });
 
   test('Check _invalidate(timeout = 0) method executes without error and calls callback', function() {
-    let spyCallback = sinon.spy();
-    inMemoryDriver._invalidate(testKey, 0, spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWith(true);
-    inMemoryDriver._has(testKey, spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWithExactly(false);
+    let spyInvalidateCallback = sinon.spy();
+    let spyHasCallback = sinon.spy();
+    inMemoryDriver._invalidate(testKey, 0, spyInvalidateCallback);
+    chai.expect(spyInvalidateCallback).to.have.been.calledWithExactly(null, true);
+    inMemoryDriver._has(testKey, spyHasCallback);
+    chai.expect(spyHasCallback).to.have.been.calledWithExactly(null, false);
   });
 
   test('Check _invalidate(timeout > 0) method executes without error and calls callback', function() {
-    let ttlToInvalidate = 111;
+    let ttlToInvalidate = 1111;
     let spySetCallback = sinon.spy();
     let spyInvalidateCallback = sinon.spy();
     let spyGetCallback = sinon.spy();
     inMemoryDriver._set(testKey, testValue, ttl, spySetCallback);
     inMemoryDriver._get(testKey, spyGetCallback);
-    let expectedResult = spyGetCallback.args[0][0];
+    let expectedResult = spyGetCallback.args[0][1];
     inMemoryDriver._invalidate(testKey, ttlToInvalidate, spyInvalidateCallback);
-    chai.expect(spyInvalidateCallback).to.have.been.calledWith(true);
+    chai.expect(spyInvalidateCallback).to.have.been.calledWithExactly(null, true);
     inMemoryDriver._get(testKey, spyGetCallback);
-    let actualResult = spyGetCallback.args[0][0];
+    let actualResult = spyGetCallback.args[0][1];
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
 
@@ -79,7 +80,7 @@ suite('Driver/InMemoryDriver', function() {
     let spyCallback = sinon.spy();
     inMemoryDriver._set(testKey, testValue, ttl);
     inMemoryDriver._flush(spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWith(true);
+    chai.expect(spyCallback).to.have.been.calledWith(null, true);
     chai.expect(inMemoryDriver.storage).to.eql({});
   });
 });
