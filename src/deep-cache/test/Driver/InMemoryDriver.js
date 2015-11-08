@@ -4,6 +4,7 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {InMemoryDriver} from '../../lib.compiled/Driver/InMemoryDriver';
+
 chai.use(sinonChai);
 
 suite('Driver/InMemoryDriver', function() {

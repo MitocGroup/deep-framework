@@ -1,35 +1,49 @@
 'use strict';
 
 import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import {Cache} from '../lib.compiled/Cache';
 import {InMemoryDriver} from '../lib.compiled/Driver/InMemoryDriver';
 import {RedisDriver} from '../lib.compiled/Driver/RedisDriver';
 import {Exception} from '../lib.compiled/Exception/Exception';
 import Kernel from 'deep-kernel';
+import KernelFactory from './common/KernelFactory';
+
+chai.use(sinonChai);
 
 suite('Cache', function() {
   let cache = new Cache();
-  let driverName = 'driver';
+  let backendKernelInstance = null;
   let memoryDriverName = 'memory';
   let redisDriverName = 'redis';
-  let localStorageDriverName = 'local-storage';
   let negativeDriverName = 'test';
+  let inMemoryDriver = null;
 
   test('Class Cache exists in Cache', function() {
     chai.expect(typeof Cache).to.equal('function');
   });
 
-  test('Check constructor sets _driver = null', function() {
-    chai.expect(cache.driver).to.be.an.equal(null);
+  test('Check driver setter sets driver value', function() {
+    inMemoryDriver = new InMemoryDriver();
+    cache.driver = inMemoryDriver;
+    chai.expect(cache.driver).to.be.eql(inMemoryDriver);
   });
 
-  test(`Check driver setter sets value ${driverName}`, function() {
-    cache.driver = driverName;
-    chai.expect(cache.driver).to.be.an.equal(driverName);
+  test('Check service getter returns driver value', function() {
+    chai.expect(cache.service).to.be.eql(inMemoryDriver);
   });
 
-  test(`Check service getter returns ${driverName}`, function() {
-    chai.expect(cache.service).to.be.an.equal(driverName);
+  test('Load backend kernel by using Kernel.load()', function(done) {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+      backendKernelInstance = backendKernel;
+      cache = backendKernel.get('cache');
+
+      // complete the async
+      done();
+    };
+    KernelFactory.create({Cache: Cache}, callback);
   });
 
   test(`Check createDriver() static method for ${memoryDriverName}`,
@@ -46,13 +60,6 @@ suite('Cache', function() {
     }
   );
 
-  test(`Check createDriver() static method for ${localStorageDriverName}`,
-    function() {
-      //todo - TBD - window is not defined
-      //chai.expect(typeof Cache.createDriver(localStorageDriverName)).to.be.an.equal('object');
-    }
-  );
-
   test('Check createDriver() throws exception', function() {
     let error = null;
 
@@ -63,26 +70,5 @@ suite('Cache', function() {
     }
 
     chai.expect(error).to.be.an.instanceof(Exception);
-  });
-
-  test('Check boot() method  for !kernel.isFrontend', function() {
-    let deepServices = {serviceName: 'serviceName'};
-    let kernel = null;
-    let error = null;
-    try {
-      kernel = new Kernel(deepServices, Kernel.BACKEND_CONTEXT);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(kernel).to.be.an.instanceof(Kernel);
-    chai.assert.instanceOf(kernel, Kernel, 'kernel is an instance of Kernel');
-
-    let callback = ()=> {
-      return 'callback called';
-    };
-
-    cache.boot(kernel, callback);
   });
 });
