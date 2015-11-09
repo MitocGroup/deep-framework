@@ -17,7 +17,7 @@ export class RedisDriver extends AbstractDriver {
   constructor(dsn) {
     super();
 
-    let nativeDriver = RedisDriver.NATIVE_DRIVER;
+    let nativeDriver = this.NATIVE_DRIVER;
 
     this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();
   }
@@ -114,10 +114,10 @@ export class RedisDriver extends AbstractDriver {
   }
 
   /**
-   * @returns {Function}
+   * @returns {*|exports|module.exports}
    * @constructor
    */
-  static get NATIVE_DRIVER() {
+  get NATIVE_DRIVER() {
     return require('ioredis');
   }
 }
