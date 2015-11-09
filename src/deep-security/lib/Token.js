@@ -6,6 +6,7 @@
 
 import AWS from 'aws-sdk';
 import {AuthException} from './Exception/AuthException';
+import {CredentialsManager} from './CredentialsManager';
 
 /**
  * Security token holds details about logged user
@@ -29,6 +30,7 @@ export class Token {
     this._credentials = null;
 
     this._isAnonymous = true;
+    this._credsManager = new CredentialsManager();
   }
 
   /**
@@ -76,7 +78,11 @@ export class Token {
         });
       }
 
-      callback(null, this);
+      this._credsManager.loadCredentials(this._credentials, (record) => {
+        console.log('Creds record - ', record);
+
+        callback(null, this);
+      });
     });
   }
 
