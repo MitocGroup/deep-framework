@@ -5,7 +5,7 @@
 'use strict';
 
 import AWS from 'aws-sdk';
-import CognitoSyncClient from 'amazon-cognito-js';
+import CognitoSyncManager from 'amazon-cognito-js';
 import {CreateCognitoDatasetException} from './Exception/CreateCognitoDatasetException';
 import {PutCognitoRecordException} from './Exception/PutCognitoRecordException';
 import {GetCognitoRecordException} from './Exception/GetCognitoRecordException';
@@ -29,7 +29,18 @@ export class CredentialsManager {
    * @param {Object|null} cognitoSyncClient
    */
   constructor(cognitoSyncClient = null) {
-    this._cognitoSyncClient = cognitoSyncClient || new AWS.CognitoSyncClient();
+    this._cognitoSyncClient = cognitoSyncClient;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get cognitoSyncClient() {
+    if (!this._cognitoSyncClient) {
+      this._cognitoSyncClient = new AWS.CognitoSyncManager();
+    }
+
+    return this._cognitoSyncClient;
   }
 
   /**
@@ -72,7 +83,7 @@ export class CredentialsManager {
    * @private
    */
   _createOrGetDataset(callback) {
-    this._cognitoSyncClient.openOrCreateDataset(CredentialsManager.DATASET_NAME, (error, dataset) => {
+    this.cognitoSyncClient.openOrCreateDataset(CredentialsManager.DATASET_NAME, (error, dataset) => {
       if (error) {
         throw new CreateCognitoDatasetException(CredentialsManager.DATASET_NAME, error);
       }

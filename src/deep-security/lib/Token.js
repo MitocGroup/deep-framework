@@ -70,19 +70,19 @@ export class Token {
       // update AWS credentials
       if (updateAwsCreds) {
         AWS.config.credentials = this._credentials;
+
+        // restore to default region
         AWS.config.update({
-          accessKeyId: this._credentials.accessKeyId,
-          secretAccessKey: this._credentials.secretAccessKey,
-          sessionToken: this._credentials.sessionToken,
-          region: defaultRegion, // restore to default region
+          region: defaultRegion,
         });
-      }
 
-      this._credsManager.loadCredentials(this._credentials, (record) => {
-        console.log('Creds record - ', record);
-
+        // @todo - Fix 'params' is not defined error from CognitoSyncManager
+        this._credsManager.loadCredentials(this._credentials, (record) => {
+          callback(null, this);
+        });
+      } else {
         callback(null, this);
-      });
+      }
     });
   }
 
