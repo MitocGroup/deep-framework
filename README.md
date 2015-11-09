@@ -6,11 +6,11 @@ DEEP Framework
 [![Codacy Badge](https://api.codacy.com/project/badge/coverage/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-`DEEP Framework` is a core component of the 
+`DEEP Framework` is a serverless web framework, core component of the 
 [Platform-as-a-Service](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem) 
-that abstracts web services from specific cloud providers. This framework enables developers build web applications 
-or platforms using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) in a completely 
-[serverless approach](https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture). 
+that abstracts web apps and web services from specific cloud providers. This framework enables developers build
+applications or platforms using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) 
+in a completely [serverless approach](https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture). 
 
 > At this moment only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are encouraged to add support 
 for [Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](https://cloud.google.com/), and so on.
