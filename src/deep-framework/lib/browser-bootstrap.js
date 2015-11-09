@@ -5,14 +5,22 @@
 'use strict';
 
 import {Framework} from './Framework';
+import DeepAsset from 'deep-asset';
+import DeepCache from 'deep-cache';
+import DeepSecurity from 'deep-security';
+import DeepResource from 'deep-resource';
+import DeepLog from 'deep-log';
+import DeepValidation from 'deep-validation';
+
+//import DeepNotification from 'deep-notification';
 
 let exports = module.exports = new Framework({
-  Asset: 'deep-asset',
-  Cache: 'deep-cache',
-  Security: 'deep-security',
-  Resource: 'deep-resource',
-  Log: 'deep-log',
-  Validation: 'deep-validation',
+  Asset: DeepAsset,
+  Cache: DeepCache,
+  Security: DeepSecurity,
+  Resource: DeepResource,
+  Log: DeepLog,
+  Validation: DeepValidation,
 
-  //Notification: 'deep-notification',
+  //Notification: DeepNotification,
 }, Framework.FRONTEND_CONTEXT);
