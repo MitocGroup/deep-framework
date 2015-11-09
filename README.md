@@ -22,18 +22,26 @@ for [Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](http
 
 To see the power of `DEEP Framework`, execute the following 4 simple steps in command line:
 
-1. `npm install deepify -g` # Install DEEP CLI, also known as deepify
+1. Install DEEP CLI, also known as deepify:
+
+  `npm install deepify -g` 
 > deepify is a collection of tools that empower developers and devops engineers to automate
 the management of web apps built on top of DEEP ecosystem.
 
-2. `deepify helloworld ~/deep-hello-world` # Using deepify, dump locally the helloworld example
+2. Using deepify, dump locally the helloworld example:
+
+  `deepify helloworld ~/deep-hello-world`
 > deepify will clone the repository from GitHub and pull all the dependencies in one place.
 
-3. `deepify server ~/deep-hello-world -o` # Using deepify, run locally the helloworld example
+3. Using deepify, run locally the helloworld example:
+
+  `deepify server ~/deep-hello-world -o`
 > deepify launches a web server that can be used for local development, without making calls
 to web services from cloud providers like AWS.
 
-4. `deepify deploy ~/deep-hello-world` # Using deepify, deploy to AWS the helloworld example
+4. Using deepify, deploy to AWS the helloworld example:
+
+  `deepify deploy ~/deep-hello-world`
 > deepify provisions the infrastructure and deploys the web app, empowering developers and
 devops engineers to automate the process.
 
