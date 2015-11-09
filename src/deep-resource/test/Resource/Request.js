@@ -31,7 +31,7 @@ class CachePositiveTest extends CacheMock {
   }
 
   has(cacheKey, cb) {
-    return cb(null, 'called has');
+    return cb(null, '{"status":200,"message":"called has","_class":"Response"}');
   }
 
   invalidate(cacheKey, number, cb) {
@@ -39,7 +39,7 @@ class CachePositiveTest extends CacheMock {
   }
 
   get(cacheKey, cb) {
-    return cb(null, '{"status":200,"message":"called has","_class":"Response"}');
+    return cb(null, '{"status":200,"message":"called get","_class":"Response"}');
   }
 
   set(cacheKey, response, ttl, cb) {
