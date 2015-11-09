@@ -33,28 +33,32 @@ export class RedisDriver extends AbstractDriver {
    * @param {String} key
    * @param {Function} callback
    */
-  _has(key, callback = () => '') {
-    this._client.exists(key, function(error, results) {
-      if (error && error !== null) {
-        throw new RedisClusterException(error);
+  _has(key, callback = () => {}) {
+    this._client.exists(key, (error, results) => {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(results);
-    }.bind(this));
+      callback(null, results);
+    });
   }
 
   /**
    * @param {String} key
    * @param {Function} callback
    */
-  _get(key, callback = () => '') {
-    this._client.get(key, function(error, results) {
-      if (error && error !== null) {
-        throw new RedisClusterException(error);
+  _get(key, callback = () => {}) {
+    this._client.get(key, (error, results) => {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(results);
-    }.bind(this));
+      callback(null, results);
+    });
   }
 
   /**
@@ -64,14 +68,16 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    * @returns {Boolean}
    */
-  _set(key, value, ttl = 0,callback = () => '') {
-    this._client.set(key, value, ttl, function(error) {
-      if (error && error !== null) {
-        throw new RedisClusterException(error);
+  _set(key, value, ttl = 0, callback = () => {}) {
+    this._client.set(key, value, ttl, (error) => {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(true);
-    }.bind(this));
+      callback(null, true);
+    });
   }
 
   /**
@@ -79,28 +85,32 @@ export class RedisDriver extends AbstractDriver {
    * @param {Number} timeout
    * @param {Function} callback
    */
-  _invalidate(key, timeout = 0, callback = () => '') {
-    this._client.del(key, timeout, function(error) {
-      if (error && error !== null) {
-        throw new RedisClusterException(error);
+  _invalidate(key, timeout = 0, callback = () => {}) {
+    this._client.del(key, timeout, (error) => {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(true);
-    }.bind(this));
+      callback(null, true);
+    });
   }
 
   /**
    * @param {Function} callback
    * @returns {AbstractDriver}
    */
-  _flush(callback = () => '') {
-    this._client.flushall(function(error) {
-      if (error && error !== null) {
-        throw new RedisClusterException(error);
+  _flush(callback = () => {}) {
+    this._client.flushall((error) => {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(true);
-    }.bind(this));
+      callback(null, true);
+    });
   }
 
   /**
