@@ -3,7 +3,7 @@
 import chai from 'chai';
 import {Cache} from '../lib.compiled/Cache';
 import {InMemoryDriver} from '../lib.compiled/Driver/InMemoryDriver';
-import {RedisDriver} from '../lib.compiled/Driver/RedisDriver'
+import {RedisDriver} from '../lib.compiled/Driver/RedisDriver';
 import {Exception} from '../lib.compiled/Exception/Exception';
 import Kernel from 'deep-kernel';
 
@@ -32,19 +32,26 @@ suite('Cache', function() {
     chai.expect(cache.service).to.be.an.equal(driverName);
   });
 
+  test(`Check createDriver() static method for ${memoryDriverName}`,
+    function() {
+      chai.assert.instanceOf(Cache.createDriver(memoryDriverName),
+        InMemoryDriver, 'createDriver() returns an instance of InMemoryDriver');
+    }
+  );
 
-  test(`Check createDriver() static method for ${memoryDriverName}`, function() {
-    chai.assert.instanceOf(Cache.createDriver(memoryDriverName), InMemoryDriver, 'createDriver() returns an instance of InMemoryDriver');
-  });
+  test(`Check createDriver() static method for ${redisDriverName}`,
+    function() {
+      chai.assert.instanceOf(Cache.createDriver(redisDriverName), RedisDriver,
+        'createDriver() returns an instance of RedisDriver');
+    }
+  );
 
-  test(`Check createDriver() static method for ${redisDriverName}`, function() {
-    chai.assert.instanceOf(Cache.createDriver(redisDriverName), RedisDriver, 'createDriver() returns an instance of RedisDriver');
-  });
-
-  test(`Check createDriver() static method for ${localStorageDriverName}`, function() {
-    //todo - TBD - window is not defined
-    //chai.expect(typeof Cache.createDriver(localStorageDriverName)).to.be.an.equal('object');
-  });
+  test(`Check createDriver() static method for ${localStorageDriverName}`,
+    function() {
+      //todo - TBD - window is not defined
+      //chai.expect(typeof Cache.createDriver(localStorageDriverName)).to.be.an.equal('object');
+    }
+  );
 
   test('Check createDriver() throws exception', function() {
     let error = null;
@@ -59,7 +66,7 @@ suite('Cache', function() {
   });
 
   test('Check boot() method  for !kernel.isFrontend', function() {
-    let deepServices = { serviceName: 'serviceName' };
+    let deepServices = {serviceName: 'serviceName'};
     let kernel = null;
     let error = null;
     try {
