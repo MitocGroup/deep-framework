@@ -30,7 +30,7 @@ suite('Cache', function() {
       backendKernelInstance = backendKernel;
       cache = backendKernel.get('cache');
 
-      //@todo - uncomment when issue will be fixed
+      //@todo - uncomment when Proxy issue will be fixed by AlexanderC
       //chai.assert.instanceOf(cache, Cache, 'cache is an instance of Cache');
 
       // complete the async
@@ -45,7 +45,7 @@ suite('Cache', function() {
     chai.expect(cache.driver).to.be.eql(inMemoryDriver);
   });
 
-  //@todo - uncomment when issue will be fixed
+  //@todo - uncomment when Proxy issue will be fixed by AlexanderC
   //test('Check service getter returns driver value', function() {
   //  chai.expect(cache.service).to.be.eql(inMemoryDriver);
   //});
@@ -75,4 +75,16 @@ suite('Cache', function() {
 
     chai.expect(error).to.be.an.instanceof(Exception);
   });
+
+  //@todo - uncomment when Proxy issue will be fixed by AlexanderC
+  //test('Check boot() method boots a certain service and executes callback',
+  //  function() {
+  //    let spyCallback = sinon.spy();
+  //    cache.boot(backendKernelInstance, spyCallback);
+  //    chai.assert.instanceOf(cache.driver,
+  //      InMemoryDriver, 'cache.driver ia an instance of InMemoryDriver');
+  //    chai.expect(cache.driver.buildId).to.be.equal(backendKernelInstance.buildId);
+  //    chai.expect(spyCallback).to.have.been.calledWithExactly();
+  //  }
+  //);
 });

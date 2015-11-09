@@ -188,7 +188,7 @@ suite('Driver/AbstractDriver', function() {
       let spyCallback = sinon.spy();
       let actualResult = abstractDriver.set(testKey, testValue, 1,
         spyCallback);
-      chai.expect(spyCallback).to.have.been.calledWith(null,
+      chai.expect(spyCallback).to.have.been.calledWithExactly(null,
         '_set was executed successfully');
     }
   );
@@ -239,7 +239,7 @@ suite('Driver/AbstractDriver', function() {
     let abstractDriverNegativeTest = new AbstractDriverNegativeTest();
     let spyCallback = sinon.spy();
     abstractDriverNegativeTest.flush(spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWith('exception', null);
+    chai.expect(spyCallback).to.have.been.calledWithExactly('exception', null);
   });
 
   test('Check flush() method throws "NoFlushException" ' +
