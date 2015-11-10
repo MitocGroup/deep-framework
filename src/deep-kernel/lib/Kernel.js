@@ -278,7 +278,7 @@ export class Kernel {
 
       this._container.addService(
         serviceInstance.name,
-        serviceInstance.service
+        Kernel._createProxyIfNeeded(serviceInstance)
       );
     }
 
@@ -292,6 +292,26 @@ export class Kernel {
       }).done(function() {
         callback(this);
       }.bind(this));
+  }
+
+  /**
+   * @param {ContainerAware|Object} serviceObj
+   * @returns {ContainerAware|Proxy|Object}
+   * @private
+   */
+  static _createProxyIfNeeded(serviceObj) {
+    if (serviceObj === serviceObj.service) {
+      return serviceObj;
+    } else if(!serviceObj.hasOwnProperty('apply')) {
+      return serviceObj.service;
+    }
+
+    let proxy = new Proxy(serviceObj, serviceObj.service);
+
+    proxy.__proto__ = this.__proto__;
+    proxy.constructor.prototype = this.constructor.prototype;
+
+    return proxy;
   }
 
   /**

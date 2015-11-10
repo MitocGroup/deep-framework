@@ -396,6 +396,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "lib/cache.js~cache#apply",
+    "class/lib/Cache.js~Cache.html#instance-method-apply",
+    "lib/Cache.js~Cache#apply",
+    "method"
+  ],
+  [
     "lib/cache.js~cache#boot",
     "class/lib/Cache.js~Cache.html#instance-method-boot",
     "lib/Cache.js~Cache#boot",
@@ -409,13 +415,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/cache.js~cache#driver",
-    "class/lib/Cache.js~Cache.html#instance-set-driver",
+    "class/lib/Cache.js~Cache.html#instance-get-driver",
     "lib/Cache.js~Cache#driver",
     "member"
   ],
   [
     "lib/cache.js~cache#driver",
-    "class/lib/Cache.js~Cache.html#instance-get-driver",
+    "class/lib/Cache.js~Cache.html#instance-set-driver",
     "lib/Cache.js~Cache#driver",
     "member"
   ],
@@ -616,6 +622,12 @@ window.esdocSearchIndex = [
     "file/lib/Driver/RedisDriver.js.html",
     "lib/Driver/RedisDriver.js",
     "file"
+  ],
+  [
+    "lib/driver/redisdriver.js~redisdriver#native_driver",
+    "class/lib/Driver/RedisDriver.js~RedisDriver.html#instance-get-NATIVE_DRIVER",
+    "lib/Driver/RedisDriver.js~RedisDriver#NATIVE_DRIVER",
+    "member"
   ],
   [
     "lib/driver/redisdriver.js~redisdriver#client",

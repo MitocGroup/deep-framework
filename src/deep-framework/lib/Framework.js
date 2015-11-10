@@ -116,7 +116,13 @@ export class Framework {
         continue;
       }
 
-      services[serviceName] = require(servicesMap[serviceName]);
+      let serviceObj = servicesMap[serviceName];
+
+      if (typeof serviceObj === 'string') {
+        serviceObj = require(servicesMap[serviceName]);
+      }
+
+      services[serviceName] = serviceObj;
     }
 
     return services;

@@ -3019,7 +3019,7 @@
     "access": null,
     "description": null,
     "lineNumber": 4,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n\n    this._fillDenyMissingUserContextOption();\n    this._fillUserContext();\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {*} event\n   * @param {*} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._addExceptionListener();\n\n    this._context = context;\n    this._request = new Request(event);\n\n    if (!this._loggedUserId && this._forceUserIdentity) {\n      throw new MissingUserContextException();\n    }\n\n    this.handle(this._request);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _addExceptionListener() {\n    process.removeAllListeners('uncaughtException');\n    process.on('uncaughtException', function(error) {\n      return this.createError(error).send();\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} iError\n   */\n  createError(iError) {\n    let oError = {};\n\n    if (typeof iError === 'string') {\n      oError = {\n        errorType: 'Error',\n        errorMessage: iError,\n        errorStack: (new Error(iError)).stack,\n      };\n    } else {\n      oError = {\n        errorType: iError.name,\n        errorMessage: iError.message,\n        errorStack: iError.stack,\n      };\n    }\n\n    let response = new Response(oError);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    let response = new Response(data);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.hasOwnProperty('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {*} event\n   * @param {*} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = context;\n    this._addExceptionListener();\n    \n    this._request = new Request(event);\n    \n    this._fillUserContext();\n\n    if (!this._loggedUserId && this._forceUserIdentity) {\n      throw new MissingUserContextException();\n    }\n\n    this.handle(this._request);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _addExceptionListener() {\n    process.removeAllListeners('uncaughtException');\n    process.on('uncaughtException', function(error) {\n      return this.createError(error).send();\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} iError\n   */\n  createError(iError) {\n    let oError = {};\n\n    if (typeof iError === 'string') {\n      oError = {\n        errorType: 'Error',\n        errorMessage: iError,\n        errorStack: (new Error(iError)).stack,\n      };\n    } else {\n      oError = {\n        errorType: iError.name,\n        errorMessage: iError.message,\n        errorStack: iError.stack,\n      };\n    }\n\n    let response = new Response(oError);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    let response = new Response(data);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.hasOwnProperty('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -3157,7 +3157,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#loggedUserId",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 35,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3188,7 +3188,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#forceUserIdentity",
     "access": null,
     "description": null,
-    "lineNumber": 43,
+    "lineNumber": 42,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3219,7 +3219,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#kernel",
     "access": null,
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 49,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3250,7 +3250,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#lambda",
     "access": null,
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 56,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3281,7 +3281,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#run",
     "access": null,
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 69,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3329,7 +3329,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_context",
     "access": null,
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 70,
     "undocument": true,
     "type": {
       "types": [
@@ -3346,7 +3346,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_request",
     "access": null,
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 73,
     "undocument": true,
     "type": {
       "types": [
@@ -3363,7 +3363,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_addExceptionListener",
     "access": "private",
     "description": null,
-    "lineNumber": 88,
+    "lineNumber": 89,
     "params": [],
     "generator": false
   },
@@ -3376,7 +3376,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createError",
     "access": null,
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 99,
     "params": [
       {
         "nullable": null,
@@ -3405,7 +3405,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createResponse",
     "access": null,
     "description": null,
-    "lineNumber": 124,
+    "lineNumber": 125,
     "params": [
       {
         "nullable": null,
@@ -3434,7 +3434,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#request",
     "access": null,
     "description": null,
-    "lineNumber": 134,
+    "lineNumber": 135,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3465,7 +3465,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#securityService",
     "access": null,
     "description": null,
-    "lineNumber": 141,
+    "lineNumber": 142,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3496,7 +3496,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillDenyMissingUserContextOption",
     "access": "private",
     "description": null,
-    "lineNumber": 148,
+    "lineNumber": 149,
     "params": [],
     "generator": false
   },
@@ -3509,7 +3509,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_forceUserIdentity",
     "access": null,
     "description": null,
-    "lineNumber": 150,
+    "lineNumber": 151,
     "undocument": true,
     "type": {
       "types": [
@@ -3526,7 +3526,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillUserContext",
     "access": "private",
     "description": "Retrieves logged user id from lambda context",
-    "lineNumber": 159,
+    "lineNumber": 160,
     "params": [],
     "generator": false
   },
@@ -3539,7 +3539,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
     "access": null,
     "description": null,
-    "lineNumber": 171,
+    "lineNumber": 172,
     "undocument": true,
     "type": {
       "types": [
@@ -4849,6 +4849,207 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/Generic/MethodsProxy.js",
+    "memberof": null,
+    "longname": "lib/Generic/MethodsProxy.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 11/10/15.\n */\n\n'use strict';\n\n\nexport class MethodsProxy {\n  /**\n   * @param {Object} target\n   */\n  constructor(target) {\n    this._target = target;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get target() {\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   */\n  proxyOverride(handler, ...explMethods) {\n    let methods = Object.keys(handler).concat(explMethods);\n\n    for (let prop of methods) {\n      if (!handler.hasOwnProperty(prop) &&\n        explMethods.indexOf(prop) === -1) {\n        continue;\n      }\n\n      if (typeof handler[prop] === 'function') {\n        Object.defineProperty(\n          this._target,\n          prop,\n          {\n            value: (...args) => {\n              return handler[prop](...args);\n            },\n          }\n        );\n      }\n    }\n\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   *\n   * @todo Replace typeof hook with hasOwnProperty() when get rid of babel\n   */\n  proxy(handler, ...explMethods) {\n    return this.proxyOverride(\n      handler,\n      ...(explMethods.filter((prop) => typeof this._target[prop] === 'undefined'))\n    );\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MethodsProxy",
+    "memberof": "lib/Generic/MethodsProxy.js",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Generic/MethodsProxy.js",
+    "importStyle": "{MethodsProxy}",
+    "description": null,
+    "lineNumber": 8,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 12,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "target",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_target",
+    "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#_target",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "target",
+    "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#target",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "proxyOverride",
+    "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#proxyOverride",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "handler",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String",
+          "String[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "explMethods",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "proxy",
+    "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#proxy",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "todo": [
+      "Replace typeof hook with hasOwnProperty() when get rid of babel"
+    ],
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "handler",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String",
+          "String[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "explMethods",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/Generic/ObjectStorage.js",
     "memberof": null,
     "longname": "lib/Generic/ObjectStorage.js",
@@ -5250,7 +5451,7 @@
     "access": null,
     "description": null,
     "lineNumber": 7,
-    "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Interface as OOPInterface} from './OOP/Interface';\nimport {Runtime as AWSLambdaRuntime} from './AWS/Lambda/Runtime';\nimport {Region as AWSRegion} from './AWS/Region';\nimport {Service as AWSService} from './AWS/Service';\nimport {Policy as AWSIAMPolicy} from './AWS/IAM/Policy';\nimport {Factory as AWSIAMFactory} from './AWS/IAM/Factory';\nimport {ObjectStorage as GenericObjectStorage} from './Generic/ObjectStorage';\nimport {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';\nimport {Exception as ExceptionException} from './Exception/Exception';\nimport {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';\nimport {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';\nimport {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';\n\nlet exports = module.exports = {\n  IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,\n  Exception: {\n    Exception: ExceptionException,\n    InvalidArgumentException: ExceptionInvalidArgumentException,\n    MethodsNotImplementedException: ExceptionMethodsNotImplementedException,\n    DatabaseOperationException: ExceptionDatabaseOperationException,\n  },\n  OOP: {\n    Interface: OOPInterface,\n  },\n  Generic: {\n    ObjectStorage: GenericObjectStorage,\n    ObjectVector: GenericObjectVector,\n  },\n  AWS: {\n    Region: AWSRegion,\n    Service: AWSService,\n    IAM: {\n      Factory: AWSIAMFactory,\n      Policy: AWSIAMPolicy,\n    },\n    Lambda: {\n      Runtime: AWSLambdaRuntime,\n    },\n  },\n};\n"
+    "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Interface as OOPInterface} from './OOP/Interface';\nimport {Runtime as AWSLambdaRuntime} from './AWS/Lambda/Runtime';\nimport {Region as AWSRegion} from './AWS/Region';\nimport {Service as AWSService} from './AWS/Service';\nimport {Policy as AWSIAMPolicy} from './AWS/IAM/Policy';\nimport {Factory as AWSIAMFactory} from './AWS/IAM/Factory';\nimport {ObjectStorage as GenericObjectStorage} from './Generic/ObjectStorage';\nimport {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';\nimport {MethodsProxy as GenericMethodsProxy} from './Generic/MethodsProxy';\nimport {Exception as ExceptionException} from './Exception/Exception';\nimport {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';\nimport {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';\nimport {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';\n\nlet exports = module.exports = {\n  IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,\n  Exception: {\n    Exception: ExceptionException,\n    InvalidArgumentException: ExceptionInvalidArgumentException,\n    MethodsNotImplementedException: ExceptionMethodsNotImplementedException,\n    DatabaseOperationException: ExceptionDatabaseOperationException,\n  },\n  OOP: {\n    Interface: OOPInterface,\n  },\n  Generic: {\n    ObjectStorage: GenericObjectStorage,\n    ObjectVector: GenericObjectVector,\n    MethodsProxy: GenericMethodsProxy,\n  },\n  AWS: {\n    Region: AWSRegion,\n    Service: AWSService,\n    IAM: {\n      Factory: AWSIAMFactory,\n      Policy: AWSIAMPolicy,\n    },\n    Lambda: {\n      Runtime: AWSLambdaRuntime,\n    },\n  },\n};\n"
   },
   {
     "kind": "variable",
@@ -5264,7 +5465,7 @@
     "importPath": "deep-core/lib/bootstrap.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [

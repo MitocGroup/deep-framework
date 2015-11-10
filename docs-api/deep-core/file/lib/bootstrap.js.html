@@ -51,7 +51,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidArgumentException.js~InvalidArgumentException.html">InvalidArgumentException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MethodsNotImplementedException.js~MethodsNotImplementedException.html">MethodsNotImplementedException</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/MethodsProxy.js~MethodsProxy.html">MethodsProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
 </ul>
@@ -75,6 +76,7 @@ import {Policy as AWSIAMPolicy} from &apos;./AWS/IAM/Policy&apos;;
 import {Factory as AWSIAMFactory} from &apos;./AWS/IAM/Factory&apos;;
 import {ObjectStorage as GenericObjectStorage} from &apos;./Generic/ObjectStorage&apos;;
 import {ObjectVector as GenericObjectVector} from &apos;./Generic/ObjectVector&apos;;
+import {MethodsProxy as GenericMethodsProxy} from &apos;./Generic/MethodsProxy&apos;;
 import {Exception as ExceptionException} from &apos;./Exception/Exception&apos;;
 import {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from &apos;./Exception/MethodsNotImplementedException&apos;;
 import {InvalidArgumentException as ExceptionInvalidArgumentException} from &apos;./Exception/InvalidArgumentException&apos;;
@@ -94,6 +96,7 @@ let exports = module.exports = {
   Generic: {
     ObjectStorage: GenericObjectStorage,
     ObjectVector: GenericObjectVector,
+    MethodsProxy: GenericMethodsProxy,
   },
   AWS: {
     Region: AWSRegion,

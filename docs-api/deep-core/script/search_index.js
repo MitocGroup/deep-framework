@@ -72,6 +72,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-core/lib/generic/methodsproxy.js~methodsproxy",
+    "class/lib/Generic/MethodsProxy.js~MethodsProxy.html",
+    "<span>MethodsProxy</span> <span class=\"search-result-import-path\">deep-core/lib/Generic/MethodsProxy.js</span>",
+    "class"
+  ],
+  [
     "deep-core/lib/aws/lambda/exception/missingruntimecontextexception.js~missingruntimecontextexception",
     "class/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException.html",
     "<span>MissingRuntimeContextException</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js</span>",
@@ -475,13 +481,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
@@ -499,13 +505,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
@@ -655,13 +661,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
@@ -721,13 +727,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
@@ -763,13 +769,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
@@ -811,13 +817,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
@@ -1276,6 +1282,36 @@ window.esdocSearchIndex = [
     "class/lib/Exception/MethodsNotImplementedException.js~MethodsNotImplementedException.html#instance-constructor-constructor",
     "lib/Exception/MethodsNotImplementedException.js~MethodsNotImplementedException#constructor",
     "method"
+  ],
+  [
+    "lib/generic/methodsproxy.js",
+    "file/lib/Generic/MethodsProxy.js.html",
+    "lib/Generic/MethodsProxy.js",
+    "file"
+  ],
+  [
+    "lib/generic/methodsproxy.js~methodsproxy#constructor",
+    "class/lib/Generic/MethodsProxy.js~MethodsProxy.html#instance-constructor-constructor",
+    "lib/Generic/MethodsProxy.js~MethodsProxy#constructor",
+    "method"
+  ],
+  [
+    "lib/generic/methodsproxy.js~methodsproxy#proxy",
+    "class/lib/Generic/MethodsProxy.js~MethodsProxy.html#instance-method-proxy",
+    "lib/Generic/MethodsProxy.js~MethodsProxy#proxy",
+    "method"
+  ],
+  [
+    "lib/generic/methodsproxy.js~methodsproxy#proxyoverride",
+    "class/lib/Generic/MethodsProxy.js~MethodsProxy.html#instance-method-proxyOverride",
+    "lib/Generic/MethodsProxy.js~MethodsProxy#proxyOverride",
+    "method"
+  ],
+  [
+    "lib/generic/methodsproxy.js~methodsproxy#target",
+    "class/lib/Generic/MethodsProxy.js~MethodsProxy.html#instance-get-target",
+    "lib/Generic/MethodsProxy.js~MethodsProxy#target",
+    "member"
   ],
   [
     "lib/generic/objectstorage.js",
