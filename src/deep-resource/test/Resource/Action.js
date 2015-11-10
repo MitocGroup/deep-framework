@@ -4,6 +4,7 @@ import chai from 'chai';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Resource} from '../../lib.compiled/Resource';
 import {UnknownMethodException} from '../../lib.compiled/Resource/Exception/UnknownMethodException';
+import backendConfig from '../common/backend-cfg-json';
 
 suite('Resource/Action', function() {
   let testResources = {

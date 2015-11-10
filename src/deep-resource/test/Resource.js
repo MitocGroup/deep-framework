@@ -4,6 +4,7 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Resource} from '../lib.compiled/Resource';
+import {Instance as ResourceInstance} from '../lib.compiled/Resource/Instance';
 import {MissingResourceException} from '../lib.compiled/Exception/MissingResourceException';
 import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance';
 import Kernel from 'deep-kernel';
@@ -94,31 +95,11 @@ suite('Resource', function() {
     chai.expect(actualResult).to.be.eql(expectedResult);
   });
 
-  //test('Check boot() method', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let spyCallback = sinon.spy();
-  //  let kernelMock = {
-  //    container: {
-  //      get: function(name) {
-  //        return {serviceName: name};
-  //      },
-  //    },
-  //    microservices: {
-  //      'deep.test': {
-  //        identifier: 'deep.test',
-  //        rawResources: testResources[microserviceIdentifier],
-  //      },
-  //    },
-  //  };
-  //
-  //  try {
-  //    actualResult = resource.boot(kernelMock, spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(spyCallback).to.have.been.calledWith();
-  //});
+  test('Check boot() method', function() {
+    let spyCallback = sinon.spy();
+    resource.boot(backendKernelInstance, spyCallback);
+    chai.expect(spyCallback).to.have.been.calledWithExactly();
+    chai.assert.instanceOf(resource._resources[microserviceIdentifier].sample, ResourceInstance,
+      'item is an instance of ResourceInstance');
+  });
 });
