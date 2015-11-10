@@ -276,7 +276,6 @@ export class Kernel {
         bootingServices--;
       }.bind(this));
 
-      console.log('serviceInstance.name: ', serviceInstance.name);
       this._container.addService(
         serviceInstance.name,
         Kernel._createProxyIfNeeded(serviceInstance)
@@ -301,12 +300,9 @@ export class Kernel {
    * @private
    */
   static _createProxyIfNeeded(serviceObj) {
-    console.log('serviceObj: ', serviceObj);
     if (serviceObj === serviceObj.service) {
-      console.log('serviceObj === serviceObj.service: ', serviceObj.service);
       return serviceObj;
     } else if(!serviceObj.hasOwnProperty('apply')) {
-      console.log('serviceObj.hasOwnProperty: ', serviceObj.hasOwnProperty('apply'));
       return serviceObj.service;
     }
 
@@ -315,7 +311,6 @@ export class Kernel {
     proxy.__proto__ = this.__proto__;
     proxy.constructor.prototype = this.constructor.prototype;
 
-    console.log('proxy.constructor.prototype: ', proxy.constructor.prototype);
     return proxy;
   }
 
