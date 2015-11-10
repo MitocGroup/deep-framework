@@ -77,7 +77,9 @@ export class Token {
         });
 
         // @todo - Fix 'params' is not defined error from CognitoSyncManager
-        this._credsManager.loadCredentials(this._credentials, (record) => {
+        this._credsManager.saveCredentials(this._credentials, (record) => {
+          console.log('saveCredentials - record - ', record);
+
           callback(null, this);
         });
       } else {
