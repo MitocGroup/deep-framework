@@ -8,13 +8,13 @@ export class RedisMock extends Redis {
    */
   constructor(...args) {
     super(args);
-    this.disableError();
+    this.disableFailureMode();
   }
 
   /**
    * Enable error in callback
    */
-  enableError() {
+  enableFailureMode() {
     this.error = RedisMock.ERROR;
     this.data = null;
   }
@@ -22,7 +22,7 @@ export class RedisMock extends Redis {
   /**
    * Disable error in callback
    */
-  disableError() {
+  disableFailureMode() {
     this.error = null;
     this.data = RedisMock.DATA;
   }
@@ -30,7 +30,7 @@ export class RedisMock extends Redis {
   /**
    * @param {String} key
    * @param {Function} callback
-   * @returns {RedisNegativeMock}
+   * @returns {RedisMock}
    */
   exists(key, callback) {
     callback(this.error, this.data);
@@ -41,7 +41,7 @@ export class RedisMock extends Redis {
   /**
    * @param {String} key
    * @param {Function} callback
-   * @returns {RedisNegativeMock}
+   * @returns {RedisMock}
    */
   get(key, callback) {
     callback(this.error, this.data);
@@ -54,7 +54,7 @@ export class RedisMock extends Redis {
    * @param {*} value
    * @param {Number} ttl
    * @param {Function} callback
-   * @returns {RedisNegativeMock}
+   * @returns {RedisMock}
    */
   set(key, value, ttl, callback) {
     callback(this.error, this.data);
@@ -66,7 +66,7 @@ export class RedisMock extends Redis {
    * @param {String} key
    * @param {Number} timeout
    * @param {Function} callback
-   * @returns {RedisNegativeMock}
+   * @returns {RedisMock}
    */
   del(key, timeout, callback) {
     callback(this.error, this.data);
@@ -76,7 +76,7 @@ export class RedisMock extends Redis {
 
   /**
    * @param {Function} callback
-   * @returns {RedisNegativeMock}
+   * @returns {RedisMock}
    */
   flushall(callback) {
     callback(this.error, this.data);

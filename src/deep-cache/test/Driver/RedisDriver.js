@@ -30,7 +30,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _has() passes "RedisClusterException" exception in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.enableErrorMode();
+      redisDriver.enableFailureMode();
       redisDriver._has(key, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWith();
       chai.assert.instanceOf(spyCallback.args[0][0],
@@ -42,7 +42,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _get() passes "RedisClusterException" exception in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.enableErrorMode();
+      redisDriver.enableFailureMode();
       redisDriver._get(key, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWith();
       chai.assert.instanceOf(spyCallback.args[0][0], RedisClusterException,
@@ -53,7 +53,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _set() passes "RedisClusterException" in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.enableErrorMode();
+      redisDriver.enableFailureMode();
       redisDriver._set(key, value, ttl, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWith();
       chai.assert.instanceOf(spyCallback.args[0][0], RedisClusterException,
@@ -64,7 +64,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _invalidate() passes "RedisClusterException" in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.enableErrorMode();
+      redisDriver.enableFailureMode();
       redisDriver._invalidate(key, timeout, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWith();
       chai.assert.instanceOf(spyCallback.args[0][0], RedisClusterException,
@@ -75,7 +75,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _flush() passes "RedisClusterException" in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.enableErrorMode();
+      redisDriver.enableFailureMode();
       redisDriver._flush(spyCallback);
       chai.expect(spyCallback).to.have.been.calledWith();
       chai.assert.instanceOf(spyCallback.args[0][0], RedisClusterException,
@@ -86,7 +86,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _has() passes result in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.disableErrorMode();
+      redisDriver.disableFailureMode();
       redisDriver._has(key, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWithExactly(null, RedisMock.DATA);
     }
@@ -95,7 +95,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _get() passes result in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.disableErrorMode();
+      redisDriver.disableFailureMode();
       redisDriver._get(key, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWithExactly(null, RedisMock.DATA);
     }
@@ -104,7 +104,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _set() passes result in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.disableErrorMode();
+      redisDriver.disableFailureMode();
       redisDriver._set(key, value, ttl, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWithExactly(null, true);
     }
@@ -113,7 +113,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _invalidate() passes result in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.disableErrorMode();
+      redisDriver.disableFailureMode();
       redisDriver._invalidate(key, timeout, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWithExactly(null, true);
     }
@@ -122,7 +122,7 @@ suite('Driver/RedisDriver', function() {
   test('Check _flush() passes result in callback',
     function() {
       let spyCallback = sinon.spy();
-      redisDriver.disableErrorMode();
+      redisDriver.disableFailureMode();
       redisDriver._flush(spyCallback);
       chai.expect(spyCallback).to.have.been.calledWithExactly(null, true);
     }

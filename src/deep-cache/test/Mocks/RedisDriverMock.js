@@ -10,23 +10,23 @@ export class RedisDriverMock extends RedisDriver {
    */
   constructor(...args) {
     super(args);
-    this.disableErrorMode();
+    this.disableFailureMode();
   }
 
   /**
    * Enables error mode
    */
-  enableErrorMode() {
-    this.isErrorMode = true;
-    this._client.enableError();
+  enableFailureMode() {
+    this.isFailureEnabled = true;
+    this._client.enableFailureMode();
   }
 
   /**
    * Disables error mode
    */
-  disableErrorMode() {
-    this.isErrorMode = false;
-    this._client.disableError();
+  disableFailureMode() {
+    this.isFailureEnabled = false;
+    this._client.disableFailureMode();
   }
 
   /**
