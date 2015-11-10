@@ -71,8 +71,6 @@ export class Cache extends Kernel.ContainerAware {
    * @returns {*}
    */
   apply(target, ...args) {
-    console.log(args);
-
     return target(...args);
   }
 
