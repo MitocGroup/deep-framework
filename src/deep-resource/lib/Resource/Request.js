@@ -194,9 +194,9 @@ export class Request {
   /**
    * @param {Function} callback
    */
-  invalidateCache(callback = null) {
+  invalidateCache(callback = () => {}) {
     if (!this.isCached) {
-      callback && callback(true);
+      callback(true);
 
       return this;
     }
@@ -204,25 +204,25 @@ export class Request {
     let cache = this._cacheImpl;
     let cacheKey = this._buildCacheKey();
 
-    cache.has(cacheKey, function(error, result) {
+    cache.has(cacheKey, (error, result) => {
       if (error) {
         throw new CachedRequestException(error);
       }
 
       if (result) {
-        cache.invalidate(cacheKey, 0, function(error, result) {
+        cache.invalidate(cacheKey, 0, (error, result) => {
           if (error) {
             throw new CachedRequestException(error);
           }
 
-          callback && callback(result);
-        }.bind(this));
+          callback(result);
+        });
 
         return;
       }
 
-      callback && callback(true);
-    }.bind(this));
+      callback(true);
+    });
 
     return this;
   }
@@ -230,7 +230,7 @@ export class Request {
   /**
    * @param {Function} callback
    */
-  send(callback = null) {
+  send(callback = () => {}) {
     if (!this.isCached) {
       return this._send(callback);
     }
@@ -239,26 +239,25 @@ export class Request {
     let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
     let cacheKey = this._buildCacheKey();
 
-    cache.has(cacheKey, function(error, result) {
+    cache.has(cacheKey, (error, result) => {
       if (error) {
         throw new CachedRequestException(error);
       }
 
       if (result && !invalidateCache) {
-        cache.get(cacheKey, function(error, result) {
+        cache.get(cacheKey, (error, result) => {
           if (error) {
             throw new CachedRequestException(error);
           }
 
-          callback && callback(this._rebuildResponse(result));
-        }.bind(this));
+          callback(this._rebuildResponse(result));
+        });
 
         return;
       }
 
-      //todo -TBD
-      this._send(function(response) {
-        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, function(error, result) {
+      this._send((response) => {
+        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
           if (!result) {
             error = `Unable to persist request cache under key ${cacheKey}`;
           }
@@ -266,12 +265,12 @@ export class Request {
           if (error) {
             throw new CachedRequestException(error);
           }
-        }.bind(this));
+        });
 
         // @todo: do it synchronous?
-        callback && callback(response);
-      }.bind(this));
-    }.bind(this));
+        callback(response);
+      });
+    });
 
     return this;
   }
@@ -289,7 +288,7 @@ export class Request {
    * @param {Function} callback
    * @returns {Request}
    */
-  _send(callback = () => null) {
+  _send(callback = () => {}) {
     if (!this._native) {
       return this._sendThroughApi(callback);
     }
@@ -312,7 +311,7 @@ export class Request {
    * @returns {Request}
    * @private
    */
-  _sendThroughApi(callback = () => null) {
+  _sendThroughApi(callback = () => {}) {
     let endpoint = this._action.source.api;
     let signedRequest = this._createAws4SignedRequest(
       endpoint,
@@ -320,9 +319,9 @@ export class Request {
       this.payload
     );
 
-    signedRequest.end(function(error, response) {
+    signedRequest.end((error, response) => {
       callback(new SuperagentResponse(this, response, error));
-    }.bind(this));
+    });
 
     return this;
   }
@@ -332,7 +331,7 @@ export class Request {
    * @returns {Request}
    * @private
    */
-  _sendLambda(callback = () => null) {
+  _sendLambda(callback = () => {}) {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
@@ -345,9 +344,9 @@ export class Request {
       Payload: JSON.stringify(this.payload),
     };
 
-    this._lambda.invoke(invocationParameters, function(error, data) {
+    this._lambda.invoke(invocationParameters, (error, data) => {
       callback(new LambdaResponse(this, data, error));
-    }.bind(this));
+    });
 
     return this;
   }
@@ -357,12 +356,12 @@ export class Request {
    * @returns {Request}
    * @private
    */
-  _sendExternal(callback = () => null) {
+  _sendExternal(callback = () => {}) {
     Http[this._method.toLowerCase()](this._action.source.original)
       .send(this.payload)
-      .end(function(error, response) {
+      .end((error, response) => {
         callback(new SuperagentResponse(this, response, error));
-      }.bind(this));
+      });
 
     return this;
   }
@@ -391,6 +390,7 @@ export class Request {
     };
 
     httpMethod = httpMethod.toLowerCase();
+
     switch (httpMethod) {
       case 'get':
       case 'delete':
@@ -405,13 +405,11 @@ export class Request {
 
     let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
 
-    let request = Http[httpMethod](url, payload)
+    return Http[httpMethod](url, payload)
       .set('Content-Type', 'application/json')
       .set('X-Amz-Date', signature.headers['X-Amz-Date'])
       .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
       .set('Authorization', signature.headers.Authorization);
-
-    return request;
   }
 
   /**

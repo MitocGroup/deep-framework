@@ -14,6 +14,7 @@ import {Policy as AWSIAMPolicy} from './AWS/IAM/Policy';
 import {Factory as AWSIAMFactory} from './AWS/IAM/Factory';
 import {ObjectStorage as GenericObjectStorage} from './Generic/ObjectStorage';
 import {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';
+import {MethodsProxy as GenericMethodsProxy} from './Generic/MethodsProxy';
 import {Exception as ExceptionException} from './Exception/Exception';
 import {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';
 import {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';
@@ -33,6 +34,7 @@ let exports = module.exports = {
   Generic: {
     ObjectStorage: GenericObjectStorage,
     ObjectVector: GenericObjectVector,
+    MethodsProxy: GenericMethodsProxy,
   },
   AWS: {
     Region: AWSRegion,

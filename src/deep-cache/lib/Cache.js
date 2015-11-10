@@ -5,8 +5,7 @@
 'use strict';
 
 import Kernel from 'deep-kernel';
-import {InMemoryDriver} from './Driver/InMemoryDriver';
-import {RedisDriver} from './Driver/RedisDriver';
+import Core from 'deep-core';
 import {Exception} from './Exception/Exception';
 
 /**
@@ -32,14 +31,12 @@ export class Cache extends Kernel.ContainerAware {
 
     switch (name) {
       case 'memory':
-        DriverPrototype = InMemoryDriver;
+        DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;
         break;
       case 'redis':
-        DriverPrototype = RedisDriver;
+        DriverPrototype = require('./Driver/RedisDriver').RedisDriver;
         break;
       case 'local-storage':
-
-        // @todo: figure out a smarter way to avoid conflicts in nodejs env
         DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;
         break;
       default:
@@ -56,18 +53,23 @@ export class Cache extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
+
     // @todo: switch to redis when issue with Elasticache is fixed
     let driverName = kernel.isFrontend ? 'local-storage' : 'memory'/*'redis'*/;
 
     this._driver = Cache.createDriver(driverName/*, kernel.config.cacheDsn*/);
     this._driver.buildId = kernel.buildId;
 
-    kernel.container.addService(
-      `${this.name}.prototype`,
-      this
-    );
-
     callback();
+  }
+
+  /**
+   * @param {AbstractDriver} target
+   * @param {*} args
+   * @returns {*}
+   */
+  apply(target, ...args) {
+    return target(...args);
   }
 
   /**
@@ -77,7 +79,12 @@ export class Cache extends Kernel.ContainerAware {
    * @returns {Object}
    */
   get service() {
-    return this._driver;
+    return new Core.Generic.MethodsProxy(this)
+      .proxyOverride(
+      this._driver,
+      'has', 'get', 'set',
+      'invalidate', 'flush'
+    );
   }
 
   /**
