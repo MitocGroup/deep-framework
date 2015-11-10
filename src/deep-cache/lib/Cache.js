@@ -76,7 +76,7 @@ export class Cache extends Kernel.ContainerAware {
    */
   get service() {
     return new Core.Generic.MethodsProxy(this)
-      .proxy(
+      .proxyOverride(
       this._driver,
       'has', 'get', 'set',
       'invalidate', 'flush'

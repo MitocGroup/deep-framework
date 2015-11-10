@@ -34,13 +34,15 @@ export class MethodsProxy {
         continue;
       }
 
-      let func = handler[prop];
-
-      if (typeof func === 'function') {
+      if (typeof handler[prop] === 'function') {
         Object.defineProperty(
           this._target,
           prop,
-          {value: func}
+          {
+            value: (...args) => {
+              return handler[prop](...args);
+            },
+          }
         );
       }
     }
