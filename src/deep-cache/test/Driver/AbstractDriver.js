@@ -248,7 +248,6 @@ suite('Driver/AbstractDriver', function() {
       let error = null;
       let spyCallback = sinon.spy();
       try {
-        abstractDriver._flush = undefined;
         abstractDriver.flush(spyCallback);
       } catch (e) {
         error = e;
