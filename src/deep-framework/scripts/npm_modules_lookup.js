@@ -13,6 +13,7 @@ var filter = function (module) {
   return true;
 };
 var replacements = {};
+var assureUnique = true; // change it to duplicate libs
 
 if (args.length < 3) {
   console.error('Missing npm root');
@@ -53,6 +54,7 @@ if (npmRoot.indexOf('/') !== 0) {
 
 exec('cd ' + npmRoot + ' && npm ls --parseable --silent --long', function (error, stdout, stderr) {
   var modulesRawList = stdout.split(os.EOL);
+  var foundModules = [];
 
   for (var line in modulesRawList) {
     if (!modulesRawList.hasOwnProperty(line)) {
@@ -70,6 +72,12 @@ exec('cd ' + npmRoot + ' && npm ls --parseable --silent --long', function (error
       }
 
       if (filter(module)) {
+        if (foundModules.indexOf(moduleList[1]) !== -1) {
+          continue;
+        }
+
+        foundModules.push(moduleList[1]);
+
         var nameReplacement = replacements[moduleList[1]];
         var moduleOutput = nameReplacement
           ? module.replace(new RegExp(':' + moduleList[1] + '$'), ':' + nameReplacement)
