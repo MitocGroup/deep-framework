@@ -21,7 +21,7 @@ export class LocalRequest extends Request {
    * @param {Function} callback
    * @returns {LocalRequest|*}
    */
-  _send(callback = null) {
+  _send(callback = () => {}) {
     let actionType = this._action.type;
 
     if (actionType === Action.LAMBDA) {
@@ -33,11 +33,11 @@ export class LocalRequest extends Request {
 
       Http.post(LocalRequest.LOCAL_LAMBDA_ENDPOINT)
         .send(data)
-        .end(function(error, response) {
-          callback && callback(new SuperagentResponse(this, response, error));
-        }.bind(this));
+        .end((error, response) => {
+          callback(new SuperagentResponse(this, response, error));
+        });
     } else {
-      return this.prototype.useNative()._send(...arguments);
+      return this.constructor.useNative()._send(...arguments);
     }
 
     return this;
