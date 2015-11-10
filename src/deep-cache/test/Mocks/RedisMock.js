@@ -12,7 +12,7 @@ export class RedisMock extends Redis {
   }
 
   /**
-   * Enable error in callback
+   * Enable failure in callback
    */
   enableFailureMode() {
     this.error = RedisMock.ERROR;
@@ -20,7 +20,7 @@ export class RedisMock extends Redis {
   }
 
   /**
-   * Disable error in callback
+   * Disable failure in callback
    */
   disableFailureMode() {
     this.error = null;

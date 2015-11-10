@@ -14,7 +14,7 @@ export class RedisDriverMock extends RedisDriver {
   }
 
   /**
-   * Enables error mode
+   * Enables failure mode
    */
   enableFailureMode() {
     this.isFailureEnabled = true;
@@ -22,7 +22,7 @@ export class RedisDriverMock extends RedisDriver {
   }
 
   /**
-   * Disables error mode
+   * Disables failure mode
    */
   disableFailureMode() {
     this.isFailureEnabled = false;
