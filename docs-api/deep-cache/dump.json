@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {InMemoryDriver} from './Driver/InMemoryDriver';\nimport {RedisDriver} from './Driver/RedisDriver';\nimport {Exception} from './Exception/Exception';\n\n/**\n * Cache manager\n */\nexport class Cache extends Kernel.ContainerAware {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver = null) {\n    super();\n\n    this._driver = driver;\n  }\n\n  /**\n   * @param {String} name\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  static createDriver(name, ...args) {\n    let DriverPrototype = null;\n\n    switch (name) {\n      case 'memory':\n        DriverPrototype = InMemoryDriver;\n        break;\n      case 'redis':\n        DriverPrototype = RedisDriver;\n        break;\n      case 'local-storage':\n\n        // @todo: figure out a smarter way to avoid conflicts in nodejs env\n        DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;\n        break;\n      default:\n        throw new Exception(`Missing driver ${name}`);\n    }\n\n    return new DriverPrototype(...args);\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: switch to redis when issue with Elasticache is fixed\n    let driverName = kernel.isFrontend ? 'local-storage' : 'memory'/*'redis'*/;\n\n    this._driver = Cache.createDriver(driverName/*, kernel.config.cacheDsn*/);\n    this._driver.buildId = kernel.buildId;\n\n    kernel.container.addService(\n      `${this.name}.prototype`,\n      this\n    );\n\n    callback();\n  }\n\n  /**\n   * DO NOT REMOVE THIS!\n   * It's used while kernel boot\n   *\n   * @returns {Object}\n   */\n  get service() {\n    return this._driver;\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set driver(driver) {\n    this._driver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get driver() {\n    return this._driver;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Exception} from './Exception/Exception';\n\n/**\n * Cache manager\n */\nexport class Cache extends Kernel.ContainerAware {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver = null) {\n    super();\n\n    this._driver = driver;\n  }\n\n  /**\n   * @param {String} name\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  static createDriver(name, ...args) {\n    let DriverPrototype = null;\n\n    switch (name) {\n      case 'memory':\n        DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        break;\n      case 'redis':\n        DriverPrototype = require('./Driver/RedisDriver').RedisDriver;\n        break;\n      case 'local-storage':\n        DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;\n        break;\n      default:\n        throw new Exception(`Missing driver ${name}`);\n    }\n\n    return new DriverPrototype(...args);\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n\n    // @todo: switch to redis when issue with Elasticache is fixed\n    let driverName = kernel.isFrontend ? 'local-storage' : 'memory'/*'redis'*/;\n\n    this._driver = Cache.createDriver(driverName/*, kernel.config.cacheDsn*/);\n    this._driver.buildId = kernel.buildId;\n\n    callback();\n  }\n\n  /**\n   * @param {AbstractDriver} target\n   * @param {*} args\n   * @returns {*}\n   */\n  apply(target, ...args) {\n    return target(...args);\n  }\n\n  /**\n   * DO NOT REMOVE THIS!\n   * It's used while kernel boot\n   *\n   * @returns {Object}\n   */\n  get service() {\n    return new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush'\n    );\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set driver(driver) {\n    this._driver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get driver() {\n    return this._driver;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -23,7 +23,7 @@
     "importPath": "deep-cache/lib/Cache.js",
     "importStyle": "{Cache}",
     "description": "Cache manager",
-    "lineNumber": 15,
+    "lineNumber": 14,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
@@ -38,7 +38,7 @@
     "longname": "lib/Cache.js~Cache#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 18,
     "params": [
       {
         "nullable": null,
@@ -62,7 +62,7 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 21,
     "undocument": true,
     "type": {
       "types": [
@@ -79,7 +79,7 @@
     "longname": "lib/Cache.js~Cache.createDriver",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 29,
     "unknown": [
       {
         "tagName": "@returns",
@@ -127,7 +127,7 @@
     "longname": "lib/Cache.js~Cache#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 58,
+    "lineNumber": 55,
     "params": [
       {
         "nullable": null,
@@ -161,13 +161,61 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 60,
     "undocument": true,
     "type": {
       "types": [
         "*"
       ]
     }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "apply",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#apply",
+    "access": null,
+    "description": null,
+    "lineNumber": 71,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "target",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
   },
   {
     "kind": "get",
@@ -178,7 +226,7 @@
     "longname": "lib/Cache.js~Cache#service",
     "access": null,
     "description": "DO NOT REMOVE THIS!\nIt's used while kernel boot",
-    "lineNumber": 79,
+    "lineNumber": 81,
     "unknown": [
       {
         "tagName": "@returns",
@@ -209,7 +257,7 @@
     "longname": "lib/Cache.js~Cache#driver",
     "access": null,
     "description": null,
-    "lineNumber": 86,
+    "lineNumber": 93,
     "params": [
       {
         "nullable": null,
@@ -238,7 +286,7 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 87,
+    "lineNumber": 94,
     "undocument": true,
     "type": {
       "types": [
@@ -255,7 +303,7 @@
     "longname": "lib/Cache.js~Cache#driver",
     "access": null,
     "description": null,
-    "lineNumber": 93,
+    "lineNumber": 100,
     "unknown": [
       {
         "tagName": "@returns",
@@ -287,7 +335,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {MissingCacheException} from './Exception/MissingCacheException';\nimport {NoFlushException} from './Exception/NoFlushException';\nimport {DriverException} from './Exception/DriverException';\n\n/**\n * Abstract driver implementation\n */\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super([\n      '_get', '_has',\n      '_set', '_invalidate',\n    ]);\n\n    this._buildId = '';\n    this._namespace = '';\n    this._silent = false;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._buildId;\n  }\n\n  /**\n   * @param {String} id\n   */\n  set buildId(id) {\n    this._buildId = id;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function|null} callback\n   * @returns {AbstractDriver}\n   */\n  has(key, callback = null) {\n    callback = callback || function() {\n      };\n\n    try {\n      this._has(this._buildKey(key), function(result) {\n        callback(undefined, result);\n      }.bind(this));\n    } catch (e) {\n      callback(new DriverException(e), undefined);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function|null} callback\n   * @returns {AbstractDriver}\n   */\n  get(key, callback = null) {\n    callback = callback || function() {\n      };\n\n    try {\n      this.has(key, function(exception, result) {\n        if (exception) {\n          throw exception;\n        }\n\n        if (!result && !this._silent) {\n          throw new MissingCacheException(key);\n        }\n\n        this._get(this._buildKey(key), function(result) {\n          callback(undefined, result);\n        }.bind(this));\n      }.bind(this));\n    } catch (e) {\n      callback(new DriverException(e), undefined);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   */\n  set(key, value, ttl = 0, callback = null) {\n    callback = callback || function() {\n      };\n\n    try {\n      this._set(this._buildKey(key), value, ttl, function(result) {\n        callback(undefined, result);\n      }.bind(this));\n    } catch (e) {\n      callback(new DriverException(e), undefined);\n    }\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function|null} callback\n   * @returns {AbstractDriver}\n   */\n  invalidate(key, timeout = 0, callback = null) {\n    callback = callback || function() {\n      };\n\n    try {\n      this.has(key, function(exception, result) {\n        if (exception) {\n          throw exception;\n        }\n\n        if (!result) {\n          throw new MissingCacheException(key);\n        }\n\n        this._invalidate(this._buildKey(key), timeout, function(result) {\n          callback(undefined, result);\n        }.bind(this));\n      }.bind(this));\n    } catch (e) {\n      callback(new DriverException(e), undefined);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function|null} callback\n   * @returns {AbstractDriver}\n   */\n  flush(callback = null) {\n    callback = callback || function() {\n      };\n\n    try {\n      if (typeof this._flush === 'undefined') {\n        throw new NoFlushException();\n      }\n\n      this._flush(function(result) {\n        callback(undefined, result);\n      }.bind(this));\n    } catch (e) {\n      callback(new DriverException(e), undefined);\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get namespace() {\n    return this._namespace;\n  }\n\n  /**\n   * @param {String} ns\n   */\n  set namespace(ns) {\n    this._namespace = ns;\n  }\n\n  /**\n   * @param {Boolean} value\n   */\n  set silent(value) {\n    this._silent = value;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get silent() {\n    return this._silent;\n  }\n\n  /**\n   * @param {String} key\n   * @returns {String}\n   * @private\n   */\n  _buildKey(key) {\n    return `${this._buildId}:${this._namespace}#${key}`;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {MissingCacheException} from './Exception/MissingCacheException';\nimport {NoFlushException} from './Exception/NoFlushException';\nimport {DriverException} from './Exception/DriverException';\n\n/**\n * Abstract driver implementation\n */\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super([\n      '_get', '_has',\n      '_set', '_invalidate',\n    ]);\n\n    this._buildId = '';\n    this._namespace = '';\n    this._silent = false;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._buildId;\n  }\n\n  /**\n   * @param {String} id\n   */\n  set buildId(id) {\n    this._buildId = id;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  has(key, callback = () => {}) {\n    try {\n      this._has(this._buildKey(key), callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  get(key, callback = () => {}) {\n    try {\n      this.has(key, (error, result) => {\n        if (error) {\n          callback(new DriverException(error), null);\n\n          return;\n        }\n\n        if (!result && !this._silent) {\n          callback(new MissingCacheException(key), null);\n\n          return;\n        }\n\n        this._get(this._buildKey(key), callback);\n      });\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  set(key, value, ttl = 0, callback = () => {}) {\n    try {\n      this._set(this._buildKey(key), value, ttl, callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  invalidate(key, timeout = 0, callback = () => {}) {\n    try {\n      this.has(key, (exception, result) => {\n        if (exception) {\n          callback(new DriverException(exception), null);\n\n          return;\n        }\n\n        if (!result) {\n          callback(null, true);\n\n          return;\n        }\n\n        this._invalidate(this._buildKey(key), timeout, callback);\n      });\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  flush(callback = () => {}) {\n    try {\n      this._flush(callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _flush() {\n    throw new NoFlushException();\n  }\n\n  /**\n   * @returns {String}\n   */\n  get namespace() {\n    return this._namespace;\n  }\n\n  /**\n   * @param {String} ns\n   */\n  set namespace(ns) {\n    this._namespace = ns;\n  }\n\n  /**\n   * @param {Boolean} value\n   */\n  set silent(value) {\n    this._silent = value;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get silent() {\n    return this._silent;\n  }\n\n  /**\n   * @param {String} key\n   * @returns {String}\n   * @private\n   */\n  _buildKey(key) {\n    return `${this._buildId}:${this._namespace}#${key}`;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -479,8 +527,7 @@
       {
         "nullable": null,
         "types": [
-          "Function",
-          "null"
+          "Function"
         ],
         "spread": false,
         "optional": false,
@@ -507,7 +554,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#get",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 61,
     "unknown": [
       {
         "tagName": "@returns",
@@ -528,8 +575,7 @@
       {
         "nullable": null,
         "types": [
-          "Function",
-          "null"
+          "Function"
         ],
         "spread": false,
         "optional": false,
@@ -556,7 +602,13 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#set",
     "access": null,
     "description": null,
-    "lineNumber": 97,
+    "lineNumber": 92,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver}"
+      }
+    ],
     "params": [
       {
         "nullable": null,
@@ -599,6 +651,14 @@
         "description": ""
       }
     ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
     "generator": false
   },
   {
@@ -610,7 +670,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#invalidate",
     "access": null,
     "description": null,
-    "lineNumber": 116,
+    "lineNumber": 108,
     "unknown": [
       {
         "tagName": "@returns",
@@ -641,8 +701,7 @@
       {
         "nullable": null,
         "types": [
-          "Function",
-          "null"
+          "Function"
         ],
         "spread": false,
         "optional": false,
@@ -669,7 +728,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#flush",
     "access": null,
     "description": null,
-    "lineNumber": 145,
+    "lineNumber": 136,
     "unknown": [
       {
         "tagName": "@returns",
@@ -680,8 +739,7 @@
       {
         "nullable": null,
         "types": [
-          "Function",
-          "null"
+          "Function"
         ],
         "spread": false,
         "optional": false,
@@ -700,6 +758,19 @@
     "generator": false
   },
   {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_flush",
+    "memberof": "lib/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#_flush",
+    "access": "private",
+    "description": null,
+    "lineNumber": 149,
+    "params": [],
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -708,7 +779,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "access": null,
     "description": null,
-    "lineNumber": 167,
+    "lineNumber": 156,
     "unknown": [
       {
         "tagName": "@returns",
@@ -739,7 +810,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "access": null,
     "description": null,
-    "lineNumber": 174,
+    "lineNumber": 163,
     "params": [
       {
         "nullable": null,
@@ -768,7 +839,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#_namespace",
     "access": null,
     "description": null,
-    "lineNumber": 175,
+    "lineNumber": 164,
     "undocument": true,
     "type": {
       "types": [
@@ -785,7 +856,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#silent",
     "access": null,
     "description": null,
-    "lineNumber": 181,
+    "lineNumber": 170,
     "params": [
       {
         "nullable": null,
@@ -814,7 +885,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#_silent",
     "access": null,
     "description": null,
-    "lineNumber": 182,
+    "lineNumber": 171,
     "undocument": true,
     "type": {
       "types": [
@@ -831,7 +902,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#silent",
     "access": null,
     "description": null,
-    "lineNumber": 188,
+    "lineNumber": 177,
     "unknown": [
       {
         "tagName": "@returns",
@@ -862,7 +933,7 @@
     "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#_buildKey",
     "access": "private",
     "description": null,
-    "lineNumber": 197,
+    "lineNumber": 186,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1257,7 +1328,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\n/**\n * In memory driver implementation\n */\nexport class InMemoryDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._storage = {};\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get storage() {\n    return this._storage;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => '') {\n    if (typeof this._storage[key] === 'undefined' || this._storage[key][1] === false) {\n      callback(false);\n      return;\n    }\n\n    let result = this._storage[key][1] < InMemoryDriver._now;\n\n    if (!result) {\n      this._invalidate(key);\n    }\n\n    callback(result);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => undefined) {\n    callback(this._storage[key]);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => undefined) {\n    this._storage[key] = [value, ttl <= 0 ? false : (InMemoryDriver._now + ttl)];\n\n    callback(true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => undefined) {\n    if (timeout <= 0) {\n      delete this._storage[key];\n\n      callback(true);\n      return;\n    }\n\n    this._storage[key][1] = InMemoryDriver._now + timeout;\n\n    callback(true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => undefined) {\n    this._storage = {};\n\n    callback(true);\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return new Date().getTime();\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\n/**\n * In memory driver implementation\n */\nexport class InMemoryDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._storage = {};\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get storage() {\n    return this._storage;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    if (!this._storage.hasOwnProperty(key) || this._storage[key][1] === false) {\n      callback(null, false);\n\n      return;\n    }\n\n    let timedOut = this._storage[key][1] < InMemoryDriver._now;\n\n    if (timedOut) {\n      this._invalidate(key);\n\n      callback(null, false);\n\n      return;\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    callback(null, this._storage[key]);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    this._storage[key] = [value, ttl <= 0 ? false : (InMemoryDriver._now + ttl)];\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      delete this._storage[key];\n\n      callback(null, true);\n\n      return;\n    }\n\n    this._storage[key][1] = InMemoryDriver._now + timeout;\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    this._storage = {};\n\n    callback(null, true);\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return new Date().getTime();\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1382,7 +1453,7 @@
     "longname": "lib/Driver/InMemoryDriver.js~InMemoryDriver#_get",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 54,
     "params": [
       {
         "nullable": null,
@@ -1416,7 +1487,7 @@
     "longname": "lib/Driver/InMemoryDriver.js~InMemoryDriver#_set",
     "access": null,
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 65,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1484,7 +1555,7 @@
     "longname": "lib/Driver/InMemoryDriver.js~InMemoryDriver#_invalidate",
     "access": null,
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 76,
     "params": [
       {
         "nullable": null,
@@ -1528,7 +1599,7 @@
     "longname": "lib/Driver/InMemoryDriver.js~InMemoryDriver#_flush",
     "access": null,
     "description": null,
-    "lineNumber": 88,
+    "lineNumber": 94,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1566,7 +1637,7 @@
     "longname": "lib/Driver/InMemoryDriver.js~InMemoryDriver#_storage",
     "access": null,
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 95,
     "undocument": true,
     "type": {
       "types": [
@@ -1583,7 +1654,7 @@
     "longname": "lib/Driver/InMemoryDriver.js~InMemoryDriver._now",
     "access": "private",
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 104,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1615,7 +1686,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport LocalStorage from 'store';\n\n/**\n * In memory driver implementation\n */\nexport class LocalStorageDriver extends AbstractDriver {\n  constructor() {\n    super();\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = null) {\n    callback = callback || function() {\n      };\n\n    callback(LocalStorageDriver._isAlive(LocalStorage.get(key), key));\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = null) {\n    callback = callback || function() {\n      };\n\n    let record = LocalStorage.get(key);\n\n    callback(LocalStorageDriver._isAlive(record, key) ? record.value : null);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = null) {\n    callback = callback || function() {\n      };\n\n    if (ttl <= 0) {\n      LocalStorage.set(key, {value: value, exd: null});\n    } else {\n      LocalStorage.set(key, {value: value, exd: (LocalStorageDriver._now + ttl)});\n    }\n\n    callback(true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = null) {\n    callback = callback || function() {\n      };\n\n    if (timeout <= 0) {\n      LocalStorage.remove(key);\n\n      callback(true);\n      return;\n    }\n\n    try {\n      let record = LocalStorage.get(key);\n\n      record.exd = LocalStorageDriver._now + timeout;\n\n      LocalStorage.set(key, record);\n    } catch (e) {\n      // do nothing...\n    }\n\n    callback(true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = null) {\n    callback = callback || function() {\n      };\n\n    LocalStorage.clear();\n\n    callback(true);\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return new Date().getTime();\n  }\n\n  /**\n   *\n   * @param {Object} response\n   * @param {String} key\n   * @returns {*}\n   * @private\n   */\n  static _isAlive(response, key) {\n    if (!response) {\n      return false;\n    }\n\n    if (response.exd && response.exd !== null && response.exd <= LocalStorageDriver._now) {\n      LocalStorage.remove(key);\n      return false;\n    }\n\n    return true;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport LocalStorage from 'store';\n\n/**\n * In memory driver implementation\n */\nexport class LocalStorageDriver extends AbstractDriver {\n  constructor() {\n    super();\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    callback(null, LocalStorageDriver._isAlive(LocalStorage.get(key), key));\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    let record = LocalStorage.get(key);\n\n    callback(null, LocalStorageDriver._isAlive(record, key) ? record.value : null);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    if (ttl <= 0) {\n      LocalStorage.set(key, {value: value, exd: null});\n    } else {\n      LocalStorage.set(key, {value: value, exd: (LocalStorageDriver._now + ttl)});\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      LocalStorage.remove(key);\n\n      callback(null, true);\n\n      return;\n    }\n\n    try {\n      let record = LocalStorage.get(key);\n\n      record.exd = LocalStorageDriver._now + timeout;\n\n      LocalStorage.set(key, record);\n    } catch (e) {\n      // do nothing...\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    LocalStorage.clear();\n\n    callback(null, true);\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return new Date().getTime();\n  }\n\n  /**\n   *\n   * @param {Object} response\n   * @param {String} key\n   * @returns {Boolean}\n   * @private\n   */\n  static _isAlive(response, key) {\n    if (!response) {\n      return false;\n    }\n\n    if (response.exd && response.exd !== null && response.exd <= LocalStorageDriver._now) {\n      LocalStorage.remove(key);\n      return false;\n    }\n\n    return true;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1692,7 +1763,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#_get",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 30,
     "params": [
       {
         "nullable": null,
@@ -1726,7 +1797,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#_set",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 43,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1794,7 +1865,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#_invalidate",
     "access": null,
     "description": null,
-    "lineNumber": 67,
+    "lineNumber": 58,
     "params": [
       {
         "nullable": null,
@@ -1838,7 +1909,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#_flush",
     "access": null,
     "description": null,
-    "lineNumber": 95,
+    "lineNumber": 84,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1876,7 +1947,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver._now",
     "access": "private",
     "description": null,
-    "lineNumber": 108,
+    "lineNumber": 94,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1907,11 +1978,11 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver._isAlive",
     "access": "private",
     "description": "",
-    "lineNumber": 119,
+    "lineNumber": 105,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{*}"
+        "tagValue": "{Boolean}"
       }
     ],
     "params": [
@@ -1939,7 +2010,7 @@
     "return": {
       "nullable": null,
       "types": [
-        "*"
+        "Boolean"
       ],
       "spread": false,
       "description": ""
@@ -1956,7 +2027,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport Redis from 'ioredis';\nimport {RedisClusterException} from './Exception/RedisClusterException';\n\n/**\n * Redis/Elasticache driver implementation\n */\nexport class RedisDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    this._client = dsn ? new Redis(dsn) : new Redis();\n  }\n\n  /**\n   * @returns {Redis}\n   */\n  get client() {\n    return this._client;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => '') {\n    this._client.exists(key, function(error, results) {\n      if (error && error !== null) {\n        throw new RedisClusterException(error);\n      }\n\n      callback(results);\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => '') {\n    this._client.get(key, function(error, results) {\n      if (error && error !== null) {\n        throw new RedisClusterException(error);\n      }\n\n      callback(results);\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0,callback = () => '') {\n    this._client.set(key, value, ttl, function(error) {\n      if (error && error !== null) {\n        throw new RedisClusterException(error);\n      }\n\n      callback(true);\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => '') {\n    this._client.del(key, timeout, function(error) {\n      if (error && error !== null) {\n        throw new RedisClusterException(error);\n      }\n\n      callback(true);\n    }.bind(this));\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => '') {\n    this._client.flushall(function(error) {\n      if (error && error !== null) {\n        throw new RedisClusterException(error);\n      }\n\n      callback(true);\n    }.bind(this));\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {RedisClusterException} from './Exception/RedisClusterException';\n\n/**\n * Redis/Elasticache driver implementation\n */\nexport class RedisDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    let nativeDriver = this.NATIVE_DRIVER;\n\n    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();\n  }\n\n  /**\n   * @returns {Redis}\n   */\n  get client() {\n    return this._client;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    this._client.exists(key, (error, results) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, results);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    this._client.get(key, (error, results) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, results);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    this._client.set(key, value, ttl, (error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    this._client.del(key, timeout, (error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    this._client.flushall((error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @returns {*|exports|module.exports}\n   * @constructor\n   */\n  get NATIVE_DRIVER() {\n    return require('ioredis');\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1970,7 +2041,7 @@
     "importPath": "deep-cache/lib/Driver/RedisDriver.js",
     "importStyle": "{RedisDriver}",
     "description": "Redis/Elasticache driver implementation",
-    "lineNumber": 14,
+    "lineNumber": 13,
     "interface": false,
     "extends": [
       "lib/Driver/AbstractDriver~AbstractDriver"
@@ -1985,7 +2056,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 17,
     "params": [
       {
         "nullable": null,
@@ -2009,7 +2080,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_client",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 22,
     "undocument": true,
     "type": {
       "types": [
@@ -2026,7 +2097,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#client",
     "access": null,
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 28,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2057,7 +2128,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_has",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "params": [
       {
         "nullable": null,
@@ -2091,7 +2162,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_get",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 52,
     "params": [
       {
         "nullable": null,
@@ -2125,7 +2196,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_set",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 71,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2193,7 +2264,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_invalidate",
     "access": null,
     "description": null,
-    "lineNumber": 81,
+    "lineNumber": 88,
     "params": [
       {
         "nullable": null,
@@ -2237,7 +2308,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_flush",
     "access": null,
     "description": null,
-    "lineNumber": 95,
+    "lineNumber": 104,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2263,6 +2334,43 @@
       ],
       "spread": false,
       "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "NATIVE_DRIVER",
+    "memberof": "lib/Driver/RedisDriver.js~RedisDriver",
+    "longname": "lib/Driver/RedisDriver.js~RedisDriver#NATIVE_DRIVER",
+    "access": null,
+    "description": null,
+    "lineNumber": 120,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*|exports|module.exports}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*",
+        "exports",
+        "module.exports"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
     },
     "generator": false
   },

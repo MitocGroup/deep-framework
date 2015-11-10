@@ -53,8 +53,7 @@
 &apos;use strict&apos;;
 
 import Kernel from &apos;deep-kernel&apos;;
-import {InMemoryDriver} from &apos;./Driver/InMemoryDriver&apos;;
-import {RedisDriver} from &apos;./Driver/RedisDriver&apos;;
+import Core from &apos;deep-core&apos;;
 import {Exception} from &apos;./Exception/Exception&apos;;
 
 /**
@@ -80,14 +79,12 @@ export class Cache extends Kernel.ContainerAware {
 
     switch (name) {
       case &apos;memory&apos;:
-        DriverPrototype = InMemoryDriver;
+        DriverPrototype = require(&apos;./Driver/InMemoryDriver&apos;).InMemoryDriver;
         break;
       case &apos;redis&apos;:
-        DriverPrototype = RedisDriver;
+        DriverPrototype = require(&apos;./Driver/RedisDriver&apos;).RedisDriver;
         break;
       case &apos;local-storage&apos;:
-
-        // @todo: figure out a smarter way to avoid conflicts in nodejs env
         DriverPrototype = require(&apos;./Driver/LocalStorageDriver&apos;).LocalStorageDriver;
         break;
       default:
@@ -104,18 +101,23 @@ export class Cache extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
+
     // @todo: switch to redis when issue with Elasticache is fixed
     let driverName = kernel.isFrontend ? &apos;local-storage&apos; : &apos;memory&apos;/*&apos;redis&apos;*/;
 
     this._driver = Cache.createDriver(driverName/*, kernel.config.cacheDsn*/);
     this._driver.buildId = kernel.buildId;
 
-    kernel.container.addService(
-      `${this.name}.prototype`,
-      this
-    );
-
     callback();
+  }
+
+  /**
+   * @param {AbstractDriver} target
+   * @param {*} args
+   * @returns {*}
+   */
+  apply(target, ...args) {
+    return target(...args);
   }
 
   /**
@@ -125,7 +127,12 @@ export class Cache extends Kernel.ContainerAware {
    * @returns {Object}
    */
   get service() {
-    return this._driver;
+    return new Core.Generic.MethodsProxy(this)
+      .proxyOverride(
+      this._driver,
+      &apos;has&apos;, &apos;get&apos;, &apos;set&apos;,
+      &apos;invalidate&apos;, &apos;flush&apos;
+    );
   }
 
   /**

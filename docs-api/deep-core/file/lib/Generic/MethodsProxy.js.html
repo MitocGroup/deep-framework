@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">Interface | DEEP Core Library API Document</title>
+  <title data-ice="title">lib/Generic/MethodsProxy.js | DEEP Core Library API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -59,146 +59,74 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Interface} from &apos;<span><a href="file/lib/OOP/Interface.js.html#lineNumber13">deep-core/lib/OOP/Interface.js</a></span>&apos;</code></pre></div>
-  <span data-ice="access">public</span>
-  <span data-ice="kind">class</span>
-  
-  
-  
-  <span data-ice="source">| <span><a href="file/lib/OOP/Interface.js.html#lineNumber13">source</a></span></span>
-</div>
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Generic/MethodsProxy.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 11/10/15.
+ */
 
-<div class="self-detail detail">
-  <h1 data-ice="name">Interface</h1>
-
-  
-
-  
-  
-  
-  
-  
-  
-  
-  
-  
-
-  
-  
-  <div class="description" data-ice="description"><p>Interface implementation</p>
-</div>
-
-  
-
-  
-
-  
-
-  
-</div>
+&apos;use strict&apos;;
 
 
+export class MethodsProxy {
+  /**
+   * @param {Object} target
+   */
+  constructor(target) {
+    this._target = target;
+  }
 
-<div data-ice="constructorSummary"><h2>Constructor Summary</h2><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Public Constructor</td></tr></thead>
-  <tbody>
-  
-  <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html#instance-constructor-constructor">constructor</a></span></span><span data-ice="signature">(abstractMethods: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span><span>[]</span></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>)</span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
+  /**
+   * @returns {Object}
+   */
+  get target() {
+    return this._target;
+  }
 
+  /**
+   * @param {Object} handler
+   * @param {String|String[]} explMethods
+   * @returns {Object}
+   */
+  proxyOverride(handler, ...explMethods) {
+    let methods = Object.keys(handler).concat(explMethods);
 
+    for (let prop of methods) {
+      if (!handler.hasOwnProperty(prop) &amp;&amp;
+        explMethods.indexOf(prop) === -1) {
+        continue;
+      }
 
+      if (typeof handler[prop] === &apos;function&apos;) {
+        Object.defineProperty(
+          this._target,
+          prop,
+          {
+            value: (...args) =&gt; {
+              return handler[prop](...args);
+            },
+          }
+        );
+      }
+    }
 
+    return this._target;
+  }
 
-
-
-<div data-ice="constructorDetails"><h2 data-ice="title">Public Constructors</h2>
-
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-constructor-constructor">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    <span data-ice="name">constructor</span><span data-ice="signature">(abstractMethods: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span><span>[]</span></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>)</span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/OOP/Interface.js.html#lineNumber17">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">abstractMethods</td>
-      <td data-ice="type"><span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span><span>[]</span></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-</div>
-
+  /**
+   * @param {Object} handler
+   * @param {String|String[]} explMethods
+   * @returns {Object}
+   *
+   * @todo Replace typeof hook with hasOwnProperty() when get rid of babel
+   */
+  proxy(handler, ...explMethods) {
+    return this.proxyOverride(
+      handler,
+      ...(explMethods.filter((prop) =&gt; typeof this._target[prop] === &apos;undefined&apos;))
+    );
+  }
+}
+</code></pre>
 
 </div>
 

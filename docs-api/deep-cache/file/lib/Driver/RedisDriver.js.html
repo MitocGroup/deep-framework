@@ -53,7 +53,6 @@
 &apos;use strict&apos;;
 
 import {AbstractDriver} from &apos;./AbstractDriver&apos;;
-import Redis from &apos;ioredis&apos;;
 import {RedisClusterException} from &apos;./Exception/RedisClusterException&apos;;
 
 /**
@@ -66,7 +65,9 @@ export class RedisDriver extends AbstractDriver {
   constructor(dsn) {
     super();
 
-    this._client = dsn ? new Redis(dsn) : new Redis();
+    let nativeDriver = this.NATIVE_DRIVER;
+
+    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();
   }
 
   /**
@@ -80,28 +81,32 @@ export class RedisDriver extends AbstractDriver {
    * @param {String} key
    * @param {Function} callback
    */
-  _has(key, callback = () =&gt; &apos;&apos;) {
-    this._client.exists(key, function(error, results) {
-      if (error &amp;&amp; error !== null) {
-        throw new RedisClusterException(error);
+  _has(key, callback = () =&gt; {}) {
+    this._client.exists(key, (error, results) =&gt; {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(results);
-    }.bind(this));
+      callback(null, results);
+    });
   }
 
   /**
    * @param {String} key
    * @param {Function} callback
    */
-  _get(key, callback = () =&gt; &apos;&apos;) {
-    this._client.get(key, function(error, results) {
-      if (error &amp;&amp; error !== null) {
-        throw new RedisClusterException(error);
+  _get(key, callback = () =&gt; {}) {
+    this._client.get(key, (error, results) =&gt; {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(results);
-    }.bind(this));
+      callback(null, results);
+    });
   }
 
   /**
@@ -111,14 +116,16 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    * @returns {Boolean}
    */
-  _set(key, value, ttl = 0,callback = () =&gt; &apos;&apos;) {
-    this._client.set(key, value, ttl, function(error) {
-      if (error &amp;&amp; error !== null) {
-        throw new RedisClusterException(error);
+  _set(key, value, ttl = 0, callback = () =&gt; {}) {
+    this._client.set(key, value, ttl, (error) =&gt; {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(true);
-    }.bind(this));
+      callback(null, true);
+    });
   }
 
   /**
@@ -126,28 +133,40 @@ export class RedisDriver extends AbstractDriver {
    * @param {Number} timeout
    * @param {Function} callback
    */
-  _invalidate(key, timeout = 0, callback = () =&gt; &apos;&apos;) {
-    this._client.del(key, timeout, function(error) {
-      if (error &amp;&amp; error !== null) {
-        throw new RedisClusterException(error);
+  _invalidate(key, timeout = 0, callback = () =&gt; {}) {
+    this._client.del(key, timeout, (error) =&gt; {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(true);
-    }.bind(this));
+      callback(null, true);
+    });
   }
 
   /**
    * @param {Function} callback
    * @returns {AbstractDriver}
    */
-  _flush(callback = () =&gt; &apos;&apos;) {
-    this._client.flushall(function(error) {
-      if (error &amp;&amp; error !== null) {
-        throw new RedisClusterException(error);
+  _flush(callback = () =&gt; {}) {
+    this._client.flushall((error) =&gt; {
+      if (error) {
+        callback(new RedisClusterException(error), null);
+
+        return;
       }
 
-      callback(true);
-    }.bind(this));
+      callback(null, true);
+    });
+  }
+
+  /**
+   * @returns {*|exports|module.exports}
+   * @constructor
+   */
+  get NATIVE_DRIVER() {
+    return require(&apos;ioredis&apos;);
   }
 }
 </code></pre>
