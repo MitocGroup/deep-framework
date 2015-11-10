@@ -41,10 +41,11 @@ export class Token {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
-    let defaultRegion = AWS.config.region;
+    let cognitoRegion = Token._getRegionFromIdentityPoolId(this._identityPoolId);
 
     AWS.config.update({
-      region: Token._getRegionFromIdentityPoolId(this._identityPoolId),
+      cognitoidentity: {region: cognitoRegion},
+      cognitosync: {region: cognitoRegion},
     });
 
     let cognitoParams = {
@@ -71,15 +72,7 @@ export class Token {
       if (updateAwsCreds) {
         AWS.config.credentials = this._credentials;
 
-        // restore to default region
-        AWS.config.update({
-          region: defaultRegion,
-        });
-
-        // @todo - Fix 'params' is not defined error from CognitoSyncManager
-        this._credsManager.saveCredentials(this._credentials, (record) => {
-          console.log('saveCredentials - record - ', record);
-
+        this._credsManager.saveCredentials(this._credentials.data, (record) => {
           callback(null, this);
         });
       } else {

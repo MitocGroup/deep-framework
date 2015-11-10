@@ -9,6 +9,7 @@ import CognitoSyncManager from 'amazon-cognito-js';
 import {CreateCognitoDatasetException} from './Exception/CreateCognitoDatasetException';
 import {PutCognitoRecordException} from './Exception/PutCognitoRecordException';
 import {GetCognitoRecordException} from './Exception/GetCognitoRecordException';
+import {SynchronizeCognitoDatasetException} from './Exception/SynchronizeCognitoDatasetException';
 
 export class CredentialsManager {
   /**
@@ -56,7 +57,13 @@ export class CredentialsManager {
           );
         }
 
-        callback(record);
+        this._synchronizeDataset(dataset, (error, savedRecords) => {
+          if (error) {
+            throw new SynchronizeCognitoDatasetException(dataset, error);
+          }
+
+          callback(savedRecords);
+        });
       });
     });
   }
@@ -89,6 +96,46 @@ export class CredentialsManager {
       }
 
       callback(dataset);
+    });
+  }
+
+  /**
+   * @param {Object} dataset
+   * @param {Function} callback
+   * @private
+   */
+  _synchronizeDataset(dataset, callback) {
+    dataset.synchronize({
+      onSuccess: (dataset, newRecords) => {
+        console.log('onSuccess - ', newRecords);
+
+        callback(null, newRecords);
+      },
+      onFailure: (error) => {
+        console.log('onFailure - ', error);
+        callback(error, null);
+      },
+      onConflict: (dataset, conflicts, callback) => {
+        console.log('onConflict - ', conflicts);
+        let resolved = [];
+
+        for (let i = 0; i < conflicts.length; i++) {
+          // take local version. @todo: implement custom merge logic to take latest changes
+          resolved.push(conflicts[i].resolveWithLocalRecord());
+        }
+
+        dataset.resolve(resolved, () => {
+          return callback(true);
+        });
+      },
+      onDatasetDeleted: (dataset, datasetName, callback) => {
+        console.log('onDatasetDeleted - ', datasetName);
+        return callback(true);
+      },
+      onDatasetMerged: (dataset, datasetNames, callback) => {
+        console.log('onDatasetMerged - ', datasetNames);
+        return callback(true);
+      }
     });
   }
 

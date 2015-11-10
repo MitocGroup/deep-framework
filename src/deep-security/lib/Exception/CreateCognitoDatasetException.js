@@ -15,6 +15,6 @@ export class CreateCognitoDatasetException extends Exception {
    * @param {Object} error
    */
   constructor(dataset, error) {
-    super(`Error on opening or creating "${dataset}" CognitoSync dataset. ${error}`);
+    super(`Error on opening or creating "${dataset}" Cognito dataset. ${error}`);
   }
 }
