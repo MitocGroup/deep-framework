@@ -10,8 +10,7 @@ export class RedisDriverMock extends RedisDriver {
    */
   constructor(...args) {
     super(args);
-    console.log('constructor RedisDriverMock');
-    this.isErrorMode = false;
+    this.disableErrorMode();
   }
 
   /**
