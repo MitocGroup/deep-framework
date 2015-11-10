@@ -6,6 +6,7 @@ browserify=$(which browserify)
 brew=$(which brew)
 uglifyjs=$(which uglifyjs)
 browser_build_path=${path}"/../browser"
+DEEP_AWS_SERVICES=lambda,cognitoidentity,cognitosync
 
 assure_brew() {
     if [ -z ${brew} ]; then
@@ -87,7 +88,7 @@ ${npm} run prepare-browserify
 echo '/** Built on '$(date) > ${__FW}
 ${npm} ls --long=false --global=false --depth=0 --production=true | sed 's/ \/.*//' | grep deep- >> ${__FW}
 echo '*/' >> ${__FW}
-${browserify} -d ${browserify_require} lib.compiled/browser-framework.js | uglifyjs >> ${__FW}
+AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -d ${browserify_require} lib.compiled/browser-framework.js | uglifyjs >> ${__FW}
 
 echo ""
 echo "Completed!"
