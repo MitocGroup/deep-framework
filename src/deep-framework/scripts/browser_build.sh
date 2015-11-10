@@ -65,7 +65,7 @@ cd ${path}/../node_modules/deep-log && \
 echo "- lookup for node modules to require"
 
 # used to require/exclude modules
-NPM_REGEX='(src/deep-framework|.*((deep\-(fs|db|event)).*|lsmod|ioredis|vogels|chai|sinon|mocha|raven(?!-js)).*)$'
+NPM_REGEX='(src/deep-framework|.*((deep\-(fs|db|event)).*|lsmod|ioredis|vogels|raven(?!-js)).*)$'
 
 # require
 browserify_require=""
