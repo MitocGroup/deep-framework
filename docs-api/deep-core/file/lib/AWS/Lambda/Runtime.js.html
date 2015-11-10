@@ -51,7 +51,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidArgumentException.js~InvalidArgumentException.html">InvalidArgumentException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MethodsNotImplementedException.js~MethodsNotImplementedException.html">MethodsNotImplementedException</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/MethodsProxy.js~MethodsProxy.html">MethodsProxy</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
 </ul>
@@ -88,7 +89,6 @@ export class Runtime extends Interface {
     this._forceUserIdentity = false;
 
     this._fillDenyMissingUserContextOption();
-    this._fillUserContext();
   }
 
   /**
@@ -129,10 +129,12 @@ export class Runtime extends Interface {
    * @returns {Runtime}
    */
   run(event, context) {
-    this._addExceptionListener();
-
     this._context = context;
+    this._addExceptionListener();
+    
     this._request = new Request(event);
+    
+    this._fillUserContext();
 
     if (!this._loggedUserId &amp;&amp; this._forceUserIdentity) {
       throw new MissingUserContextException();

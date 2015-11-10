@@ -6,11 +6,11 @@ DEEP Validation Library (deep-validation)
 [![Codacy Badge](https://api.codacy.com/project/badge/coverage/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-`DEEP Framework` is a core component of the 
+`DEEP Framework` is a serverless web framework, core component of the 
 [Platform-as-a-Service](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem) 
-that abstracts web services from specific cloud providers. This framework enables developers build web applications 
-or platforms using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) in a completely 
-[serverless approach](https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture). 
+that abstracts web apps and web services from specific cloud providers. This framework enables developers build
+applications or platforms using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) 
+in a completely [serverless approach](https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture). 
 
 > At this moment only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are encouraged to add support 
 for [Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](https://cloud.google.com/), and so on.
@@ -22,18 +22,26 @@ for [Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](http
 
 To see the power of `DEEP Framework`, execute the following 4 simple steps in command line:
 
-1. `npm install deepify -g` # Install DEEP CLI, also known as deepify
+1. Install DEEP CLI, also known as deepify:
+
+  `npm install deepify -g` 
 > deepify is a collection of tools that empower developers and devops engineers to automate
 the management of web apps built on top of DEEP ecosystem.
 
-2. `deepify helloworld ~/deep-hello-world` # Using deepify, dump locally the helloworld example
+2. Using deepify, dump locally the helloworld example:
+
+  `deepify helloworld ~/deep-hello-world`
 > deepify will clone the repository from GitHub and pull all the dependencies in one place.
 
-3. `deepify server ~/deep-hello-world -o` # Using deepify, run locally the helloworld example
+3. Using deepify, run locally the helloworld example:
+
+  `deepify server ~/deep-hello-world -o`
 > deepify launches a web server that can be used for local development, without making calls
 to web services from cloud providers like AWS.
 
-4. `deepify deploy ~/deep-hello-world` # Using deepify, deploy to AWS the helloworld example
+4. Using deepify, deploy to AWS the helloworld example:
+
+  `deepify deploy ~/deep-hello-world`
 > deepify provisions the infrastructure and deploys the web app, empowering developers and
 devops engineers to automate the process.
 
@@ -201,4 +209,4 @@ does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, ver
 (let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
 as web apps into their own accounts on AWS (or other cloud providers).
 
-> In summary: We empowers lego consumers to license curated lego pieces from lego producers.
+> In summary: We empower lego consumers to license curated lego pieces from a marketplace of lego producers.

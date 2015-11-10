@@ -613,7 +613,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport FileSystem from 'fs';\nimport WaitUntil from 'wait-until';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Microservice}\n   */\n  microservice(identifier) {\n    if (typeof identifier === 'undefined') {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {String} jsonFile\n   * @param {Function} callback\n   * @returns {Kernel}\n   */\n  loadFromFile(jsonFile, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    if (this.isBackend) {\n      FileSystem.readFile(jsonFile, 'utf8', function(error, data) {\n        if (error) {\n          throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);\n        }\n\n        this.load(JSON.parse(data), callback);\n      }.bind(this));\n    } else { // @todo: get rid of native code...\n      var client = new XMLHttpRequest();\n\n      client.open('GET', jsonFile);\n      client.onreadystatechange = function(event) {\n        if (client.readyState === 4) {\n          if (client.status !== 200) {\n            throw new Exception(`Failed to load kernel config from ${jsonFile}`);\n          }\n\n          this.load(JSON.parse(client.responseText), callback);\n        }\n      }.bind(this);\n\n      client.send();\n    }\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} globalConfig\n   * @param {Function} callback\n   */\n  load(globalConfig, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = function(kernel) {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    }.bind(this);\n\n    this._config = globalConfig;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend\n      && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      if (!serviceInstance instanceof ContainerAware) {\n        let serviceType = typeof serviceInstance;\n\n        throw new Exception(`Service ${serviceType} must be Kernel.ContainerAware instance`);\n      }\n\n      bootingServices++;\n\n      serviceInstance.container = this._container;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, function() {\n        bootingServices--;\n      }.bind(this));\n\n      this._container.addService(\n        serviceInstance.name,\n        serviceInstance.service\n      );\n    }\n\n    WaitUntil()\n      .interval(5)\n      .times(999999) // @todo: get rid of magic here...\n      .condition(function(cb) {\n        process.nextTick(function() {\n          cb(bootingServices <= 0);\n        }.bind(this));\n      }).done(function() {\n        callback(this);\n      }.bind(this));\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport FileSystem from 'fs';\nimport WaitUntil from 'wait-until';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Microservice}\n   */\n  microservice(identifier) {\n    if (typeof identifier === 'undefined') {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {String} jsonFile\n   * @param {Function} callback\n   * @returns {Kernel}\n   */\n  loadFromFile(jsonFile, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    if (this.isBackend) {\n      FileSystem.readFile(jsonFile, 'utf8', function(error, data) {\n        if (error) {\n          throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);\n        }\n\n        this.load(JSON.parse(data), callback);\n      }.bind(this));\n    } else { // @todo: get rid of native code...\n      var client = new XMLHttpRequest();\n\n      client.open('GET', jsonFile);\n      client.onreadystatechange = function(event) {\n        if (client.readyState === 4) {\n          if (client.status !== 200) {\n            throw new Exception(`Failed to load kernel config from ${jsonFile}`);\n          }\n\n          this.load(JSON.parse(client.responseText), callback);\n        }\n      }.bind(this);\n\n      client.send();\n    }\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} globalConfig\n   * @param {Function} callback\n   */\n  load(globalConfig, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = function(kernel) {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    }.bind(this);\n\n    this._config = globalConfig;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend\n      && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      if (!serviceInstance instanceof ContainerAware) {\n        let serviceType = typeof serviceInstance;\n\n        throw new Exception(`Service ${serviceType} must be Kernel.ContainerAware instance`);\n      }\n\n      bootingServices++;\n\n      serviceInstance.container = this._container;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, function() {\n        bootingServices--;\n      }.bind(this));\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(5)\n      .times(999999) // @todo: get rid of magic here...\n      .condition(function(cb) {\n        process.nextTick(function() {\n          cb(bootingServices <= 0);\n        }.bind(this));\n      }).done(function() {\n        callback(this);\n      }.bind(this));\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1346,6 +1346,47 @@
     }
   },
   {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_createProxyIfNeeded",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel._createProxyIfNeeded",
+    "access": "private",
+    "description": null,
+    "lineNumber": 302,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{ContainerAware|Proxy|Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "ContainerAware",
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "serviceObj",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ContainerAware",
+        "Proxy",
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1354,7 +1395,7 @@
     "longname": "lib/Kernel.js~Kernel.MicroserviceInjectable",
     "access": null,
     "description": null,
-    "lineNumber": 300,
+    "lineNumber": 320,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1385,7 +1426,7 @@
     "longname": "lib/Kernel.js~Kernel.ContainerAware",
     "access": null,
     "description": null,
-    "lineNumber": 307,
+    "lineNumber": 327,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1416,7 +1457,7 @@
     "longname": "lib/Kernel.js~Kernel.FRONTEND_BOOTSTRAP_VECTOR",
     "access": null,
     "description": null,
-    "lineNumber": 314,
+    "lineNumber": 334,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1447,7 +1488,7 @@
     "longname": "lib/Kernel.js~Kernel.CONFIG",
     "access": null,
     "description": null,
-    "lineNumber": 321,
+    "lineNumber": 341,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1478,7 +1519,7 @@
     "longname": "lib/Kernel.js~Kernel.KERNEL",
     "access": null,
     "description": null,
-    "lineNumber": 328,
+    "lineNumber": 348,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1509,7 +1550,7 @@
     "longname": "lib/Kernel.js~Kernel.CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 335,
+    "lineNumber": 355,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1540,7 +1581,7 @@
     "longname": "lib/Kernel.js~Kernel.MICROSERVICES",
     "access": null,
     "description": null,
-    "lineNumber": 342,
+    "lineNumber": 362,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1571,7 +1612,7 @@
     "longname": "lib/Kernel.js~Kernel.FRONTEND_CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 349,
+    "lineNumber": 369,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1602,7 +1643,7 @@
     "longname": "lib/Kernel.js~Kernel.BACKEND_CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 356,
+    "lineNumber": 376,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1633,7 +1674,7 @@
     "longname": "lib/Kernel.js~Kernel.ALL_CONTEXTS",
     "access": null,
     "description": null,
-    "lineNumber": 363,
+    "lineNumber": 383,
     "unknown": [
       {
         "tagName": "@returns",
