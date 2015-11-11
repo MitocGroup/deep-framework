@@ -23,8 +23,8 @@ suite('Driver/ConsoleDriver', function() {
       error = e;
     }
 
+    if (error) console.log(error, error.stack);//@todo:remove after debugging!!!
+    
     chai.expect(error).to.be.equal(null);
-
-    console.log(error, error.stack);//@todo:remove after debugging!!!
   });
 });
