@@ -37,6 +37,6 @@ suite('Generic/ObjectStorage', function() {
   test('Check find() method in non-strict mode returns valid string', function() {
     objectStorage.add(3);
     let actualResult = objectStorage.find(Number);
-    chai.expect(actualResult).to.be.eql(undefined);
+    chai.expect(actualResult).to.be.eql(null);
   });
 });
