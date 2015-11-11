@@ -24,5 +24,7 @@ suite('Driver/ConsoleDriver', function() {
     }
 
     chai.expect(error).to.be.equal(null);
+
+    console.log(error, error.stack);//@todo:remove after debugging!!!
   });
 });
