@@ -32,6 +32,12 @@ export class ConsoleDriver extends AbstractDriver {
 
       let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];
 
+      // Fixes issue with node env
+      if (method === 'debug' &&
+        typeof nativeConsole[method] === 'undefined') {
+        method = 'log';
+      }
+
       console[method] = nativeConsole[method];
     }
 
@@ -71,7 +77,7 @@ export class ConsoleDriver extends AbstractDriver {
 
     // @todo: figure out a better way of dumping context
     if (context) {
-      this._console.debug(context);
+      (this._console.debug || this._console.log)('[DEBUG]', context);
     }
   }
 
