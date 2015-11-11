@@ -31,14 +31,18 @@ suite('Resource', function() {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
         backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+
       backendKernelInstance = backendKernel;
       resource = backendKernel.get('resource');
+
       chai.assert.instanceOf(
-        resource, Resource, 'resource is an instance of Resource');
+        resource, Resource, 'resource is an instance of Resource'
+      );
 
       // complete the async
       done();
     };
+
     KernelFactory.create({
       Cache: Cache,
       Security: Security,
@@ -48,7 +52,8 @@ suite('Resource', function() {
 
   test('Check constructor sets _resources', function() {
     chai.expect(Object.keys(resource._resources)).to.be.eql(
-      ['hello.world.example', 'deep.ng.root']);
+      ['hello.world.example', 'deep.ng.root']
+    );
   });
 
   test('Check has() method returns false', function() {
@@ -62,7 +67,10 @@ suite('Resource', function() {
   });
 
   test('Check get() method returns valid object', function() {
-    let actualResult = resource.get(`@${microserviceIdentifier}:${resourceName}`);
+    let actualResult = resource.get(
+      `@${microserviceIdentifier}:${resourceName}`
+    );
+
     chai.expect(actualResult.name).to.be.equal(resourceName);
     chai.expect(actualResult._rawActions).to.be.eql(
       backendConfig.microservices[microserviceIdentifier].resources[resourceName]
@@ -97,9 +105,14 @@ suite('Resource', function() {
 
   test('Check boot() method', function() {
     let spyCallback = sinon.spy();
+
     resource.boot(backendKernelInstance, spyCallback);
+
     chai.expect(spyCallback).to.have.been.calledWithExactly();
-    chai.assert.instanceOf(resource._resources[microserviceIdentifier].sample, ResourceInstance,
-      'item is an instance of ResourceInstance');
+    chai.assert.instanceOf(
+      resource._resources[microserviceIdentifier].sample,
+      ResourceInstance,
+      'item is an instance of ResourceInstance'
+    );
   });
 });

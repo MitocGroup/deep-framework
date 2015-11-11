@@ -32,9 +32,11 @@ suite('Resource/Action', function() {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
         backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+
       backendKernelInstance = backendKernel;
-      action = backendKernel.get('resource')
-        .get(`@${microserviceIdentifier}:${resourceName}:${actionName}`);
+      action = backendKernel.get('resource').get(
+        `@${microserviceIdentifier}:${resourceName}:${actionName}`
+      );
 
       chai.assert.instanceOf(
         action, Action, 'action is an instance of Action'
@@ -43,6 +45,7 @@ suite('Resource/Action', function() {
       // complete the async
       done();
     };
+
     KernelFactory.create({
       Cache: Cache,
       Security: Security,
@@ -53,7 +56,8 @@ suite('Resource/Action', function() {
   test('Check resource getter returns valid instance of Resource', function() {
     chai.assert.instanceOf(
       action.resource, ResourceInstance,
-      'action.resource is an instance of ResourceInstance');
+      'action.resource is an instance of ResourceInstance'
+    );
     chai.expect(action.resource.name).to.be.equal(resourceName);
   });
 
@@ -110,12 +114,11 @@ suite('Resource/Action', function() {
   });
 
   test('Check request() method return valid instance of Request', function() {
-    let actualResult = null;
-
-    actualResult = action.request({}, 'POST');
+    let actualResult = action.request({}, 'POST');
 
     chai.assert.instanceOf(
-      actualResult, Request, 'is an instance of Request');
+      actualResult, Request, 'is an instance of Request'
+    );
     chai.expect(actualResult.cacheImpl).to.be.eql(action._resource.cache);
   });
 });
