@@ -26,7 +26,11 @@ suite('Cache', function() {
 
   test('Load backend kernel by using Kernel.load()', function(done) {
     let callback = (backendKernel) => {
-      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
       backendKernelInstance = backendKernel;
       cache = backendKernel.get('cache');
 
@@ -35,12 +39,15 @@ suite('Cache', function() {
       // complete the async
       done();
     };
+
     KernelFactory.create({Cache: Cache}, callback);
   });
 
   test('Check driver setter sets driver value', function() {
     inMemoryDriver = new InMemoryDriver();
+
     cache.driver = inMemoryDriver;
+
     chai.expect(cache.driver).to.be.eql(inMemoryDriver);
   });
 
@@ -51,15 +58,20 @@ suite('Cache', function() {
 
   test(`Check createDriver() static method for ${memoryDriverName}`,
     function() {
-      chai.assert.instanceOf(Cache.createDriver(memoryDriverName),
-        InMemoryDriver, 'createDriver() returns an instance of InMemoryDriver');
+      chai.assert.instanceOf(
+        Cache.createDriver(memoryDriverName),
+        InMemoryDriver, 'createDriver() returns an instance of InMemoryDriver'
+      );
     }
   );
 
   test(`Check createDriver() static method for ${redisDriverName}`,
     function() {
-      chai.assert.instanceOf(Cache.createDriver(redisDriverName), RedisDriver,
-        'createDriver() returns an instance of RedisDriver');
+      chai.assert.instanceOf(
+        Cache.createDriver(redisDriverName),
+        RedisDriver,
+        'createDriver() returns an instance of RedisDriver'
+      );
     }
   );
 
@@ -78,9 +90,12 @@ suite('Cache', function() {
   test('Check boot() method boots a certain service and executes callback',
     function() {
       let spyCallback = sinon.spy();
+
       cache.boot(backendKernelInstance, spyCallback);
-      chai.assert.instanceOf(cache.driver,
-        InMemoryDriver, 'cache.driver ia an instance of InMemoryDriver');
+
+      chai.assert.instanceOf(
+        cache.driver, InMemoryDriver, 'cache.driver ia an instance of InMemoryDriver'
+      );
       chai.expect(cache.driver.buildId).to.be.equal(backendKernelInstance.buildId);
       chai.expect(spyCallback).to.have.been.calledWithExactly();
     }

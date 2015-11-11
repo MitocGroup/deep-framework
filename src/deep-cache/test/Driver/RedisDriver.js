@@ -23,8 +23,10 @@ suite('Driver/RedisDriver', function() {
   });
 
   test('Check constructor sets by default _client', function() {
-    chai.assert.instanceOf(redisDriver.client, Redis,
-      'redisDriver.client is an instance of Redis');
+    chai.assert.instanceOf(
+      redisDriver.client, Redis,
+      'redisDriver.client is an instance of Redis'
+    );
   });
 
   test('Check _has() passes "RedisClusterException" exception in callback',
@@ -35,9 +37,11 @@ suite('Driver/RedisDriver', function() {
       redisDriver._has(key, spyCallback);
 
       chai.expect(spyCallback).to.have.been.calledWith();
-      chai.assert.instanceOf(spyCallback.args[0][0],
+      chai.assert.instanceOf(
+        spyCallback.args[0][0],
         RedisClusterException,
-        '_has() throws an instance of RedisClusterException');
+        '_has() throws an instance of RedisClusterException'
+      );
     }
   );
 
@@ -49,8 +53,11 @@ suite('Driver/RedisDriver', function() {
       redisDriver._get(key, spyCallback);
 
       chai.expect(spyCallback).to.have.been.calledWith();
-      chai.assert.instanceOf(spyCallback.args[0][0], RedisClusterException,
-        '_get() throws an instance of RedisClusterException');
+      chai.assert.instanceOf(
+        spyCallback.args[0][0],
+        RedisClusterException,
+        '_get() throws an instance of RedisClusterException'
+      );
     }
   );
 
@@ -62,8 +69,11 @@ suite('Driver/RedisDriver', function() {
       redisDriver._set(key, value, ttl, spyCallback);
 
       chai.expect(spyCallback).to.have.been.calledWith();
-      chai.assert.instanceOf(spyCallback.args[0][0], RedisClusterException,
-        '_set() throws an instance of RedisClusterException');
+      chai.assert.instanceOf(
+        spyCallback.args[0][0],
+        RedisClusterException,
+        '_set() throws an instance of RedisClusterException'
+      );
     }
   );
 
@@ -75,8 +85,11 @@ suite('Driver/RedisDriver', function() {
       redisDriver._invalidate(key, timeout, spyCallback);
       chai.expect(spyCallback).to.have.been.calledWith();
 
-      chai.assert.instanceOf(spyCallback.args[0][0], RedisClusterException,
-        '_invalidate() throws an instance of RedisClusterException');
+      chai.assert.instanceOf(
+        spyCallback.args[0][0],
+        RedisClusterException,
+        '_invalidate() throws an instance of RedisClusterException'
+      );
     }
   );
 
@@ -88,30 +101,33 @@ suite('Driver/RedisDriver', function() {
       redisDriver._flush(spyCallback);
 
       chai.expect(spyCallback).to.have.been.calledWith();
-      chai.assert.instanceOf(spyCallback.args[0][0], RedisClusterException,
-        '_invalidate() throws an instance of RedisClusterException');
+      chai.assert.instanceOf(
+        spyCallback.args[0][0],
+        RedisClusterException,
+        '_invalidate() throws an instance of RedisClusterException'
+      );
     }
   );
 
   test('Check _has() passes result in callback',
     function() {
-      let spyCallback = sinon.spy();
+      let spyCb = sinon.spy();
 
       redisDriver.disableFailureMode();
-      redisDriver._has(key, spyCallback);
+      redisDriver._has(key, spyCb);
 
-      chai.expect(spyCallback).to.have.been.calledWithExactly(null, RedisMock.DATA);
+      chai.expect(spyCb).to.have.been.calledWithExactly(null, RedisMock.DATA);
     }
   );
 
   test('Check _get() passes result in callback',
     function() {
-      let spyCallback = sinon.spy();
+      let spyCb = sinon.spy();
 
       redisDriver.disableFailureMode();
-      redisDriver._get(key, spyCallback);
+      redisDriver._get(key, spyCb);
 
-      chai.expect(spyCallback).to.have.been.calledWithExactly(null, RedisMock.DATA);
+      chai.expect(spyCb).to.have.been.calledWithExactly(null, RedisMock.DATA);
     }
   );
 

@@ -67,9 +67,9 @@ suite('Driver/AbstractDriver', function() {
   test(`Check _buildKey() method returns:
     ${abstractDriver.buildId}:${abstractDriver.namespace}#${testKey}`,
     function() {
-      chai.expect(abstractDriver._buildKey(testKey)).to.be
-        .equal(`${abstractDriver.buildId}:${abstractDriver
-          .namespace}#${testKey}`);
+      chai.expect(abstractDriver._buildKey(testKey)).to.be.equal(
+        `${abstractDriver.buildId}:${abstractDriver.namespace}#${testKey}`
+      );
     }
   );
 
@@ -80,13 +80,18 @@ suite('Driver/AbstractDriver', function() {
       let spyCallback = sinon.spy();
       let actualResult = abstractDriver.has(testKey, spyCallback);
 
-      chai.assert.instanceOf(actualResult, AbstractDriver,
-        'result of has() is an instance of AbstractDriver');
+      chai.assert.instanceOf(
+        actualResult,
+        AbstractDriver,
+        'result of has() is an instance of AbstractDriver'
+      );
       chai.expect(actualResult.buildId).to.be.equal(buildId);
       chai.expect(actualResult.silent).to.be.equal(silent);
       chai.expect(actualResult.namespace).to.be.equal(namespace);
-      chai.expect(spyCallback).to.have.been.calledWithExactly(null,
-        AbstractDriverMock.DATA);
+      chai.expect(spyCallback).to.have.been.calledWithExactly(
+        null,
+        AbstractDriverMock.DATA
+      );
     }
   );
 
@@ -102,8 +107,10 @@ suite('Driver/AbstractDriver', function() {
       chai.expect(actualResult.buildId).to.be.equal(buildId);
       chai.expect(actualResult.silent).to.be.equal(silent);
       chai.expect(actualResult.namespace).to.be.equal(namespace);
-      chai.expect(spyCallback).to.have.been.calledWithExactly(null,
-        AbstractDriverMock.DATA);
+      chai.expect(spyCallback).to.have.been.calledWithExactly(
+        null,
+        AbstractDriverMock.DATA
+      );
     }
   );
 
@@ -130,8 +137,10 @@ suite('Driver/AbstractDriver', function() {
       abstractDriver.disableFailureMode();
       abstractDriver.set(testKey, testValue, 1, spyCallback);
 
-      chai.expect(spyCallback).to.have.been.calledWith(null,
-        AbstractDriverMock.DATA);
+      chai.expect(spyCallback).to.have.been.calledWith(
+        null,
+        AbstractDriverMock.DATA
+      );
     }
   );
 
@@ -181,7 +190,10 @@ suite('Driver/AbstractDriver', function() {
       abstractDriver.disableFailureMode();
 
       abstractDriver.invalidate(testKey, 1, spyCallback);
-      chai.expect(spyCallback).to.have.been.calledWithExactly(null, AbstractDriverMock.DATA);
+      chai.expect(spyCallback).to.have.been.calledWithExactly(
+        null,
+        AbstractDriverMock.DATA
+      );
     }
   );
 
@@ -191,7 +203,10 @@ suite('Driver/AbstractDriver', function() {
     abstractDriver.disableFailureMode();
 
     abstractDriver.flush(spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, AbstractDriverMock.DATA);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(
+      null,
+      AbstractDriverMock.DATA
+    );
   });
 
   test('Check flush() method throws "NoFlushException" ' +
