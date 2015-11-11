@@ -53,6 +53,7 @@ suite('Resource/Request', function() {
       done();
 
     };
+
     KernelFactory.create({
       Cache: Cache,
       Security: Security,
