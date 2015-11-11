@@ -10,8 +10,12 @@ export class CacheMock {
     this.enableNoResultMode();
   }
 
+  /**
+   * @param {String} cacheKey
+   * @param {Function} callback
+   * @returns {CacheMock}
+   */
   has(cacheKey, callback) {
-
     switch (this._methodsBehavior.get('has')) {
       case CacheMock.NO_RESULT_MODE:
         callback(null, null);
@@ -22,13 +26,19 @@ export class CacheMock {
         break;
 
       case CacheMock.DATA_MODE:
-        callback(null, CacheMock);
+        callback(null, CacheMock.DATA);
         break;
     }
 
     return this;
   }
 
+  /**
+   * @param {String} cacheKey
+   * @param {Number} number
+   * @param {Function} callback
+   * @returns {CacheMock}
+   */
   invalidate(cacheKey, number, callback) {
     switch (this._methodsBehavior.get('invalidate')) {
       case CacheMock.NO_RESULT_MODE:
@@ -40,14 +50,19 @@ export class CacheMock {
         break;
 
       case CacheMock.DATA_MODE:
-        callback(null, CacheMock);
+        callback(null, CacheMock.DATA);
         break;
     }
 
     return this;
   }
 
-  get(cacheKey, cb) {
+  /**
+   * @param {String} cacheKey
+   * @param {Function} callback
+   * @returns {CacheMock}
+   */
+  get(cacheKey, callback) {
     switch (this._methodsBehavior.get('get')) {
       case CacheMock.NO_RESULT_MODE:
         callback(null, null);
@@ -58,13 +73,20 @@ export class CacheMock {
         break;
 
       case CacheMock.DATA_MODE:
-        callback(null, CacheMock);
+        callback(null, CacheMock.DATA);
         break;
     }
 
     return this;
   }
 
+  /**
+   * @param {String} cacheKey
+   * @param {*} response
+   * @param {Number} ttl
+   * @param {Function} callback
+   * @returns {CacheMock}
+   */
   set(cacheKey, response, ttl, callback) {
     switch (this._methodsBehavior.get('set')) {
       case CacheMock.NO_RESULT_MODE:
@@ -76,7 +98,7 @@ export class CacheMock {
         break;
 
       case CacheMock.DATA_MODE:
-        callback(null, CacheMock);
+        callback(null, CacheMock.DATA);
         break;
     }
 
@@ -119,6 +141,10 @@ export class CacheMock {
    */
   enableNoResultModeFor(methods) {
     for (let method of methods) {
+      if (CacheMock.METHODS.indexOf(method) < 0) {
+        continue;
+      }
+
       this._methodsBehavior.set(method, CacheMock.NO_RESULT_MODE);
     }
   }
@@ -129,6 +155,10 @@ export class CacheMock {
    */
   enableFailureModeFor(methods) {
     for (let method of methods) {
+      if (CacheMock.METHODS.indexOf(method) < 0) {
+        continue;
+      }
+
       this._methodsBehavior.set(method, CacheMock.FAILURE_MODE);
     }
   }
@@ -139,6 +169,10 @@ export class CacheMock {
    */
   disableFailureModeFor(methods) {
     for (let method of methods) {
+      if (CacheMock.METHODS.indexOf(method) < 0) {
+        continue;
+      }
+
       this._methodsBehavior.set(method, CacheMock.DATA_MODE);
     }
   }

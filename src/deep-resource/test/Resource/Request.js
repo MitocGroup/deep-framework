@@ -8,9 +8,10 @@ import {Action} from '../../lib.compiled/Resource/Action';
 import {Request} from '../../lib.compiled/Resource/Request';
 import {Response} from '../../lib.compiled/Resource/Response';
 import {MissingCacheImplementationException} from '../../lib.compiled/Resource/Exception/MissingCacheImplementationException';
+import {DirectLambdaCallDeniedException} from '../../lib.compiled/Resource/Exception/DirectLambdaCallDeniedException';
 import {Exception} from '../../lib.compiled/Exception/Exception';
 import {CachedRequestException} from '../../lib.compiled/Resource/Exception/CachedRequestException';
-import CacheMock from '../Mock/CacheMock';
+import {CacheMock} from '../Mock/CacheMock';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
@@ -59,154 +60,334 @@ suite('Resource/Request', function() {
     }, callback);
   });
 
-  //test('Check constructor sets valid value for _method', function() {
-  //  chai.expect(request.method).to.be.equal(method);
-  //});
+  test(`Check method getter returns ${method}`, function() {
+    chai.expect(request.method).to.be.equal(method);
+  });
+
+  test('Check method getter returns valid instance of Action', function() {
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
+    chai.expect(request.action).to.be.eql(action);
+  });
+
+  test('Check payload getter returns valid value', function() {
+    chai.expect(request.payload).to.be.equal(payload);
+  });
+
+  test('Check constructor sets valid value for _lambda=null', function() {
+    chai.expect(request._lambda).to.be.equal(null);
+  });
+
+  test('Check constructor sets valid value for _native=false', function() {
+    chai.expect(request.native).to.be.equal(false);
+  });
+
+  test('Check constructor sets valid value for _cacheImpl=null', function() {
+    chai.expect(request.cacheImpl).to.be.equal(null);
+  });
+
+  test(`Check constructor sets cacheTtl to ${Request.TTL_FOREVER}`, function() {
+    chai.expect(request.cacheTtl).to.be.equal(Request.TTL_FOREVER);
+  });
+
+  test('Check constructor sets valid value for _cached=false', function() {
+    chai.expect(request._cached).to.be.equal(false);
+  });
+
+  test('Check isCached getter returns false', function() {
+    chai.expect(request.isCached).to.be.equal(null);
+  });
+
+  test('Check cacheTtl setter sets value', function() {
+    let cacheTtl = 120;
+    request.cacheTtl = cacheTtl;
+    chai.expect(request.cacheTtl).to.be.equal(cacheTtl);
+  });
+
+  test('Check enableCache/disableCache methods', function() {
+    request.disableCache();
+    chai.expect(request._cached).to.be.equal(false);
+
+    request.enableCache();
+    chai.expect(request._cached).to.be.equal(true);
+  });
+
+  test(
+    'Check cache() throws "MissingCacheImplementationException" for !_cacheImpl',
+    function() {
+      let error = null;
+      try {
+        request.cache();
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.not.equal(null);
+      chai.expect(error).to.be.an.instanceof(MissingCacheImplementationException);
+    }
+  );
+
+  test('Check TTL_DEFAULT static getter returns value above -1', function() {
+    chai.expect(Request.TTL_DEFAULT).to.be.above(0);
+  });
+
+  test('Check TTL_INVALIDATE static getter returns value -1', function() {
+    chai.expect(Request.TTL_INVALIDATE).to.be.equal(-1);
+  });
+
+  test('Check TTL_FOREVER static getter returns value above -1', function() {
+    chai.expect(Request.TTL_FOREVER).to.be.above(-1);
+  });
+
+  test('Check _rebuildResponse() throws "CachedRequestException" for invalid rawData',
+    function() {
+      let error = null;
+      let rawData = 'null';
+
+      try {
+        request._rebuildResponse(rawData);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.not.equal(null);
+      chai.expect(error).to.be.an.instanceof(CachedRequestException);
+    }
+  );
+
+  test('Check _rebuildResponse() throws "Exception"', function() {
+    let rawData = '{ "_class":"TestResponseMessage"}';
+    let error = null;
+
+    try {
+      request._rebuildResponse(rawData);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, Exception, 'result is an instance of Exception'
+    );
+    chai.expect(error.message).to.be.equal(
+      'Unknown Response implementation TestResponseMessage'
+    );
+  });
+
+  test('Check _rebuildResponse() returns instance of Response', function() {
+    let rawData = '{"status":200,"message":"Test message","_class":"Response"}';
+    let error = null;
+    let actualResult = null;
+
+    try {
+      actualResult = request._rebuildResponse(rawData);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      actualResult, Response, 'result is an instance of Response'
+    );
+  });
+
+  test('Check _chooseResponseImpl() returns undefined for invalid className',
+    function() {
+      let className = 'TestClass';
+      let actualResult = Request._chooseResponseImpl(className);
+
+      chai.expect(actualResult).to.be.equal(undefined);
+    }
+  );
+
+  test('Check _chooseResponseImpl() for className = Response', function() {
+    let className = 'Response';
+    let actualResult = Request._chooseResponseImpl(className);
+
+    chai.expect(actualResult.name).to.be.equal(className);
+  });
+
+  test(
+    'Check _chooseResponseImpl() for className = LambdaResponse',
+    function() {
+      let className = 'LambdaResponse';
+      let actualResult = Request._chooseResponseImpl(className);
+
+      chai.expect(actualResult.name).to.be.equal(className);
+    }
+  );
+
+  test(
+    'Check _chooseResponseImpl() for className = SuperagentResponse',
+    function() {
+      let className = 'SuperagentResponse';
+      let actualResult = Request._chooseResponseImpl(className);
+
+      chai.expect(actualResult.name).to.be.equal(className);
+    });
+
+  test('Check _stringifyResponse() method', function() {
+    let requestData = 'responseTest';
+    let rawData = {Payload: '{"dataKey":"testResponseValue"}', StatusCode: 201};
+    let rawError = null;
+
+    let response = new Response(requestData, rawData, rawError);
+    let actualResult = JSON.parse(Request._stringifyResponse(response));
+
+    chai.expect(actualResult._class).to.be.equal('Response');
+    chai.expect(actualResult.data).to.be.eql(rawData);
+    chai.expect(actualResult.error).to.be.equal(rawError);
+  });
+
+  test(
+    'Check _buildCacheKey() method returns valid cache key',
+    function() {
+      let actualResult = request._buildCacheKey();
+      let endpoint = request.native ? action.source.original : action.source.api;
+      let expectedResult = `${method}:${action.type}:${endpoint}#${JSON.stringify(payload)}`;
+      chai.expect(actualResult).to.be.equal(expectedResult);
+    }
+  );
+
+  test('Check cacheImpl() setter sets valid value', function() {
+    let cache = new CacheMock();
+    request.cacheImpl = cache;
+    chai.expect(request.cacheImpl).to.be.equal(cache);
+    chai.expect(request.cacheTtl).to.be.equal(Request.TTL_DEFAULT);
+  });
+
+
+  test(
+    'Check useDirectCall() throws "DirectLambdaCallDeniedException" for action.forceUserIdentity',
+    function() {
+      let error = null;
+      let actualResult = null;
+
+      try {
+        actualResult = request.useDirectCall();
+      } catch (e) {
+        error = e;
+      }
+
+      chai.assert.instanceOf(
+        error,
+        DirectLambdaCallDeniedException,
+        'error is an instance of DirectLambdaCallDeniedException'
+      );
+      chai.expect(request.native).to.be.equal(false);
+    }
+  );
+
+  //@todo - TBD Cannot set property forceUserIdentity
+  //test('Check useDirectCall() for !action.forceUserIdentity', function() {
+  //  request.action.forceUserIdentity = false;
+  //  chai.expect(request.useDirectCall().native).to.be.equal(true);
   //
-  //test('Check constructor sets valid value for _action', function() {
-  //  chai.expect(request.action).to.be.equal(action);
-  //});
-  //
-  //test('Check constructor sets valid value for _payload', function() {
-  //  chai.expect(request.payload).to.be.equal(payload);
-  //});
-  //
-  //test('Check constructor sets valid value for _lambda=null', function() {
-  //  chai.expect(request._lambda).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets valid value for _native=false', function() {
-  //  chai.expect(request.native).to.be.equal(false);
-  //});
-  //
-  //test('Check constructor sets valid value for _cacheImpl=null', function() {
-  //  chai.expect(request.cacheImpl).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets valid value for _cacheImpl=null', function() {
-  //  chai.expect(request.cacheTtl).to.be.equal(Request.TTL_FOREVER);
+  //  request.native = false;
+  //  request.action._forceUserIdentity = true;
   //});
 
-  //test('Check cache method throws \'MissingCacheImplementationException\' exception for !_cacheImpl', function() {
-  //  let error = null;
-  //  try {
-  //    request.cache();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.expect(error).to.be.an.instanceof(MissingCacheImplementationException);
-  //});
-  //
-  //test('Check constructor sets valid value for _cached=false', function() {
-  //  chai.expect(request._cached).to.be.equal(false);
-  //});
-  //
-  //test('Check isCached getter returns false', function() {
-  //  chai.expect(request.isCached).to.be.equal(null);
-  //});
-  //
-  //test('Check cacheTtl setter sets value', function() {
-  //  let cacheTtl = 120;
-  //  request.cacheTtl = cacheTtl;
-  //  chai.expect(request.cacheTtl).to.be.equal(cacheTtl);
-  //});
-  //
-  //test('Check enableCache/disableCache methods', function() {
-  //  request.disableCache();
-  //  chai.expect(request._cached).to.be.equal(false);
-  //  request.enableCache();
-  //  chai.expect(request._cached).to.be.equal(true);
-  //});
-  //
-  //test('Check TTL_DEFAULT static getter returns value above -1', function() {
-  //  chai.expect(Request.TTL_DEFAULT).to.be.above(0);
-  //});
-  //
-  //test('Check TTL_INVALIDATE static getter returns value -1', function() {
-  //  chai.expect(Request.TTL_INVALIDATE).to.be.equal(-1);
-  //});
-  //
-  //test('Check TTL_FOREVER static getter returns value above -1', function() {
-  //  chai.expect(Request.TTL_FOREVER).to.be.above(-1);
-  //});
-  //
-  //test('Check _rebuildResponse method throws CachedRequestException exception for invalid rawData', function() {
-  //  let error = null;
-  //  let rawData = 'null';
-  //  try {
-  //    request._rebuildResponse(rawData);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.expect(error).to.be.an.instanceof(CachedRequestException);
-  //});
-  //
-  //test('Check _stringifyResponse() method', function() {
-  //  let requestData = 'responseTest';
-  //  let rawData = {Payload: '{"dataKey":"testResponseValue"}', StatusCode:201};
-  //  let rawError = null;
-  //  let error = null;
-  //  let actualResult = null;
-  //  let response = null;
-  //
-  //  try {
-  //    response = new Response(requestData, rawData, rawError);
-  //    actualResult = JSON.parse(Request._stringifyResponse(response));
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(actualResult._class).to.be.equal('Response');
-  //  chai.expect(actualResult.data).to.be.eql(rawData);
-  //  chai.expect(actualResult.error).to.be.equal(rawError);
-  //
-  //});
-  //
-  //test(`Check _buildCacheKey() method returns ${method}:${action.type}:${action.source}#${payload}`, function() {
-  //  let actualResult = request._buildCacheKey();
-  //  let expectedResult = `${method}:${action.type}:${action.source.original}#${JSON.stringify(payload)}`;
-  //  chai.expect(actualResult).to.be.equal(expectedResult);
-  //});
-  //
-  //test('Check cacheImpl() setter sets valid value', function() {
-  //  let cache = new CacheMock();
-  //  request.cacheImpl = cache;
-  //  chai.expect(request.cacheImpl).to.be.equal(cache);
-  //  chai.expect(request.cacheTtl).to.be.equal(Request.TTL_DEFAULT);
-  //});
-  //
-  //test('Check _chooseResponseImpl() return valid object', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  try {
-  //    actualResult = Request._chooseResponseImpl('TestClass');
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //});
-  //
-  //test('Check _rebuildResponse() throws \'Exception\'', function() {
-  //  let rawData = '{ "_class":"TestResponseMessage"}';
-  //
-  //  let error = null;
-  //  let actualResult = null;
-  //  try {
-  //    actualResult = request._rebuildResponse(rawData);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(error, Exception, 'result is an instance of Exception');
-  //  chai.expect(error.message).to.be.equal('Unknown Response implementation TestResponseMessage');
-  //});
-  //
+  test('Check invalidateCache() !isCached', function() {
+    let spyCallback = sinon.spy();
+
+    request.disableCache();
+    chai.expect(request.isCached).to.be.equal(false);
+
+    request.invalidateCache(spyCallback);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(true);
+  });
+
+  test(
+    'Check invalidateCache() throws "CachedRequestException" in has() method',
+    function() {
+
+      let error = null;
+      let spyCallback = sinon.spy();
+      let cache = new CacheMock();
+
+      //sets mock mode
+      cache.enableFailureModeFor(['has']);
+
+      request.cacheImpl = cache;
+      request.enableCache();
+
+      try {
+        request.invalidateCache(spyCallback);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.not.equal(null);
+      chai.assert.instanceOf(
+        error,
+        CachedRequestException,
+        'error is an instance of CachedRequestException'
+      );
+    }
+  );
+
+  test(
+    'Check invalidateCache() throws "CachedRequestException" in invalidate()',
+    function() {
+
+      let error = null;
+      let spyCallback = sinon.spy();
+      let cache = new CacheMock();
+
+      //sets mock mode
+      cache.disableFailureMode(['has']);
+      cache.enableFailureModeFor(['invalidate']);
+
+      request.cacheImpl = cache;
+      request.enableCache();
+
+      try {
+        request.invalidateCache(spyCallback);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.not.equal(null);
+      chai.assert.instanceOf(
+        error,
+        CachedRequestException,
+        'error is an instance of CachedRequestException'
+      );
+    }
+  );
+
+  test(
+    'Check invalidateCache() returns valid result in callback',
+    function() {
+      let spyCallback = sinon.spy();
+      let cache = new CacheMock();
+
+      //sets mock mode
+      cache.disableFailureModeFor(['has', 'invalidate']);
+
+      request.cacheImpl = cache;
+      request.enableCache();
+      request.invalidateCache(spyCallback);
+
+      chai.expect(spyCallback).to.have.been.calledWithExactly(CacheMock.DATA);
+    }
+  );
+
+  test('Check invalidateCache() isCached with no results in has methods',
+    function() {
+      let spyCallback = sinon.spy();
+      let cache = new CacheMock();
+
+      //sets mock mode
+      cache.enableNoResultModeFor(['has']);
+
+      request.cacheImpl = cache;
+      request.enableCache();
+      request.invalidateCache(spyCallback);
+
+      chai.expect(spyCallback).to.have.been.calledWithExactly(true);
+    }
+  );
+
   //test('Check _send() for lambda', function() {
   //  let error = null;
   //  try {
@@ -353,91 +534,6 @@ suite('Resource/Request', function() {
   //  chai.expect(testRequest._cacheTtl).to.be.not.equal(Request.TTL_INVALIDATE);
   //  chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
   //  chai.expect(spyCallback).to.not.have.been.calledWith();
-  //});
-  //
-  //test('Check useDirectCall() method sets native=true', function() {
-  //  chai.expect(request.useDirectCall().native).to.be.equal(true);
-  //});
-  //
-  //test('Check invalidateCache() !isCached', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  request.disableCache();
-  //  chai.expect(request.isCached).to.be.equal(false);
-  //  try {
-  //    request.invalidateCache(spyCallback);
-  //    chai.expect(spyCallback).to.have.been.calledWith(true);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //});
-  //
-  //test('Check invalidateCache() throws \'CachedRequestException\' exception in has() method', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let cache = new CacheNegativeHasTest();
-  //  request.cacheImpl = cache;
-  //  request.enableCache();
-  //  chai.expect(request.isCached).to.be.equal(true);
-  //  try {
-  //    request.invalidateCache(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
-  //});
-  //
-  //test('Check invalidateCache() throws \'CachedRequestException\' exception in invalidate() method', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let cache = new CacheNegativeInvalidateTest();
-  //  request.cacheImpl = cache;
-  //  request.enableCache();
-  //  chai.expect(request.isCached).to.be.equal(true);
-  //  try {
-  //    request.invalidateCache(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
-  //});
-  //
-  //test('Check invalidateCache() isCached', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let cache = new CachePositiveTest();
-  //  request.cacheImpl = cache;
-  //  request.enableCache();
-  //  chai.expect(request.isCached).to.be.equal(true);
-  //  try {
-  //    request.invalidateCache(spyCallback);
-  //    chai.expect(spyCallback).to.have.been.calledWith('called invalidate');
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //});
-  //
-  //test('Check invalidateCache() isCached with no results in validate and has methods', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let cache = new CacheNoResultsTest();
-  //  request.cacheImpl = cache;
-  //  request.enableCache();
-  //  chai.expect(request.isCached).to.be.equal(true);
-  //  try {
-  //    request.invalidateCache(spyCallback);
-  //    chai.expect(spyCallback).to.have.been.calledWith(true);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
   //});
   //
   //test('Check _send() calls _sendThroughApi() method', function() {
