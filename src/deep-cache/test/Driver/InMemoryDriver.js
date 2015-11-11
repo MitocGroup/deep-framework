@@ -70,10 +70,10 @@ suite('Driver/InMemoryDriver', function() {
       let spyInvalidateCb = sinon.spy();
       let spyHasCb = sinon.spy();
 
-      inMemoryDriver._invalidate(testKey, 0, spyInvalidateCallback);
+      inMemoryDriver._invalidate(testKey, 0, spyInvalidateCb);
       chai.expect(spyInvalidateCb).to.have.been.calledWithExactly(null, true);
 
-      inMemoryDriver._has(testKey, spyHasCallback);
+      inMemoryDriver._has(testKey, spyHasCb);
       chai.expect(spyHasCb).to.have.been.calledWithExactly(null, false);
     }
   );
