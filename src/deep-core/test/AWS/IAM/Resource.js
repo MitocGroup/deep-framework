@@ -28,8 +28,8 @@ suite('AWS/IAM/Resource', function() {
     chai.expect(resource.accountId).to.be.equal('');
   });
 
-  test('Check constructor sets _region="*"', function() {
-    chai.expect(resource.region).to.be.equal("*");
+  test('Check constructor sets _region=""', function() {
+    chai.expect(resource.region).to.be.equal('');
   });
 
   test('Check constructor sets _service="*"', function() {

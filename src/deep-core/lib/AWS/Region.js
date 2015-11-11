@@ -83,7 +83,7 @@ export class Region {
    * @returns {Boolean}
    */
   static exists(name) {
-    return -1 !== Region.list().indexOf(name);
+    return name === '' || -1 !== Region.list().indexOf(name);
   }
 
   /**

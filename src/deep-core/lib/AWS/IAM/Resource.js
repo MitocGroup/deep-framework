@@ -14,7 +14,7 @@ import {InvalidArnException} from './Exception/InvalidArnException';
  * IAM statement resource
  */
 export class Resource extends Extractable {
-  constructor(service = Service.ANY, region = Region.ANY, accountId = '', descriptor = '') {
+  constructor(service = Service.ANY, region = '', accountId = '', descriptor = '') {
     super();
 
     this._service = null;
