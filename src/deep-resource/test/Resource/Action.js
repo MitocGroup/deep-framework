@@ -2,6 +2,7 @@
 
 import chai from 'chai';
 import {Action} from '../../lib.compiled/Resource/Action';
+import {Request} from '../../lib.compiled/Resource/Request';
 import {Resource} from '../../lib.compiled/Resource';
 import {Instance as ResourceInstance} from '../../lib.compiled/Resource/Instance';
 import {UnknownMethodException} from '../../lib.compiled/Resource/Exception/UnknownMethodException';
@@ -105,44 +106,13 @@ suite('Resource/Action', function() {
     chai.expect(error).to.be.an.instanceof(UnknownMethodException);
   });
 
-  //@todo - need to rework
-  test('Check request() method return valid object', function() {
-    //let error = null;
-    //let actualResult = null;
-    //let expectedResult = {
-    //  //_action: {
-    //  //  _forceUserIdentity: true,
-    //  //  _methods: [
-    //  //    'GET',
-    //  //    'POST',
-    //  //  ],
-    //  //  _name: 'UpdateTest',
-    //  //  _region: 'us-west-2',
-    //  //  _resource: {
-    //  //    _container: null,
-    //  //    _localBackend: false,
-    //  //    _microservice: null,
-    //  //    _resources: testResources,
-    //  //  },
-    //  //  _source: 'sourceTest',
-    //  //  _type: 'typeTest',
-    //  //},
-    //  //_cacheImpl: null,
-    //  //_cacheTtl: 0,
-    //  //_cached: false,
-    //  //_native: false,
-    //  //_lambda: null,
-    //  //_method: 'GET',
-    //  //_payload: {},
-    //};
-    //
-    //try {
-    //  actualResult = action.request({}, 'GET');
-    //} catch (e) {
-    //  error = e;
-    //}
-    //
-    //chai.expect(error).to.be.equal(null);
-    //chai.expect(actualResult).to.be.eql(expectedResult);
+  test('Check request() method return valid instance of Request', function() {
+    let actualResult = null;
+
+    actualResult = action.request({}, 'POST');
+
+    chai.assert.instanceOf(
+      actualResult, Request, 'is an instance of Request');
+    chai.expect(actualResult.cacheImpl).to.be.eql(action._resource.cache);
   });
 });
