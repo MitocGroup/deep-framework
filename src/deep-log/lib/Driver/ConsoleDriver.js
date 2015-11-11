@@ -44,7 +44,6 @@ export class ConsoleDriver extends AbstractDriver {
    * @param {*} context
    */
   log(msg, level, context) {
-    let datetime = AbstractDriver.datetime;
     let nativeMethod = 'log';
 
     switch (level) {
