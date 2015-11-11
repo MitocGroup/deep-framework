@@ -67,7 +67,7 @@ export class ConsoleDriver extends AbstractDriver {
         break;
     }
 
-    this._console[nativeMethod](AbstractDriver.datetime, msg);
+    this._console[nativeMethod](AbstractDriver.timeString, msg);
 
     // @todo: figure out a better way of dumping context
     if (context) {
@@ -89,7 +89,7 @@ export class ConsoleDriver extends AbstractDriver {
       let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];
 
       nativeConsole[method] = (...args) => {
-        this._console[method](AbstractDriver.datetime, ...args);
+        this._console[method](AbstractDriver.timeString, ...args);
       };
     }
 

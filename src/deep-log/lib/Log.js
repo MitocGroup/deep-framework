@@ -85,6 +85,21 @@ export class Log extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {Log}
+   *
+   * @todo: do we need this here?
+   */
+  overrideJsConsole() {
+    if (!this._drivers.find(ConsoleDriver)) {
+      this.register('console');
+    }
+
+    this._drivers.find(ConsoleDriver).overrideNative();
+
+    return this;
+  }
+
+  /**
    * @param {AbstractDriver|String} driver
    * @param {Array} args
    * @returns {Log}
