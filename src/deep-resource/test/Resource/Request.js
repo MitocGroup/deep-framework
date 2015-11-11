@@ -38,8 +38,9 @@ suite('Resource/Request', function() {
       chai.assert.instanceOf(
         backendKernel, Kernel, 'backendKernel is an instance of Kernel');
       backendKernelInstance = backendKernel;
-      action = backendKernel.get('resource')
-        .get(`@${microserviceIdentifier}:${resourceName}:${actionName}`);
+      action = backendKernel.get('resource').get(
+        `@${microserviceIdentifier}:${resourceName}:${actionName}`
+      );
 
       chai.assert.instanceOf(
         action, Action, 'action is an instance of Action'
