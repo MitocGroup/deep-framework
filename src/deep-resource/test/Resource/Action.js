@@ -28,14 +28,17 @@ suite('Resource/Action', function() {
     chai.expect(typeof Action).to.equal('function');
   });
 
-  test('Load Kernel by using Kernel.loadFromFile()', function(done) {
+  test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
         backendKernel, Kernel, 'backendKernel is an instance of Kernel');
       backendKernelInstance = backendKernel;
-      action = backendKernel.get('resource').get(`@hello.world.example:${resourceName}:${actionName}`);
+      action = backendKernel.get('resource')
+        .get(`@${microserviceIdentifier}:${resourceName}:${actionName}`);
+
       chai.assert.instanceOf(
-        action, Action, 'action is an instance of Action');
+        action, Action, 'action is an instance of Action'
+      );
 
       // complete the async
       done();

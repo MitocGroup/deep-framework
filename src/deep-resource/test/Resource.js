@@ -27,7 +27,7 @@ suite('Resource', function() {
     chai.expect(typeof Resource).to.equal('function');
   });
 
-  test('Load Kernel by using Kernel.loadFromFile()', function(done) {
+  test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
         backendKernel, Kernel, 'backendKernel is an instance of Kernel');
