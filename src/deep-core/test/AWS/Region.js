@@ -84,7 +84,7 @@ suite('AWS/Region', function() {
   });
 
   test('Check exists() static method returns false if region doesn\'t exist', function() {
-    chai.expect(Region.exists('')).to.be.equal(false);
+    chai.expect(Region.exists('invalid-region')).to.be.equal(false);
     chai.expect(Region.exists()).to.be.equal(false);
     chai.expect(Region.exists('eu-region-1')).to.be.equal(false);
   });
