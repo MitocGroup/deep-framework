@@ -85,6 +85,21 @@ export class Log extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {Log}
+   *
+   * @todo: do we need this here?
+   */
+  overrideJsConsole() {
+    if (!this._drivers.find(ConsoleDriver)) {
+      this.register('console');
+    }
+
+    this._drivers.find(ConsoleDriver).overrideNative();
+
+    return this;
+  }
+
+  /**
    * @param {AbstractDriver|String} driver
    * @param {Array} args
    * @returns {Log}
@@ -130,6 +145,106 @@ export class Log extends Kernel.ContainerAware {
     }
 
     return this;
+  }
+
+  /**
+   * @param {String} msg
+   * @param {Object} context
+   * @returns {Log}
+   */
+  debug(msg, context = {}) {
+    return this.log(msg, Log.DEBUG, context);
+  }
+
+  /**
+   * @param {String} msg
+   * @param {Object} context
+   * @returns {Log}
+   */
+  err(msg, context = {}) {
+    return this.log(msg, Log.ERROR, context);
+  }
+
+  /**
+   * @param {*} args
+   */
+  error(...args) {
+    return this.err(...args);
+  }
+
+  /**
+   * @param {String} msg
+   * @param {Object} context
+   * @returns {Log}
+   */
+  info(msg, context = {}) {
+    return this.log(msg, Log.INFO, context);
+  }
+
+  /**
+   * @param {String} msg
+   * @param {Object} context
+   * @returns {Log}
+   */
+  warn(msg, context = {}) {
+    return this.log(msg, Log.WARNING, context);
+  }
+
+  /**
+   * @param {*} args
+   */
+  warning(...args) {
+    return this.warn(...args);
+  }
+
+  /**
+   * @param {String} msg
+   * @param {Object} context
+   * @returns {Log}
+   */
+  emerg(msg, context = {}) {
+    return this.log(msg, Log.EMERGENCY, context);
+  }
+
+  /**
+   * @param {*} args
+   */
+  emergency(...args) {
+    return this.emerg(...args);
+  }
+
+  /**
+   * @param {String} msg
+   * @param {Object} context
+   * @returns {Log}
+   */
+  crit(msg, context = {}) {
+    return this.log(msg, Log.CRITICAL, context);
+  }
+
+  /**
+   * @param {*} args
+   */
+  critical(...args) {
+    return this.crit(...args);
+  }
+
+  /**
+   * @param {String} msg
+   * @param {Object} context
+   * @returns {Log}
+   */
+  notice(msg, context = {}) {
+    return this.log(msg, Log.NOTICE, context);
+  }
+
+  /**
+   * @param {String} msg
+   * @param {Object} context
+   * @returns {Log}
+   */
+  alert(msg, context = {}) {
+    return this.log(msg, Log.ALERT, context);
   }
 
   /**
