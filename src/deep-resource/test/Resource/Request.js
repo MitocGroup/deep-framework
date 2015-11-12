@@ -7,6 +7,7 @@ import {Resource} from '../../lib.compiled/Resource';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Request} from '../../lib.compiled/Resource/Request';
 import {Response} from '../../lib.compiled/Resource/Response';
+import {Instance} from '../../lib.compiled/Resource/Instance';
 import {MissingCacheImplementationException} from '../../lib.compiled/Resource/Exception/MissingCacheImplementationException';
 import {DirectLambdaCallDeniedException} from '../../lib.compiled/Resource/Exception/DirectLambdaCallDeniedException';
 import {Exception} from '../../lib.compiled/Exception/Exception';
@@ -17,6 +18,8 @@ import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
+import RequireProxy from 'proxyquire';
+import {HttpMock} from '../Mock/HttpMock';
 
 chai.use(sinonChai);
 
@@ -24,11 +27,22 @@ suite('Resource/Request', function() {
   let backendKernelInstance = null;
   let action = null;
   let request = null;
+  let resource = null;
+  let externalRequest = null;
   let microserviceIdentifier = 'hello.world.example';
   let resourceName = 'sample';
   let actionName = 'say-hello';
   let payload = '{"body":"bodyData"}';
+  let source = backendConfig
+    .microservices[microserviceIdentifier]
+    .resources[resourceName][actionName]
+    .source;
+  let region = backendConfig
+    .microservices[microserviceIdentifier]
+    .resources[resourceName][actionName]
+    .region;
   let method = 'POST';
+  let httpMock = new HttpMock();
 
   test('Class Request exists in Resource/Request', function() {
     chai.expect(typeof Request).to.equal('function');
@@ -42,9 +56,15 @@ suite('Resource/Request', function() {
       action = backendKernel.get('resource').get(
         `@${microserviceIdentifier}:${resourceName}:${actionName}`
       );
+      resource = backendKernel.get('resource').get(
+        `@${microserviceIdentifier}:${resourceName}`
+      );
 
       chai.assert.instanceOf(
         action, Action, 'action is an instance of Action'
+      );
+      chai.assert.instanceOf(
+        resource, Instance, 'resource is an instance of Instance'
       );
 
       request = new Request(action, payload, method);
@@ -256,7 +276,6 @@ suite('Resource/Request', function() {
     chai.expect(request.cacheTtl).to.be.equal(Request.TTL_DEFAULT);
   });
 
-
   test(
     'Check useDirectCall() throws "DirectLambdaCallDeniedException" for action.forceUserIdentity',
     function() {
@@ -277,15 +296,6 @@ suite('Resource/Request', function() {
       chai.expect(request.native).to.be.equal(false);
     }
   );
-
-  //@todo - TBD Cannot set property forceUserIdentity
-  //test('Check useDirectCall() for !action.forceUserIdentity', function() {
-  //  request.action.forceUserIdentity = false;
-  //  chai.expect(request.useDirectCall().native).to.be.equal(true);
-  //
-  //  request.native = false;
-  //  request.action._forceUserIdentity = true;
-  //});
 
   test('Check invalidateCache() !isCached', function() {
     let spyCallback = sinon.spy();
@@ -389,28 +399,143 @@ suite('Resource/Request', function() {
     }
   );
 
-  //test('Check _send() for lambda', function() {
-  //  let error = null;
-  //  try {
-  //    request._send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //});
-  //
-  //test('Check _send() for external', function() {
-  //  let externalAction = { type:'external', source: 'testLambda'};
-  //  let externalPayload = '{"body":"bodyData"}';
-  //  let externalMethod = 'method';
-  //  let externalRequest = new Request(externalAction, externalPayload, externalMethod);
-  //  let error = null;
-  //  try {
-  //    externalRequest._send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //});
-  //
+  test('Check send() external for !isCashed', function() {
+    let spyCallback = sinon.spy();
+    let externalAction = new Action(
+      resource, actionName, Action.EXTERNAL, [method], source, region, false
+    );
+
+    //mocking Http
+    httpMock.fixBabelTranspile();
+    let requestExport = RequireProxy('../../lib.compiled/Resource/Request', {
+      'superagent': httpMock,
+    });
+    let Request = requestExport.Request;
+    externalRequest = new Request(externalAction, payload, method);
+
+    httpMock.disableFailureModeFor(['end']);
+    externalRequest.useDirectCall();
+    externalRequest.send(spyCallback);
+
+    let actualResult = spyCallback.args[0][0];
+    chai.expect(typeof actualResult).to.equal('object')
+    chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
+  });
+
+  test('Check send() external for isCashed', function() {
+    let spyCallback = sinon.spy();
+
+    //set cache mock mode
+    let cache = new CacheMock();
+    cache.enableNoResultModeFor(['has']);
+    cache.disableFailureModeFor(['set']);
+    externalRequest.cacheImpl = cache;
+    externalRequest.enableCache();
+    externalRequest.useDirectCall();
+
+    //set http mock mode
+    httpMock.disableFailureModeFor(['end']);
+
+    externalRequest.send(spyCallback);
+
+    let actualResult = spyCallback.args[0][0];
+    chai.expect(typeof actualResult).to.equal('object')
+    chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
+  });
+
+  test('Check send() throws "CachedRequestException" in has() for isCashed', function() {
+    let spyCallback = sinon.spy();
+    let error = null;
+
+    //set cache mock mode
+    let cache = new CacheMock();
+    cache.enableFailureModeFor(['has']);
+    externalRequest.cacheImpl = cache;
+    externalRequest.enableCache();
+
+    try {
+      externalRequest.send(spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.assert.instanceOf(
+      error,
+      CachedRequestException,
+      'error is an instance of CachedRequestException'
+    );
+  });
+
+  test('Check send() throws "CachedRequestException" in get() for isCashed', function() {
+    let spyCallback = sinon.spy();
+    let error = null;
+
+    //set cache mock mode
+    let cache = new CacheMock();
+    cache.disableFailureMode(['has']);
+    cache.enableFailureModeFor(['get']);
+    externalRequest.cacheImpl = cache;
+    externalRequest.enableCache();
+
+    try {
+      externalRequest.send(spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.assert.instanceOf(
+      error,
+      CachedRequestException,
+      'error is an instance of CachedRequestException'
+    );
+  });
+
+  test('Check send() throws "CachedRequestException" in set() for isCashed', function() {
+    let spyCallback = sinon.spy();
+    let error = null;
+
+    //set cache mock mode
+    let cache = new CacheMock();
+    cache.enableNoResultModeFor(['has', 'set']);
+    externalRequest.cacheImpl = cache;
+    externalRequest.enableCache();
+
+    //set http mock mode
+    httpMock.disableFailureModeFor(['end']);
+
+    try {
+      externalRequest.send(spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.assert.instanceOf(
+      error,
+      CachedRequestException,
+      'error is an instance of CachedRequestException'
+    );
+  });
+
+  test('Check send() calls callback with _rebuildResponse() in has() for isCashed', function() {
+    let spyCallback = sinon.spy();
+
+    //set cache mock mode
+    let cache = new CacheMock();
+    cache.disableFailureModeFor(['has', 'get']);
+    externalRequest.cacheImpl = cache;
+    externalRequest.enableCache();
+
+    externalRequest.send(spyCallback);
+    let actualResult = spyCallback.args[0][0];
+
+    chai.assert.instanceOf(
+      actualResult, Response, 'result is an instance of Response'
+    );
+  });
+
   //test('Check _send() throws \'Exception\'', function() {
   //  let invalidActionType = 'invalidAction';
   //  let invalidAction = new Action(resource, actionName, invalidActionType, methods, source, region);
@@ -427,114 +552,6 @@ suite('Resource/Request', function() {
   //
   //  chai.assert.instanceOf(error, Exception, 'result is an instance of Exception');
   //  chai.expect(error.message).to.be.equal(`Request of type ${invalidActionType} is not implemented`);
-  //});
-  //
-  //test('Check send() !isCached', function() {
-  //  let error = null;
-  //  request.disableCache();
-  //  chai.expect(request.isCached).to.be.equal(false);
-  //  try {
-  //    request.send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //});
-  //
-  //test('Check send() isCached throws \'CachedRequestException\' exception in has() method', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let cache = new CacheNegativeTest();
-  //  request.cacheImpl = cache;
-  //  request.enableCache();
-  //  chai.expect(request.isCached).to.be.equal(true);
-  //  try {
-  //    request.send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
-  //  chai.expect(spyCallback).to.not.have.been.calledWith();
-  //});
-  //
-  //test('Check send() isCached throws \'CachedRequestException\' exception in get() method', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let cache = new CacheNegativeInvalidateTest();
-  //  request.cacheImpl = cache;
-  //  request.enableCache();
-  //  chai.expect(request.isCached).to.be.equal(true);
-  //  try {
-  //    request.send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
-  //  chai.expect(spyCallback).to.not.have.been.calledWith();
-  //});
-  //
-  //test('Check send() isCached', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let cache = new CachePositiveTest();
-  //  request.cacheImpl = cache;
-  //  request.enableCache();
-  //  chai.expect(request.isCached).to.be.equal(true);
-  //  try {
-  //    request.send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(request._cacheTtl).to.be.not.equal(Request.TTL_INVALIDATE);
-  //  chai.expect(spyCallback).to.not.have.been.calledWith('set called');
-  //});
-  //
-  //test('Check send() isCached with calling _send()', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let testRequest = new RequestMock(action, payload, method);
-  //  let cache = new CachePositiveTest();
-  //  testRequest.cacheImpl = cache;
-  //  testRequest.enableCache();
-  //  testRequest.useDirectCall();
-  //  chai.expect(testRequest.isCached).to.be.equal(true);
-  //
-  //  try {
-  //    testRequest.send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(testRequest._cacheTtl).to.be.not.equal(Request.TTL_INVALIDATE);
-  //  chai.expect(spyCallback).to.not.have.been.calledWith('called');
-  //});
-  //
-  //test('Check _send() is called from send() method and throws exception', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let testRequest = new RequestMock(action, payload, method);
-  //  let cache = new CacheNoResultsTest();
-  //  testRequest.cacheImpl = cache;
-  //  testRequest.enableCache();
-  //  testRequest.useDirectCall();
-  //  chai.expect(testRequest.isCached).to.be.equal(true);
-  //
-  //  try {
-  //    testRequest.send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.expect(testRequest._cacheTtl).to.be.not.equal(Request.TTL_INVALIDATE);
-  //  chai.assert.instanceOf(error, CachedRequestException, 'error is an instance of CachedRequestException');
-  //  chai.expect(spyCallback).to.not.have.been.calledWith();
   //});
   //
   //test('Check _send() calls _sendThroughApi() method', function() {
@@ -566,4 +583,14 @@ suite('Resource/Request', function() {
   //  //@todo - need to add smart checks
   //  chai.expect(error).to.be.not.equal(null);
   //});
+  //
+  //test('Check _send() for lambda', function() {
+  //  let error = null;
+  //  try {
+  //    request._send();
+  //  } catch (e) {
+  //    error = e;
+  //  }
+  //});
+  //
 });

@@ -1,18 +1,13 @@
 'use strict';
 
-//import Http from 'superagent';
-
 export class HttpMock {
-//export class HttpMock extends Http {
   constructor(...args) {
-   // super(args);
     this._methodsBehavior = new Map();
     this.enableNoResultMode();
   }
 
   /**
    * @param {String} endpoint
-   * @param {Function} callback
    * @returns {HttpMock}
    */
   post(endpoint) {
@@ -26,129 +21,128 @@ export class HttpMock {
     return this;
   }
 
+  ///**
+  // * @param {String} endpoint
+  // * @param {Function} callback
+  // * @returns {HttpMock}
+  // */
+  //get(endpoint, callback) {
+  //  switch (this._methodsBehavior.get('get')) {
+  //    case HttpMock.NO_RESULT_MODE:
+  //      callback(null, null);
+  //      break;
+  //
+  //    case HttpMock.FAILURE_MODE:
+  //      callback(HttpMock.ERROR, null);
+  //      break;
+  //
+  //    case HttpMock.DATA_MODE:
+  //      callback(null, HttpMock.DATA);
+  //      break;
+  //  }
+  //
+  //  return this;
+  //}
+  //
+  ///**
+  // * @param {String} endpoint
+  // * @param {*} data
+  // * @param {Function} callback
+  // * @returns {HttpMock}
+  // */
+  //put(endpoint, data, callback) {
+  //  switch (this._methodsBehavior.get('put')) {
+  //    case HttpMock.NO_RESULT_MODE:
+  //      callback(null, null);
+  //      break;
+  //
+  //    case HttpMock.FAILURE_MODE:
+  //      callback(HttpMock.ERROR, null);
+  //      break;
+  //
+  //    case HttpMock.DATA_MODE:
+  //      callback(null, HttpMock.DATA);
+  //      break;
+  //  }
+  //
+  //  return this;
+  //}
+  //
+  ///**
+  // * @param {String} endpoint
+  // * @param {String} id
+  // * @param {*} data
+  // * @param {Function} callback
+  // * @returns {HttpMock}
+  // */
+  //patch(endpoint, id, data, callback) {
+  //  switch (this._methodsBehavior.get('patch')) {
+  //    case HttpMock.NO_RESULT_MODE:
+  //      callback(null, null);
+  //      break;
+  //
+  //    case HttpMock.FAILURE_MODE:
+  //      callback(HttpMock.ERROR, null);
+  //      break;
+  //
+  //    case HttpMock.DATA_MODE:
+  //      callback(null, HttpMock.DATA);
+  //      break;
+  //  }
+  //
+  //  return this;
+  //}
+  //
+  ///**
+  // * @param {String} endpoint
+  // * @param {String} id
+  // * @param {Function} callback
+  // * @returns {HttpMock}
+  // */
+  //delete(endpoint, id,  callback) {
+  //  switch (this._methodsBehavior.get('delete')) {
+  //    case HttpMock.NO_RESULT_MODE:
+  //      callback(null, null);
+  //      break;
+  //
+  //    case HttpMock.FAILURE_MODE:
+  //      callback(HttpMock.ERROR, null);
+  //      break;
+  //
+  //    case HttpMock.DATA_MODE:
+  //      callback(null, HttpMock.DATA);
+  //      break;
+  //  }
+  //
+  //  return this;
+  //}
+  //
+  ///**
+  // * @param {String} endpoint
+  // * @param {*} data
+  // * @param {Function} callback
+  // * @returns {HttpMock}
+  // */
+  //options(endpoint, data, callback) {
+  //  switch (this._methodsBehavior.get('options')) {
+  //    case HttpMock.NO_RESULT_MODE:
+  //      callback(null, null);
+  //      break;
+  //
+  //    case HttpMock.FAILURE_MODE:
+  //      callback(HttpMock.ERROR, null);
+  //      break;
+  //
+  //    case HttpMock.DATA_MODE:
+  //      callback(null, HttpMock.DATA);
+  //      break;
+  //  }
+  //
+  //  return this;
+  //}
+
   /**
-   * @param {String} endpoint
-   * @param {Function} callback
-   * @returns {HttpMock}
-   */
-  get(endpoint, callback) {
-    switch (this._methodsBehavior.get('get')) {
-      case HttpMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case HttpMock.FAILURE_MODE:
-        callback(HttpMock.ERROR, null);
-        break;
-
-      case HttpMock.DATA_MODE:
-        callback(null, HttpMock.DATA);
-        break;
-    }
-
-    return this;
-  }
-
-  /**
-   * @param {String} endpoint
    * @param {*} data
-   * @param {Function} callback
-   * @returns {HttpMock}
-   */
-  put(endpoint, data, callback) {
-    switch (this._methodsBehavior.get('put')) {
-      case HttpMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case HttpMock.FAILURE_MODE:
-        callback(HttpMock.ERROR, null);
-        break;
-
-      case HttpMock.DATA_MODE:
-        callback(null, HttpMock.DATA);
-        break;
-    }
-
-    return this;
-  }
-
-  /**
-   * @param {String} endpoint
-   * @param {String} id
-   * @param {*} data
-   * @param {Function} callback
-   * @returns {HttpMock}
-   */
-  patch(endpoint, id, data, callback) {
-    switch (this._methodsBehavior.get('patch')) {
-      case HttpMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case HttpMock.FAILURE_MODE:
-        callback(HttpMock.ERROR, null);
-        break;
-
-      case HttpMock.DATA_MODE:
-        callback(null, HttpMock.DATA);
-        break;
-    }
-
-    return this;
-  }
-
-  /**
-   * @param {String} endpoint
-   * @param {String} id
-   * @param {Function} callback
-   * @returns {HttpMock}
-   */
-  delete(endpoint, id,  callback) {
-    switch (this._methodsBehavior.get('delete')) {
-      case HttpMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case HttpMock.FAILURE_MODE:
-        callback(HttpMock.ERROR, null);
-        break;
-
-      case HttpMock.DATA_MODE:
-        callback(null, HttpMock.DATA);
-        break;
-    }
-
-    return this;
-  }
-
-  /**
-   * @param {String} endpoint
-   * @param {*} data
-   * @param {Function} callback
-   * @returns {HttpMock}
-   */
-  options(endpoint, data, callback) {
-    switch (this._methodsBehavior.get('options')) {
-      case HttpMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case HttpMock.FAILURE_MODE:
-        callback(HttpMock.ERROR, null);
-        break;
-
-      case HttpMock.DATA_MODE:
-        callback(null, HttpMock.DATA);
-        break;
-    }
-
-    return this;
-  }
-
-  /**
-   * @param {*} data
-   * @param {Function} callback
    * @returns {HttpMock}
    */
   send(data) {
@@ -167,7 +161,6 @@ export class HttpMock {
    * @returns {HttpMock}
    */
   end(callback) {
-    console.log('overrided end: ', this._methodsBehavior.get('end'))
     switch (this._methodsBehavior.get('end')) {
       case HttpMock.NO_RESULT_MODE:
         callback(null, null);

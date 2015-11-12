@@ -15,7 +15,6 @@ import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
 import RequireProxy from 'proxyquire';
-import Http from 'superagent';
 import {HttpMock} from '../Mock/HttpMock';
 
 chai.use(sinonChai);
@@ -48,7 +47,7 @@ suite('Resource/LocalRequest', function() {
         action, Action, 'action is an instance of Action'
       );
 
-
+      //mocking Http
       Object.defineProperty(httpMock, '@global', {
         value: true,
         writable: false,
