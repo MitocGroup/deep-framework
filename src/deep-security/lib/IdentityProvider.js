@@ -4,11 +4,7 @@
 
 'use strict';
 
-import Kernel from 'deep-kernel';
 import {MissingLoginProviderException} from './Exception/MissingLoginProviderException';
-import {Token} from './Token';
-import {LocalToken} from './LocalToken';
-import {UserProvider} from './UserProvider';
 
 /**
  * 3rd Party identity provider (Amazon, Facebook, Google, etc.)
