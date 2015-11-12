@@ -7,6 +7,7 @@
 import AWS from 'aws-sdk';
 import {AuthException} from './Exception/AuthException';
 import {CredentialsManager} from './CredentialsManager';
+import {IdentityProvider} from './IdentityProvider';
 
 /**
  * Security token holds details about logged user
@@ -14,71 +15,111 @@ import {CredentialsManager} from './CredentialsManager';
 export class Token {
   /**
    * @param {String} identityPoolId
-   * @param {String} providerName
-   * @param {String} providerUserToken
-   * @param {String} providerUserId
    */
-  constructor(identityPoolId, providerName = null, providerUserToken = null, providerUserId = null) {
+  constructor(identityPoolId) {
     this._identityPoolId = identityPoolId;
-    this._providerName = providerName;
-    this._providerUserToken = providerUserToken;
-    this._providerUserId = providerUserId;
 
+    this._identityProvider = null;
+    this._lambdaContext = null;
     this._user = null;
     this._userProvider = null;
-    this._identityId = null;
     this._credentials = null;
 
-    this._isAnonymous = true;
     this._credsManager = new CredentialsManager();
+
+    this._setupAwsCognitoConfig();
   }
 
   /**
-   * @param {Boolean} updateAwsCreds
-   * @param {Function} callback
+   * Setup region for CognitoIdentity and CognitoSync services
+   *
+   * @private
    */
-  loadCredentials(updateAwsCreds = true, callback = () => null) {
+  _setupAwsCognitoConfig() {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
-    let cognitoRegion = Token._getRegionFromIdentityPoolId(this._identityPoolId);
+    let cognitoRegion = Token.getRegionFromIdentityPoolId(this._identityPoolId);
 
     AWS.config.update({
       cognitoidentity: {region: cognitoRegion},
       cognitosync: {region: cognitoRegion},
     });
+  }
 
-    let cognitoParams = {
-      IdentityPoolId: this._identityPoolId,
-    };
+  /**
+   * @returns {IdentityProvider}
+   */
+  get identityProvider() {
+    return this._identityProvider;
+  }
 
-    if (this._providerName && this._providerUserToken) {
-      this._isAnonymous = false;
-      cognitoParams.Logins = {};
-      cognitoParams.Logins[this._providerName] = this._providerUserToken;
+  /**
+   * @param {IdentityProvider} provider
+   */
+  set identityProvider(provider) {
+    this._identityProvider = provider;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get lambdaContext() {
+    return this._lambdaContext;
+  }
+
+  /**
+   * @param {Object} lambdaContext
+   */
+  set lambdaContext(lambdaContext) {
+    this._lambdaContext = lambdaContext;
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  loadCredentials(callback = () => null) {
+    // avoid refreshing or loading credentials for each request
+    if (this._validCredentials()) {
+      return callback(null, this.credentials);
     }
 
-    this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+    if (this.lambdaContext) {
+      this._credsManager.loadCredentials((error, credentials) => {
+        if (error) {
+          return callback(error);
+        }
 
-    this._credentials.refresh((error) => {
-      if (error) {
-        callback(new AuthException(error));
-        return;
+        this._credentials = credentials;
+
+        callback(null, this._credentials);
+      });
+    } else {
+      let cognitoParams = {
+        IdentityPoolId: this._identityPoolId,
+      };
+
+      if (this.identityProvider) {
+        cognitoParams.Logins = {};
+        cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
       }
 
-      this._identityId = this._credentials.identityId;
+      this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 
-      // update AWS credentials
-      if (updateAwsCreds) {
-        AWS.config.credentials = this._credentials;
+      this._credentials.refresh((error) => {
+        if (error) {
+          return callback(new AuthException(error));
+        }
 
-        this._credsManager.saveCredentials(this._credentials.data, (record) => {
-          callback(null, this);
+        this._credsManager.saveCredentials(this._credentials.data, (error, record) => {
+          if (error) {
+            return callback(error);
+          }
+
+          callback(null, this._credentials);
         });
-      } else {
-        callback(null, this);
-      }
-    });
+      });
+    }
   }
 
   /**
@@ -86,36 +127,15 @@ export class Token {
    * @returns {String}
    * @private
    */
-  static _getRegionFromIdentityPoolId(identityPoolId) {
+  static getRegionFromIdentityPoolId(identityPoolId) {
     return identityPoolId.split(':')[0];
   }
 
   /**
    * @returns {String}
    */
-  get providerName() {
-    return this._providerName;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get providerUserToken() {
-    return this._providerUserToken;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get providerUserId() {
-    return this._providerUserId;
-  }
-
-  /**
-   * @returns {String}
-   */
   get identityId() {
-    return this._identityId;
+    return this.credentials ? this.credentials.IdentityId : null;
   }
 
   /**
@@ -126,10 +146,20 @@ export class Token {
   }
 
   /**
+   * @todo - validate credentials by 'Expiration' value
+   *
+   * @returns {boolean}
+   * @private
+   */
+  _validCredentials() {
+    return this.credentials && this.credentials.hasOwnProperty('IdentityId');
+  }
+
+  /**
    * @returns {Boolean}
    */
   get isAnonymous() {
-    return this._isAnonymous;
+    return !this.identityProvider && !this.lambdaContext;
   }
 
   /**
@@ -161,5 +191,34 @@ export class Token {
     }
 
     callback(this._user);
+  }
+
+  /**
+   * @param {String} identityPoolId
+   */
+  static create(identityPoolId) {
+    return new this(identityPoolId);
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @param {IdentityProvider} identityProvider
+   */
+  static createFromIdentityProvider(identityPoolId, identityProvider) {
+    let token = new this(identityPoolId);
+    token.identityProvider = identityProvider;
+
+    return token;
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @param {Object} lambdaContext
+   */
+  static createFromLambdaContext(identityPoolId, lambdaContext) {
+    let token = new this(identityPoolId);
+    token.lambdaContext = lambdaContext;
+
+    return token;
   }
 }

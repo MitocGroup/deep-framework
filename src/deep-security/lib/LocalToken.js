@@ -18,9 +18,10 @@ export class LocalToken extends Token {
   }
 
   /**
+   * @param {Boolean} updateAwsCreds
    * @param {Function} callback
    */
-  getCredentials(callback) {
+  loadCredentials(updateAwsCreds = true, callback = () => null) {
     // use provider user id instead of cognito identity id for local backend
     this._identityId = this._providerUserId;
 

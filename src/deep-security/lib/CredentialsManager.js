@@ -49,20 +49,24 @@ export class CredentialsManager {
    * @param {Function} callback
    */
   saveCredentials(credentials, callback) {
-    this._createOrGetDataset((dataset) => {
+    this._createOrGetDataset((error, dataset) => {
+      if (error) {
+        return callback(error);
+      }
+
       dataset.put(CredentialsManager.RECORD_NAME, this._encodeCredentials(credentials), (error, record) => {
         if (error) {
-          throw new PutCognitoRecordException(
+          return callback(new PutCognitoRecordException(
             CredentialsManager.DATASET_NAME, CredentialsManager.RECORD_NAME, error
-          );
+          ));
         }
 
         this._synchronizeDataset(dataset, (error, savedRecords) => {
           if (error) {
-            throw new SynchronizeCognitoDatasetException(dataset, error);
+            return callback(new SynchronizeCognitoDatasetException(dataset, error));
           }
 
-          callback(savedRecords);
+          callback(null, savedRecords);
         });
       });
     });
@@ -72,15 +76,19 @@ export class CredentialsManager {
    * @param {Function} callback
    */
   loadCredentials(callback) {
-    this._createOrGetDataset((dataset) => {
+    this._createOrGetDataset((error, dataset) => {
+      if (error) {
+        return callback(error);
+      }
+
       dataset.get(CredentialsManager.RECORD_NAME, (error, recordValue) => {
         if (error) {
-          throw new GetCognitoRecordException(
+          return callback(new GetCognitoRecordException(
             CredentialsManager.DATASET_NAME, CredentialsManager.RECORD_NAME, error
-          );
+          ));
         }
 
-        callback(this._decodeCredentials(recordValue));
+        callback(null, this._decodeCredentials(recordValue));
       });
     });
   }
@@ -92,10 +100,10 @@ export class CredentialsManager {
   _createOrGetDataset(callback) {
     this.cognitoSyncClient.openOrCreateDataset(CredentialsManager.DATASET_NAME, (error, dataset) => {
       if (error) {
-        throw new CreateCognitoDatasetException(CredentialsManager.DATASET_NAME, error);
+        return callback(new CreateCognitoDatasetException(CredentialsManager.DATASET_NAME, error));
       }
 
-      callback(dataset);
+      callback(null, dataset);
     });
   }
 
