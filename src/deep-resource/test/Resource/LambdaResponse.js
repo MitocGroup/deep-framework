@@ -5,56 +5,98 @@ import {LambdaResponse} from '../../lib.compiled/Resource/LambdaResponse';
 import {Resource} from '../../lib.compiled/Resource';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Request} from '../../lib.compiled/Resource/Request';
+import Kernel from 'deep-kernel';
+import Cache from 'deep-cache';
+import Security from 'deep-security';
+import KernelFactory from '../common/KernelFactory';
+import backendConfig from '../common/backend-cfg-json';
 
 suite('Resource/LambdaResponse', function() {
-  let testResources = {
-    'deep.test': {
-      test: {
-        create: {
-          description: 'Lambda for creating test',
-          type: 'lambda',
-          methods: [
-            'POST',
-          ],
-          source: 'src/Test/Create',
-        },
-        retrieve: {
-          description: 'Retrieves test',
-          type: 'lambda',
-          methods: ['GET'],
-          source: 'src/Test/Retrieve',
-        },
-        delete: {
-          description: 'Lambda for deleting test',
-          type: 'lambda',
-          methods: ['DELETE'],
-          source: 'src/Test/Delete',
-        },
-        update: {
-          description: 'Update test',
-          type: 'lambda',
-          methods: ['PUT'],
-          source: 'src/Test/Update',
-        },
-      },
-    },
-  };
-  let resource = new Resource(testResources);
-  let actionName = 'UpdateTest';
-  let type = 'lambda';
-  let methods = ['GET', 'POST'];
-  let source = 'sourceTest';
-  let region = 'us-west-2';
-  let action = new Action(resource, actionName, type, methods, source, region);
+  //let testResources = {
+  //  'deep.test': {
+  //    test: {
+  //      create: {
+  //        description: 'Lambda for creating test',
+  //        type: 'lambda',
+  //        methods: [
+  //          'POST',
+  //        ],
+  //        source: 'src/Test/Create',
+  //      },
+  //      retrieve: {
+  //        description: 'Retrieves test',
+  //        type: 'lambda',
+  //        methods: ['GET'],
+  //        source: 'src/Test/Retrieve',
+  //      },
+  //      delete: {
+  //        description: 'Lambda for deleting test',
+  //        type: 'lambda',
+  //        methods: ['DELETE'],
+  //        source: 'src/Test/Delete',
+  //      },
+  //      update: {
+  //        description: 'Update test',
+  //        type: 'lambda',
+  //        methods: ['PUT'],
+  //        source: 'src/Test/Update',
+  //      },
+  //    },
+  //  },
+  //};
+  //let resource = new Resource(testResources);
+  //let actionName = 'UpdateTest';
+  //let type = 'lambda';
+  //let methods = ['GET', 'POST'];
+  //let source = 'sourceTest';
+  //let region = 'us-west-2';
+  //let action = new Action(resource, actionName, type, methods, source, region);
+  //let payload = '{"body":"bodyData"}';
+  //let method = 'method';
+  //let request = new Request(action, payload, method);
+
+  let backendKernelInstance = null;
+  let action = null;
+  let request = null;
+  let lambdaResponse = null;
+  let microserviceIdentifier = 'hello.world.example';
+  let resourceName = 'sample';
+  let actionName = 'say-hello';
   let payload = '{"body":"bodyData"}';
-  let method = 'method';
-  let request = new Request(action, payload, method);
-  let rawData = {Payload: '{"dataKey":"testValue"}', StatusCode:201};
+  let method = 'POST';
+  let rawData = {Payload: '{"dataKey":"testValue"}', StatusCode: 201};
   let rawError = '{"message":"errorMessage", "name":"RuntimeException"}';
-  let lambdaResponse = new LambdaResponse(request, rawData, rawError);
 
   test('Class LambdaResponse exists in Resource/LambdaResponse', function() {
     chai.expect(typeof LambdaResponse).to.equal('function');
+  });
+
+  test('Load Kernel by using Kernel.load()', function(done) {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+      backendKernelInstance = backendKernel;
+      action = backendKernel.get('resource').get(
+        `@${microserviceIdentifier}:${resourceName}:${actionName}`
+      );
+
+      chai.assert.instanceOf(
+        action, Action, 'action is an instance of Action'
+      );
+
+      request = new Request(action, payload, method);
+      lambdaResponse = new LambdaResponse(request, rawData, rawError);
+
+      // complete the async
+      done();
+
+    };
+    
+    KernelFactory.create({
+      Cache: Cache,
+      Security: Security,
+      Resource: Resource,
+    }, callback);
   });
 
   test('Check constructor sets valid value for _actions=null', function() {
@@ -110,8 +152,10 @@ suite('Resource/LambdaResponse', function() {
   });
 
   test('Check errorType getter returns valid error from rawData with errotType', function() {
-    let rawDataWithError = {Payload: '{"dataKey":"testValue","errorMessage":"Internal error",' +
-    '"errorType":"RuntimeException"}', StatusCode: 500};
+    let rawDataWithError = {
+      Payload: '{"dataKey":"testValue","errorMessage":"Internal error",' +
+      '"errorType":"RuntimeException"}', StatusCode: 500
+    };
     let emptyRawError = null;
     let lambdaResponseWithError = new LambdaResponse(request, rawDataWithError, emptyRawError);
     chai.expect(lambdaResponseWithError.errorType).to.be.equal('RuntimeException');

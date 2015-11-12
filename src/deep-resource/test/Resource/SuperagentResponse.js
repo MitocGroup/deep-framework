@@ -5,57 +5,57 @@ import {SuperagentResponse} from '../../lib.compiled/Resource/SuperagentResponse
 import {Resource} from '../../lib.compiled/Resource';
 import {Request} from '../../lib.compiled/Resource/Request';
 import {Action} from '../../lib.compiled/Resource/Action';
+import Kernel from 'deep-kernel';
+import Cache from 'deep-cache';
+import Security from 'deep-security';
+import KernelFactory from '../common/KernelFactory';
+import backendConfig from '../common/backend-cfg-json';
 
-suite('Resource/SuperagentResponse', function () {
-  let testResources = {
-    'deep.test': {
-      test: {
-        create: {
-          description: 'Lambda for creating test',
-          type: 'lambda',
-          methods: [
-            'POST',
-          ],
-          source: 'src/Test/Create',
-        },
-        retrieve: {
-          description: 'Retrieves test',
-          type: 'lambda',
-          methods: ['GET'],
-          source: 'src/Test/Retrieve',
-        },
-        delete: {
-          description: 'Lambda for deleting test',
-          type: 'lambda',
-          methods: ['DELETE'],
-          source: 'src/Test/Delete',
-        },
-        update: {
-          description: 'Update test',
-          type: 'lambda',
-          methods: ['PUT'],
-          source: 'src/Test/Update',
-        },
-      },
-    },
-  };
-  let resource = new Resource(testResources);
-  let actionName = 'UpdateTest';
-  let type = 'lambda';
-  let methods = ['GET', 'POST'];
-  let source = 'sourceTest';
-  let region = 'us-west-2';
-  let action = new Action(resource, actionName, type, methods, source, region);
+suite('Resource/SuperagentResponse', function() {
+  let backendKernelInstance = null;
+  let action = null;
+  let request = null;
+  let superagentResponse = null;
+  let microserviceIdentifier = 'hello.world.example';
+  let resourceName = 'sample';
+  let actionName = 'say-hello';
   let payload = '{"body":"bodyData"}';
-  let method = 'method';
-  let request = new Request(action, payload, method);
+  let method = 'POST';
   let rawData = {status: 500, body: 'bodyTest', error: 'errorMessage',};
   let rawError = {message: 'errorMessage'};
 
-  let superagentResponse = new SuperagentResponse(request, rawData, rawError);
+  test('Class SuperagentResponse exists in Resource/SuperagentResponse',
+    function() {
+      chai.expect(typeof SuperagentResponse).to.equal('function');
+    }
+  );
 
-  test('Class SuperagentResponse exists in Resource/SuperagentResponse', function() {
-    chai.expect(typeof SuperagentResponse).to.equal('function');
+  test('Load Kernel by using Kernel.load()', function(done) {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+      backendKernelInstance = backendKernel;
+      action = backendKernel.get('resource').get(
+        `@${microserviceIdentifier}:${resourceName}:${actionName}`
+      );
+
+      chai.assert.instanceOf(
+        action, Action, 'action is an instance of Action'
+      );
+
+      request = new Request(action, payload, method);
+      superagentResponse = new SuperagentResponse(request, rawData, rawError);
+
+      // complete the async
+      done();
+
+    };
+
+    KernelFactory.create({
+      Cache: Cache,
+      Security: Security,
+      Resource: Resource,
+    }, callback);
   });
 
   test('Check constructor sets _data', function() {
@@ -71,6 +71,59 @@ suite('Resource/SuperagentResponse', function () {
   });
 
   test(`Check statusCode getter returns ${rawData.status}`, function() {
+    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
+  });
+
+  test('Check _parseResponse()', function() {
+    let actualResult = superagentResponse._parseResponse(rawData);
+
+    chai.expect(superagentResponse.isError).to.be.equal(true);
+    chai.expect(superagentResponse.error).to.be.equal(rawData.error);
+    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
+    chai.expect(actualResult).to.be.equal(rawData.body);
+  });
+
+  test('Check _parseLambdaResponse()', function() {
+    rawData = {
+      status: 500,
+      body: {
+        errorMessage: 'test error message',
+      },
+    };
+    let actualResult = superagentResponse._parseLambdaResponse(rawData);
+
+    chai.expect(superagentResponse.isError).to.be.equal(true);
+    chai.expect(superagentResponse.error).to.be.equal(
+      rawData.body.errorMessage
+    );
+    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
+    chai.expect(actualResult).to.be.equal(null);
+  });
+
+  test('Check constructor for !data.body && status < 300', function() {
+    rawData = {Payload: '{"dataKey":"testValue"}', status: 201};
+    rawError = null;
+
+    superagentResponse = new SuperagentResponse(request, rawData, rawError);
+
+    chai.expect(superagentResponse.isError).to.be.equal(false);
+    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
+  });
+
+  test('Check constructor for !data.body && status > 300', function() {
+    rawData = {
+      Payload: '{"dataKey":"testValue"}',
+      status: 404,
+      error: {
+        message: 'errorMessage',
+      },
+    };
+    rawError = null;
+
+    superagentResponse = new SuperagentResponse(request, rawData, rawError);
+
+    chai.expect(superagentResponse.isError).to.be.equal(true);
+    chai.expect(superagentResponse.error).to.be.equal(rawData.error);
     chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
   });
 });
