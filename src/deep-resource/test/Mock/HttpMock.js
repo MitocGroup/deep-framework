@@ -1,11 +1,11 @@
 'use strict';
 
-import Http from 'superagent';
+//import Http from 'superagent';
 
-export class HttpMock extends Http {
+export class HttpMock {
+//export class HttpMock extends Http {
   constructor(...args) {
-    super(args);
-    console.log('Http: ', Http);
+    //super(args);
     this._methodsBehavior = new Map();
     this.enableNoResultMode();
   }

@@ -16,7 +16,6 @@ import RequireProxy from 'proxyquire';
 import Http from 'superagent';
 import {HttpMock} from '../Mock/HttpMock';
 
-
 chai.use(sinonChai);
 
 suite('Resource/LocalRequest', function() {
@@ -52,7 +51,7 @@ suite('Resource/LocalRequest', function() {
       });
 
       let localRequestExport = RequireProxy('../../lib.compiled/Resource/LocalRequest', {
-        'superagent': HttpMock,
+        superagent: HttpMock,
       });
 
       let LocalRequest = localRequestExport.LocalRequest;
@@ -79,9 +78,9 @@ suite('Resource/LocalRequest', function() {
     let spyCallback = sinon.spy();
 
     localRequest._send(spyCallback);
+    let actualResult = spyCallback.args[0];
 
-
-    chai.expect(error).to.be.equal(null);
+    chai.expect(spyCallback.args).to.be.eql();
   });
 
   //test('Check _send() method for acctionType!=\'lambda\'', function() {
