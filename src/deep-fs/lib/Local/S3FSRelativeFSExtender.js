@@ -339,9 +339,9 @@ export class S3FSRelativeFSExtender {
       _files.push(file);
 
       if (fs.statSync(file).isDirectory()) {
-        let nestedFiles = S3FSRelativeFSExtender._readdirp(file, basePath);
-
-        _files.push(...nestedFiles);
+        _files = _files.concat(
+          S3FSRelativeFSExtender._readdirp(file)
+        );
       }
     }
 
