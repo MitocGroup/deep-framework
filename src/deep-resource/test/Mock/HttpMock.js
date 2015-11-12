@@ -5,7 +5,7 @@
 export class HttpMock {
 //export class HttpMock extends Http {
   constructor(...args) {
-    //super(args);
+   // super(args);
     this._methodsBehavior = new Map();
     this.enableNoResultMode();
   }
@@ -15,18 +15,11 @@ export class HttpMock {
    * @param {Function} callback
    * @returns {HttpMock}
    */
-  post(endpoint, callback) {
+  post(endpoint) {
     switch (this._methodsBehavior.get('post')) {
-      case HttpMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case HttpMock.FAILURE_MODE:
-        callback(HttpMock.ERROR, null);
-        break;
-
-      case HttpMock.DATA_MODE:
-        callback(null, HttpMock.DATA);
+      case HttpMock.NO_RESULT_MODE,
+        HttpMock.FAILURE_MODE,
+        HttpMock.DATA_MODE:
         break;
     }
 
@@ -158,18 +151,11 @@ export class HttpMock {
    * @param {Function} callback
    * @returns {HttpMock}
    */
-  send(data, callback) {
+  send(data) {
     switch (this._methodsBehavior.get('send')) {
-      case HttpMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case HttpMock.FAILURE_MODE:
-        callback(HttpMock.ERROR, null);
-        break;
-
-      case HttpMock.DATA_MODE:
-        callback(null, HttpMock.DATA);
+      case HttpMock.NO_RESULT_MODE,
+        HttpMock.FAILURE_MODE,
+        HttpMock.DATA_MODE:
         break;
     }
 
@@ -181,6 +167,7 @@ export class HttpMock {
    * @returns {HttpMock}
    */
   end(callback) {
+    console.log('overrided end: ', this._methodsBehavior.get('end'))
     switch (this._methodsBehavior.get('end')) {
       case HttpMock.NO_RESULT_MODE:
         callback(null, null);
@@ -335,5 +322,14 @@ export class HttpMock {
         'send',
         'end',
     ];
+  }
+
+  fixBabelTranspile() {
+    for (let method of HttpMock.METHODS) {
+      Object.defineProperty(this, method, {
+        value: this[method],
+        writable: false,
+      });
+    }
   }
 }

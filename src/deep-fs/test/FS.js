@@ -6,24 +6,28 @@ import sinonChai from 'sinon-chai';
 import {FS} from '../lib.compiled/FS';
 import {UnknownFolderException} from '../lib.compiled/Exception/UnknownFolderException';
 import Kernel from 'deep-kernel';
+
 chai.use(sinonChai);
 
 suite('FS', function() {
-  let fs = new FS('tempBucket', 'publicBucket', 'systemBucket');
+  let tmpBucketName = 'tempBucket';
+  let publicBucketName = 'publicBucket';
+  let systemBucketName = 'systemBucket';
+  let fs = new FS(tmpBucketName, publicBucketName, systemBucketName);
 
   test('Class FS exists in FS', function() {
     chai.expect(typeof FS).to.equal('function');
   });
 
-  test('Check TMP static getter returns \'temp\'', function() {
+  test('Check TMP static getter returns "temp"', function() {
     chai.expect(FS.TMP).to.be.equal('temp');
   });
 
-  test('Check PUBLIC static getter returns \'public\'', function() {
+  test('Check PUBLIC static getter returns "public"', function() {
     chai.expect(FS.PUBLIC).to.be.equal('public');
   });
 
-  test('Check SYSTEM static getter returns \'system\'', function() {
+  test('Check SYSTEM static getter returns "system"', function() {
     chai.expect(FS.SYSTEM).to.be.equal('system');
   });
 
@@ -34,31 +38,29 @@ suite('FS', function() {
     chai.expect(FS.FOLDERS).to.be.include(FS.SYSTEM);
   });
 
-  test('Check getFolder() method throws \'UnknownFolderException\' exception for invalid value', function() {
-    let error = null;
-    try {
-      fs.getFolder('invalidPath');
-    } catch (e) {
-      error = e;
+  test('Check getFolder() throws "UnknownFolderException" for invalid value',
+    function() {
+      let error = null;
+      let invalidPath = 'invalidPath';
+      try {
+        fs.getFolder(invalidPath);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.not.equal(null);
+      chai.expect(error).to.be.an.instanceof(UnknownFolderException);
+      chai.expect(error.message).to.contains(
+        `Unknown folder "${invalidPath}". Defined folders are`
+      );
     }
+  );
 
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(error).to.be.an.instanceof(UnknownFolderException);
-  });
-
-  test('Check getFolder() method returns valid value', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = fs.getFolder(FS.TMP);
-    } catch (e) {
-      error = e;
+  test('Check getFolder() returns valid value for !this._mountedFolders[name]',
+    function() {
+      chai.expect(fs.getFolder(FS.TMP).bucket).to.eql(tmpBucketName);
     }
-
-    //todo - bucket issue here
-    //chai.expect(error).to.be.equal(null);
-    //chai.expect(actualResult).to.be.an.contains(FS.TMP);
-  });
+  );
 
   test('Check _getTmpDir() static method returns valid value', function() {
     let error = null;

@@ -4,6 +4,8 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {LocalRequest} from '../../lib.compiled/Resource/LocalRequest';
+import {SuperagentResponse} from '../../lib.compiled/Resource/SuperagentResponse';
+import {Response} from '../../lib.compiled/Resource/Response';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Resource} from '../../lib.compiled/Resource';
 import CacheMock from '../Mock/CacheMock';
@@ -27,6 +29,7 @@ suite('Resource/LocalRequest', function() {
   let actionName = 'say-hello';
   let payload = '{"body":"bodyData"}';
   let method = 'POST';
+  let httpMock = new HttpMock();
 
   test('Class LocalRequest exists in Resource/LocalRequest', function() {
     chai.expect(typeof LocalRequest).to.equal('function');
@@ -45,13 +48,16 @@ suite('Resource/LocalRequest', function() {
         action, Action, 'action is an instance of Action'
       );
 
-      Object.defineProperty(Http, '@global', {
+
+      Object.defineProperty(httpMock, '@global', {
         value: true,
         writable: false,
       });
 
+      httpMock.fixBabelTranspile();
+
       let localRequestExport = RequireProxy('../../lib.compiled/Resource/LocalRequest', {
-        superagent: HttpMock,
+        'superagent': httpMock,
       });
 
       let LocalRequest = localRequestExport.LocalRequest;
@@ -70,19 +76,26 @@ suite('Resource/LocalRequest', function() {
     }, callback);
   });
 
-  test('Check LOCAL_LAMBDA_ENDPOINT static getter return \'/_/lambda\'', function() {
-    chai.expect(LocalRequest.LOCAL_LAMBDA_ENDPOINT).to.be.equal('/_/lambda');
-  });
+  test('Check LOCAL_LAMBDA_ENDPOINT static getter return "/_/lambda"',
+    function() {
+      chai.expect(LocalRequest.LOCAL_LAMBDA_ENDPOINT).to.be.equal('/_/lambda');
+    }
+  );
 
   test('Check _send() method for acctionType="lambda"', function() {
     let spyCallback = sinon.spy();
 
-    localRequest._send(spyCallback);
-    let actualResult = spyCallback.args[0];
+    httpMock.disableFailureModeFor(['end']);
 
-    chai.expect(spyCallback.args).to.be.eql();
+    localRequest._send(spyCallback);
+
+    let actualResult = spyCallback.args[0][0];
+
+    chai.expect(typeof actualResult).to.equal('object')
+    chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
   });
 
+  //todo - need to fix when AWS mock will be created
   //test('Check _send() method for acctionType!=\'lambda\'', function() {
   //  let error = null;
   //  let spyCallback = sinon.spy();
