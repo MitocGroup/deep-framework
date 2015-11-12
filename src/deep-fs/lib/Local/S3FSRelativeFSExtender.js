@@ -236,19 +236,21 @@ export class S3FSRelativeFSExtender {
         let absPath = path.join(this.cwd, pathStr);
 
         if (callback) {
-          fs.readdir(absPath, callback);
+          try {
+            callback(null, S3FSRelativeFSExtender._readdirp(absPath));
+          } catch(error) {
+            callback(error, null);
+          }
+
           return;
         }
 
         return new Promise((resolve, reject) => {
-          fs.readdir(absPath, (error, files) => {
-            if (error) {
-              reject(error);
-              return;
-            }
-
-            resolve(files);
-          });
+          try {
+            resolve(S3FSRelativeFSExtender._readdirp(absPath));
+          } catch(error) {
+            reject(error);
+          }
         });
       },
 
@@ -308,5 +310,35 @@ export class S3FSRelativeFSExtender {
     extendObject.putBucketLifecycle = extendObject.create;
 
     return extendObject;
+  }
+
+  /**
+   * @param {String} dir
+   * @returns {String[]}
+   * @private
+   */
+  static _readdirp(dir) {
+    let _files = [];
+
+    let files = fs.readdirSync(dir);
+
+    for (let i in files) {
+      if (!files.hasOwnProperty(i)) {
+        continue;
+      }
+
+      let file = path.join(dir, files[i]);
+      let fileStats = fs.statSync(file);
+
+      if (fileStats.isDirectory()) {
+        let nestedFiles = S3FSRelativeFSExtender._readdirp(file);
+
+        _files.push(...nestedFiles);
+      } else {
+        _files.push(file);
+      }
+    }
+
+    return _files;
   }
 }
