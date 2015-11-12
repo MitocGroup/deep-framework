@@ -80,7 +80,8 @@ suite('AWS/Service', function() {
   });
 
   test('Check all() static method returns array of Service alias', function() {
-    chai.expect(Service.list().length).to.be.equal(14);
+    chai.expect(Service.list().length).to.be.equal(15);
+    chai.expect(Service.list()).to.be.include(Service.ANY);
     chai.expect(Service.list()).to.be.include(Service.LAMBDA);
     chai.expect(Service.list()).to.be.include(Service.SIMPLE_STORAGE_SERVICE);
     chai.expect(Service.list()).to.be.include(Service.DYNAMO_DB);

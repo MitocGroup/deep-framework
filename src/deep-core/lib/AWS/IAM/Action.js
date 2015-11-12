@@ -13,11 +13,17 @@ import {Policy} from './Policy';
  * Iam statement action
  */
 export class Action extends Extractable {
-  constructor() {
+  /**
+   * @param {String} service
+   * @param {String} actionName
+   */
+  constructor(service = Service.ANY, actionName = Policy.ANY) {
     super();
 
-    this._service = Policy.ANY;
-    this._action = Policy.ANY;
+    this._service = null;
+    this._action = actionName;
+
+    this.service = service;
   }
 
   /**
