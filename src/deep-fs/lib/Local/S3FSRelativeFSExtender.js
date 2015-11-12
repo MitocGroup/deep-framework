@@ -9,6 +9,10 @@ import relativeFs from 'relative-fs';
 import fse from 'fs-extra';
 import fs from 'fs';
 import {_extend as extend} from 'util';
+import es6Promise from 'es6-promise';
+
+// Fix missing Promise
+es6Promise.polyfill();
 
 export class S3FSRelativeFSExtender {
   /**
