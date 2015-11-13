@@ -7,6 +7,7 @@ import {Resource} from '../../lib.compiled/Resource';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Request} from '../../lib.compiled/Resource/Request';
 import {Response} from '../../lib.compiled/Resource/Response';
+import {LambdaResponse} from '../../lib.compiled/Resource/LambdaResponse';
 import {Instance} from '../../lib.compiled/Resource/Instance';
 import {MissingCacheImplementationException} from '../../lib.compiled/Resource/Exception/MissingCacheImplementationException';
 import {DirectLambdaCallDeniedException} from '../../lib.compiled/Resource/Exception/DirectLambdaCallDeniedException';
@@ -537,14 +538,14 @@ suite('Resource/Request', function() {
     );
   });
 
-  test('Check _send() throws \'Exception\'', function() {
+  test('Check _send() throws "Exception"', function() {
     let invalidActionType = 'invalidAction';
     let invalidAction = new Action(
       resource, actionName, invalidActionType, method, source, region
     );
-    let payload = '{"body":"bodyData"}';
     let invalidRequest = new Request(invalidAction, payload, method);
     let error = null;
+
     try {
       invalidRequest.useDirectCall();
       invalidRequest._send();
@@ -553,46 +554,59 @@ suite('Resource/Request', function() {
     }
 
     chai.assert.instanceOf(error, Exception, 'result is an instance of Exception');
-    chai.expect(error.message).to.be.equal(`Request of type ${invalidActionType} is not implemented`);
+    chai.expect(error.message).to.be.equal(
+      `Request of type ${invalidActionType} is not implemented`
+    );
   });
 
-  //test('Check _send() calls _sendThroughApi() method', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //
-  //  let actionName = 'UpdateTest';
-  //  let cache = new CacheMock();
-  //  let resource = {name: 'resourceTest', cache: cache};
-  //  let type = 'lambda';
-  //  let methods = ['GET', 'POST'];
-  //  let source = {
-  //    api: 'http://tets:8888/foo/bar?user=tj&pet=new',
-  //  };
-  //  let region = 'us-west-2';
-  //  let action = new Action(resource, actionName, type, methods, source, region);
-  //  let testRequest = new RequestMock(action, payload, method);
-  //  testRequest.cacheImpl = cache;
-  //  testRequest.enableCache();
-  //  testRequest._native = false;
-  //  chai.expect(testRequest.isCached).to.be.equal(true);
-  //
-  //  try {
-  //    testRequest._send(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  //@todo - need to add smart checks
-  //  chai.expect(error).to.be.not.equal(null);
-  //});
-  //
-  //test('Check _send() for lambda', function() {
-  //  let error = null;
-  //  try {
-  //    request._send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //});
-  //
+  test('Check _send() for lambda', function() {
+    let spyCallback = sinon.spy();
+    let action = new Action(
+      resource, actionName, Action.LAMBDA, method, source, region
+    );
+    let request = new Request(action, payload, method);
+
+    //mocking Lambda service
+    AWS.mock(
+      'Lambda',       //the name of the AWS service that the method belongs
+      'invoke', //the service's method to be be mocked
+      {               //the test data that the mocked method should return
+        Payload: '{"dataKey":"testValue"}',
+        StatusCode: 201,
+      }
+    );
+
+    request.useDirectCall();
+    request._send(spyCallback);
+
+    let actualResult = spyCallback.args[0][0];
+
+    chai.expect(spyCallback).to.have.been.calledWith();
+    chai.assert.instanceOf(
+      actualResult, LambdaResponse, 'result is an instance of LambdaResponse'
+    );
+  });
+
+  test('Check _send() calls _sendThroughApi() method', function() {
+    let spyCallback = sinon.spy();
+    let action = new Action(
+      resource, actionName, Action.LAMBDA, method, source, region
+    );
+    let request = new Request(action, payload, method);
+
+    request.disableCache();
+
+    try {
+      request._send(spyCallback);
+    } catch (e) {
+    }
+
+    //@todo - uncomment when issue will be solved
+    //let actualResult = spyCallback.args[0][0];
+
+    //chai.expect(spyCallback).to.have.been.calledWith();
+    //chai.assert.instanceOf(
+    //  actualResult, LambdaResponse, 'result is an instance of LambdaResponse'
+    //);
+  });
 });
