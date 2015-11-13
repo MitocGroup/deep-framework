@@ -5,43 +5,66 @@ import {Log} from '../lib.compiled/Log';
 import {ConsoleDriver} from '../lib.compiled/Driver/ConsoleDriver';
 import Core from 'deep-core';
 import Kernel from 'deep-kernel';
+import KernelFactory from './common/KernelFactory';
 
 suite('Log', function() {
-  let log = new Log();
+  let log = null;
+  let backendKernelInstance = null;
+  let frontendKernelInstance = null;
 
   test('Class Log exists in Log', function() {
     chai.expect(typeof Log).to.equal('function');
   });
 
-  test('Check EMERGENCY static getter returns \'emergency\'', function() {
+  test('Load Kernels by using Kernel.load()', function(done) {
+    let callback = (frontendKernel, backendKernel) => {
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+      chai.assert.instanceOf(
+        frontendKernel, Kernel, 'frontendKernel is an instance of Kernel'
+      );
+      backendKernelInstance = backendKernel;
+      frontendKernelInstance = frontendKernel;
+
+      log = frontendKernel.get('log');
+
+      // complete the async
+      done();
+    };
+
+    KernelFactory.create({Log: Log}, callback);
+  });
+
+  test('Check EMERGENCY static getter returns "emergency"', function() {
     chai.expect(Log.EMERGENCY).to.be.equal('emergency');
   });
 
-  test('Check ALERT static getter returns \'alert\'', function() {
+  test('Check ALERT static getter returns "alert"', function() {
     chai.expect(Log.ALERT).to.be.equal('alert');
   });
 
-  test('Check CRITICAL static getter returns \'critical\'', function() {
+  test('Check CRITICAL static getter returns "critical"', function() {
     chai.expect(Log.CRITICAL).to.be.equal('critical');
   });
 
-  test('Check ERROR static getter returns \'error\'', function() {
+  test('Check ERROR static getter returns "error"', function() {
     chai.expect(Log.ERROR).to.be.equal('error');
   });
 
-  test('Check WARNING static getter returns \'warning\'', function() {
+  test('Check WARNING static getter returns "warning"', function() {
     chai.expect(Log.WARNING).to.be.equal('warning');
   });
 
-  test('Check NOTICE static getter returns \'notice\'', function() {
+  test('Check NOTICE static getter returns "notice"', function() {
     chai.expect(Log.NOTICE).to.be.equal('notice');
   });
 
-  test('Check INFO static getter returns \'info\'', function() {
+  test('Check INFO static getter returns "info"', function() {
     chai.expect(Log.INFO).to.be.equal('info');
   });
 
-  test('Check DEBUG static getter returns \'debug\'', function() {
+  test('Check DEBUG static getter returns "debug"', function() {
     chai.expect(Log.DEBUG).to.be.equal('debug');
   });
 
@@ -68,7 +91,7 @@ suite('Log', function() {
     chai.expect(error).to.be.equal(null);
   });
 
-  test('Check create() method throws \'Core.Exception.InvalidArgumentException\' exception for invalid driver type', function() {
+  test('Check create() method throws "Core.Exception.InvalidArgumentException" exception for invalid driver type', function() {
     let error = null;
     try {
       log.create('test');
@@ -121,7 +144,7 @@ suite('Log', function() {
     chai.expect(error).to.be.equal(null);
   });
 
-  test('Check register() method throws \'Core.Exception.InvalidArgumentException\' exception for invalid driver', function() {
+  test('Check register() method throws "Core.Exception.InvalidArgumentException" exception for invalid driver', function() {
     let error = null;
     try {
       log.register({key: 'value'});
