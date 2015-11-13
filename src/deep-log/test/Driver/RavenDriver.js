@@ -2,6 +2,7 @@
 
 import chai from 'chai';
 import {RavenDriver} from '../../lib.compiled/Driver/RavenDriver';
+import Raven from 'raven';
 
 suite('Driver/RavenDriver', function() {
   let ravenDriver = new RavenDriver();

@@ -1,6 +1,5 @@
 'use strict';
 
-
 import {AbstractDriver} from '../../lib.compiled/Driver/AbstractDriver';
 
 export class AbstractDriverMock extends AbstractDriver {

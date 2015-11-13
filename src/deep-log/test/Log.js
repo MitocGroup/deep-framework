@@ -1,11 +1,16 @@
 'use strict';
 
 import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import {Log} from '../lib.compiled/Log';
 import {ConsoleDriver} from '../lib.compiled/Driver/ConsoleDriver';
 import Core from 'deep-core';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
+import ravenMock from './Mocks/ravenMock';
+
+chai.use(sinonChai);
 
 suite('Log', function() {
   let log = null;
@@ -28,6 +33,12 @@ suite('Log', function() {
       frontendKernelInstance = frontendKernel;
 
       log = frontendKernel.get('log');
+
+      //let requestExport = RequireProxy('../../lib.compiled/Resource/Request', {
+      //  'superagent': httpMock,
+      //});
+      //let RequestProxy = requestExport.Request;
+      //externalRequest = new RequestProxy(externalAction, payload, method);
 
       // complete the async
       done();
@@ -80,14 +91,28 @@ suite('Log', function() {
     chai.expect(Log.LEVELS).to.be.include(Log.DEBUG);
   });
 
+  test('Check register() method register driver for console', function() {
+      let actualResult = log.register('console');
+      chai.assert.instanceOf(
+        actualResult,
+        Log,
+        'register() method registers and returns an instance of ConsoleDriver'
+      );
+      chai.expect(log.drivers.iterator[0].constructor.name).to.be.equal('ConsoleDriver');
+    }
+  );
+
   test('Check log() method runs without exception', function() {
 
     let actualResult = log.log(
       'test log() from ConsoleDriver', 'debug', 'context'
     );
 
-    //@todo - add smart checks
-    //chai.expect(actualResult).to.be.not.eql({});
+    chai.assert.instanceOf(
+      actualResult,
+      Log,
+      'register() method registers and returns an instance of ConsoleDriver'
+    );
   });
 
   test('Check create() method throws "Core.Exception.InvalidArgumentException" exception for invalid driver type', function() {
@@ -103,69 +128,30 @@ suite('Log', function() {
   });
 
   test('Check create() method returns log driver for console', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = log.create('console');
-    } catch (e) {
-      error = e;
-    }
+    let actualResult = log.create('console');
 
-    chai.expect(error).to.be.equal(null);
-    chai.assert.instanceOf(actualResult, ConsoleDriver, 'create() method returns an instance of ConsoleDriver');
+    chai.assert.instanceOf(
+      actualResult,
+      ConsoleDriver,
+      'create() method returns an instance of ConsoleDriver'
+    );
   });
 
   test('Check create() method returns log driver for sentry/raven', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = log.create('sentry');
-    } catch (e) {
-      error = e;
-    }
+    let actualResult = log.create('console');
+
+    chai.assert.instanceOf(
+      actualResult,
+      ConsoleDriver,
+      'create() method returns an instance of ConsoleDriver'
+    );
   });
 
   test('Check boot() method register service', function() {
-    let error = null;
-    let actualResult = null;
-    let deepServices = { serviceName: 'serviceName' };
-    let kernel = new Kernel(deepServices, Kernel.FRONTEND_CONTEXT);
-    let callback = () => {
-      return 'callback called';
-    };
+    let spyCallback = sinon.spy();
 
-    try {
-      actualResult = log.boot(kernel, callback);
-    } catch (e) {
-      error = e;
-    }
+    log.boot(backendKernelInstance, spyCallback);
 
-    chai.expect(error).to.be.equal(null);
-  });
-
-  test('Check register() method throws "Core.Exception.InvalidArgumentException" exception for invalid driver', function() {
-    let error = null;
-    try {
-      log.register({key: 'value'});
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(error).to.be.an.instanceof(Core.Exception.InvalidArgumentException);
-  });
-
-  test('Check register() method register driver for console', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = log.register('console');
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.assert.instanceOf(actualResult, Log, 'register() method registers driver ' +
-      'and returns an instance of ConsoleDriver');
+    chai.expect(spyCallback).to.have.been.calledWithExactly();
   });
 });
