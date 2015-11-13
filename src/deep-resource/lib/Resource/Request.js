@@ -312,12 +312,18 @@ export class Request {
    * @private
    */
   _sendThroughApi(callback = () => {}) {
+    console.log('_sendThroughApi')
+
     let endpoint = this._action.source.api;
+    console.log('endpoint: ', endpoint)
+    console.log('this.method: ', this.method)
+    console.log('this.payload: ', this.payload)
     let signedRequest = this._createAws4SignedRequest(
       endpoint,
       this.method,
       this.payload
     );
+    console.log('signedRequest: ', signedRequest);
 
     signedRequest.end((error, response) => {
       callback(new SuperagentResponse(this, response, error));
@@ -378,6 +384,11 @@ export class Request {
     let apiPath = urlParts.pathname ? urlParts.pathname : '/';
     let apiQueryString = urlParts.search ? `?${urlParts.search}` : '';
 
+    console.log('apiHost: ', apiHost)
+    console.log('apiPath: ', apiPath)
+    console.log('apiQueryString: ', apiQueryString)
+
+
     let opsToSign = {
       service: Core.AWS.Service.API_GATEWAY_EXECUTE,
       region: this.getEndpointHostRegion(apiHost),
@@ -389,7 +400,10 @@ export class Request {
       },
     };
 
+
+
     httpMethod = httpMethod.toLowerCase();
+    console.log('httpMethod: ', httpMethod)
 
     switch (httpMethod) {
       case 'get':
@@ -402,6 +416,8 @@ export class Request {
         opsToSign.body = JSON.stringify(payload);
         break;
     }
+
+    console.log('opsToSign: ', opsToSign)
 
     let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
 

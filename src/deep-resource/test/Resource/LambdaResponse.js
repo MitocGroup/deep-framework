@@ -12,49 +12,6 @@ import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
 
 suite('Resource/LambdaResponse', function() {
-  //let testResources = {
-  //  'deep.test': {
-  //    test: {
-  //      create: {
-  //        description: 'Lambda for creating test',
-  //        type: 'lambda',
-  //        methods: [
-  //          'POST',
-  //        ],
-  //        source: 'src/Test/Create',
-  //      },
-  //      retrieve: {
-  //        description: 'Retrieves test',
-  //        type: 'lambda',
-  //        methods: ['GET'],
-  //        source: 'src/Test/Retrieve',
-  //      },
-  //      delete: {
-  //        description: 'Lambda for deleting test',
-  //        type: 'lambda',
-  //        methods: ['DELETE'],
-  //        source: 'src/Test/Delete',
-  //      },
-  //      update: {
-  //        description: 'Update test',
-  //        type: 'lambda',
-  //        methods: ['PUT'],
-  //        source: 'src/Test/Update',
-  //      },
-  //    },
-  //  },
-  //};
-  //let resource = new Resource(testResources);
-  //let actionName = 'UpdateTest';
-  //let type = 'lambda';
-  //let methods = ['GET', 'POST'];
-  //let source = 'sourceTest';
-  //let region = 'us-west-2';
-  //let action = new Action(resource, actionName, type, methods, source, region);
-  //let payload = '{"body":"bodyData"}';
-  //let method = 'method';
-  //let request = new Request(action, payload, method);
-
   let backendKernelInstance = null;
   let action = null;
   let request = null;
@@ -151,18 +108,29 @@ suite('Resource/LambdaResponse', function() {
     chai.expect(lambdaResponse.errorType).to.be.equal('Error');
   });
 
-  test('Check errorType getter returns valid error from rawData with errotType', function() {
-    let rawDataWithError = {
-      Payload: '{"dataKey":"testValue","errorMessage":"Internal error",' +
-      '"errorType":"RuntimeException"}', StatusCode: 500
-    };
-    let emptyRawError = null;
-    let lambdaResponseWithError = new LambdaResponse(request, rawDataWithError, emptyRawError);
-    chai.expect(lambdaResponseWithError.errorType).to.be.equal('RuntimeException');
-  });
+  test(
+    'Check errorType getter returns valid error from rawData with errorType',
+    function () {
+      let rawDataWithError = {
+        Payload: '{"dataKey":"testValue","errorMessage":"Internal error",' +
+        '"errorType":"RuntimeException"}',
+        StatusCode: 500,
+      };
+      let emptyRawError = null;
+      let lambdaResponseWithError = new LambdaResponse(
+        request, rawDataWithError, emptyRawError
+      );
+      chai.expect(lambdaResponseWithError.errorType).to.be.equal(
+        'RuntimeException'
+      );
+    }
+  );
 
-  test('Check errorType getter returns valid error from rawData without errotType', function() {
-    let rawDataWithError = {Payload: '{"dataKey":"testValue","errorMessage":"Internal error"}', StatusCode: 500};
+  test('Check errorType getter returns valid error from rawData without errorType', function() {
+    let rawDataWithError = {
+      Payload: '{"dataKey":"testValue","errorMessage":"Internal error"}',
+      StatusCode: 500,
+    };
     let emptyRawError = null;
     let lambdaResponseWithError = new LambdaResponse(request, rawDataWithError, emptyRawError);
     chai.expect(lambdaResponseWithError.errorType).to.be.equal('Error');
