@@ -21,125 +21,15 @@ export class HttpMock {
     return this;
   }
 
-  ///**
-  // * @param {String} endpoint
-  // * @param {Function} callback
-  // * @returns {HttpMock}
-  // */
-  //get(endpoint, callback) {
-  //  switch (this._methodsBehavior.get('get')) {
-  //    case HttpMock.NO_RESULT_MODE:
-  //      callback(null, null);
-  //      break;
-  //
-  //    case HttpMock.FAILURE_MODE:
-  //      callback(HttpMock.ERROR, null);
-  //      break;
-  //
-  //    case HttpMock.DATA_MODE:
-  //      callback(null, HttpMock.DATA);
-  //      break;
-  //  }
-  //
-  //  return this;
-  //}
-  //
-  ///**
-  // * @param {String} endpoint
-  // * @param {*} data
-  // * @param {Function} callback
-  // * @returns {HttpMock}
-  // */
-  //put(endpoint, data, callback) {
-  //  switch (this._methodsBehavior.get('put')) {
-  //    case HttpMock.NO_RESULT_MODE:
-  //      callback(null, null);
-  //      break;
-  //
-  //    case HttpMock.FAILURE_MODE:
-  //      callback(HttpMock.ERROR, null);
-  //      break;
-  //
-  //    case HttpMock.DATA_MODE:
-  //      callback(null, HttpMock.DATA);
-  //      break;
-  //  }
-  //
-  //  return this;
-  //}
-  //
-  ///**
-  // * @param {String} endpoint
-  // * @param {String} id
-  // * @param {*} data
-  // * @param {Function} callback
-  // * @returns {HttpMock}
-  // */
-  //patch(endpoint, id, data, callback) {
-  //  switch (this._methodsBehavior.get('patch')) {
-  //    case HttpMock.NO_RESULT_MODE:
-  //      callback(null, null);
-  //      break;
-  //
-  //    case HttpMock.FAILURE_MODE:
-  //      callback(HttpMock.ERROR, null);
-  //      break;
-  //
-  //    case HttpMock.DATA_MODE:
-  //      callback(null, HttpMock.DATA);
-  //      break;
-  //  }
-  //
-  //  return this;
-  //}
-  //
-  ///**
-  // * @param {String} endpoint
-  // * @param {String} id
-  // * @param {Function} callback
-  // * @returns {HttpMock}
-  // */
-  //delete(endpoint, id,  callback) {
-  //  switch (this._methodsBehavior.get('delete')) {
-  //    case HttpMock.NO_RESULT_MODE:
-  //      callback(null, null);
-  //      break;
-  //
-  //    case HttpMock.FAILURE_MODE:
-  //      callback(HttpMock.ERROR, null);
-  //      break;
-  //
-  //    case HttpMock.DATA_MODE:
-  //      callback(null, HttpMock.DATA);
-  //      break;
-  //  }
-  //
-  //  return this;
-  //}
-  //
-  ///**
-  // * @param {String} endpoint
-  // * @param {*} data
-  // * @param {Function} callback
-  // * @returns {HttpMock}
-  // */
-  //options(endpoint, data, callback) {
-  //  switch (this._methodsBehavior.get('options')) {
-  //    case HttpMock.NO_RESULT_MODE:
-  //      callback(null, null);
-  //      break;
-  //
-  //    case HttpMock.FAILURE_MODE:
-  //      callback(HttpMock.ERROR, null);
-  //      break;
-  //
-  //    case HttpMock.DATA_MODE:
-  //      callback(null, HttpMock.DATA);
-  //      break;
-  //  }
-  //
-  //  return this;
-  //}
+  /**
+   * @param {String} key
+   * @param {*} value
+   * @returns {HttpMock}
+   */
+  set(key, value) {
+    this[key] = value;
+    return this;
+  }
 
   /**
    * @param {*} data
@@ -307,11 +197,7 @@ export class HttpMock {
   static get METHODS() {
     return [
         'post',
-        'get',
-        'put',
-        'patch',
-        'delete',
-        'options',
+        'set',
         'send',
         'end',
     ];

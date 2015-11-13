@@ -3,7 +3,6 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {LocalRequest} from '../../lib.compiled/Resource/LocalRequest';
 import {SuperagentResponse} from '../../lib.compiled/Resource/SuperagentResponse';
 import {Response} from '../../lib.compiled/Resource/Response';
 import {Action} from '../../lib.compiled/Resource/Action';
@@ -17,6 +16,7 @@ import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
 import RequireProxy from 'proxyquire';
 import {HttpMock} from '../Mock/HttpMock';
+import {LocalRequest} from '../../lib.compiled/Resource/LocalRequest';
 
 chai.use(sinonChai);
 
@@ -113,16 +113,18 @@ suite('Resource/LocalRequest', function() {
       .resources[resourceName][actionName]
       .region;
 
-    let externalAction = new Action(resource, actionName, Action.EXTERNAL, method, source, region);
+    let externalAction = new Action(
+      resource, actionName, Action.EXTERNAL, method, source, region
+    );
     let externalRequest = new LocalRequest(externalAction, payload, method);
 
-    //todo - defect here
+    //todo - it looks like code issue here, line:40
+    //uncomment when issue will be fixed
     try {
       externalRequest._send(spyCallback);
     } catch (e) {
 
     }
-
     //let actualResult = spyCallback.args[0][0];
     //chai.expect(typeof actualResult).to.equal('object')
     //chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');

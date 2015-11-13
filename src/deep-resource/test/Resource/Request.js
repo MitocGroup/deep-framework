@@ -5,23 +5,25 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Resource} from '../../lib.compiled/Resource';
 import {Action} from '../../lib.compiled/Resource/Action';
-import {Request} from '../../lib.compiled/Resource/Request';
 import {Response} from '../../lib.compiled/Resource/Response';
+import {SuperagentResponse} from '../../lib.compiled/Resource/SuperagentResponse';
 import {LambdaResponse} from '../../lib.compiled/Resource/LambdaResponse';
 import {Instance} from '../../lib.compiled/Resource/Instance';
 import {MissingCacheImplementationException} from '../../lib.compiled/Resource/Exception/MissingCacheImplementationException';
 import {DirectLambdaCallDeniedException} from '../../lib.compiled/Resource/Exception/DirectLambdaCallDeniedException';
 import {Exception} from '../../lib.compiled/Exception/Exception';
 import {CachedRequestException} from '../../lib.compiled/Resource/Exception/CachedRequestException';
-import {CacheMock} from '../Mock/CacheMock';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
 import RequireProxy from 'proxyquire';
-import {HttpMock} from '../Mock/HttpMock';
 import AWS from 'mock-aws';
+import {HttpMock} from '../Mock/HttpMock';
+import {Request} from '../../lib.compiled/Resource/Request';
+import {CacheMock} from '../Mock/CacheMock';
+
 
 chai.use(sinonChai);
 
@@ -31,6 +33,7 @@ suite('Resource/Request', function() {
   let request = null;
   let resource = null;
   let externalRequest = null;
+  let security = null;
   let microserviceIdentifier = 'hello.world.example';
   let resourceName = 'sample';
   let actionName = 'say-hello';
@@ -61,12 +64,16 @@ suite('Resource/Request', function() {
       resource = backendKernel.get('resource').get(
         `@${microserviceIdentifier}:${resourceName}`
       );
+      security = backendKernel.get('security');
 
       chai.assert.instanceOf(
         action, Action, 'action is an instance of Action'
       );
       chai.assert.instanceOf(
         resource, Instance, 'resource is an instance of Instance'
+      );
+      chai.assert.instanceOf(
+        security, Security, 'security is an instance of Security'
       );
 
       request = new Request(action, payload, method);
@@ -81,6 +88,19 @@ suite('Resource/Request', function() {
       Security: Security,
       Resource: Resource,
     }, callback);
+  });
+
+  test('Check security.anonymousLogin()', function(done) {
+    let callback = (error, token) => {
+
+      chai.expect(token.constructor.name).to.equal('LocalToken');
+
+      // complete the async
+      done();
+    };
+
+    security.localBackend = true;
+    security.anonymousLogin(callback);
   });
 
   test(`Check method getter returns ${method}`, function() {
@@ -147,7 +167,7 @@ suite('Resource/Request', function() {
       }
 
       chai.expect(error).to.be.not.equal(null);
-      chai.expect(error).to.be.an.instanceof(MissingCacheImplementationException);
+      chai.expect(error).to.an.instanceof(MissingCacheImplementationException);
     }
   );
 
@@ -163,7 +183,8 @@ suite('Resource/Request', function() {
     chai.expect(Request.TTL_FOREVER).to.be.above(-1);
   });
 
-  test('Check _rebuildResponse() throws "CachedRequestException" for invalid rawData',
+  test(
+    'Check _rebuildResponse() throws "CachedRequestException" for invalid rawData',
     function() {
       let error = null;
       let rawData = 'null';
@@ -412,8 +433,8 @@ suite('Resource/Request', function() {
     let requestExport = RequireProxy('../../lib.compiled/Resource/Request', {
       'superagent': httpMock,
     });
-    let Request = requestExport.Request;
-    externalRequest = new Request(externalAction, payload, method);
+    let RequestProxy = requestExport.Request;
+    externalRequest = new RequestProxy(externalAction, payload, method);
 
     httpMock.disableFailureModeFor(['end']);
     externalRequest.useDirectCall();
@@ -445,29 +466,31 @@ suite('Resource/Request', function() {
     chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
   });
 
-  test('Check send() throws "CachedRequestException" in has() for isCashed', function() {
-    let spyCallback = sinon.spy();
-    let error = null;
+  test('Check send() throws "CachedRequestException" in has() for isCashed',
+    function() {
+      let spyCallback = sinon.spy();
+      let error = null;
 
-    //set cache mock mode
-    let cache = new CacheMock();
-    cache.enableFailureModeFor(['has']);
-    externalRequest.cacheImpl = cache;
-    externalRequest.enableCache();
+      //set cache mock mode
+      let cache = new CacheMock();
+      cache.enableFailureModeFor(['has']);
+      externalRequest.cacheImpl = cache;
+      externalRequest.enableCache();
 
-    try {
-      externalRequest.send(spyCallback);
-    } catch (e) {
-      error = e;
+      try {
+        externalRequest.send(spyCallback);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.not.equal(null);
+      chai.assert.instanceOf(
+        error,
+        CachedRequestException,
+        'error is an instance of CachedRequestException'
+      );
     }
-
-    chai.expect(error).to.be.not.equal(null);
-    chai.assert.instanceOf(
-      error,
-      CachedRequestException,
-      'error is an instance of CachedRequestException'
-    );
-  });
+  );
 
   test('Check send() throws "CachedRequestException" in get() for isCashed', function() {
     let spyCallback = sinon.spy();
@@ -521,22 +544,25 @@ suite('Resource/Request', function() {
     );
   });
 
-  test('Check send() calls callback with _rebuildResponse() in has() for isCashed', function() {
-    let spyCallback = sinon.spy();
+  test(
+    'Check send() calls callback with _rebuildResponse() in has() for isCashed',
+    function() {
+      let spyCallback = sinon.spy();
 
-    //set cache mock mode
-    let cache = new CacheMock();
-    cache.disableFailureModeFor(['has', 'get']);
-    externalRequest.cacheImpl = cache;
-    externalRequest.enableCache();
+      //set cache mock mode
+      let cache = new CacheMock();
+      cache.disableFailureModeFor(['has', 'get']);
+      externalRequest.cacheImpl = cache;
+      externalRequest.enableCache();
 
-    externalRequest.send(spyCallback);
-    let actualResult = spyCallback.args[0][0];
+      externalRequest.send(spyCallback);
+      let actualResult = spyCallback.args[0][0];
 
-    chai.assert.instanceOf(
-      actualResult, Response, 'result is an instance of Response'
-    );
-  });
+      chai.assert.instanceOf(
+        actualResult, Response, 'result is an instance of Response'
+      );
+    }
+  );
 
   test('Check _send() throws "Exception"', function() {
     let invalidActionType = 'invalidAction';
@@ -553,7 +579,9 @@ suite('Resource/Request', function() {
       error = e;
     }
 
-    chai.assert.instanceOf(error, Exception, 'result is an instance of Exception');
+    chai.assert.instanceOf(
+      error, Exception, 'result is an instance of Exception'
+    );
     chai.expect(error.message).to.be.equal(
       `Request of type ${invalidActionType} is not implemented`
     );
@@ -592,21 +620,30 @@ suite('Resource/Request', function() {
     let action = new Action(
       resource, actionName, Action.LAMBDA, method, source, region
     );
-    let request = new Request(action, payload, method);
 
+    //mocking Http
+    httpMock.fixBabelTranspile();
+    let requestExport = RequireProxy('../../lib.compiled/Resource/Request', {
+      'superagent': httpMock,
+    });
+    let RequestProxy = requestExport.Request;
+    let request = new RequestProxy(action, payload, method);
     request.disableCache();
+
+    httpMock.disableFailureModeFor(['end']);
 
     try {
       request._send(spyCallback);
     } catch (e) {
     }
 
-    //@todo - uncomment when issue will be solved
-    //let actualResult = spyCallback.args[0][0];
+    let actualResult = spyCallback.args[0][0];
 
-    //chai.expect(spyCallback).to.have.been.calledWith();
-    //chai.assert.instanceOf(
-    //  actualResult, LambdaResponse, 'result is an instance of LambdaResponse'
-    //);
+    chai.expect(spyCallback).to.have.been.calledWith();
+    chai.assert.instanceOf(
+      actualResult,
+      SuperagentResponse,
+      'result is an instance of SuperagentResponse'
+    );
   });
 });
