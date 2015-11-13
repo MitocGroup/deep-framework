@@ -11,7 +11,6 @@ import {Token} from './Token';
 import {LocalToken} from './LocalToken';
 import {UserProvider} from './UserProvider';
 import {IdentityProvider} from './IdentityProvider';
-import AWS from 'aws-sdk';
 
 /**
  * Deep Security implementation
@@ -94,10 +93,6 @@ export class Security extends Kernel.ContainerAware {
     this._token.userProvider = this.userProvider;
 
     this._token.loadCredentials((error, credentials) => {
-      if (!error && this.kernel.isFrontend) {
-        AWS.config.credentials = credentials;
-      }
-
       callback(error, this._token);
     });
 
@@ -116,10 +111,6 @@ export class Security extends Kernel.ContainerAware {
     this._token.userProvider = this.userProvider;
 
     this._token.loadCredentials((error, credentials) => {
-      if (!error && this.kernel.isFrontend) {
-        AWS.config.credentials = credentials;
-      }
-
       callback(error, this._token);
     });
 

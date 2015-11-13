@@ -48,6 +48,26 @@ export class Token {
   }
 
   /**
+   * Populates AWS credentials with Cognito credentials to be used in CognitoSyncManager
+   * @see https://github.com/mgoria/amazon-cognito-js/blob/master/src/CognitoSyncManager.js#L36
+   *
+   * @private
+   */
+  _populateAwsCredentials() {
+    let cognitoCredentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: this._identityPoolId
+    });
+
+    cognitoCredentials.accessKeyId = AWS.config.credentials.accessKeyId;
+    cognitoCredentials.secretAccessKey = AWS.config.credentials.secretAccessKey;
+    cognitoCredentials.sessionToken = AWS.config.credentials.sessionToken;
+    cognitoCredentials.identityId = this.identityId;
+    cognitoCredentials.params.IdentityId = this.identityId;
+
+    AWS.config.credentials = cognitoCredentials;
+  }
+
+  /**
    * @returns {IdentityProvider}
    */
   get identityProvider() {
@@ -85,6 +105,8 @@ export class Token {
     }
 
     if (this.lambdaContext) {
+      this._populateAwsCredentials();
+
       this._credsManager.loadCredentials((error, credentials) => {
         if (error) {
           return callback(error);
@@ -111,7 +133,9 @@ export class Token {
           return callback(new AuthException(error));
         }
 
-        this._credsManager.saveCredentials(this._credentials.data, (error, record) => {
+        AWS.config.credentials = this._credentials;
+
+        this._credsManager.saveCredentials(this._credentials, (error, record) => {
           if (error) {
             return callback(error);
           }
@@ -135,7 +159,15 @@ export class Token {
    * @returns {String}
    */
   get identityId() {
-    return this.credentials ? this.credentials.IdentityId : null;
+    let identityId = null;
+
+    if (this.credentials && this.credentials.hasOwnProperty('IdentityId')) {
+      identityId = this.credentials.IdentityId;
+    } else if (this.lambdaContext) {
+      identityId = this.lambdaContext.identity.cognitoIdentityId;
+    }
+
+    return identityId;
   }
 
   /**
