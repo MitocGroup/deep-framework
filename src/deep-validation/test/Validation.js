@@ -9,6 +9,9 @@ import {ObjectToJoi} from '../lib.compiled/ObjectToJoi';
 import {Exception} from '../lib.compiled/Exception/Exception';
 import {ModelNotFoundException} from '../lib.compiled/Exception/ModelNotFoundException';
 import {ObjectValidationFailedException} from '../lib.compiled/Exception/ObjectValidationFailedException';
+import Kernel from 'deep-kernel';
+import KernelFactory from './common/KernelFactory';
+
 chai.use(sinonChai);
 
 import Joi from 'joi';
@@ -20,12 +23,29 @@ suite('Validation', function() {
     username: Joi.string().min(3).max(30).required(),
     password: Joi.string(),
   };
+  let backendKernelInstance = null;
+  let frontendKernelInstance = null;
 
   let rawModelName = 'rawUserModel';
   let rawModelSchema = {username: 'string'};
 
   test('Class Validation exists in Validation', function() {
     chai.expect(typeof Validation).to.equal('function');
+  });
+
+  test('Load Kernels by using Kernel.load()', function(done) {
+    let callback = (frontendKernel, backendKernel) => {
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+      backendKernelInstance = backendKernel;
+      chai.assert.instanceOf(frontendKernel, Kernel, 'frontendKernel is an instance of Kernel');
+      frontendKernelInstance = frontendKernel;
+      validation = frontendKernel.get('validation');
+
+      chai.assert.instanceOf(validation, Validation, 'validation is an instance of Validation');
+      // complete the async
+      done();
+    };
+    KernelFactory.create({Validation: Validation}, callback);
   });
 
   test('Check contructor sets default values', function() {
