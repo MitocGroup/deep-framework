@@ -7,6 +7,7 @@ import {LocalRequest} from '../../lib.compiled/Resource/LocalRequest';
 import {SuperagentResponse} from '../../lib.compiled/Resource/SuperagentResponse';
 import {Response} from '../../lib.compiled/Resource/Response';
 import {Action} from '../../lib.compiled/Resource/Action';
+import {Instance} from '../../lib.compiled/Resource/Instance';
 import {Resource} from '../../lib.compiled/Resource';
 import CacheMock from '../Mock/CacheMock';
 import Kernel from 'deep-kernel';
@@ -23,6 +24,7 @@ suite('Resource/LocalRequest', function() {
   let backendKernelInstance = null;
   let action = null;
   let localRequest = null;
+  let resource = null;
   let microserviceIdentifier = 'hello.world.example';
   let resourceName = 'sample';
   let actionName = 'say-hello';
@@ -42,9 +44,15 @@ suite('Resource/LocalRequest', function() {
       action = backendKernel.get('resource').get(
         `@${microserviceIdentifier}:${resourceName}:${actionName}`
       );
+      resource = backendKernel.get('resource').get(
+        `@${microserviceIdentifier}:${resourceName}`
+      );
 
       chai.assert.instanceOf(
         action, Action, 'action is an instance of Action'
+      );
+      chai.assert.instanceOf(
+        resource, Instance, 'resource is an instance of Instance'
       );
 
       //mocking Http
@@ -94,30 +102,29 @@ suite('Resource/LocalRequest', function() {
     chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
   });
 
-  //todo - need to fix when AWS mock will be created
-  //test('Check _send() method for acctionType!=\'lambda\'', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let cache = new CacheMock();
-  //  let actionName = 'UpdateTest';
-  //  let resource = {name: 'resourceTest', cache: cache};
-  //  let type = 'testType';
-  //  let methods = ['GET', 'POST'];
-  //  let source = {
-  //    api: 'http://tets:8888/foo/bar?user=tj&pet=new',
-  //  };
-  //  let region = 'us-west-2';
-  //  let action = new Action(resource, actionName, type, methods, source, region);
-  //  let testRequest = new LocalRequest(action, payload, method);
-  //  testRequest.cacheImpl = cache;
-  //  testRequest.enableCache();
-  //  testRequest._native = false;
-  //  chai.expect(testRequest.isCached).to.be.equal(true);
-  //
-  //  try {
-  //    testRequest._send(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //});
+  test('Check _send() method for acctionType!=\'lambda\'', function() {
+    let spyCallback = sinon.spy();
+    let source = backendConfig
+      .microservices[microserviceIdentifier]
+      .resources[resourceName][actionName]
+      .source;
+    let region = backendConfig
+      .microservices[microserviceIdentifier]
+      .resources[resourceName][actionName]
+      .region;
+
+    let externalAction = new Action(resource, actionName, Action.EXTERNAL, method, source, region);
+    let externalRequest = new LocalRequest(externalAction, payload, method);
+
+    //todo - defect here
+    try {
+      externalRequest._send(spyCallback);
+    } catch (e) {
+
+    }
+
+    //let actualResult = spyCallback.args[0][0];
+    //chai.expect(typeof actualResult).to.equal('object')
+    //chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
+  });
 });
