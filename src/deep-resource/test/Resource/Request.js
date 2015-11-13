@@ -20,6 +20,7 @@ import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
 import RequireProxy from 'proxyquire';
 import {HttpMock} from '../Mock/HttpMock';
+import AWS from 'mock-aws';
 
 chai.use(sinonChai);
 
@@ -536,24 +537,25 @@ suite('Resource/Request', function() {
     );
   });
 
-  //test('Check _send() throws \'Exception\'', function() {
-  //  let invalidActionType = 'invalidAction';
-  //  let invalidAction = new Action(resource, actionName, invalidActionType, methods, source, region);
-  //  let payload = '{"body":"bodyData"}';
-  //  let method = 'method';
-  //  let invalidRequest = new Request(invalidAction, payload, method);
-  //  let error = null;
-  //  try {
-  //    invalidRequest.useDirectCall();
-  //    invalidRequest._send();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(error, Exception, 'result is an instance of Exception');
-  //  chai.expect(error.message).to.be.equal(`Request of type ${invalidActionType} is not implemented`);
-  //});
-  //
+  test('Check _send() throws \'Exception\'', function() {
+    let invalidActionType = 'invalidAction';
+    let invalidAction = new Action(
+      resource, actionName, invalidActionType, method, source, region
+    );
+    let payload = '{"body":"bodyData"}';
+    let invalidRequest = new Request(invalidAction, payload, method);
+    let error = null;
+    try {
+      invalidRequest.useDirectCall();
+      invalidRequest._send();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(error, Exception, 'result is an instance of Exception');
+    chai.expect(error.message).to.be.equal(`Request of type ${invalidActionType} is not implemented`);
+  });
+
   //test('Check _send() calls _sendThroughApi() method', function() {
   //  let error = null;
   //  let spyCallback = sinon.spy();
