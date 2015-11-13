@@ -81,14 +81,13 @@ suite('Log', function() {
   });
 
   test('Check log() method runs without exception', function() {
-    let error = null;
-    try {
-      log.log('test log() from ConsoleDriver', 'debug', 'context');
-    } catch (e) {
-      error = e;
-    }
 
-    chai.expect(error).to.be.equal(null);
+    let actualResult = log.log(
+      'test log() from ConsoleDriver', 'debug', 'context'
+    );
+
+    //@todo - add smart checks
+    //chai.expect(actualResult).to.be.not.eql({});
   });
 
   test('Check create() method throws "Core.Exception.InvalidArgumentException" exception for invalid driver type', function() {
