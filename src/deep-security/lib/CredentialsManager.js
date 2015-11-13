@@ -27,9 +27,11 @@ export class CredentialsManager {
   }
 
   /**
+   * @param {String} identityPoolId
    * @param {Object|null} cognitoSyncClient
    */
-  constructor(cognitoSyncClient = null) {
+  constructor(identityPoolId, cognitoSyncClient = null) {
+    this._identityPoolId = identityPoolId;
     this._cognitoSyncClient = cognitoSyncClient;
   }
 
@@ -73,23 +75,32 @@ export class CredentialsManager {
   }
 
   /**
+   * @param {String} identityId
    * @param {Function} callback
    */
-  loadCredentials(callback) {
-    this._createOrGetDataset((error, dataset) => {
+  loadCredentials(identityId, callback) {
+    let cognitosync = new AWS.CognitoSync();
+
+    let params = {
+      DatasetName: CredentialsManager.DATASET_NAME,
+      IdentityId: identityId,
+      IdentityPoolId: this._identityPoolId,
+    };
+
+    cognitosync.listRecords(params, (error, data) => {
       if (error) {
         return callback(error);
       }
 
-      dataset.get(CredentialsManager.RECORD_NAME, (error, recordValue) => {
-        if (error) {
-          return callback(new GetCognitoRecordException(
-            CredentialsManager.DATASET_NAME, CredentialsManager.RECORD_NAME, error
-          ));
+      let creds = null;
+      data.Records.forEach((record) => {
+        if (record.Key === CredentialsManager.RECORD_NAME) {
+          creds = this._decodeCredentials(record.Value);
+          return creds = creds.data.Credentials;
         }
-
-        callback(null, this._decodeCredentials(recordValue));
       });
+
+      callback(null, creds);
     });
   }
 
@@ -115,16 +126,12 @@ export class CredentialsManager {
   _synchronizeDataset(dataset, callback) {
     dataset.synchronize({
       onSuccess: (dataset, newRecords) => {
-        console.log('onSuccess - ', newRecords);
-
         callback(null, newRecords);
       },
       onFailure: (error) => {
-        console.log('onFailure - ', error);
         callback(error, null);
       },
       onConflict: (dataset, conflicts, callback) => {
-        console.log('onConflict - ', conflicts);
         let resolved = [];
 
         for (let i = 0; i < conflicts.length; i++) {
@@ -137,11 +144,9 @@ export class CredentialsManager {
         });
       },
       onDatasetDeleted: (dataset, datasetName, callback) => {
-        console.log('onDatasetDeleted - ', datasetName);
         return callback(true);
       },
       onDatasetMerged: (dataset, datasetNames, callback) => {
-        console.log('onDatasetMerged - ', datasetNames);
         return callback(true);
       }
     });
