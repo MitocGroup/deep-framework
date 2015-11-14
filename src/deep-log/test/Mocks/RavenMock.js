@@ -12,7 +12,7 @@ export default  {
         this.logs.push(arguments);
 
         return {
-          message,
+          message: message,
         };
       },
 
@@ -20,7 +20,7 @@ export default  {
         this.logs.push(arguments);
 
         return {
-          error,
+          error: error,
         };
       },
 
@@ -28,9 +28,17 @@ export default  {
         this.logs.push(arguments);
 
         return {
-          query,
+          query: query,
         };
       },
     };
+  },
+
+  config: function() {
+
+  },
+
+  install: function() {
+
   },
 };

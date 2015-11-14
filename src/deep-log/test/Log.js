@@ -127,7 +127,7 @@ suite('Log', function() {
     chai.expect(error).to.be.an.instanceof(Core.Exception.InvalidArgumentException);
   });
 
-  test('Check create() method returns log driver for console', function() {
+  test('Check create() method returns log driver for "console"', function() {
     let actualResult = log.create('console');
 
     chai.assert.instanceOf(
@@ -137,15 +137,16 @@ suite('Log', function() {
     );
   });
 
-  test('Check create() method returns log driver for sentry/raven', function() {
-    let actualResult = log.create('console');
-
-    chai.assert.instanceOf(
-      actualResult,
-      ConsoleDriver,
-      'create() method returns an instance of ConsoleDriver'
-    );
-  });
+  //@todo - resolve with AlexC
+  //test('Check create() method returns log driver for "sentry/raven"', function() {
+  //  let actualResult = log.create('raven');
+  //
+  //  chai.assert.instanceOf(
+  //    actualResult,
+  //    ConsoleDriver,
+  //    'create() method returns an instance of ConsoleDriver'
+  //  );
+  //});
 
   test('Check boot() method register service', function() {
     let spyCallback = sinon.spy();
