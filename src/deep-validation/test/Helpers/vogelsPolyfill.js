@@ -11,6 +11,15 @@ suite('Helpers/vogelsPolyfill', function() {
     chai.expect(typeof Vogels).to.equal('object');
   });
 
+  test('Check Vogels.types contains all types', function() {
+    chai.expect(Object.keys(Vogels.types).length).to.equal(5);
+    chai.expect(Object.keys(Vogels.types)).to.contains('uuid');
+    chai.expect(Object.keys(Vogels.types)).to.contains('timeUUID');
+    chai.expect(Object.keys(Vogels.types)).to.contains('stringSet');
+    chai.expect(Object.keys(Vogels.types)).to.contains('numberSet');
+    chai.expect(Object.keys(Vogels.types)).to.contains('binarySet');
+  });
+
   test('Check Vogels.types.stringSet is function', function() {
     chai.expect(typeof Vogels.types.stringSet).to.equal('function');
   });
@@ -19,4 +28,6 @@ suite('Helpers/vogelsPolyfill', function() {
     let actualResult = Vogels.types.stringSet();
     chai.expect(actualResult.isJoi).to.eql(true);
   });
+
+
 });

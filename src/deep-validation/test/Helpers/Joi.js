@@ -15,8 +15,6 @@ suite('Helpers/Joi', function() {
   test('Check uuid static getter returns valid object', function() {
     let actualResult = Joi.uuid;
     let expectedResult = Vogels.types.uuid();
-    //chai.assert.instanceOf(actualResult, Vogels, 'object is an instance of Vogels');
-    //chai.expect(Joi.uuid).to.be.eql(Vogels.types.uuid());
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -101,12 +99,12 @@ suite('Helpers/Joi', function() {
   test('Check mapSet static getter returns valid object', function() {
     let actualResult = Joi.mapSet;
     let array = BaseJoi.array();
-    let expectedResult = null;
+
     if (array.includes) {
       return array.includes(BaseJoi.object());
     }
 
-    expectedResult = array.items(BaseJoi.object());
+    let expectedResult = array.items(BaseJoi.object());
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });

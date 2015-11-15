@@ -72,7 +72,11 @@ export class Log extends Kernel.ContainerAware {
       case 'sentry':
         let DriverPrototype = this.container.get(Kernel.CONTEXT).isFrontend ? RavenBrowserDriver : RavenDriver;
 
-        driver = new DriverPrototype(args[0].dsn);
+        driver = new DriverPrototype(
+          args.length > 0 && typeof args[0] === 'object'
+            ? args[0].dsn
+            : null
+        );
         break;
       default:
         throw new Core.Exception.InvalidArgumentException(
