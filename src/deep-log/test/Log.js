@@ -34,12 +34,6 @@ suite('Log', function() {
 
       log = frontendKernel.get('log');
 
-      //let requestExport = RequireProxy('../../lib.compiled/Resource/Request', {
-      //  'superagent': httpMock,
-      //});
-      //let RequestProxy = requestExport.Request;
-      //externalRequest = new RequestProxy(externalAction, payload, method);
-
       // complete the async
       done();
     };
@@ -137,6 +131,14 @@ suite('Log', function() {
     );
   });
 
+  test('Check boot() method register service', function() {
+    let spyCallback = sinon.spy();
+
+    log.boot(backendKernelInstance, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly();
+  });
+
   //@todo - resolve with AlexC
   //test('Check create() method returns log driver for "sentry/raven"', function() {
   //  let actualResult = log.create('raven');
@@ -148,11 +150,14 @@ suite('Log', function() {
   //  );
   //});
 
-  test('Check boot() method register service', function() {
-    let spyCallback = sinon.spy();
+  test('Check overrideJsConsole() method returns object', function() {
+    let error = null;
+    let actualResult = null;
 
-    log.boot(backendKernelInstance, spyCallback);
-
-    chai.expect(spyCallback).to.have.been.calledWithExactly();
+    try {
+      actualResult = log.overrideJsConsole();
+    } catch (e) {
+      error = e;
+    }
   });
 });

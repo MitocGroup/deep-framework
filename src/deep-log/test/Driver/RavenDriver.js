@@ -42,9 +42,11 @@ suite('Driver/RavenDriver', function() {
   test('Check log() method runs without exception', function() {
     let level = 'debug';
     let msg = 'test log() from RavenDriver';
+    let context = {context: 'Test context'};
 
-    ravenDriver.log(msg, level);
+    ravenDriver.log(msg, level, context);
 
-    chai.expect(ravenDriver.clients[level].logs.pop()[0]).to.eql(msg);
+    let actualResult = ravenDriver.clients[level].logs.pop();
+    chai.expect(actualResult[0]).to.eql(msg);
   });
 });
