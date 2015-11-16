@@ -20,6 +20,7 @@ import Core from 'deep-core';
 import {DirectLambdaCallDeniedException} from './Exception/DirectLambdaCallDeniedException';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
 import Security from 'deep-security';
+import crypto from 'crypto';
 
 /**
  * Action request instance
@@ -136,10 +137,22 @@ export class Request {
    * @private
    */
   _buildCacheKey() {
-    let payload = JSON.stringify(this._payload);
+    let payload = Request._md5(JSON.stringify(this._payload));
     let endpoint = this.native ? this._action.source.original : this._action.source.api;
 
     return `${this._method}:${this._action.type}:${endpoint}#${payload}`;
+  }
+
+  /**
+   * @param {String} str
+   * @returns {String}
+   */
+  static _md5(str) {
+    var md5sum = crypto.createHash('md5');
+
+    md5sum.update(str);
+
+    return md5sum.digest('hex');
   }
 
   /**

@@ -32,8 +32,8 @@ suite('AWS/IAM/Resource', function() {
     chai.expect(resource.region).to.be.equal('');
   });
 
-  test('Check constructor sets _service=""', function() {
-    chai.expect(resource.service).to.be.equal('');
+  test('Check constructor sets _service="*"', function() {
+    chai.expect(resource.service).to.be.equal("*");
   });
 
   test(`Check accountId setter sets value ${accountId}`, function() {

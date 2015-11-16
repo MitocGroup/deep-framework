@@ -39,4 +39,11 @@ export class AbstractDriver extends Core.OOP.Interface {
   static get datetime() {
     return new Date().toISOString();
   }
+
+  /**
+   * @returns {String}
+   */
+  static get timeString() {
+    return new Date().toTimeString();
+  }
 }
