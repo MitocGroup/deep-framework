@@ -46,7 +46,7 @@ export class LocalDynamo extends PathAwareDriver {
     // This hook fixes DynamoDB startup delay by waiting an empty stdout dataset
     // @todo: remove this hook after fixing issue!
     this._process.stdout.on('data', (data) => {
-      if (!data.toString().replace(/\s+/, '') && !cbTriggered) {
+      if (data.toString() && !cbTriggered) {
         cbTriggered = true;
         cb(null);
       }
