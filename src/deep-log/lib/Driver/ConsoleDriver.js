@@ -87,7 +87,7 @@ export class ConsoleDriver extends AbstractDriver {
    * @returns {ConsoleDriver}
    */
   overrideNative() {
-    let nativeConsole = this.constructor.name.nativeConsole;
+    let nativeConsole = ConsoleDriver.nativeConsole;
 
     for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {
       if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {
