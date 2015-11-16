@@ -123,7 +123,11 @@ export class FS extends Kernel.ContainerAware {
    * @private
    */
   static _getTmpDir(subpath) {
+    console.log('subpath', subpath);
+
     let dir = Path.join(OS.tmpdir(), subpath);
+
+    console.log('dir', dir);
 
     require('fs-extra').mkdirpSync(dir);
 
