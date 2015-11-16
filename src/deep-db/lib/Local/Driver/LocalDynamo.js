@@ -7,6 +7,7 @@
 import {PathAwareDriver} from './PathAwareDriver';
 import LocalDynamoServer from 'local-dynamo';
 import {FailedToStartServerException} from './Exception/FailedToStartServerException';
+import fse from 'fs-extra';
 
 export class LocalDynamo extends PathAwareDriver {
   /**
@@ -35,6 +36,9 @@ export class LocalDynamo extends PathAwareDriver {
   _start(cb) {
     let cbTriggered = false;
 
+    // avoid local-dynamo package issues...
+    fse.ensureDirSync(this.path);
+
     this._options.dir = this.path;
 
     this._process = LocalDynamoServer.launch(this._options, this.port);
@@ -49,7 +53,7 @@ export class LocalDynamo extends PathAwareDriver {
     });
 
     let onError = (error) => {
-      this._stop(() => '');
+      this._stop(() => {});
 
       if (!cbTriggered) {
         cbTriggered = true;
