@@ -13,5 +13,3 @@
  * @alexanderc: Implement provisioning update
  * @alexanderc: Implement partial web app update
  * @alexanderc: Implement production preparation command
-
-
