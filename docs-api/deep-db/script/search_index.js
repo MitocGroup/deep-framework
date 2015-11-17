@@ -589,13 +589,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/local/driver/abstractdriver.js~abstractdriver#port",
-    "class/lib/Local/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-port",
+    "class/lib/Local/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-port",
     "lib/Local/Driver/AbstractDriver.js~AbstractDriver#port",
     "member"
   ],
   [
     "lib/local/driver/abstractdriver.js~abstractdriver#port",
-    "class/lib/Local/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-port",
+    "class/lib/Local/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-port",
     "lib/Local/Driver/AbstractDriver.js~AbstractDriver#port",
     "member"
   ],
@@ -726,6 +726,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/local/driver/localdynamo.js~localdynamo#pickupoldinstance",
+    "class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html#instance-get-pickUpOldInstance",
+    "lib/Local/Driver/LocalDynamo.js~LocalDynamo#pickUpOldInstance",
+    "member"
+  ],
+  [
+    "lib/local/driver/localdynamo.js~localdynamo#pickupoldinstance",
+    "class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html#instance-set-pickUpOldInstance",
+    "lib/Local/Driver/LocalDynamo.js~LocalDynamo#pickUpOldInstance",
+    "member"
+  ],
+  [
     "lib/local/driver/localdynamo.js~localdynamo.default_options",
     "class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html#static-get-DEFAULT_OPTIONS",
     "lib/Local/Driver/LocalDynamo.js~LocalDynamo.DEFAULT_OPTIONS",
@@ -745,13 +757,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/local/driver/pathawaredriver.js~pathawaredriver#path",
-    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-set-path",
+    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-get-path",
     "lib/Local/Driver/PathAwareDriver.js~PathAwareDriver#path",
     "member"
   ],
   [
     "lib/local/driver/pathawaredriver.js~pathawaredriver#path",
-    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-get-path",
+    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-set-path",
     "lib/Local/Driver/PathAwareDriver.js~PathAwareDriver#path",
     "member"
   ],
