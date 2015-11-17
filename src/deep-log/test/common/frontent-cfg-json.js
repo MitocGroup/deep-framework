@@ -20,7 +20,7 @@ export default {
       parameters: {},
       resources: {
         sample: {
-          say-hello: {
+          'say-hello': {
             type: 'lambda',
             methods: [
               'POST',
@@ -47,7 +47,7 @@ export default {
           'say-test': {
             type: 'external',
             methods: [
-              'GET'
+              'GET',
             ],
             forceUserIdentity: true,
             region: 'us-west-2',
@@ -75,4 +75,4 @@ export default {
       },
     },
   },
-}
+};
