@@ -2,7 +2,7 @@
 
 import chai from 'chai';
 import {RavenBrowserDriver} from '../../lib.compiled/Driver/RavenBrowserDriver';
-import RequireProxy from 'proxyquire';
+import requireProxy from 'proxyquire';
 import ravenMock from '../Mock/ravenMock';
 
 suite('Driver/RavenBrowserDriver', function() {
@@ -13,7 +13,7 @@ suite('Driver/RavenBrowserDriver', function() {
     writable: false,
   });
 
-  let localRavenBrowserDriverExport = RequireProxy(
+  let localRavenBrowserDriverExport = requireProxy(
     '../../lib.compiled/Driver/RavenBrowserDriver',
     {
       'raven': ravenMock,

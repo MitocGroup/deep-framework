@@ -92,4 +92,4 @@ export default {
   tablesNames: {
     Name: 'DeepDevName32f3705a',
   },
-}
+};

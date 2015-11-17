@@ -8,7 +8,7 @@
  * Raven Mock
  */
 export default  {
-  Client: function(dsn) {
+  Client: function() {
     return {
       logs: [],
 
