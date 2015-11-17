@@ -9,7 +9,6 @@ import {ConsoleDriverMock} from './Mock/ConsoleDriverMock';
 import Core from 'deep-core';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
-import ravenMock from './Mock/ravenMock';
 
 chai.use(sinonChai);
 
@@ -133,18 +132,21 @@ suite('Log', function() {
     chai.expect(actualMsg[2]).to.eql(context);
   });
 
-  test('Check create() method throws "Core.Exception.InvalidArgumentException" exception for invalid driver type', function() {
-    let error = null;
-    try {
-      log.create('test');
-    } catch (e) {
-      error = e;
-    }
+  test(
+    'Check create() method throws "Core.Exception.InvalidArgumentException" for invalid driver type',
+    function() {
+      let error = null;
+      try {
+        log.create('test');
+      } catch (e) {
+        error = e;
+      }
 
-    chai.expect(error).to.be.an.instanceof(
-      Core.Exception.InvalidArgumentException
-    );
-  });
+      chai.expect(error).to.be.an.instanceof(
+        Core.Exception.InvalidArgumentException
+      );
+    }
+  );
 
   test('Check boot() method register service', function() {
     let spyCallback = sinon.spy();
@@ -162,7 +164,7 @@ suite('Log', function() {
 
       log.overrideJsConsole();
       log.debug(msg, context);
-      
+
       let actualResult = log.drivers.iterator[0].logs.pop();
       chai.expect(actualResult[0]).to.eql(msg);
       chai.expect(actualResult[1]).to.eql('debug');

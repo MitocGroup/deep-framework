@@ -25,6 +25,14 @@ suite('Driver/RavenBrowserDriver', function() {
     'https://72kshdbrgkebghkrb34iu5yb3ub:23l5hbk2v2jhg52uygvygvhmgv@app.getsentry.com/45747'
   );
 
+  test('Chec constructor successfully instantiates new istance of class',
+    function() {
+      chai.assert.instanceOf(
+        ravenBrowserDriver, RavenBrowserDriver, 'is instance of RavenBrowserDriver'
+      );
+    }
+  );
+
   test('Class RavenBrowserDriver exists in Driver/RavenBrowserDriver', function() {
     chai.expect(typeof RavenBrowserDriver).to.equal('function');
   });
