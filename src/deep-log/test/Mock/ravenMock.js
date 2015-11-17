@@ -39,10 +39,10 @@ export default  {
   },
 
   config: function() {
-
+    return this;
   },
 
   install: function() {
-
+    return this;
   },
 };

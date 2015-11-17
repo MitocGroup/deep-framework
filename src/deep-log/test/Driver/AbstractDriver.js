@@ -2,7 +2,7 @@
 
 import chai from 'chai';
 import {AbstractDriver} from '../../lib.compiled/Driver/AbstractDriver';
-import {AbstractDriverMock} from '../Mocks/AbstractDriverMock';
+import {AbstractDriverMock} from '../Mock/AbstractDriverMock';
 
 suite('Driver/AbstractDriver', function() {
   let abstractDriver = new AbstractDriverMock();

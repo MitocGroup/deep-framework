@@ -5,10 +5,11 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Log} from '../lib.compiled/Log';
 import {ConsoleDriver} from '../lib.compiled/Driver/ConsoleDriver';
+import {ConsoleDriverMock} from './Mock/ConsoleDriverMock';
 import Core from 'deep-core';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
-import ravenMock from './Mocks/ravenMock';
+import ravenMock from './Mock/ravenMock';
 
 chai.use(sinonChai);
 
@@ -16,6 +17,7 @@ suite('Log', function() {
   let log = null;
   let backendKernelInstance = null;
   let frontendKernelInstance = null;
+  let consoleDriverMock = new ConsoleDriverMock();
 
   test('Class Log exists in Log', function() {
     chai.expect(typeof Log).to.equal('function');
@@ -33,6 +35,7 @@ suite('Log', function() {
       frontendKernelInstance = frontendKernel;
 
       log = frontendKernel.get('log');
+      log.localBackend = true;
 
       // complete the async
       done();
@@ -86,27 +89,48 @@ suite('Log', function() {
   });
 
   test('Check register() method register driver for console', function() {
-      let actualResult = log.register('console');
+      let actualResult = log.register(consoleDriverMock);
       chai.assert.instanceOf(
         actualResult,
         Log,
         'register() method registers and returns an instance of ConsoleDriver'
       );
-      chai.expect(log.drivers.iterator[0].constructor.name).to.be.equal('ConsoleDriver');
+      chai.expect(log.drivers.iterator[0].constructor.name).to.be.equal(
+        'ConsoleDriverMock'
+      );
+    }
+  );
+
+  test('Check register() method throws exception for invalid driver', function() {
+      let error = null;
+      try {
+        log.register({});
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.an.instanceof(
+        Core.Exception.InvalidArgumentException
+      );
     }
   );
 
   test('Check log() method runs without exception', function() {
+    let level = 'debug';
+    let msg = 'test debug log() from Log';
+    let context = {context: 'Test context'};
 
-    let actualResult = log.log(
-      'test log() from ConsoleDriver', 'debug', 'context'
-    );
+    let actualResult = log.log(msg, level, context);
+    let actualMsg = log.drivers.iterator[0].logs.pop();
 
     chai.assert.instanceOf(
       actualResult,
       Log,
       'register() method registers and returns an instance of ConsoleDriver'
     );
+    chai.expect(actualMsg[0]).to.eql(msg);
+    chai.expect(actualMsg[1]).to.eql(level);
+    chai.expect(actualMsg[2]).to.eql(context);
   });
 
   test('Check create() method throws "Core.Exception.InvalidArgumentException" exception for invalid driver type', function() {
@@ -117,17 +141,8 @@ suite('Log', function() {
       error = e;
     }
 
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(error).to.be.an.instanceof(Core.Exception.InvalidArgumentException);
-  });
-
-  test('Check create() method returns log driver for "console"', function() {
-    let actualResult = log.create('console');
-
-    chai.assert.instanceOf(
-      actualResult,
-      ConsoleDriver,
-      'create() method returns an instance of ConsoleDriver'
+    chai.expect(error).to.be.an.instanceof(
+      Core.Exception.InvalidArgumentException
     );
   });
 
@@ -139,25 +154,113 @@ suite('Log', function() {
     chai.expect(spyCallback).to.have.been.calledWithExactly();
   });
 
-  //@todo - resolve with AlexC
-  //test('Check create() method returns log driver for "sentry/raven"', function() {
-  //  let actualResult = log.create('raven');
-  //
-  //  chai.assert.instanceOf(
-  //    actualResult,
-  //    ConsoleDriver,
-  //    'create() method returns an instance of ConsoleDriver'
-  //  );
-  //});
+  test(
+    'Check overrideJsConsole() method returns object and executes debug',
+    function() {
+      let msg = 'test debug log() from Log';
+      let context = {context: 'Test context'};
 
-  test('Check overrideJsConsole() method returns object', function() {
-    let error = null;
-    let actualResult = null;
-
-    try {
-      actualResult = log.overrideJsConsole();
-    } catch (e) {
-      error = e;
+      log.overrideJsConsole();
+      log.debug(msg, context);
+      
+      let actualResult = log.drivers.iterator[0].logs.pop();
+      chai.expect(actualResult[0]).to.eql(msg);
+      chai.expect(actualResult[1]).to.eql('debug');
+      chai.expect(actualResult[2]).to.eql(context);
     }
+  );
+
+  test('Check error()', function() {
+    let msg = 'test error log() from Log';
+    let context = {context: 'Test context'};
+
+    log.error(msg, context);
+
+    let actualResult = log.drivers.iterator[0].logs.pop();
+    chai.expect(actualResult[0]).to.eql(msg);
+    chai.expect(actualResult[1]).to.eql('error');
+    chai.expect(actualResult[2]).to.eql(context);
+  });
+
+  test('Check info()', function() {
+    let msg = 'test info log() from Log';
+    let context = {context: 'Test context'};
+
+    log.info(msg, context);
+
+    let actualResult = log.drivers.iterator[0].logs.pop();
+    chai.expect(actualResult[0]).to.eql(msg);
+    chai.expect(actualResult[1]).to.eql('info');
+    chai.expect(actualResult[2]).to.eql(context);
+  });
+
+  test('Check warning()', function() {
+    let msg = 'test warning log() from Log';
+    let context = {context: 'Test context'};
+
+    log.warning(msg, context);
+
+    let actualResult = log.drivers.iterator[0].logs.pop();
+    chai.expect(actualResult[0]).to.eql(msg);
+    chai.expect(actualResult[1]).to.eql('warning');
+    chai.expect(actualResult[2]).to.eql(context);
+  });
+
+  test('Check emergency()', function() {
+    let msg = 'test emergency log() from Log';
+    let context = {context: 'Test context'};
+
+    log.emergency(msg, context);
+
+    let actualResult = log.drivers.iterator[0].logs.pop();
+    chai.expect(actualResult[0]).to.eql(msg);
+    chai.expect(actualResult[1]).to.eql('emergency');
+    chai.expect(actualResult[2]).to.eql(context);
+  });
+
+  test('Check critical()', function() {
+    let msg = 'test critical log() from Log';
+    let context = {context: 'Test context'};
+
+    log.critical(msg, context);
+
+    let actualResult = log.drivers.iterator[0].logs.pop();
+    chai.expect(actualResult[0]).to.eql(msg);
+    chai.expect(actualResult[1]).to.eql('critical');
+    chai.expect(actualResult[2]).to.eql(context);
+  });
+
+  test('Check notice()', function() {
+    let msg = 'test notice log() from Log';
+    let context = {context: 'Test context'};
+
+    log.notice(msg, context);
+
+    let actualResult = log.drivers.iterator[0].logs.pop();
+    chai.expect(actualResult[0]).to.eql(msg);
+    chai.expect(actualResult[1]).to.eql('notice');
+    chai.expect(actualResult[2]).to.eql(context);
+  });
+
+  test('Check alert()', function() {
+    let msg = 'test alert log() from Log';
+    let context = {context: 'Test context'};
+
+    log.alert(msg, context);
+
+    let actualResult = log.drivers.iterator[0].logs.pop();
+    chai.expect(actualResult[0]).to.eql(msg);
+    chai.expect(actualResult[1]).to.eql('alert');
+    chai.expect(actualResult[2]).to.eql(context);
+  });
+
+  test('Check register().create() method returns log driver for "console"', function() {
+    log.register('console');
+
+    chai.assert.instanceOf(
+      log.drivers.iterator[0],
+      ConsoleDriver,
+      'create() method returns an instance of ConsoleDriver'
+    );
   });
 });

@@ -4,7 +4,7 @@ import chai from 'chai';
 import {RavenDriver} from '../../lib.compiled/Driver/RavenDriver';
 import Raven from 'raven';
 import RequireProxy from 'proxyquire';
-import ravenMock from '../Mocks/ravenMock';
+import ravenMock from '../Mock/ravenMock';
 
 suite('Driver/RavenDriver', function() {
 

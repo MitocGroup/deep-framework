@@ -2,27 +2,28 @@
 
 import chai from 'chai';
 import {RavenBrowserDriver} from '../../lib.compiled/Driver/RavenBrowserDriver';
-import {RavenBrowserDriverMock} from '../Mocks/RavenBrowserDriverMock';
 import RequireProxy from 'proxyquire';
+import ravenMock from '../Mock/ravenMock';
 
 suite('Driver/RavenBrowserDriver', function() {
 
-  //@todo - TBD
   //mocking raven
-  //Object.defineProperty(ravenMock, '@global', {
-  //  value: true,
-  //  writable: false,
-  //});
-  //
-  //let localRavenBrowserDriverExport = RequireProxy(
-  //  '../Mocks/RavenBrowserDriverMock',
-  //  {
-  //    'raven': ravenMock,
-  //  }
-  //);
-  //
-  //let RavenBrowserDriverMock = localRavenBrowserDriverExport.RavenBrowserDriverMock;
-  //let ravenDriver = new RavenBrowserDriverMock('https://pycoding.slack.com/messages/sentry-deep-dev/');
+  Object.defineProperty(ravenMock, '@global', {
+    value: true,
+    writable: false,
+  });
+
+  let localRavenBrowserDriverExport = RequireProxy(
+    '../../lib.compiled/Driver/RavenBrowserDriver',
+    {
+      'raven': ravenMock,
+    }
+  );
+
+  let RavenBrowserDriver = localRavenBrowserDriverExport.RavenBrowserDriver;
+  let ravenBrowserDriver = new RavenBrowserDriver(
+    'https://72kshdbrgkebghkrb34iu5yb3ub:23l5hbk2v2jhg52uygvygvhmgv@app.getsentry.com/45747'
+  );
 
   test('Class RavenBrowserDriver exists in Driver/RavenBrowserDriver', function() {
     chai.expect(typeof RavenBrowserDriver).to.equal('function');
