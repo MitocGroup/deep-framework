@@ -1,3 +1,5 @@
+'use strict';
+
 import backendConfig from './backend-cfg-json';
 import Kernel from 'deep-kernel';
 

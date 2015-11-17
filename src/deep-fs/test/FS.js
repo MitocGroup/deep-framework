@@ -134,7 +134,7 @@ suite('FS', function() {
     chai.expect(nodeFS.existsSync(actualResult)).to.equal(true);
 
     //remove directory
-    nodeFS.rmdirSync(actualResult)
+    nodeFS.rmdirSync(actualResult);
     chai.expect(nodeFS.existsSync(actualResult)).to.equal(false);
   });
 });
