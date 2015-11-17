@@ -293,10 +293,12 @@ suite('Local/S3FSRelativeFSExtender', function() {
         CommonPrefixes: [],
         EncodingType: 'url',
       };
-      let files = [
-        'deep-framework/src/deep-fs/test/common/backend-cfg-json.js',
-        'deep-framework/src/deep-fs/test/common/KernelFactory.js',
-      ];
+
+      //@todo - uncomment when method will be updated because got duplicate content of first file
+      //let files = [
+      //  'deep-framework/src/deep-fs/test/common/backend-cfg-json.js',
+      //  'deep-framework/src/deep-fs/test/common/KernelFactory.js',
+      //];
 
       let callback = (globResponseObj) => {
         chai.expect(actualResult).to.equal(undefined);
