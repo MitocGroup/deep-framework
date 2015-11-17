@@ -1,16 +1,21 @@
 'use strict';
 
 import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import {S3FSRelativeFSExtender} from '../../lib.compiled/Local/S3FSRelativeFSExtender';
 import path from 'path';
+
+chai.use(sinonChai);
 
 suite('Local/S3FSRelativeFSExtender', function() {
 
   let s3FSRelativeFSExtender = null;
-  let relativeFsPath = 'relativeTestPath/To';
+  let relativeFsPath = process.cwd() + '/test/relativeTestPath/To';
 
   test('Class S3FSRelativeFSExtender exists in Local/S3FSRelativeFSExtender', function() {
     chai.expect(typeof S3FSRelativeFSExtender).to.equal('function');
+    chai.expect(relativeFsPath).to.equal('fdfs')
   });
 
   test('Check constructor throws exception for invalid relativeFsPath', function() {
@@ -90,17 +95,103 @@ suite('Local/S3FSRelativeFSExtender', function() {
   test(
     'Check getPath() w/o argument returns valid path',
     function() {
-      chai.expect(s3FSRelativeFSExtender.relativeFsExtended.getPath()).to.eql(relativeFsPath);
+      chai.expect(s3FSRelativeFSExtender.relativeFsExtended.getPath()).to.equal(relativeFsPath);
     }
   );
 
   test(
     'Check getPath() argument returns valid path',
     function() {
-      let pathStr = 'testPath/Str';
-      let expectedResult = path.join(relativeFsPath, pathStr)
+      let pathStr = '/testPath/Str';
+      let expectedResult = path.join(relativeFsPath, pathStr);
 
-      chai.expect(s3FSRelativeFSExtender.relativeFsExtended.getPath(pathStr)).to.eql(expectedResult);
+      chai.expect(s3FSRelativeFSExtender.relativeFsExtended.getPath(pathStr)).to.equal(expectedResult);
+    }
+  );
+
+  test(
+    'Check clone() argument returns valid object',
+    function() {
+      let storeS3FSRelativeFSExtender = s3FSRelativeFSExtender;
+      let pathStr = process.cwd() + '/testPath/Str/ToClone';
+
+      let actualResult = s3FSRelativeFSExtender.relativeFsExtended.clone(pathStr);
+
+      chai.expect(actualResult.constructor.name).to.eql('Object');
+      chai.expect(actualResult.getPath()).to.eql(relativeFsPath + pathStr);
+    }
+  );
+
+  test(
+    'Check headObject() argument returns result in cb',
+    function() {
+      let spyCallback = sinon.spy();
+      let pathStr = 'testPath/Str';
+      let cbArg = null;
+
+      //arround to first 9 chars
+      let lastModified = new Date().getTime().toString().substr(0, 9);
+      let expectedResultObj = {
+        AcceptRanges: '',
+        Restore: '',
+        LastModified: lastModified,
+        ContentLength: 0,
+        ETag: '55ad340609f4b302',
+        MissingMeta: 0,
+        VersionId: '55ad340609f4b302',
+        StorageClass: 'REDUCED_REDUNDANCY',
+      };
+
+      chai.expect(
+        s3FSRelativeFSExtender.relativeFsExtended.headObject(pathStr, spyCallback)
+      ).to.eql(undefined);
+      chai.expect(spyCallback).to.have.been.calledWith();
+      cbArg = spyCallback.args[0][0];
+      chai.expect(cbArg.AcceptRanges).to.eql(expectedResultObj.AcceptRanges);
+      chai.expect(cbArg.Restore).to.eql(expectedResultObj.Restore);
+      chai.expect(cbArg.LastModified.toString()).to.contains(expectedResultObj.LastModified);
+      chai.expect(cbArg.ContentLength).to.eql(expectedResultObj.ContentLength);
+      chai.expect(cbArg.ETag).to.eql(expectedResultObj.ETag);
+      chai.expect(cbArg.MissingMeta).to.eql(expectedResultObj.MissingMeta);
+      chai.expect(cbArg.VersionId).to.eql(expectedResultObj.VersionId);
+      chai.expect(cbArg.StorageClass).to.eql(expectedResultObj.StorageClass);
+    }
+  );
+
+  test(
+    'Check headObject() argument returns Promise',
+    function() {
+      let pathStr = 'testPath/Str';
+
+      //arround to first 9 chars
+      let lastModified = new Date().getTime().toString().substr(0, 9);
+      let expectedResultObj = {
+        AcceptRanges: '',
+        Restore: '',
+        LastModified: lastModified,
+        ContentLength: 0,
+        ETag: '55ad340609f4b302',
+        MissingMeta: 0,
+        VersionId: '55ad340609f4b302',
+        StorageClass: 'REDUCED_REDUNDANCY',
+      };
+
+      s3FSRelativeFSExtender.relativeFsExtended.headObject(pathStr).then(
+        function(response) {
+          chai.expect(response.AcceptRanges).to.eql(expectedResultObj.AcceptRanges);
+          chai.expect(response.Restore).to.eql(expectedResultObj.Restore);
+          chai.expect(response.LastModified.toString()).to.contains(expectedResultObj.LastModified);
+          chai.expect(response.ContentLength).to.eql(expectedResultObj.ContentLength);
+          chai.expect(response.ETag).to.eql(expectedResultObj.ETag);
+          chai.expect(response.MissingMeta).to.eql(expectedResultObj.MissingMeta);
+          chai.expect(response.VersionId).to.eql(expectedResultObj.VersionId);
+          chai.expect(response.StorageClass).to.eql(expectedResultObj.StorageClass);
+        })
+        .catch(
+        function(reason) {
+          chai.assert.ok(false, 'Handle rejected promise (' + reason + ') here.');
+        }
+      );
     }
   );
 });
