@@ -66,6 +66,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-resource/lib/resource/exception/notauthenticatedexception.js~notauthenticatedexception",
+    "class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html",
+    "<span>NotAuthenticatedException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/NotAuthenticatedException.js</span>",
+    "class"
+  ],
+  [
     "deep-resource/lib/resource/request.js~request",
     "class/lib/Resource/Request.js~Request.html",
     "<span>Request</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Request.js</span>",
@@ -615,6 +621,18 @@ window.esdocSearchIndex = [
     "lib/resource/exception/missingsecurityserviceexception.js~missingsecurityserviceexception#constructor",
     "class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html#instance-constructor-constructor",
     "lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException#constructor",
+    "method"
+  ],
+  [
+    "lib/resource/exception/notauthenticatedexception.js",
+    "file/lib/Resource/Exception/NotAuthenticatedException.js.html",
+    "lib/Resource/Exception/NotAuthenticatedException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/notauthenticatedexception.js~notauthenticatedexception#constructor",
+    "class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException#constructor",
     "method"
   ],
   [

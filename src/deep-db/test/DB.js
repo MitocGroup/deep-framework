@@ -174,7 +174,7 @@ suite('DB', function() {
 
 
     try {
-      actualResult = db._setVogelsDriver({LocalDynamo: dynamodb});
+      actualResult = db._setVogelsDriver(dynamodb);
     } catch (e) {
       error = e;
     }

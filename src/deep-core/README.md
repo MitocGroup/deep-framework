@@ -9,7 +9,7 @@ DEEP Core Library (deep-core)
 `DEEP Framework` is a serverless web framework, core component of the 
 [Platform-as-a-Service](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem) 
 that abstracts web apps and web services from specific cloud providers. This framework enables developers build
-applications or platforms using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) 
+cloud-native applications or platforms using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) 
 in a completely [serverless approach](https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture). 
 
 > At this moment only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are encouraged to add support 

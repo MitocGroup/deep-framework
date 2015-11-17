@@ -2027,7 +2027,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {RedisClusterException} from './Exception/RedisClusterException';\n\n/**\n * Redis/Elasticache driver implementation\n */\nexport class RedisDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    let nativeDriver = this.NATIVE_DRIVER;\n\n    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();\n  }\n\n  /**\n   * @returns {Redis}\n   */\n  get client() {\n    return this._client;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    this._client.exists(key, (error, results) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, results);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    this._client.get(key, (error, results) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, results);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    this._client.set(key, value, ttl, (error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    this._client.del(key, timeout, (error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    this._client.flushall((error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @returns {*|exports|module.exports}\n   * @constructor\n   */\n  get NATIVE_DRIVER() {\n    return require('ioredis');\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {RedisClusterException} from './Exception/RedisClusterException';\nimport Redis from 'ioredis';\n\n/**\n * Redis/Elasticache driver implementation\n */\nexport class RedisDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    let nativeDriver = this.NATIVE_DRIVER;\n\n    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();\n  }\n\n  /**\n   * @returns {Redis}\n   */\n  get client() {\n    return this._client;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    this._client.exists(key, (error, results) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, results);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    this._client.get(key, (error, results) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, results);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    this._client.set(key, value, ttl, (error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    this._client.del(key, timeout, (error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    this._client.flushall((error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @returns {*|exports|module.exports}\n   * @constructor\n   */\n  get NATIVE_DRIVER() {\n    return Redis;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2041,7 +2041,7 @@
     "importPath": "deep-cache/lib/Driver/RedisDriver.js",
     "importStyle": "{RedisDriver}",
     "description": "Redis/Elasticache driver implementation",
-    "lineNumber": 13,
+    "lineNumber": 14,
     "interface": false,
     "extends": [
       "lib/Driver/AbstractDriver~AbstractDriver"
@@ -2056,7 +2056,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 18,
     "params": [
       {
         "nullable": null,
@@ -2080,7 +2080,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_client",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -2097,7 +2097,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#client",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 29,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2128,7 +2128,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_has",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 37,
     "params": [
       {
         "nullable": null,
@@ -2162,7 +2162,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_get",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 53,
     "params": [
       {
         "nullable": null,
@@ -2196,7 +2196,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_set",
     "access": null,
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 72,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2264,7 +2264,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_invalidate",
     "access": null,
     "description": null,
-    "lineNumber": 88,
+    "lineNumber": 89,
     "params": [
       {
         "nullable": null,
@@ -2308,7 +2308,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#_flush",
     "access": null,
     "description": null,
-    "lineNumber": 104,
+    "lineNumber": 105,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2346,7 +2346,7 @@
     "longname": "lib/Driver/RedisDriver.js~RedisDriver#NATIVE_DRIVER",
     "access": null,
     "description": null,
-    "lineNumber": 120,
+    "lineNumber": 121,
     "unknown": [
       {
         "tagName": "@returns",

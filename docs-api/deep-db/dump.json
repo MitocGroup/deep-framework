@@ -2130,7 +2130,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport {PathAwareDriver} from './PathAwareDriver';\nimport LocalDynamoServer from 'local-dynamo';\nimport {FailedToStartServerException} from './Exception/FailedToStartServerException';\n\nexport class LocalDynamo extends PathAwareDriver {\n  /**\n   * @param {Object} options\n   * @param {String} path\n   * @param {Number} port\n   */\n  constructor(options = LocalDynamo.DEFAULT_OPTIONS, path = LocalDynamo.DBPath, port = LocalDynamo.DEFAULT_PORT) {\n    super(path, port);\n\n    this._options = options;\n    this._process = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get options() {\n    return this._options;\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _start(cb) {\n    let cbTriggered = false;\n\n    this._options.dir = this.path;\n\n    this._process = LocalDynamoServer.launch(this._options, this.port);\n\n    // This hook fixes DynamoDB startup delay by waiting an empty stdout dataset\n    // @todo: remove this hook after fixing issue!\n    this._process.stdout.on('data', (data) => {\n      if (!data.toString().replace(/\\s+/, '') && !cbTriggered) {\n        cbTriggered = true;\n        cb(null);\n      }\n    });\n\n    let onError = (error) => {\n      this._stop(() => '');\n\n      if (!cbTriggered) {\n        cbTriggered = true;\n        cb(new FailedToStartServerException(this, error));\n      }\n    };\n\n    this._process.on('uncaughtException', onError);\n    this._process.on('error', onError);\n    this._process.on('exit', () => {\n      this.stop(() => '');\n    });\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _stop(cb) {\n    if (this._process) {\n      this._process.kill();\n      this._process = null;\n    }\n\n    cb(null);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_OPTIONS() {\n    return {\n      stdio: 'pipe',\n    };\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport {PathAwareDriver} from './PathAwareDriver';\nimport LocalDynamoServer from 'local-dynamo';\nimport {FailedToStartServerException} from './Exception/FailedToStartServerException';\nimport fse from 'fs-extra';\n\nexport class LocalDynamo extends PathAwareDriver {\n  /**\n   * @param {Object} options\n   * @param {String} path\n   * @param {Number} port\n   */\n  constructor(options = LocalDynamo.DEFAULT_OPTIONS, path = LocalDynamo.DBPath, port = LocalDynamo.DEFAULT_PORT) {\n    super(path, port);\n\n    this._options = options;\n    this._process = null;\n\n    this._pickUpOldInstance = true; // @todo: set it false by default?\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get pickUpOldInstance() {\n    return this._pickUpOldInstance;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set pickUpOldInstance(state) {\n    this._pickUpOldInstance = state;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get options() {\n    return this._options;\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _start(cb) {\n    let cbTriggered = false;\n\n    // avoid local-dynamo package issues...\n    fse.ensureDirSync(this.path);\n\n    this._options.dir = this.path;\n\n    try {\n      this._process = LocalDynamoServer.launch(this._options, this.port);\n    } catch (error) {\n      this._pickUpOldInstance\n        ? cb(null)\n        : cb(new FailedToStartServerException(this, error));\n\n      return;\n    }\n\n    // This hook fixes DynamoDB startup delay by waiting an empty stdout dataset\n    // @todo: remove this hook after fixing issue!\n    this._process.stdout.on('data', (data) => {\n      if (data.toString() && !cbTriggered) {\n        cbTriggered = true;\n        cb(null);\n      }\n    });\n\n    let onError = (error) => {\n      this._stop(() => {});\n\n      if (!cbTriggered) {\n        cbTriggered = true;\n        cb(new FailedToStartServerException(this, error));\n      }\n    };\n\n    this._process.on('uncaughtException', onError);\n    this._process.on('error', onError);\n    this._process.on('exit', () => {\n      this.stop(() => '');\n    });\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _stop(cb) {\n    if (this._process) {\n      this._process.kill();\n      this._process = null;\n    }\n\n    cb(null);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_OPTIONS() {\n    return {\n      stdio: 'pipe',\n    };\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2144,7 +2144,7 @@
     "importPath": "deep-db/lib/Local/Driver/LocalDynamo.js",
     "importStyle": "{LocalDynamo}",
     "description": null,
-    "lineNumber": 11,
+    "lineNumber": 12,
     "undocument": true,
     "interface": false,
     "extends": [
@@ -2160,7 +2160,7 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 18,
     "params": [
       {
         "nullable": null,
@@ -2204,7 +2204,7 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#_options",
     "access": null,
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 21,
     "undocument": true,
     "type": {
       "types": [
@@ -2221,7 +2221,101 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#_process",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_pickUpOldInstance",
+    "memberof": "lib/Local/Driver/LocalDynamo.js~LocalDynamo",
+    "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#_pickUpOldInstance",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "pickUpOldInstance",
+    "memberof": "lib/Local/Driver/LocalDynamo.js~LocalDynamo",
+    "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#pickUpOldInstance",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "pickUpOldInstance",
+    "memberof": "lib/Local/Driver/LocalDynamo.js~LocalDynamo",
+    "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#pickUpOldInstance",
+    "access": null,
+    "description": null,
+    "lineNumber": 37,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "state",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_pickUpOldInstance",
+    "memberof": "lib/Local/Driver/LocalDynamo.js~LocalDynamo",
+    "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#_pickUpOldInstance",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
     "undocument": true,
     "type": {
       "types": [
@@ -2238,7 +2332,7 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#options",
     "access": null,
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 44,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2269,7 +2363,7 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#_start",
     "access": "private",
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 52,
     "params": [
       {
         "nullable": null,
@@ -2293,7 +2387,7 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#_process",
     "access": null,
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 61,
     "undocument": true,
     "type": {
       "types": [
@@ -2310,7 +2404,7 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#_stop",
     "access": "private",
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 99,
     "params": [
       {
         "nullable": null,
@@ -2334,7 +2428,7 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo#_process",
     "access": null,
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 102,
     "undocument": true,
     "type": {
       "types": [
@@ -2351,7 +2445,7 @@
     "longname": "lib/Local/Driver/LocalDynamo.js~LocalDynamo.DEFAULT_OPTIONS",
     "access": null,
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 111,
     "unknown": [
       {
         "tagName": "@returns",

@@ -20,6 +20,22 @@ export class LocalDynamo extends PathAwareDriver {
 
     this._options = options;
     this._process = null;
+
+    this._pickUpOldInstance = true; // @todo: set it false by default?
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get pickUpOldInstance() {
+    return this._pickUpOldInstance;
+  }
+
+  /**
+   * @param {Boolean} state
+   */
+  set pickUpOldInstance(state) {
+    this._pickUpOldInstance = state;
   }
 
   /**
@@ -41,12 +57,20 @@ export class LocalDynamo extends PathAwareDriver {
 
     this._options.dir = this.path;
 
-    this._process = LocalDynamoServer.launch(this._options, this.port);
+    try {
+      this._process = LocalDynamoServer.launch(this._options, this.port);
+    } catch (error) {
+      this._pickUpOldInstance
+        ? cb(null)
+        : cb(new FailedToStartServerException(this, error));
+
+      return;
+    }
 
     // This hook fixes DynamoDB startup delay by waiting an empty stdout dataset
     // @todo: remove this hook after fixing issue!
     this._process.stdout.on('data', (data) => {
-      if (!data.toString().replace(/\s+/, '') && !cbTriggered) {
+      if (data.toString() && !cbTriggered) {
         cbTriggered = true;
         cb(null);
       }

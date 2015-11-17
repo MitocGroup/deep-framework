@@ -48,6 +48,7 @@
 &apos;use strict&apos;;
 
 import {AbstractDriver} from &apos;./AbstractDriver&apos;;
+import {Log} from &apos;../Log&apos;;
 
 /**
  * Console native logging
@@ -55,6 +56,35 @@ import {AbstractDriver} from &apos;./AbstractDriver&apos;;
 export class ConsoleDriver extends AbstractDriver {
   constructor() {
     super();
+
+    this._console = ConsoleDriver._buildConsole();
+  }
+
+  /**
+   * @returns {Object}
+   * @private
+   */
+  static _buildConsole() {
+    let nativeConsole = ConsoleDriver.nativeConsole;
+    let console = {};
+
+    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {
+      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {
+        continue;
+      }
+
+      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];
+
+      // Fixes issue with node env
+      if (method === &apos;debug&apos; &amp;&amp;
+        typeof nativeConsole[method] === &apos;undefined&apos;) {
+        method = &apos;log&apos;;
+      }
+
+      console[method] = nativeConsole[method];
+    }
+
+    return console;
   }
 
   /**
@@ -63,9 +93,72 @@ export class ConsoleDriver extends AbstractDriver {
    * @param {*} context
    */
   log(msg, level, context) {
-    var datetime = AbstractDriver.datetime;
+    let nativeMethod = &apos;log&apos;;
 
-    console.log(`${level.toUpperCase()} on ${datetime}: `, msg, context);
+    switch (level) {
+      case Log.EMERGENCY:
+      case Log.ERROR:
+      case Log.CRITICAL:
+        nativeMethod = &apos;error&apos;;
+        break;
+      case Log.ALERT:
+      case Log.WARNING:
+        nativeMethod = &apos;warn&apos;;
+        break;
+      case Log.NOTICE:
+        nativeMethod = &apos;log&apos;;
+        break;
+      case Log.INFO:
+        nativeMethod = &apos;info&apos;;
+        break;
+      case Log.DEBUG:
+        nativeMethod = &apos;debug&apos;;
+        break;
+    }
+
+    // Fixes issue with node env
+    (this._console[nativeMethod] || this._console.log)(AbstractDriver.timeString, msg);
+
+    // @todo: figure out a better way of dumping context
+    if (context) {
+      // Fixes issue with node env
+      (this._console.debug || this._console.log)(&apos;[DEBUG]&apos;, context);
+    }
+  }
+
+  /**
+   * @returns {ConsoleDriver}
+   */
+  overrideNative() {
+    let nativeConsole = ConsoleDriver.nativeConsole;
+
+    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {
+      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {
+        continue;
+      }
+
+      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];
+
+      nativeConsole[method] = (...args) =&gt; {
+        this._console[method](AbstractDriver.timeString, ...args);
+      };
+    }
+
+    return this;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  static get nativeConsole() {
+    return typeof window === &apos;undefined&apos; ? console : window.console;
+  }
+
+  /**
+   * @returns {String[]}
+   */
+  static get METHODS_TO_OVERRIDE() {
+    return [&apos;error&apos;, &apos;log&apos;, &apos;warn&apos;, &apos;info&apos;, &apos;debug&apos;];
   }
 }
 </code></pre>
