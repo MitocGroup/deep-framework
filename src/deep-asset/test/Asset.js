@@ -21,15 +21,10 @@ suite('Asset', function() {
 
   test('Load Kernels by using Kernel.load()', function(done) {
     let callback = (frontendKernel, backendKernel) => {
-      chai.assert.instanceOf(
-        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
-      );
-      chai.assert.instanceOf(
-        frontendKernel, Kernel, 'frontendKernel is an instance of Kernel'
-      );
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
       backendKernelInstance = backendKernel;
+      chai.assert.instanceOf(frontendKernel, Kernel, 'frontendKernel is an instance of Kernel');
       frontendKernelInstance = frontendKernel;
-
       assetService = frontendKernel.get('asset');
 
       // complete the async
