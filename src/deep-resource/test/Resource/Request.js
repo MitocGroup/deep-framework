@@ -282,7 +282,7 @@ suite('Resource/Request', function() {
 
   test(`Check _buildCacheKey() method returns ${method}:${action.type}:${action.source}#${payload}`, function() {
     let actualResult = request._buildCacheKey();
-    let expectedResult = `${method}:${action.type}:${action.source.original}#${JSON.stringify(payload)}`;
+    let expectedResult = `${method}:${action.type}:${action.source.original}#${Request._md5(JSON.stringify(payload))}`;
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
 
