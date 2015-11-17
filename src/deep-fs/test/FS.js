@@ -102,7 +102,7 @@ suite('FS', function() {
     chai.expect(actualResult.path).to.equal(path);
   });
 
-  test('Check getFolder() throws "UnknownFolderException" exception for invalid path',
+  test('Check getFolder() throws "UnknownFolderException" for invalid path',
     function() {
       let error = null;
 
