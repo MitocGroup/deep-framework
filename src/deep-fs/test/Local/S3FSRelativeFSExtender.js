@@ -308,7 +308,7 @@ suite('Local/S3FSRelativeFSExtender', function() {
         chai.expect(globResponseObj.CommonPrefixes).to.eql(expectedResult.CommonPrefixes);
         chai.expect(globResponseObj.EncodingType).to.equal(expectedResult.EncodingType);
 
-        //@todo - uncomment when method will be updated because got duplicate content of first file, u
+        //@todo - uncomment when method will be updated because got duplicate content of first file
         //chai.expect(globResponseObj.Contents.length).to.equal(files.length);
         //for (let i = 0; i < files.length; i++) {
         //  chai.expect(globResponseObj.Contents[i].Key).to.contains(files[i]);
@@ -359,7 +359,7 @@ suite('Local/S3FSRelativeFSExtender', function() {
             chai.expect(response.CommonPrefixes).to.eql(expectedResult.CommonPrefixes);
             chai.expect(response.EncodingType).to.equal(expectedResult.EncodingType);
 
-            //@todo - uncomment when method will be updated because got duplicate content of first file, u
+            //@todo - uncomment when method will be updated because got duplicate content of first file
             //chai.expect(response.Contents.length).to.equal(files.length);
             //for (let i = 0; i < files.length; i++) {
             //  chai.expect(response.Contents[i].Key).to.contains(files[i]);
