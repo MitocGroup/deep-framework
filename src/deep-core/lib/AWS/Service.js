@@ -11,6 +11,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get ANY() {
+    return '*';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get LAMBDA() {
     return 'lambda';
   }
@@ -127,6 +134,7 @@ export class Service {
    */
   static list() {
     return [
+      Service.ANY,
       Service.LAMBDA,
       Service.SIMPLE_STORAGE_SERVICE,
       Service.DYNAMO_DB,

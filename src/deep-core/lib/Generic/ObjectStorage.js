@@ -30,9 +30,9 @@ export class ObjectStorage {
   }
 
   /**
-   * @param {*} thing
+   * @param {Function|Object} thing
    * @param {Boolean} strict
-   * @returns {*}
+   * @returns {Object|null}
    */
   find(thing, strict = false) {
     for (let objectKey in this._vector) {
@@ -46,6 +46,8 @@ export class ObjectStorage {
         return object;
       }
     }
+
+    return null;
   }
 
   /**
