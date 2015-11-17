@@ -13,6 +13,7 @@ import Http from 'superagent';
 import AWS from 'aws-sdk';
 import {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';
 import {CachedRequestException} from './Exception/CachedRequestException';
+import {NotAuthenticatedException} from './Exception/NotAuthenticatedException';
 import aws4 from 'aws4';
 import parseUrl from 'parse-url';
 import queryString from 'query-string';
@@ -434,7 +435,13 @@ export class Request {
       throw new MissingSecurityServiceException();
     }
 
-    return this._action.resource.security.token.credentials;
+    let token = this._action.resource.security.token;
+
+    if (!token) {
+      throw new NotAuthenticatedException();
+    }
+
+    return token.credentials;
   }
 
   /**
