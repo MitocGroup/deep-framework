@@ -20,8 +20,11 @@ export class ConsoleDriverMock extends ConsoleDriver {
     return {
 
       error: function(message, options, callback) {
+
         return {
           message: message,
+          options: options,
+          callback: callback,
         };
       },
 
@@ -29,6 +32,8 @@ export class ConsoleDriverMock extends ConsoleDriver {
 
         return {
           log: message,
+          options: options,
+          callback: callback,
         };
       },
 
@@ -36,6 +41,8 @@ export class ConsoleDriverMock extends ConsoleDriver {
 
         return {
           warning: message,
+          options: options,
+          callback: callback,
         };
       },
 
@@ -43,6 +50,8 @@ export class ConsoleDriverMock extends ConsoleDriver {
 
         return {
           info: message,
+          options: options,
+          callback: callback,
         };
       },
 
@@ -50,6 +59,8 @@ export class ConsoleDriverMock extends ConsoleDriver {
 
         return {
           debug: message,
+          options: options,
+          callback: callback,
         };
       },
     };

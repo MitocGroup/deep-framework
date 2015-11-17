@@ -17,6 +17,8 @@ export default  {
 
         return {
           message: message,
+          options: options,
+          callback: callback,
         };
       },
 
@@ -25,6 +27,8 @@ export default  {
 
         return {
           error: error,
+          options: options,
+          callback: callback,
         };
       },
 
@@ -33,6 +37,8 @@ export default  {
 
         return {
           query: query,
+          options: options,
+          callback: callback,
         };
       },
     };
