@@ -49,7 +49,7 @@ export class S3FSRelativeFSExtender {
    * @returns {String}
    */
   get cwd() {
-    return this._relativeFsObject._rootFolder || process.cwd();
+    return path.normalize(this._relativeFsObject._rootFolder || process.cwd());
   }
 
   /**
@@ -62,6 +62,8 @@ export class S3FSRelativeFSExtender {
       /**
        * @param {String} pathStr
        * @returns {String}
+       *
+       * @todo: return some fake bucket name? or the prefix?
        */
       getPath: (pathStr = '') => {
         return path.join(this.cwd, pathStr);
@@ -86,8 +88,6 @@ export class S3FSRelativeFSExtender {
       copyFile: (sourcePath, destinationPath, callback = null) => {
         let absSourcePath = path.join(this.cwd, sourcePath);
         let absDestinationPath = path.join(this.cwd, destinationPath);
-
-
 
         if (callback) {
           fse.copy(absSourcePath, absDestinationPath, callback);
@@ -186,8 +186,6 @@ export class S3FSRelativeFSExtender {
       listContents: (pathStr, marker, callback = null) => {
         let absPath = path.join(this.cwd, pathStr);
 
-        console.log('abs: ', absPath)
-
         let globResponseObj = {
           Marker: marker,
           IsTruncated: false,
@@ -215,11 +213,9 @@ export class S3FSRelativeFSExtender {
         if (callback) {
           fse.walk(absPath)
             .on('data', (item) => {
-              console.log('item: ', item)
-              globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));
+              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));
             })
             .on('end', () => {
-              console.log('globResponseObj: ', globResponseObj)
               callback(globResponseObj);
             });
 
@@ -229,7 +225,7 @@ export class S3FSRelativeFSExtender {
         return new Promise((resolve) => {
           fse.walk(absPath)
             .on('data', (item) => {
-              globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));
+              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));
             })
             .on('end', () => {
               resolve(globResponseObj);
@@ -247,7 +243,7 @@ export class S3FSRelativeFSExtender {
 
         if (callback) {
           try {
-            callback(null, S3FSRelativeFSExtender._readdirp(absPath));
+            callback(null, S3FSRelativeFSExtender._readdirp(absPath, this.cwd));
           } catch(error) {
             callback(error, null);
           }
@@ -257,7 +253,7 @@ export class S3FSRelativeFSExtender {
 
         return new Promise((resolve, reject) => {
           try {
-            resolve(S3FSRelativeFSExtender._readdirp(absPath));
+            resolve(S3FSRelativeFSExtender._readdirp(absPath, this.cwd));
           } catch(error) {
             reject(error);
           }
@@ -324,10 +320,11 @@ export class S3FSRelativeFSExtender {
 
   /**
    * @param {String} dir
+   * @param {String} basePath
    * @returns {String[]}
    * @private
    */
-  static _readdirp(dir) {
+  static _readdirp(dir, basePath = null) {
     let _files = [];
 
     let files = fs.readdirSync(dir);
@@ -338,17 +335,18 @@ export class S3FSRelativeFSExtender {
       }
 
       let file = path.join(dir, files[i]);
-      let fileStats = fs.statSync(file);
 
-      if (fileStats.isDirectory()) {
-        let nestedFiles = S3FSRelativeFSExtender._readdirp(file);
+      _files.push(file);
 
-        _files.push(...nestedFiles);
-      } else {
-        _files.push(file);
+      if (fs.statSync(file).isDirectory()) {
+        _files = _files.concat(
+          S3FSRelativeFSExtender._readdirp(file)
+        );
       }
     }
 
-    return _files;
+    return basePath
+      ? _files.map((file) => file.substr(basePath.length))
+      : _files;
   }
 }

@@ -19,6 +19,38 @@ suite('Local/S3FSRelativeFSExtender', function() {
     chai.expect(typeof S3FSRelativeFSExtender).to.equal('function');
   });
 
+  test('Check _readdirp() returns valid [] of files ib dir', function() {
+    let expectedResult = [
+      'deep-framework/src/deep-fs/test/.gitkeep',
+      'deep-framework/src/deep-fs/test/FS.js',
+      'deep-framework/src/deep-fs/test/Local',
+      'deep-framework/src/deep-fs/test/Local/S3FSRelativeFSExtender.js',
+      'deep-framework/src/deep-fs/test/common',
+      'deep-framework/src/deep-fs/test/common/KernelFactory.js',
+      'deep-framework/src/deep-fs/test/common/backend-cfg-json.js',
+    ];
+    let dir = process.cwd() + '/test';
+
+    actualResult = S3FSRelativeFSExtender._readdirp(dir);
+
+    for (let i = 0; i < expectedResult.length; i++) {
+      chai.expect(actualResult[i]).to.contains(expectedResult[i]);
+    }
+  });
+
+  test('Check _readdirp() returns empty array for invalid dir', function() {
+    let dir = process.cwd() + '/test/invalid';
+    let error = null;
+
+    try {
+      S3FSRelativeFSExtender._readdirp(dir);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.an.instanceof(Error);
+  });
+
   test('Check constructor throws exception for invalid relativeFsPath', function() {
     s3FSRelativeFSExtender = new S3FSRelativeFSExtender(relativeFsPath);
 
@@ -34,37 +66,6 @@ suite('Local/S3FSRelativeFSExtender', function() {
 
     try {
       s3FSRelativeFSExtender = new S3FSRelativeFSExtender(relativeFsPath);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.an.instanceof(Error);
-  });
-
-  test('Check _readdirp() returns falid [] of files ib dir', function() {
-    let expectedResult = [
-      'deep-framework/src/deep-fs/test/.gitkeep',
-      'deep-framework/src/deep-fs/test/FS.js',
-      'deep-framework/src/deep-fs/test/Local/S3FSRelativeFSExtender.js',
-      'deep-framework/src/deep-fs/test/common/KernelFactory.js',
-      'deep-framework/src/deep-fs/test/common/backend-cfg-json.js',
-    ];
-    let dir = process.cwd() + '/test';
-
-    actualResult = S3FSRelativeFSExtender._readdirp(dir);
-
-    chai.expect(actualResult.length).to.equal(expectedResult.length);
-    for (let i = 0; i < expectedResult.length; i++) {
-      chai.expect(actualResult[i]).to.contains(expectedResult[i]);
-    }
-  });
-
-  test('Check _readdirp() returns empty array for invalid dir', function() {
-    let dir = process.cwd() + '/test/invalid';
-    let error = null;
-
-    try {
-      S3FSRelativeFSExtender._readdirp(dir);
     } catch (e) {
       error = e;
     }
@@ -380,8 +381,8 @@ suite('Local/S3FSRelativeFSExtender', function() {
       let spyCallback = sinon.spy();
       let callbackArgs = null;
       let expectedResult = [
-        'deep-framework/src/deep-fs/test/common/KernelFactory.js',
-        'deep-framework/src/deep-fs/test/common/backend-cfg-json.js',
+        'common/KernelFactory.js',
+        'common/backend-cfg-json.js',
       ];
 
       actualResult = s3FSRelativeFSExtender.relativeFsExtended.readdirp(
@@ -405,11 +406,9 @@ suite('Local/S3FSRelativeFSExtender', function() {
     'Check readdirp() reads files in directory, and returns Promise',
     function() {
       let pathStr = 'common';
-      let spyCallback = sinon.spy();
-      let callbackArgs = null;
       let expectedResult = [
-        'deep-framework/src/deep-fs/test/common/KernelFactory.js',
-        'deep-framework/src/deep-fs/test/common/backend-cfg-json.js',
+        'common/KernelFactory.js',
+        'common/backend-cfg-json.js',
       ];
 
       s3FSRelativeFSExtender.relativeFsExtended.readdirp(pathStr).then(
@@ -505,41 +504,40 @@ suite('Local/S3FSRelativeFSExtender', function() {
     }
   );
 
-
   test(
     'Check destroy() with cb removes directory with 2 files',
     function(done) {
-      relativeFsPath = process.cwd() + '/test/copied';
-      s3FSRelativeFSExtender = new S3FSRelativeFSExtender(relativeFsPath);
+      let relativeFsPathToDestroy = process.cwd().toString() + '/test/copied';
+      let s3FSRelativeFSExtender = new S3FSRelativeFSExtender(relativeFsPathToDestroy);
 
       let callback = () => {
         chai.expect(actualResult).to.equal(undefined);
-        chai.expect(nodeFS.existsSync(relativeFsPath)).to.equal(false);
+        chai.expect(nodeFS.existsSync(relativeFsPathToDestroy)).to.equal(false);
 
         // complete the async
         done();
       };
 
-      actualResult = s3FSRelativeFSExtender.relativeFsExtended.rmdirp(callback);
+      actualResult = s3FSRelativeFSExtender.relativeFsExtended.destroy(callback);
     }
   );
 
-  //test(
-  //  'Check destroy() removes non-existing directory and returns Promise',
-  //  function() {
-  //    let pathStr = '/mkdirp_promise_test';
-  //    let expectedResultPath = path.join(relativeFsPath, pathStr);
-  //
-  //    s3FSRelativeFSExtender.relativeFsExtended.rmdirp(pathStr).then(
-  //      function(response) {
-  //        chai.expect(response).to.equal(undefined, 'response equals to undefined');
-  //        chai.expect(nodeFS.existsSync(expectedResultPath)).to.equal(false);
-  //      })
-  //      .catch(
-  //      function(reason) {
-  //        chai.assert.ok(false, 'Rejected promise (' + reason + ') here.');
-  //      }
-  //    );
-  //  }
-  //);
+  test(
+    'Check destroy() removes non-existing directory and returns Promise',
+    function() {
+      let relativeFsPathToDestroy = process.cwd().toString() + '/test/copied';
+      let s3FSRelativeFSExtender = new S3FSRelativeFSExtender(relativeFsPathToDestroy);
+
+      s3FSRelativeFSExtender.relativeFsExtended.destroy().then(
+        function(response) {
+          chai.expect(response).to.equal(undefined, 'response equals to undefined');
+          chai.expect(nodeFS.existsSync(relativeFsPathToDestroy)).to.equal(false);
+        })
+        .catch(
+        function(reason) {
+          chai.assert.ok(false, 'Rejected promise (' + reason + ') here.');
+        }
+      );
+    }
+  );
 });
