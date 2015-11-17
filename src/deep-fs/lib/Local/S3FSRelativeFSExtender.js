@@ -87,6 +87,8 @@ export class S3FSRelativeFSExtender {
         let absSourcePath = path.join(this.cwd, sourcePath);
         let absDestinationPath = path.join(this.cwd, destinationPath);
 
+
+
         if (callback) {
           fse.copy(absSourcePath, absDestinationPath, callback);
           return;
@@ -184,6 +186,8 @@ export class S3FSRelativeFSExtender {
       listContents: (pathStr, marker, callback = null) => {
         let absPath = path.join(this.cwd, pathStr);
 
+        console.log('abs: ', absPath)
+
         let globResponseObj = {
           Marker: marker,
           IsTruncated: false,
@@ -211,9 +215,11 @@ export class S3FSRelativeFSExtender {
         if (callback) {
           fse.walk(absPath)
             .on('data', (item) => {
+              console.log('item: ', item)
               globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));
             })
             .on('end', () => {
+              console.log('globResponseObj: ', globResponseObj)
               callback(globResponseObj);
             });
 
