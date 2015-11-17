@@ -45,6 +45,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 </ul>
 </div>
@@ -66,6 +67,7 @@ import Http from &apos;superagent&apos;;
 import AWS from &apos;aws-sdk&apos;;
 import {MissingCacheImplementationException} from &apos;./Exception/MissingCacheImplementationException&apos;;
 import {CachedRequestException} from &apos;./Exception/CachedRequestException&apos;;
+import {NotAuthenticatedException} from &apos;./Exception/NotAuthenticatedException&apos;;
 import aws4 from &apos;aws4&apos;;
 import parseUrl from &apos;parse-url&apos;;
 import queryString from &apos;query-string&apos;;
@@ -73,6 +75,7 @@ import Core from &apos;deep-core&apos;;
 import {DirectLambdaCallDeniedException} from &apos;./Exception/DirectLambdaCallDeniedException&apos;;
 import {MissingSecurityServiceException} from &apos;./Exception/MissingSecurityServiceException&apos;;
 import Security from &apos;deep-security&apos;;
+import crypto from &apos;crypto&apos;;
 
 /**
  * Action request instance
@@ -189,10 +192,22 @@ export class Request {
    * @private
    */
   _buildCacheKey() {
-    let payload = JSON.stringify(this._payload);
+    let payload = Request._md5(JSON.stringify(this._payload));
     let endpoint = this.native ? this._action.source.original : this._action.source.api;
 
     return `${this._method}:${this._action.type}:${endpoint}#${payload}`;
+  }
+
+  /**
+   * @param {String} str
+   * @returns {String}
+   */
+  static _md5(str) {
+    var md5sum = crypto.createHash(&apos;md5&apos;);
+
+    md5sum.update(str);
+
+    return md5sum.digest(&apos;hex&apos;);
   }
 
   /**
@@ -474,7 +489,13 @@ export class Request {
       throw new MissingSecurityServiceException();
     }
 
-    return this._action.resource.security.token.credentials;
+    let token = this._action.resource.security.token;
+
+    if (!token) {
+      throw new NotAuthenticatedException();
+    }
+
+    return token.credentials;
   }
 
   /**

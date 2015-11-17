@@ -54,6 +54,7 @@
 
 import {AbstractDriver} from &apos;./AbstractDriver&apos;;
 import {RedisClusterException} from &apos;./Exception/RedisClusterException&apos;;
+import Redis from &apos;ioredis&apos;;
 
 /**
  * Redis/Elasticache driver implementation
@@ -166,7 +167,7 @@ export class RedisDriver extends AbstractDriver {
    * @constructor
    */
   get NATIVE_DRIVER() {
-    return require(&apos;ioredis&apos;);
+    return Redis;
   }
 }
 </code></pre>
