@@ -92,11 +92,11 @@ suite('Driver/ConsoleDriver', function() {
     let error = null;
     let actualResult = null;
 
-    //try {
-    //  actualResult = consoleDriver.overrideNative();
-    //} catch (e) {
-    //  error = e;
-    //}
+    try {
+      actualResult = consoleDriver.overrideNative();
+    } catch (e) {
+      error = e;
+    }
 
     //chai.expect(Object.keys(actualResult._console).length).to.be.equal(4);
     //chai.expect(Object.keys(actualResult._console)).to.be.include('error');

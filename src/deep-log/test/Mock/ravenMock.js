@@ -37,7 +37,7 @@ export default  {
 
         return {
           query: query,
-          options: options,
+          type: type,
           callback: callback,
         };
       },
