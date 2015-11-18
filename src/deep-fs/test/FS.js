@@ -17,6 +17,7 @@ chai.use(sinonChai);
 suite('FS', function() {
   let fs = null;
   let backendKernelInstance = null;
+  let path = 'hello.world.example/';
 
   test('Class FS exists in FS', function() {
     chai.expect(typeof FS).to.equal('function');
@@ -71,7 +72,6 @@ suite('FS', function() {
 
   test('Check tmp() getter returns valid mounted tmp folder', function() {
     let bucketName = 'deep.dev.temp.32f3705a';
-    let path = 'hello.world.example/';
 
     let actualResult = fs.tmp;
 
@@ -82,7 +82,6 @@ suite('FS', function() {
 
   test('Check public() getter returns valid mounted public folder', function() {
     let bucketName = 'deep.dev.public.32f3705a';
-    let path = 'hello.world.example/';
 
     let actualResult = fs.public;
 
@@ -93,7 +92,6 @@ suite('FS', function() {
 
   test('Check system() getter returns valid mounted system folder', function() {
     let bucketName = 'deep.dev.system.32f3705a';
-    let path = 'hello.world.example/';
 
     let actualResult = fs.system;
 

@@ -19,7 +19,7 @@ suite('Local/S3FSRelativeFSExtender', function() {
     chai.expect(typeof S3FSRelativeFSExtender).to.equal('function');
   });
 
-  test('Check _readdirp() returns valid [] of files ib dir', function() {
+  test('Check _readdirp() returns valid [] of files in dir', function() {
     let expectedResult = [
       'deep-framework/src/deep-fs/test/.gitkeep',
       'deep-framework/src/deep-fs/test/FS.js',
@@ -76,21 +76,20 @@ suite('Local/S3FSRelativeFSExtender', function() {
   test(
     'Check relativeFsExtended() copies the prototype of this.EXTEND_OBJECT to this._relativeFsObject',
     function() {
+
       chai.expect(s3FSRelativeFSExtender.relativeFsExtended.constructor.name).to.eql('Object');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.getPath).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.clone).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.copyFile).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.create).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.destroy).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.headObject).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.listContents).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.readdirp).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.mkdirp).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.rmdirp).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.copyDir).to.eql('function');
-      // defect ???
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.delete).to.eql('function');
-      chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended.putBucketLifecycle).to.eql('function');
+
+      [
+        'getPath', 'clone', 'copyFile',
+        'create', 'destroy', 'headObject',
+        'listContents', 'readdirp',
+        'mkdirp', 'rmdirp', 'copyDir',
+        'delete', 'putBucketLifecycle',
+      ].forEach(
+        function(method) {
+          chai.expect(typeof s3FSRelativeFSExtender.relativeFsExtended[method]).to.eql('function');
+        }
+      );
     }
   );
 
