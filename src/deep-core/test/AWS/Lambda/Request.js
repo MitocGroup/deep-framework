@@ -20,8 +20,20 @@ suite('AWS/Lambda/Request', function() {
     chai.expect(request.data).to.be.eql(data);
   });
 
-  test('Check getParam() method returns null', function() {
-    chai.expect(request.getParam('name')).to.be.equal(null);
+  test('Check Object.keys(request) returns data keys', function() {
+    chai.expect(Object.keys(request)).to.be.equal(Object.keys(data));
+  });
+
+  test('Check request.firstKey returns param', function() {
+    chai.expect(request.firstKey).to.be.equal(data.firstKey);
+  });
+
+  test('Check request.name returns undefined on missing param', function() {
+    chai.expect(request.name).to.be.equal(undefined);
+  });
+
+  test('Check getParam() method returns undefined on missing param', function() {
+    chai.expect(request.getParam('name')).to.be.equal(undefined);
   });
 
   test('Check getParam() method returns param', function() {
