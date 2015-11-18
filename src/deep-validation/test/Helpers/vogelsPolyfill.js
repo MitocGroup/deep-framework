@@ -12,12 +12,9 @@ suite('Helpers/vogelsPolyfill', function() {
   });
 
   test('Check Vogels.types contains all types', function() {
-    chai.expect(Object.keys(Vogels.types).length).to.equal(5);
-    chai.expect(Object.keys(Vogels.types)).to.contains('uuid');
-    chai.expect(Object.keys(Vogels.types)).to.contains('timeUUID');
-    chai.expect(Object.keys(Vogels.types)).to.contains('stringSet');
-    chai.expect(Object.keys(Vogels.types)).to.contains('numberSet');
-    chai.expect(Object.keys(Vogels.types)).to.contains('binarySet');
+    chai.expect(Object.keys(Vogels.types)).contains.all.of(
+      'uuid', 'timeUUID', 'stringSet', 'numberSet', 'binarySet'
+    );
   });
 
   test('Check Vogels.types.stringSet is function', function() {
