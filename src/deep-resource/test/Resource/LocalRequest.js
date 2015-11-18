@@ -6,7 +6,6 @@ import sinonChai from 'sinon-chai';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Instance} from '../../lib.compiled/Resource/Instance';
 import {Resource} from '../../lib.compiled/Resource';
-import CacheMock from '../Mock/CacheMock';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';

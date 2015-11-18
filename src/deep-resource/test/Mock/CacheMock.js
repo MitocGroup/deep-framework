@@ -7,16 +7,16 @@ export class CacheMock {
     this._localBackend = false;
     this._microservice = null;
     this._methodsBehavior = new Map();
-    this.enableNoResultMode();
+    this.setMode(CacheMock.NO_RESULT_MODE);
   }
 
   /**
-   * @param {String} cacheKey
+   * Returns callback for method based on behavior from _methodsBehavior map
+   * @param {String} method
    * @param {Function} callback
-   * @returns {CacheMock}
    */
-  has(cacheKey, callback) {
-    switch (this._methodsBehavior.get('has')) {
+  getCallbackByMetod(method, callback) {
+    switch (method) {
       case CacheMock.NO_RESULT_MODE:
         callback(null, null);
         break;
@@ -29,6 +29,15 @@ export class CacheMock {
         callback(null, CacheMock.DATA);
         break;
     }
+  }
+
+  /**
+   * @param {String} cacheKey
+   * @param {Function} callback
+   * @returns {CacheMock}
+   */
+  has(cacheKey, callback) {
+    this.getCallbackByMetod(this._methodsBehavior.get('has'), callback);
 
     return this;
   }
@@ -40,19 +49,7 @@ export class CacheMock {
    * @returns {CacheMock}
    */
   invalidate(cacheKey, number, callback) {
-    switch (this._methodsBehavior.get('invalidate')) {
-      case CacheMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case CacheMock.FAILURE_MODE:
-        callback(CacheMock.ERROR, null);
-        break;
-
-      case CacheMock.DATA_MODE:
-        callback(null, CacheMock.DATA);
-        break;
-    }
+    this.getCallbackByMetod(this._methodsBehavior.get('invalidate'), callback);
 
     return this;
   }
@@ -63,19 +60,7 @@ export class CacheMock {
    * @returns {CacheMock}
    */
   get(cacheKey, callback) {
-    switch (this._methodsBehavior.get('get')) {
-      case CacheMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case CacheMock.FAILURE_MODE:
-        callback(CacheMock.ERROR, null);
-        break;
-
-      case CacheMock.DATA_MODE:
-        callback(null, CacheMock.DATA);
-        break;
-    }
+    this.getCallbackByMetod(this._methodsBehavior.get('get'), callback);
 
     return this;
   }
@@ -88,92 +73,28 @@ export class CacheMock {
    * @returns {CacheMock}
    */
   set(cacheKey, response, ttl, callback) {
-    switch (this._methodsBehavior.get('set')) {
-      case CacheMock.NO_RESULT_MODE:
-        callback(null, null);
-        break;
-
-      case CacheMock.FAILURE_MODE:
-        callback(CacheMock.ERROR, null);
-        break;
-
-      case CacheMock.DATA_MODE:
-        callback(null, CacheMock.DATA);
-        break;
-    }
+    this.getCallbackByMetod(this._methodsBehavior.get('set'), callback);
 
     return this;
   }
 
   /**
-   * Enables no results mode
-   * @param methods
-   */
-  enableNoResultMode() {
-    for (let method of CacheMock.METHODS) {
-      this._methodsBehavior.set(method, CacheMock.NO_RESULT_MODE);
-    }
-  }
-
-  /**
-   * Enables failure mode
-   * @param methods
-   */
-  enableFailureMode() {
-    for (let method of CacheMock.METHODS) {
-      this._methodsBehavior.set(method, CacheMock.ERROR);
-    }
-  }
-
-  /**
-   * Disable failure mode
-   * @param methods
-   */
-  disableFailureMode() {
-    for (let method of CacheMock.METHODS) {
-      this._methodsBehavior.set(method, CacheMock.DATA_MODE);
-    }
-  }
-
-  /**
-   * Enables no results mode for passed methods
-   * @param methods
-   */
-  enableNoResultModeFor(methods) {
-    for (let method of methods) {
-      if (CacheMock.METHODS.indexOf(method) < 0) {
-        continue;
-      }
-
-      this._methodsBehavior.set(method, CacheMock.NO_RESULT_MODE);
-    }
-  }
-
-  /**
-   * Enables failure mode for passed methods
+   * Set mode for passed methods
+   * @param {Number} mode
    * @param {String[]} methods
    */
-  enableFailureModeFor(methods) {
-    for (let method of methods) {
-      if (CacheMock.METHODS.indexOf(method) < 0) {
-        continue;
-      }
+  setMode(mode = CacheMock.NO_RESULT_MODE, methods = CacheMock.METHODS) {
 
-      this._methodsBehavior.set(method, CacheMock.FAILURE_MODE);
+    if (CacheMock.MODES.indexOf(mode) < 0) {
+      mode = CacheMock.NO_RESULT_MODE;
     }
-  }
 
-  /**
-   * Disables failure mode for passed methods
-   * @param methods
-   */
-  disableFailureModeFor(methods) {
     for (let method of methods) {
       if (CacheMock.METHODS.indexOf(method) < 0) {
         continue;
       }
 
-      this._methodsBehavior.set(method, CacheMock.DATA_MODE);
+      this._methodsBehavior.set(method, mode);
     }
   }
 
@@ -199,6 +120,18 @@ export class CacheMock {
    */
   static get DATA_MODE() {
     return 2;
+  }
+
+  /**
+   * @returns {string[]}
+   * @constructor
+   */
+  static get MODES() {
+    return [
+      CacheMock.NO_RESULT_MODE,
+      CacheMock.FAILURE_MODE,
+      CacheMock.DATA_MODE,
+    ];
   }
 
   /**

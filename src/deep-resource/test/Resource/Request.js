@@ -338,7 +338,7 @@ suite('Resource/Request', function() {
       let cache = new CacheMock();
 
       //sets mock mode
-      cache.enableFailureModeFor(['has']);
+      cache.setMode(CacheMock.FAILURE_MODE, ['has']);
 
       request.cacheImpl = cache;
       request.enableCache();
@@ -366,8 +366,8 @@ suite('Resource/Request', function() {
       let cache = new CacheMock();
 
       //sets mock mode
-      cache.disableFailureMode(['has']);
-      cache.enableFailureModeFor(['invalidate']);
+      cache.setMode(CacheMock.DATA_MODE, ['has']);
+      cache.setMode(CacheMock.FAILURE_MODE, ['invalidate']);
 
       request.cacheImpl = cache;
       request.enableCache();
@@ -393,7 +393,7 @@ suite('Resource/Request', function() {
       let cache = new CacheMock();
 
       //sets mock mode
-      cache.disableFailureModeFor(['has', 'invalidate']);
+      cache.setMode(CacheMock.DATA_MODE, ['has', 'invalidate']);
 
       request.cacheImpl = cache;
       request.enableCache();
@@ -409,7 +409,7 @@ suite('Resource/Request', function() {
       let cache = new CacheMock();
 
       //sets mock mode
-      cache.enableNoResultModeFor(['has']);
+      cache.setMode(CacheMock.NO_RESULT_MODE, ['has']);
 
       request.cacheImpl = cache;
       request.enableCache();
@@ -447,8 +447,9 @@ suite('Resource/Request', function() {
 
     //set cache mock mode
     let cache = new CacheMock();
-    cache.enableNoResultModeFor(['has']);
-    cache.disableFailureModeFor(['set']);
+    cache.setMode(CacheMock.NO_RESULT_MODE, ['has']);
+    cache.setMode(CacheMock.DATA_MODE, ['set']);
+
     externalRequest.cacheImpl = cache;
     externalRequest.enableCache();
     externalRequest.useDirectCall();
@@ -470,7 +471,7 @@ suite('Resource/Request', function() {
 
       //set cache mock mode
       let cache = new CacheMock();
-      cache.enableFailureModeFor(['has']);
+      cache.setMode(CacheMock.FAILURE_MODE, ['has']);
       externalRequest.cacheImpl = cache;
       externalRequest.enableCache();
 
@@ -494,8 +495,8 @@ suite('Resource/Request', function() {
 
     //set cache mock mode
     let cache = new CacheMock();
-    cache.disableFailureMode(['has']);
-    cache.enableFailureModeFor(['get']);
+    cache.setMode(CacheMock.DATA_MODE, ['has']);
+    cache.setMode(CacheMock.FAILURE_MODE, ['get']);
     externalRequest.cacheImpl = cache;
     externalRequest.enableCache();
 
@@ -518,7 +519,7 @@ suite('Resource/Request', function() {
 
     //set cache mock mode
     let cache = new CacheMock();
-    cache.enableNoResultModeFor(['has', 'set']);
+    cache.setMode(CacheMock.NO_RESULT_MODE, ['has', 'set']);
     externalRequest.cacheImpl = cache;
     externalRequest.enableCache();
 
@@ -545,7 +546,7 @@ suite('Resource/Request', function() {
 
       //set cache mock mode
       let cache = new CacheMock();
-      cache.disableFailureModeFor(['has', 'get']);
+      cache.setMode(CacheMock.DATA_MODE, ['has', 'get']);
       externalRequest.cacheImpl = cache;
       externalRequest.enableCache();
 

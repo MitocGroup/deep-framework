@@ -75,8 +75,8 @@ suite('Resource/Action', function() {
     chai.expect(action.methods).to.be.eql(actionMethods);
   });
 
-  test(`Check methods getter returns ${actionSource}`, function() {
-    chai.expect(action.source).to.be.equal(actionSource);
+  test(`Check source getter returns ${actionSource}`, function() {
+    chai.expect(action.source).to.be.eql(actionSource);
   });
 
   test(`Check region getter returns ${actionRegion}`, function() {
