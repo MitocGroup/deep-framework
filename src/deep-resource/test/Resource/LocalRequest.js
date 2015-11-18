@@ -98,7 +98,7 @@ suite('Resource/LocalRequest', function() {
 
     let actualResult = spyCallback.args[0][0];
 
-    chai.expect(typeof actualResult).to.equal('object')
+    chai.expect(typeof actualResult).to.equal('object');
     chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
   });
 

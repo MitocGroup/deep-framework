@@ -438,7 +438,7 @@ suite('Resource/Request', function() {
     externalRequest.send(spyCallback);
 
     let actualResult = spyCallback.args[0][0];
-    chai.expect(typeof actualResult).to.equal('object')
+    chai.expect(typeof actualResult).to.equal('object');
     chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
   });
 
@@ -459,7 +459,7 @@ suite('Resource/Request', function() {
     externalRequest.send(spyCallback);
 
     let actualResult = spyCallback.args[0][0];
-    chai.expect(typeof actualResult).to.equal('object')
+    chai.expect(typeof actualResult).to.equal('object');
     chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
   });
 
