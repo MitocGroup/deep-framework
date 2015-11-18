@@ -13,6 +13,32 @@ export class Request {
    */
   constructor(data) {
     this._data = data || {};
+
+    this._registerDataAsParams();
+  }
+
+  /**
+   * @private
+   */
+  _registerDataAsParams() {
+    for (let key in this._data) {
+      if (!this._data.hasOwnProperty(key)) {
+        continue;
+      }
+
+      Object.defineProperty(this, key, {
+        value: this._data[key],
+        writable: false,
+        configurable: false,
+        enumerable: true,
+      });
+    }
+
+    // Avoid _data key listing on Object.keys(request)
+    Object.defineProperty(this, '_data', {
+      configurable: false,
+      enumerable: false,
+    });
   }
 
   /**
@@ -28,7 +54,7 @@ export class Request {
    *
    * @returns {String|Object|null}
    */
-  getParam(name, defaultValue = null) {
-    return this.data.hasOwnProperty(name) ? this.data[name] : defaultValue;
+  getParam(name, defaultValue = undefined) {
+    return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;
   }
 }
