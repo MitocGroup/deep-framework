@@ -15,6 +15,7 @@ suite('Helpers/Joi', function() {
   test('Check uuid static getter returns valid object', function() {
     let actualResult = Joi.uuid;
     let expectedResult = Vogels.types.uuid();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -22,6 +23,7 @@ suite('Helpers/Joi', function() {
   test('Check timeUUID static getter returns valid object', function() {
     let actualResult = Joi.timeUUID;
     let expectedResult = Vogels.types.timeUUID();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -29,6 +31,7 @@ suite('Helpers/Joi', function() {
   test('Check stringSet static getter returns valid object', function() {
     let actualResult = Joi.stringSet;
     let expectedResult = Vogels.types.stringSet();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -43,6 +46,7 @@ suite('Helpers/Joi', function() {
   test('Check binarySet static getter returns valid object', function() {
     let actualResult = Joi.binarySet;
     let expectedResult = Vogels.types.binarySet();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -50,6 +54,7 @@ suite('Helpers/Joi', function() {
   test('Check binary static getter returns valid object', function() {
     let actualResult = Joi.binary;
     let expectedResult = BaseJoi.binary();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -57,6 +62,7 @@ suite('Helpers/Joi', function() {
   test('Check number static getter returns valid object', function() {
     let actualResult = Joi.number;
     let expectedResult = BaseJoi.number();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -64,6 +70,7 @@ suite('Helpers/Joi', function() {
   test('Check string static getter returns valid object', function() {
     let actualResult = Joi.string;
     let expectedResult = BaseJoi.string();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -71,6 +78,7 @@ suite('Helpers/Joi', function() {
   test('Check boolean static getter returns valid object', function() {
     let actualResult = Joi.boolean;
     let expectedResult = BaseJoi.boolean();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -78,6 +86,7 @@ suite('Helpers/Joi', function() {
   test('Check email static getter returns valid object', function() {
     let actualResult = Joi.email;
     let expectedResult = BaseJoi.string().email();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -85,6 +94,7 @@ suite('Helpers/Joi', function() {
   test('Check website static getter returns valid object', function() {
     let actualResult = Joi.website;
     let expectedResult = BaseJoi.string().uri();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });
@@ -92,6 +102,7 @@ suite('Helpers/Joi', function() {
   test('Check map static getter returns valid object', function() {
     let actualResult = Joi.map;
     let expectedResult = BaseJoi.object();
+
     chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
     chai.expect(actualResult._type).to.be.eql(expectedResult._type);
   });

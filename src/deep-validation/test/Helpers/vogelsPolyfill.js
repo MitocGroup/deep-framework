@@ -28,6 +28,4 @@ suite('Helpers/vogelsPolyfill', function() {
     let actualResult = Vogels.types.stringSet();
     chai.expect(actualResult.isJoi).to.eql(true);
   });
-
-
 });

@@ -107,25 +107,25 @@ suite('Validation', function() {
   test('Check get() method throws ModelNotFoundException',
     function() {
       let error = null;
+
       try {
         validation.get('invalidModelKey');
       } catch (e) {
         error = e;
       }
 
-      chai.expect(error).to.be.not.equal(null);
       chai.expect(error).to.be.an.instanceOf(ModelNotFoundException);
     });
 
   test('Check get() method throws ModelNotFoundException', function() {
     let error = null;
+
     try {
       validation.get('invalidModelKey');
     } catch (e) {
       error = e;
     }
 
-    chai.expect(error).to.be.not.equal(null);
     chai.expect(error).to.be.an.instanceOf(ModelNotFoundException);
   });
 
@@ -189,7 +189,6 @@ suite('Validation', function() {
         error = e;
       }
 
-      chai.expect(error).to.be.not.equal(null);
       chai.expect(error).to.be.an.instanceOf(ObjectValidationFailedException);
       chai.expect(error.message).to.be.contains(
         'Object validation failed on schema'
