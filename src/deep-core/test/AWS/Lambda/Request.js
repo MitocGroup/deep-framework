@@ -21,7 +21,7 @@ suite('AWS/Lambda/Request', function() {
   });
 
   test('Check Object.keys(request) returns data keys', function() {
-    chai.expect(Object.keys(request)).to.be.equal(Object.keys(data));
+    chai.expect(Object.keys(request)).to.be.eql(Object.keys(data));
   });
 
   test('Check request.firstKey returns param', function() {
