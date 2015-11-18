@@ -11,14 +11,12 @@ import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from './common/KernelFactory';
-import backendConfig from './common/backend-cfg-json';
 
 chai.use(sinonChai);
 
 suite('Resource', function() {
   let microserviceIdentifier = 'hello.world.example';
-  let microserviceInstance = new Instance(microserviceIdentifier,
-    backendConfig.microservices[microserviceIdentifier].resources);
+  let microserviceInstance = null;
   let resource = null;
   let resourceName = 'sample';
   let backendKernelInstance = null;
@@ -57,13 +55,20 @@ suite('Resource', function() {
   });
 
   test('Check has() method returns false', function() {
-    resource.bind(microserviceInstance);
-    chai.expect(resource.has('invalid_res_identifier')).to.be.equal(false);
+    chai.expect(resource._resources).to.eql({});
+    //microserviceInstance = resource.get(`@${microserviceIdentifier}:invalidResourceName`);
+
+    //resource.bind(microserviceInstance);
+
+    //chai.expect(resource.has('invalid_res_identifier')).to.be.equal(false);
   });
 
   test('Check has() method returns true', function() {
-    resource.bind(microserviceInstance);
-    chai.expect(resource.has(resourceName)).to.be.equal(true);
+    microserviceInstance = resource.get(`@${microserviceIdentifier}:sample`);
+
+    //resource.bind(microserviceInstance);
+
+    //chai.expect(resource.has(resourceName)).to.be.equal(true);
   });
 
   test('Check get() method returns valid object', function() {
@@ -71,9 +76,11 @@ suite('Resource', function() {
       `@${microserviceIdentifier}:${resourceName}`
     );
 
+    chai.assert.instanceOf(
+      actualResult, ResourceInstance, 'result is an instance of ResourceInstance');
     chai.expect(actualResult.name).to.be.equal(resourceName);
-    chai.expect(actualResult._rawActions).to.be.eql(
-      backendConfig.microservices[microserviceIdentifier].resources[resourceName]
+    chai.expect(Object.keys(actualResult._rawActions)).to.be.eql(
+      ['say-hello','say-bye','say-test']
     );
   });
 
@@ -87,8 +94,9 @@ suite('Resource', function() {
         error = e;
       }
 
-      chai.assert.instanceOf(error, MissingResourceException,
-        'error is an instance of MissingResourceException');
+      chai.assert.instanceOf(
+        error, MissingResourceException, 'error is an instance of MissingResourceException'
+      );
     }
   );
 
