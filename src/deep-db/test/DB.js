@@ -3,12 +3,14 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {DB} from '../lib.compiled/DB';
 import Validation from 'deep-validation';
+import {DB} from '../lib.compiled/DB';
 import {ModelNotFoundException} from '../lib.compiled/Exception/ModelNotFoundException';
 import Joi from 'joi';
 import AWS from 'aws-sdk';
 import Vogels from 'vogels';
+import Kernel from 'deep-kernel';
+import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
 
@@ -51,10 +53,46 @@ suite('DB', function() {
   };
   let dynamodb = new AWS.DynamoDB();
 
-  let db = new DB(models, tablenames);
+  //let db = new DB(models, tablenames);
+  let db = null;
+  let validation = null;
+  let backendKernelInstance = null;
+  let frontendKernelInstance = null;
 
   test('Class DB exists in DB', function() {
     chai.expect(typeof DB).to.equal('function');
+  });
+
+  test('Load Kernels by using Kernel.load()', function(done) {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
+      backendKernelInstance = backendKernel;
+
+      validation = backendKernel.get('validation');
+      db = backendKernel.get('db');
+
+      chai.assert.instanceOf(
+        validation, Validation, 'validation is an instance of Validation'
+      );
+
+      chai.assert.instanceOf(
+        db, DB, 'db is an instance of DB'
+      );
+
+      // complete the async
+      done();
+    };
+
+    KernelFactory.create(
+      {
+        DB: DB,
+        Validation: Validation,
+      },
+      callback
+    );
   });
 
   test('Check validation getter returns valid value', function() {
@@ -82,15 +120,9 @@ suite('DB', function() {
   });
 
   test('Check get() method returns valid object', function() {
-    let error = null;
+    let actualResult = db.get('Name');
 
-    try {
-      db.get('IAM');
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
+    chai.expect(actualResult).to.be.eql({});
   });
 
   test('Check LOCAL_DB_PORT static method returns integer and more than 0 value', function() {
