@@ -10,7 +10,6 @@ import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
-import backendConfig from '../common/backend-cfg-json';
 import requireProxy from 'proxyquire';
 import {HttpMock} from '../Mock/HttpMock';
 import {LocalRequest} from '../../lib.compiled/Resource/LocalRequest';
@@ -101,14 +100,11 @@ suite('Resource/LocalRequest', function() {
 
   test('Check _send() method for acctionType!=\'lambda\'', function() {
     let spyCallback = sinon.spy();
-    let source = backendConfig
-      .microservices[microserviceIdentifier]
-      .resources[resourceName][actionName]
-      .source;
-    let region = backendConfig
-      .microservices[microserviceIdentifier]
-      .resources[resourceName][actionName]
-      .region;
+    let source = {
+      api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',
+      original: 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayHello64232f3705a',
+    };
+    let region = 'us-west-2';
 
     let externalAction = new Action(
       resource, actionName, Action.EXTERNAL, method, source, region

@@ -17,13 +17,11 @@ import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
-import backendConfig from '../common/backend-cfg-json';
 import requireProxy from 'proxyquire';
 import AWS from 'mock-aws';
 import {HttpMock} from '../Mock/HttpMock';
 import {Request} from '../../lib.compiled/Resource/Request';
 import {CacheMock} from '../Mock/CacheMock';
-
 
 chai.use(sinonChai);
 
@@ -38,14 +36,11 @@ suite('Resource/Request', function() {
   let resourceName = 'sample';
   let actionName = 'say-hello';
   let payload = '{"body":"bodyData"}';
-  let source = backendConfig
-    .microservices[microserviceIdentifier]
-    .resources[resourceName][actionName]
-    .source;
-  let region = backendConfig
-    .microservices[microserviceIdentifier]
-    .resources[resourceName][actionName]
-    .region;
+  let source = {
+    api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',
+    original: 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayHello64232f3705a',
+  };
+  let region = 'us-west-2';
   let method = 'POST';
   let httpMock = new HttpMock();
 

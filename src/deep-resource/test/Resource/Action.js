@@ -10,7 +10,6 @@ import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
-import backendConfig from '../common/backend-cfg-json';
 
 suite('Resource/Action', function() {
   let actionName = 'say-hello';
