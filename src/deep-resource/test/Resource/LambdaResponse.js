@@ -21,7 +21,10 @@ suite('Resource/LambdaResponse', function() {
   let payload = '{"body":"bodyData"}';
   let method = 'POST';
   let rawData = {Payload: '{"dataKey":"testValue"}', StatusCode: 201};
-  let rawError = '{"message":"errorMessage", "name":"RuntimeException"}';
+  let rawError = {
+    message:'errorMessage',
+    'name':'RuntimeException',
+  };
 
   test('Class LambdaResponse exists in Resource/LambdaResponse', function() {
     chai.expect(typeof LambdaResponse).to.equal('function');
@@ -59,7 +62,7 @@ suite('Resource/LambdaResponse', function() {
 
   test('Check creating request > lambdaResponse from action instance', function() {
     request = new Request(action, payload, method);
-    lambdaResponse = new LambdaResponse(request, rawData, rawError);
+    lambdaResponse = new LambdaResponse(request, rawData, JSON.stringify(rawError));
     chai.assert.instanceOf(
       lambdaResponse, LambdaResponse, 'lambdaResponse is an instance of LambdaResponse'
     );
@@ -96,10 +99,10 @@ suite('Resource/LambdaResponse', function() {
 
   test('Check error getter returns valid error', function() {
     //check when this._rawError
-    chai.expect(lambdaResponse.error).to.be.eql(rawError);
+    chai.expect(lambdaResponse.error).to.be.eql(JSON.stringify(rawError));
 
     //check when this._error
-    chai.expect(lambdaResponse.error).to.be.eql(rawError);
+    chai.expect(lambdaResponse.error).to.be.eql(JSON.stringify(rawError));
   });
 
   test('Check error getter returns valid error from rawData with errorMessage', function() {
@@ -114,7 +117,7 @@ suite('Resource/LambdaResponse', function() {
     chai.expect(lambdaResponse.errorType).to.be.equal('Error');
 
     //check when this._rawError
-    chai.expect(lambdaResponse._rawError).to.be.equal(rawError);
+    chai.expect(lambdaResponse._rawError).to.be.equal(JSON.stringify(rawError));
   });
 
   test(

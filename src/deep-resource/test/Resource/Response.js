@@ -21,7 +21,7 @@ suite('Resource/Response', function() {
   let payload = '{"body":"bodyData"}';
   let method = 'POST';
   let rawData = {Payload: '{"dataKey":"testValue"}', StatusCode: 201};
-  let rawError = '{ "message":"errorMessage"}';
+  let rawError = { message: 'errorMessage'};
 
   test('Class Response exists in Resource/Response', function() {
     chai.expect(typeof Response).to.equal('function');
@@ -59,7 +59,7 @@ suite('Resource/Response', function() {
 
   test('Check creating request > response from action instance', function() {
     request = new Request(action, payload, method);
-    response = new Response(request, rawData, rawError);
+    response = new Response(request, rawData, JSON.stringify(rawError));
 
     chai.assert.instanceOf(
       response, Response, 'response is an instance of Response'
@@ -71,7 +71,7 @@ suite('Resource/Response', function() {
   });
 
   test('Check constructor sets _rawError', function() {
-    chai.expect(response.rawError).to.be.equal(rawError);
+    chai.expect(response.rawError).to.be.equal(JSON.stringify(rawError));
   });
 
   test('Check constructor sets _rawData', function() {
@@ -104,7 +104,7 @@ suite('Resource/Response', function() {
   });
 
   test('Check error getter returns valid error', function() {
-    chai.expect(response.error).to.be.eql(rawError);
+    chai.expect(response.error).to.be.eql(JSON.stringify(rawError));
   });
 
   test('Check isError getter returns true', function() {
