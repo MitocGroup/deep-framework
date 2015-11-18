@@ -1,7 +1,7 @@
 'use strict';
 
 export class HttpMock {
-  constructor(...args) {
+  constructor() {
     this._methodsBehavior = new Map();
     this.enableNoResultMode();
   }
@@ -11,12 +11,7 @@ export class HttpMock {
    * @returns {HttpMock}
    */
   post(endpoint) {
-    switch (this._methodsBehavior.get('post')) {
-      case HttpMock.NO_RESULT_MODE,
-        HttpMock.FAILURE_MODE,
-        HttpMock.DATA_MODE:
-        break;
-    }
+    this.endpoint = endpoint;
 
     return this;
   }
@@ -36,12 +31,7 @@ export class HttpMock {
    * @returns {HttpMock}
    */
   send(data) {
-    switch (this._methodsBehavior.get('send')) {
-      case HttpMock.NO_RESULT_MODE,
-        HttpMock.FAILURE_MODE,
-        HttpMock.DATA_MODE:
-        break;
-    }
+    this.data = data;
 
     return this;
   }

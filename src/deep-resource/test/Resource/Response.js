@@ -67,12 +67,18 @@ suite('Resource/Response', function() {
     chai.expect(response.rawData).to.be.equal(rawData);
   });
 
-  test(`Check statusCode getter returns:  ${rawData.StatusCode}`,
+  test(`Check statusCode getter returns \'${rawData.StatusCode}\' when this._rawData`,
     function() {
       //check when this._rawData
-      chai.expect(response.statusCode).to.be.equal(rawData.StatusCode);
+      chai.expect(response._rawData).to.be.equal(rawData);
 
       //check when this._statusCode
+      chai.expect(response.statusCode).to.be.equal(rawData.StatusCode);
+    }
+  );
+
+  test(`Check statusCode getter returns \'${rawData.StatusCode}\' when this._statusCode`,
+    function() {
       chai.expect(response.statusCode).to.be.equal(rawData.StatusCode);
     }
   );
