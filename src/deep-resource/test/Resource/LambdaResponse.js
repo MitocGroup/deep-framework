@@ -101,11 +101,11 @@ suite('Resource/LambdaResponse', function() {
   });
 
   test('Check errorType getter returns valid error', function() {
-    //check when this._rawError
-    chai.expect(lambdaResponse._rawError).to.be.equal(rawError);
-
     //check when this._errorType
     chai.expect(lambdaResponse.errorType).to.be.equal('Error');
+
+    //check when this._rawError
+    chai.expect(lambdaResponse._rawError).to.be.equal(rawError);
   });
 
   test(
