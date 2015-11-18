@@ -30,9 +30,15 @@ export class Request {
         value: this._data[key],
         writable: false,
         configurable: false,
-        enumerable: true
+        enumerable: true,
       });
     }
+
+    // Avoid _data key listing on Object.keys(request)
+    Object.defineProperty(this, '_data', {
+      configurable: false,
+      enumerable: true,
+    });
   }
 
   /**
