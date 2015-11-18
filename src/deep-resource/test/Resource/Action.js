@@ -18,8 +18,10 @@ suite('Resource/Action', function() {
   let actionType = 'lambda';
   let actionMethods = ['POST'];
   let microserviceIdentifier = 'hello.world.example';
-  let actionSource = backendConfig.microservices[microserviceIdentifier]
-    .resources[resourceName][actionName].source;
+  let actionSource = {
+    api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',
+    original: 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayHello64232f3705a',
+  };
   let actionRegion = 'us-west-2';
   let action = null;
   let backendKernelInstance = null;
