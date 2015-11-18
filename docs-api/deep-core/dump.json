@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {Policy} from './Policy';\n\n/**\n * Iam statement action\n */\nexport class Action extends Extractable {\n  constructor() {\n    super();\n\n    this._service = Policy.ANY;\n    this._action = Policy.ANY;\n  }\n\n  /**\n   * @param {String} action\n   */\n  set action(action) {\n    this._action = action;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let action = this._action;\n\n    return `${service}:${action}`;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {Policy} from './Policy';\n\n/**\n * Iam statement action\n */\nexport class Action extends Extractable {\n  /**\n   * @param {String} service\n   * @param {String} actionName\n   */\n  constructor(service = Service.ANY, actionName = Policy.ANY) {\n    super();\n\n    this._service = null;\n    this._action = actionName;\n\n    this.service = service;\n  }\n\n  /**\n   * @param {String} action\n   */\n  set action(action) {\n    this._action = action;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let action = this._action;\n\n    return `${service}:${action}`;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -38,9 +38,29 @@
     "longname": "lib/AWS/IAM/Action.js~Action#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 16,
-    "undocument": true,
-    "params": [],
+    "lineNumber": 20,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "service",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "actionName",
+        "description": ""
+      }
+    ],
     "generator": false
   },
   {
@@ -52,7 +72,7 @@
     "longname": "lib/AWS/IAM/Action.js~Action#_service",
     "access": null,
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -69,7 +89,24 @@
     "longname": "lib/AWS/IAM/Action.js~Action#_action",
     "access": null,
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "service",
+    "memberof": "lib/AWS/IAM/Action.js~Action",
+    "longname": "lib/AWS/IAM/Action.js~Action#service",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
     "undocument": true,
     "type": {
       "types": [
@@ -86,7 +123,7 @@
     "longname": "lib/AWS/IAM/Action.js~Action#action",
     "access": null,
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 32,
     "params": [
       {
         "nullable": null,
@@ -115,7 +152,7 @@
     "longname": "lib/AWS/IAM/Action.js~Action#_action",
     "access": null,
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -132,7 +169,7 @@
     "longname": "lib/AWS/IAM/Action.js~Action#action",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 39,
     "unknown": [
       {
         "tagName": "@returns",
@@ -163,7 +200,7 @@
     "longname": "lib/AWS/IAM/Action.js~Action#service",
     "access": null,
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 46,
     "params": [
       {
         "nullable": null,
@@ -192,7 +229,7 @@
     "longname": "lib/AWS/IAM/Action.js~Action#_service",
     "access": null,
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 51,
     "undocument": true,
     "type": {
       "types": [
@@ -209,7 +246,7 @@
     "longname": "lib/AWS/IAM/Action.js~Action#service",
     "access": null,
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 57,
     "unknown": [
       {
         "tagName": "@returns",
@@ -240,7 +277,7 @@
     "longname": "lib/AWS/IAM/Action.js~Action#extract",
     "access": null,
     "description": null,
-    "lineNumber": 58,
+    "lineNumber": 64,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1226,7 +1263,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Region} from '../Region';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {InvalidArnException} from './Exception/InvalidArnException';\n\n/**\n * IAM statement resource\n */\nexport class Resource extends Extractable {\n  constructor() {\n    super();\n\n    this._service = '';\n    this._region = '';\n    this._accountId = '';\n    this._descriptor = '';\n  }\n\n  /**\n   * @param {String} identifier\n   */\n  set accountId(identifier) {\n    this._accountId = identifier;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get accountId() {\n    return this._accountId;\n  }\n\n  /**\n   * @param {String} descriptor\n   */\n  set descriptor(descriptor) {\n    this._descriptor = descriptor;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get descriptor() {\n    return this._descriptor;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set region(name) {\n    if (!Region.exists(name)) {\n      throw new InvalidArgumentException(name, Region);\n    }\n\n    this._region = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @see - http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\n   *\n   * @param {string} arn\n   * @returns {Resource}\n   */\n  updateFromArn(arn) {\n    let arnParts = arn.split(':');\n\n    if (arnParts.length < 6) {\n      throw new InvalidArnException(arn);\n    }\n\n    this.service = arnParts[2];\n    this.region = arnParts[3];\n    this.accountId = arnParts[4];\n    this.descriptor = arnParts.slice(5).join(':');\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let region = this._region;\n    let accountId = this._accountId;\n    let descriptor = this._descriptor;\n\n    return `arn:aws:${service}:${region}:${accountId}:${descriptor}`;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Region} from '../Region';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {InvalidArnException} from './Exception/InvalidArnException';\n\n/**\n * IAM statement resource\n */\nexport class Resource extends Extractable {\n  constructor(service = Service.ANY, region = '', accountId = '', descriptor = '') {\n    super();\n\n    this._service = null;\n    this._region = null;\n    this._accountId = accountId;\n    this._descriptor = descriptor;\n\n    this.service = service;\n    this.region = region;\n  }\n\n  /**\n   * @param {String} identifier\n   */\n  set accountId(identifier) {\n    this._accountId = identifier;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get accountId() {\n    return this._accountId;\n  }\n\n  /**\n   * @param {String} descriptor\n   */\n  set descriptor(descriptor) {\n    this._descriptor = descriptor;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get descriptor() {\n    return this._descriptor;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set region(name) {\n    if (!Region.exists(name)) {\n      throw new InvalidArgumentException(name, Region);\n    }\n\n    this._region = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @see - http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\n   *\n   * @param {string} arn\n   * @returns {Resource}\n   */\n  updateFromArn(arn) {\n    let arnParts = arn.split(':');\n\n    if (arnParts.length < 6) {\n      throw new InvalidArnException(arn);\n    }\n\n    this.service = arnParts[2];\n    this.region = arnParts[3];\n    this.accountId = arnParts[4];\n    this.descriptor = arnParts.slice(5).join(':');\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let region = this._region;\n    let accountId = this._accountId;\n    let descriptor = this._descriptor;\n\n    return `arn:aws:${service}:${region}:${accountId}:${descriptor}`;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1257,7 +1294,42 @@
     "description": null,
     "lineNumber": 17,
     "undocument": true,
-    "params": [],
+    "params": [
+      {
+        "name": "service",
+        "optional": true,
+        "types": [
+          "*"
+        ]
+      },
+      {
+        "name": "region",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": "",
+        "defaultValue": ""
+      },
+      {
+        "name": "accountId",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": "",
+        "defaultValue": ""
+      },
+      {
+        "name": "descriptor",
+        "optional": true,
+        "types": [
+          "string"
+        ],
+        "defaultRaw": "",
+        "defaultValue": ""
+      }
+    ],
     "generator": false
   },
   {
@@ -1273,7 +1345,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "string"
+        "*"
       ]
     }
   },
@@ -1290,7 +1362,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "string"
+        "*"
       ]
     }
   },
@@ -1307,7 +1379,7 @@
     "undocument": true,
     "type": {
       "types": [
-        "string"
+        "*"
       ]
     }
   },
@@ -1324,7 +1396,41 @@
     "undocument": true,
     "type": {
       "types": [
-        "string"
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "service",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#service",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "region",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#region",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
       ]
     }
   },
@@ -1337,7 +1443,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
     "access": null,
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 32,
     "params": [
       {
         "nullable": null,
@@ -1366,7 +1472,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#_accountId",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -1383,7 +1489,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 39,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1414,7 +1520,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "access": null,
     "description": null,
-    "lineNumber": 43,
+    "lineNumber": 46,
     "params": [
       {
         "nullable": null,
@@ -1443,7 +1549,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#_descriptor",
     "access": null,
     "description": null,
-    "lineNumber": 44,
+    "lineNumber": 47,
     "undocument": true,
     "type": {
       "types": [
@@ -1460,7 +1566,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "access": null,
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 53,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1491,7 +1597,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#region",
     "access": null,
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 60,
     "params": [
       {
         "nullable": null,
@@ -1520,7 +1626,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#_region",
     "access": null,
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 65,
     "undocument": true,
     "type": {
       "types": [
@@ -1537,7 +1643,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#region",
     "access": null,
     "description": null,
-    "lineNumber": 68,
+    "lineNumber": 71,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1568,7 +1674,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#service",
     "access": null,
     "description": null,
-    "lineNumber": 75,
+    "lineNumber": 78,
     "params": [
       {
         "nullable": null,
@@ -1597,7 +1703,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#_service",
     "access": null,
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 83,
     "undocument": true,
     "type": {
       "types": [
@@ -1614,7 +1720,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#service",
     "access": null,
     "description": null,
-    "lineNumber": 86,
+    "lineNumber": 89,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1648,7 +1754,7 @@
     "see": [
       "- http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html"
     ],
-    "lineNumber": 96,
+    "lineNumber": 99,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1686,7 +1792,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#service",
     "access": null,
     "description": null,
-    "lineNumber": 103,
+    "lineNumber": 106,
     "undocument": true,
     "type": {
       "types": [
@@ -1703,7 +1809,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#region",
     "access": null,
     "description": null,
-    "lineNumber": 104,
+    "lineNumber": 107,
     "undocument": true,
     "type": {
       "types": [
@@ -1720,7 +1826,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
     "access": null,
     "description": null,
-    "lineNumber": 105,
+    "lineNumber": 108,
     "undocument": true,
     "type": {
       "types": [
@@ -1737,7 +1843,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "access": null,
     "description": null,
-    "lineNumber": 106,
+    "lineNumber": 109,
     "undocument": true,
     "type": {
       "types": [
@@ -1754,7 +1860,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#extract",
     "access": null,
     "description": null,
-    "lineNumber": 114,
+    "lineNumber": 117,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3557,7 +3663,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS regions\n */\nexport class Region {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_TOKYO() {\n    return 'ap-northeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SINGAPORE() {\n    return 'ap-southeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SYDNEY() {\n    return 'ap-southeast-2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_FRANKFURT() {\n    return 'eu-central-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_IRELAND() {\n    return 'eu-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SOUTH_AMERICA_SAO_PAULO() {\n    return 'sa-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_EAST_N_VIRGINIA() {\n    return 'us-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_N_CALIFORNIA() {\n    return 'us-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_OREGON() {\n    return 'us-west-2';\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Region.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Region.ANY,\n      Region.ASIA_PACIFIC_TOKYO,\n      Region.ASIA_PACIFIC_SYDNEY,\n      Region.ASIA_PACIFIC_SINGAPORE,\n      Region.EU_FRANKFURT,\n      Region.EU_IRELAND,\n      Region.SOUTH_AMERICA_SAO_PAULO,\n      Region.US_EAST_N_VIRGINIA,\n      Region.US_WEST_N_CALIFORNIA,\n      Region.US_WEST_OREGON,\n    ];\n  }\n\n  /**\n   * List method alias\n   *\n   * @returns {String[]}\n   */\n  static all() {\n    return Region.list();\n  }\n\n  /**\n   * @param {string} defaultRegion\n   * @param {array} availableRegions\n   * @returns {string}\n   */\n  static getAppropriateAwsRegion(defaultRegion, availableRegions) {\n    if (availableRegions.indexOf(defaultRegion) !== -1) {\n      return defaultRegion;\n    }\n\n    let regionContinent = defaultRegion.split('-')[0];\n\n    for (let regionKey in availableRegions) {\n      if (!availableRegions.hasOwnProperty(regionKey)) {\n        continue;\n      }\n\n      let region = availableRegions[regionKey];\n\n      if (region === Region.ANY) {\n        return defaultRegion;\n      }\n\n      if (region.split('-')[0] === regionContinent) {\n        return region;\n      }\n    }\n\n    return availableRegions[0]; // fallback to first available region\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS regions\n */\nexport class Region {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_TOKYO() {\n    return 'ap-northeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SINGAPORE() {\n    return 'ap-southeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SYDNEY() {\n    return 'ap-southeast-2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_FRANKFURT() {\n    return 'eu-central-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_IRELAND() {\n    return 'eu-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SOUTH_AMERICA_SAO_PAULO() {\n    return 'sa-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_EAST_N_VIRGINIA() {\n    return 'us-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_N_CALIFORNIA() {\n    return 'us-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_OREGON() {\n    return 'us-west-2';\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return name === '' || -1 !== Region.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Region.ANY,\n      Region.ASIA_PACIFIC_TOKYO,\n      Region.ASIA_PACIFIC_SYDNEY,\n      Region.ASIA_PACIFIC_SINGAPORE,\n      Region.EU_FRANKFURT,\n      Region.EU_IRELAND,\n      Region.SOUTH_AMERICA_SAO_PAULO,\n      Region.US_EAST_N_VIRGINIA,\n      Region.US_WEST_N_CALIFORNIA,\n      Region.US_WEST_OREGON,\n    ];\n  }\n\n  /**\n   * List method alias\n   *\n   * @returns {String[]}\n   */\n  static all() {\n    return Region.list();\n  }\n\n  /**\n   * @param {string} defaultRegion\n   * @param {array} availableRegions\n   * @returns {string}\n   */\n  static getAppropriateAwsRegion(defaultRegion, availableRegions) {\n    if (availableRegions.indexOf(defaultRegion) !== -1) {\n      return defaultRegion;\n    }\n\n    let regionContinent = defaultRegion.split('-')[0];\n\n    for (let regionKey in availableRegions) {\n      if (!availableRegions.hasOwnProperty(regionKey)) {\n        continue;\n      }\n\n      let region = availableRegions[regionKey];\n\n      if (region === Region.ANY) {\n        return defaultRegion;\n      }\n\n      if (region.split('-')[0] === regionContinent) {\n        return region;\n      }\n    }\n\n    return availableRegions[0]; // fallback to first available region\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -4034,7 +4140,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY_EXECUTE() {\n    return 'execute-api';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n      Service.API_GATEWAY_EXECUTE,\n    ];\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY_EXECUTE() {\n    return 'execute-api';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.ANY,\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n      Service.API_GATEWAY_EXECUTE,\n    ];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -4055,12 +4161,43 @@
     "kind": "get",
     "static": true,
     "variation": null,
+    "name": "ANY",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.ANY",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
     "name": "LAMBDA",
     "memberof": "lib/AWS/Service.js~Service",
     "longname": "lib/AWS/Service.js~Service.LAMBDA",
     "access": null,
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 21,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4091,7 +4228,7 @@
     "longname": "lib/AWS/Service.js~Service.SIMPLE_STORAGE_SERVICE",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 28,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4122,7 +4259,7 @@
     "longname": "lib/AWS/Service.js~Service.DYNAMO_DB",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 35,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4153,7 +4290,7 @@
     "longname": "lib/AWS/Service.js~Service.SIMPLE_NOTIFICATION_SERVICE",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 42,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4184,7 +4321,7 @@
     "longname": "lib/AWS/Service.js~Service.COGNITO_IDENTITY",
     "access": null,
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 49,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4215,7 +4352,7 @@
     "longname": "lib/AWS/Service.js~Service.COGNITO_SYNC",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 56,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4246,7 +4383,7 @@
     "longname": "lib/AWS/Service.js~Service.ELASTIC_CACHE",
     "access": null,
     "description": null,
-    "lineNumber": 56,
+    "lineNumber": 63,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4277,7 +4414,7 @@
     "longname": "lib/AWS/Service.js~Service.IDENTITY_AND_ACCESS_MANAGEMENT",
     "access": null,
     "description": null,
-    "lineNumber": 63,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4308,7 +4445,7 @@
     "longname": "lib/AWS/Service.js~Service.KINESIS",
     "access": null,
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 77,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4339,7 +4476,7 @@
     "longname": "lib/AWS/Service.js~Service.CLOUD_FRONT",
     "access": null,
     "description": null,
-    "lineNumber": 77,
+    "lineNumber": 84,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4370,7 +4507,7 @@
     "longname": "lib/AWS/Service.js~Service.SECURITY_TOKEN_SERVICE",
     "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 91,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4401,7 +4538,7 @@
     "longname": "lib/AWS/Service.js~Service.CLOUD_WATCH_LOGS",
     "access": null,
     "description": null,
-    "lineNumber": 91,
+    "lineNumber": 98,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4432,7 +4569,7 @@
     "longname": "lib/AWS/Service.js~Service.API_GATEWAY",
     "access": null,
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 105,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4463,7 +4600,7 @@
     "longname": "lib/AWS/Service.js~Service.API_GATEWAY_EXECUTE",
     "access": null,
     "description": null,
-    "lineNumber": 105,
+    "lineNumber": 112,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4494,7 +4631,7 @@
     "longname": "lib/AWS/Service.js~Service.identifier",
     "access": null,
     "description": null,
-    "lineNumber": 113,
+    "lineNumber": 120,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4532,7 +4669,7 @@
     "longname": "lib/AWS/Service.js~Service.exists",
     "access": null,
     "description": null,
-    "lineNumber": 121,
+    "lineNumber": 128,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4570,7 +4707,7 @@
     "longname": "lib/AWS/Service.js~Service.list",
     "access": null,
     "description": null,
-    "lineNumber": 128,
+    "lineNumber": 135,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5056,7 +5193,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Simple object storage implementation\n */\nexport class ObjectStorage {\n  /**\n   * @param {Array} objects\n   */\n  constructor(...objects) {\n    if (objects.length === 1 && objects[0] instanceof Array) {\n      objects = objects[0];\n    }\n\n    this._vector = objects;\n  }\n\n  /**\n   * @param {*} object\n   * @returns {ObjectStorage}\n   */\n  add(object) {\n    this._vector.push(object);\n\n    return this;\n  }\n\n  /**\n   * @param {*} thing\n   * @param {Boolean} strict\n   * @returns {*}\n   */\n  find(thing, strict = false) {\n    for (let objectKey in this._vector) {\n      if (!this._vector.hasOwnProperty(objectKey)) {\n        continue;\n      }\n\n      let object = this._vector[objectKey];\n\n      if ((strict && object === thing) || (!strict && object instanceof thing)) {\n        return object;\n      }\n    }\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get iterator() {\n    return this._vector;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Simple object storage implementation\n */\nexport class ObjectStorage {\n  /**\n   * @param {Array} objects\n   */\n  constructor(...objects) {\n    if (objects.length === 1 && objects[0] instanceof Array) {\n      objects = objects[0];\n    }\n\n    this._vector = objects;\n  }\n\n  /**\n   * @param {*} object\n   * @returns {ObjectStorage}\n   */\n  add(object) {\n    this._vector.push(object);\n\n    return this;\n  }\n\n  /**\n   * @param {Function|Object} thing\n   * @param {Boolean} strict\n   * @returns {Object|null}\n   */\n  find(thing, strict = false) {\n    for (let objectKey in this._vector) {\n      if (!this._vector.hasOwnProperty(objectKey)) {\n        continue;\n      }\n\n      let object = this._vector[objectKey];\n\n      if ((strict && object === thing) || (!strict && object instanceof thing)) {\n        return object;\n      }\n    }\n\n    return null;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get iterator() {\n    return this._vector;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -5165,14 +5302,15 @@
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{*}"
+        "tagValue": "{Object|null}"
       }
     ],
     "params": [
       {
         "nullable": null,
         "types": [
-          "*"
+          "Function",
+          "Object"
         ],
         "spread": false,
         "optional": false,
@@ -5193,7 +5331,8 @@
     "return": {
       "nullable": null,
       "types": [
-        "*"
+        "Object",
+        "null"
       ],
       "spread": false,
       "description": ""
@@ -5209,7 +5348,7 @@
     "longname": "lib/Generic/ObjectStorage.js~ObjectStorage#iterator",
     "access": null,
     "description": null,
-    "lineNumber": 54,
+    "lineNumber": 56,
     "unknown": [
       {
         "tagName": "@returns",

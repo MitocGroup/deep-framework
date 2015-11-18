@@ -13,6 +13,7 @@ import Http from 'superagent';
 import AWS from 'aws-sdk';
 import {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';
 import {CachedRequestException} from './Exception/CachedRequestException';
+import {NotAuthenticatedException} from './Exception/NotAuthenticatedException';
 import aws4 from 'aws4';
 import parseUrl from 'parse-url';
 import queryString from 'query-string';
@@ -21,6 +22,7 @@ import {DirectLambdaCallDeniedException} from './Exception/DirectLambdaCallDenie
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
 import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import Security from 'deep-security';
+import crypto from 'crypto';
 
 /**
  * Action request instance
@@ -137,10 +139,22 @@ export class Request {
    * @private
    */
   _buildCacheKey() {
-    let payload = JSON.stringify(this._payload);
+    let payload = Request._md5(JSON.stringify(this._payload));
     let endpoint = this.native ? this._action.source.original : this._action.source.api;
 
     return `${this._method}:${this._action.type}:${endpoint}#${payload}`;
+  }
+
+  /**
+   * @param {String} str
+   * @returns {String}
+   */
+  static _md5(str) {
+    var md5sum = crypto.createHash('md5');
+
+    md5sum.update(str);
+
+    return md5sum.digest('hex');
   }
 
   /**
@@ -424,6 +438,10 @@ export class Request {
 
     if (!(securityService instanceof Security)) {
       throw new MissingSecurityServiceException();
+    }
+
+    if (!securityService.token) {
+      throw new NotAuthenticatedException();
     }
 
     return securityService.token.loadCredentials((error, credentials) => {
