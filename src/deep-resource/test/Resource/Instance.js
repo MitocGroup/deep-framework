@@ -1,48 +1,100 @@
 'use strict';
 
 import chai from 'chai';
+import {Resource} from '../../lib.compiled/Resource';
+import {Request} from '../../lib.compiled/Resource/Request';
 import {Instance} from '../../lib.compiled/Resource/Instance';
-import {MissingActionException} from '../../lib.compiled/Exception/MissingResourceException';
 import {Action} from '../../lib.compiled/Resource/Action';
+import {MissingActionException} from '../../lib.compiled/Resource/Exception/MissingActionException';
+import Kernel from 'deep-kernel';
+import Cache from 'deep-cache';
+import Security from 'deep-security';
+import KernelFactory from '../common/KernelFactory';
+import backendConfig from '../common/backend-cfg-json';
 
 suite('Resource/Instance', function() {
-  let actionName = 'UpdateData';
-  let rawActions = ['find', 'update'];
-  let instance = new Instance(actionName, rawActions);
+  let actionName = 'say-hello';
+  let resourceName = 'sample';
+  let microserviceIdentifier = 'hello.world.example';
+  let instance = null;
+  let action = null;
+  let backendKernelInstance = null;
 
   test('Class Instance exists in Resource/Instance', function() {
     chai.expect(typeof Instance).to.equal('function');
   });
 
+  test('Load Kernel by using Kernel.load()', function(done) {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+
+      backendKernelInstance = backendKernel;
+
+      // complete the async
+      done();
+    };
+
+    KernelFactory.create({
+      Cache: Cache,
+      Security: Security,
+      Resource: Resource,
+    }, callback);
+  });
+
+  test('Check getting instance from Kernel instance', function() {
+    instance = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}`
+    );
+
+    chai.assert.instanceOf(
+      instance, Instance, 'instance is an instance of Instance'
+    );
+  });
+
+  test('Check getting action from Kernel instance', function() {
+    action = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}:${actionName}`
+    );
+
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
+  });
+
   test('Check constructor sets _name', function() {
-    chai.expect(instance.name).to.be.equal(actionName);
+    chai.expect(instance.name).to.be.equal(resourceName);
   });
 
   test('Check constructor sets _rawActions', function() {
-    chai.expect(instance._rawActions).to.be.equal(rawActions);
-  });
-
-  test('Check constructor sets _security=null', function() {
-    chai.expect(instance.security).to.be.eql(null);
+    let expectedResult = backendConfig
+      .microservices[microserviceIdentifier]
+      .resources[resourceName];
+    chai.expect(instance._rawActions).to.be.equal(expectedResult);
   });
 
   test('Check constructor sets _actions', function() {
-    chai.expect(Object.keys(instance.actions).length).to.be.equal(2);
+    chai.expect(Object.keys(instance.actions).length).to.be.equal(3);
   });
 
   test('Check constructor sets _localBackend=false', function() {
     chai.expect(instance.localBackend).to.be.equal(false);
   });
 
-  test('Check constructor sets _cache=null', function() {
-    chai.expect(instance.cache).to.be.equal(null);
-  });
+  test('Check cache() getter/setter', function() {
+    let cache = instance.cache;
+    chai.assert.instanceOf(
+      cache, Cache, 'cache is an instance of Cache'
+    );
 
-  test('Check cache() setter sets _cache={}', function() {
     instance.cache = null;
     chai.expect(instance.cache).to.be.equal(null);
+
     instance.cache = {};
     chai.expect(instance.cache).to.be.eql({});
+
+    instance.cache = cache;
+    chai.expect(instance.cache).to.be.eql(cache);
   });
 
   test('Check localBackend() setter sets _localBackend=true', function() {
@@ -52,27 +104,66 @@ suite('Resource/Instance', function() {
     chai.expect(instance.localBackend).to.be.equal(true);
   });
 
-  test('Check security() setter sets _security={}', function() {
+  test('Check security() getter/setter', function() {
+    let security = instance.security;
+    chai.assert.instanceOf(
+      security, Security, 'security is an instance of Security'
+    );
+
     instance.security = null;
     chai.expect(instance.security).to.be.equal(null);
+
     instance.security = {};
     chai.expect(instance.security).to.be.eql({});
+
+    instance.security = security;
+    chai.expect(instance.security).to.be.eql(security);
   });
 
   test('Check has() method returns false', function() {
     chai.expect(instance.has('find')).to.be.equal(false);
   });
 
-  test('Check action() method throws \'MissingActionException\' exception', function() {
-    let error = null;
-    let testAction = 'find';
-    try {
-      instance.action(testAction);
-    } catch (e) {
-      error = e;
-    }
+  test('Check has() method returns true', function() {
+    chai.expect(instance.has(actionName)).to.be.equal(true);
+  });
 
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(error.message).to.be.equal(`Missing action ${testAction} in UpdateData resource.`);
+  test('Check action() method throws "MissingActionException" exception',
+    function() {
+
+      let error = null;
+      let testAction = 'find';
+      
+      try {
+        instance.action(testAction);
+      } catch (e) {
+        error = e;
+      }
+      
+      chai.assert.instanceOf(
+        error, MissingActionException, 'error is an instance of MissingActionException'
+      );
+    }
+  );
+
+  test('Check action() method returns valid action',
+    function() {
+
+      let actualResult = instance.action(actionName);
+
+      chai.assert.instanceOf(
+        actualResult, Action, 'result is an instance of Action'
+      );
+      chai.expect(actualResult.name).to.be.equal(actionName);
+    }
+  );
+
+  test('Check request() method return valid instance of Request', function() {
+    let actualResult = instance.request(actionName, {}, 'POST');
+
+    chai.assert.instanceOf(
+      actualResult, Request, 'is an instance of Request'
+    );
+    chai.expect(actualResult.cacheImpl).to.be.eql(action._resource.cache);
   });
 });
