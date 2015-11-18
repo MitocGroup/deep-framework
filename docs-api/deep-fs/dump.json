@@ -562,7 +562,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 10/27/15.\n */\n\n'use strict';\n\nimport path from 'path';\nimport relativeFs from 'relative-fs';\nimport fse from 'fs-extra';\nimport fs from 'fs';\nimport {_extend as extend} from 'util';\n\nexport class S3FSRelativeFSExtender {\n  /**\n   * @param {Object|String} relativeFsPath\n   */\n  constructor(relativeFsPath) {\n    let relativeFsObject = relativeFsPath;\n\n    if (typeof relativeFsObject !== 'object') {\n      relativeFsObject = relativeFs.relativeTo(relativeFsPath);\n      relativeFsObject._rootFolder = relativeFsPath;\n    } else if(!relativeFsObject.hasOwnProperty('_rootFolder')) {\n      throw new Error('Missing _rootFolder property from RelativeFS object');\n    }\n\n    this._relativeFsObject = relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFs() {\n    return this._relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFsExtended() {\n    return extend(this._relativeFsObject, this.EXTEND_OBJECT);\n  }\n\n  /**\n   * @returns {String}\n   */\n  get cwd() {\n    return this._relativeFsObject._rootFolder || process.cwd();\n  }\n\n  /**\n   * @returns {{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}}\n   * @constructor\n   */\n  get EXTEND_OBJECT() {\n    let extendObject = {\n\n      /**\n       * @param {String} pathStr\n       * @returns {String}\n       */\n      getPath: (pathStr = '') => {\n        return path.join(this.cwd, pathStr);\n      },\n\n      /**\n       * @param {String} pathStr\n       * @returns {Object}\n       */\n      clone: (pathStr) => {\n        let newCwd = path.join(this.cwd, pathStr);\n\n        return new S3FSRelativeFSExtender(newCwd).relativeFsExtended;\n      },\n\n      /**\n       * @param {String} sourcePath\n       * @param {String} destinationPath\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      copyFile: (sourcePath, destinationPath, callback = null) => {\n        let absSourcePath = path.join(this.cwd, sourcePath);\n        let absDestinationPath = path.join(this.cwd, destinationPath);\n\n        if (callback) {\n          fse.copy(absSourcePath, absDestinationPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.copy(absSourcePath, absDestinationPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {Object} options\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      create: (options, callback = null) => {\n        let error = new Error(`You do not have rights for this operation on bucket ${options.Bucket}`);\n\n        if (callback) {\n          callback(error);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          reject(error);\n        });\n      },\n\n      /**\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      destroy: (callback = null) => {\n        let error = new Error(`You do not have rights for this operation`);\n\n        if (callback) {\n          fse.remove(this.cwd, () => {\n            callback(error);\n          });\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(this.cwd, (nativeError) => {\n            if (nativeError) {\n              reject(nativeError);\n              return;\n            }\n\n            reject(error);\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      headObject: (pathStr, callback = null) => {\n        let responseObj = {\n          AcceptRanges: '',\n          Restore: '',\n          LastModified: new Date().getTime(),\n          ContentLength: 0,\n          ETag: '55ad340609f4b302',\n          MissingMeta: 0,\n          VersionId: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n        };\n\n        if (callback) {\n          callback(responseObj);\n          return;\n        }\n\n        return new Promise((resolve) => {\n          resolve(responseObj);\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {String} marker\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      listContents: (pathStr, marker, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        let globResponseObj = {\n          Marker: marker,\n          IsTruncated: false,\n          Contents: [],\n          Name: this.cwd,\n          Prefix: pathStr,\n          Delimiter: '/',\n          MaxKeys: 1000000000,\n          CommonPrefixes: [],\n          EncodingType: 'url',\n        };\n\n        let responseObj = {\n          Key: null,\n          LastModified: new Date().getTime(),\n          Size: 0,\n          ETag: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n          Owner: {\n            DisplayName: 's3fs',\n            ID: '55ad340609f4b302',\n          },\n        };\n\n        if (callback) {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));\n            })\n            .on('end', () => {\n              callback(globResponseObj);\n            });\n\n          return;\n        }\n\n        return new Promise((resolve) => {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path}));\n            })\n            .on('end', () => {\n              resolve(globResponseObj);\n            });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      readdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fs.readdir(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fs.readdir(absPath, (error, files) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve(files);\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      mkdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.mkdirp(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.mkdirp(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      rmdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.remove(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      }\n    };\n\n    extendObject.copyDir = extendObject.copyFile;\n    extendObject.delete = extendObject.create;\n    extendObject.putBucketLifecycle = extendObject.create;\n\n    return extendObject;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 10/27/15.\n */\n\n'use strict';\n\nimport path from 'path';\nimport relativeFs from 'relative-fs';\nimport fse from 'fs-extra';\nimport fs from 'fs';\nimport {_extend as extend} from 'util';\nimport es6Promise from 'es6-promise';\n\n// Fix missing Promise\nes6Promise.polyfill();\n\nexport class S3FSRelativeFSExtender {\n  /**\n   * @param {Object|String} relativeFsPath\n   */\n  constructor(relativeFsPath) {\n    let relativeFsObject = relativeFsPath;\n\n    if (typeof relativeFsObject !== 'object') {\n      relativeFsObject = relativeFs.relativeTo(relativeFsPath);\n      relativeFsObject._rootFolder = relativeFsPath;\n    } else if(!relativeFsObject.hasOwnProperty('_rootFolder')) {\n      throw new Error('Missing _rootFolder property from RelativeFS object');\n    }\n\n    this._relativeFsObject = relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFs() {\n    return this._relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFsExtended() {\n    return extend(this._relativeFsObject, this.EXTEND_OBJECT);\n  }\n\n  /**\n   * @returns {String}\n   */\n  get cwd() {\n    return path.normalize(this._relativeFsObject._rootFolder || process.cwd());\n  }\n\n  /**\n   * @returns {{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}}\n   * @constructor\n   */\n  get EXTEND_OBJECT() {\n    let extendObject = {\n\n      /**\n       * @param {String} pathStr\n       * @returns {String}\n       *\n       * @todo: return some fake bucket name? or the prefix?\n       */\n      getPath: (pathStr = '') => {\n        return path.join(this.cwd, pathStr);\n      },\n\n      /**\n       * @param {String} pathStr\n       * @returns {Object}\n       */\n      clone: (pathStr) => {\n        let newCwd = path.join(this.cwd, pathStr);\n\n        return new S3FSRelativeFSExtender(newCwd).relativeFsExtended;\n      },\n\n      /**\n       * @param {String} sourcePath\n       * @param {String} destinationPath\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      copyFile: (sourcePath, destinationPath, callback = null) => {\n        let absSourcePath = path.join(this.cwd, sourcePath);\n        let absDestinationPath = path.join(this.cwd, destinationPath);\n\n        if (callback) {\n          fse.copy(absSourcePath, absDestinationPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.copy(absSourcePath, absDestinationPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {Object} options\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      create: (options, callback = null) => {\n        let error = new Error(`You do not have rights for this operation on bucket ${options.Bucket}`);\n\n        if (callback) {\n          callback(error);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          reject(error);\n        });\n      },\n\n      /**\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      destroy: (callback = null) => {\n        let error = new Error(`You do not have rights for this operation`);\n\n        if (callback) {\n          fse.remove(this.cwd, () => {\n            callback(error);\n          });\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(this.cwd, (nativeError) => {\n            if (nativeError) {\n              reject(nativeError);\n              return;\n            }\n\n            reject(error);\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      headObject: (pathStr, callback = null) => {\n        let responseObj = {\n          AcceptRanges: '',\n          Restore: '',\n          LastModified: new Date().getTime(),\n          ContentLength: 0,\n          ETag: '55ad340609f4b302',\n          MissingMeta: 0,\n          VersionId: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n        };\n\n        if (callback) {\n          callback(responseObj);\n          return;\n        }\n\n        return new Promise((resolve) => {\n          resolve(responseObj);\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {String} marker\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      listContents: (pathStr, marker, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        let globResponseObj = {\n          Marker: marker,\n          IsTruncated: false,\n          Contents: [],\n          Name: this.cwd,\n          Prefix: pathStr,\n          Delimiter: '/',\n          MaxKeys: 1000000000,\n          CommonPrefixes: [],\n          EncodingType: 'url',\n        };\n\n        let responseObj = {\n          Key: null,\n          LastModified: new Date().getTime(),\n          Size: 0,\n          ETag: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n          Owner: {\n            DisplayName: 's3fs',\n            ID: '55ad340609f4b302',\n          },\n        };\n\n        if (callback) {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));\n            })\n            .on('end', () => {\n              callback(globResponseObj);\n            });\n\n          return;\n        }\n\n        return new Promise((resolve) => {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));\n            })\n            .on('end', () => {\n              resolve(globResponseObj);\n            });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      readdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          try {\n            callback(null, S3FSRelativeFSExtender._readdirp(absPath, this.cwd));\n          } catch(error) {\n            callback(error, null);\n          }\n\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          try {\n            resolve(S3FSRelativeFSExtender._readdirp(absPath, this.cwd));\n          } catch(error) {\n            reject(error);\n          }\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      mkdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.mkdirp(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.mkdirp(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      rmdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.remove(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      }\n    };\n\n    extendObject.copyDir = extendObject.copyFile;\n    extendObject.delete = extendObject.create;\n    extendObject.putBucketLifecycle = extendObject.create;\n\n    return extendObject;\n  }\n\n  /**\n   * @param {String} dir\n   * @param {String} basePath\n   * @returns {String[]}\n   * @private\n   */\n  static _readdirp(dir, basePath = null) {\n    let _files = [];\n\n    let files = fs.readdirSync(dir);\n\n    for (let i in files) {\n      if (!files.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let file = path.join(dir, files[i]);\n\n      _files.push(file);\n\n      if (fs.statSync(file).isDirectory()) {\n        _files = _files.concat(\n          S3FSRelativeFSExtender._readdirp(file)\n        );\n      }\n    }\n\n    return basePath\n      ? _files.map((file) => file.substr(basePath.length))\n      : _files;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -576,7 +576,7 @@
     "importPath": "deep-fs/lib/Local/S3FSRelativeFSExtender.js",
     "importStyle": "{S3FSRelativeFSExtender}",
     "description": null,
-    "lineNumber": 13,
+    "lineNumber": 17,
     "undocument": true,
     "interface": false
   },
@@ -589,7 +589,7 @@
     "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 21,
     "params": [
       {
         "nullable": null,
@@ -614,7 +614,7 @@
     "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#_relativeFsObject",
     "access": null,
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -631,7 +631,7 @@
     "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#relativeFs",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 37,
     "unknown": [
       {
         "tagName": "@returns",
@@ -662,7 +662,7 @@
     "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#relativeFsExtended",
     "access": null,
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 44,
     "unknown": [
       {
         "tagName": "@returns",
@@ -693,7 +693,7 @@
     "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#cwd",
     "access": null,
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 51,
     "unknown": [
       {
         "tagName": "@returns",
@@ -724,7 +724,7 @@
     "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#EXTEND_OBJECT",
     "access": null,
     "description": null,
-    "lineNumber": 55,
+    "lineNumber": 59,
     "unknown": [
       {
         "tagName": "@returns",
@@ -747,6 +747,54 @@
       "types": [
         "*"
       ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_readdirp",
+    "memberof": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender",
+    "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender._readdirp",
+    "access": "private",
+    "description": null,
+    "lineNumber": 327,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dir",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "basePath",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
     },
     "generator": false
   },

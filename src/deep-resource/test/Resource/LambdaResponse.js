@@ -102,7 +102,7 @@ suite('Resource/LambdaResponse', function() {
 
   test('Check errorType getter returns valid error', function() {
     //check when this._rawError
-    chai.expect(lambdaResponse.errorType).to.be.equal('Error');
+    chai.expect(lambdaResponse._rawError).to.be.equal(rawError);
 
     //check when this._errorType
     chai.expect(lambdaResponse.errorType).to.be.equal('Error');
@@ -110,7 +110,7 @@ suite('Resource/LambdaResponse', function() {
 
   test(
     'Check errorType getter returns valid error from rawData with errorType',
-    function () {
+    function() {
       let rawDataWithError = {
         Payload: '{"dataKey":"testValue","errorMessage":"Internal error",' +
         '"errorType":"RuntimeException"}',

@@ -5,7 +5,7 @@ import {Resource} from '../../lib.compiled/Resource';
 import {Request} from '../../lib.compiled/Resource/Request';
 import {Instance} from '../../lib.compiled/Resource/Instance';
 import {Action} from '../../lib.compiled/Resource/Action';
-import {MissingActionException} from '../../lib.compiled/Exception/MissingResourceException';
+import {MissingActionException} from '../../lib.compiled/Resource/Exception/MissingActionException';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
@@ -123,15 +123,16 @@ suite('Resource/Instance', function() {
 
       let error = null;
       let testAction = 'find';
-
+      
       try {
         instance.action(testAction);
       } catch (e) {
         error = e;
       }
-
-      chai.expect(error).to.be.not.equal(null);
-      chai.expect(error.message).to.be.equal(`Missing action ${testAction} in ${resourceName} resource.`);
+      
+      chai.assert.instanceOf(
+        error, MissingActionException, 'error is an instance of MissingActionException'
+      );
     }
   );
 

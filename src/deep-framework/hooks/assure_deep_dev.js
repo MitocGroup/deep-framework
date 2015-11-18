@@ -76,7 +76,7 @@ if (process.env[npmEnvKey] !== 'true') {
 
                 console.log('Running: ' + installCmd);
 
-                exec(installCmd, function (error, stdout, stderr) {
+                exec(installCmd + ' &>/dev/null', function (error, stdout, stderr) {
                     if (error) {
                       console.error('Error while installing npm packages ' + pckgsToInstall.join(', ') + ': ' + stderr);
                       return;

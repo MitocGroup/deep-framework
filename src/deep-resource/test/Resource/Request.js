@@ -160,13 +160,13 @@ suite('Resource/Request', function() {
     'Check cache() throws "MissingCacheImplementationException" for !_cacheImpl',
     function() {
       let error = null;
+
       try {
         request.cache();
       } catch (e) {
         error = e;
       }
 
-      chai.expect(error).to.be.not.equal(null);
       chai.expect(error).to.an.instanceof(MissingCacheImplementationException);
     }
   );
@@ -195,7 +195,6 @@ suite('Resource/Request', function() {
         error = e;
       }
 
-      chai.expect(error).to.be.not.equal(null);
       chai.expect(error).to.be.an.instanceof(CachedRequestException);
     }
   );
@@ -287,7 +286,7 @@ suite('Resource/Request', function() {
     function() {
       let actualResult = request._buildCacheKey();
       let endpoint = request.native ? action.source.original : action.source.api;
-      let expectedResult = `${method}:${action.type}:${endpoint}#${JSON.stringify(payload)}`;
+      let expectedResult = `${method}:${action.type}:${endpoint}#${Request._md5(JSON.stringify(payload))}`;
       chai.expect(actualResult).to.be.equal(expectedResult);
     }
   );
@@ -350,7 +349,6 @@ suite('Resource/Request', function() {
         error = e;
       }
 
-      chai.expect(error).to.be.not.equal(null);
       chai.assert.instanceOf(
         error,
         CachedRequestException,
@@ -380,7 +378,6 @@ suite('Resource/Request', function() {
         error = e;
       }
 
-      chai.expect(error).to.be.not.equal(null);
       chai.assert.instanceOf(
         error,
         CachedRequestException,
@@ -483,7 +480,6 @@ suite('Resource/Request', function() {
         error = e;
       }
 
-      chai.expect(error).to.be.not.equal(null);
       chai.assert.instanceOf(
         error,
         CachedRequestException,
@@ -509,7 +505,6 @@ suite('Resource/Request', function() {
       error = e;
     }
 
-    chai.expect(error).to.be.not.equal(null);
     chai.assert.instanceOf(
       error,
       CachedRequestException,
@@ -536,7 +531,6 @@ suite('Resource/Request', function() {
       error = e;
     }
 
-    chai.expect(error).to.be.not.equal(null);
     chai.assert.instanceOf(
       error,
       CachedRequestException,

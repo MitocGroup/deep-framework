@@ -661,13 +661,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
@@ -691,13 +691,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
@@ -709,13 +709,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
@@ -739,13 +739,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#service",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-service",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-service",
     "lib/AWS/IAM/Resource.js~Resource#service",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#service",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-service",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-service",
     "lib/AWS/IAM/Resource.js~Resource#service",
     "member"
   ],
@@ -787,13 +787,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
@@ -817,13 +817,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
@@ -949,13 +949,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/lambda/response.js~response#runtimecontext",
-    "class/lib/AWS/Lambda/Response.js~Response.html#instance-get-runtimeContext",
+    "class/lib/AWS/Lambda/Response.js~Response.html#instance-set-runtimeContext",
     "lib/AWS/Lambda/Response.js~Response#runtimeContext",
     "member"
   ],
   [
     "lib/aws/lambda/response.js~response#runtimecontext",
-    "class/lib/AWS/Lambda/Response.js~Response.html#instance-set-runtimeContext",
+    "class/lib/AWS/Lambda/Response.js~Response.html#instance-get-runtimeContext",
     "lib/AWS/Lambda/Response.js~Response#runtimeContext",
     "member"
   ],
@@ -1126,6 +1126,12 @@ window.esdocSearchIndex = [
     "file/lib/AWS/Service.js.html",
     "lib/AWS/Service.js",
     "file"
+  ],
+  [
+    "lib/aws/service.js~service.any",
+    "class/lib/AWS/Service.js~Service.html#static-get-ANY",
+    "lib/AWS/Service.js~Service.ANY",
+    "member"
   ],
   [
     "lib/aws/service.js~service.api_gateway",

@@ -77,16 +77,16 @@ suite('Resource', function() {
     );
   });
 
-  test('Check get() method throws \'MissingResourceException\' exception',
+  test('Check get() method throws "MissingResourceException" exception',
     function() {
       let error = null;
+
       try {
         resource.get(`@${microserviceIdentifier}:invalid_resource_name`);
       } catch (e) {
         error = e;
       }
 
-      chai.expect(error).to.be.not.equal(null);
       chai.assert.instanceOf(error, MissingResourceException,
         'error is an instance of MissingResourceException');
     }

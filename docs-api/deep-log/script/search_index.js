@@ -384,6 +384,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/driver/abstractdriver.js~abstractdriver.timestring",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#static-get-timeString",
+    "lib/Driver/AbstractDriver.js~AbstractDriver.timeString",
+    "member"
+  ],
+  [
     "lib/driver/consoledriver.js",
     "file/lib/Driver/ConsoleDriver.js.html",
     "lib/Driver/ConsoleDriver.js",
@@ -400,6 +406,24 @@ window.esdocSearchIndex = [
     "class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html#instance-method-log",
     "lib/Driver/ConsoleDriver.js~ConsoleDriver#log",
     "method"
+  ],
+  [
+    "lib/driver/consoledriver.js~consoledriver#overridenative",
+    "class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html#instance-method-overrideNative",
+    "lib/Driver/ConsoleDriver.js~ConsoleDriver#overrideNative",
+    "method"
+  ],
+  [
+    "lib/driver/consoledriver.js~consoledriver.methods_to_override",
+    "class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html#static-get-METHODS_TO_OVERRIDE",
+    "lib/Driver/ConsoleDriver.js~ConsoleDriver.METHODS_TO_OVERRIDE",
+    "member"
+  ],
+  [
+    "lib/driver/consoledriver.js~consoledriver.nativeconsole",
+    "class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html#static-get-nativeConsole",
+    "lib/Driver/ConsoleDriver.js~ConsoleDriver.nativeConsole",
+    "member"
   ],
   [
     "lib/driver/ravenbrowserdriver.js",
@@ -462,6 +486,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "lib/log.js~log#alert",
+    "class/lib/Log.js~Log.html#instance-method-alert",
+    "lib/Log.js~Log#alert",
+    "method"
+  ],
+  [
     "lib/log.js~log#boot",
     "class/lib/Log.js~Log.html#instance-method-boot",
     "lib/Log.js~Log#boot",
@@ -480,10 +510,58 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/log.js~log#crit",
+    "class/lib/Log.js~Log.html#instance-method-crit",
+    "lib/Log.js~Log#crit",
+    "method"
+  ],
+  [
+    "lib/log.js~log#critical",
+    "class/lib/Log.js~Log.html#instance-method-critical",
+    "lib/Log.js~Log#critical",
+    "method"
+  ],
+  [
+    "lib/log.js~log#debug",
+    "class/lib/Log.js~Log.html#instance-method-debug",
+    "lib/Log.js~Log#debug",
+    "method"
+  ],
+  [
     "lib/log.js~log#drivers",
     "class/lib/Log.js~Log.html#instance-get-drivers",
     "lib/Log.js~Log#drivers",
     "member"
+  ],
+  [
+    "lib/log.js~log#emerg",
+    "class/lib/Log.js~Log.html#instance-method-emerg",
+    "lib/Log.js~Log#emerg",
+    "method"
+  ],
+  [
+    "lib/log.js~log#emergency",
+    "class/lib/Log.js~Log.html#instance-method-emergency",
+    "lib/Log.js~Log#emergency",
+    "method"
+  ],
+  [
+    "lib/log.js~log#err",
+    "class/lib/Log.js~Log.html#instance-method-err",
+    "lib/Log.js~Log#err",
+    "method"
+  ],
+  [
+    "lib/log.js~log#error",
+    "class/lib/Log.js~Log.html#instance-method-error",
+    "lib/Log.js~Log#error",
+    "method"
+  ],
+  [
+    "lib/log.js~log#info",
+    "class/lib/Log.js~Log.html#instance-method-info",
+    "lib/Log.js~Log#info",
+    "method"
   ],
   [
     "lib/log.js~log#log",
@@ -492,9 +570,33 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/log.js~log#notice",
+    "class/lib/Log.js~Log.html#instance-method-notice",
+    "lib/Log.js~Log#notice",
+    "method"
+  ],
+  [
+    "lib/log.js~log#overridejsconsole",
+    "class/lib/Log.js~Log.html#instance-method-overrideJsConsole",
+    "lib/Log.js~Log#overrideJsConsole",
+    "method"
+  ],
+  [
     "lib/log.js~log#register",
     "class/lib/Log.js~Log.html#instance-method-register",
     "lib/Log.js~Log#register",
+    "method"
+  ],
+  [
+    "lib/log.js~log#warn",
+    "class/lib/Log.js~Log.html#instance-method-warn",
+    "lib/Log.js~Log#warn",
+    "method"
+  ],
+  [
+    "lib/log.js~log#warning",
+    "class/lib/Log.js~Log.html#instance-method-warning",
+    "lib/Log.js~Log#warning",
     "method"
   ],
   [

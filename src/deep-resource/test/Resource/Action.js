@@ -100,18 +100,20 @@ suite('Resource/Action', function() {
     chai.expect(Action.HTTP_VERBS).to.be.contains('PATCH');
   });
 
-  test('Check request method throws "UnknownMethodException" ' +
-    'exception for unknow method', function() {
-    let error = null;
-    try {
-      action.request({}, 'GET');
-    } catch (e) {
-      error = e;
-    }
+  test(
+    'Check request method throws "UnknownMethodException" for unknow method',
+    function() {
+      let error = null;
 
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(error).to.be.an.instanceof(UnknownMethodException);
-  });
+      try {
+        action.request({}, 'GET');
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.an.instanceof(UnknownMethodException);
+    }
+  );
 
   test('Check request() method return valid instance of Request', function() {
     let actualResult = action.request({}, 'POST');
