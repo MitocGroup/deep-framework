@@ -18,7 +18,7 @@ import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
-import RequireProxy from 'proxyquire';
+import requireProxy from 'proxyquire';
 import AWS from 'mock-aws';
 import {HttpMock} from '../Mock/HttpMock';
 import {Request} from '../../lib.compiled/Resource/Request';
@@ -427,7 +427,7 @@ suite('Resource/Request', function() {
 
     //mocking Http
     httpMock.fixBabelTranspile();
-    let requestExport = RequireProxy('../../lib.compiled/Resource/Request', {
+    let requestExport = requireProxy('../../lib.compiled/Resource/Request', {
       'superagent': httpMock,
     });
     let RequestProxy = requestExport.Request;
@@ -617,7 +617,7 @@ suite('Resource/Request', function() {
 
     //mocking Http
     httpMock.fixBabelTranspile();
-    let requestExport = RequireProxy('../../lib.compiled/Resource/Request', {
+    let requestExport = requireProxy('../../lib.compiled/Resource/Request', {
       'superagent': httpMock,
     });
     let RequestProxy = requestExport.Request;

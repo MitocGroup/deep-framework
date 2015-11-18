@@ -14,7 +14,7 @@ import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
-import RequireProxy from 'proxyquire';
+import requireProxy from 'proxyquire';
 import {HttpMock} from '../Mock/HttpMock';
 import {LocalRequest} from '../../lib.compiled/Resource/LocalRequest';
 
@@ -63,7 +63,7 @@ suite('Resource/LocalRequest', function() {
 
       httpMock.fixBabelTranspile();
 
-      let localRequestExport = RequireProxy('../../lib.compiled/Resource/LocalRequest', {
+      let localRequestExport = requireProxy('../../lib.compiled/Resource/LocalRequest', {
         'superagent': httpMock,
       });
 
