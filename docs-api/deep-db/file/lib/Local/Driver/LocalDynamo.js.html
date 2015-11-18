@@ -62,6 +62,7 @@
 import {PathAwareDriver} from &apos;./PathAwareDriver&apos;;
 import LocalDynamoServer from &apos;local-dynamo&apos;;
 import {FailedToStartServerException} from &apos;./Exception/FailedToStartServerException&apos;;
+import fse from &apos;fs-extra&apos;;
 
 export class LocalDynamo extends PathAwareDriver {
   /**
@@ -74,6 +75,22 @@ export class LocalDynamo extends PathAwareDriver {
 
     this._options = options;
     this._process = null;
+
+    this._pickUpOldInstance = true; // @todo: set it false by default?
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get pickUpOldInstance() {
+    return this._pickUpOldInstance;
+  }
+
+  /**
+   * @param {Boolean} state
+   */
+  set pickUpOldInstance(state) {
+    this._pickUpOldInstance = state;
   }
 
   /**
@@ -90,21 +107,32 @@ export class LocalDynamo extends PathAwareDriver {
   _start(cb) {
     let cbTriggered = false;
 
+    // avoid local-dynamo package issues...
+    fse.ensureDirSync(this.path);
+
     this._options.dir = this.path;
 
-    this._process = LocalDynamoServer.launch(this._options, this.port);
+    try {
+      this._process = LocalDynamoServer.launch(this._options, this.port);
+    } catch (error) {
+      this._pickUpOldInstance
+        ? cb(null)
+        : cb(new FailedToStartServerException(this, error));
+
+      return;
+    }
 
     // This hook fixes DynamoDB startup delay by waiting an empty stdout dataset
     // @todo: remove this hook after fixing issue!
     this._process.stdout.on(&apos;data&apos;, (data) =&gt; {
-      if (!data.toString().replace(/\s+/, &apos;&apos;) &amp;&amp; !cbTriggered) {
+      if (data.toString() &amp;&amp; !cbTriggered) {
         cbTriggered = true;
         cb(null);
       }
     });
 
     let onError = (error) =&gt; {
-      this._stop(() =&gt; &apos;&apos;);
+      this._stop(() =&gt; {});
 
       if (!cbTriggered) {
         cbTriggered = true;
