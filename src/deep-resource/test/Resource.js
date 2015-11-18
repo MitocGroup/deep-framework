@@ -33,14 +33,10 @@ suite('Resource', function() {
   test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
-        backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
 
       backendKernelInstance = backendKernel;
-      resource = backendKernel.get('resource');
-
-      chai.assert.instanceOf(
-        resource, Resource, 'resource is an instance of Resource'
-      );
 
       // complete the async
       done();
@@ -51,6 +47,13 @@ suite('Resource', function() {
       Security: Security,
       Resource: Resource,
     }, callback);
+  });
+
+  test('Check getting resource from Kernel instance', function() {
+    resource = backendKernelInstance.get('resource');
+    chai.assert.instanceOf(
+      resource, Resource, 'resource is an instance of Resource'
+    );
   });
 
   test('Check constructor sets _resources', function() {

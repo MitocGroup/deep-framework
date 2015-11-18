@@ -30,18 +30,10 @@ suite('Resource/LambdaResponse', function() {
   test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
-        backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
       backendKernelInstance = backendKernel;
-      action = backendKernel.get('resource').get(
-        `@${microserviceIdentifier}:${resourceName}:${actionName}`
-      );
-
-      chai.assert.instanceOf(
-        action, Action, 'action is an instance of Action'
-      );
-
-      request = new Request(action, payload, method);
-      lambdaResponse = new LambdaResponse(request, rawData, rawError);
 
       // complete the async
       done();
@@ -53,6 +45,24 @@ suite('Resource/LambdaResponse', function() {
       Security: Security,
       Resource: Resource,
     }, callback);
+  });
+
+  test('Check getting action from Kernel instance', function() {
+    action = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}:${actionName}`
+    );
+
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
+  });
+
+  test('Check creating request > lambdaResponse from action instance', function() {
+    request = new Request(action, payload, method);
+    lambdaResponse = new LambdaResponse(request, rawData, rawError);
+    chai.assert.instanceOf(
+      lambdaResponse, LambdaResponse, 'lambdaResponse is an instance of LambdaResponse'
+    );
   });
 
   test('Check constructor sets valid value for _actions=null', function() {

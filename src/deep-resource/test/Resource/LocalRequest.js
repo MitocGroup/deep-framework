@@ -36,36 +36,8 @@ suite('Resource/LocalRequest', function() {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
         backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+
       backendKernelInstance = backendKernel;
-      action = backendKernel.get('resource').get(
-        `@${microserviceIdentifier}:${resourceName}:${actionName}`
-      );
-      resource = backendKernel.get('resource').get(
-        `@${microserviceIdentifier}:${resourceName}`
-      );
-
-      chai.assert.instanceOf(
-        action, Action, 'action is an instance of Action'
-      );
-      chai.assert.instanceOf(
-        resource, Instance, 'resource is an instance of Instance'
-      );
-
-      //mocking Http
-      Object.defineProperty(httpMock, '@global', {
-        value: true,
-        writable: false,
-      });
-
-      httpMock.fixBabelTranspile();
-
-      let localRequestExport = requireProxy('../../lib.compiled/Resource/LocalRequest', {
-        'superagent': httpMock,
-      });
-
-      let LocalRequest = localRequestExport.LocalRequest;
-
-      localRequest = new LocalRequest(action, payload, method);
 
       // complete the async
       done();
@@ -77,6 +49,44 @@ suite('Resource/LocalRequest', function() {
       Security: Security,
       Resource: Resource,
     }, callback);
+  });
+
+  test('Check getting action from Kernel instance', function() {
+    action = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}:${actionName}`
+    );
+
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
+  });
+
+  test('Check getting resource from Kernel instance', function() {
+    resource = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}`
+    );
+
+    chai.assert.instanceOf(
+      resource, Instance, 'resource is an instance of Instance'
+    );
+  });
+
+  test('Check localRequest constructor', function() {
+    //mocking Http
+    Object.defineProperty(httpMock, '@global', {
+      value: true,
+      writable: false,
+    });
+
+    httpMock.fixBabelTranspile();
+
+    let localRequestExport = requireProxy('../../lib.compiled/Resource/LocalRequest', {
+      'superagent': httpMock,
+    });
+
+    let LocalRequest = localRequestExport.LocalRequest;
+
+    localRequest = new LocalRequest(action, payload, method);
   });
 
   test('Check LOCAL_LAMBDA_ENDPOINT static getter return "/_/lambda"',

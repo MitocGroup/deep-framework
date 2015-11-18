@@ -51,27 +51,10 @@ suite('Resource/Request', function() {
   test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
-        backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
       backendKernelInstance = backendKernel;
-      action = backendKernel.get('resource').get(
-        `@${microserviceIdentifier}:${resourceName}:${actionName}`
-      );
-      resource = backendKernel.get('resource').get(
-        `@${microserviceIdentifier}:${resourceName}`
-      );
-      security = backendKernel.get('security');
-
-      chai.assert.instanceOf(
-        action, Action, 'action is an instance of Action'
-      );
-      chai.assert.instanceOf(
-        resource, Instance, 'resource is an instance of Instance'
-      );
-      chai.assert.instanceOf(
-        security, Security, 'security is an instance of Security'
-      );
-
-      request = new Request(action, payload, method);
 
       // complete the async
       done();
@@ -83,6 +66,42 @@ suite('Resource/Request', function() {
       Security: Security,
       Resource: Resource,
     }, callback);
+  });
+
+  test('Check getting action from Kernel instance', function() {
+    action = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}:${actionName}`
+    );
+
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
+  });
+
+  test('Check getting resource from Kernel instance', function() {
+    resource = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}`
+    );
+
+    chai.assert.instanceOf(
+      resource, Instance, 'resource is an instance of Instance'
+    );
+  });
+
+  test('Check Request constructor', function() {
+    request = new Request(action, payload, method);
+
+    chai.assert.instanceOf(
+      request, Request, 'resource is an instance of Request'
+    );
+  });
+
+  test('Check getting security from Kernel instance', function() {
+    security = backendKernelInstance.get('security');
+
+    chai.assert.instanceOf(
+      security, Security, 'security is an instance of Security'
+    );
   });
 
   test('Check security.anonymousLogin()', function(done) {

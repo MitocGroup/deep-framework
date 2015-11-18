@@ -30,16 +30,6 @@ suite('Resource/Instance', function() {
         backendKernel, Kernel, 'backendKernel is an instance of Kernel');
 
       backendKernelInstance = backendKernel;
-      instance = backendKernel.get('resource').get(
-        `@${microserviceIdentifier}:${resourceName}`
-      );
-      action = backendKernel.get('resource').get(
-        `@${microserviceIdentifier}:${resourceName}:${actionName}`
-      );
-
-      chai.assert.instanceOf(
-        instance, Instance, 'instance is an instance of Instance'
-      );
 
       // complete the async
       done();
@@ -50,6 +40,26 @@ suite('Resource/Instance', function() {
       Security: Security,
       Resource: Resource,
     }, callback);
+  });
+
+  test('Check getting instance from Kernel instance', function() {
+    instance = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}`
+    );
+
+    chai.assert.instanceOf(
+      instance, Instance, 'instance is an instance of Instance'
+    );
+  });
+
+  test('Check getting action from Kernel instance', function() {
+    action = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}:${actionName}`
+    );
+
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
   });
 
   test('Check constructor sets _name', function() {

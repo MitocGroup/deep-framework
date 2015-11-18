@@ -32,18 +32,10 @@ suite('Resource/SuperagentResponse', function() {
   test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
-        backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
       backendKernelInstance = backendKernel;
-      action = backendKernel.get('resource').get(
-        `@${microserviceIdentifier}:${resourceName}:${actionName}`
-      );
-
-      chai.assert.instanceOf(
-        action, Action, 'action is an instance of Action'
-      );
-
-      request = new Request(action, payload, method);
-      superagentResponse = new SuperagentResponse(request, rawData, rawError);
 
       // complete the async
       done();
@@ -55,6 +47,27 @@ suite('Resource/SuperagentResponse', function() {
       Security: Security,
       Resource: Resource,
     }, callback);
+  });
+
+  test('Check getting action from Kernel instance', function() {
+    action = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}:${actionName}`
+    );
+
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
+  });
+
+  test('Check creating request > superagentResponse from action instance', function() {
+    request = new Request(action, payload, method);
+    superagentResponse = new SuperagentResponse(request, rawData, rawError);
+
+    chai.assert.instanceOf(
+      superagentResponse,
+      SuperagentResponse,
+      'superagentResponse is an instance of SuperagentResponse'
+    );
   });
 
   test('Check constructor sets _data', function() {
