@@ -8,7 +8,8 @@ import {Instance as ResourceInstance} from '../lib.compiled/Resource/Instance';
 import {Action} from '../lib.compiled/Resource/Action';
 import {MissingResourceException} from '../lib.compiled/Exception/MissingResourceException';
 import {MissingActionException} from '../lib.compiled/Resource/Exception/MissingActionException';
-import {InvalidDeepIdentifierException} from '../node_modules/deep-kernel/lib.compiled/Exception/InvalidDeepIdentifierException';
+import {InvalidDeepIdentifierException}
+  from '../node_modules/deep-kernel/lib.compiled/Exception/InvalidDeepIdentifierException';
 import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
