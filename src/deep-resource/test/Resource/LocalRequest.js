@@ -92,7 +92,7 @@ suite('Resource/LocalRequest', function() {
   test('Check _send() method for acctionType="lambda"', function() {
     let spyCallback = sinon.spy();
 
-    httpMock.disableFailureModeFor(['end']);
+    httpMock.setMode(HttpMock.DATA_MODE, ['end']);
 
     localRequest._send(spyCallback);
 

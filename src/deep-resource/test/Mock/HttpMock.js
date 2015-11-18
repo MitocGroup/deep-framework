@@ -3,7 +3,7 @@
 export class HttpMock {
   constructor() {
     this._methodsBehavior = new Map();
-    this.enableNoResultMode();
+    this.setMode(HttpMock.NO_RESULT_MODE);
   }
 
   /**
@@ -59,74 +59,22 @@ export class HttpMock {
   }
 
   /**
-   * Enables no results mode
-   * @param methods
-   */
-  enableNoResultMode() {
-    for (let method of HttpMock.METHODS) {
-      this._methodsBehavior.set(method, HttpMock.NO_RESULT_MODE);
-    }
-  }
-
-  /**
-   * Enables failure mode
-   * @param methods
-   */
-  enableFailureMode() {
-    for (let method of HttpMock.METHODS) {
-      this._methodsBehavior.set(method, HttpMock.ERROR);
-    }
-  }
-
-  /**
-   * Disable failure mode
-   * @param methods
-   */
-  disableFailureMode() {
-    for (let method of HttpMock.METHODS) {
-      this._methodsBehavior.set(method, HttpMock.DATA_MODE);
-    }
-  }
-
-  /**
-   * Enables no results mode for passed methods
-   * @param methods
-   */
-  enableNoResultModeFor(methods) {
-    for (let method of methods) {
-      if (HttpMock.METHODS.indexOf(method) < 0) {
-        continue;
-      }
-
-      this._methodsBehavior.set(method, HttpMock.NO_RESULT_MODE);
-    }
-  }
-
-  /**
-   * Enables failure mode for passed methods
+   * Set mode for passed methods
+   * @param {Number} mode
    * @param {String[]} methods
    */
-  enableFailureModeFor(methods) {
-    for (let method of methods) {
-      if (HttpMock.METHODS.indexOf(method) < 0) {
-        continue;
-      }
+  setMode(mode = HttpMock.NO_RESULT_MODE, methods = HttpMock.METHODS) {
 
-      this._methodsBehavior.set(method, HttpMock.FAILURE_MODE);
+    if (HttpMock.MODES.indexOf(mode) < 0) {
+      mode = HttpMock.NO_RESULT_MODE;
     }
-  }
 
-  /**
-   * Disables failure mode for passed methods
-   * @param methods
-   */
-  disableFailureModeFor(methods) {
     for (let method of methods) {
       if (HttpMock.METHODS.indexOf(method) < 0) {
         continue;
       }
 
-      this._methodsBehavior.set(method, HttpMock.DATA_MODE);
+      this._methodsBehavior.set(method, mode);
     }
   }
 
@@ -152,6 +100,18 @@ export class HttpMock {
    */
   static get DATA_MODE() {
     return 2;
+  }
+
+  /**
+   * @returns {string[]}
+   * @constructor
+   */
+  static get MODES() {
+    return [
+      HttpMock.NO_RESULT_MODE,
+      HttpMock.FAILURE_MODE,
+      HttpMock.DATA_MODE,
+    ];
   }
 
   /**
@@ -186,10 +146,10 @@ export class HttpMock {
    */
   static get METHODS() {
     return [
-        'post',
-        'set',
-        'send',
-        'end',
+      'post',
+      'set',
+      'send',
+      'end',
     ];
   }
 

@@ -433,7 +433,7 @@ suite('Resource/Request', function() {
     let RequestProxy = requestExport.Request;
     externalRequest = new RequestProxy(externalAction, payload, method);
 
-    httpMock.disableFailureModeFor(['end']);
+    httpMock.setMode(HttpMock.DATA_MODE, ['end']);
     externalRequest.useDirectCall();
     externalRequest.send(spyCallback);
 
@@ -454,7 +454,7 @@ suite('Resource/Request', function() {
     externalRequest.useDirectCall();
 
     //set http mock mode
-    httpMock.disableFailureModeFor(['end']);
+    httpMock.setMode(HttpMock.DATA_MODE, ['end']);
 
     externalRequest.send(spyCallback);
 
@@ -523,7 +523,7 @@ suite('Resource/Request', function() {
     externalRequest.enableCache();
 
     //set http mock mode
-    httpMock.disableFailureModeFor(['end']);
+    httpMock.setMode(HttpMock.DATA_MODE, ['end']);
 
     try {
       externalRequest.send(spyCallback);
@@ -624,7 +624,7 @@ suite('Resource/Request', function() {
     let request = new RequestProxy(action, payload, method);
     request.disableCache();
 
-    httpMock.disableFailureModeFor(['end']);
+    httpMock.setMode(HttpMock.DATA_MODE, ['end']);
 
     try {
       request._send(spyCallback);
