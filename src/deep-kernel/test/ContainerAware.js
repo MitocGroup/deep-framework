@@ -25,6 +25,8 @@ suite('ContainerAware', function() {
       chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
       backendKernelInstance = backendKernel;
 
+      containerAware.kernel = backendKernelInstance;
+
       // complete the async
       done();
     };
@@ -62,12 +64,6 @@ suite('ContainerAware', function() {
     var spyCallback = sinon.spy();
     containerAware.boot('kernel', spyCallback);
     chai.expect(spyCallback).to.have.been.calledWith();
-  });
-
-  test('Check container setter sets object correctly', function() {
-    containerAware.container = backendKernelInstance._container;
-    chai.assert.instanceOf(containerAware.container, DI, 'container is an instance of DI');
-    chai.expect(containerAware.container).to.eql(backendKernelInstance._container);
   });
 
   test('Check _resolveIdentifier() throws InvalidDeepIdentifierException ' +

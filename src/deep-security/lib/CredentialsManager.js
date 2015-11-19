@@ -8,7 +8,6 @@ import AWS from 'aws-sdk';
 import CognitoSyncManager from 'amazon-cognito-js';
 import {CreateCognitoDatasetException} from './Exception/CreateCognitoDatasetException';
 import {PutCognitoRecordException} from './Exception/PutCognitoRecordException';
-import {GetCognitoRecordException} from './Exception/GetCognitoRecordException';
 import {SynchronizeCognitoDatasetException} from './Exception/SynchronizeCognitoDatasetException';
 
 export class CredentialsManager {

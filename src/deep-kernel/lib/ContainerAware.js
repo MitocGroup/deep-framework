@@ -94,10 +94,10 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
-   * @returns {DI}
+   * @returns {DI|null}
    */
   get container() {
-    return this._kernel.container;
+    return this._kernel ? this._kernel.container : null;
   }
 
   /**
