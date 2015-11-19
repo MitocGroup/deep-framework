@@ -14,6 +14,7 @@ import Vogels from 'vogels';
 import Kernel from 'deep-kernel';
 import requireProxy from 'proxyquire';
 import KernelFactory from './common/KernelFactory';
+import {LocalDynamoMock} from './Mock/Driver/LocalDynamoMock';
 import {VogelsMock} from './Mock/VogelsMock';
 
 chai.use(sinonChai);
@@ -257,40 +258,15 @@ suite('DB', function() {
     chai.expect(vogelsMock.dynamoDB.options.secretAccessKey).to.be.equal('fake');
     chai.expect(vogelsMock.dynamoDB.options.region).to.be.equal('us-east-1');
 
-    chai.expect(vogelsMock.dynamoDB.endpoint).to.be.eql({});
+    chai.expect(vogelsMock.dynamoDB.endpoint).to.be.eql(`http://localhost:${DB.LOCAL_DB_PORT}`);
   });
 
+  test('Check startLocalDynamoDBServer() starts db server', function() {
+    let spyCallback = sinon.spy();
 
-  //test('Check boot() returns valid object !_localBackend', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let kernel = {
-  //    config: {
-  //      models: {},
-  //    },
-  //  };
-  //  let spyCallback = sinon.spy();
-  //  try {
-  //    actualResult = db.boot(kernel, spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(spyCallback).to.have.been.calledWith();
-  //});
-  //
-  //test('Check startLocalDynamoDBServer() starts db server', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let spyCallback = sinon.spy();
-  //  try {
-  //    actualResult = DB.startLocalDynamoDBServer(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //});
-  //
+    let actualResult = DB.startLocalDynamoDBServer(spyCallback, LocalDynamoMock);
+
+    chai.expect(actualResult._running).to.be.equal(true);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, 'IsRunning');
+  });
 });

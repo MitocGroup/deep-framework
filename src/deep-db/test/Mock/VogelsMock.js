@@ -159,7 +159,7 @@ export class VogelsMock {
    */
   static get DATA() {
     return {
-      status:200,
+      status: 200,
       message: 'Operation successfully proccessed',
     };
   }
