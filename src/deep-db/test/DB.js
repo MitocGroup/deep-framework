@@ -139,11 +139,10 @@ suite('DB', function() {
   });
 
   test('Check _rawModelsToVogels() returns {}', function() {
-    chai.expect(db._rawModelsToVogels).to.not.equal(null);
+    chai.expect(db._rawModelsToVogels).to.eql({});
   });
 
   test('Check _rawModelsToVogels() returns valid object', function() {
-    let error = null;
     let rawModels = {
       Backend: {
         IAM: {
@@ -156,16 +155,10 @@ suite('DB', function() {
         },
       },
     };
-    let actualResult = null;
 
-    try {
-      actualResult = db._rawModelsToVogels(rawModels);
-    } catch (e) {
-      error = e;
-    }
+    let actualResult = db._rawModelsToVogels(rawModels);
 
-    chai.expect(error).to.equal(null);
-    chai.expect(db.models).to.not.equal({});
+    chai.expect(actualResult).to.eql({});
 
   });
 
