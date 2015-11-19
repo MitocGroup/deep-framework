@@ -96,7 +96,7 @@ export class CredentialsManager {
       data.Records.forEach((record) => {
         if (record.Key === CredentialsManager.RECORD_NAME) {
           creds = this._decodeCredentials(record.Value);
-          return creds = creds.data.Credentials;
+          return creds;
         }
       });
 
