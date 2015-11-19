@@ -36,11 +36,7 @@ suite('ContainerAware', function() {
   test('Check localBackend getter returns valid default value [false]', function() {
     chai.assert.isFalse(containerAware.localBackend);
   });
-
-  test('Check container getter returns valid default value [null]', function() {
-    chai.assert.isNull(containerAware.container);
-  });
-
+  
   test('Check service getter returns valid value [this]', function() {
     chai.expect(containerAware.service).to.equal(containerAware);
   });
