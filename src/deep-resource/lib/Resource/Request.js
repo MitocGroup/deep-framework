@@ -326,6 +326,7 @@ export class Request {
    * @private
    */
   _sendThroughApi(callback = () => {}) {
+
     let endpoint = this._action.source.api;
     let signedRequest = this._createAws4SignedRequest(
       endpoint,
@@ -357,6 +358,7 @@ export class Request {
       FunctionName: this._action.source.original,
       Payload: JSON.stringify(this.payload),
     };
+
 
     this._lambda.invoke(invocationParameters, (error, data) => {
       callback(new LambdaResponse(this, data, error));
