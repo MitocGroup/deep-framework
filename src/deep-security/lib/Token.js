@@ -156,13 +156,26 @@ export class Token {
   }
 
   /**
-   * @todo - validate credentials by 'Expiration' value
-   *
    * @returns {boolean}
    * @private
    */
   _validCredentials() {
-    return this.credentials !== null;
+    return this.credentials && this.expireDateTime > new Date();
+  }
+
+  /**
+   * @returns {Date}
+   */
+  get expireDateTime() {
+    let dateTime = null;
+
+    if (this.credentials.hasOwnProperty('expireTime')) {
+      dateTime = this.credentials.expireTime instanceof Date ?
+        this.credentials.expireTime :
+        new Date(this.credentials.expireTime);
+    }
+
+    return dateTime;
   }
 
   /**
