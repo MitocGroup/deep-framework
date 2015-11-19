@@ -16,7 +16,7 @@ import {CachedRequestException} from './Exception/CachedRequestException';
 import {NotAuthenticatedException} from './Exception/NotAuthenticatedException';
 import aws4 from 'aws4';
 import parseUrl from 'parse-url';
-import queryString from 'query-string';
+import qs from 'qs';
 import Core from 'deep-core';
 import {DirectLambdaCallDeniedException} from './Exception/DirectLambdaCallDeniedException';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
@@ -410,7 +410,7 @@ export class Request {
     switch (httpMethod) {
       case 'get':
       case 'delete':
-        opsToSign.path += (apiQueryString ? '&' : '?') + queryString.stringify(payload);
+        opsToSign.path += (apiQueryString ? '&' : '?') + qs.stringify(payload);
         break;
       case 'post':
       case 'put':
