@@ -84,9 +84,10 @@ export class ConsoleDriver extends AbstractDriver {
   }
 
   /**
+   * @param {Boolean} turnOff
    * @returns {ConsoleDriver}
    */
-  overrideNative() {
+  overrideNative(turnOff = false) {
     let nativeConsole = ConsoleDriver.nativeConsole;
 
     for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {
@@ -97,7 +98,9 @@ export class ConsoleDriver extends AbstractDriver {
       let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];
 
       nativeConsole[method] = (...args) => {
-        this._console[method](AbstractDriver.timeString, ...args);
+        if (!turnOff) {
+          this._console[method](AbstractDriver.timeString, ...args);
+        }
       };
     }
 

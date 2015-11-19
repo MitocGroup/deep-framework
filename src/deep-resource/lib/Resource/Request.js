@@ -327,6 +327,7 @@ export class Request {
    * @private
    */
   _sendThroughApi(callback = () => {}) {
+
     let endpoint = this._action.source.api;
 
     this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {
@@ -355,6 +356,7 @@ export class Request {
       FunctionName: this._action.source.original,
       Payload: JSON.stringify(this.payload),
     };
+
 
     this._lambda.invoke(invocationParameters, (error, data) => {
       callback(new LambdaResponse(this, data, error));
@@ -398,7 +400,7 @@ export class Request {
       method: httpMethod,
       path: `${apiPath}${apiQueryString}`,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
       },
     };
 
@@ -420,7 +422,7 @@ export class Request {
       let signature = aws4.sign(opsToSign, credentials);
 
       let request = Http[httpMethod](url, payload)
-        .set('Content-Type', 'application/json')
+        .set('Content-Type', 'application/json; charset=UTF-8')
         .set('X-Amz-Date', signature.headers['X-Amz-Date'])
         .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
         .set('Authorization', signature.headers.Authorization);
