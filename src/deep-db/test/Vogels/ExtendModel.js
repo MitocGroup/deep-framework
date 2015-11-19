@@ -2,78 +2,9 @@
 
 import chai from 'chai';
 import {ExtendModel} from '../../lib.compiled/Vogels/ExtendModel';
+import {ExtendModelMock} from '../../test/Mock/ExtendModelMock';
 import {Exception} from '../../lib.compiled/Vogels/Exceptions/Exception';
 import {UndefinedMethodException} from '../../lib.compiled/Vogels/Exceptions/UndefinedMethodException';
-
-
-class ExtendModelMock extends ExtendModel {
-  constructor(model) {
-    super(model);
-  }
-
-  scan() {
-    return 'scanned';
-  }
-
-  loadAll() {
-    return 'loaded';
-  }
-
-  exec(cb) {
-    return cb(null, 'result');
-  }
-
-  startKey() {
-    return 'startKey';
-  }
-
-  limit() {
-    return 'limit';
-  }
-
-  where() {
-    return 'where';
-  }
-
-  update(id, data) {
-    return 'update';
-  }
-
-  create() {
-    return 'create';
-  }
-
-  filterExpression() {
-    return 'filterExpression';
-  }
-
-  expressionAttributeValues() {
-    return 'expressionAttributeValues';
-  }
-
-  expressionAttributeNames() {
-    return 'expressionAttributeNames';
-  }
-}
-
-class ExtendModelMockException extends ExtendModelMock {
-  constructor(model) {
-    super(model);
-  }
-
-  exec(cb) {
-    cb(null, 'result');
-    return cb(null, 'result');
-  }
-
-  throwException(message) {
-    throw new Exception(message);
-  }
-
-  throwUndefinedMethodException(name, methods) {
-    throw new UndefinedMethodException(name, methods);
-  }
-}
 
 suite('Vogels/ExtendModel', function() {
   let model = {name: 'userName'};
@@ -338,7 +269,7 @@ suite('Vogels/ExtendModel', function() {
   });
 
   test('Check method.createUniqueOnFields() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMockException({name: 'userName'});
+    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
     let error = null;
     try {
       mockedExtendModel.methods.createUniqueOnFields(['id', 'name'], {id: 'testId', name: 'testName'});
@@ -349,8 +280,8 @@ suite('Vogels/ExtendModel', function() {
     chai.expect(error).to.be.not.equal(null);
   });
 
-  test('Check \'Exception\' exception can be called', function() {
-    let mockedExtendModel = new ExtendModelMockException();
+  test('Check "Exception" exception can be called', function() {
+    let mockedExtendModel = new ExtendModelMock();
     let error = null;
     let msg = 'Test message';
     try {
@@ -362,8 +293,8 @@ suite('Vogels/ExtendModel', function() {
     chai.assert.instanceOf(error, Exception, 'error is an instance of Exception');
   });
 
-  test('Check \'UndefinedMethodException\' exception can be called', function() {
-    let mockedExtendModel = new ExtendModelMockException();
+  test('Check "UndefinedMethodException" exception can be called', function() {
+    let mockedExtendModel = new ExtendModelMock();
     let error = null;
     let method = 'test';
     let predefinedMethods = ['firstMethod', 'secondMethod'];
