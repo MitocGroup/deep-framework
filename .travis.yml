@@ -11,6 +11,11 @@ branches:
     - stage
     - test
     - dev
+addons:
+  ssh_known_hosts:
+    - ssh.github.com
+    - 192.30.252.128
+
 env:
   global:
     #JSPM_GITHUB_AUTH_TOKEN=[secured]
