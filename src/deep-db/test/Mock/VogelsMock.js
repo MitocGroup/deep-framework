@@ -7,7 +7,23 @@ export class VogelsMock {
       config: {
         maxRetries: 1,
       },
+
+      DynamoDB: (options ={}) => {
+        this._dynamoDB.options = options;
+
+        return this;
+      },
+
+      Endpoint: (options = {}) => {
+        this._dynamoDB = {
+          endpoint: options,
+        };
+
+        return options;
+      },
     };
+
+    this._driver = null;
 
     this._methodsBehavior = new Map();
 
@@ -44,6 +60,30 @@ export class VogelsMock {
     this.getCallbackByMetod(this._methodsBehavior.get('createTables'), callback);
 
     return this;
+  }
+
+  /**
+   * @param driver
+   * @returns {VogelsMock}
+   */
+  dynamoDriver(driver) {
+    this._driver = driver;
+
+    return this;
+  }
+
+  /**
+   * @returns {null|*}
+   */
+  get driver() {
+    return this._driver;
+  }
+
+  /**
+   * @returns {{}|*}
+   */
+  get dynamoDB() {
+    return this._dynamoDB;
   }
 
   /**
@@ -131,6 +171,16 @@ export class VogelsMock {
   static get METHODS() {
     return [
       'createTables',
+      'dynamoDriver',
     ];
+  }
+
+  fixBabelTranspile() {
+    for (let method of VogelsMock.METHODS) {
+      Object.defineProperty(this, method, {
+        value: this[method],
+        writable: false,
+      });
+    }
   }
 }

@@ -6,10 +6,13 @@ import sinonChai from 'sinon-chai';
 import Validation from 'deep-validation';
 import {DB} from '../lib.compiled/DB';
 import {ModelNotFoundException} from '../lib.compiled/Exception/ModelNotFoundException';
+import {FailedToCreateTableException} from '../lib.compiled/Exception/FailedToCreateTableException';
+import {FailedToCreateTablesException} from '../lib.compiled/Exception/FailedToCreateTablesException';
 import Joi from 'joi';
 import AWS from 'aws-sdk';
 import Vogels from 'vogels';
 import Kernel from 'deep-kernel';
+import requireProxy from 'proxyquire';
 import KernelFactory from './common/KernelFactory';
 import {VogelsMock} from './Mock/VogelsMock';
 
@@ -31,13 +34,7 @@ suite('DB', function() {
         },
       },
     ];
-  //let tablenames = {
-  //  Configuration: 'ConfigurationTable',
-  //  Status: 'StatusTable',
-  //};
-  //let dynamodb = new AWS.DynamoDB();
   let db = null;
-  let validation = null;
   let backendKernelInstance = null;
   let vogelsMock = new VogelsMock();
 
@@ -57,11 +54,16 @@ suite('DB', function() {
       done();
     };
 
-
+    //mocking Vogels
+    vogelsMock.fixBabelTranspile();
+    let vogelsExport = requireProxy('../lib.compiled/DB', {
+      'vogels': vogelsMock,
+    });
+    let DBProxy = vogelsExport.DB;
 
     KernelFactory.create(
       {
-        DB: DB,
+        DB: DBProxy,
         Validation: Validation,
       },
       callback
@@ -71,7 +73,7 @@ suite('DB', function() {
   test('Check getting db from Kernel instance', function() {
     db = backendKernelInstance.get('db');
 
-    chai.assert.instanceOf(db, DB, 'db is an instance of DB');
+    chai.expect(db.constructor.name).to.equal('DB');
   });
 
   test('Check validation getter returns valid value', function() {
@@ -164,36 +166,101 @@ suite('DB', function() {
     chai.expect(error.constructor.name).to.be.equal('ModelNotFoundException');
   });
 
-  //// @todo - mock Vogels in order to test assureTable, assureTables, etc methods
-  ////test('Check assureTable() return valid object', function() {
-  ////  let error = null;
-  ////  let actualResult = null;
-  ////  let spyCallback = sinon.spy();
-  ////
-  ////  try {
-  ////    actualResult = db.assureTable('Lambda', spyCallback);
-  ////  } catch (e) {
-  ////    error = e;
-  ////  }
-  ////
-  ////  chai.expect(error).to.be.equal(null);
-  ////});
-  //
-  //
-  //test('Check _setVogelsDriver method returns valid object', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //
-  //
-  //  try {
-  //    actualResult = db._setVogelsDriver(dynamodb);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.equal(null);
-  //});
-  //
+  test('Check assureTable() return valid object', function() {
+    let spyCallback = sinon.spy();
+    vogelsMock.setMode(VogelsMock.NO_RESULT_MODE, ['createTables']);
+
+    let actualResult = db.assureTable('Name', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly();
+    chai.expect(actualResult.constructor.name).to.be.equal('DB');
+  });
+
+  test('Check assureTable() throws ModelNotFoundException for invalid name',
+    function() {
+      let error = null;
+      let spyCallback = sinon.spy();
+
+      try {
+        db.assureTable('Invalid model name', spyCallback);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.assert.instanceOf(error, ModelNotFoundException, 'error is an instance of ModelNotFoundException');
+      chai.expect(spyCallback).to.not.have.been.calledWith();
+    }
+  );
+
+  test('Check assureTable() throws FailedToCreateTablesException ', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+
+    vogelsMock.setMode(VogelsMock.FAILURE_MODE, ['createTables']);
+
+    try {
+      db.assureTable('Name', spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, FailedToCreateTableException, 'error is an instance of FailedToCreateTableException'
+    );
+    chai.expect(spyCallback).to.not.have.been.calledWith();
+  });
+
+  test('Check assureTables() return valid object', function() {
+    let spyCallback = sinon.spy();
+    vogelsMock.setMode(VogelsMock.NO_RESULT_MODE, ['createTables']);
+
+    let actualResult = db.assureTables(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly();
+    chai.expect(actualResult.constructor.name).to.be.equal('DB');
+  });
+
+  test('Check assureTables() throws FailedToCreateTablesException ', function() {
+    let error = null;
+    let spyCallback = sinon.spy();
+
+    vogelsMock.setMode(VogelsMock.FAILURE_MODE, ['createTables']);
+
+    try {
+      db.assureTables('Name', spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, FailedToCreateTablesException, 'error is an instance of FailedToCreateTablesException'
+    );
+    chai.expect(spyCallback).to.not.have.been.calledWith();
+  });
+
+  test('Check _setVogelsDriver method returns valid object', function() {
+    let testDriver = { name: 'Test driver'};
+    let actualResult = db._setVogelsDriver(testDriver);
+
+    chai.expect(actualResult.constructor.name).to.be.equal('DB');
+    chai.expect(vogelsMock.driver).to.be.eql(testDriver);
+  });
+
+  test('Check _enableLocalDB() returns valid object', function() {
+    let spyCallback = sinon.spy();
+
+    vogelsMock.setMode(VogelsMock.NO_RESULT_MODE);
+
+    db._enableLocalDB(spyCallback);
+
+    chai.expect(vogelsMock.dynamoDB.options.accessKeyId).to.be.equal('fake');
+    chai.expect(vogelsMock.dynamoDB.options.secretAccessKey).to.be.equal('fake');
+    chai.expect(vogelsMock.dynamoDB.options.region).to.be.equal('us-east-1');
+
+    chai.expect(vogelsMock.dynamoDB.endpoint).to.be.eql({});
+  });
+
+
   //test('Check boot() returns valid object !_localBackend', function() {
   //  let error = null;
   //  let actualResult = null;
@@ -213,31 +280,6 @@ suite('DB', function() {
   //  chai.expect(spyCallback).to.have.been.calledWith();
   //});
   //
-  //test('Check assureTable() throws ModelNotFoundException', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let spyCallback = sinon.spy();
-  //  try {
-  //    actualResult = db.assureTable('IAM', spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(error, ModelNotFoundException, 'error is an instance of ModelNotFoundException');
-  //});
-  //
-  //test('Check assureTables() returns valid object', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let spyCallback = sinon.spy();
-  //  try {
-  //    actualResult = db.assureTables(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //});
-  //
   //test('Check startLocalDynamoDBServer() starts db server', function() {
   //  let error = null;
   //  let actualResult = null;
@@ -251,16 +293,4 @@ suite('DB', function() {
   //  chai.expect(error).to.be.equal(null);
   //});
   //
-  //test('Check _enableLocalDB() returns valid object', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let spyCallback = sinon.spy();
-  //  try {
-  //    actualResult = db._enableLocalDB(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //});
 });
