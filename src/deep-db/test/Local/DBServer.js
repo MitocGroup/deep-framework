@@ -4,6 +4,7 @@ import chai from 'chai';
 import {DBServer} from '../../lib.compiled/Local/DBServer';
 import {LocalDynamo} from '../../lib.compiled/Local/Driver/LocalDynamo';
 import {Dynalite} from '../../lib.compiled/Local/Driver/Dynalite';
+import {DynaliteMock} from '../../test/Mock/Driver/DynaliteMock';
 
 suite('Local/DBServer', function() {
   let dbServer = new DBServer();
@@ -16,37 +17,42 @@ suite('Local/DBServer', function() {
     chai.expect(dbServer).to.be.an.instanceof(DBServer);
   });
 
-  test('Check DEFAULT_DRIVER static getter returns LocalDynamo', function() {
-    chai.expect(typeof DBServer.DEFAULT_DRIVER).to.be.equal('function');
-    chai.expect(DBServer.DEFAULT_DRIVER).to.be.equal(LocalDynamo);
-  });
-
-  test('Check DRIVERS static getter returns [LocalDynamo,Dynalite]', function() {
-    chai.expect(DBServer.DRIVERS.length).to.be.equal(2);
-    chai.expect(DBServer.DRIVERS).to.be.contains(LocalDynamo);
-    chai.expect(DBServer.DRIVERS).to.be.contains(Dynalite);
-  });
-
-  test('Check _findDriverPrototype() static method returns valid driver prototype', function() {
+  test('Check _findDriverPrototype() returns driver prototype for Dynalite', function() {
     let actualResult = DBServer._findDriverPrototype('Dynalite');
-    chai.expect(actualResult).to.be.not.equal(null);
+
+    chai.expect(actualResult).to.be.equal(Dynalite);
     chai.expect(typeof actualResult).to.be.equal('function');
   });
 
-  test('Check _findDriverPrototype() static method returns null', function() {
+  test('Check _findDriverPrototype() returns driver prototype for LocalDynamo', function() {
+    let actualResult = DBServer._findDriverPrototype('LocalDynamo');
+
+    chai.expect(actualResult).to.be.equal(LocalDynamo);
+    chai.expect(typeof actualResult).to.be.equal('function');
+  });
+
+  test('Check _findDriverPrototype() returns null for invalid driver name', function() {
     let actualResult = DBServer._findDriverPrototype('dynalite');
+
     chai.expect(actualResult).to.be.equal(null);
   });
 
   test('Check create() static method for default DriveProto', function() {
-    let error = null;
-    try {
-      DBServer.create();
-    } catch (e) {
-      error = e;
-    }
+    let actualResult = DBServer.create();
 
-    chai.expect(error).to.be.equal(null);
+    chai.expect(actualResult).to.an.instanceof(DBServer.DEFAULT_DRIVER);
+  });
+
+  test('Check create() static method for LocalDynamo', function() {
+    let actualResult = DBServer.create(LocalDynamo);
+
+    chai.expect(actualResult).to.an.instanceof(LocalDynamo);
+  });
+
+  test('Check create() static method for DynaliteMock', function() {
+    let actualResult = DBServer.create(DynaliteMock, DynaliteMock.DEFAULT_OPTIONS);
+
+    chai.expect(actualResult).to.an.instanceof(DynaliteMock);
   });
 
   test('Check create() static method throws Error', function() {
@@ -58,6 +64,17 @@ suite('Local/DBServer', function() {
       error = e;
     }
 
-    chai.expect(error.message).to.be.equal(`Missing DB server driver ${driver}`);
+    chai.assert.instanceOf(error, Error, 'error is an instance of Error');
+  });
+
+  test('Check DEFAULT_DRIVER static getter returns LocalDynamo', function() {
+    chai.expect(typeof DBServer.DEFAULT_DRIVER).to.be.equal('function');
+    chai.expect(DBServer.DEFAULT_DRIVER).to.be.equal(LocalDynamo);
+  });
+
+  test('Check DRIVERS static getter returns [LocalDynamo,Dynalite]', function() {
+    chai.expect(DBServer.DRIVERS.length).to.be.equal(2);
+    chai.expect(DBServer.DRIVERS).to.be.contains(LocalDynamo);
+    chai.expect(DBServer.DRIVERS).to.be.contains(Dynalite);
   });
 });

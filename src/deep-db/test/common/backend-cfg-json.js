@@ -8,6 +8,13 @@ export default {
         Name: 'string',
         Id: 'timeUUID',
       },
+    }, {
+      Backend: {
+        IAM: {
+          Configuration: 'string',
+          Status: 'string',
+        },
+      },
     },
   ],
   identityPoolId: 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef',
