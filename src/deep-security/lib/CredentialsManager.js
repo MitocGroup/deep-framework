@@ -159,6 +159,13 @@ export class CredentialsManager {
    * @returns {String}
    */
   _encodeCredentials(credentials) {
+    // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore
+    credentials = Object.defineProperty(credentials, 'secretAccessKey', {
+      enumerable: true,
+      writable: true,
+      configurable: true
+    });
+
     return JSON.stringify(credentials);
   }
 
