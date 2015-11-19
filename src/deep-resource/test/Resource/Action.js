@@ -2,83 +2,95 @@
 
 import chai from 'chai';
 import {Action} from '../../lib.compiled/Resource/Action';
+import {Request} from '../../lib.compiled/Resource/Request';
 import {Resource} from '../../lib.compiled/Resource';
+import {Instance as ResourceInstance} from '../../lib.compiled/Resource/Instance';
 import {UnknownMethodException} from '../../lib.compiled/Resource/Exception/UnknownMethodException';
+import Kernel from 'deep-kernel';
+import Cache from 'deep-cache';
+import Security from 'deep-security';
+import KernelFactory from '../common/KernelFactory';
 
 suite('Resource/Action', function() {
-  let testResources = {
-    'deep.test': {
-      test: {
-        create: {
-          description: 'Lambda for creating test',
-          type: 'lambda',
-          methods: [
-            'POST',
-          ],
-          source: 'src/Test/Create',
-        },
-        retrieve: {
-          description: 'Retrieves test',
-          type: 'lambda',
-          methods: ['GET'],
-          source: 'src/Test/Retrieve',
-        },
-        'delete': {
-          description: 'Lambda for deleting test',
-          type: 'lambda',
-          methods: ['DELETE'],
-          source: 'src/Test/Delete',
-        },
-        update: {
-          description: 'Update test',
-          type: 'lambda',
-          methods: ['PUT'],
-          source: 'src/Test/Update',
-        },
-      },
-    },
+  let actionName = 'say-hello';
+  let resourceName = 'sample';
+  let actionType = 'lambda';
+  let actionMethods = ['POST'];
+  let microserviceIdentifier = 'hello.world.example';
+  let actionSource = {
+    api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',
+    original: 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayHello64232f3705a',
   };
-  let actionName = 'UpdateTest';
-  let resource = new Resource(testResources);
-  let type = 'typeTest';
-  let methods = ['GET', 'POST'];
-  let source = 'sourceTest';
-  let region = 'us-west-2';
-  let action = new Action(resource, actionName, type, methods, source, region, true);
+  let actionRegion = 'us-west-2';
+  let action = null;
+  let backendKernelInstance = null;
 
   test('Class Action exists in Resource/Action', function() {
     chai.expect(typeof Action).to.equal('function');
   });
 
-  test('Check constructor sets _resource', function() {
-    chai.expect(action.resource).to.be.equal(resource);
+  test('Load Kernel by using Kernel.load()', function(done) {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
+      backendKernelInstance = backendKernel;
+
+      // complete the async
+      done();
+    };
+
+    KernelFactory.create({
+      Cache: Cache,
+      Security: Security,
+      Resource: Resource,
+    }, callback);
   });
 
-  test('Check constructor sets _name', function() {
+  test('Check getting action from Kernel instance', function() {
+    action = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}:${actionName}`
+    );
+
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
+  });
+
+  test('Check resource getter returns valid instance of Resource', function() {
+    chai.assert.instanceOf(
+      action.resource, ResourceInstance,
+      'action.resource is an instance of ResourceInstance'
+    );
+    chai.expect(action.resource.name).to.be.equal(resourceName);
+  });
+
+  test(`Check name getter returns ${actionName}`, function() {
     chai.expect(action.name).to.be.equal(actionName);
   });
 
-  test('Check constructor sets _type', function() {
-    chai.expect(action.type).to.be.equal(type);
+  test(`Check type getter returns ${actionType}`, function() {
+    chai.expect(action.type).to.be.equal(actionType);
   });
 
-  test('Check constructor sets _methods', function() {
-    chai.expect(action.methods).to.be.eql(methods);
+  test(`Check methods getter returns ${actionMethods}`, function() {
+    chai.expect(action.methods).to.be.eql(actionMethods);
   });
 
-  test('Check constructor sets _source', function() {
-    chai.expect(action.source).to.be.eql(source);
+  test(`Check source getter returns ${actionSource}`, function() {
+    chai.expect(action.source).to.be.eql(actionSource);
   });
 
-  test('Check constructor sets _region', function() {
-    chai.expect(action.region).to.be.eql(region);
+  test(`Check region getter returns ${actionRegion}`, function() {
+    chai.expect(action.region).to.be.equal(actionRegion);
   });
 
-  test('Check LAMBDA static getter return \'lambda\'', function() {
+  test('Check LAMBDA static getter return "lambda"', function() {
     chai.expect(Action.LAMBDA).to.be.equal('lambda');
   });
 
-  test('Check EXTERNAL static getter return \'external\'', function() {
+  test('Check EXTERNAL static getter return "external"', function() {
     chai.expect(Action.EXTERNAL).to.be.equal('external');
   });
 
@@ -93,56 +105,27 @@ suite('Resource/Action', function() {
     chai.expect(Action.HTTP_VERBS).to.be.contains('PATCH');
   });
 
-  test('Check request method throws \'UnknownMethodException\' ' +
-    'exception for unknow method', function() {
-    let error = null;
-    try {
-      action.request({}, 'THROW');
-    } catch (e) {
-      error = e;
+  test(
+    'Check request method throws "UnknownMethodException" for unknow method',
+    function() {
+      let error = null;
+
+      try {
+        action.request({}, 'GET');
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.an.instanceof(UnknownMethodException);
     }
+  );
 
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(error).to.be.an.instanceof(UnknownMethodException);
-  });
+  test('Check request() method return valid instance of Request', function() {
+    let actualResult = action.request({}, 'POST');
 
-  test('Check request() method return valid object', function() {
-    let error = null;
-    let actualResult = null;
-    let expectedResult = {
-      _action: {
-        _forceUserIdentity: true,
-        _methods: [
-          'GET',
-          'POST',
-        ],
-        _name: 'UpdateTest',
-        _region: 'us-west-2',
-        _resource: {
-          _container: null,
-          _localBackend: false,
-          _microservice: null,
-          _resources: testResources,
-        },
-        _source: 'sourceTest',
-        _type: 'typeTest',
-      },
-      _cacheImpl: null,
-      _cacheTtl: 0,
-      _cached: false,
-      _native: false,
-      _lambda: null,
-      _method: 'GET',
-      _payload: {},
-    };
-
-    try {
-      actualResult = action.request({}, 'GET');
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(actualResult).to.be.eql(expectedResult);
+    chai.assert.instanceOf(
+      actualResult, Request, 'is an instance of Request'
+    );
+    chai.expect(actualResult.cacheImpl).to.be.eql(action._resource.cache);
   });
 });
