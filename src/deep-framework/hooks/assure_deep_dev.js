@@ -7,7 +7,11 @@
 var npmEnvKey = 'npm_config_production';
 
 // @todo: populate ignores this dynamically
-var skipModules = ['mocha', 'chai', 'sinon', 'sinon-chai'];
+var skipModules = [
+  'mocha', 'chai', 'sinon',
+  'sinon-chai', 'istanbul',
+  'jscoverage', 'jshint', 'jshint-stylish',
+];
 
 if (process.env[npmEnvKey] !== 'true') {
   var path = require('path');
