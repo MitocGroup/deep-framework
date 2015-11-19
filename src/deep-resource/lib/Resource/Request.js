@@ -401,7 +401,7 @@ export class Request {
       method: httpMethod,
       path: `${apiPath}${apiQueryString}`,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
       },
     };
 
@@ -422,7 +422,7 @@ export class Request {
     let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
 
     return Http[httpMethod](url, payload)
-      .set('Content-Type', 'application/json')
+      .set('Content-Type', 'application/json; charset=UTF-8')
       .set('X-Amz-Date', signature.headers['X-Amz-Date'])
       .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
       .set('Authorization', signature.headers.Authorization);
