@@ -42,10 +42,6 @@ export class ExtendModelMock extends ExtendModel {
     return 'loaded';
   }
 
-  exec(cb) {
-    return cb(null, 'result');
-  }
-
   startKey() {
     return 'startKey';
   }
