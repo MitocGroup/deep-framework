@@ -646,6 +646,7 @@ suite('Resource/Request', function() {
     } catch (e) {
     }
 
+    console.log('spyCallback.args', spyCallback.args)
     let actualResult = spyCallback.args[0][0];
 
     chai.expect(spyCallback).to.have.been.calledWith();
