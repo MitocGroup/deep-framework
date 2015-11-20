@@ -29,8 +29,9 @@ export class LambdaResponse extends Response {
       return this._data;
     }
 
-    if (this._rawData) {
-      var response = JSON.parse(this._rawData.Payload);
+    if (this._rawData && !this._request.async) {
+      let response = this._getPayload();
+
       if (response && typeof response.errorMessage === 'undefined') {
         this._data = response;
       }
@@ -50,9 +51,14 @@ export class LambdaResponse extends Response {
     if (this._rawError) {
       this._error = this._rawError;
     } else {
-      var response = JSON.parse(this._rawData.Payload);
-      if (response && typeof response.errorMessage !== 'undefined') {
-        this._error = response.errorMessage;
+      if (!this._request.async) {
+        let response = this._getPayload();
+
+        if (response && typeof response.errorMessage !== 'undefined') {
+          this._error = response.errorMessage;
+        }
+      } else {
+        this._error = 'Unknown async invocation error';
       }
     }
 
@@ -70,11 +76,16 @@ export class LambdaResponse extends Response {
     if (this._rawError) {
       this._errorType = (this._rawError && this._rawError.name) ? this._rawError.name : 'Error';
     } else {
-      var response = JSON.parse(this._rawData.Payload);
-      if (response && typeof response.errorType !== 'undefined') {
-        this._errorType = response.errorType;
+      if (!this._request.async) {
+        let response = this._getPayload();
+
+        if (response && typeof response.errorType !== 'undefined') {
+          this._errorType = response.errorType;
+        } else {
+          this._errorType = 'Error';
+        }
       } else {
-        this._errorType = 'Error';
+        this._errorType = 'AsyncInvocationError';
       }
     }
 
@@ -90,9 +101,24 @@ export class LambdaResponse extends Response {
     }
 
     if (this._rawData) {
-      this._statusCode = this._rawData.StatusCode;
+      this._statusCode = this._rawData.StatusCode || this._rawData.Status;
     }
 
     return this._statusCode;
+  }
+
+  /**
+   * @returns {Object|null}
+   * @private
+   */
+  _getPayload() {
+    if (typeof this._rawData === 'object' &&
+      this._rawData.hasOwnProperty('Payload')) {
+      let payload = this._rawData.Payload;
+
+      return typeof payload === 'string' ? JSON.parse(payload) : payload;
+    }
+
+    return null;
   }
 }

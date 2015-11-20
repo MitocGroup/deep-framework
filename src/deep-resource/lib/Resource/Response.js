@@ -9,7 +9,7 @@
  */
 export class Response {
   /**
-   * @param {Request} request
+   * @param {Request|*} request
    * @param {Object} data
    * @param {String} error
    */
