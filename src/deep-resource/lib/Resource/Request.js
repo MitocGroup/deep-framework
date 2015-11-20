@@ -372,8 +372,8 @@ export class Request {
       region: this._action.region,
     });
 
-    let payloadKey = invokeAsync ? 'InvokeArgs' : 'Payload';
-    let invokeMethod = invokeAsync ? 'invokeAsync' : 'invoke';
+    let payloadKey = this._async ? 'InvokeArgs' : 'Payload';
+    let invokeMethod = this._async ? 'invokeAsync' : 'invoke';
 
     let invocationParameters = {
       FunctionName: this._action.source.original,
