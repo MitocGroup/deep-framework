@@ -15,7 +15,7 @@ import {MissingCacheImplementationException} from './Exception/MissingCacheImple
 import {CachedRequestException} from './Exception/CachedRequestException';
 import {NotAuthenticatedException} from './Exception/NotAuthenticatedException';
 import aws4 from 'aws4';
-import parseUrl from 'parse-url';
+import urlParse from 'url-parse';
 import qs from 'qs';
 import Core from 'deep-core';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
@@ -411,17 +411,16 @@ export class Request {
    * @private
    */
   _createAws4SignedRequest(url, httpMethod, payload) {
-    let urlParts = parseUrl(url);
-    let apiHost = urlParts.resource;
-    let apiPath = urlParts.pathname ? urlParts.pathname : '/';
-    let apiQueryString = urlParts.search ? `?${urlParts.search}` : '';
+    let parsedUrl = urlParse(url, qs);
+    let apiHost = parsedUrl.hostname;
+    let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';
 
     let opsToSign = {
       service: Core.AWS.Service.API_GATEWAY_EXECUTE,
       region: this.getEndpointHostRegion(apiHost),
       host: apiHost,
       method: httpMethod,
-      path: `${apiPath}${apiQueryString}`,
+      path: apiPath,
       headers: {
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -432,9 +431,16 @@ export class Request {
     switch (httpMethod) {
       case 'get':
       case 'delete':
-        opsToSign.path += (apiQueryString ? '&' : '?') + qs.stringify(
-          payload, { arrayFormat: 'brackets', encode: false }
-        );
+        if (parsedUrl.query || payload) {
+          let mergedPayload = Object.assign(parsedUrl.query, payload);
+
+          opsToSign.path += `?${qs.stringify(mergedPayload)}`;
+
+          // pass payload as query string
+          parsedUrl.set('query', mergedPayload, qs.parse);
+          url = parsedUrl.toString(qs.stringify);
+          payload = null; // reset it coz superagent overrides url query string
+        }
         break;
       case 'post':
       case 'put':

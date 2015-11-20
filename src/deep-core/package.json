@@ -57,7 +57,9 @@
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile"
   },
-  "dependencies": {},
+  "dependencies": {
+    "qs": "^5.2.x"
+  },
   "devDependencies": {
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
