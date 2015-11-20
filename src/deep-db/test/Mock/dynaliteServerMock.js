@@ -15,7 +15,6 @@ let instance = null;
 
 class DynaliteServer {
   constructor(options) {
-    console.log('instance: ',  instance);
     if(!instance) {
       this._methodsBehavior = new Map();
       this.setMode(DynaliteServer.NO_RESULT_MODE);
@@ -31,7 +30,6 @@ class DynaliteServer {
    * @param {Function} callback
    */
   getCallbackByMetod(method, callback) {
-    console.log('method: ', method)
     switch (method) {
       case DynaliteServer.NO_RESULT_MODE:
         callback(null, null);
@@ -64,7 +62,6 @@ class DynaliteServer {
    * @returns {*}
    */
   listen(port, callback) {
-    console.log('listen')
     this.getCallbackByMetod(this._methodsBehavior.get('listen'), callback);
 
     return this;
