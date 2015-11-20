@@ -646,10 +646,10 @@ suite('Resource/Request', function() {
     } catch (e) {
     }
 
-    chai.expect(spyCallback).to.have.been.calledWith();
-
     // @todo - un comment this use case once deep-resource will be published
     //let actualResult = spyCallback.args[0][0];
+
+    //chai.expect(spyCallback).to.have.been.calledWith();
     //chai.assert.instanceOf(
     //  actualResult,
     //  SuperagentResponse,
