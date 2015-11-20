@@ -1,15 +1,14 @@
 'use strict';
 
-import {AbstractDriver} from '../../../lib.compiled/Local/Driver/AbstractDriver';
-import {ServerTtsExceededException} from '../../../lib.compiled/Local/Driver/Exception/ServerTtsExceededException';
+import {PathAwareDriver} from '../../../lib.compiled/Local/Driver/PathAwareDriver';
 
-export class AbstractDriverMock extends AbstractDriver {
+export class PathAwareDriverMock extends PathAwareDriver {
   constructor() {
     super();
 
     this._methodsBehavior = new Map();
 
-    this.setMode(AbstractDriverMock.NO_RESULT_MODE);
+    this.setMode(PathAwareDriverMock.NO_RESULT_MODE);
   }
 
   /**
@@ -19,23 +18,23 @@ export class AbstractDriverMock extends AbstractDriver {
    */
   getCallbackByMetod(method, callback) {
     switch (method) {
-      case AbstractDriverMock.NO_RESULT_MODE:
+      case PathAwareDriverMock.NO_RESULT_MODE:
         callback(null, null);
         break;
 
-      case AbstractDriverMock.FAILURE_MODE:
-        callback(AbstractDriverMock.ERROR, null);
+      case PathAwareDriverMock.FAILURE_MODE:
+        callback(PathAwareDriverMock.ERROR, null);
         break;
 
-      case AbstractDriverMock.DATA_MODE:
-        callback(null, AbstractDriverMock.DATA);
+      case PathAwareDriverMock.DATA_MODE:
+        callback(null, PathAwareDriverMock.DATA);
         break;
     }
   }
 
   /**
    * @param {Function} callback
-   * @returns {AbstractDriverMock}
+   * @returns {PathAwareDriverMock}
    */
   _start(callback) {
     this.getCallbackByMetod(this._methodsBehavior.get('_start'), callback);
@@ -45,7 +44,7 @@ export class AbstractDriverMock extends AbstractDriver {
 
   /**
    * @param {Function} callback
-   * @returns {AbstractDriverMock}
+   * @returns {PathAwareDriverMock}
    */
   _stop(callback) {
     this.getCallbackByMetod(this._methodsBehavior.get('_stop'), callback);
@@ -54,26 +53,18 @@ export class AbstractDriverMock extends AbstractDriver {
   }
 
   /**
-   * @param {AbstractDriver} driver
-   * @param {Number} tts
-   */
-  throwServerTtsExceededException(driver, tts) {
-    throw new ServerTtsExceededException(driver, tts);
-  }
-
-  /**
    * Set mode for passed methods
    * @param {Number} mode
    * @param {String[]} methods
    */
-  setMode(mode = AbstractDriverMock.NO_RESULT_MODE, methods = AbstractDriverMock.METHODS) {
+  setMode(mode = PathAwareDriverMock.NO_RESULT_MODE, methods = PathAwareDriverMock.METHODS) {
 
-    if (AbstractDriverMock.MODES.indexOf(mode) < 0) {
-      mode = AbstractDriverMock.NO_RESULT_MODE;
+    if (PathAwareDriverMock.MODES.indexOf(mode) < 0) {
+      mode = PathAwareDriverMock.NO_RESULT_MODE;
     }
 
     for (let method of methods) {
-      if (AbstractDriverMock.METHODS.indexOf(method) < 0) {
+      if (PathAwareDriverMock.METHODS.indexOf(method) < 0) {
         continue;
       }
 
@@ -111,9 +102,9 @@ export class AbstractDriverMock extends AbstractDriver {
    */
   static get MODES() {
     return [
-      AbstractDriverMock.NO_RESULT_MODE,
-      AbstractDriverMock.FAILURE_MODE,
-      AbstractDriverMock.DATA_MODE,
+      PathAwareDriverMock.NO_RESULT_MODE,
+      PathAwareDriverMock.FAILURE_MODE,
+      PathAwareDriverMock.DATA_MODE,
     ];
   }
 

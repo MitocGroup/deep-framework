@@ -129,14 +129,15 @@ suite('Local/Driver/AbstractDriver', function() {
 
   test('Check ServerTtsExceededException can be thrown', function() {
     let error = null;
-    let abstractDriverWithStopError = new AbstractDriverWithStopError();
+
     try {
-      abstractDriverWithStopError.throwServerTtsExceededException('driver', 1);
+      abstractDriver.throwServerTtsExceededException('driver', 1);
     } catch (e) {
       error = e;
     }
 
-    chai.expect(error).to.be.not.equal(null);
-    chai.assert.instanceOf(error, ServerTtsExceededException, 'error is an instance of ServerTtsExceededException');
+    chai.assert.instanceOf(
+      error, ServerTtsExceededException, 'error is an instance of ServerTtsExceededException'
+    );
   });
 });
