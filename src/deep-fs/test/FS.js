@@ -3,27 +3,54 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+import S3FS from 's3fs';
 import {FS} from '../lib.compiled/FS';
 import {UnknownFolderException} from '../lib.compiled/Exception/UnknownFolderException';
 import Kernel from 'deep-kernel';
+import KernelFactory from './common/KernelFactory';
+import OS from 'os';
+import Path from 'path';
+import nodeFS from 'fs';
+
 chai.use(sinonChai);
 
 suite('FS', function() {
-  let fs = new FS('tempBucket', 'publicBucket', 'systemBucket');
+  let fs = null;
+  let backendKernelInstance = null;
+  let path = 'hello.world.example/';
 
   test('Class FS exists in FS', function() {
     chai.expect(typeof FS).to.equal('function');
   });
 
-  test('Check TMP static getter returns \'temp\'', function() {
+  test('Load instance of FS by using Kernel.load()', function(done) {
+    let callback = (backendKernel) => {
+      backendKernelInstance = backendKernel;
+      fs = backendKernel.get('fs');
+
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+      chai.assert.instanceOf(
+        fs, FS, 'fs is an instance of FS'
+      );
+
+      // complete the async
+      done();
+    };
+
+    KernelFactory.create({FS: FS}, callback);
+  });
+
+  test('Check TMP static getter returns "temp"', function() {
     chai.expect(FS.TMP).to.be.equal('temp');
   });
 
-  test('Check PUBLIC static getter returns \'public\'', function() {
+  test('Check PUBLIC static getter returns "public"', function() {
     chai.expect(FS.PUBLIC).to.be.equal('public');
   });
 
-  test('Check SYSTEM static getter returns \'system\'', function() {
+  test('Check SYSTEM static getter returns "system"', function() {
     chai.expect(FS.SYSTEM).to.be.equal('system');
   });
 
@@ -34,100 +61,78 @@ suite('FS', function() {
     chai.expect(FS.FOLDERS).to.be.include(FS.SYSTEM);
   });
 
-  test('Check getFolder() method throws \'UnknownFolderException\' exception for invalid value', function() {
-    let error = null;
-    try {
-      fs.getFolder('invalidPath');
-    } catch (e) {
-      error = e;
-    }
+  test('Check boot() method boots a certain service', function() {
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(error).to.be.an.instanceof(UnknownFolderException);
-  });
+    fs.boot(backendKernelInstance, spyCallback);
 
-  test('Check getFolder() method returns valid value', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = fs.getFolder(FS.TMP);
-    } catch (e) {
-      error = e;
-    }
-
-    //todo - bucket issue here
-    //chai.expect(error).to.be.equal(null);
-    //chai.expect(actualResult).to.be.an.contains(FS.TMP);
-  });
-
-  test('Check _getTmpDir() static method returns valid value', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = FS._getTmpDir(FS.TMP);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(actualResult).to.be.an.contains(FS.TMP);
-
+    chai.expect(Object.keys(fs._buckets)).to.eql(['temp', 'public', 'system']);
+    chai.expect(spyCallback).to.have.been.calledWithExactly();
   });
 
   test('Check tmp() getter returns valid mounted tmp folder', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = fs.tmp;
-    } catch (e) {
-      error = e;
-    }
+    let bucketName = 'deep.dev.temp.32f3705a';
 
-    // todo - AssertionError: expected [Error: bucket is required] to equal null
-    //chai.expect(error).to.be.equal(null);
-    //chai.expect(actualResult).to.be.an.contains(FS.TMP);
+    let actualResult = fs.tmp;
+
+    chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
+    chai.expect(actualResult.bucket).to.equal(bucketName);
+    chai.expect(actualResult.path).to.equal(path);
   });
 
-  test('Check public() getter returns valid mounted tmp folder', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = fs.public;
-    } catch (e) {
-      error = e;
-    }
+  test('Check public() getter returns valid mounted public folder', function() {
+    let bucketName = 'deep.dev.public.32f3705a';
 
-    // todo - AssertionError: expected [Error: bucket is required] to equal null
-    //chai.expect(error).to.be.equal(null);
-    //chai.expect(actualResult).to.be.an.contains(FS.PUBLIC);
+    let actualResult = fs.public;
+
+    chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
+    chai.expect(actualResult.bucket).to.equal(bucketName);
+    chai.expect(actualResult.path).to.equal(path);
   });
 
-  test('Check system() getter returns valid mounted tmp folder', function() {
-    let error = null;
-    let actualResult = null;
-    try {
-      actualResult = fs.system;
-    } catch (e) {
-      error = e;
-    }
+  test('Check system() getter returns valid mounted system folder', function() {
+    let bucketName = 'deep.dev.system.32f3705a';
 
-    // todo - AssertionError: expected [Error: bucket is required] to equal null
-    //chai.expect(error).to.be.equal(null);
-    //chai.expect(actualResult).to.be.an.contains(FS.SYSTEM);
+    let actualResult = fs.system;
+
+    chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
+    chai.expect(actualResult.bucket).to.equal(bucketName);
+    chai.expect(actualResult.path).to.equal(path);
   });
 
-  test('Check boot() method boots a certain service', function() {
-    let error = null;
-    let actualResult = null;
-    let deepServices = {serviceKey: 'ServiceName'};
-    let spyCallback = sinon.spy();
-    let kernel = null;
-    try {
-      kernel = new Kernel(deepServices, Kernel.FRONTEND_CONTEXT);
-      kernel.config.buckets = fs._buckets;
-      actualResult = fs.boot(kernel, spyCallback);
-    } catch (e) {
-      error = e;
+  test('Check getFolder() throws "UnknownFolderException" for invalid path',
+    function() {
+      let error = null;
+
+      try {
+        fs.getFolder('invalidPath');
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.an.instanceof(UnknownFolderException);
     }
+  );
+
+  test('Check getFolder() method returns valid value', function() {
+    let actualResult = fs.getFolder(FS.TMP);
+
+    chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
+    chai.expect(actualResult.bucket).to.equal('deep.dev.temp.32f3705a');
+    chai.expect(actualResult.path).to.equal('hello.world.example/');
+  });
+
+  test('Check _getTmpDir() static method returns valid value', function() {
+    let subpath = 'test/Path/To/' + FS.TMP;
+    let expectedResult = Path.join(OS.tmpdir(), subpath);
+
+    let actualResult = FS._getTmpDir(subpath);
+
+    chai.expect(actualResult).to.be.equal(expectedResult);
+    chai.expect(nodeFS.existsSync(actualResult)).to.equal(true);
+
+    //remove directory
+    nodeFS.rmdirSync(actualResult);
+    chai.expect(nodeFS.existsSync(actualResult)).to.equal(false);
   });
 });

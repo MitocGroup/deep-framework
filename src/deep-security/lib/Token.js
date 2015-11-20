@@ -6,6 +6,7 @@
 
 import AWS from 'aws-sdk';
 import {AuthException} from './Exception/AuthException';
+import {CredentialsManager} from './CredentialsManager';
 
 /**
  * Security token holds details about logged user
@@ -13,104 +14,140 @@ import {AuthException} from './Exception/AuthException';
 export class Token {
   /**
    * @param {String} identityPoolId
-   * @param {String} providerName
-   * @param {String} providerUserToken
-   * @param {String} providerUserId
    */
-  constructor(identityPoolId, providerName = null, providerUserToken = null, providerUserId = null) {
+  constructor(identityPoolId) {
     this._identityPoolId = identityPoolId;
-    this._providerName = providerName;
-    this._providerUserToken = providerUserToken;
-    this._providerUserId = providerUserId;
 
+    this._identityProvider = null;
+    this._lambdaContext = null;
     this._user = null;
     this._userProvider = null;
-    this._identityId = null;
     this._credentials = null;
 
-    this._isAnonymous = true;
+    this._credsManager = new CredentialsManager(identityPoolId);
+
+    this._setupAwsCognitoConfig();
+  }
+
+  /**
+   * Setup region for CognitoIdentity and CognitoSync services
+   *
+   * @private
+   */
+  _setupAwsCognitoConfig() {
+    // @todo: set retries in a smarter way...
+    AWS.config.maxRetries = 3;
+
+    let cognitoRegion = Token.getRegionFromIdentityPoolId(this._identityPoolId);
+
+    AWS.config.update({
+      cognitoidentity: {region: cognitoRegion},
+      cognitosync: {region: cognitoRegion},
+    });
+  }
+
+  /**
+   * @returns {IdentityProvider}
+   */
+  get identityProvider() {
+    return this._identityProvider;
+  }
+
+  /**
+   * @param {IdentityProvider} provider
+   */
+  set identityProvider(provider) {
+    this._identityProvider = provider;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get lambdaContext() {
+    return this._lambdaContext;
+  }
+
+  /**
+   * @param {Object} lambdaContext
+   */
+  set lambdaContext(lambdaContext) {
+    this._lambdaContext = lambdaContext;
   }
 
   /**
    * @param {Function} callback
    */
-  getCredentials(callback = () => null) {
-    // @todo: set retries in a smarter way...
-    AWS.config.maxRetries = 3;
-
-    let defaultRegion = AWS.config.region;
-
-    AWS.config.update({
-      region: Token._getRegionFromIdentityPoolId(this._identityPoolId),
-    });
-
-    let cognitoParams = {
-      IdentityPoolId: this._identityPoolId,
-    };
-
-    if (this._providerName && this._providerUserToken) {
-      this._isAnonymous = false;
-      cognitoParams.Logins = {};
-      cognitoParams.Logins[this._providerName] = this._providerUserToken;
+  loadCredentials(callback = () => {}) {
+    // avoid refreshing or loading credentials for each request
+    if (this._validCredentials()) {
+      callback(null, this.credentials);
+      return;
     }
 
-    this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+    if (this.lambdaContext) {
+      this._credsManager.loadCredentials(this.identityId, (error, credentials) => {
+        if (error) {
+          callback(error, null);
+          return;
+        }
 
-    // update AWS credentials
-    AWS.config.credentials = this._credentials.refresh(function(error) {
-      if (error) {
-        callback(new AuthException(error));
-        return;
+        this._credentials = credentials;
+
+        callback(null, this._credentials);
+      });
+    } else {
+      let cognitoParams = {
+        IdentityPoolId: this._identityPoolId,
+      };
+
+      if (this.identityProvider) {
+        cognitoParams.Logins = {};
+        cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
       }
 
-      this._identityId = this._credentials.identityId;
+      this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 
-      AWS.config.update({
-        accessKeyId: this._credentials.accessKeyId,
-        secretAccessKey: this._credentials.secretAccessKey,
-        sessionToken: this._credentials.sessionToken,
-        region: defaultRegion, // restore to default region
+      this._credentials.refresh((error) => {
+        if (error) {
+          callback(new AuthException(error), null);
+          return;
+        }
+
+        AWS.config.credentials = this._credentials;
+
+        this._credsManager.saveCredentials(this._credentials, (error, record) => {
+          if (error) {
+            callback(error, null);
+            return;
+          }
+
+          callback(null, this._credentials);
+        });
       });
-
-      callback(null, this);
-    }.bind(this));
+    }
   }
 
   /**
    * @param {String} identityPoolId
    * @returns {String}
-   * @private
    */
-  static _getRegionFromIdentityPoolId(identityPoolId) {
+  static getRegionFromIdentityPoolId(identityPoolId) {
     return identityPoolId.split(':')[0];
   }
 
   /**
    * @returns {String}
    */
-  get providerName() {
-    return this._providerName;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get providerUserToken() {
-    return this._providerUserToken;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get providerUserId() {
-    return this._providerUserId;
-  }
-
-  /**
-   * @returns {String}
-   */
   get identityId() {
-    return this._identityId;
+    let identityId = null;
+
+    if (this.credentials && this.credentials.hasOwnProperty('IdentityId')) {
+      identityId = this.credentials.IdentityId;
+    } else if (this.lambdaContext) {
+      identityId = this.lambdaContext.identity.cognitoIdentityId;
+    }
+
+    return identityId;
   }
 
   /**
@@ -121,10 +158,33 @@ export class Token {
   }
 
   /**
+   * @returns {boolean}
+   * @private
+   */
+  _validCredentials() {
+    return this.credentials && this.expireDateTime > new Date();
+  }
+
+  /**
+   * @returns {Date}
+   */
+  get expireDateTime() {
+    let dateTime = null;
+
+    if (this.credentials.hasOwnProperty('expireTime')) {
+      dateTime = this.credentials.expireTime instanceof Date ?
+        this.credentials.expireTime :
+        new Date(this.credentials.expireTime);
+    }
+
+    return dateTime;
+  }
+
+  /**
    * @returns {Boolean}
    */
   get isAnonymous() {
-    return this._isAnonymous;
+    return !this.identityProvider && !this.lambdaContext;
   }
 
   /**
@@ -156,5 +216,34 @@ export class Token {
     }
 
     callback(this._user);
+  }
+
+  /**
+   * @param {String} identityPoolId
+   */
+  static create(identityPoolId) {
+    return new this(identityPoolId);
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @param {IdentityProvider} identityProvider
+   */
+  static createFromIdentityProvider(identityPoolId, identityProvider) {
+    let token = new this(identityPoolId);
+    token.identityProvider = identityProvider;
+
+    return token;
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @param {Object} lambdaContext
+   */
+  static createFromLambdaContext(identityPoolId, lambdaContext) {
+    let token = new this(identityPoolId);
+    token.lambdaContext = lambdaContext;
+
+    return token;
   }
 }

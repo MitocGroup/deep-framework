@@ -91,7 +91,7 @@ Resources file (`resources.json`)
             "source": "src/User/Retrieve", // the source of the resource (ex. for external type: http://example.com/api/v1/users)
             "engine": { // only available for `"type": "lambda"`
                 "memory": 512, // max. amount of RAM allocated to a lambda (default 128, max. 1536) 
-                "timeout": 30, // timeout Lambda runs within, (max. 60)
+                "timeout": 30, // timeout Lambda runs within, (max. 5 minutes)
                 "runtime": "nodejs" // Lambda runtime engine (default nodejs)
             }
         },

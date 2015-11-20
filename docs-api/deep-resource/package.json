@@ -1,6 +1,6 @@
 {
   "name": "deep-resource",
-  "version": "1.1.3",
+  "version": "1.2.3",
   "description": "DEEP Resource Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -47,6 +47,10 @@
     {
       "name": "Dragos Palade",
       "email": "dpalade@mitocgroup.com"
+    },
+    {
+      "name": "Vitali Cernomschi",
+      "email": "vcernosmchi@mitocgroup.com"
     }
   ],
   "main": "lib.compiled/bootstrap.js",
@@ -61,20 +65,22 @@
     "prepublish": "npm run compile"
   },
   "dependencies": {
-    "deep-kernel": "1.1.*",
-    "deep-core": "1.1.*",
-    "deep-cache": "1.1.*",
-    "deep-security": "1.1.*",
-    "superagent": "1.4.*",
-    "aws4": "1.0.*",
-    "parse-url": "1.0.*",
-    "query-string": "3.0.*",
-    "aws-sdk": "2.2.*"
+    "deep-kernel": "^1.x.x",
+    "deep-core": "^1.x.x",
+    "deep-cache": "^1.x.x",
+    "deep-security": "^1.x.x",
+    "superagent": "^1.4.x",
+    "aws4": "^1.0.x",
+    "parse-url": "^1.0.x",
+    "query-string": "^3.0.x",
+    "aws-sdk": "^2.2.x"
   },
   "devDependencies": {
-    "chai": "3.2.*",
-    "sinon": "1.17.*",
-    "sinon-chai": "2.8.*"
+    "chai": "^3.2.x",
+    "sinon": "^1.17.x",
+    "sinon-chai": "^2.8.x",
+    "proxyquire": "^1.7.x",
+    "mock-aws": "^1.2.x"
   },
   "preferGlobal": true,
   "analyze": true

@@ -5,9 +5,12 @@
 'use strict';
 
 import {SuperagentResponse} from './SuperagentResponse';
+import {LambdaResponse} from './LambdaResponse';
 import {Request} from './Request';
 import {Action} from './Action';
 import Http from 'superagent';
+import {MissingLocalLambdaExecWrapperException} from './Exception/MissingLocalLambdaExecWrapperException';
+import {MissingLambdaLocalPathException} from './Exception/MissingLambdaLocalPathException';
 
 /**
  * Resource request instance
@@ -31,11 +34,37 @@ export class LocalRequest extends Request {
         method: this._method,
       };
 
-      Http.post(LocalRequest.LOCAL_LAMBDA_ENDPOINT)
-        .send(data)
-        .end((error, response) => {
-          callback(new SuperagentResponse(this, response, error));
+      if (typeof window === 'undefined') {
+        if (!global.hasOwnProperty(LocalRequest.LAMBDA_EXEC_WRAPPER_KEY)) {
+          throw new MissingLocalLambdaExecWrapperException(LocalRequest.LAMBDA_EXEC_WRAPPER_KEY);
+        }
+
+        let localPath = this._action.source._localPath;
+
+        if (!localPath) {
+          throw new MissingLambdaLocalPathException(data.lambda);
+        }
+
+        let execWrapper = global[LocalRequest.LAMBDA_EXEC_WRAPPER_KEY];
+
+        execWrapper[this._async ? 'invokeAsync' : 'invoke'](localPath, data, (error, result) => {
+          let resultData = {};
+
+          if (this._async) {
+            resultData.Status = 202;
+          } else {
+            resultData.Payload = result;
+          }
+
+          callback(new LambdaResponse(this, error ? null : resultData, error));
         });
+      } else {
+        Http.post(this._async ? LocalRequest.LOCAL_LAMBDA_ASYNC_ENDPOINT :  LocalRequest.LOCAL_LAMBDA_ENDPOINT)
+          .send(data)
+          .end((error, response) => {
+            callback(new SuperagentResponse(this, response, error));
+          });
+      }
     } else {
       return this.constructor.useNative()._send(...arguments);
     }
@@ -48,5 +77,19 @@ export class LocalRequest extends Request {
    */
   static get LOCAL_LAMBDA_ENDPOINT() {
     return '/_/lambda';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get LOCAL_LAMBDA_ASYNC_ENDPOINT() {
+    return '/_/lambda-async';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get LAMBDA_EXEC_WRAPPER_KEY() {
+    return '_deep_lambda_exec_';
   }
 }

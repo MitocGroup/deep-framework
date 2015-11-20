@@ -25,6 +25,8 @@ suite('ContainerAware', function() {
       chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
       backendKernelInstance = backendKernel;
 
+      containerAware.kernel = backendKernelInstance;
+
       // complete the async
       done();
     };
@@ -34,11 +36,7 @@ suite('ContainerAware', function() {
   test('Check localBackend getter returns valid default value [false]', function() {
     chai.assert.isFalse(containerAware.localBackend);
   });
-
-  test('Check container getter returns valid default value [null]', function() {
-    chai.assert.isNull(containerAware.container);
-  });
-
+  
   test('Check service getter returns valid value [this]', function() {
     chai.expect(containerAware.service).to.equal(containerAware);
   });
@@ -62,12 +60,6 @@ suite('ContainerAware', function() {
     var spyCallback = sinon.spy();
     containerAware.boot('kernel', spyCallback);
     chai.expect(spyCallback).to.have.been.calledWith();
-  });
-
-  test('Check container setter sets object correctly', function() {
-    containerAware.container = backendKernelInstance._container;
-    chai.assert.instanceOf(containerAware.container, DI, 'container is an instance of DI');
-    chai.expect(containerAware.container).to.eql(backendKernelInstance._container);
   });
 
   test('Check _resolveIdentifier() throws InvalidDeepIdentifierException ' +

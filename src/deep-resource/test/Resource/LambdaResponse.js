@@ -5,56 +5,67 @@ import {LambdaResponse} from '../../lib.compiled/Resource/LambdaResponse';
 import {Resource} from '../../lib.compiled/Resource';
 import {Action} from '../../lib.compiled/Resource/Action';
 import {Request} from '../../lib.compiled/Resource/Request';
+import Kernel from 'deep-kernel';
+import Cache from 'deep-cache';
+import Security from 'deep-security';
+import KernelFactory from '../common/KernelFactory';
 
 suite('Resource/LambdaResponse', function() {
-  let testResources = {
-    'deep.test': {
-      test: {
-        create: {
-          description: 'Lambda for creating test',
-          type: 'lambda',
-          methods: [
-            'POST',
-          ],
-          source: 'src/Test/Create',
-        },
-        retrieve: {
-          description: 'Retrieves test',
-          type: 'lambda',
-          methods: ['GET'],
-          source: 'src/Test/Retrieve',
-        },
-        delete: {
-          description: 'Lambda for deleting test',
-          type: 'lambda',
-          methods: ['DELETE'],
-          source: 'src/Test/Delete',
-        },
-        update: {
-          description: 'Update test',
-          type: 'lambda',
-          methods: ['PUT'],
-          source: 'src/Test/Update',
-        },
-      },
-    },
-  };
-  let resource = new Resource(testResources);
-  let actionName = 'UpdateTest';
-  let type = 'lambda';
-  let methods = ['GET', 'POST'];
-  let source = 'sourceTest';
-  let region = 'us-west-2';
-  let action = new Action(resource, actionName, type, methods, source, region);
+  let backendKernelInstance = null;
+  let action = null;
+  let request = null;
+  let lambdaResponse = null;
+  let microserviceIdentifier = 'hello.world.example';
+  let resourceName = 'sample';
+  let actionName = 'say-hello';
   let payload = '{"body":"bodyData"}';
-  let method = 'method';
-  let request = new Request(action, payload, method);
-  let rawData = {Payload: '{"dataKey":"testValue"}', StatusCode:201};
-  let rawError = '{"message":"errorMessage", "name":"RuntimeException"}';
-  let lambdaResponse = new LambdaResponse(request, rawData, rawError);
+  let method = 'POST';
+  let rawData = {Payload: '{"dataKey":"testValue"}', StatusCode: 201};
+  let rawError = {
+    message:'errorMessage',
+    'name':'RuntimeException',
+  };
 
   test('Class LambdaResponse exists in Resource/LambdaResponse', function() {
     chai.expect(typeof LambdaResponse).to.equal('function');
+  });
+
+  test('Load Kernel by using Kernel.load()', function(done) {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
+      backendKernelInstance = backendKernel;
+
+      // complete the async
+      done();
+
+    };
+    
+    KernelFactory.create({
+      Cache: Cache,
+      Security: Security,
+      Resource: Resource,
+    }, callback);
+  });
+
+  test('Check getting action from Kernel instance', function() {
+    action = backendKernelInstance.get('resource').get(
+      `@${microserviceIdentifier}:${resourceName}:${actionName}`
+    );
+
+    chai.assert.instanceOf(
+      action, Action, 'action is an instance of Action'
+    );
+  });
+
+  test('Check creating request > lambdaResponse from action instance', function() {
+    request = new Request(action, payload, method);
+    lambdaResponse = new LambdaResponse(request, rawData, JSON.stringify(rawError));
+    chai.assert.instanceOf(
+      lambdaResponse, LambdaResponse, 'lambdaResponse is an instance of LambdaResponse'
+    );
   });
 
   test('Check constructor sets valid value for _actions=null', function() {
@@ -88,10 +99,10 @@ suite('Resource/LambdaResponse', function() {
 
   test('Check error getter returns valid error', function() {
     //check when this._rawError
-    chai.expect(lambdaResponse.error).to.be.eql(rawError);
+    chai.expect(lambdaResponse.error).to.be.eql(JSON.stringify(rawError));
 
     //check when this._error
-    chai.expect(lambdaResponse.error).to.be.eql(rawError);
+    chai.expect(lambdaResponse.error).to.be.eql(JSON.stringify(rawError));
   });
 
   test('Check error getter returns valid error from rawData with errorMessage', function() {
@@ -102,23 +113,36 @@ suite('Resource/LambdaResponse', function() {
   });
 
   test('Check errorType getter returns valid error', function() {
-    //check when this._rawError
-    chai.expect(lambdaResponse.errorType).to.be.equal('Error');
-
     //check when this._errorType
     chai.expect(lambdaResponse.errorType).to.be.equal('Error');
+
+    //check when this._rawError
+    chai.expect(lambdaResponse._rawError).to.be.equal(JSON.stringify(rawError));
   });
 
-  test('Check errorType getter returns valid error from rawData with errotType', function() {
-    let rawDataWithError = {Payload: '{"dataKey":"testValue","errorMessage":"Internal error",' +
-    '"errorType":"RuntimeException"}', StatusCode: 500};
-    let emptyRawError = null;
-    let lambdaResponseWithError = new LambdaResponse(request, rawDataWithError, emptyRawError);
-    chai.expect(lambdaResponseWithError.errorType).to.be.equal('RuntimeException');
-  });
+  test(
+    'Check errorType getter returns valid error from rawData with errorType',
+    function() {
+      let rawDataWithError = {
+        Payload: '{"dataKey":"testValue","errorMessage":"Internal error",' +
+        '"errorType":"RuntimeException"}',
+        StatusCode: 500,
+      };
+      let emptyRawError = null;
+      let lambdaResponseWithError = new LambdaResponse(
+        request, rawDataWithError, emptyRawError
+      );
+      chai.expect(lambdaResponseWithError.errorType).to.be.equal(
+        'RuntimeException'
+      );
+    }
+  );
 
-  test('Check errorType getter returns valid error from rawData without errotType', function() {
-    let rawDataWithError = {Payload: '{"dataKey":"testValue","errorMessage":"Internal error"}', StatusCode: 500};
+  test('Check errorType getter returns valid error from rawData without errorType', function() {
+    let rawDataWithError = {
+      Payload: '{"dataKey":"testValue","errorMessage":"Internal error"}',
+      StatusCode: 500,
+    };
     let emptyRawError = null;
     let lambdaResponseWithError = new LambdaResponse(request, rawDataWithError, emptyRawError);
     chai.expect(lambdaResponseWithError.errorType).to.be.equal('Error');
