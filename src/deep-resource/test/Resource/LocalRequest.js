@@ -107,6 +107,8 @@ suite('Resource/LocalRequest', function() {
 
     chai.expect(typeof actualResult).to.equal('object');
     chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
+
+    delete global.window;
   });
 
   test('Check _send() throws "MissingLocalLambdaExecWrapperException" for !window',
@@ -115,7 +117,6 @@ suite('Resource/LocalRequest', function() {
       let spyCallback = sinon.spy();
 
       httpMock.setMode(HttpMock.DATA_MODE, ['end']);
-      global.window = undefined;
 
       try {
         localRequest._send(spyCallback);
