@@ -52,19 +52,22 @@ export class CredentialsManager {
   saveCredentials(credentials, callback) {
     this._createOrGetDataset((error, dataset) => {
       if (error) {
-        return callback(error);
+        callback(error, null);
+        return;
       }
 
       dataset.put(CredentialsManager.RECORD_NAME, this._encodeCredentials(credentials), (error, record) => {
         if (error) {
-          return callback(new PutCognitoRecordException(
+          callback(new PutCognitoRecordException(
             CredentialsManager.DATASET_NAME, CredentialsManager.RECORD_NAME, error
-          ));
+          ), null);
+          return;
         }
 
         this._synchronizeDataset(dataset, (error, savedRecords) => {
           if (error) {
-            return callback(new SynchronizeCognitoDatasetException(dataset, error));
+            callback(new SynchronizeCognitoDatasetException(dataset, error), null);
+            return;
           }
 
           callback(null, savedRecords);
@@ -88,7 +91,8 @@ export class CredentialsManager {
 
     cognitosync.listRecords(params, (error, data) => {
       if (error) {
-        return callback(error);
+        callback(error, null);
+        return;
       }
 
       let creds = null;
@@ -110,7 +114,8 @@ export class CredentialsManager {
   _createOrGetDataset(callback) {
     this.cognitoSyncClient.openOrCreateDataset(CredentialsManager.DATASET_NAME, (error, dataset) => {
       if (error) {
-        return callback(new CreateCognitoDatasetException(CredentialsManager.DATASET_NAME, error));
+        callback(new CreateCognitoDatasetException(CredentialsManager.DATASET_NAME, error), null);
+        return;
       }
 
       callback(null, dataset);

@@ -77,16 +77,18 @@ export class Token {
   /**
    * @param {Function} callback
    */
-  loadCredentials(callback = () => null) {
+  loadCredentials(callback = () => {}) {
     // avoid refreshing or loading credentials for each request
     if (this._validCredentials()) {
-      return callback(null, this.credentials);
+      callback(null, this.credentials);
+      return;
     }
 
     if (this.lambdaContext) {
       this._credsManager.loadCredentials(this.identityId, (error, credentials) => {
         if (error) {
-          return callback(error);
+          callback(error, null);
+          return;
         }
 
         this._credentials = credentials;
@@ -107,14 +109,16 @@ export class Token {
 
       this._credentials.refresh((error) => {
         if (error) {
-          return callback(new AuthException(error));
+          callback(new AuthException(error), null);
+          return;
         }
 
         AWS.config.credentials = this._credentials;
 
         this._credsManager.saveCredentials(this._credentials, (error, record) => {
           if (error) {
-            return callback(error);
+            callback(error, null);
+            return;
           }
 
           callback(null, this._credentials);
@@ -126,7 +130,6 @@ export class Token {
   /**
    * @param {String} identityPoolId
    * @returns {String}
-   * @private
    */
   static getRegionFromIdentityPoolId(identityPoolId) {
     return identityPoolId.split(':')[0];

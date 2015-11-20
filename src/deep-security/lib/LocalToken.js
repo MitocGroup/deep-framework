@@ -20,7 +20,7 @@ export class LocalToken extends Token {
   /**
    * @param {Function} callback
    */
-  loadCredentials(callback = () => null) {
+  loadCredentials(callback = () => {}) {
     // use provider user id instead of cognito identity id for local backend
     this._identityId = this._providerUserId;
 

@@ -81,7 +81,7 @@ export class IdentityProvider {
    * @returns {Object}
    */
   config(name) {
-    if (Object.keys(this.providers).indexOf(name) === -1) {
+    if (!this.providers.hasOwnProperty(name)) {
       throw new MissingLoginProviderException(name);
     }
 

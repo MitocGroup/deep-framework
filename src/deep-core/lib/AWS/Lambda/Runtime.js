@@ -169,7 +169,8 @@ export class Runtime extends Interface {
         throw new InvalidCognitoIdentityException(identityPoolId);
       }
 
-      // inject lambda context into security service and instantiate security token without loading credentials
+      // inject lambda context into security service
+      // and instantiate security token without loading credentials
       this.securityService.warmupBackendLogin(this._context);
 
       this._loggedUserId = this._context.identity.cognitoIdentityId;
