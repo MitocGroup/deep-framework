@@ -20,6 +20,7 @@ import queryString from 'query-string';
 import Core from 'deep-core';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
 import {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';
+import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import Security from 'deep-security';
 import crypto from 'crypto';
 
@@ -346,14 +347,11 @@ export class Request {
    */
   _sendThroughApi(callback = () => {}) {
     let endpoint = this._action.source.api;
-    let signedRequest = this._createAws4SignedRequest(
-      endpoint,
-      this.method,
-      this.payload
-    );
 
-    signedRequest.end((error, response) => {
-      callback(new SuperagentResponse(this, response, error));
+    this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {
+      signedRequest.end((error, response) => {
+        callback(new SuperagentResponse(this, response, error));
+      });
     });
 
     return this;
@@ -408,9 +406,10 @@ export class Request {
    * @param {String} url
    * @param {String} httpMethod
    * @param {Object} payload
+   * @param {Function} callback
    * @private
    */
-  _createAws4SignedRequest(url, httpMethod, payload) {
+  _createAws4SignedRequest(url, httpMethod, payload, callback) {
     let urlParts = parseUrl(url);
     let apiHost = urlParts.resource;
     let apiPath = urlParts.pathname ? urlParts.pathname : '/';
@@ -441,31 +440,45 @@ export class Request {
         break;
     }
 
-    let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
+    this._loadSecurityCredentials((credentials) => {
+      let signature = aws4.sign(opsToSign, credentials);
 
-    return Http[httpMethod](url, payload)
-      .set('Content-Type', 'application/json; charset=UTF-8')
-      .set('X-Amz-Date', signature.headers['X-Amz-Date'])
-      .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
-      .set('Authorization', signature.headers.Authorization);
+      let request = Http[httpMethod](url, payload)
+        .set('Content-Type', 'application/json; charset=UTF-8')
+        .set('X-Amz-Date', signature.headers['X-Amz-Date'])
+        .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
+        .set('Authorization', signature.headers.Authorization);
+
+      if (signature.headers.hasOwnProperty('Content-Length')) {
+        request.set('Content-Length', signature.headers['Content-Length']);
+      }
+
+      callback(request);
+    });
   }
 
   /**
    * @returns {Object}
    * @private
    */
-  _getSecurityCredentials() {
-    if (!(this._action.resource.security instanceof Security)) {
+  _loadSecurityCredentials(callback) {
+    let securityService = this._action.resource.security;
+
+    if (!(securityService instanceof Security)) {
       throw new MissingSecurityServiceException();
     }
 
-    let token = this._action.resource.security.token;
-
-    if (!token) {
+    if (!securityService.token) {
       throw new NotAuthenticatedException();
     }
 
-    return token.credentials;
+    return securityService.token.loadCredentials((error, credentials) => {
+      if (error) {
+        throw new LoadCredentialsException(error);
+      }
+
+      callback(credentials);
+    });
   }
 
   /**
