@@ -457,10 +457,10 @@
               "type": "MethodDefinition",
               "key": {
                 "type": "Identifier",
-                "name": "getCredentials",
+                "name": "loadCredentials",
                 "range": [
                   313,
-                  327
+                  328
                 ],
                 "loc": {
                   "start": {
@@ -469,7 +469,7 @@
                   },
                   "end": {
                     "line": 23,
-                    "column": 16
+                    "column": 17
                   }
                 }
               },
@@ -478,20 +478,76 @@
                 "id": null,
                 "params": [
                   {
-                    "type": "Identifier",
-                    "name": "callback",
+                    "type": "AssignmentPattern",
+                    "left": {
+                      "type": "Identifier",
+                      "name": "callback",
+                      "range": [
+                        329,
+                        337
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 23,
+                          "column": 18
+                        },
+                        "end": {
+                          "line": 23,
+                          "column": 26
+                        }
+                      }
+                    },
+                    "right": {
+                      "type": "ArrowFunctionExpression",
+                      "id": null,
+                      "params": [],
+                      "body": {
+                        "type": "BlockStatement",
+                        "body": [],
+                        "range": [
+                          346,
+                          348
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 23,
+                            "column": 35
+                          },
+                          "end": {
+                            "line": 23,
+                            "column": 37
+                          }
+                        }
+                      },
+                      "generator": false,
+                      "expression": false,
+                      "range": [
+                        340,
+                        348
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 23,
+                          "column": 29
+                        },
+                        "end": {
+                          "line": 23,
+                          "column": 37
+                        }
+                      }
+                    },
                     "range": [
-                      328,
-                      336
+                      329,
+                      348
                     ],
                     "loc": {
                       "start": {
                         "line": 23,
-                        "column": 17
+                        "column": 18
                       },
                       "end": {
                         "line": 23,
-                        "column": 25
+                        "column": 37
                       }
                     }
                   }
@@ -510,8 +566,8 @@
                           "object": {
                             "type": "ThisExpression",
                             "range": [
-                              421,
-                              425
+                              433,
+                              437
                             ],
                             "loc": {
                               "start": {
@@ -528,8 +584,8 @@
                             "type": "Identifier",
                             "name": "_identityId",
                             "range": [
-                              426,
-                              437
+                              438,
+                              449
                             ],
                             "loc": {
                               "start": {
@@ -543,8 +599,8 @@
                             }
                           },
                           "range": [
-                            421,
-                            437
+                            433,
+                            449
                           ],
                           "loc": {
                             "start": {
@@ -563,8 +619,8 @@
                           "object": {
                             "type": "ThisExpression",
                             "range": [
-                              440,
-                              444
+                              452,
+                              456
                             ],
                             "loc": {
                               "start": {
@@ -581,8 +637,8 @@
                             "type": "Identifier",
                             "name": "_providerUserId",
                             "range": [
-                              445,
-                              460
+                              457,
+                              472
                             ],
                             "loc": {
                               "start": {
@@ -596,8 +652,8 @@
                             }
                           },
                           "range": [
-                            440,
-                            460
+                            452,
+                            472
                           ],
                           "loc": {
                             "start": {
@@ -611,8 +667,8 @@
                           }
                         },
                         "range": [
-                          421,
-                          460
+                          433,
+                          472
                         ],
                         "loc": {
                           "start": {
@@ -626,8 +682,8 @@
                         }
                       },
                       "range": [
-                        421,
-                        461
+                        433,
+                        473
                       ],
                       "loc": {
                         "start": {
@@ -644,8 +700,8 @@
                           "type": "Line",
                           "value": " use provider user id instead of cognito identity id for local backend",
                           "range": [
-                            344,
-                            416
+                            356,
+                            428
                           ],
                           "loc": {
                             "start": {
@@ -668,8 +724,8 @@
                           "type": "Identifier",
                           "name": "callback",
                           "range": [
-                            467,
-                            475
+                            479,
+                            487
                           ],
                           "loc": {
                             "start": {
@@ -688,8 +744,8 @@
                             "value": null,
                             "raw": "null",
                             "range": [
-                              476,
-                              480
+                              488,
+                              492
                             ],
                             "loc": {
                               "start": {
@@ -705,8 +761,8 @@
                           {
                             "type": "ThisExpression",
                             "range": [
-                              482,
-                              486
+                              494,
+                              498
                             ],
                             "loc": {
                               "start": {
@@ -721,8 +777,8 @@
                           }
                         ],
                         "range": [
-                          467,
-                          487
+                          479,
+                          499
                         ],
                         "loc": {
                           "start": {
@@ -736,8 +792,8 @@
                         }
                       },
                       "range": [
-                        467,
-                        488
+                        479,
+                        500
                       ],
                       "loc": {
                         "start": {
@@ -752,13 +808,13 @@
                     }
                   ],
                   "range": [
-                    338,
-                    492
+                    350,
+                    504
                   ],
                   "loc": {
                     "start": {
                       "line": 23,
-                      "column": 27
+                      "column": 39
                     },
                     "end": {
                       "line": 28,
@@ -769,13 +825,13 @@
                 "generator": false,
                 "expression": false,
                 "range": [
-                  327,
-                  492
+                  328,
+                  504
                 ],
                 "loc": {
                   "start": {
                     "line": 23,
-                    "column": 16
+                    "column": 17
                   },
                   "end": {
                     "line": 28,
@@ -787,7 +843,7 @@
               "computed": false,
               "range": [
                 313,
-                492
+                504
               ],
               "loc": {
                 "start": {
@@ -824,7 +880,7 @@
           ],
           "range": [
             186,
-            494
+            506
           ],
           "loc": {
             "start": {
@@ -839,7 +895,7 @@
         },
         "range": [
           155,
-          494
+          506
         ],
         "loc": {
           "start": {
@@ -877,7 +933,7 @@
       "source": null,
       "range": [
         148,
-        494
+        506
       ],
       "loc": {
         "start": {
@@ -914,7 +970,7 @@
   "sourceType": "module",
   "range": [
     43,
-    494
+    506
   ],
   "loc": {
     "start": {
@@ -1003,8 +1059,8 @@
       "type": "Line",
       "value": " use provider user id instead of cognito identity id for local backend",
       "range": [
-        344,
-        416
+        356,
+        428
       ],
       "loc": {
         "start": {

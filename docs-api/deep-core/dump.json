@@ -2723,7 +2723,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\n/**\n * Request received by the lambda context\n */\nexport class Request {\n  /**\n   * @param {*} data\n   */\n  constructor(data) {\n    this._data = data || {};\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @param {String} name\n   * @param {String|Object|null} defaultValue\n   *\n   * @returns {String|Object|null}\n   */\n  getParam(name, defaultValue = null) {\n    return this.data.hasOwnProperty(name) ? this.data[name] : defaultValue;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\n/**\n * Request received by the lambda context\n */\nexport class Request {\n  /**\n   * @param {*} data\n   */\n  constructor(data) {\n    this._data = data || {};\n\n    this._registerDataAsParams();\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsParams() {\n    for (let key in this._data) {\n      if (!this._data.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._data[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_data', {\n      configurable: false,\n      enumerable: false,\n    });\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @param {String} name\n   * @param {String|Object|null} defaultValue\n   *\n   * @returns {String|Object|null}\n   */\n  getParam(name, defaultValue = undefined) {\n    return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2782,6 +2782,19 @@
     }
   },
   {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_registerDataAsParams",
+    "memberof": "lib/AWS/Lambda/Request.js~Request",
+    "longname": "lib/AWS/Lambda/Request.js~Request#_registerDataAsParams",
+    "access": "private",
+    "description": null,
+    "lineNumber": 23,
+    "params": [],
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2790,7 +2803,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#data",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 47,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2821,7 +2834,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#getParam",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 57,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3125,7 +3138,7 @@
     "access": null,
     "description": null,
     "lineNumber": 4,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {*} event\n   * @param {*} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = context;\n    this._addExceptionListener();\n    \n    this._request = new Request(event);\n    \n    this._fillUserContext();\n\n    if (!this._loggedUserId && this._forceUserIdentity) {\n      throw new MissingUserContextException();\n    }\n\n    this.handle(this._request);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _addExceptionListener() {\n    process.removeAllListeners('uncaughtException');\n    process.on('uncaughtException', function(error) {\n      return this.createError(error).send();\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} iError\n   */\n  createError(iError) {\n    let oError = {};\n\n    if (typeof iError === 'string') {\n      oError = {\n        errorType: 'Error',\n        errorMessage: iError,\n        errorStack: (new Error(iError)).stack,\n      };\n    } else {\n      oError = {\n        errorType: iError.name,\n        errorMessage: iError.message,\n        errorStack: iError.stack,\n      };\n    }\n\n    let response = new Response(oError);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    let response = new Response(data);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.hasOwnProperty('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {*} event\n   * @param {*} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = context;\n    this._addExceptionListener();\n    \n    this._request = new Request(event);\n    \n    this._fillUserContext();\n\n    if (!this._loggedUserId && this._forceUserIdentity) {\n      throw new MissingUserContextException();\n    }\n\n    this.handle(this._request);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _addExceptionListener() {\n    process.removeAllListeners('uncaughtException');\n    process.on('uncaughtException', function(error) {\n      return this.createError(error).send();\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} iError\n   */\n  createError(iError) {\n    let oError = {};\n\n    if (typeof iError === 'string') {\n      oError = {\n        errorType: 'Error',\n        errorMessage: iError,\n        errorStack: (new Error(iError)).stack,\n      };\n    } else {\n      oError = {\n        errorType: iError.name,\n        errorMessage: iError.message,\n        errorStack: iError.stack,\n      };\n    }\n\n    let response = new Response(oError);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    let response = new Response(data);\n    response.runtimeContext = this._context;\n\n    return response;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.hasOwnProperty('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      // inject lambda context into security service\n      // and instantiate security token without loading credentials\n      this.securityService.warmupBackendLogin(this._context);\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -3645,7 +3658,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
     "access": null,
     "description": null,
-    "lineNumber": 172,
+    "lineNumber": 176,
     "undocument": true,
     "type": {
       "types": [
