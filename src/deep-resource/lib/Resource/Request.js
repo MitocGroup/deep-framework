@@ -18,8 +18,8 @@ import aws4 from 'aws4';
 import parseUrl from 'parse-url';
 import queryString from 'query-string';
 import Core from 'deep-core';
-import {DirectLambdaCallDeniedException} from './Exception/DirectLambdaCallDeniedException';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
+import {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';
 import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import Security from 'deep-security';
 import crypto from 'crypto';
@@ -43,7 +43,29 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
+    this._async = false;
     this._native = false;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get async() {
+    return this._async;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  invokeAsync() {
+    if (!this.isLambda) {
+      throw new AsyncCallNotAvailableException(this._action.type);
+    }
+
+    this._native = true;
+    this._async = true;
+
+    return this;
   }
 
   /**
@@ -57,11 +79,8 @@ export class Request {
    * @returns {Request}
    */
   useDirectCall() {
-    if (this._action.forceUserIdentity) {
-      throw new DirectLambdaCallDeniedException(this);
-    }
-
     this._native = true;
+
     return this;
   }
 
@@ -246,7 +265,7 @@ export class Request {
    * @param {Function} callback
    */
   send(callback = () => {}) {
-    if (!this.isCached) {
+    if (!this.isCached || this._async) {
       return this._send(callback);
     }
 
@@ -327,7 +346,6 @@ export class Request {
    * @private
    */
   _sendThroughApi(callback = () => {}) {
-
     let endpoint = this._action.source.api;
 
     this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {
@@ -352,13 +370,17 @@ export class Request {
       region: this._action.region,
     });
 
+    let payloadKey = this._async ? 'InvokeArgs' : 'Payload';
+    let invokeMethod = this._async ? 'invokeAsync' : 'invoke';
+
     let invocationParameters = {
       FunctionName: this._action.source.original,
-      Payload: JSON.stringify(this.payload),
     };
 
+    invocationParameters[payloadKey] = JSON.stringify(this.payload);
 
-    this._lambda.invoke(invocationParameters, (error, data) => {
+
+    this._lambda[invokeMethod](invocationParameters, (error, data) => {
       callback(new LambdaResponse(this, data, error));
     });
 
