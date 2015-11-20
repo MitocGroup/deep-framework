@@ -6,9 +6,33 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-security/lib/exception/createcognitodatasetexception.js~createcognitodatasetexception",
+    "class/lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException.html",
+    "<span>CreateCognitoDatasetException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/CreateCognitoDatasetException.js</span>",
+    "class"
+  ],
+  [
+    "deep-security/lib/credentialsmanager.js~credentialsmanager",
+    "class/lib/CredentialsManager.js~CredentialsManager.html",
+    "<span>CredentialsManager</span> <span class=\"search-result-import-path\">deep-security/lib/CredentialsManager.js</span>",
+    "class"
+  ],
+  [
     "deep-security/lib/exception/exception.js~exception",
     "class/lib/Exception/Exception.js~Exception.html",
     "<span>Exception</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/Exception.js</span>",
+    "class"
+  ],
+  [
+    "deep-security/lib/exception/getcognitorecordexception.js~getcognitorecordexception",
+    "class/lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException.html",
+    "<span>GetCognitoRecordException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/GetCognitoRecordException.js</span>",
+    "class"
+  ],
+  [
+    "deep-security/lib/identityprovider.js~identityprovider",
+    "class/lib/IdentityProvider.js~IdentityProvider.html",
+    "<span>IdentityProvider</span> <span class=\"search-result-import-path\">deep-security/lib/IdentityProvider.js</span>",
     "class"
   ],
   [
@@ -30,9 +54,21 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-security/lib/exception/putcognitorecordexception.js~putcognitorecordexception",
+    "class/lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException.html",
+    "<span>PutCognitoRecordException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/PutCognitoRecordException.js</span>",
+    "class"
+  ],
+  [
     "deep-security/lib/security.js~security",
     "class/lib/Security.js~Security.html",
     "<span>Security</span> <span class=\"search-result-import-path\">deep-security/lib/Security.js</span>",
+    "class"
+  ],
+  [
+    "deep-security/lib/exception/synchronizecognitodatasetexception.js~synchronizecognitodatasetexception",
+    "class/lib/Exception/SynchronizeCognitoDatasetException.js~SynchronizeCognitoDatasetException.html",
+    "<span>SynchronizeCognitoDatasetException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/SynchronizeCognitoDatasetException.js</span>",
     "class"
   ],
   [
@@ -372,6 +408,48 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "lib/credentialsmanager.js",
+    "file/lib/CredentialsManager.js.html",
+    "lib/CredentialsManager.js",
+    "file"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#cognitosyncclient",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-get-cognitoSyncClient",
+    "lib/CredentialsManager.js~CredentialsManager#cognitoSyncClient",
+    "member"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#constructor",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-constructor-constructor",
+    "lib/CredentialsManager.js~CredentialsManager#constructor",
+    "method"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#loadcredentials",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-loadCredentials",
+    "lib/CredentialsManager.js~CredentialsManager#loadCredentials",
+    "method"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#savecredentials",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-saveCredentials",
+    "lib/CredentialsManager.js~CredentialsManager#saveCredentials",
+    "method"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager.dataset_name",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#static-get-DATASET_NAME",
+    "lib/CredentialsManager.js~CredentialsManager.DATASET_NAME",
+    "member"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager.record_name",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#static-get-RECORD_NAME",
+    "lib/CredentialsManager.js~CredentialsManager.RECORD_NAME",
+    "member"
+  ],
+  [
     "lib/exception/authexception.js",
     "file/lib/Exception/AuthException.js.html",
     "lib/Exception/AuthException.js",
@@ -384,6 +462,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/exception/createcognitodatasetexception.js",
+    "file/lib/Exception/CreateCognitoDatasetException.js.html",
+    "lib/Exception/CreateCognitoDatasetException.js",
+    "file"
+  ],
+  [
+    "lib/exception/createcognitodatasetexception.js~createcognitodatasetexception#constructor",
+    "class/lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException.html#instance-constructor-constructor",
+    "lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException#constructor",
+    "method"
+  ],
+  [
     "lib/exception/exception.js",
     "file/lib/Exception/Exception.js.html",
     "lib/Exception/Exception.js",
@@ -393,6 +483,18 @@ window.esdocSearchIndex = [
     "lib/exception/exception.js~exception#constructor",
     "class/lib/Exception/Exception.js~Exception.html#instance-constructor-constructor",
     "lib/Exception/Exception.js~Exception#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/getcognitorecordexception.js",
+    "file/lib/Exception/GetCognitoRecordException.js.html",
+    "lib/Exception/GetCognitoRecordException.js",
+    "file"
+  ],
+  [
+    "lib/exception/getcognitorecordexception.js~getcognitorecordexception#constructor",
+    "class/lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException.html#instance-constructor-constructor",
+    "lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException#constructor",
     "method"
   ],
   [
@@ -420,6 +522,90 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/exception/putcognitorecordexception.js",
+    "file/lib/Exception/PutCognitoRecordException.js.html",
+    "lib/Exception/PutCognitoRecordException.js",
+    "file"
+  ],
+  [
+    "lib/exception/putcognitorecordexception.js~putcognitorecordexception#constructor",
+    "class/lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException.html#instance-constructor-constructor",
+    "lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/synchronizecognitodatasetexception.js",
+    "file/lib/Exception/SynchronizeCognitoDatasetException.js.html",
+    "lib/Exception/SynchronizeCognitoDatasetException.js",
+    "file"
+  ],
+  [
+    "lib/exception/synchronizecognitodatasetexception.js~synchronizecognitodatasetexception#constructor",
+    "class/lib/Exception/SynchronizeCognitoDatasetException.js~SynchronizeCognitoDatasetException.html#instance-constructor-constructor",
+    "lib/Exception/SynchronizeCognitoDatasetException.js~SynchronizeCognitoDatasetException#constructor",
+    "method"
+  ],
+  [
+    "lib/identityprovider.js",
+    "file/lib/IdentityProvider.js.html",
+    "lib/IdentityProvider.js",
+    "file"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider#config",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-method-config",
+    "lib/IdentityProvider.js~IdentityProvider#config",
+    "method"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider#constructor",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-constructor-constructor",
+    "lib/IdentityProvider.js~IdentityProvider#constructor",
+    "method"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider#name",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-get-name",
+    "lib/IdentityProvider.js~IdentityProvider#name",
+    "member"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider#providers",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-get-providers",
+    "lib/IdentityProvider.js~IdentityProvider#providers",
+    "member"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider#userid",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-get-userId",
+    "lib/IdentityProvider.js~IdentityProvider#userId",
+    "member"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider#usertoken",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-get-userToken",
+    "lib/IdentityProvider.js~IdentityProvider#userToken",
+    "member"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider.amazon",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#static-get-AMAZON",
+    "lib/IdentityProvider.js~IdentityProvider.AMAZON",
+    "member"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider.facebook",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#static-get-FACEBOOK",
+    "lib/IdentityProvider.js~IdentityProvider.FACEBOOK",
+    "member"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider.google",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#static-get-GOOGLE",
+    "lib/IdentityProvider.js~IdentityProvider.GOOGLE",
+    "member"
+  ],
+  [
     "lib/localtoken.js",
     "file/lib/LocalToken.js.html",
     "lib/LocalToken.js",
@@ -432,9 +618,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/localtoken.js~localtoken#getcredentials",
-    "class/lib/LocalToken.js~LocalToken.html#instance-method-getCredentials",
-    "lib/LocalToken.js~LocalToken#getCredentials",
+    "lib/localtoken.js~localtoken#loadcredentials",
+    "class/lib/LocalToken.js~LocalToken.html#instance-method-loadCredentials",
+    "lib/LocalToken.js~LocalToken#loadCredentials",
     "method"
   ],
   [
@@ -442,12 +628,6 @@ window.esdocSearchIndex = [
     "file/lib/Security.js.html",
     "lib/Security.js",
     "file"
-  ],
-  [
-    "lib/security.js~security#amazonloginproviderconfig",
-    "class/lib/Security.js~Security.html#instance-get-amazonLoginProviderConfig",
-    "lib/Security.js~Security#amazonLoginProviderConfig",
-    "member"
   ],
   [
     "lib/security.js~security#anonymouslogin",
@@ -468,33 +648,9 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/security.js~security#facebookloginproviderconfig",
-    "class/lib/Security.js~Security.html#instance-get-facebookLoginProviderConfig",
-    "lib/Security.js~Security#facebookLoginProviderConfig",
-    "member"
-  ],
-  [
-    "lib/security.js~security#getloginproviderconfig",
-    "class/lib/Security.js~Security.html#instance-method-getLoginProviderConfig",
-    "lib/Security.js~Security#getLoginProviderConfig",
-    "method"
-  ],
-  [
-    "lib/security.js~security#googleloginproviderconfig",
-    "class/lib/Security.js~Security.html#instance-get-googleLoginProviderConfig",
-    "lib/Security.js~Security#googleLoginProviderConfig",
-    "member"
-  ],
-  [
     "lib/security.js~security#identitypoolid",
     "class/lib/Security.js~Security.html#instance-get-identityPoolId",
     "lib/Security.js~Security#identityPoolId",
-    "member"
-  ],
-  [
-    "lib/security.js~security#identityproviders",
-    "class/lib/Security.js~Security.html#instance-get-identityProviders",
-    "lib/Security.js~Security#identityProviders",
     "member"
   ],
   [
@@ -516,22 +672,10 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/security.js~security.provider_amazon",
-    "class/lib/Security.js~Security.html#static-get-PROVIDER_AMAZON",
-    "lib/Security.js~Security.PROVIDER_AMAZON",
-    "member"
-  ],
-  [
-    "lib/security.js~security.provider_facebook",
-    "class/lib/Security.js~Security.html#static-get-PROVIDER_FACEBOOK",
-    "lib/Security.js~Security.PROVIDER_FACEBOOK",
-    "member"
-  ],
-  [
-    "lib/security.js~security.provider_google",
-    "class/lib/Security.js~Security.html#static-get-PROVIDER_GOOGLE",
-    "lib/Security.js~Security.PROVIDER_GOOGLE",
-    "member"
+    "lib/security.js~security#warmupbackendlogin",
+    "class/lib/Security.js~Security.html#instance-method-warmupBackendLogin",
+    "lib/Security.js~Security#warmupBackendLogin",
+    "method"
   ],
   [
     "lib/token.js",
@@ -552,10 +696,10 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/token.js~token#getcredentials",
-    "class/lib/Token.js~Token.html#instance-method-getCredentials",
-    "lib/Token.js~Token#getCredentials",
-    "method"
+    "lib/token.js~token#expiredatetime",
+    "class/lib/Token.js~Token.html#instance-get-expireDateTime",
+    "lib/Token.js~Token#expireDateTime",
+    "member"
   ],
   [
     "lib/token.js~token#getuser",
@@ -570,34 +714,70 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/token.js~token#identityprovider",
+    "class/lib/Token.js~Token.html#instance-get-identityProvider",
+    "lib/Token.js~Token#identityProvider",
+    "member"
+  ],
+  [
+    "lib/token.js~token#identityprovider",
+    "class/lib/Token.js~Token.html#instance-set-identityProvider",
+    "lib/Token.js~Token#identityProvider",
+    "member"
+  ],
+  [
     "lib/token.js~token#isanonymous",
     "class/lib/Token.js~Token.html#instance-get-isAnonymous",
     "lib/Token.js~Token#isAnonymous",
     "member"
   ],
   [
-    "lib/token.js~token#providername",
-    "class/lib/Token.js~Token.html#instance-get-providerName",
-    "lib/Token.js~Token#providerName",
+    "lib/token.js~token#lambdacontext",
+    "class/lib/Token.js~Token.html#instance-get-lambdaContext",
+    "lib/Token.js~Token#lambdaContext",
     "member"
   ],
   [
-    "lib/token.js~token#provideruserid",
-    "class/lib/Token.js~Token.html#instance-get-providerUserId",
-    "lib/Token.js~Token#providerUserId",
+    "lib/token.js~token#lambdacontext",
+    "class/lib/Token.js~Token.html#instance-set-lambdaContext",
+    "lib/Token.js~Token#lambdaContext",
     "member"
   ],
   [
-    "lib/token.js~token#providerusertoken",
-    "class/lib/Token.js~Token.html#instance-get-providerUserToken",
-    "lib/Token.js~Token#providerUserToken",
-    "member"
+    "lib/token.js~token#loadcredentials",
+    "class/lib/Token.js~Token.html#instance-method-loadCredentials",
+    "lib/Token.js~Token#loadCredentials",
+    "method"
   ],
   [
     "lib/token.js~token#userprovider",
     "class/lib/Token.js~Token.html#instance-set-userProvider",
     "lib/Token.js~Token#userProvider",
     "member"
+  ],
+  [
+    "lib/token.js~token.create",
+    "class/lib/Token.js~Token.html#static-method-create",
+    "lib/Token.js~Token.create",
+    "method"
+  ],
+  [
+    "lib/token.js~token.createfromidentityprovider",
+    "class/lib/Token.js~Token.html#static-method-createFromIdentityProvider",
+    "lib/Token.js~Token.createFromIdentityProvider",
+    "method"
+  ],
+  [
+    "lib/token.js~token.createfromlambdacontext",
+    "class/lib/Token.js~Token.html#static-method-createFromLambdaContext",
+    "lib/Token.js~Token.createFromLambdaContext",
+    "method"
+  ],
+  [
+    "lib/token.js~token.getregionfromidentitypoolid",
+    "class/lib/Token.js~Token.html#static-method-getRegionFromIdentityPoolId",
+    "lib/Token.js~Token.getRegionFromIdentityPoolId",
+    "method"
   ],
   [
     "lib/userprovider.js",
