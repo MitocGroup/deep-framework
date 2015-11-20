@@ -7,7 +7,6 @@
 import AWS from 'aws-sdk';
 import {AuthException} from './Exception/AuthException';
 import {CredentialsManager} from './CredentialsManager';
-import {IdentityProvider} from './IdentityProvider';
 
 /**
  * Security token holds details about logged user

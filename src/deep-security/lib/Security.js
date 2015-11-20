@@ -5,7 +5,6 @@
 'use strict';
 
 import Kernel from 'deep-kernel';
-import {MissingLoginProviderException} from './Exception/MissingLoginProviderException';
 import {Exception} from './Exception/Exception';
 import {Token} from './Token';
 import {LocalToken} from './LocalToken';
