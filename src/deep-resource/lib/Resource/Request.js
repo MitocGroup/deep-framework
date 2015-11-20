@@ -410,7 +410,9 @@ export class Request {
     switch (httpMethod) {
       case 'get':
       case 'delete':
-        opsToSign.path += (apiQueryString ? '&' : '?') + qs.stringify(payload);
+        opsToSign.path += (apiQueryString ? '&' : '?') + qs.stringify(
+          payload, { arrayFormat: 'brackets', encode: false }
+        );
         break;
       case 'post':
       case 'put':
