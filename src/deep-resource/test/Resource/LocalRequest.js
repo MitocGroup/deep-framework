@@ -35,7 +35,8 @@ suite('Resource/LocalRequest', function() {
   test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (backendKernel) => {
       chai.assert.instanceOf(
-        backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
 
       backendKernelInstance = backendKernel;
 
@@ -95,20 +96,39 @@ suite('Resource/LocalRequest', function() {
     }
   );
 
-  test('Check _send() method for acctionType="lambda"', function() {
+  test('Check _send() method for acctionType="lambda" for window = {}', function() {
     let spyCallback = sinon.spy();
 
     httpMock.setMode(HttpMock.DATA_MODE, ['end']);
-
+    global.window = {};
     localRequest._send(spyCallback);
 
     let actualResult = spyCallback.args[0][0];
 
     chai.expect(typeof actualResult).to.equal('object');
     chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
+
+    delete global.window;
   });
 
-  test('Check _send() method for acctionType!=\'lambda\'', function() {
+  test('Check _send() throws "MissingLocalLambdaExecWrapperException" for !window',
+    function () {
+      let error = null;
+      let spyCallback = sinon.spy();
+
+      httpMock.setMode(HttpMock.DATA_MODE, ['end']);
+
+      try {
+        localRequest._send(spyCallback);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error.constructor.name).to.equal('MissingLocalLambdaExecWrapperException');
+    }
+  );
+
+  test('Check _send() method for acctionType!="lambda"', function() {
     let spyCallback = sinon.spy();
     let source = {
       api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',
