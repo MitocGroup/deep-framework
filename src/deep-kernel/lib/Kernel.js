@@ -270,7 +270,7 @@ export class Kernel {
 
       bootingServices++;
 
-      serviceInstance.container = this._container;
+      serviceInstance.kernel = this;
       serviceInstance.localBackend = Core.IS_DEV_SERVER;
       serviceInstance.boot(this, function() {
         bootingServices--;
