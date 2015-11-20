@@ -1,8 +1,5 @@
 'use strict';
 
-import {Exception} from '../../lib.compiled/Vogels/Exceptions/Exception';
-import {UndefinedMethodException} from '../../lib.compiled/Vogels/Exceptions/UndefinedMethodException';
-
 export class ModelMock {
   constructor() {
     this._methodsBehavior = new Map();
