@@ -4,7 +4,6 @@ import chai from 'chai';
 import {DBServer} from '../../lib.compiled/Local/DBServer';
 import {LocalDynamo} from '../../lib.compiled/Local/Driver/LocalDynamo';
 import {Dynalite} from '../../lib.compiled/Local/Driver/Dynalite';
-import {DynaliteMock} from '../../test/Mock/Driver/DynaliteMock';
 
 suite('Local/DBServer', function() {
   let dbServer = new DBServer();
@@ -49,10 +48,10 @@ suite('Local/DBServer', function() {
     chai.expect(actualResult).to.an.instanceof(LocalDynamo);
   });
 
-  test('Check create() static method for DynaliteMock', function() {
-    let actualResult = DBServer.create(DynaliteMock, DynaliteMock.DEFAULT_OPTIONS);
+  test('Check create() static method for Dynalite', function() {
+    let actualResult = DBServer.create(Dynalite, Dynalite.DEFAULT_OPTIONS);
 
-    chai.expect(actualResult).to.an.instanceof(DynaliteMock);
+    chai.expect(actualResult).to.an.instanceof(Dynalite);
   });
 
   test('Check create() static method throws Error', function() {
