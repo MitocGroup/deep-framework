@@ -63,6 +63,7 @@ export class ContainerAware extends MicroserviceInjectable {
    * @returns {Injectable}
    */
   bind(microservice) {
+
     // @todo: find more smart way of doing this...
     if (typeof microservice === 'string') {
       microservice = this._container.get(Kernel.KERNEL).microservice(microservice);
@@ -72,7 +73,7 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
-   * @param {String} identifier (e.g. @microservice_identifier:resource)
+   * @param {String} identifier (e.g. @microservice_identifier:resource[:action])
    * @returns {String}
    *
    * @private
