@@ -6,15 +6,15 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "deep-resource/lib/resource/exception/cachedrequestexception.js~cachedrequestexception",
-    "class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html",
-    "<span>CachedRequestException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/CachedRequestException.js</span>",
+    "deep-resource/lib/resource/exception/asynccallnotavailableexception.js~asynccallnotavailableexception",
+    "class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html",
+    "<span>AsyncCallNotAvailableException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/AsyncCallNotAvailableException.js</span>",
     "class"
   ],
   [
-    "deep-resource/lib/resource/exception/directlambdacalldeniedexception.js~directlambdacalldeniedexception",
-    "class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html",
-    "<span>DirectLambdaCallDeniedException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/DirectLambdaCallDeniedException.js</span>",
+    "deep-resource/lib/resource/exception/cachedrequestexception.js~cachedrequestexception",
+    "class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html",
+    "<span>CachedRequestException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/CachedRequestException.js</span>",
     "class"
   ],
   [
@@ -36,6 +36,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-resource/lib/resource/exception/loadcredentialsexception.js~loadcredentialsexception",
+    "class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html",
+    "<span>LoadCredentialsException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/LoadCredentialsException.js</span>",
+    "class"
+  ],
+  [
     "deep-resource/lib/resource/localrequest.js~localrequest",
     "class/lib/Resource/LocalRequest.js~LocalRequest.html",
     "<span>LocalRequest</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/LocalRequest.js</span>",
@@ -51,6 +57,18 @@ window.esdocSearchIndex = [
     "deep-resource/lib/resource/exception/missingcacheimplementationexception.js~missingcacheimplementationexception",
     "class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html",
     "<span>MissingCacheImplementationException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/MissingCacheImplementationException.js</span>",
+    "class"
+  ],
+  [
+    "deep-resource/lib/resource/exception/missinglambdalocalpathexception.js~missinglambdalocalpathexception",
+    "class/lib/Resource/Exception/MissingLambdaLocalPathException.js~MissingLambdaLocalPathException.html",
+    "<span>MissingLambdaLocalPathException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/MissingLambdaLocalPathException.js</span>",
+    "class"
+  ],
+  [
+    "deep-resource/lib/resource/exception/missinglocallambdaexecwrapperexception.js~missinglocallambdaexecwrapperexception",
+    "class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html",
+    "<span>MissingLocalLambdaExecWrapperException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js</span>",
     "class"
   ],
   [
@@ -564,6 +582,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/resource/exception/asynccallnotavailableexception.js",
+    "file/lib/Resource/Exception/AsyncCallNotAvailableException.js.html",
+    "lib/Resource/Exception/AsyncCallNotAvailableException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/asynccallnotavailableexception.js~asynccallnotavailableexception#constructor",
+    "class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException#constructor",
+    "method"
+  ],
+  [
     "lib/resource/exception/cachedrequestexception.js",
     "file/lib/Resource/Exception/CachedRequestException.js.html",
     "lib/Resource/Exception/CachedRequestException.js",
@@ -576,15 +606,15 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/resource/exception/directlambdacalldeniedexception.js",
-    "file/lib/Resource/Exception/DirectLambdaCallDeniedException.js.html",
-    "lib/Resource/Exception/DirectLambdaCallDeniedException.js",
+    "lib/resource/exception/loadcredentialsexception.js",
+    "file/lib/Resource/Exception/LoadCredentialsException.js.html",
+    "lib/Resource/Exception/LoadCredentialsException.js",
     "file"
   ],
   [
-    "lib/resource/exception/directlambdacalldeniedexception.js~directlambdacalldeniedexception#constructor",
-    "class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html#instance-constructor-constructor",
-    "lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException#constructor",
+    "lib/resource/exception/loadcredentialsexception.js~loadcredentialsexception#constructor",
+    "class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException#constructor",
     "method"
   ],
   [
@@ -609,6 +639,30 @@ window.esdocSearchIndex = [
     "lib/resource/exception/missingcacheimplementationexception.js~missingcacheimplementationexception#constructor",
     "class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html#instance-constructor-constructor",
     "lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException#constructor",
+    "method"
+  ],
+  [
+    "lib/resource/exception/missinglambdalocalpathexception.js",
+    "file/lib/Resource/Exception/MissingLambdaLocalPathException.js.html",
+    "lib/Resource/Exception/MissingLambdaLocalPathException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/missinglambdalocalpathexception.js~missinglambdalocalpathexception#constructor",
+    "class/lib/Resource/Exception/MissingLambdaLocalPathException.js~MissingLambdaLocalPathException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/MissingLambdaLocalPathException.js~MissingLambdaLocalPathException#constructor",
+    "method"
+  ],
+  [
+    "lib/resource/exception/missinglocallambdaexecwrapperexception.js",
+    "file/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js.html",
+    "lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/missinglocallambdaexecwrapperexception.js~missinglocallambdaexecwrapperexception#constructor",
+    "class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException#constructor",
     "method"
   ],
   [
@@ -691,13 +745,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
@@ -774,6 +828,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/localrequest.js~localrequest.lambda_exec_wrapper_key",
+    "class/lib/Resource/LocalRequest.js~LocalRequest.html#static-get-LAMBDA_EXEC_WRAPPER_KEY",
+    "lib/Resource/LocalRequest.js~LocalRequest.LAMBDA_EXEC_WRAPPER_KEY",
+    "member"
+  ],
+  [
+    "lib/resource/localrequest.js~localrequest.local_lambda_async_endpoint",
+    "class/lib/Resource/LocalRequest.js~LocalRequest.html#static-get-LOCAL_LAMBDA_ASYNC_ENDPOINT",
+    "lib/Resource/LocalRequest.js~LocalRequest.LOCAL_LAMBDA_ASYNC_ENDPOINT",
+    "member"
+  ],
+  [
     "lib/resource/localrequest.js~localrequest.local_lambda_endpoint",
     "class/lib/Resource/LocalRequest.js~LocalRequest.html#static-get-LOCAL_LAMBDA_ENDPOINT",
     "lib/Resource/LocalRequest.js~LocalRequest.LOCAL_LAMBDA_ENDPOINT",
@@ -792,6 +858,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/resource/request.js~request#async",
+    "class/lib/Resource/Request.js~Request.html#instance-get-async",
+    "lib/Resource/Request.js~Request#async",
+    "member"
+  ],
+  [
     "lib/resource/request.js~request#cache",
     "class/lib/Resource/Request.js~Request.html#instance-method-cache",
     "lib/Resource/Request.js~Request#cache",
@@ -799,13 +871,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/request.js~request#cacheimpl",
-    "class/lib/Resource/Request.js~Request.html#instance-set-cacheImpl",
+    "class/lib/Resource/Request.js~Request.html#instance-get-cacheImpl",
     "lib/Resource/Request.js~Request#cacheImpl",
     "member"
   ],
   [
     "lib/resource/request.js~request#cacheimpl",
-    "class/lib/Resource/Request.js~Request.html#instance-get-cacheImpl",
+    "class/lib/Resource/Request.js~Request.html#instance-set-cacheImpl",
     "lib/Resource/Request.js~Request#cacheImpl",
     "member"
   ],
@@ -849,6 +921,12 @@ window.esdocSearchIndex = [
     "lib/resource/request.js~request#invalidatecache",
     "class/lib/Resource/Request.js~Request.html#instance-method-invalidateCache",
     "lib/Resource/Request.js~Request#invalidateCache",
+    "method"
+  ],
+  [
+    "lib/resource/request.js~request#invokeasync",
+    "class/lib/Resource/Request.js~Request.html#instance-method-invokeAsync",
+    "lib/Resource/Request.js~Request#invokeAsync",
     "method"
   ],
   [
