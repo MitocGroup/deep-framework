@@ -44,11 +44,12 @@ suite('Local/Driver/PathAwareDriver', function() {
   test('Check DBPath() static method returns creates DBPath dir and returns it',
     function() {
       //remove directory
-      nodeFS.rmdirSync(PathAwareDriver.DBPath);
-      chai.expect(nodeFS.existsSync(PathAwareDriver.DBPath)).to.equal(false);
-
       let actualResult = PathAwareDriver.DBPath;
 
+      nodeFS.rmdirSync(actualResult);
+      chai.expect(nodeFS.existsSync(actualResult)).to.equal(false);
+
+      actualResult = PathAwareDriver.DBPath;
       chai.expect(actualResult).to.contains('/PathAwareDriver');
       chai.expect(nodeFS.existsSync(actualResult)).to.equal(true);
     }

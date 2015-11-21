@@ -66,7 +66,6 @@ suite('Local/Driver/AbstractDriver', function() {
   test(
     'Check start() method creates ServerAlreadyRunningException in callback when _running=true',
     function() {
-      let error = null;
       let spyCallback = sinon.spy();
 
       abstractDriver.start(spyCallback);

@@ -48,10 +48,9 @@ export class LocalDynamoServerMock {
   /**
    * Returns callback() with on arg for method based on behavior from _methodsBehavior map
    * @param {String} method
-   * @param {Boolean} isError
    * @param {Function} callback
    */
-  getCustomCallbackByMethod(method, callback, isError = false) {
+  getCustomCallbackByMethod(method, callback) {
     switch (method) {
       case LocalDynamoServerMock.NO_RESULT_MODE:
         callback(null);
@@ -73,7 +72,7 @@ export class LocalDynamoServerMock {
    * @returns {LocalDynamoServerMock}
    */
   on(data, callback) {
-    this.getCustomCallbackByMethod(this._methodsBehavior.get('on'), callback, false);
+    this.getCustomCallbackByMethod(this._methodsBehavior.get('on'), callback);
 
     return this;
   }
@@ -88,6 +87,8 @@ export class LocalDynamoServerMock {
       throw Error('Server already up and running');
     }
 
+    this.options = options;
+    this.port = port;
     this._isRunning = true;
 
     return this;
