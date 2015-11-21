@@ -45,7 +45,7 @@ suite('Local/Driver/PathAwareDriver', function() {
     function() {
       //remove directory
       nodeFS.rmdirSync(PathAwareDriver.DBPath);
-      chai.expect(nodeFS.existsSync(actualResult)).to.equal(false);
+      chai.expect(nodeFS.existsSync(PathAwareDriver.DBPath)).to.equal(false);
 
       let actualResult = PathAwareDriver.DBPath;
 

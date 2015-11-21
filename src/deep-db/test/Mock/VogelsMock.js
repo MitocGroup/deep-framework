@@ -35,7 +35,7 @@ export class VogelsMock {
    * @param {String} method
    * @param {Function} callback
    */
-  getCallbackByMetod(method, callback) {
+  getCallbackByMethod(method, callback) {
     switch (method) {
       case VogelsMock.NO_RESULT_MODE:
         callback(null, null);
@@ -57,7 +57,7 @@ export class VogelsMock {
    * @returns {VogelsMock}
    */
   createTables(options, callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('createTables'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('createTables'), callback);
 
     return this;
   }

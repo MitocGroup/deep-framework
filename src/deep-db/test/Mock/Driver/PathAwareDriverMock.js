@@ -16,7 +16,7 @@ export class PathAwareDriverMock extends PathAwareDriver {
    * @param {String} method
    * @param {Function} callback
    */
-  getCallbackByMetod(method, callback) {
+  getCallbackByMethod(method, callback) {
     switch (method) {
       case PathAwareDriverMock.NO_RESULT_MODE:
         callback(null, null);
@@ -37,7 +37,7 @@ export class PathAwareDriverMock extends PathAwareDriver {
    * @returns {PathAwareDriverMock}
    */
   _start(callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('_start'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('_start'), callback);
 
     return this;
   }
@@ -47,7 +47,7 @@ export class PathAwareDriverMock extends PathAwareDriver {
    * @returns {PathAwareDriverMock}
    */
   _stop(callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('_stop'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('_stop'), callback);
 
     return this;
   }

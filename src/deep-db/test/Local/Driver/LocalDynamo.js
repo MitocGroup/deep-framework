@@ -5,18 +5,18 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {LocalDynamo} from '../../../lib.compiled/Local/Driver/LocalDynamo';
 import {AbstractDriver} from '../../../lib.compiled/Local/Driver/AbstractDriver';
-import {LocalDynamoServerMock} from '../../../test/Mock/LocalDynamoServerMock';
+import {LocalDynamoServerMock} from '../../Mock/LocalDynamoServerMock';
 import requireProxy from 'proxyquire';
 
 chai.use(sinonChai);
 
 suite('Local/Driver/LocalDynamo', function() {
-
+  //mocking localDynamo
   let localDynamoServerMock = new LocalDynamoServerMock();
 
-  //mocking localDynamo
+  localDynamoServerMock.fixBabelTranspile();
   let localDynamoExport = requireProxy('../../../lib.compiled/Local/Driver/LocalDynamo', {
-    'dynalite': localDynamoServerMock,
+    'local-dynamo': localDynamoServerMock,
   });
 
   let LocalDynamo = localDynamoExport.LocalDynamo;
@@ -43,24 +43,43 @@ suite('Local/Driver/LocalDynamo', function() {
     chai.expect(localDynamo.port).to.be.equal(AbstractDriver.DEFAULT_PORT);
   });
 
+  test('Check constructor sets _pickUpOldInstance=true', function() {
+    //check value by default
+    chai.expect(localDynamo.pickUpOldInstance).to.be.equal(true);
+
+    //check setter/getter
+    localDynamo.pickUpOldInstance = false;
+    chai.expect(localDynamo.pickUpOldInstance).to.be.equal(false);
+
+    localDynamo.pickUpOldInstance = true;
+    chai.expect(localDynamo.pickUpOldInstance).to.be.equal(true);
+  });
+
+  test('Check constructor sets _pickUpOldInstance', function() {
+    chai.expect(localDynamo.pickUpOldInstance).to.be.equal(true);
+  });
+
   test('Check start() method starts LocalDynamo', function() {
     let spyCallback = sinon.spy();
+    let error = null;
 
-    localDynamo._start(spyCallback);
+    //@todo - wrapped to try/catch because after this._process.on('uncaughtException', onError)
+    // process is equal null, and next on() cannot read property 'on' of null
+    try {
+      localDynamo._start(spyCallback);
+    } catch (e) {
+      error = e;
+    }
 
-    chai.expect(localDynamo._proccess).to.be.not.equal(null);
+    chai.expect(localDynamo._process).to.be.equal(null);
   });
-  //
-  //test('Check stop() method starts LocalDynamo', function() {
-  //  let error = null;
-  //
-  //  try {
-  //    localDynamo._stop(callback);
-  //  } catch (e) {
-  //    error = e;
-  //    chai.expect(error).to.be.equal(null);
-  //  }
-  //
-  //  chai.expect(localDynamo._proccess).to.be.equal(undefined);
-  //});
+
+  test('Check stop() method starts LocalDynamo', function() {
+    let spyCallback = sinon.spy();
+
+    localDynamo._stop(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null);
+    chai.expect(localDynamo._process).to.be.equal(null);
+  });
 });

@@ -12,7 +12,7 @@ export class ModelMock {
    * @param {String} method
    * @param {Function} callback
    */
-  getCallbackByMetod(method, callback) {
+  getCallbackByMethod(method, callback) {
     switch (method) {
       case ModelMock.NO_RESULT_MODE:
         callback(null, null);
@@ -74,7 +74,7 @@ export class ModelMock {
    * @returns {*}
    */
   get(id, callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('get'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('get'), callback);
 
     return this;
   }
@@ -84,7 +84,7 @@ export class ModelMock {
    * @returns {ModelMock}
    */
   exec(callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('exec'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('exec'), callback);
 
     return this;
   }
@@ -95,7 +95,7 @@ export class ModelMock {
    * @returns {*}
    */
   destroy(id, callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('destroy'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('destroy'), callback);
 
     return this;
   }
@@ -106,7 +106,7 @@ export class ModelMock {
    * @returns {ModelMock}
    */
   create(data, callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('create'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('create'), callback);
 
     return this;
   }
@@ -117,7 +117,7 @@ export class ModelMock {
    * @returns {ModelMock}
    */
   update(data, callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('update'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('update'), callback);
 
     return this;
   }

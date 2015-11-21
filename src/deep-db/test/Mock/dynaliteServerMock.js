@@ -7,17 +7,17 @@
 /**
  * Dynalite Server Mock, as singleton
  */
-export default function(options) {
-  return new DynaliteServer(options);
-};
-
 let instance = null;
 
 class DynaliteServer {
   constructor(options) {
+
     if(!instance) {
+      this.options = options;
       this._methodsBehavior = new Map();
       this.setMode(DynaliteServer.NO_RESULT_MODE);
+      this._isRunning = false;
+
       instance = this;
     }
 
@@ -29,7 +29,7 @@ class DynaliteServer {
    * @param {String} method
    * @param {Function} callback
    */
-  getCallbackByMetod(method, callback) {
+  getCallbackByMethod(method, callback) {
     switch (method) {
       case DynaliteServer.NO_RESULT_MODE:
         callback(null, null);
@@ -51,7 +51,9 @@ class DynaliteServer {
    * @returns {DynaliteServer}
    */
   close(callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('close'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('close'), callback);
+
+    this._isRunning = false;
 
     return this;
   }
@@ -62,9 +64,18 @@ class DynaliteServer {
    * @returns {*}
    */
   listen(port, callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('listen'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('listen'), callback);
+
+    this._isRunning = true;
 
     return this;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isRunning() {
+    return this._isRunning;
   }
 
   /**
@@ -155,4 +166,8 @@ class DynaliteServer {
       'listen',
     ];
   }
+}
+
+export default function(options) {
+  return new DynaliteServer(options);
 }

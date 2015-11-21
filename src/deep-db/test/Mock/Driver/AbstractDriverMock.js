@@ -17,7 +17,7 @@ export class AbstractDriverMock extends AbstractDriver {
    * @param {String} method
    * @param {Function} callback
    */
-  getCallbackByMetod(method, callback) {
+  getCallbackByMethod(method, callback) {
     switch (method) {
       case AbstractDriverMock.NO_RESULT_MODE:
         callback(null, null);
@@ -38,7 +38,7 @@ export class AbstractDriverMock extends AbstractDriver {
    * @returns {AbstractDriverMock}
    */
   _start(callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('_start'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('_start'), callback);
 
     return this;
   }
@@ -48,7 +48,7 @@ export class AbstractDriverMock extends AbstractDriver {
    * @returns {AbstractDriverMock}
    */
   _stop(callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('_stop'), callback);
+    this.getCallbackByMethod(this._methodsBehavior.get('_stop'), callback);
 
     return this;
   }

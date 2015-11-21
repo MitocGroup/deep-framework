@@ -5,23 +5,31 @@
 'use strict';
 
 /**
- * LocalDynamo Server Mock
+ * LocalDynamo Server Mock, as singleton
  */
+let instance = null;
+
 export class LocalDynamoServerMock {
-  constructor() {
+  constructor(options) {
 
-    this._methodsBehavior = new Map();
+    if (!instance) {
+      this.options = options;
+      this._methodsBehavior = new Map();
+      this.setMode(LocalDynamoServerMock.DATA_MODE);
+      this._isRunning = false;
 
-    this.setMode(LocalDynamoServerMock.NO_RESULT_MODE);
+      instance = this;
+    }
 
+    return instance;
   }
 
   /**
-   * Returns callback for method based on behavior from _methodsBehavior map
+   * Returns standard callback(err, data) for method based on behavior from _methodsBehavior map
    * @param {String} method
    * @param {Function} callback
    */
-  getCallbackByMetod(method, callback) {
+  getCallbackByMethod(method, callback) {
     switch (method) {
       case LocalDynamoServerMock.NO_RESULT_MODE:
         callback(null, null);
@@ -35,7 +43,28 @@ export class LocalDynamoServerMock {
         callback(null, LocalDynamoServerMock.DATA);
         break;
     }
+  }
 
+  /**
+   * Returns callback() with on arg for method based on behavior from _methodsBehavior map
+   * @param {String} method
+   * @param {Boolean} isError
+   * @param {Function} callback
+   */
+  getCustomCallbackByMethod(method, callback, isError = false) {
+    switch (method) {
+      case LocalDynamoServerMock.NO_RESULT_MODE:
+        callback(null);
+        break;
+
+      case LocalDynamoServerMock.FAILURE_MODE:
+        callback(LocalDynamoServerMock.ERROR);
+        break;
+
+      case LocalDynamoServerMock.DATA_MODE:
+        callback(LocalDynamoServerMock.DATA);
+        break;
+    }
   }
 
   /**
@@ -44,7 +73,7 @@ export class LocalDynamoServerMock {
    * @returns {LocalDynamoServerMock}
    */
   on(data, callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('on'), callback);
+    this.getCustomCallbackByMethod(this._methodsBehavior.get('on'), callback, false);
 
     return this;
   }
@@ -52,24 +81,39 @@ export class LocalDynamoServerMock {
   /**
    * @param {Object} options
    * @param {Number} port
-   * @param {Function} callback
    * @returns {LocalDynamoServerMock}
    */
-  launch(options, port, callback) {
-    console.log('in launch')
-    this.getCallbackByMetod(this._methodsBehavior.get('launch'), callback);
+  launch(options, port) {
+    if (this.isRunning) {
+      throw Error('Server already up and running');
+    }
+
+    this._isRunning = true;
 
     return this;
   }
 
   /**
-   * @param {Function} callback
    * @returns {LocalDynamoServerMock}
    */
-  kill(callback) {
-    this.getCallbackByMetod(this._methodsBehavior.get('kill'), callback);
+  kill() {
+    this._isRunning = false;
 
     return this;
+  }
+
+  /**
+   * @returns {LocalDynamoServerMock}
+   */
+  get stdout() {
+    return this;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isRunning() {
+    return this._isRunning;
   }
 
   /**
@@ -158,7 +202,17 @@ export class LocalDynamoServerMock {
     return [
       'launch',
       'kill',
+      'stdout',
       'on',
     ];
+  }
+
+  fixBabelTranspile() {
+    for (let method of LocalDynamoServerMock.METHODS) {
+      Object.defineProperty(this, method, {
+        value: this[method],
+        writable: false,
+      });
+    }
   }
 }

@@ -111,15 +111,13 @@ suite('Local/Driver/AbstractDriver', function() {
   test(
     'Check _registerTeardownHook() method returns valid object with _teardownHook=true',
     function() {
-      let error = null;
-      let actualResult = null;
       let expectedResult = {
         _port: port,
         _running: false,
         _teardownHook: true,
       };
 
-      actualResult = abstractDriver._registerTeardownHook();
+      let actualResult = abstractDriver._registerTeardownHook();
 
       chai.expect(actualResult.port).to.equal(expectedResult._port);
       chai.expect(actualResult.running).to.equal(expectedResult._running);
