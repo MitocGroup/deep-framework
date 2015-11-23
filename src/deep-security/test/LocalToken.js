@@ -4,7 +4,7 @@ import chai from 'chai';
 import {LocalToken} from '../lib.compiled/LocalToken';
 
 suite('LocalToken', function() {
-  let identityPoolId = 'us-west-2:identityPoolIdTest';
+  let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
   let localToken = new LocalToken(identityPoolId);
   let callbackFunction = (error, data) => {
     return data;

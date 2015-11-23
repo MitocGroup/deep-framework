@@ -5,53 +5,52 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Token} from '../lib.compiled/Token';
 import {UserProvider} from '../lib.compiled/UserProvider';
+import {CredentialsManager} from '../lib.compiled/CredentialsManager';
 
 chai.use(sinonChai);
 
 suite('Token', function() {
-  let identityPoolId = 'us-west-2:identityPoolIdTest';
+  let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
   let token = new Token(identityPoolId);
 
   test('Class Token exists in Token', function() {
     chai.expect(typeof Token).to.equal('function');
   });
 
+  test('Check constructor sets _identityPoolId', function() {
+    chai.expect(token._identityPoolId).to.be.equal(identityPoolId);
+  });
+
+  test('Check constructor sets _identityProvider=null', function() {
+    chai.expect(token.identityProvider).to.be.equal(null);
+  });
+
+  test('Check constructor sets _lambdaContext=null', function() {
+    chai.expect(token.lambdaContext).to.be.equal(null);
+  });
+
+  test('Check constructor sets _user=null', function() {
+    chai.expect(token._user).to.be.equal(null);
+  });
+
+  test('Check constructor sets _userProvider=null', function() {
+    chai.expect(token._userProvider).to.be.equal(null);
+  });
+
+  test('Check constructor sets _credentials=null', function() {
+    chai.expect(token.credentials).to.be.equal(null);
+  });
+
+  test('Check constructor sets _credsManager as new instance ofCredentialsManager',
+    function() {
+      chai.assert.instanceOf(
+        token._credsManager, CredentialsManager, '_credsManager is an instance of CredentialsManager'
+      );
+      chai.expect(token._credsManager._identityPoolId).to.be.equal(identityPoolId);
+    }
+  );
+
   // @note - this is goning to be refactored (https://github.com/MitocGroup/deep-framework/issues/52)
-  //test('Check constructor sets _identityPoolId', function() {
-  //  chai.expect(token._identityPoolId).to.be.equal(identityPoolId);
-  //});
-  //
-  //test('Check constructor sets _providerName=null', function() {
-  //  chai.expect(token.providerName).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _providerUserToken=null', function() {
-  //  chai.expect(token.providerUserToken).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _providerUserId=null', function() {
-  //  chai.expect(token.providerUserId).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _user=null', function() {
-  //  chai.expect(token._user).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _userProvider=null', function() {
-  //  chai.expect(token._userProvider).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _identityId=null', function() {
-  //  chai.expect(token.identityId).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _credentials=null', function() {
-  //  chai.expect(token.credentials).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _isAnonymous=true', function() {
-  //  chai.expect(token.isAnonymous).to.be.equal(true);
-  //});
   //
   //test('Check userProvider setter sets new provider', function() {
   //  token.userProvider = null;

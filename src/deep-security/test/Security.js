@@ -5,26 +5,53 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Security} from '../lib.compiled/Security';
 import {MissingLoginProviderException} from '../lib.compiled/Exception/MissingLoginProviderException';
+import Kernel from 'deep-kernel';
+import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
 
-suite('Security', function() {
-  let identityPoolId = 'us-west-2:identityPoolIdTest';
-  let identityProvidersMock = {
-    'www.amazon.com': {
-      provider: 'amazonProviderMock',
-    },
-    'graph.facebook.com': {
-      provider: 'facebokProviderMock',
-    },
-    'accounts.google.com': {
-      provider: 'googleProviderMock',
-    },
-  };
-  let security = new Security(identityPoolId, identityProvidersMock);
+suite('Security', function () {
+  //let identityPoolId = 'us-west-2:identityPoolIdTest';
+  //let identityProvidersMock = {
+  //  'www.amazon.com': {
+  //    provider: 'amazonProviderMock',
+  //  },
+  //  'graph.facebook.com': {
+  //    provider: 'facebokProviderMock',
+  //  },
+  //  'accounts.google.com': {
+  //    provider: 'googleProviderMock',
+  //  },
+  //};
+  //let security = new Security(identityPoolId, identityProvidersMock);
+
+  let backendKernelInstance = null;
+  let frontendKernelInstance = null;
+
+  test('Load Kernel by using Kernel.load()', function (done) {
+    let callback = (frontendKernel, backendKernel) => {
+      chai.assert.instanceOf(
+        frontendKernel, Kernel, 'frontendKernel is an instance of Kernel'
+      );
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
+      frontendKernelInstance = frontendKernel;
+      backendKernelInstance = backendKernel;
+
+      // complete the async
+      done();
+
+    };
+
+    KernelFactory.create({
+      Security: Security,
+    }, callback);
+  });
 
 
-  test('Class Security exists in Security', function() {
+  test('Class Security exists in Security', function () {
     chai.expect(typeof Security).to.equal('function');
   });
 
