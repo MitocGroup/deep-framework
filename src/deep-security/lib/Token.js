@@ -6,6 +6,7 @@
 
 import AWS from 'aws-sdk';
 import {AuthException} from './Exception/AuthException';
+import {DescribeIdentityException} from './Exception/DescribeIdentityException';
 import {CredentialsManager} from './CredentialsManager';
 
 /**
@@ -23,6 +24,7 @@ export class Token {
     this._user = null;
     this._userProvider = null;
     this._credentials = null;
+    this._identityMetadata = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -181,6 +183,8 @@ export class Token {
   }
 
   /**
+   * @todo - check this._identityMetadata for loginProviders
+   *
    * @returns {Boolean}
    */
   get isAnonymous() {
@@ -198,24 +202,24 @@ export class Token {
    * @param {Function} callback
    */
   getUser(callback) {
-    if (this.isAnonymous) {
-      callback(null);
-      return;
-    }
+    this._describeIdentity(this.identityId, (metadata) => {
+      if (this.isAnonymous) {
+        callback(null);
+        return;
+      }
 
-    if (!this._user) {
-      this._userProvider.loadUserByIdentityId(this.identityId, (user) => {
-        if (user) {
+      if (!this._user) {
+        this._userProvider.loadUserByIdentityId(this.identityId, (user) => {
           this._user = user;
-        }
 
-        callback(user);
-      });
+          callback(this._user);
+        });
 
-      return;
-    }
+        return;
+      }
 
-    callback(this._user);
+      callback(this._user);
+    });
   }
 
   /**
@@ -253,15 +257,21 @@ export class Token {
    * @private
    */
   _describeIdentity(identityId, callback) {
+    if (this._identityMetadata) {
+      callback(this._identityMetadata);
+      return;
+    }
+
     let cognitoIdentity = new AWS.CognitoIdentity();
 
-    cognitoIdentity.describeIdentity({IdentityId: identityId}, (err, data) => {
-      if (err) {
-        callback(err, null);
-        return;
+    cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) => {
+      if (error) {
+        throw new DescribeIdentityException(identityId, error);
       }
 
-      callback(null, data);
+      this._identityMetadata = data;
+
+      callback(this._identityMetadata);
     });
   }
 }
