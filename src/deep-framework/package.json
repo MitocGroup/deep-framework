@@ -65,10 +65,9 @@
     "url": "https://github.com/MitocGroup/deep.git"
   },
   "scripts": {
-    "coverage": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
+    "test": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
     "postinstall": "hooks/assure_deep_dev.js",
     "prepare-browserify": "npm run compile",
-    "test": "mocha --ui tdd --compilers js:mocha-babel --recursive --reporter spec",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile && if [ -d 'test/' ]; then npm run test; fi && npm run browser-build",
     "browser-build": "if [ -d 'scripts/' ]; then scripts/browser_build.sh; fi"
