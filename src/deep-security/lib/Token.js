@@ -246,4 +246,22 @@ export class Token {
 
     return token;
   }
+
+  /**
+   * @param {String} identityId
+   * @param {Function} callback
+   * @private
+   */
+  _describeIdentity(identityId, callback) {
+    let cognitoIdentity = new AWS.CognitoIdentity();
+
+    cognitoIdentity.describeIdentity({IdentityId: identityId}, (err, data) => {
+      if (err) {
+        callback(err, null);
+        return;
+      }
+
+      callback(null, data);
+    });
+  }
 }
