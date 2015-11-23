@@ -9,7 +9,6 @@ import {ModelNotFoundException} from '../lib.compiled/Exception/ModelNotFoundExc
 import {FailedToCreateTableException} from '../lib.compiled/Exception/FailedToCreateTableException';
 import {FailedToCreateTablesException} from '../lib.compiled/Exception/FailedToCreateTablesException';
 import Joi from 'joi';
-import AWS from 'aws-sdk';
 import Vogels from 'vogels';
 import Kernel from 'deep-kernel';
 import requireProxy from 'proxyquire';
