@@ -11,7 +11,17 @@ import {CredentialsManager} from '../lib.compiled/CredentialsManager';
 
 chai.use(sinonChai);
 
-suite('Token', function() {
+suite('Token', function () {
+  //mocking Config
+  //AWS.mock(
+  //  'Config',       //the name of the AWS service that the method belongs
+  //  'update',       //the service's method to be be mocked
+  //  {               //the test data that the mocked method should return
+  //    Payload: {dataKey: "testValue"},
+  //    StatusCode: 201,
+  //  }
+  //);
+
   let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
   let providerName = 'facebook';
   let userToken = 'test_userToken';
@@ -33,48 +43,37 @@ suite('Token', function() {
   let identityProvider = new IdentityProvider(providers, providerName, userToken, userId);
   let token = new Token(identityPoolId);
 
-  //setup('Mocking Config', function() {
-  //  //mocking Config
-  //  AWS.mock(
-  //    'Config',       //the name of the AWS service that the method belongs
-  //    'update',       //the service's method to be be mocked
-  //    {               //the test data that the mocked method should return
-  //      Payload: {dataKey: "testValue"},
-  //      StatusCode: 201,
-  //    }
-  //  );
-  //});
 
-  test('Class Token exists in Token', function() {
+  test('Class Token exists in Token', function () {
     chai.expect(typeof Token).to.equal('function');
   });
 
-  test('Check constructor sets _identityPoolId', function() {
+  test('Check constructor sets _identityPoolId', function () {
     chai.expect(token._identityPoolId).to.be.equal(identityPoolId);
   });
 
-  test('Check constructor sets _identityProvider=null', function() {
+  test('Check constructor sets _identityProvider=null', function () {
     chai.expect(token.identityProvider).to.be.equal(null);
   });
 
-  test('Check constructor sets _lambdaContext=null', function() {
+  test('Check constructor sets _lambdaContext=null', function () {
     chai.expect(token.lambdaContext).to.be.equal(null);
   });
 
-  test('Check constructor sets _user=null', function() {
+  test('Check constructor sets _user=null', function () {
     chai.expect(token._user).to.be.equal(null);
   });
 
-  test('Check constructor sets _userProvider=null', function() {
+  test('Check constructor sets _userProvider=null', function () {
     chai.expect(token._userProvider).to.be.equal(null);
   });
 
-  test('Check constructor sets _credentials=null', function() {
+  test('Check constructor sets _credentials=null', function () {
     chai.expect(token.credentials).to.be.equal(null);
   });
 
   test('Check constructor sets _credsManager as new instance ofCredentialsManager',
-    function() {
+    function () {
       chai.assert.instanceOf(
         token._credsManager, CredentialsManager, '_credsManager is an instance of CredentialsManager'
       );
@@ -91,7 +90,7 @@ suite('Token', function() {
   //});
 
   test('Check identityProvider setter',
-    function() {
+    function () {
       token.identityProvider = identityProvider;
 
       chai.expect(token.identityProvider).to.be.equal(identityProvider);
@@ -101,19 +100,19 @@ suite('Token', function() {
     }
   );
 
-  test('Check lambdaContext setter', function() {
+  test('Check lambdaContext setter', function () {
     let lambdaContext = {context: 'test context'};
     token.lambdaContext = lambdaContext;
 
     chai.expect(token.lambdaContext).to.be.equal(lambdaContext);
   });
 
-  test('Check _getRegionFromIdentityPoolId returns region', function() {
+  test('Check _getRegionFromIdentityPoolId returns region', function () {
     let expectedResult = identityPoolId.split(':')[0];
     chai.expect(Token.getRegionFromIdentityPoolId(identityPoolId)).to.be.equal(expectedResult);
   });
 
-  test('Check create() returns new instance of Token', function() {
+  test('Check create() returns new instance of Token', function () {
     let identityPoolId = 'us-east-1:create-a2v2-465a-877v-12fd264525ef';
 
     let actualResult = Token.create(identityPoolId);
@@ -122,7 +121,7 @@ suite('Token', function() {
     chai.expect(actualResult._identityPoolId).to.be.equal(identityPoolId);
   });
 
-  test('Check createFromIdentityProvider() returns new instance of Token', function() {
+  test('Check createFromIdentityProvider() returns new instance of Token', function () {
     let identityPoolId = 'us-east-1:provider-a2v2-465a-877v-12fd264525ef';
     identityProvider = new IdentityProvider(providers, 'amazon', userToken, userId);
 
@@ -133,7 +132,7 @@ suite('Token', function() {
     chai.expect(actualResult.identityProvider).to.be.equal(identityProvider);
   });
 
-  test('Check createFromLambdaContext() returns new instance of Token', function() {
+  test('Check createFromLambdaContext() returns new instance of Token', function () {
     let lambdaContext = {context: 'test createFromLambdaContext'};
 
     let actualResult = Token.createFromLambdaContext(identityPoolId, lambdaContext);
