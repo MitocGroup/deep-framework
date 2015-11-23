@@ -72,12 +72,7 @@ suite('Security', function () {
   //  chai.expect(security._userProviderEndpoint).to.be.eql(null);
   //});
   //
-  //test('Check userProvider getter for _userProvider', function() {
-  //  let userProvider = 'userProviderTest';
-  //  security._userProvider = userProvider;
-  //  chai.expect(security.userProvider).to.be.equal(userProvider);
-  //  security._userProvider = null;
-  //});
+
   //
   //test('Check PROVIDER_AMAZON static getter returns value \'www.amazon.com\'', function() {
   //  chai.expect(Security.PROVIDER_AMAZON).to.be.equal('www.amazon.com');

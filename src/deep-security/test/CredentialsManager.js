@@ -1,8 +1,9 @@
 'use strict';
 
 import chai from 'chai';
-import AWS from 'aws-sdk';
+import AWS from 'mock-aws';
 import {CredentialsManager} from '../lib.compiled/CredentialsManager';
+import CognitoSyncManager from 'amazon-cognito-js';
 
 suite('CredentialsManager', function() {
   let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
@@ -42,7 +43,6 @@ suite('CredentialsManager', function() {
     chai.expect(actualResult).to.eql(expectedResult);
   });
 
-  //@todo
   //test('Check cognitoSyncClient getter returns instance of AWS.CognitoSyncManager', function() {
   //  let actualResult = credentialsManager.cognitoSyncClient;
   //
