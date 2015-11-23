@@ -5,25 +5,21 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Dynalite} from '../../../lib.compiled/Local/Driver/Dynalite';
 import DynaliteServer from 'dynalite';
-import {AbstractDriver} from '../../../lib.compiled/Local/Driver/AbstractDriver';
+import dynaliteServerMock from '../../Mock/dynaliteServerMock';
 import {FailedToStartServerException} from '../../../lib.compiled/Local/Driver/Exception/FailedToStartServerException';
+import requireProxy from 'proxyquire';
+
 chai.use(sinonChai);
 
-class DynaliteServerTest extends DynaliteServer {
-  constructor(options) {
-    super(options);
-  }
-
-  listen(port, cb) {
-    return cb('error', null);
-  }
-
-  throwFailedToStartServerException(){
-    throw new FailedToStartServerException();
-  }
-}
-
 suite('Local/Driver/Dynalite', function() {
+
+  //mocking dynalite
+  let dynalityExport = requireProxy('../../../lib.compiled/Local/Driver/Dynalite', {
+    'dynalite': dynaliteServerMock,
+  });
+
+  let Dynalite = dynalityExport.Dynalite;
+
   let dynalite = new Dynalite();
 
   test('Class Dynalite exists in Local/Driver/Dynalite', function() {
@@ -41,50 +37,41 @@ suite('Local/Driver/Dynalite', function() {
   });
 
   test('Check constructor sets _port', function() {
-    chai.expect(dynalite.port).to.be.equal(AbstractDriver.DEFAULT_PORT);
+    chai.expect(dynalite.port).to.be.equal(Dynalite.DEFAULT_PORT);
   });
 
-  // todo - unstable tests, takes time to start server
-  //test('Check start() method starts DynaliteServer', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //
-  //  try {
-  //    dynalite._start(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(typeof dynalite._server).to.be.equal('object');
-  //});
+  test('Check _start() method starts DynaliteServer', function() {
+    let spyCallback = sinon.spy();
 
-  //test('Check stop() method stops server', function() {
-  //  let spyCallback = sinon.spy();
-  //
-  //  dynalite._stop(spyCallback);
-  //  chai.expect(dynalite._server).to.be.equal(null);
-  //  chai.expect(spyCallback).to.not.have.been.called;
-  //});
+    dynalite._start(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null);
+  });
+
+  test('Check _start() throws "FailedToStartServerException" in cb', function() {
+    let spyCallback = sinon.spy();
+
+    dynalite._server.setMode(1, ['listen']);
+    dynalite._start(spyCallback);
+
+    chai.expect(spyCallback.args[0][0].constructor.name).to.equal('FailedToStartServerException');
+  });
+
+  test('Check stop() method stops server', function() {
+    let spyCallback = sinon.spy();
+
+    dynalite._stop(spyCallback);
+
+    chai.expect(dynalite._server).to.be.equal(null);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
+  });
 
   test('Check stop() method stops !server', function() {
     let spyCallback = sinon.spy();
 
     dynalite._stop(spyCallback);
+
     chai.expect(dynalite._server).to.be.equal(null);
     chai.expect(spyCallback).to.have.been.calledWith(null);
-  });
-
-  test('Check FailedToStartServerException can be thrown', function() {
-    let error = null;
-    let dynaliteException = null;
-    try {
-      dynaliteException = new DynaliteServerTest();
-      dynaliteException.throwFailedToStartServerException(dynaliteException, 'error');
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.not.equal(null);
   });
 });
