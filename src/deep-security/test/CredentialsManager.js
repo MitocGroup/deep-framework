@@ -4,16 +4,10 @@ import chai from 'chai';
 import AWS from 'mock-aws';
 import {CredentialsManager} from '../lib.compiled/CredentialsManager';
 import CognitoSyncManager from 'amazon-cognito-js';
+import credentials from './common/credentials';
 
 suite('CredentialsManager', function() {
-  let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
-  let credentials = {
-    security: {
-      identityProviders: {
-        'www.amazon.com': 'amzn1.application.0987678ba3347fds73dd9f6d3b9ce2b',
-      },
-    },
-  };
+  let identityPoolId = 'us-east-1:7e2e9d57-wswed-asdasdas-22f4-595e1d8128c5';
   let credentialsManager = new CredentialsManager(identityPoolId);
 
   test('Class CredentialsManager exists in CredentialsManager', function() {
@@ -43,11 +37,13 @@ suite('CredentialsManager', function() {
     chai.expect(actualResult).to.eql(expectedResult);
   });
 
-  //test('Check cognitoSyncClient getter returns instance of AWS.CognitoSyncManager', function() {
-  //  let actualResult = credentialsManager.cognitoSyncClient;
-  //
-  //  chai.assert.instanceOf(
-  //    actualResult, AWS.CognitoSyncManager, 'actualResult is an instance of AWS.CognitoSyncManager'
-  //  );
-  //});
+  test('Check cognitoSyncClient getter returns instance of AWS.CognitoSyncManager', function() {
+    AWS.config.region = 'us-east-1';
+    AWS.config.credentials = credentials;
+    //let actualResult = credentialsManager.cognitoSyncClient;
+    //
+    //chai.assert.instanceOf(
+    //  actualResult, AWS.CognitoSyncManager, 'actualResult is an instance of AWS.CognitoSyncManager'
+    //);
+  });
 });

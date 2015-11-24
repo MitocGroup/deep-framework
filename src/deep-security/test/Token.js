@@ -10,7 +10,6 @@ import {IdentityProvider} from '../lib.compiled/IdentityProvider';
 import {CredentialsManager} from '../lib.compiled/CredentialsManager';
 import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 
-
 chai.use(sinonChai);
 
 suite('Token', function() {
@@ -24,6 +23,12 @@ suite('Token', function() {
   //  }
   //);
 
+  let lambdaContext = {
+    context: 'test context',
+    identity: {
+      cognitoIdentityId: 'us-east-1:b5487645-61bd-4c3b-dd54-5cba66070e7c',
+    },
+  };
   let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
   let providerName = 'facebook';
   let userToken = 'test_userToken';
@@ -107,13 +112,29 @@ suite('Token', function() {
   );
 
   test('Check lambdaContext setter', function() {
-    let lambdaContext = {context: 'test context'};
     token.lambdaContext = lambdaContext;
 
     chai.expect(token.lambdaContext).to.be.equal(lambdaContext);
   });
 
-  test('Check lambdaContext setter', function() {
+  test('Check identityId getter for !credentials', function() {
+    chai.expect(token.identityId).to.be.equal(lambdaContext.identity.cognitoIdentityId);
+  });
+
+  test('Check _validCredentials returns null', function() {
+    chai.expect(token._validCredentials()).to.be.equal(null);
+  });
+
+  //@todo - uncomment when credentials uploaded
+  //test('Check identityId getter for credentials', function() {
+  //  chai.expect(token.identityId).to.be.eql(credentials.IdentityId);
+  //});
+  //
+  //test('Check _validCredentials returns true', function() {
+  //  chai.expect(token._validCredentials).to.be.equal(false);
+  //});
+
+  test('Check userProvider setter', function() {
     let resourceName = 'sample';
     let deepResourceServiceMock = new DeepResourceServiceMock();
     let userProvider = new UserProvider(resourceName, deepResourceServiceMock);
