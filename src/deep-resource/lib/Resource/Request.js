@@ -366,9 +366,9 @@ export class Request {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
-    this._lambda = new AWS.Lambda({
+    let options = {
       region: this._action.region,
-    });
+    };
 
     let payloadKey = this._async ? 'InvokeArgs' : 'Payload';
     let invokeMethod = this._async ? 'invokeAsync' : 'invoke';
@@ -379,9 +379,18 @@ export class Request {
 
     invocationParameters[payloadKey] = JSON.stringify(this.payload);
 
+    this._loadSecurityCredentials((credentials) => {
+      // use cognito identity credentials if present
+      // if not, fallback to lambda execution role permissions
+      if (credentials) {
+        options.credentials = credentials;
+      }
 
-    this._lambda[invokeMethod](invocationParameters, (error, data) => {
-      callback(new LambdaResponse(this, data, error));
+      this._lambda = new AWS.Lambda(options);
+
+      this._lambda[invokeMethod](invocationParameters, (error, data) => {
+        callback(new LambdaResponse(this, data, error));
+      });
     });
 
     return this;
