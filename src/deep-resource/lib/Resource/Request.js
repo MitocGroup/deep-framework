@@ -379,10 +379,10 @@ export class Request {
 
     invocationParameters[payloadKey] = JSON.stringify(this.payload);
 
-    this._loadSecurityCredentials((credentials) => {
+    this._loadSecurityCredentials((error, credentials) => {
       // use cognito identity credentials if present
       // if not, fallback to lambda execution role permissions
-      if (credentials) {
+      if (!error && credentials) {
         options.credentials = credentials;
       }
 
@@ -457,7 +457,11 @@ export class Request {
         break;
     }
 
-    this._loadSecurityCredentials((credentials) => {
+    this._loadSecurityCredentials((error, credentials) => {
+      if (error) {
+        throw error;
+      }
+
       let signature = aws4.sign(opsToSign, credentials);
 
       let request = Http[httpMethod](url, payload)
@@ -475,27 +479,32 @@ export class Request {
   }
 
   /**
-   * @returns {Object}
+   * @returns {Request}
    * @private
    */
   _loadSecurityCredentials(callback) {
     let securityService = this._action.resource.security;
 
     if (!(securityService instanceof Security)) {
-      throw new MissingSecurityServiceException();
+      callback(new MissingSecurityServiceException(), null);
+      return this;
     }
 
     if (!securityService.token) {
-      throw new NotAuthenticatedException();
+      callback(new NotAuthenticatedException(), null);
+      return this;
     }
 
-    return securityService.token.loadCredentials((error, credentials) => {
+    securityService.token.loadCredentials((error, credentials) => {
       if (error) {
-        throw new LoadCredentialsException(error);
+        callback(new LoadCredentialsException(error), null);
+        return;
       }
 
-      callback(credentials);
+      callback(null, credentials);
     });
+
+    return this;
   }
 
   /**
