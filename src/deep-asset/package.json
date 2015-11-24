@@ -51,7 +51,8 @@
   "scripts": {
     "test": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "prepare_test": "npm link deep-kernel deep-core"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
