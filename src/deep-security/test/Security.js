@@ -7,23 +7,14 @@ import {Security} from '../lib.compiled/Security';
 import {MissingLoginProviderException} from '../lib.compiled/Exception/MissingLoginProviderException';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
+import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 
 chai.use(sinonChai);
 
 suite('Security', function () {
-  //let identityPoolId = 'us-west-2:identityPoolIdTest';
-  //let identityProvidersMock = {
-  //  'www.amazon.com': {
-  //    provider: 'amazonProviderMock',
-  //  },
-  //  'graph.facebook.com': {
-  //    provider: 'facebokProviderMock',
-  //  },
-  //  'accounts.google.com': {
-  //    provider: 'googleProviderMock',
-  //  },
-  //};
-  //let security = new Security(identityPoolId, identityProvidersMock);
+  let resourceName = 'sample';
+  let deepResourceServiceMock = new DeepResourceServiceMock();
+  let userProvider = new UserProvider(resourceName, deepResourceServiceMock);
 
   let backendKernelInstance = null;
   let frontendKernelInstance = null;
