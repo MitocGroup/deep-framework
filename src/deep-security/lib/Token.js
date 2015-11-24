@@ -200,7 +200,7 @@ export class Token {
    * @param {Function} callback
    */
   getUser(callback) {
-    this._describeIdentity(this.identityId, (metadata) => {
+    this._describeIdentity(this.identityId, () => {
       if (this.isAnonymous) {
         callback(null);
         return;
