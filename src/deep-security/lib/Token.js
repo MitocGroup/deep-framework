@@ -183,12 +183,10 @@ export class Token {
   }
 
   /**
-   * @todo - check this._identityMetadata for loginProviders
-   *
    * @returns {Boolean}
    */
   get isAnonymous() {
-    return !this.identityProvider && !this.lambdaContext;
+    return (!this.identityProvider && !this.lambdaContext) || this._identityLogins.length <= 0;
   }
 
   /**
@@ -273,5 +271,15 @@ export class Token {
 
       callback(this._identityMetadata);
     });
+  }
+
+  /**
+   * @returns {Array}
+   * @private
+   */
+  get _identityLogins() {
+    return this._identityMetadata && this._identityMetadata.hasOwnProperty('Logins') ?
+      this._identityMetadata.Logins :
+      [];
   }
 }
