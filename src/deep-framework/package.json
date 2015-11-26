@@ -1,6 +1,6 @@
 {
   "name": "deep-framework",
-  "version": "1.2.2",
+  "version": "1.2.12",
   "description": "DEEP Framework",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -65,13 +65,13 @@
     "url": "https://github.com/MitocGroup/deep.git"
   },
   "scripts": {
-    "coverage": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
+    "test": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
     "postinstall": "hooks/assure_deep_dev.js",
     "prepare-browserify": "npm run compile",
-    "test": "mocha --ui tdd --compilers js:mocha-babel --recursive --reporter spec",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
-    "prepublish": "npm run compile && if [ -d 'test/' ]; then npm run test; fi && npm run browser-build",
-    "browser-build": "if [ -d 'scripts/' ]; then scripts/browser_build.sh; fi"
+    "prepublish": "npm run compile && npm run browser-build",
+    "browser-build": "if [ -d 'scripts/' ]; then scripts/browser_build.sh; fi",
+    "pretest": "npm link deep-log deep-core deep-asset deep-cache deep-db deep-validation deep-di deep-event deep-fs deep-kernel deep-resource deep-security deep-notification"
   },
   "dependencies": {
     "deep-log": "^1.x.x",
@@ -101,7 +101,7 @@
   "os": [
     "!win32"
   ],
-  "preferGlobal": true,
+  "preferGlobal": false,
   "analyze": true,
   "jspm": {
     "main": "browser/framework.js"

@@ -40,10 +40,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLambdaLocalPathException.js~MissingLambdaLocalPathException.html">MissingLambdaLocalPathException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
@@ -69,11 +72,12 @@ import {MissingCacheImplementationException} from &apos;./Exception/MissingCache
 import {CachedRequestException} from &apos;./Exception/CachedRequestException&apos;;
 import {NotAuthenticatedException} from &apos;./Exception/NotAuthenticatedException&apos;;
 import aws4 from &apos;aws4&apos;;
-import parseUrl from &apos;parse-url&apos;;
-import queryString from &apos;query-string&apos;;
+import urlParse from &apos;url-parse&apos;;
+import qs from &apos;qs&apos;;
 import Core from &apos;deep-core&apos;;
-import {DirectLambdaCallDeniedException} from &apos;./Exception/DirectLambdaCallDeniedException&apos;;
 import {MissingSecurityServiceException} from &apos;./Exception/MissingSecurityServiceException&apos;;
+import {AsyncCallNotAvailableException} from &apos;./Exception/AsyncCallNotAvailableException&apos;;
+import {LoadCredentialsException} from &apos;./Exception/LoadCredentialsException&apos;;
 import Security from &apos;deep-security&apos;;
 import crypto from &apos;crypto&apos;;
 
@@ -96,7 +100,29 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
+    this._async = false;
     this._native = false;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get async() {
+    return this._async;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  invokeAsync() {
+    if (!this.isLambda) {
+      throw new AsyncCallNotAvailableException(this._action.type);
+    }
+
+    this._native = true;
+    this._async = true;
+
+    return this;
   }
 
   /**
@@ -110,11 +136,8 @@ export class Request {
    * @returns {Request}
    */
   useDirectCall() {
-    if (this._action.forceUserIdentity) {
-      throw new DirectLambdaCallDeniedException(this);
-    }
-
     this._native = true;
+
     return this;
   }
 
@@ -299,7 +322,7 @@ export class Request {
    * @param {Function} callback
    */
   send(callback = () =&gt; {}) {
-    if (!this.isCached) {
+    if (!this.isCached || this._async) {
       return this._send(callback);
     }
 
@@ -381,14 +404,11 @@ export class Request {
    */
   _sendThroughApi(callback = () =&gt; {}) {
     let endpoint = this._action.source.api;
-    let signedRequest = this._createAws4SignedRequest(
-      endpoint,
-      this.method,
-      this.payload
-    );
 
-    signedRequest.end((error, response) =&gt; {
-      callback(new SuperagentResponse(this, response, error));
+    this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) =&gt; {
+      signedRequest.end((error, response) =&gt; {
+        callback(new SuperagentResponse(this, response, error));
+      });
     });
 
     return this;
@@ -403,17 +423,28 @@ export class Request {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
-    this._lambda = new AWS.Lambda({
+    let options = {
       region: this._action.region,
-    });
+    };
 
     let invocationParameters = {
       FunctionName: this._action.source.original,
       Payload: JSON.stringify(this.payload),
+      InvocationType: this._async ? &apos;Event&apos; : &apos;RequestResponse&apos;,
     };
 
-    this._lambda.invoke(invocationParameters, (error, data) =&gt; {
-      callback(new LambdaResponse(this, data, error));
+    this._loadSecurityCredentials((error, credentials) =&gt; {
+      // use cognito identity credentials if present
+      // if not, fallback to lambda execution role permissions
+      if (!error &amp;&amp; credentials) {
+        options.credentials = credentials;
+      }
+
+      this._lambda = new AWS.Lambda(options);
+
+      this._lambda.invoke(invocationParameters, (error, data) =&gt; {
+        callback(new LambdaResponse(this, data, error));
+      });
     });
 
     return this;
@@ -425,7 +456,7 @@ export class Request {
    * @private
    */
   _sendExternal(callback = () =&gt; {}) {
-    Http[this._method.toLowerCase()](this._action.source.original)
+    Http[Request._httpRealMethod(this._method)](this._action.source.original)
       .send(this.payload)
       .end((error, response) =&gt; {
         callback(new SuperagentResponse(this, response, error));
@@ -438,22 +469,22 @@ export class Request {
    * @param {String} url
    * @param {String} httpMethod
    * @param {Object} payload
+   * @param {Function} callback
    * @private
    */
-  _createAws4SignedRequest(url, httpMethod, payload) {
-    let urlParts = parseUrl(url);
-    let apiHost = urlParts.resource;
-    let apiPath = urlParts.pathname ? urlParts.pathname : &apos;/&apos;;
-    let apiQueryString = urlParts.search ? `?${urlParts.search}` : &apos;&apos;;
-
+  _createAws4SignedRequest(url, httpMethod, payload, callback) {
+    let parsedUrl = urlParse(url, qs);
+    let apiHost = parsedUrl.hostname;
+    let apiPath = parsedUrl.pathname ? parsedUrl.pathname : &apos;/&apos;;
+    
     let opsToSign = {
       service: Core.AWS.Service.API_GATEWAY_EXECUTE,
       region: this.getEndpointHostRegion(apiHost),
       host: apiHost,
       method: httpMethod,
-      path: `${apiPath}${apiQueryString}`,
+      path: apiPath,
       headers: {
-        &apos;Content-Type&apos;: &apos;application/json&apos;,
+        &apos;Content-Type&apos;: &apos;application/json; charset=UTF-8&apos;,
       },
     };
 
@@ -462,7 +493,16 @@ export class Request {
     switch (httpMethod) {
       case &apos;get&apos;:
       case &apos;delete&apos;:
-        opsToSign.path += (apiQueryString ? &apos;&amp;&apos; : &apos;?&apos;) + queryString.stringify(payload);
+        if (parsedUrl.query || payload) {
+          let mergedPayload = Object.assign(parsedUrl.query, payload);
+
+          opsToSign.path += `?${qs.stringify(mergedPayload)}`;
+
+          // pass payload as query string
+          parsedUrl.set(&apos;query&apos;, mergedPayload, qs.parse);
+          url = parsedUrl.toString(qs.stringify);
+          payload = null; // reset it coz superagent overrides url query string
+        }
         break;
       case &apos;post&apos;:
       case &apos;put&apos;:
@@ -471,31 +511,70 @@ export class Request {
         break;
     }
 
-    let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
+    this._loadSecurityCredentials((error, credentials) =&gt; {
+      if (error) {
+        throw error;
+      }
 
-    return Http[httpMethod](url, payload)
-      .set(&apos;Content-Type&apos;, &apos;application/json&apos;)
-      .set(&apos;X-Amz-Date&apos;, signature.headers[&apos;X-Amz-Date&apos;])
-      .set(&apos;X-Amz-Security-Token&apos;, signature.headers[&apos;X-Amz-Security-Token&apos;])
-      .set(&apos;Authorization&apos;, signature.headers.Authorization);
+      let signature = aws4.sign(opsToSign, credentials);
+
+      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)
+        .set(&apos;Content-Type&apos;, &apos;application/json; charset=UTF-8&apos;)
+        .set(&apos;X-Amz-Date&apos;, signature.headers[&apos;X-Amz-Date&apos;])
+        .set(&apos;X-Amz-Security-Token&apos;, signature.headers[&apos;X-Amz-Security-Token&apos;])
+        .set(&apos;Authorization&apos;, signature.headers.Authorization);
+
+      if (signature.headers.hasOwnProperty(&apos;Content-Length&apos;)) {
+        request.set(&apos;Content-Length&apos;, signature.headers[&apos;Content-Length&apos;]);
+      }
+
+      callback(request);
+    });
   }
 
   /**
-   * @returns {Object}
+   * @param {String} httpMethod
+   * @returns {String}
    * @private
    */
-  _getSecurityCredentials() {
-    if (!(this._action.resource.security instanceof Security)) {
-      throw new MissingSecurityServiceException();
+  static _httpRealMethod(httpMethod) {
+    let method = httpMethod.toLowerCase();
+
+    // @see https://visionmedia.github.io/superagent/
+    if (method === &apos;delete&apos;) {
+      method = &apos;del&apos;;
     }
 
-    let token = this._action.resource.security.token;
+    return method;
+  }
 
-    if (!token) {
-      throw new NotAuthenticatedException();
+  /**
+   * @returns {Request}
+   * @private
+   */
+  _loadSecurityCredentials(callback) {
+    let securityService = this._action.resource.security;
+
+    if (!(securityService instanceof Security)) {
+      callback(new MissingSecurityServiceException(), null);
+      return this;
     }
 
-    return token.credentials;
+    if (!securityService.token) {
+      callback(new NotAuthenticatedException(), null);
+      return this;
+    }
+
+    securityService.token.loadCredentials((error, credentials) =&gt; {
+      if (error) {
+        callback(new LoadCredentialsException(error), null);
+        return;
+      }
+
+      callback(null, credentials);
+    });
+
+    return this;
   }
 
   /**

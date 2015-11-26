@@ -1,6 +1,6 @@
 {
   "name": "deep-notification",
-  "version": "1.1.1",
+  "version": "1.2.1",
   "description": "DEEP Notification Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -45,20 +45,20 @@
     "url": "https://github.com/MitocGroup/deep.git"
   },
   "scripts": {
-    "coverage": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
-    "test": "mocha --ui tdd --compilers js:mocha-babel --recursive --reporter spec",
+    "test": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "pretest": "npm link deep-kernel deep-core"
   },
   "dependencies": {
-    "deep-kernel": "1.1.*",
-    "deep-core": "1.1.*"
+    "deep-kernel": "^1.x.x",
+    "deep-core": "^1.x.x"
   },
   "devDependencies": {
-    "chai": "3.2.*",
-    "sinon": "1.17.*",
-    "sinon-chai": "2.8.*"
+    "chai": "^3.2.x",
+    "sinon": "^1.17.x",
+    "sinon-chai": "^2.8.x"
   },
-  "preferGlobal": true,
+  "preferGlobal": false,
   "analyze": true
 }

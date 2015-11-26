@@ -40,10 +40,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLambdaLocalPathException.js~MissingLambdaLocalPathException.html">MissingLambdaLocalPathException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
@@ -59,9 +62,12 @@
 &apos;use strict&apos;;
 
 import {SuperagentResponse} from &apos;./SuperagentResponse&apos;;
+import {LambdaResponse} from &apos;./LambdaResponse&apos;;
 import {Request} from &apos;./Request&apos;;
 import {Action} from &apos;./Action&apos;;
 import Http from &apos;superagent&apos;;
+import {MissingLocalLambdaExecWrapperException} from &apos;./Exception/MissingLocalLambdaExecWrapperException&apos;;
+import {MissingLambdaLocalPathException} from &apos;./Exception/MissingLambdaLocalPathException&apos;;
 
 /**
  * Resource request instance
@@ -85,11 +91,37 @@ export class LocalRequest extends Request {
         method: this._method,
       };
 
-      Http.post(LocalRequest.LOCAL_LAMBDA_ENDPOINT)
-        .send(data)
-        .end((error, response) =&gt; {
-          callback(new SuperagentResponse(this, response, error));
+      if (typeof window === &apos;undefined&apos;) {
+        if (!global.hasOwnProperty(LocalRequest.LAMBDA_EXEC_WRAPPER_KEY)) {
+          throw new MissingLocalLambdaExecWrapperException(LocalRequest.LAMBDA_EXEC_WRAPPER_KEY);
+        }
+
+        let localPath = this._action.source._localPath;
+
+        if (!localPath) {
+          throw new MissingLambdaLocalPathException(data.lambda);
+        }
+
+        let execWrapper = global[LocalRequest.LAMBDA_EXEC_WRAPPER_KEY];
+
+        execWrapper[this._async ? &apos;invokeAsync&apos; : &apos;invoke&apos;](localPath, data, (error, result) =&gt; {
+          let resultData = {};
+
+          if (this._async) {
+            resultData.Status = 202;
+          } else {
+            resultData.Payload = result;
+          }
+
+          callback(new LambdaResponse(this, error ? null : resultData, error));
         });
+      } else {
+        Http.post(this._async ? LocalRequest.LOCAL_LAMBDA_ASYNC_ENDPOINT :  LocalRequest.LOCAL_LAMBDA_ENDPOINT)
+          .send(data)
+          .end((error, response) =&gt; {
+            callback(new SuperagentResponse(this, response, error));
+          });
+      }
     } else {
       return this.constructor.useNative()._send(...arguments);
     }
@@ -102,6 +134,20 @@ export class LocalRequest extends Request {
    */
   static get LOCAL_LAMBDA_ENDPOINT() {
     return &apos;/_/lambda&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get LOCAL_LAMBDA_ASYNC_ENDPOINT() {
+    return &apos;/_/lambda-async&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get LAMBDA_EXEC_WRAPPER_KEY() {
+    return &apos;_deep_lambda_exec_&apos;;
   }
 }
 </code></pre>

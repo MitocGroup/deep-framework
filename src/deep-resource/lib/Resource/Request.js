@@ -15,11 +15,12 @@ import {MissingCacheImplementationException} from './Exception/MissingCacheImple
 import {CachedRequestException} from './Exception/CachedRequestException';
 import {NotAuthenticatedException} from './Exception/NotAuthenticatedException';
 import aws4 from 'aws4';
-import parseUrl from 'parse-url';
-import queryString from 'query-string';
+import urlParse from 'url-parse';
+import qs from 'qs';
 import Core from 'deep-core';
-import {DirectLambdaCallDeniedException} from './Exception/DirectLambdaCallDeniedException';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
+import {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';
+import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import Security from 'deep-security';
 import crypto from 'crypto';
 
@@ -42,7 +43,29 @@ export class Request {
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
 
+    this._async = false;
     this._native = false;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get async() {
+    return this._async;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  invokeAsync() {
+    if (!this.isLambda) {
+      throw new AsyncCallNotAvailableException(this._action.type);
+    }
+
+    this._native = true;
+    this._async = true;
+
+    return this;
   }
 
   /**
@@ -56,11 +79,8 @@ export class Request {
    * @returns {Request}
    */
   useDirectCall() {
-    if (this._action.forceUserIdentity) {
-      throw new DirectLambdaCallDeniedException(this);
-    }
-
     this._native = true;
+
     return this;
   }
 
@@ -245,7 +265,7 @@ export class Request {
    * @param {Function} callback
    */
   send(callback = () => {}) {
-    if (!this.isCached) {
+    if (!this.isCached || this._async) {
       return this._send(callback);
     }
 
@@ -327,14 +347,11 @@ export class Request {
    */
   _sendThroughApi(callback = () => {}) {
     let endpoint = this._action.source.api;
-    let signedRequest = this._createAws4SignedRequest(
-      endpoint,
-      this.method,
-      this.payload
-    );
 
-    signedRequest.end((error, response) => {
-      callback(new SuperagentResponse(this, response, error));
+    this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {
+      signedRequest.end((error, response) => {
+        callback(new SuperagentResponse(this, response, error));
+      });
     });
 
     return this;
@@ -349,17 +366,28 @@ export class Request {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
-    this._lambda = new AWS.Lambda({
+    let options = {
       region: this._action.region,
-    });
+    };
 
     let invocationParameters = {
       FunctionName: this._action.source.original,
       Payload: JSON.stringify(this.payload),
+      InvocationType: this._async ? 'Event' : 'RequestResponse',
     };
 
-    this._lambda.invoke(invocationParameters, (error, data) => {
-      callback(new LambdaResponse(this, data, error));
+    this._loadSecurityCredentials((error, credentials) => {
+      // use cognito identity credentials if present
+      // if not, fallback to lambda execution role permissions
+      if (!error && credentials) {
+        options.credentials = credentials;
+      }
+
+      this._lambda = new AWS.Lambda(options);
+
+      this._lambda.invoke(invocationParameters, (error, data) => {
+        callback(new LambdaResponse(this, data, error));
+      });
     });
 
     return this;
@@ -371,7 +399,7 @@ export class Request {
    * @private
    */
   _sendExternal(callback = () => {}) {
-    Http[this._method.toLowerCase()](this._action.source.original)
+    Http[Request._httpRealMethod(this._method)](this._action.source.original)
       .send(this.payload)
       .end((error, response) => {
         callback(new SuperagentResponse(this, response, error));
@@ -384,22 +412,22 @@ export class Request {
    * @param {String} url
    * @param {String} httpMethod
    * @param {Object} payload
+   * @param {Function} callback
    * @private
    */
-  _createAws4SignedRequest(url, httpMethod, payload) {
-    let urlParts = parseUrl(url);
-    let apiHost = urlParts.resource;
-    let apiPath = urlParts.pathname ? urlParts.pathname : '/';
-    let apiQueryString = urlParts.search ? `?${urlParts.search}` : '';
-
+  _createAws4SignedRequest(url, httpMethod, payload, callback) {
+    let parsedUrl = urlParse(url, qs);
+    let apiHost = parsedUrl.hostname;
+    let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';
+    
     let opsToSign = {
       service: Core.AWS.Service.API_GATEWAY_EXECUTE,
       region: this.getEndpointHostRegion(apiHost),
       host: apiHost,
       method: httpMethod,
-      path: `${apiPath}${apiQueryString}`,
+      path: apiPath,
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=UTF-8',
       },
     };
 
@@ -408,7 +436,16 @@ export class Request {
     switch (httpMethod) {
       case 'get':
       case 'delete':
-        opsToSign.path += (apiQueryString ? '&' : '?') + queryString.stringify(payload);
+        if (parsedUrl.query || payload) {
+          let mergedPayload = Object.assign(parsedUrl.query, payload);
+
+          opsToSign.path += `?${qs.stringify(mergedPayload)}`;
+
+          // pass payload as query string
+          parsedUrl.set('query', mergedPayload, qs.parse);
+          url = parsedUrl.toString(qs.stringify);
+          payload = null; // reset it coz superagent overrides url query string
+        }
         break;
       case 'post':
       case 'put':
@@ -417,31 +454,70 @@ export class Request {
         break;
     }
 
-    let signature = aws4.sign(opsToSign, this._getSecurityCredentials());
+    this._loadSecurityCredentials((error, credentials) => {
+      if (error) {
+        throw error;
+      }
 
-    return Http[httpMethod](url, payload)
-      .set('Content-Type', 'application/json')
-      .set('X-Amz-Date', signature.headers['X-Amz-Date'])
-      .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
-      .set('Authorization', signature.headers.Authorization);
+      let signature = aws4.sign(opsToSign, credentials);
+
+      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)
+        .set('Content-Type', 'application/json; charset=UTF-8')
+        .set('X-Amz-Date', signature.headers['X-Amz-Date'])
+        .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
+        .set('Authorization', signature.headers.Authorization);
+
+      if (signature.headers.hasOwnProperty('Content-Length')) {
+        request.set('Content-Length', signature.headers['Content-Length']);
+      }
+
+      callback(request);
+    });
   }
 
   /**
-   * @returns {Object}
+   * @param {String} httpMethod
+   * @returns {String}
    * @private
    */
-  _getSecurityCredentials() {
-    if (!(this._action.resource.security instanceof Security)) {
-      throw new MissingSecurityServiceException();
+  static _httpRealMethod(httpMethod) {
+    let method = httpMethod.toLowerCase();
+
+    // @see https://visionmedia.github.io/superagent/
+    if (method === 'delete') {
+      method = 'del';
     }
 
-    let token = this._action.resource.security.token;
+    return method;
+  }
 
-    if (!token) {
-      throw new NotAuthenticatedException();
+  /**
+   * @returns {Request}
+   * @private
+   */
+  _loadSecurityCredentials(callback) {
+    let securityService = this._action.resource.security;
+
+    if (!(securityService instanceof Security)) {
+      callback(new MissingSecurityServiceException(), null);
+      return this;
     }
 
-    return token.credentials;
+    if (!securityService.token) {
+      callback(new NotAuthenticatedException(), null);
+      return this;
+    }
+
+    securityService.token.loadCredentials((error, credentials) => {
+      if (error) {
+        callback(new LoadCredentialsException(error), null);
+        return;
+      }
+
+      callback(null, credentials);
+    });
+
+    return this;
   }
 
   /**

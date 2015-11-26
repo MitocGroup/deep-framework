@@ -3,6 +3,423 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/CredentialsManager.js",
+    "memberof": null,
+    "longname": "lib/CredentialsManager.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 11/6/15.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport CognitoSyncManager from 'amazon-cognito-js';\nimport {CreateCognitoDatasetException} from './Exception/CreateCognitoDatasetException';\nimport {PutCognitoRecordException} from './Exception/PutCognitoRecordException';\nimport {SynchronizeCognitoDatasetException} from './Exception/SynchronizeCognitoDatasetException';\n\nexport class CredentialsManager {\n  /**\n   * @returns {String}\n   */\n  static get DATASET_NAME() {\n    return 'deep_session';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get RECORD_NAME() {\n    return 'session_creds';\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {Object|null} cognitoSyncClient\n   */\n  constructor(identityPoolId, cognitoSyncClient = null) {\n    this._identityPoolId = identityPoolId;\n    this._cognitoSyncClient = cognitoSyncClient;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cognitoSyncClient() {\n    if (!this._cognitoSyncClient) {\n      this._cognitoSyncClient = new AWS.CognitoSyncManager();\n    }\n\n    return this._cognitoSyncClient;\n  }\n\n  /**\n   * @param {Object} credentials\n   * @param {Function} callback\n   */\n  saveCredentials(credentials, callback) {\n    this._createOrGetDataset((error, dataset) => {\n      if (error) {\n        callback(error, null);\n        return;\n      }\n\n      dataset.put(CredentialsManager.RECORD_NAME, this._encodeCredentials(credentials), (error, record) => {\n        if (error) {\n          callback(new PutCognitoRecordException(\n            CredentialsManager.DATASET_NAME, CredentialsManager.RECORD_NAME, error\n          ), null);\n          return;\n        }\n\n        this._synchronizeDataset(dataset, (error, savedRecords) => {\n          if (error) {\n            callback(new SynchronizeCognitoDatasetException(dataset, error), null);\n            return;\n          }\n\n          callback(null, savedRecords);\n        });\n      });\n    });\n  }\n\n  /**\n   * @param {String} identityId\n   * @param {Function} callback\n   */\n  loadCredentials(identityId, callback) {\n    let cognitosync = new AWS.CognitoSync();\n\n    let params = {\n      DatasetName: CredentialsManager.DATASET_NAME,\n      IdentityId: identityId,\n      IdentityPoolId: this._identityPoolId,\n    };\n\n    cognitosync.listRecords(params, (error, data) => {\n      if (error) {\n        callback(error, null);\n        return;\n      }\n\n      let creds = null;\n      data.Records.forEach((record) => {\n        if (record.Key === CredentialsManager.RECORD_NAME) {\n          creds = this._decodeCredentials(record.Value);\n          return creds;\n        }\n      });\n\n      callback(null, creds);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _createOrGetDataset(callback) {\n    this.cognitoSyncClient.openOrCreateDataset(CredentialsManager.DATASET_NAME, (error, dataset) => {\n      if (error) {\n        callback(new CreateCognitoDatasetException(CredentialsManager.DATASET_NAME, error), null);\n        return;\n      }\n\n      callback(null, dataset);\n    });\n  }\n\n  /**\n   * @param {Object} dataset\n   * @param {Function} callback\n   * @private\n   */\n  _synchronizeDataset(dataset, callback) {\n    dataset.synchronize({\n      onSuccess: (dataset, newRecords) => {\n        callback(null, newRecords);\n      },\n      onFailure: (error) => {\n        callback(error, null);\n      },\n      onConflict: (dataset, conflicts, callback) => {\n        let resolved = [];\n\n        for (let i = 0; i < conflicts.length; i++) {\n          // take local version. @todo: implement custom merge logic to take latest changes\n          resolved.push(conflicts[i].resolveWithLocalRecord());\n        }\n\n        dataset.resolve(resolved, () => {\n          return callback(true);\n        });\n      },\n      onDatasetDeleted: (dataset, datasetName, callback) => {\n        return callback(true);\n      },\n      onDatasetMerged: (dataset, datasetNames, callback) => {\n        return callback(true);\n      }\n    });\n  }\n\n  /**\n   * @todo: implement an encoding method\n   *\n   * @param {Object} credentials\n   * @returns {String}\n   */\n  _encodeCredentials(credentials) {\n    // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore\n    credentials = Object.defineProperty(credentials, 'secretAccessKey', {\n      enumerable: true,\n      writable: true,\n      configurable: true\n    });\n\n    return JSON.stringify(credentials);\n  }\n\n  /**\n   * @todo: implement an encoding method\n   *\n   * @param {String} credentials\n   * @returns {Object}\n   */\n  _decodeCredentials(credentials) {\n    return JSON.parse(credentials);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "CredentialsManager",
+    "memberof": "lib/CredentialsManager.js",
+    "longname": "lib/CredentialsManager.js~CredentialsManager",
+    "access": null,
+    "export": true,
+    "importPath": "deep-security/lib/CredentialsManager.js",
+    "importStyle": "{CredentialsManager}",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DATASET_NAME",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager.DATASET_NAME",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "RECORD_NAME",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager.RECORD_NAME",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityPoolId",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object",
+          "null"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cognitoSyncClient",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_identityPoolId",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#_identityPoolId",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cognitoSyncClient",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#_cognitoSyncClient",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "cognitoSyncClient",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#cognitoSyncClient",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cognitoSyncClient",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#_cognitoSyncClient",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "saveCredentials",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#saveCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 52,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "credentials",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loadCredentials",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#loadCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 83,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityId",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_createOrGetDataset",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#_createOrGetDataset",
+    "access": "private",
+    "description": null,
+    "lineNumber": 114,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_synchronizeDataset",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#_synchronizeDataset",
+    "access": "private",
+    "description": null,
+    "lineNumber": 130,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataset",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_encodeCredentials",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#_encodeCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 165,
+    "unknown": [
+      {
+        "tagName": "@todo: implement an encoding method\n\n",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "credentials",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_decodeCredentials",
+    "memberof": "lib/CredentialsManager.js~CredentialsManager",
+    "longname": "lib/CredentialsManager.js~CredentialsManager#_decodeCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 182,
+    "unknown": [
+      {
+        "tagName": "@todo: implement an encoding method\n\n",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "credentials",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/Exception/AuthException.js",
     "memberof": null,
     "longname": "lib/Exception/AuthException.js",
@@ -40,6 +457,134 @@
     "description": null,
     "lineNumber": 16,
     "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/CreateCognitoDatasetException.js",
+    "memberof": null,
+    "longname": "lib/Exception/CreateCognitoDatasetException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 11/09/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when open or create a CognitoSync dataset\n */\nexport class CreateCognitoDatasetException extends Exception {\n  /**\n   * @param {String} dataset\n   * @param {Object} error\n   */\n  constructor(dataset, error) {\n    super(`Error on opening or creating \"${dataset}\" Cognito dataset. ${error}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "CreateCognitoDatasetException",
+    "memberof": "lib/Exception/CreateCognitoDatasetException.js",
+    "longname": "lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-security/lib/Exception/CreateCognitoDatasetException.js",
+    "importStyle": "{CreateCognitoDatasetException}",
+    "description": "Thrown when open or create a CognitoSync dataset",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException",
+    "longname": "lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataset",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/DescribeIdentityException.js",
+    "memberof": null,
+    "longname": "lib/Exception/DescribeIdentityException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 11/23/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when describe cognito identity failed\n */\nexport class DescribeIdentityException extends Exception {\n  /**\n   * @param {String} identityId\n   * @param {Object} error\n   */\n  constructor(identityId, error) {\n    super(`Error on describing cognito identity ${identityId}. ${error}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "DescribeIdentityException",
+    "memberof": "lib/Exception/DescribeIdentityException.js",
+    "longname": "lib/Exception/DescribeIdentityException.js~DescribeIdentityException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-security/lib/Exception/DescribeIdentityException.js",
+    "importStyle": "{DescribeIdentityException}",
+    "description": "Thrown when describe cognito identity failed",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/DescribeIdentityException.js~DescribeIdentityException",
+    "longname": "lib/Exception/DescribeIdentityException.js~DescribeIdentityException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityId",
+        "description": ""
+      },
       {
         "nullable": null,
         "types": [
@@ -102,6 +647,80 @@
         "spread": false,
         "optional": false,
         "name": "args",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/GetCognitoRecordException.js",
+    "memberof": null,
+    "longname": "lib/Exception/GetCognitoRecordException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 11/09/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when getting a record from a CognitoSync dataset failed\n */\nexport class GetCognitoRecordException extends Exception {\n  /**\n   * @param {String} dataset\n   * @param {String} record\n   * @param {Object} error\n   */\n  constructor(dataset, record, error) {\n    super(`Error on getting \"${record}\" record from \"${dataset}\" dataset. ${error}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "GetCognitoRecordException",
+    "memberof": "lib/Exception/GetCognitoRecordException.js",
+    "longname": "lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-security/lib/Exception/GetCognitoRecordException.js",
+    "importStyle": "{GetCognitoRecordException}",
+    "description": "Thrown when getting a record from a CognitoSync dataset failed",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException",
+    "longname": "lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataset",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "record",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
         "description": ""
       }
     ],
@@ -229,13 +848,555 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/Exception/PutCognitoRecordException.js",
+    "memberof": null,
+    "longname": "lib/Exception/PutCognitoRecordException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 11/09/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when put a new record to a CognitoSync dataset failed\n */\nexport class PutCognitoRecordException extends Exception {\n  /**\n   * @param {String} dataset\n   * @param {String} record\n   * @param {Object} error\n   */\n  constructor(dataset, record, error) {\n    super(`Error on putting \"${record}\" record into \"${dataset}\" dataset. ${error}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "PutCognitoRecordException",
+    "memberof": "lib/Exception/PutCognitoRecordException.js",
+    "longname": "lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-security/lib/Exception/PutCognitoRecordException.js",
+    "importStyle": "{PutCognitoRecordException}",
+    "description": "Thrown when put a new record to a CognitoSync dataset failed",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException",
+    "longname": "lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataset",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "record",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/SynchronizeCognitoDatasetException.js",
+    "memberof": null,
+    "longname": "lib/Exception/SynchronizeCognitoDatasetException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 11/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when failed to sync a CognitoSync dataset\n */\nexport class SynchronizeCognitoDatasetException extends Exception {\n  /**\n   * @param {String} dataset\n   * @param {Object} error\n   */\n  constructor(dataset, error) {\n    super(`Error on synchronizing \"${dataset}\" Cognito dataset. ${error}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "SynchronizeCognitoDatasetException",
+    "memberof": "lib/Exception/SynchronizeCognitoDatasetException.js",
+    "longname": "lib/Exception/SynchronizeCognitoDatasetException.js~SynchronizeCognitoDatasetException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-security/lib/Exception/SynchronizeCognitoDatasetException.js",
+    "importStyle": "{SynchronizeCognitoDatasetException}",
+    "description": "Thrown when failed to sync a CognitoSync dataset",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/SynchronizeCognitoDatasetException.js~SynchronizeCognitoDatasetException",
+    "longname": "lib/Exception/SynchronizeCognitoDatasetException.js~SynchronizeCognitoDatasetException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dataset",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/IdentityProvider.js",
+    "memberof": null,
+    "longname": "lib/IdentityProvider.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 11/12/15.\n */\n\n'use strict';\n\nimport {MissingLoginProviderException} from './Exception/MissingLoginProviderException';\n\n/**\n * 3rd Party identity provider (Amazon, Facebook, Google, etc.)\n */\nexport class IdentityProvider {\n  /**\n   * @returns {string}\n   */\n  static get AMAZON() {\n    return 'www.amazon.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get FACEBOOK() {\n    return 'graph.facebook.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get GOOGLE() {\n    return 'accounts.google.com';\n  }\n\n  /**\n   * @param {Object} providers\n   * @param {String} providerName\n   * @param {String} userToken\n   * @param {String} userId\n   */\n  constructor(providers, providerName, userToken, userId) {\n    if (Object.keys(providers).indexOf(providerName) === -1) {\n      throw new MissingLoginProviderException(providerName);\n    }\n\n    this._providers = providers;\n    this._name = providerName;\n    this._userToken = userToken;\n    this._userId = userId;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get providers() {\n    return this._providers;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get userToken() {\n    return this._userToken;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get userId() {\n    return this._userId;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   */\n  config(name) {\n    if (!this.providers.hasOwnProperty(name)) {\n      throw new MissingLoginProviderException(name);\n    }\n\n    return this.providers[name];\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "IdentityProvider",
+    "memberof": "lib/IdentityProvider.js",
+    "longname": "lib/IdentityProvider.js~IdentityProvider",
+    "access": null,
+    "export": true,
+    "importPath": "deep-security/lib/IdentityProvider.js",
+    "importStyle": "{IdentityProvider}",
+    "description": "3rd Party identity provider (Amazon, Facebook, Google, etc.)",
+    "lineNumber": 12,
+    "interface": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "AMAZON",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider.AMAZON",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "FACEBOOK",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider.FACEBOOK",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "GOOGLE",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider.GOOGLE",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{string}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "string"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "providers",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "providerName",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "userToken",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "userId",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_providers",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#_providers",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_name",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#_name",
+    "access": null,
+    "description": null,
+    "lineNumber": 46,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_userToken",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#_userToken",
+    "access": null,
+    "description": null,
+    "lineNumber": 47,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_userId",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#_userId",
+    "access": null,
+    "description": null,
+    "lineNumber": 48,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "providers",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#providers",
+    "access": null,
+    "description": null,
+    "lineNumber": 54,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "name",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#name",
+    "access": null,
+    "description": null,
+    "lineNumber": 61,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "userToken",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#userToken",
+    "access": null,
+    "description": null,
+    "lineNumber": 68,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "userId",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#userId",
+    "access": null,
+    "description": null,
+    "lineNumber": 75,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "config",
+    "memberof": "lib/IdentityProvider.js~IdentityProvider",
+    "longname": "lib/IdentityProvider.js~IdentityProvider#config",
+    "access": null,
+    "description": null,
+    "lineNumber": 83,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/LocalToken.js",
     "memberof": null,
     "longname": "lib/LocalToken.js",
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 09/01/15.\n */\n\n'use strict';\n\nimport {Token} from './Token';\n\n/**\n * Security token holds details about logged user\n */\nexport class LocalToken extends Token {\n  /**\n   * @param args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  getCredentials(callback) {\n    // use provider user id instead of cognito identity id for local backend\n    this._identityId = this._providerUserId;\n\n    callback(null, this);\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 09/01/15.\n */\n\n'use strict';\n\nimport {Token} from './Token';\n\n/**\n * Security token holds details about logged user\n */\nexport class LocalToken extends Token {\n  /**\n   * @param args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadCredentials(callback = () => {}) {\n    // use provider user id instead of cognito identity id for local backend\n    this._identityId = this.identityProvider ? this.identityProvider.userId : null;\n\n    callback(null, this);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -283,9 +1444,9 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "getCredentials",
+    "name": "loadCredentials",
     "memberof": "lib/LocalToken.js~LocalToken",
-    "longname": "lib/LocalToken.js~LocalToken#getCredentials",
+    "longname": "lib/LocalToken.js~LocalToken#loadCredentials",
     "access": null,
     "description": null,
     "lineNumber": 23,
@@ -330,7 +1491,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 6/17/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {MissingLoginProviderException} from './Exception/MissingLoginProviderException';\nimport {Token} from './Token';\nimport {LocalToken} from './LocalToken';\nimport {UserProvider} from './UserProvider';\n\n/**\n * Deep Security implementation\n */\nexport class Security extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} identityPoolId\n   * @param {Object} identityProviders\n   */\n  constructor(identityPoolId = null, identityProviders = {}) {\n    super();\n\n    this._identityPoolId = identityPoolId;\n    this._identityProviders = identityProviders;\n    this._token = null;\n    this._userProvider = null;\n    this._userProviderEndpoint = null;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_AMAZON() {\n    return 'www.amazon.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_FACEBOOK() {\n    return 'graph.facebook.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PROVIDER_GOOGLE() {\n    return 'accounts.google.com';\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get identityProviders() {\n    return this._identityProviders;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get identityPoolId() {\n    return this._identityPoolId;\n  }\n\n  /**\n   * @returns {UserProvider}\n   */\n  get userProvider() {\n    if (!this._userProvider) {\n      this._userProvider = new UserProvider(this._userProviderEndpoint, this.container.get('resource'));\n    }\n\n    return this._userProvider;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: remove this compatibility hook\n    let globals = kernel.config.globals || kernel.config;\n\n    this._identityProviders = globals.security.identityProviders;\n    this._userProviderEndpoint = globals.userProviderEndpoint;\n\n    this._identityPoolId = kernel.config.identityPoolId;\n\n    callback();\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   */\n  getLoginProviderConfig(name) {\n    for (let providerName in this._identityProviders) {\n      if (!this._identityProviders.hasOwnProperty(providerName)) {\n        continue;\n      }\n\n      if (providerName === name) {\n        return this._identityProviders[providerName];\n      }\n    }\n\n    throw new MissingLoginProviderException(name);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get amazonLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_AMAZON);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get facebookLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_FACEBOOK);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get googleLoginProviderConfig() {\n    return this.getLoginProviderConfig(Security.PROVIDER_GOOGLE);\n  }\n\n  /**\n   * @returns {null|Token}\n   */\n  get token() {\n    return this._token;\n  }\n\n  /**\n   * @param {String} providerName\n   * @param {String} userToken\n   * @param {String} userId\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  login(providerName, userToken, userId, callback) {\n    // check if providerName is defined\n    this.getLoginProviderConfig(providerName);\n\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = new TokenImplementation(this._identityPoolId, providerName, userToken, userId);\n\n    this._token.userProvider = this.userProvider;\n\n    this._token.getCredentials(callback);\n\n    return this._token;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  anonymousLogin(callback) {\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = new TokenImplementation(this._identityPoolId);\n\n    this._token.userProvider = this.userProvider;\n\n    this._token.getCredentials(callback);\n\n    return this._token;\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 6/17/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {Exception} from './Exception/Exception';\nimport {Token} from './Token';\nimport {LocalToken} from './LocalToken';\nimport {UserProvider} from './UserProvider';\nimport {IdentityProvider} from './IdentityProvider';\n\n/**\n * Deep Security implementation\n */\nexport class Security extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} identityPoolId\n   * @param {Object} identityProviders\n   */\n  constructor(identityPoolId = null, identityProviders = {}) {\n    super();\n\n    this._identityPoolId = identityPoolId;\n    this._identityProviders = identityProviders;\n\n    this._token = null;\n    this._userProvider = null;\n    this._userProviderEndpoint = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get identityPoolId() {\n    return this._identityPoolId;\n  }\n\n  /**\n   * @returns {UserProvider}\n   */\n  get userProvider() {\n    if (!this._userProvider) {\n      this._userProvider = new UserProvider(this._userProviderEndpoint, this.container.get('resource'));\n    }\n\n    return this._userProvider;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: remove this compatibility hook\n    let globals = kernel.config.globals || kernel.config;\n\n    this._identityProviders = globals.security.identityProviders;\n    this._userProviderEndpoint = globals.userProviderEndpoint;\n\n    this._identityPoolId = kernel.config.identityPoolId;\n\n    callback();\n  }\n\n  /**\n   * @returns {null|Token}\n   */\n  get token() {\n    return this._token;\n  }\n\n  /**\n   * @param {String} providerName\n   * @param {String} userToken\n   * @param {String} userId\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  login(providerName, userToken, userId, callback) {\n    let identityProvider = new IdentityProvider(this._identityProviders, providerName, userToken, userId);\n\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);\n\n    this._token.userProvider = this.userProvider;\n\n    this._token.loadCredentials((error, credentials) => {\n      callback(error, this._token);\n    });\n\n    return this._token;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  anonymousLogin(callback) {\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = TokenImplementation.create(this._identityPoolId);\n\n    this._token.userProvider = this.userProvider;\n\n    this._token.loadCredentials((error, credentials) => {\n      callback(error, this._token);\n    });\n\n    return this._token;\n  }\n\n  /**\n   * @param {Object} lambdaContext\n   * @returns {Token}\n   */\n  warmupBackendLogin(lambdaContext) {\n    if (this.kernel.isFrontend) {\n      throw new Exception('Call to warmupBackendLogin method is not allowed from frontend context.');\n    }\n\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = TokenImplementation.createFromLambdaContext(this._identityPoolId, lambdaContext);\n\n    this._token.userProvider = this.userProvider;\n\n    return this._token;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -344,7 +1505,7 @@
     "importPath": "deep-security/lib/Security.js",
     "importStyle": "{Security}",
     "description": "Deep Security implementation",
-    "lineNumber": 16,
+    "lineNumber": 17,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
@@ -359,7 +1520,7 @@
     "longname": "lib/Security.js~Security#constructor",
     "access": null,
     "description": "Defines all class private properties",
-    "lineNumber": 23,
+    "lineNumber": 24,
     "params": [
       {
         "nullable": null,
@@ -393,7 +1554,7 @@
     "longname": "lib/Security.js~Security#_identityPoolId",
     "access": null,
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 27,
     "undocument": true,
     "type": {
       "types": [
@@ -410,7 +1571,7 @@
     "longname": "lib/Security.js~Security#_identityProviders",
     "access": null,
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 28,
     "undocument": true,
     "type": {
       "types": [
@@ -427,7 +1588,7 @@
     "longname": "lib/Security.js~Security#_token",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 30,
     "undocument": true,
     "type": {
       "types": [
@@ -444,7 +1605,7 @@
     "longname": "lib/Security.js~Security#_userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -461,137 +1622,13 @@
     "longname": "lib/Security.js~Security#_userProviderEndpoint",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
         "*"
       ]
     }
-  },
-  {
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "PROVIDER_AMAZON",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security.PROVIDER_AMAZON",
-    "access": null,
-    "description": null,
-    "lineNumber": 36,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{string}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "string"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "PROVIDER_FACEBOOK",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security.PROVIDER_FACEBOOK",
-    "access": null,
-    "description": null,
-    "lineNumber": 43,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{string}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "string"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "PROVIDER_GOOGLE",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security.PROVIDER_GOOGLE",
-    "access": null,
-    "description": null,
-    "lineNumber": 50,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{string}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "string"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "identityProviders",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security#identityProviders",
-    "access": null,
-    "description": null,
-    "lineNumber": 57,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
   },
   {
     "kind": "get",
@@ -602,7 +1639,7 @@
     "longname": "lib/Security.js~Security#identityPoolId",
     "access": null,
     "description": null,
-    "lineNumber": 64,
+    "lineNumber": 38,
     "unknown": [
       {
         "tagName": "@returns",
@@ -633,7 +1670,7 @@
     "longname": "lib/Security.js~Security#userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 45,
     "unknown": [
       {
         "tagName": "@returns",
@@ -664,7 +1701,7 @@
     "longname": "lib/Security.js~Security#_userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 47,
     "undocument": true,
     "type": {
       "types": [
@@ -681,7 +1718,7 @@
     "longname": "lib/Security.js~Security#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 85,
+    "lineNumber": 59,
     "params": [
       {
         "nullable": null,
@@ -715,7 +1752,7 @@
     "longname": "lib/Security.js~Security#_identityProviders",
     "access": null,
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 63,
     "undocument": true,
     "type": {
       "types": [
@@ -732,7 +1769,7 @@
     "longname": "lib/Security.js~Security#_userProviderEndpoint",
     "access": null,
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 64,
     "undocument": true,
     "type": {
       "types": [
@@ -749,144 +1786,13 @@
     "longname": "lib/Security.js~Security#_identityPoolId",
     "access": null,
     "description": null,
-    "lineNumber": 92,
+    "lineNumber": 66,
     "undocument": true,
     "type": {
       "types": [
         "*"
       ]
     }
-  },
-  {
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "getLoginProviderConfig",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security#getLoginProviderConfig",
-    "access": null,
-    "description": null,
-    "lineNumber": 101,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "name",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "amazonLoginProviderConfig",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security#amazonLoginProviderConfig",
-    "access": null,
-    "description": null,
-    "lineNumber": 118,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "facebookLoginProviderConfig",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security#facebookLoginProviderConfig",
-    "access": null,
-    "description": null,
-    "lineNumber": 125,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "googleLoginProviderConfig",
-    "memberof": "lib/Security.js~Security",
-    "longname": "lib/Security.js~Security#googleLoginProviderConfig",
-    "access": null,
-    "description": null,
-    "lineNumber": 132,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
   },
   {
     "kind": "get",
@@ -897,7 +1803,7 @@
     "longname": "lib/Security.js~Security#token",
     "access": null,
     "description": null,
-    "lineNumber": 139,
+    "lineNumber": 74,
     "unknown": [
       {
         "tagName": "@returns",
@@ -929,7 +1835,7 @@
     "longname": "lib/Security.js~Security#login",
     "access": null,
     "description": null,
-    "lineNumber": 150,
+    "lineNumber": 85,
     "unknown": [
       {
         "tagName": "@returns",
@@ -997,7 +1903,7 @@
     "longname": "lib/Security.js~Security#_token",
     "access": null,
     "description": null,
-    "lineNumber": 156,
+    "lineNumber": 90,
     "undocument": true,
     "type": {
       "types": [
@@ -1014,7 +1920,7 @@
     "longname": "lib/Security.js~Security#anonymousLogin",
     "access": null,
     "description": null,
-    "lineNumber": 169,
+    "lineNumber": 105,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1052,7 +1958,62 @@
     "longname": "lib/Security.js~Security#_token",
     "access": null,
     "description": null,
-    "lineNumber": 172,
+    "lineNumber": 108,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "warmupBackendLogin",
+    "memberof": "lib/Security.js~Security",
+    "longname": "lib/Security.js~Security#warmupBackendLogin",
+    "access": null,
+    "description": null,
+    "lineNumber": 123,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Token}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "lambdaContext",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Token"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_token",
+    "memberof": "lib/Security.js~Security",
+    "longname": "lib/Security.js~Security#_token",
+    "access": null,
+    "description": null,
+    "lineNumber": 130,
     "undocument": true,
     "type": {
       "types": [
@@ -1070,7 +2031,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 6/23/15.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AuthException} from './Exception/AuthException';\n\n/**\n * Security token holds details about logged user\n */\nexport class Token {\n  /**\n   * @param {String} identityPoolId\n   * @param {String} providerName\n   * @param {String} providerUserToken\n   * @param {String} providerUserId\n   */\n  constructor(identityPoolId, providerName = null, providerUserToken = null, providerUserId = null) {\n    this._identityPoolId = identityPoolId;\n    this._providerName = providerName;\n    this._providerUserToken = providerUserToken;\n    this._providerUserId = providerUserId;\n\n    this._user = null;\n    this._userProvider = null;\n    this._identityId = null;\n    this._credentials = null;\n\n    this._isAnonymous = true;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  getCredentials(callback = () => null) {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let defaultRegion = AWS.config.region;\n\n    AWS.config.update({\n      region: Token._getRegionFromIdentityPoolId(this._identityPoolId),\n    });\n\n    let cognitoParams = {\n      IdentityPoolId: this._identityPoolId,\n    };\n\n    if (this._providerName && this._providerUserToken) {\n      this._isAnonymous = false;\n      cognitoParams.Logins = {};\n      cognitoParams.Logins[this._providerName] = this._providerUserToken;\n    }\n\n    this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);\n\n    // update AWS credentials\n    AWS.config.credentials = this._credentials.refresh(function(error) {\n      if (error) {\n        callback(new AuthException(error));\n        return;\n      }\n\n      this._identityId = this._credentials.identityId;\n\n      AWS.config.update({\n        accessKeyId: this._credentials.accessKeyId,\n        secretAccessKey: this._credentials.secretAccessKey,\n        sessionToken: this._credentials.sessionToken,\n        region: defaultRegion, // restore to default region\n      });\n\n      callback(null, this);\n    }.bind(this));\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @returns {String}\n   * @private\n   */\n  static _getRegionFromIdentityPoolId(identityPoolId) {\n    return identityPoolId.split(':')[0];\n  }\n\n  /**\n   * @returns {String}\n   */\n  get providerName() {\n    return this._providerName;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get providerUserToken() {\n    return this._providerUserToken;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get providerUserId() {\n    return this._providerUserId;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identityId() {\n    return this._identityId;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get credentials() {\n    return this._credentials;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isAnonymous() {\n    return this._isAnonymous;\n  }\n\n  /**\n   * @param {UserProvider} userProvider\n   */\n  set userProvider(userProvider) {\n    this._userProvider = userProvider;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  getUser(callback) {\n    if (this.isAnonymous) {\n      callback(null);\n      return;\n    }\n\n    if (!this._user) {\n      this._userProvider.loadUserByIdentityId(this.identityId, (user) => {\n        if (user) {\n          this._user = user;\n        }\n\n        callback(user);\n      });\n\n      return;\n    }\n\n    callback(this._user);\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 6/23/15.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AuthException} from './Exception/AuthException';\nimport {DescribeIdentityException} from './Exception/DescribeIdentityException';\nimport {CredentialsManager} from './CredentialsManager';\n\n/**\n * Security token holds details about logged user\n */\nexport class Token {\n  /**\n   * @param {String} identityPoolId\n   */\n  constructor(identityPoolId) {\n    this._identityPoolId = identityPoolId;\n\n    this._identityProvider = null;\n    this._lambdaContext = null;\n    this._user = null;\n    this._userProvider = null;\n    this._credentials = null;\n    this._identityMetadata = null;\n\n    this._credsManager = new CredentialsManager(identityPoolId);\n\n    this._setupAwsCognitoConfig();\n  }\n\n  /**\n   * Setup region for CognitoIdentity and CognitoSync services\n   *\n   * @private\n   */\n  _setupAwsCognitoConfig() {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let cognitoRegion = Token.getRegionFromIdentityPoolId(this._identityPoolId);\n\n    AWS.config.update({\n      cognitoidentity: {region: cognitoRegion},\n      cognitosync: {region: cognitoRegion},\n    });\n  }\n\n  /**\n   * @returns {IdentityProvider}\n   */\n  get identityProvider() {\n    return this._identityProvider;\n  }\n\n  /**\n   * @param {IdentityProvider} provider\n   */\n  set identityProvider(provider) {\n    this._identityProvider = provider;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get lambdaContext() {\n    return this._lambdaContext;\n  }\n\n  /**\n   * @param {Object} lambdaContext\n   */\n  set lambdaContext(lambdaContext) {\n    this._lambdaContext = lambdaContext;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadCredentials(callback = () => {}) {\n    // avoid refreshing or loading credentials for each request\n    if (this._validCredentials()) {\n      callback(null, this.credentials);\n      return;\n    }\n\n    if (this.lambdaContext) {\n      this._credsManager.loadCredentials(this.identityId, (error, credentials) => {\n        if (error) {\n          callback(error, null);\n          return;\n        }\n\n        this._credentials = credentials;\n\n        callback(null, this._credentials);\n      });\n    } else {\n      let cognitoParams = {\n        IdentityPoolId: this._identityPoolId,\n      };\n\n      if (this.identityProvider) {\n        cognitoParams.Logins = {};\n        cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;\n      }\n\n      this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);\n\n      this._credentials.refresh((error) => {\n        if (error) {\n          callback(new AuthException(error), null);\n          return;\n        }\n\n        AWS.config.credentials = this._credentials;\n\n        this._credsManager.saveCredentials(this._credentials, (error, record) => {\n          if (error) {\n            callback(error, null);\n            return;\n          }\n\n          callback(null, this._credentials);\n        });\n      });\n    }\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @returns {String}\n   */\n  static getRegionFromIdentityPoolId(identityPoolId) {\n    return identityPoolId.split(':')[0];\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identityId() {\n    let identityId = null;\n\n    if (this.credentials && this.credentials.hasOwnProperty('IdentityId')) {\n      identityId = this.credentials.IdentityId;\n    } else if (this.lambdaContext) {\n      identityId = this.lambdaContext.identity.cognitoIdentityId;\n    }\n\n    return identityId;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get credentials() {\n    return this._credentials;\n  }\n\n  /**\n   * @returns {boolean}\n   * @private\n   */\n  _validCredentials() {\n    return this.credentials && this.expireDateTime > new Date();\n  }\n\n  /**\n   * @returns {Date}\n   */\n  get expireDateTime() {\n    let dateTime = null;\n\n    if (this.credentials.hasOwnProperty('expireTime')) {\n      dateTime = this.credentials.expireTime instanceof Date ?\n        this.credentials.expireTime :\n        new Date(this.credentials.expireTime);\n    }\n\n    return dateTime;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isAnonymous() {\n    return (!this.identityProvider && !this.lambdaContext) || this._identityLogins.length <= 0;\n  }\n\n  /**\n   * @param {UserProvider} userProvider\n   */\n  set userProvider(userProvider) {\n    this._userProvider = userProvider;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  getUser(callback) {\n    this._describeIdentity(this.identityId, () => {\n      if (this.isAnonymous) {\n        callback(null);\n        return;\n      }\n\n      if (!this._user) {\n        this._userProvider.loadUserByIdentityId(this.identityId, (user) => {\n          this._user = user;\n\n          callback(this._user);\n        });\n\n        return;\n      }\n\n      callback(this._user);\n    });\n  }\n\n  /**\n   * @param {String} identityPoolId\n   */\n  static create(identityPoolId) {\n    return new this(identityPoolId);\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {IdentityProvider} identityProvider\n   */\n  static createFromIdentityProvider(identityPoolId, identityProvider) {\n    let token = new this(identityPoolId);\n    token.identityProvider = identityProvider;\n\n    return token;\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {Object} lambdaContext\n   */\n  static createFromLambdaContext(identityPoolId, lambdaContext) {\n    let token = new this(identityPoolId);\n    token.lambdaContext = lambdaContext;\n\n    return token;\n  }\n\n  /**\n   * @param {String} identityId\n   * @param {Function} callback\n   * @private\n   */\n  _describeIdentity(identityId, callback) {\n    if (this._identityMetadata) {\n      callback(this._identityMetadata);\n      return;\n    }\n\n    let cognitoIdentity = new AWS.CognitoIdentity();\n\n    cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) => {\n      if (error) {\n        throw new DescribeIdentityException(identityId, error);\n      }\n\n      this._identityMetadata = data;\n\n      callback(this._identityMetadata);\n    });\n  }\n\n  /**\n   * @returns {Array}\n   * @private\n   */\n  get _identityLogins() {\n    return this._identityMetadata && this._identityMetadata.hasOwnProperty('Logins') ?\n      this._identityMetadata.Logins :\n      [];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1084,7 +2045,7 @@
     "importPath": "deep-security/lib/Token.js",
     "importStyle": "{Token}",
     "description": "Security token holds details about logged user",
-    "lineNumber": 13,
+    "lineNumber": 15,
     "interface": false
   },
   {
@@ -1096,7 +2057,7 @@
     "longname": "lib/Token.js~Token#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 19,
     "params": [
       {
         "nullable": null,
@@ -1106,36 +2067,6 @@
         "spread": false,
         "optional": false,
         "name": "identityPoolId",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "providerName",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "providerUserToken",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "providerUserId",
         "description": ""
       }
     ],
@@ -1150,7 +2081,7 @@
     "longname": "lib/Token.js~Token#_identityPoolId",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 20,
     "undocument": true,
     "type": {
       "types": [
@@ -1162,9 +2093,9 @@
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_providerName",
+    "name": "_identityProvider",
     "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#_providerName",
+    "longname": "lib/Token.js~Token#_identityProvider",
     "access": null,
     "description": null,
     "lineNumber": 22,
@@ -1179,29 +2110,12 @@
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_providerUserToken",
+    "name": "_lambdaContext",
     "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#_providerUserToken",
+    "longname": "lib/Token.js~Token#_lambdaContext",
     "access": null,
     "description": null,
     "lineNumber": 23,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_providerUserId",
-    "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#_providerUserId",
-    "access": null,
-    "description": null,
-    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -1218,7 +2132,7 @@
     "longname": "lib/Token.js~Token#_user",
     "access": null,
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -1235,24 +2149,7 @@
     "longname": "lib/Token.js~Token#_userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 27,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_identityId",
-    "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#_identityId",
-    "access": null,
-    "description": null,
-    "lineNumber": 28,
+    "lineNumber": 25,
     "undocument": true,
     "type": {
       "types": [
@@ -1269,7 +2166,7 @@
     "longname": "lib/Token.js~Token#_credentials",
     "access": null,
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 26,
     "undocument": true,
     "type": {
       "types": [
@@ -1281,16 +2178,33 @@
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_isAnonymous",
+    "name": "_identityMetadata",
     "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#_isAnonymous",
+    "longname": "lib/Token.js~Token#_identityMetadata",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 27,
     "undocument": true,
     "type": {
       "types": [
-        "boolean"
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_credsManager",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_credsManager",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
       ]
     }
   },
@@ -1298,12 +2212,179 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "getCredentials",
+    "name": "_setupAwsCognitoConfig",
     "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#getCredentials",
+    "longname": "lib/Token.js~Token#_setupAwsCognitoConfig",
+    "access": "private",
+    "description": "Setup region for CognitoIdentity and CognitoSync services",
+    "lineNumber": 39,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "identityProvider",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#identityProvider",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 54,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{IdentityProvider}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "IdentityProvider"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "identityProvider",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#identityProvider",
+    "access": null,
+    "description": null,
+    "lineNumber": 61,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "IdentityProvider"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "provider",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_identityProvider",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_identityProvider",
+    "access": null,
+    "description": null,
+    "lineNumber": 62,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "lambdaContext",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#lambdaContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 68,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "lambdaContext",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#lambdaContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 75,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "lambdaContext",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_lambdaContext",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_lambdaContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 76,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loadCredentials",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#loadCredentials",
+    "access": null,
+    "description": null,
+    "lineNumber": 82,
     "params": [
       {
         "nullable": null,
@@ -1322,16 +2403,16 @@
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_isAnonymous",
+    "name": "_credentials",
     "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#_isAnonymous",
+    "longname": "lib/Token.js~Token#_credentials",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 96,
     "undocument": true,
     "type": {
       "types": [
-        "boolean"
+        "*"
       ]
     }
   },
@@ -1344,24 +2425,7 @@
     "longname": "lib/Token.js~Token#_credentials",
     "access": null,
     "description": null,
-    "lineNumber": 57,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_identityId",
-    "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#_identityId",
-    "access": null,
-    "description": null,
-    "lineNumber": 66,
+    "lineNumber": 110,
     "undocument": true,
     "type": {
       "types": [
@@ -1373,12 +2437,12 @@
     "kind": "method",
     "static": true,
     "variation": null,
-    "name": "_getRegionFromIdentityPoolId",
+    "name": "getRegionFromIdentityPoolId",
     "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token._getRegionFromIdentityPoolId",
-    "access": "private",
+    "longname": "lib/Token.js~Token.getRegionFromIdentityPoolId",
+    "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 136,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1411,105 +2475,12 @@
     "kind": "get",
     "static": false,
     "variation": null,
-    "name": "providerName",
-    "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#providerName",
-    "access": null,
-    "description": null,
-    "lineNumber": 91,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "providerUserToken",
-    "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#providerUserToken",
-    "access": null,
-    "description": null,
-    "lineNumber": 98,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "providerUserId",
-    "memberof": "lib/Token.js~Token",
-    "longname": "lib/Token.js~Token#providerUserId",
-    "access": null,
-    "description": null,
-    "lineNumber": 105,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
     "name": "identityId",
     "memberof": "lib/Token.js~Token",
     "longname": "lib/Token.js~Token#identityId",
     "access": null,
     "description": null,
-    "lineNumber": 112,
+    "lineNumber": 143,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1540,7 +2511,7 @@
     "longname": "lib/Token.js~Token#credentials",
     "access": null,
     "description": null,
-    "lineNumber": 119,
+    "lineNumber": 158,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1563,6 +2534,64 @@
     "generator": false
   },
   {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_validCredentials",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_validCredentials",
+    "access": "private",
+    "description": null,
+    "lineNumber": 166,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{boolean}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "expireDateTime",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#expireDateTime",
+    "access": null,
+    "description": null,
+    "lineNumber": 173,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Date}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Date"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1571,7 +2600,7 @@
     "longname": "lib/Token.js~Token#isAnonymous",
     "access": null,
     "description": null,
-    "lineNumber": 126,
+    "lineNumber": 188,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1602,7 +2631,7 @@
     "longname": "lib/Token.js~Token#userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 133,
+    "lineNumber": 195,
     "params": [
       {
         "nullable": null,
@@ -1631,7 +2660,7 @@
     "longname": "lib/Token.js~Token#_userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 134,
+    "lineNumber": 196,
     "undocument": true,
     "type": {
       "types": [
@@ -1648,7 +2677,7 @@
     "longname": "lib/Token.js~Token#getUser",
     "access": null,
     "description": null,
-    "lineNumber": 140,
+    "lineNumber": 202,
     "params": [
       {
         "nullable": null,
@@ -1672,13 +2701,202 @@
     "longname": "lib/Token.js~Token#_user",
     "access": null,
     "description": null,
-    "lineNumber": 149,
+    "lineNumber": 211,
     "undocument": true,
     "type": {
       "types": [
         "*"
       ]
     }
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "create",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token.create",
+    "access": null,
+    "description": null,
+    "lineNumber": 226,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityPoolId",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "createFromIdentityProvider",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token.createFromIdentityProvider",
+    "access": null,
+    "description": null,
+    "lineNumber": 234,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityPoolId",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "IdentityProvider"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityProvider",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "createFromLambdaContext",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token.createFromLambdaContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 245,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityPoolId",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "lambdaContext",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_describeIdentity",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_describeIdentity",
+    "access": "private",
+    "description": null,
+    "lineNumber": 257,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityId",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_identityMetadata",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_identityMetadata",
+    "access": null,
+    "description": null,
+    "lineNumber": 270,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "_identityLogins",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_identityLogins",
+    "access": "private",
+    "description": null,
+    "lineNumber": 280,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
   },
   {
     "kind": "file",
