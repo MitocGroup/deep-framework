@@ -40,10 +40,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLambdaLocalPathException.js~MissingLambdaLocalPathException.html">MissingLambdaLocalPathException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
@@ -51,7 +54,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">86/96</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">93/106</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -88,7 +91,7 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
       <td style="display: none;" data-ice="size">3110 byte</td>
       <td style="display: none;" data-ice="lines">130</td>
-      <td style="display: none;" data-ice="updated">2015-11-06 08:52:47 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 11:12:40 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Resource/Action.js.html">lib/Resource/Action.js</a></span></td>
@@ -99,6 +102,14 @@
       <td style="display: none;" data-ice="updated">2015-10-02 14:46:58 (UTC)</td>
     </tr>
 <tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Resource/Exception/AsyncCallNotAvailableException.js.html#errorLines=9">lib/Resource/Exception/AsyncCallNotAvailableException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
+      <td style="display: none;" data-ice="size">323 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 07:57:31 (UTC)</td>
+    </tr>
+<tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Resource/Exception/CachedRequestException.js.html#errorLines=9">lib/Resource/Exception/CachedRequestException.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></td>
       <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
@@ -107,12 +118,12 @@
       <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/Resource/Exception/DirectLambdaCallDeniedException.js.html#errorLines=9">lib/Resource/Exception/DirectLambdaCallDeniedException.js</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/Resource/Exception/LoadCredentialsException.js.html#errorLines=9">lib/Resource/Exception/LoadCredentialsException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></td>
       <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
-      <td style="display: none;" data-ice="size">412 byte</td>
-      <td style="display: none;" data-ice="lines">18</td>
-      <td style="display: none;" data-ice="updated">2015-10-02 14:46:58 (UTC)</td>
+      <td style="display: none;" data-ice="size">340 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Resource/Exception/MissingActionException.js.html">lib/Resource/Exception/MissingActionException.js</a></span></td>
@@ -129,6 +140,22 @@
       <td style="display: none;" data-ice="size">269 byte</td>
       <td style="display: none;" data-ice="lines">13</td>
       <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Resource/Exception/MissingLambdaLocalPathException.js.html#errorLines=9">lib/Resource/Exception/MissingLambdaLocalPathException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/Exception/MissingLambdaLocalPathException.js~MissingLambdaLocalPathException.html">MissingLambdaLocalPathException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
+      <td style="display: none;" data-ice="size">310 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 10:24:00 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js.html#errorLines=9">lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
+      <td style="display: none;" data-ice="size">351 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 09:53:48 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Resource/Exception/MissingSecurityServiceException.js.html#errorLines=10,9">lib/Resource/Exception/MissingSecurityServiceException.js</a></span></td>
@@ -166,33 +193,33 @@
       <td data-ice="filePath"><span><a href="file/lib/Resource/LambdaResponse.js.html">lib/Resource/LambdaResponse.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/LambdaResponse.js~LambdaResponse.html">LambdaResponse</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">6/6</span></td>
-      <td style="display: none;" data-ice="size">1853 byte</td>
-      <td style="display: none;" data-ice="lines">98</td>
-      <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+      <td style="display: none;" data-ice="size">2412 byte</td>
+      <td style="display: none;" data-ice="lines">124</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 10:27:26 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/Resource/LocalRequest.js.html#errorLines=16">lib/Resource/LocalRequest.js</a></span></td>
+      <td data-ice="filePath"><span><a href="file/lib/Resource/LocalRequest.js.html#errorLines=19">lib/Resource/LocalRequest.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/LocalRequest.js~LocalRequest.html">LocalRequest</a></span></td>
-      <td class="coverage"><span data-ice="coverage">66 %</span><span data-ice="coverageCount" class="coverage-count">2/3</span></td>
-      <td style="display: none;" data-ice="size">1068 byte</td>
-      <td style="display: none;" data-ice="lines">52</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 11:02:15 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">80 %</span><span data-ice="coverageCount" class="coverage-count">4/5</span></td>
+      <td style="display: none;" data-ice="size">2459 byte</td>
+      <td style="display: none;" data-ice="lines">95</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 10:31:59 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Resource/Request.js.html">lib/Resource/Request.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">22/22</span></td>
-      <td style="display: none;" data-ice="size">10679 byte</td>
-      <td style="display: none;" data-ice="lines">500</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 13:14:56 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">24/24</span></td>
+      <td style="display: none;" data-ice="size">11631 byte</td>
+      <td style="display: none;" data-ice="lines">537</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Resource/Response.js.html">lib/Resource/Response.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Resource/Response.js~Response.html">Response</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">9/9</span></td>
-      <td style="display: none;" data-ice="size">1724 byte</td>
+      <td style="display: none;" data-ice="size">1726 byte</td>
       <td style="display: none;" data-ice="lines">107</td>
-      <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2015-11-06 10:06:35 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Resource/SuperagentResponse.js.html#errorLines=9">lib/Resource/SuperagentResponse.js</a></span></td>

@@ -11,6 +11,12 @@ suite('Helpers/vogelsPolyfill', function() {
     chai.expect(typeof Vogels).to.equal('object');
   });
 
+  test('Check Vogels.types contains all types', function() {
+    chai.expect(Object.keys(Vogels.types)).contains.all.of(
+      'uuid', 'timeUUID', 'stringSet', 'numberSet', 'binarySet'
+    );
+  });
+
   test('Check Vogels.types.stringSet is function', function() {
     chai.expect(typeof Vogels.types.stringSet).to.equal('function');
   });

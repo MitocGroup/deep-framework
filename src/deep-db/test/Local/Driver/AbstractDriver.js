@@ -6,43 +6,12 @@ import sinonChai from 'sinon-chai';
 import {AbstractDriver} from '../../../lib.compiled/Local/Driver/AbstractDriver';
 import {ServerAlreadyRunningException} from '../../../lib.compiled/Local/Driver/Exception/ServerAlreadyRunningException';
 import {ServerTtsExceededException} from '../../../lib.compiled/Local/Driver/Exception/ServerTtsExceededException';
+import {AbstractDriverMock} from '../../Mock/Driver/AbstractDriverMock';
 
 chai.use(sinonChai);
 
-class AbstractDriverTest extends AbstractDriver {
-  constructor() {
-    super();
-  }
-
-  _stop(cb) {
-    return cb(null, 'stopped');
-  }
-
-  _start(cb, tts) {
-    return cb(null, 'started');
-  }
-}
-
-class AbstractDriverWithStopError extends AbstractDriver {
-  constructor() {
-    super();
-  }
-
-  _stop(cb) {
-    return cb('error', null);
-  }
-
-  _start(cb, tts) {
-    return cb(null, 'started');
-  }
-
-  throwServerTtsExceededException(driver, tts) {
-    throw new ServerTtsExceededException(driver, tts);
-  }
-}
-
 suite('Local/Driver/AbstractDriver', function() {
-  let abstractDriver = new AbstractDriverTest();
+  let abstractDriver = new AbstractDriverMock();
   let port = 8878;
 
   test('Class AbstractDriver exists in Local/Driver/AbstractDriver', function() {
@@ -57,9 +26,12 @@ suite('Local/Driver/AbstractDriver', function() {
     chai.expect(abstractDriver._teardownHook).to.be.equal(false);
   });
 
-  test(`Check constructor sets by default _port=${AbstractDriverTest.DEFAULT_PORT}`, function() {
-    chai.expect(abstractDriver.port).to.be.equal(AbstractDriverTest.DEFAULT_PORT);
-  });
+  test(
+    `Check constructor sets by default _port=${AbstractDriver.DEFAULT_PORT}`,
+    function() {
+      chai.expect(abstractDriver.port).to.be.equal(AbstractDriver.DEFAULT_PORT);
+    }
+  );
 
   test(`Check port setter sets _port=${port}`, function() {
     abstractDriver.port = port;
@@ -67,177 +39,102 @@ suite('Local/Driver/AbstractDriver', function() {
   });
 
   test('Check DEFAULT_TTS static getter returns value more than 0', function() {
-    chai.expect(AbstractDriverTest.DEFAULT_TTS).to.be.above(0);
+    chai.expect(AbstractDriver.DEFAULT_TTS).to.be.above(0);
   });
 
   test('Check DEFAULT_PORT static getter returns value more than 0', function() {
-    chai.expect(AbstractDriverTest.DEFAULT_PORT).to.be.above(0);
+    chai.expect(AbstractDriver.DEFAULT_PORT).to.be.above(0);
   });
 
   test('Check start() method starts driver', function() {
-    let error = null;
-    let actualResult = null;
-    let expectedResult = {
-      _port: port,
-      _running: true,
-      _teardownHook: true,
-    };
     let spyCallback = sinon.spy();
 
-    try {
-      actualResult = abstractDriver.start(spyCallback);
-    } catch (e) {
-      error = e;
-    }
+    abstractDriver.start(spyCallback);
 
-    chai.expect(error).to.be.equal(null);
-    chai.expect(actualResult.port).to.be.equal(expectedResult._port);
-    chai.expect(actualResult.running).to.be.equal(expectedResult._running);
-    chai.expect(actualResult._teardownHook).to.be.equal(expectedResult._teardownHook);
-    chai.expect(spyCallback).to.have.been.called;
+    chai.expect(abstractDriver._running).to.be.equal(true);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check _triggerOnTtsExpired() method', function() {
-    let error = null;
     let spyCallback = sinon.spy();
 
-    try {
-      abstractDriver._triggerOnTtsExpired(1, spyCallback);
-    } catch (e) {
-      error = e;
-    }
+    abstractDriver._triggerOnTtsExpired(1, spyCallback);
 
-    chai.expect(error).to.be.equal(null);
-    chai.expect(spyCallback).to.not.have.been.called;
+    chai.expect(spyCallback).to.not.have.been.calledWith();
   });
 
-  test(`Check start() method creates ServerAlreadyRunningException in callback when _running=true`, function() {
-    let error = null;
-    let spyCallback = sinon.spy();
-    try {
+  test(
+    'Check start() method creates ServerAlreadyRunningException in callback when _running=true',
+    function() {
+      let spyCallback = sinon.spy();
+
       abstractDriver.start(spyCallback);
-    } catch (e) {
-      error = e;
-    }
 
-    chai.expect(spyCallback).to.have.been.threw;
-  });
+      chai.expect(spyCallback).to.have.been.threw;
+      chai.assert.instanceOf(
+        spyCallback.args[0][0],
+        ServerAlreadyRunningException,
+        'error is an instance of ServerAlreadyRunningException'
+      );
+    }
+  );
 
   test('Check restart() method restarts driver', function() {
-    let error = null;
-    let actualResult = null;
-    let spyCallback = sinon.spy();
-    let expectedResult = {
-      _port: port,
-      _running: true,
-      _teardownHook: true,
-    };
 
-    try {
-      actualResult = abstractDriver.restart(spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(actualResult).to.be.eql(expectedResult);
-    chai.expect(spyCallback).to.have.been.called;
-  });
-
-  test('Check stop() method stops driver', function() {
-    let error = null;
-    let actualResult = null;
-    let expectedResult = {
-      _port: port,
-      _running: false,
-      _teardownHook: true,
-    };
     let spyCallback = sinon.spy();
 
-    try {
-      actualResult = abstractDriver.stop(spyCallback);
-    } catch (e) {
-      error = e;
-    }
+    abstractDriver.restart(spyCallback);
 
-    chai.expect(error).to.be.equal(null);
-    chai.expect(actualResult).to.be.eql(expectedResult);
-    chai.expect(spyCallback).to.have.been.called;
+    chai.expect(abstractDriver._running).to.be.equal(true);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
-  test('Check _triggerOnTtsExpired() method for running=false', function() {
-    let error = null;
-    let spyCallback = sinon.spy();
-    chai.expect(abstractDriver.running).to.be.equal(false);
-
-    try {
-      abstractDriver._triggerOnTtsExpired(1, spyCallback);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.equal(null);
-  });
-
-  test('Check restart() method call', function() {
-    let abstractDriverWithStopError = new AbstractDriverWithStopError();
-    let error = null;
+  test('Check stop() method stops driver when it is running', function() {
     let spyCallback = sinon.spy();
 
-    try {
-      abstractDriverWithStopError.restart(spyCallback);
-      abstractDriverWithStopError.restart(spyCallback);
-    } catch (e) {
-      error = e;
-    }
+    abstractDriver.stop(spyCallback);
 
-    chai.expect(error).to.be.equal(null);
-    chai.expect(spyCallback).to.have.been.calledWith('error');
+    chai.expect(abstractDriver._running).to.be.equal(false);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
-  test('Check _triggerOnTtsExpired() method for running=true', function() {
-    let error = null;
+  test('Check stop() method when it is not running', function() {
     let spyCallback = sinon.spy();
 
-    try {
-      abstractDriver._triggerOnTtsExpired(1, spyCallback);
-    } catch (e) {
-      error = e;
-    }
+    abstractDriver.stop(spyCallback);
 
-    chai.expect(error).to.be.equal(null);
-    chai.expect(spyCallback).to.not.have.been.called;
+    chai.expect(abstractDriver._running).to.be.equal(false);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null);
   });
 
-  test('Check _registerTeardownHook() method returns valid object with _teardownHook=true', function() {
-    let error = null;
-    let actualResult = null;
-    let expectedResult = {
-      _port: port,
-      _running: false,
-      _teardownHook: true,
-    };
+  test(
+    'Check _registerTeardownHook() method returns valid object with _teardownHook=true',
+    function() {
+      let expectedResult = {
+        _port: port,
+        _running: false,
+        _teardownHook: true,
+      };
 
-    try {
-      actualResult = abstractDriver._registerTeardownHook();
-    } catch (e) {
-      error = e;
+      let actualResult = abstractDriver._registerTeardownHook();
+
+      chai.expect(actualResult.port).to.equal(expectedResult._port);
+      chai.expect(actualResult.running).to.equal(expectedResult._running);
+      chai.expect(actualResult._teardownHook).to.equal(expectedResult._teardownHook);
     }
-
-    chai.expect(error).to.be.equal(null);
-    chai.expect(actualResult).to.be.eql(expectedResult);
-  });
+  );
 
   test('Check ServerTtsExceededException can be thrown', function() {
     let error = null;
-    let abstractDriverWithStopError = new AbstractDriverWithStopError();
+
     try {
-      abstractDriverWithStopError.throwServerTtsExceededException('driver', 1);
+      abstractDriver.throwServerTtsExceededException('driver', 1);
     } catch (e) {
       error = e;
     }
 
-    chai.expect(error).to.be.not.equal(null);
-    chai.assert.instanceOf(error, ServerTtsExceededException, 'error is an instance of ServerTtsExceededException');
+    chai.assert.instanceOf(
+      error, ServerTtsExceededException, 'error is an instance of ServerTtsExceededException'
+    );
   });
 });

@@ -30,14 +30,20 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/LocalToken.js~LocalToken.html">LocalToken</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/CredentialsManager.js~CredentialsManager.html">CredentialsManager</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/IdentityProvider.js~IdentityProvider.html">IdentityProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/LocalToken.js~LocalToken.html">LocalToken</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Security.js~Security.html">Security</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Token.js~Token.html">Token</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/UserProvider.js~UserProvider.html">UserProvider</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/AuthException.js~AuthException.html">AuthException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException.html">CreateCognitoDatasetException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException.html">GetCognitoRecordException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/LoadUserException.js~LoadUserException.html">LoadUserException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingLoginProviderException.js~MissingLoginProviderException.html">MissingLoginProviderException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException.html">PutCognitoRecordException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/SynchronizeCognitoDatasetException.js~SynchronizeCognitoDatasetException.html">SynchronizeCognitoDatasetException</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -50,10 +56,11 @@
 &apos;use strict&apos;;
 
 import Kernel from &apos;deep-kernel&apos;;
-import {MissingLoginProviderException} from &apos;./Exception/MissingLoginProviderException&apos;;
+import {Exception} from &apos;./Exception/Exception&apos;;
 import {Token} from &apos;./Token&apos;;
 import {LocalToken} from &apos;./LocalToken&apos;;
 import {UserProvider} from &apos;./UserProvider&apos;;
+import {IdentityProvider} from &apos;./IdentityProvider&apos;;
 
 /**
  * Deep Security implementation
@@ -70,37 +77,10 @@ export class Security extends Kernel.ContainerAware {
 
     this._identityPoolId = identityPoolId;
     this._identityProviders = identityProviders;
+
     this._token = null;
     this._userProvider = null;
     this._userProviderEndpoint = null;
-  }
-
-  /**
-   * @returns {string}
-   */
-  static get PROVIDER_AMAZON() {
-    return &apos;www.amazon.com&apos;;
-  }
-
-  /**
-   * @returns {string}
-   */
-  static get PROVIDER_FACEBOOK() {
-    return &apos;graph.facebook.com&apos;;
-  }
-
-  /**
-   * @returns {string}
-   */
-  static get PROVIDER_GOOGLE() {
-    return &apos;accounts.google.com&apos;;
-  }
-
-  /**
-   * @returns {Object}
-   */
-  get identityProviders() {
-    return this._identityProviders;
   }
 
   /**
@@ -140,45 +120,6 @@ export class Security extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {String} name
-   * @returns {Object}
-   */
-  getLoginProviderConfig(name) {
-    for (let providerName in this._identityProviders) {
-      if (!this._identityProviders.hasOwnProperty(providerName)) {
-        continue;
-      }
-
-      if (providerName === name) {
-        return this._identityProviders[providerName];
-      }
-    }
-
-    throw new MissingLoginProviderException(name);
-  }
-
-  /**
-   * @returns {Object}
-   */
-  get amazonLoginProviderConfig() {
-    return this.getLoginProviderConfig(Security.PROVIDER_AMAZON);
-  }
-
-  /**
-   * @returns {Object}
-   */
-  get facebookLoginProviderConfig() {
-    return this.getLoginProviderConfig(Security.PROVIDER_FACEBOOK);
-  }
-
-  /**
-   * @returns {Object}
-   */
-  get googleLoginProviderConfig() {
-    return this.getLoginProviderConfig(Security.PROVIDER_GOOGLE);
-  }
-
-  /**
    * @returns {null|Token}
    */
   get token() {
@@ -193,16 +134,17 @@ export class Security extends Kernel.ContainerAware {
    * @returns {Token}
    */
   login(providerName, userToken, userId, callback) {
-    // check if providerName is defined
-    this.getLoginProviderConfig(providerName);
+    let identityProvider = new IdentityProvider(this._identityProviders, providerName, userToken, userId);
 
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 
-    this._token = new TokenImplementation(this._identityPoolId, providerName, userToken, userId);
+    this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);
 
     this._token.userProvider = this.userProvider;
 
-    this._token.getCredentials(callback);
+    this._token.loadCredentials((error, credentials) =&gt; {
+      callback(error, this._token);
+    });
 
     return this._token;
   }
@@ -214,11 +156,31 @@ export class Security extends Kernel.ContainerAware {
   anonymousLogin(callback) {
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 
-    this._token = new TokenImplementation(this._identityPoolId);
+    this._token = TokenImplementation.create(this._identityPoolId);
 
     this._token.userProvider = this.userProvider;
 
-    this._token.getCredentials(callback);
+    this._token.loadCredentials((error, credentials) =&gt; {
+      callback(error, this._token);
+    });
+
+    return this._token;
+  }
+
+  /**
+   * @param {Object} lambdaContext
+   * @returns {Token}
+   */
+  warmupBackendLogin(lambdaContext) {
+    if (this.kernel.isFrontend) {
+      throw new Exception(&apos;Call to warmupBackendLogin method is not allowed from frontend context.&apos;);
+    }
+
+    let TokenImplementation = this._localBackend ? LocalToken : Token;
+
+    this._token = TokenImplementation.createFromLambdaContext(this._identityPoolId, lambdaContext);
+
+    this._token.userProvider = this.userProvider;
 
     return this._token;
   }

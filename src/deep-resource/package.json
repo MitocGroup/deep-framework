@@ -1,6 +1,6 @@
 {
   "name": "deep-resource",
-  "version": "1.2.1",
+  "version": "1.2.6",
   "description": "DEEP Resource Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -47,6 +47,10 @@
     {
       "name": "Dragos Palade",
       "email": "dpalade@mitocgroup.com"
+    },
+    {
+      "name": "Vitali Cernomschi",
+      "email": "vcernosmchi@mitocgroup.com"
     }
   ],
   "main": "lib.compiled/bootstrap.js",
@@ -55,10 +59,10 @@
     "url": "https://github.com/MitocGroup/deep.git"
   },
   "scripts": {
-    "coverage": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
-    "test": "mocha --ui tdd --compilers js:mocha-babel --recursive --reporter spec",
+    "test": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "pretest": "npm link deep-kernel deep-core deep-cache deep-security"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
@@ -67,15 +71,17 @@
     "deep-security": "^1.x.x",
     "superagent": "^1.4.x",
     "aws4": "^1.0.x",
-    "parse-url": "^1.0.x",
-    "query-string": "^3.0.x",
+    "url-parse": "^1.0.x",
+    "qs": "^5.2.x",
     "aws-sdk": "^2.2.x"
   },
   "devDependencies": {
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
-    "sinon-chai": "^2.8.x"
+    "sinon-chai": "^2.8.x",
+    "proxyquire": "^1.7.x",
+    "mock-aws": "^1.2.x"
   },
-  "preferGlobal": true,
+  "preferGlobal": false,
   "analyze": true
 }

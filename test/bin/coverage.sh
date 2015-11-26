@@ -2,12 +2,6 @@
 
 source $(dirname $0)/_head.sh
 
-### Run Coverage ###
-
-__CMD='npm run coverage'
-
-subpath_run_cmd ${__SRC_PATH} "$__CMD"
-
 ### Merge Coverage results ###
 
 COVERAGE_PATH=${__SCRIPT_PATH}"/../coverage"

@@ -40,10 +40,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectLambdaCallDeniedException.js~DirectLambdaCallDeniedException.html">DirectLambdaCallDeniedException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLambdaLocalPathException.js~MissingLambdaLocalPathException.html">MissingLambdaLocalPathException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
@@ -83,8 +86,9 @@ export class LambdaResponse extends Response {
       return this._data;
     }
 
-    if (this._rawData) {
-      var response = JSON.parse(this._rawData.Payload);
+    if (this._rawData &amp;&amp; !this._request.async) {
+      let response = this._getPayload();
+
       if (response &amp;&amp; typeof response.errorMessage === &apos;undefined&apos;) {
         this._data = response;
       }
@@ -104,9 +108,14 @@ export class LambdaResponse extends Response {
     if (this._rawError) {
       this._error = this._rawError;
     } else {
-      var response = JSON.parse(this._rawData.Payload);
-      if (response &amp;&amp; typeof response.errorMessage !== &apos;undefined&apos;) {
-        this._error = response.errorMessage;
+      if (!this._request.async) {
+        let response = this._getPayload();
+
+        if (response &amp;&amp; typeof response.errorMessage !== &apos;undefined&apos;) {
+          this._error = response.errorMessage;
+        }
+      } else {
+        this._error = &apos;Unknown async invocation error&apos;;
       }
     }
 
@@ -124,11 +133,16 @@ export class LambdaResponse extends Response {
     if (this._rawError) {
       this._errorType = (this._rawError &amp;&amp; this._rawError.name) ? this._rawError.name : &apos;Error&apos;;
     } else {
-      var response = JSON.parse(this._rawData.Payload);
-      if (response &amp;&amp; typeof response.errorType !== &apos;undefined&apos;) {
-        this._errorType = response.errorType;
+      if (!this._request.async) {
+        let response = this._getPayload();
+
+        if (response &amp;&amp; typeof response.errorType !== &apos;undefined&apos;) {
+          this._errorType = response.errorType;
+        } else {
+          this._errorType = &apos;Error&apos;;
+        }
       } else {
-        this._errorType = &apos;Error&apos;;
+        this._errorType = &apos;AsyncInvocationError&apos;;
       }
     }
 
@@ -144,10 +158,25 @@ export class LambdaResponse extends Response {
     }
 
     if (this._rawData) {
-      this._statusCode = this._rawData.StatusCode;
+      this._statusCode = this._rawData.StatusCode || this._rawData.Status;
     }
 
     return this._statusCode;
+  }
+
+  /**
+   * @returns {Object|null}
+   * @private
+   */
+  _getPayload() {
+    if (typeof this._rawData === &apos;object&apos; &amp;&amp;
+      this._rawData.hasOwnProperty(&apos;Payload&apos;)) {
+      let payload = this._rawData.Payload;
+
+      return typeof payload === &apos;string&apos; ? JSON.parse(payload) : payload;
+    }
+
+    return null;
   }
 }
 </code></pre>

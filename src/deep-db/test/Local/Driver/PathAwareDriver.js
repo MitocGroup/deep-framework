@@ -2,25 +2,11 @@
 
 import chai from 'chai';
 import {PathAwareDriver} from '../../../lib.compiled/Local/Driver/PathAwareDriver';
-
-class PathAwareDriverTest extends PathAwareDriver {
-  constructor(path = PathAwareDriver.DBPath, port = PathAwareDriver.DEFAULT_PORT) {
-    super(path, port);
-  }
-
-  _stop(cb) {
-    this._running = false;
-    return 'stopped';
-  }
-
-  _start(cb, tts) {
-    this._running = true;
-    return 'started';
-  }
-}
+import {PathAwareDriverMock} from '../../../test/Mock/Driver/PathAwareDriverMock';
+import nodeFS from 'fs';
 
 suite('Local/Driver/PathAwareDriver', function() {
-  let pathAwareDriver = new PathAwareDriverTest();
+  let pathAwareDriver = new PathAwareDriverMock();
 
   test('Class PathAwareDriver exists in Local/Driver/PathAwareDriver', function() {
     chai.expect(typeof PathAwareDriver).to.equal('function');
@@ -33,8 +19,39 @@ suite('Local/Driver/PathAwareDriver', function() {
   test('Check path getter/setter returns/sets _path value', function() {
     pathAwareDriver.path = PathAwareDriver.DBPath;
     chai.expect(pathAwareDriver.path).to.be.equal(PathAwareDriver.DBPath);
+
     let newPath = 'newPath';
     pathAwareDriver.path = newPath;
     chai.expect(pathAwareDriver.path).to.be.equal(newPath);
   });
+
+  test('Check path getter/setter returns/sets _path value', function() {
+    pathAwareDriver.path = PathAwareDriver.DBPath;
+    chai.expect(pathAwareDriver.path).to.be.equal(PathAwareDriver.DBPath);
+
+    let newPath = 'newPath';
+    pathAwareDriver.path = newPath;
+    chai.expect(pathAwareDriver.path).to.be.equal(newPath);
+  });
+
+  test('Check DBPath() static method returns DBPath dir', function() {
+    let actualResult = PathAwareDriver.DBPath;
+
+    chai.expect(actualResult).to.contains('/PathAwareDriver');
+    chai.expect(nodeFS.existsSync(actualResult)).to.equal(true);
+  });
+
+  test('Check DBPath() static method returns creates DBPath dir and returns it',
+    function() {
+      //remove directory
+      let actualResult = PathAwareDriver.DBPath;
+
+      nodeFS.rmdirSync(actualResult);
+      chai.expect(nodeFS.existsSync(actualResult)).to.equal(false);
+
+      actualResult = PathAwareDriver.DBPath;
+      chai.expect(actualResult).to.contains('/PathAwareDriver');
+      chai.expect(nodeFS.existsSync(actualResult)).to.equal(true);
+    }
+  );
 });

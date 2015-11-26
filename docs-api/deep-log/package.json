@@ -1,6 +1,6 @@
 {
   "name": "deep-log",
-  "version": "1.1.2",
+  "version": "1.2.2",
   "description": "DEEP Log Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -37,6 +37,10 @@
     {
       "name": "Marcel Goria",
       "email": "mgoria@mitocgroup.com"
+    },
+    {
+      "name": "Vitali Cernomschi",
+      "email": "vcernomschi@mitocgroup.com"
     }
   ],
   "main": "lib.compiled/bootstrap.js",
@@ -52,14 +56,15 @@
     "prepublish": "npm run compile"
   },
   "dependencies": {
-    "deep-kernel": "1.1.*",
-    "deep-core": "1.1.*",
-    "raven": "0.7.*"
+    "deep-kernel": "^1.x.x",
+    "deep-core": "^1.x.x",
+    "raven": "^0.7.x"
   },
   "devDependencies": {
-    "chai": "3.2.*",
-    "sinon": "1.17.*",
-    "sinon-chai": "2.8.*"
+    "chai": "^3.2.x",
+    "sinon": "^1.17.x",
+    "sinon-chai": "^2.8.x",
+    "proxyquire": "^1.7.x"
   },
   "preferGlobal": true,
   "analyze": true
