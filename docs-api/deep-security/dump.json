@@ -538,6 +538,70 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/Exception/DescribeIdentityException.js",
+    "memberof": null,
+    "longname": "lib/Exception/DescribeIdentityException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 11/23/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when describe cognito identity failed\n */\nexport class DescribeIdentityException extends Exception {\n  /**\n   * @param {String} identityId\n   * @param {Object} error\n   */\n  constructor(identityId, error) {\n    super(`Error on describing cognito identity ${identityId}. ${error}`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "DescribeIdentityException",
+    "memberof": "lib/Exception/DescribeIdentityException.js",
+    "longname": "lib/Exception/DescribeIdentityException.js~DescribeIdentityException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-security/lib/Exception/DescribeIdentityException.js",
+    "importStyle": "{DescribeIdentityException}",
+    "description": "Thrown when describe cognito identity failed",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/DescribeIdentityException.js~DescribeIdentityException",
+    "longname": "lib/Exception/DescribeIdentityException.js~DescribeIdentityException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityId",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/Exception/Exception.js",
     "memberof": null,
     "longname": "lib/Exception/Exception.js",
@@ -1332,7 +1396,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 09/01/15.\n */\n\n'use strict';\n\nimport {Token} from './Token';\n\n/**\n * Security token holds details about logged user\n */\nexport class LocalToken extends Token {\n  /**\n   * @param args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadCredentials(callback = () => {}) {\n    // use provider user id instead of cognito identity id for local backend\n    this._identityId = this._providerUserId;\n\n    callback(null, this);\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 09/01/15.\n */\n\n'use strict';\n\nimport {Token} from './Token';\n\n/**\n * Security token holds details about logged user\n */\nexport class LocalToken extends Token {\n  /**\n   * @param args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadCredentials(callback = () => {}) {\n    // use provider user id instead of cognito identity id for local backend\n    this._identityId = this.identityProvider ? this.identityProvider.userId : null;\n\n    callback(null, this);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1967,7 +2031,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 6/23/15.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AuthException} from './Exception/AuthException';\nimport {CredentialsManager} from './CredentialsManager';\n\n/**\n * Security token holds details about logged user\n */\nexport class Token {\n  /**\n   * @param {String} identityPoolId\n   */\n  constructor(identityPoolId) {\n    this._identityPoolId = identityPoolId;\n\n    this._identityProvider = null;\n    this._lambdaContext = null;\n    this._user = null;\n    this._userProvider = null;\n    this._credentials = null;\n\n    this._credsManager = new CredentialsManager(identityPoolId);\n\n    this._setupAwsCognitoConfig();\n  }\n\n  /**\n   * Setup region for CognitoIdentity and CognitoSync services\n   *\n   * @private\n   */\n  _setupAwsCognitoConfig() {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let cognitoRegion = Token.getRegionFromIdentityPoolId(this._identityPoolId);\n\n    AWS.config.update({\n      cognitoidentity: {region: cognitoRegion},\n      cognitosync: {region: cognitoRegion},\n    });\n  }\n\n  /**\n   * @returns {IdentityProvider}\n   */\n  get identityProvider() {\n    return this._identityProvider;\n  }\n\n  /**\n   * @param {IdentityProvider} provider\n   */\n  set identityProvider(provider) {\n    this._identityProvider = provider;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get lambdaContext() {\n    return this._lambdaContext;\n  }\n\n  /**\n   * @param {Object} lambdaContext\n   */\n  set lambdaContext(lambdaContext) {\n    this._lambdaContext = lambdaContext;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadCredentials(callback = () => {}) {\n    // avoid refreshing or loading credentials for each request\n    if (this._validCredentials()) {\n      callback(null, this.credentials);\n      return;\n    }\n\n    if (this.lambdaContext) {\n      this._credsManager.loadCredentials(this.identityId, (error, credentials) => {\n        if (error) {\n          callback(error, null);\n          return;\n        }\n\n        this._credentials = credentials;\n\n        callback(null, this._credentials);\n      });\n    } else {\n      let cognitoParams = {\n        IdentityPoolId: this._identityPoolId,\n      };\n\n      if (this.identityProvider) {\n        cognitoParams.Logins = {};\n        cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;\n      }\n\n      this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);\n\n      this._credentials.refresh((error) => {\n        if (error) {\n          callback(new AuthException(error), null);\n          return;\n        }\n\n        AWS.config.credentials = this._credentials;\n\n        this._credsManager.saveCredentials(this._credentials, (error, record) => {\n          if (error) {\n            callback(error, null);\n            return;\n          }\n\n          callback(null, this._credentials);\n        });\n      });\n    }\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @returns {String}\n   */\n  static getRegionFromIdentityPoolId(identityPoolId) {\n    return identityPoolId.split(':')[0];\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identityId() {\n    let identityId = null;\n\n    if (this.credentials && this.credentials.hasOwnProperty('IdentityId')) {\n      identityId = this.credentials.IdentityId;\n    } else if (this.lambdaContext) {\n      identityId = this.lambdaContext.identity.cognitoIdentityId;\n    }\n\n    return identityId;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get credentials() {\n    return this._credentials;\n  }\n\n  /**\n   * @returns {boolean}\n   * @private\n   */\n  _validCredentials() {\n    return this.credentials && this.expireDateTime > new Date();\n  }\n\n  /**\n   * @returns {Date}\n   */\n  get expireDateTime() {\n    let dateTime = null;\n\n    if (this.credentials.hasOwnProperty('expireTime')) {\n      dateTime = this.credentials.expireTime instanceof Date ?\n        this.credentials.expireTime :\n        new Date(this.credentials.expireTime);\n    }\n\n    return dateTime;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isAnonymous() {\n    return !this.identityProvider && !this.lambdaContext;\n  }\n\n  /**\n   * @param {UserProvider} userProvider\n   */\n  set userProvider(userProvider) {\n    this._userProvider = userProvider;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  getUser(callback) {\n    if (this.isAnonymous) {\n      callback(null);\n      return;\n    }\n\n    if (!this._user) {\n      this._userProvider.loadUserByIdentityId(this.identityId, (user) => {\n        if (user) {\n          this._user = user;\n        }\n\n        callback(user);\n      });\n\n      return;\n    }\n\n    callback(this._user);\n  }\n\n  /**\n   * @param {String} identityPoolId\n   */\n  static create(identityPoolId) {\n    return new this(identityPoolId);\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {IdentityProvider} identityProvider\n   */\n  static createFromIdentityProvider(identityPoolId, identityProvider) {\n    let token = new this(identityPoolId);\n    token.identityProvider = identityProvider;\n\n    return token;\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {Object} lambdaContext\n   */\n  static createFromLambdaContext(identityPoolId, lambdaContext) {\n    let token = new this(identityPoolId);\n    token.lambdaContext = lambdaContext;\n\n    return token;\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 6/23/15.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AuthException} from './Exception/AuthException';\nimport {DescribeIdentityException} from './Exception/DescribeIdentityException';\nimport {CredentialsManager} from './CredentialsManager';\n\n/**\n * Security token holds details about logged user\n */\nexport class Token {\n  /**\n   * @param {String} identityPoolId\n   */\n  constructor(identityPoolId) {\n    this._identityPoolId = identityPoolId;\n\n    this._identityProvider = null;\n    this._lambdaContext = null;\n    this._user = null;\n    this._userProvider = null;\n    this._credentials = null;\n    this._identityMetadata = null;\n\n    this._credsManager = new CredentialsManager(identityPoolId);\n\n    this._setupAwsCognitoConfig();\n  }\n\n  /**\n   * Setup region for CognitoIdentity and CognitoSync services\n   *\n   * @private\n   */\n  _setupAwsCognitoConfig() {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let cognitoRegion = Token.getRegionFromIdentityPoolId(this._identityPoolId);\n\n    AWS.config.update({\n      cognitoidentity: {region: cognitoRegion},\n      cognitosync: {region: cognitoRegion},\n    });\n  }\n\n  /**\n   * @returns {IdentityProvider}\n   */\n  get identityProvider() {\n    return this._identityProvider;\n  }\n\n  /**\n   * @param {IdentityProvider} provider\n   */\n  set identityProvider(provider) {\n    this._identityProvider = provider;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get lambdaContext() {\n    return this._lambdaContext;\n  }\n\n  /**\n   * @param {Object} lambdaContext\n   */\n  set lambdaContext(lambdaContext) {\n    this._lambdaContext = lambdaContext;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadCredentials(callback = () => {}) {\n    // avoid refreshing or loading credentials for each request\n    if (this._validCredentials()) {\n      callback(null, this.credentials);\n      return;\n    }\n\n    if (this.lambdaContext) {\n      this._credsManager.loadCredentials(this.identityId, (error, credentials) => {\n        if (error) {\n          callback(error, null);\n          return;\n        }\n\n        this._credentials = credentials;\n\n        callback(null, this._credentials);\n      });\n    } else {\n      let cognitoParams = {\n        IdentityPoolId: this._identityPoolId,\n      };\n\n      if (this.identityProvider) {\n        cognitoParams.Logins = {};\n        cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;\n      }\n\n      this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);\n\n      this._credentials.refresh((error) => {\n        if (error) {\n          callback(new AuthException(error), null);\n          return;\n        }\n\n        AWS.config.credentials = this._credentials;\n\n        this._credsManager.saveCredentials(this._credentials, (error, record) => {\n          if (error) {\n            callback(error, null);\n            return;\n          }\n\n          callback(null, this._credentials);\n        });\n      });\n    }\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @returns {String}\n   */\n  static getRegionFromIdentityPoolId(identityPoolId) {\n    return identityPoolId.split(':')[0];\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identityId() {\n    let identityId = null;\n\n    if (this.credentials && this.credentials.hasOwnProperty('IdentityId')) {\n      identityId = this.credentials.IdentityId;\n    } else if (this.lambdaContext) {\n      identityId = this.lambdaContext.identity.cognitoIdentityId;\n    }\n\n    return identityId;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get credentials() {\n    return this._credentials;\n  }\n\n  /**\n   * @returns {boolean}\n   * @private\n   */\n  _validCredentials() {\n    return this.credentials && this.expireDateTime > new Date();\n  }\n\n  /**\n   * @returns {Date}\n   */\n  get expireDateTime() {\n    let dateTime = null;\n\n    if (this.credentials.hasOwnProperty('expireTime')) {\n      dateTime = this.credentials.expireTime instanceof Date ?\n        this.credentials.expireTime :\n        new Date(this.credentials.expireTime);\n    }\n\n    return dateTime;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isAnonymous() {\n    return (!this.identityProvider && !this.lambdaContext) || this._identityLogins.length <= 0;\n  }\n\n  /**\n   * @param {UserProvider} userProvider\n   */\n  set userProvider(userProvider) {\n    this._userProvider = userProvider;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  getUser(callback) {\n    this._describeIdentity(this.identityId, () => {\n      if (this.isAnonymous) {\n        callback(null);\n        return;\n      }\n\n      if (!this._user) {\n        this._userProvider.loadUserByIdentityId(this.identityId, (user) => {\n          this._user = user;\n\n          callback(this._user);\n        });\n\n        return;\n      }\n\n      callback(this._user);\n    });\n  }\n\n  /**\n   * @param {String} identityPoolId\n   */\n  static create(identityPoolId) {\n    return new this(identityPoolId);\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {IdentityProvider} identityProvider\n   */\n  static createFromIdentityProvider(identityPoolId, identityProvider) {\n    let token = new this(identityPoolId);\n    token.identityProvider = identityProvider;\n\n    return token;\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {Object} lambdaContext\n   */\n  static createFromLambdaContext(identityPoolId, lambdaContext) {\n    let token = new this(identityPoolId);\n    token.lambdaContext = lambdaContext;\n\n    return token;\n  }\n\n  /**\n   * @param {String} identityId\n   * @param {Function} callback\n   * @private\n   */\n  _describeIdentity(identityId, callback) {\n    if (this._identityMetadata) {\n      callback(this._identityMetadata);\n      return;\n    }\n\n    let cognitoIdentity = new AWS.CognitoIdentity();\n\n    cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) => {\n      if (error) {\n        throw new DescribeIdentityException(identityId, error);\n      }\n\n      this._identityMetadata = data;\n\n      callback(this._identityMetadata);\n    });\n  }\n\n  /**\n   * @returns {Array}\n   * @private\n   */\n  get _identityLogins() {\n    return this._identityMetadata && this._identityMetadata.hasOwnProperty('Logins') ?\n      this._identityMetadata.Logins :\n      [];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1981,7 +2045,7 @@
     "importPath": "deep-security/lib/Token.js",
     "importStyle": "{Token}",
     "description": "Security token holds details about logged user",
-    "lineNumber": 14,
+    "lineNumber": 15,
     "interface": false
   },
   {
@@ -1993,7 +2057,7 @@
     "longname": "lib/Token.js~Token#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 19,
     "params": [
       {
         "nullable": null,
@@ -2017,7 +2081,7 @@
     "longname": "lib/Token.js~Token#_identityPoolId",
     "access": null,
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 20,
     "undocument": true,
     "type": {
       "types": [
@@ -2034,7 +2098,7 @@
     "longname": "lib/Token.js~Token#_identityProvider",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 22,
     "undocument": true,
     "type": {
       "types": [
@@ -2051,7 +2115,7 @@
     "longname": "lib/Token.js~Token#_lambdaContext",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -2068,7 +2132,7 @@
     "longname": "lib/Token.js~Token#_user",
     "access": null,
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -2085,7 +2149,7 @@
     "longname": "lib/Token.js~Token#_userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 25,
     "undocument": true,
     "type": {
       "types": [
@@ -2102,7 +2166,24 @@
     "longname": "lib/Token.js~Token#_credentials",
     "access": null,
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_identityMetadata",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_identityMetadata",
+    "access": null,
+    "description": null,
+    "lineNumber": 27,
     "undocument": true,
     "type": {
       "types": [
@@ -2119,7 +2200,7 @@
     "longname": "lib/Token.js~Token#_credsManager",
     "access": null,
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 29,
     "undocument": true,
     "type": {
       "types": [
@@ -2136,7 +2217,7 @@
     "longname": "lib/Token.js~Token#_setupAwsCognitoConfig",
     "access": "private",
     "description": "Setup region for CognitoIdentity and CognitoSync services",
-    "lineNumber": 37,
+    "lineNumber": 39,
     "params": [],
     "generator": false
   },
@@ -2149,7 +2230,7 @@
     "longname": "lib/Token.js~Token#identityProvider",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 54,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2180,7 +2261,7 @@
     "longname": "lib/Token.js~Token#identityProvider",
     "access": null,
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 61,
     "params": [
       {
         "nullable": null,
@@ -2209,7 +2290,7 @@
     "longname": "lib/Token.js~Token#_identityProvider",
     "access": null,
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 62,
     "undocument": true,
     "type": {
       "types": [
@@ -2226,7 +2307,7 @@
     "longname": "lib/Token.js~Token#lambdaContext",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 68,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2257,7 +2338,7 @@
     "longname": "lib/Token.js~Token#lambdaContext",
     "access": null,
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 75,
     "params": [
       {
         "nullable": null,
@@ -2286,7 +2367,7 @@
     "longname": "lib/Token.js~Token#_lambdaContext",
     "access": null,
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 76,
     "undocument": true,
     "type": {
       "types": [
@@ -2303,7 +2384,7 @@
     "longname": "lib/Token.js~Token#loadCredentials",
     "access": null,
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 82,
     "params": [
       {
         "nullable": null,
@@ -2327,7 +2408,7 @@
     "longname": "lib/Token.js~Token#_credentials",
     "access": null,
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 96,
     "undocument": true,
     "type": {
       "types": [
@@ -2344,7 +2425,7 @@
     "longname": "lib/Token.js~Token#_credentials",
     "access": null,
     "description": null,
-    "lineNumber": 108,
+    "lineNumber": 110,
     "undocument": true,
     "type": {
       "types": [
@@ -2361,7 +2442,7 @@
     "longname": "lib/Token.js~Token.getRegionFromIdentityPoolId",
     "access": null,
     "description": null,
-    "lineNumber": 134,
+    "lineNumber": 136,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2399,7 +2480,7 @@
     "longname": "lib/Token.js~Token#identityId",
     "access": null,
     "description": null,
-    "lineNumber": 141,
+    "lineNumber": 143,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2430,7 +2511,7 @@
     "longname": "lib/Token.js~Token#credentials",
     "access": null,
     "description": null,
-    "lineNumber": 156,
+    "lineNumber": 158,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2461,7 +2542,7 @@
     "longname": "lib/Token.js~Token#_validCredentials",
     "access": "private",
     "description": null,
-    "lineNumber": 164,
+    "lineNumber": 166,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2488,7 +2569,7 @@
     "longname": "lib/Token.js~Token#expireDateTime",
     "access": null,
     "description": null,
-    "lineNumber": 171,
+    "lineNumber": 173,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2519,7 +2600,7 @@
     "longname": "lib/Token.js~Token#isAnonymous",
     "access": null,
     "description": null,
-    "lineNumber": 186,
+    "lineNumber": 188,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2550,7 +2631,7 @@
     "longname": "lib/Token.js~Token#userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 193,
+    "lineNumber": 195,
     "params": [
       {
         "nullable": null,
@@ -2579,7 +2660,7 @@
     "longname": "lib/Token.js~Token#_userProvider",
     "access": null,
     "description": null,
-    "lineNumber": 194,
+    "lineNumber": 196,
     "undocument": true,
     "type": {
       "types": [
@@ -2596,7 +2677,7 @@
     "longname": "lib/Token.js~Token#getUser",
     "access": null,
     "description": null,
-    "lineNumber": 200,
+    "lineNumber": 202,
     "params": [
       {
         "nullable": null,
@@ -2620,7 +2701,7 @@
     "longname": "lib/Token.js~Token#_user",
     "access": null,
     "description": null,
-    "lineNumber": 209,
+    "lineNumber": 211,
     "undocument": true,
     "type": {
       "types": [
@@ -2637,7 +2718,7 @@
     "longname": "lib/Token.js~Token.create",
     "access": null,
     "description": null,
-    "lineNumber": 224,
+    "lineNumber": 226,
     "params": [
       {
         "nullable": null,
@@ -2666,7 +2747,7 @@
     "longname": "lib/Token.js~Token.createFromIdentityProvider",
     "access": null,
     "description": null,
-    "lineNumber": 232,
+    "lineNumber": 234,
     "params": [
       {
         "nullable": null,
@@ -2705,7 +2786,7 @@
     "longname": "lib/Token.js~Token.createFromLambdaContext",
     "access": null,
     "description": null,
-    "lineNumber": 243,
+    "lineNumber": 245,
     "params": [
       {
         "nullable": null,
@@ -2729,6 +2810,88 @@
       }
     ],
     "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_describeIdentity",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_describeIdentity",
+    "access": "private",
+    "description": null,
+    "lineNumber": 257,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "identityId",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_identityMetadata",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_identityMetadata",
+    "access": null,
+    "description": null,
+    "lineNumber": 270,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "_identityLogins",
+    "memberof": "lib/Token.js~Token",
+    "longname": "lib/Token.js~Token#_identityLogins",
+    "access": "private",
+    "description": null,
+    "lineNumber": 280,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
       "types": [
         "*"
       ]

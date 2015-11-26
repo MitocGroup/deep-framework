@@ -66,6 +66,8 @@
 
 &apos;use strict&apos;;
 
+import qs from &apos;qs&apos;;
+
 /**
  * Request received by the lambda context
  */
@@ -73,8 +75,8 @@ export class Request {
   /**
    * @param {*} data
    */
-  constructor(data) {
-    this._data = data || {};
+  constructor(data = {}) {
+    this._data = typeof data === &apos;object&apos; ? qs.parse(data) : data;
 
     this._registerDataAsParams();
   }

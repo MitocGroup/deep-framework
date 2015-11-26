@@ -1,6 +1,6 @@
 {
   "name": "deep-core",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "DEEP Core Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -52,17 +52,18 @@
     "url": "https://github.com/MitocGroup/deep.git"
   },
   "scripts": {
-    "coverage": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
-    "test": "mocha --ui tdd --compilers js:mocha-babel --recursive --reporter spec",
+    "test": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile"
   },
-  "dependencies": {},
+  "dependencies": {
+    "qs": "^5.2.x"
+  },
   "devDependencies": {
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
     "sinon-chai": "^2.8.x"
   },
-  "preferGlobal": true,
+  "preferGlobal": false,
   "analyze": true
 }

@@ -2723,7 +2723,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\n/**\n * Request received by the lambda context\n */\nexport class Request {\n  /**\n   * @param {*} data\n   */\n  constructor(data) {\n    this._data = data || {};\n\n    this._registerDataAsParams();\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsParams() {\n    for (let key in this._data) {\n      if (!this._data.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._data[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_data', {\n      configurable: false,\n      enumerable: false,\n    });\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @param {String} name\n   * @param {String|Object|null} defaultValue\n   *\n   * @returns {String|Object|null}\n   */\n  getParam(name, defaultValue = undefined) {\n    return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport qs from 'qs';\n\n/**\n * Request received by the lambda context\n */\nexport class Request {\n  /**\n   * @param {*} data\n   */\n  constructor(data = {}) {\n    this._data = typeof data === 'object' ? qs.parse(data) : data;\n\n    this._registerDataAsParams();\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsParams() {\n    for (let key in this._data) {\n      if (!this._data.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._data[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_data', {\n      configurable: false,\n      enumerable: false,\n    });\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @param {String} name\n   * @param {String|Object|null} defaultValue\n   *\n   * @returns {String|Object|null}\n   */\n  getParam(name, defaultValue = undefined) {\n    return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2737,7 +2737,7 @@
     "importPath": "deep-core/lib/AWS/Lambda/Request.js",
     "importStyle": "{Request}",
     "description": "Request received by the lambda context",
-    "lineNumber": 10,
+    "lineNumber": 12,
     "interface": false
   },
   {
@@ -2749,7 +2749,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 16,
     "params": [
       {
         "nullable": null,
@@ -2773,7 +2773,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#_data",
     "access": null,
     "description": null,
-    "lineNumber": 15,
+    "lineNumber": 17,
     "undocument": true,
     "type": {
       "types": [
@@ -2790,7 +2790,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#_registerDataAsParams",
     "access": "private",
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 25,
     "params": [],
     "generator": false
   },
@@ -2803,7 +2803,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#data",
     "access": null,
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 49,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2834,7 +2834,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#getParam",
     "access": null,
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 59,
     "unknown": [
       {
         "tagName": "@returns",
