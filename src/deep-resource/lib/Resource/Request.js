@@ -399,7 +399,7 @@ export class Request {
    * @private
    */
   _sendExternal(callback = () => {}) {
-    Http[this._method.toLowerCase()](this._action.source.original)
+    Http[Request._httpRealMethod(this._method)](this._action.source.original)
       .send(this.payload)
       .end((error, response) => {
         callback(new SuperagentResponse(this, response, error));
@@ -461,7 +461,7 @@ export class Request {
 
       let signature = aws4.sign(opsToSign, credentials);
 
-      let request = Http[httpMethod](url, payload)
+      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)
         .set('Content-Type', 'application/json; charset=UTF-8')
         .set('X-Amz-Date', signature.headers['X-Amz-Date'])
         .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
@@ -473,6 +473,22 @@ export class Request {
 
       callback(request);
     });
+  }
+
+  /**
+   * @param {String} httpMethod
+   * @returns {String}
+   * @private
+   */
+  static _httpRealMethod(httpMethod) {
+    let method = httpMethod.toLowerCase();
+
+    // @see https://visionmedia.github.io/superagent/
+    if (method === 'delete') {
+      method = 'del';
+    }
+
+    return method;
   }
 
   /**
