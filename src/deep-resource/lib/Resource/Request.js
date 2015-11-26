@@ -370,14 +370,11 @@ export class Request {
       region: this._action.region,
     };
 
-    let payloadKey = this._async ? 'InvokeArgs' : 'Payload';
-    let invokeMethod = this._async ? 'invokeAsync' : 'invoke';
-
     let invocationParameters = {
       FunctionName: this._action.source.original,
+      Payload: JSON.stringify(this.payload),
+      InvocationType: this._async ? 'Event' : 'RequestResponse',
     };
-
-    invocationParameters[payloadKey] = JSON.stringify(this.payload);
 
     this._loadSecurityCredentials((error, credentials) => {
       // use cognito identity credentials if present
@@ -388,7 +385,7 @@ export class Request {
 
       this._lambda = new AWS.Lambda(options);
 
-      this._lambda[invokeMethod](invocationParameters, (error, data) => {
+      this._lambda.invoke(invocationParameters, (error, data) => {
         callback(new LambdaResponse(this, data, error));
       });
     });
