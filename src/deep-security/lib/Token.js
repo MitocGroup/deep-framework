@@ -6,6 +6,7 @@
 
 import AWS from 'aws-sdk';
 import {AuthException} from './Exception/AuthException';
+import {DescribeIdentityException} from './Exception/DescribeIdentityException';
 import {CredentialsManager} from './CredentialsManager';
 
 /**
@@ -23,6 +24,7 @@ export class Token {
     this._user = null;
     this._userProvider = null;
     this._credentials = null;
+    this._identityMetadata = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -184,7 +186,7 @@ export class Token {
    * @returns {Boolean}
    */
   get isAnonymous() {
-    return !this.identityProvider && !this.lambdaContext;
+    return (!this.identityProvider && !this.lambdaContext) || this._identityLogins.length <= 0;
   }
 
   /**
@@ -198,24 +200,24 @@ export class Token {
    * @param {Function} callback
    */
   getUser(callback) {
-    if (this.isAnonymous) {
-      callback(null);
-      return;
-    }
+    this._describeIdentity(this.identityId, () => {
+      if (this.isAnonymous) {
+        callback(null);
+        return;
+      }
 
-    if (!this._user) {
-      this._userProvider.loadUserByIdentityId(this.identityId, (user) => {
-        if (user) {
+      if (!this._user) {
+        this._userProvider.loadUserByIdentityId(this.identityId, (user) => {
           this._user = user;
-        }
 
-        callback(user);
-      });
+          callback(this._user);
+        });
 
-      return;
-    }
+        return;
+      }
 
-    callback(this._user);
+      callback(this._user);
+    });
   }
 
   /**
@@ -245,5 +247,39 @@ export class Token {
     token.lambdaContext = lambdaContext;
 
     return token;
+  }
+
+  /**
+   * @param {String} identityId
+   * @param {Function} callback
+   * @private
+   */
+  _describeIdentity(identityId, callback) {
+    if (this._identityMetadata) {
+      callback(this._identityMetadata);
+      return;
+    }
+
+    let cognitoIdentity = new AWS.CognitoIdentity();
+
+    cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) => {
+      if (error) {
+        throw new DescribeIdentityException(identityId, error);
+      }
+
+      this._identityMetadata = data;
+
+      callback(this._identityMetadata);
+    });
+  }
+
+  /**
+   * @returns {Array}
+   * @private
+   */
+  get _identityLogins() {
+    return this._identityMetadata && this._identityMetadata.hasOwnProperty('Logins') ?
+      this._identityMetadata.Logins :
+      [];
   }
 }

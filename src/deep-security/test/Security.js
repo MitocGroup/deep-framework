@@ -4,6 +4,7 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Security} from '../lib.compiled/Security';
+import {UserProvider} from '../lib.compiled/UserProvider';
 import {MissingLoginProviderException} from '../lib.compiled/Exception/MissingLoginProviderException';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';

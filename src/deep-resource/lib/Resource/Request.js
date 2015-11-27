@@ -366,9 +366,9 @@ export class Request {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
-    this._lambda = new AWS.Lambda({
+    let options = {
       region: this._action.region,
-    });
+    };
 
     let payloadKey = this._async ? 'InvokeArgs' : 'Payload';
     let invokeMethod = this._async ? 'invokeAsync' : 'invoke';
@@ -379,9 +379,18 @@ export class Request {
 
     invocationParameters[payloadKey] = JSON.stringify(this.payload);
 
+    this._loadSecurityCredentials((error, credentials) => {
+      // use cognito identity credentials if present
+      // if not, fallback to lambda execution role permissions
+      if (!error && credentials) {
+        options.credentials = credentials;
+      }
 
-    this._lambda[invokeMethod](invocationParameters, (error, data) => {
-      callback(new LambdaResponse(this, data, error));
+      this._lambda = new AWS.Lambda(options);
+
+      this._lambda[invokeMethod](invocationParameters, (error, data) => {
+        callback(new LambdaResponse(this, data, error));
+      });
     });
 
     return this;
@@ -448,7 +457,11 @@ export class Request {
         break;
     }
 
-    this._loadSecurityCredentials((credentials) => {
+    this._loadSecurityCredentials((error, credentials) => {
+      if (error) {
+        throw error;
+      }
+
       let signature = aws4.sign(opsToSign, credentials);
 
       let request = Http[httpMethod](url, payload)
@@ -466,27 +479,32 @@ export class Request {
   }
 
   /**
-   * @returns {Object}
+   * @returns {Request}
    * @private
    */
   _loadSecurityCredentials(callback) {
     let securityService = this._action.resource.security;
 
     if (!(securityService instanceof Security)) {
-      throw new MissingSecurityServiceException();
+      callback(new MissingSecurityServiceException(), null);
+      return this;
     }
 
     if (!securityService.token) {
-      throw new NotAuthenticatedException();
+      callback(new NotAuthenticatedException(), null);
+      return this;
     }
 
-    return securityService.token.loadCredentials((error, credentials) => {
+    securityService.token.loadCredentials((error, credentials) => {
       if (error) {
-        throw new LoadCredentialsException(error);
+        callback(new LoadCredentialsException(error), null);
+        return;
       }
 
-      callback(credentials);
+      callback(null, credentials);
     });
+
+    return this;
   }
 
   /**

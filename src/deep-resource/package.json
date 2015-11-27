@@ -1,6 +1,6 @@
 {
   "name": "deep-resource",
-  "version": "1.2.4",
+  "version": "1.2.6",
   "description": "DEEP Resource Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -61,7 +61,8 @@
   "scripts": {
     "test": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "pretest": "npm link deep-kernel deep-core deep-cache deep-security"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
