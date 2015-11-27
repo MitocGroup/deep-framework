@@ -467,7 +467,7 @@ export class Request {
         .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
         .set('Authorization', signature.headers.Authorization);
 
-      if (signature.headers.hasOwnProperty('Content-Length')) {
+      if (this.action.resource.isBackend && signature.headers.hasOwnProperty('Content-Length')) {
         request.set('Content-Length', signature.headers['Content-Length']);
       }
 

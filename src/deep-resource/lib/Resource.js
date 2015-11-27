@@ -117,7 +117,8 @@ export class Resource extends Kernel.ContainerAware {
           microservice.rawResources[resourceName]
         );
 
-        resource.localBackend = this._localBackend;
+        resource.localBackend = this.localBackend;
+        resource.isBackend = this.kernel.isBackend;
 
         this._resources[microservice.identifier][resourceName] = resource;
 
