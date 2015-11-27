@@ -370,14 +370,11 @@ export class Request {
       region: this._action.region,
     };
 
-    let payloadKey = this._async ? 'InvokeArgs' : 'Payload';
-    let invokeMethod = this._async ? 'invokeAsync' : 'invoke';
-
     let invocationParameters = {
       FunctionName: this._action.source.original,
+      Payload: JSON.stringify(this.payload),
+      InvocationType: this._async ? 'Event' : 'RequestResponse',
     };
-
-    invocationParameters[payloadKey] = JSON.stringify(this.payload);
 
     this._loadSecurityCredentials((error, credentials) => {
       // use cognito identity credentials if present
@@ -388,7 +385,7 @@ export class Request {
 
       this._lambda = new AWS.Lambda(options);
 
-      this._lambda[invokeMethod](invocationParameters, (error, data) => {
+      this._lambda.invoke(invocationParameters, (error, data) => {
         callback(new LambdaResponse(this, data, error));
       });
     });
@@ -402,7 +399,7 @@ export class Request {
    * @private
    */
   _sendExternal(callback = () => {}) {
-    Http[this._method.toLowerCase()](this._action.source.original)
+    Http[Request._httpRealMethod(this._method)](this._action.source.original)
       .send(this.payload)
       .end((error, response) => {
         callback(new SuperagentResponse(this, response, error));
@@ -464,18 +461,34 @@ export class Request {
 
       let signature = aws4.sign(opsToSign, credentials);
 
-      let request = Http[httpMethod](url, payload)
+      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)
         .set('Content-Type', 'application/json; charset=UTF-8')
         .set('X-Amz-Date', signature.headers['X-Amz-Date'])
         .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
         .set('Authorization', signature.headers.Authorization);
 
-      if (signature.headers.hasOwnProperty('Content-Length')) {
+      if (this.action.resource.isBackend && signature.headers.hasOwnProperty('Content-Length')) {
         request.set('Content-Length', signature.headers['Content-Length']);
       }
 
       callback(request);
     });
+  }
+
+  /**
+   * @param {String} httpMethod
+   * @returns {String}
+   * @private
+   */
+  static _httpRealMethod(httpMethod) {
+    let method = httpMethod.toLowerCase();
+
+    // @see https://visionmedia.github.io/superagent/
+    if (method === 'delete') {
+      method = 'del';
+    }
+
+    return method;
   }
 
   /**

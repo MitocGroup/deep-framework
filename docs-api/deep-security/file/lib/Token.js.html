@@ -38,6 +38,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/UserProvider.js~UserProvider.html">UserProvider</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/AuthException.js~AuthException.html">AuthException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException.html">CreateCognitoDatasetException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DescribeIdentityException.js~DescribeIdentityException.html">DescribeIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException.html">GetCognitoRecordException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/LoadUserException.js~LoadUserException.html">LoadUserException</a></span></span></li>
@@ -57,6 +58,7 @@
 
 import AWS from &apos;aws-sdk&apos;;
 import {AuthException} from &apos;./Exception/AuthException&apos;;
+import {DescribeIdentityException} from &apos;./Exception/DescribeIdentityException&apos;;
 import {CredentialsManager} from &apos;./CredentialsManager&apos;;
 
 /**
@@ -74,6 +76,7 @@ export class Token {
     this._user = null;
     this._userProvider = null;
     this._credentials = null;
+    this._identityMetadata = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -235,7 +238,7 @@ export class Token {
    * @returns {Boolean}
    */
   get isAnonymous() {
-    return !this.identityProvider &amp;&amp; !this.lambdaContext;
+    return (!this.identityProvider &amp;&amp; !this.lambdaContext) || this._identityLogins.length &lt;= 0;
   }
 
   /**
@@ -249,24 +252,24 @@ export class Token {
    * @param {Function} callback
    */
   getUser(callback) {
-    if (this.isAnonymous) {
-      callback(null);
-      return;
-    }
+    this._describeIdentity(this.identityId, () =&gt; {
+      if (this.isAnonymous) {
+        callback(null);
+        return;
+      }
 
-    if (!this._user) {
-      this._userProvider.loadUserByIdentityId(this.identityId, (user) =&gt; {
-        if (user) {
+      if (!this._user) {
+        this._userProvider.loadUserByIdentityId(this.identityId, (user) =&gt; {
           this._user = user;
-        }
 
-        callback(user);
-      });
+          callback(this._user);
+        });
 
-      return;
-    }
+        return;
+      }
 
-    callback(this._user);
+      callback(this._user);
+    });
   }
 
   /**
@@ -296,6 +299,40 @@ export class Token {
     token.lambdaContext = lambdaContext;
 
     return token;
+  }
+
+  /**
+   * @param {String} identityId
+   * @param {Function} callback
+   * @private
+   */
+  _describeIdentity(identityId, callback) {
+    if (this._identityMetadata) {
+      callback(this._identityMetadata);
+      return;
+    }
+
+    let cognitoIdentity = new AWS.CognitoIdentity();
+
+    cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) =&gt; {
+      if (error) {
+        throw new DescribeIdentityException(identityId, error);
+      }
+
+      this._identityMetadata = data;
+
+      callback(this._identityMetadata);
+    });
+  }
+
+  /**
+   * @returns {Array}
+   * @private
+   */
+  get _identityLogins() {
+    return this._identityMetadata &amp;&amp; this._identityMetadata.hasOwnProperty(&apos;Logins&apos;) ?
+      this._identityMetadata.Logins :
+      [];
   }
 }
 </code></pre>

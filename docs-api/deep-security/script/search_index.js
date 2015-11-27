@@ -18,6 +18,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-security/lib/exception/describeidentityexception.js~describeidentityexception",
+    "class/lib/Exception/DescribeIdentityException.js~DescribeIdentityException.html",
+    "<span>DescribeIdentityException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/DescribeIdentityException.js</span>",
+    "class"
+  ],
+  [
     "deep-security/lib/exception/exception.js~exception",
     "class/lib/Exception/Exception.js~Exception.html",
     "<span>Exception</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/Exception.js</span>",
@@ -471,6 +477,18 @@ window.esdocSearchIndex = [
     "lib/exception/createcognitodatasetexception.js~createcognitodatasetexception#constructor",
     "class/lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException.html#instance-constructor-constructor",
     "lib/Exception/CreateCognitoDatasetException.js~CreateCognitoDatasetException#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/describeidentityexception.js",
+    "file/lib/Exception/DescribeIdentityException.js.html",
+    "lib/Exception/DescribeIdentityException.js",
+    "file"
+  ],
+  [
+    "lib/exception/describeidentityexception.js~describeidentityexception#constructor",
+    "class/lib/Exception/DescribeIdentityException.js~DescribeIdentityException.html#instance-constructor-constructor",
+    "lib/Exception/DescribeIdentityException.js~DescribeIdentityException#constructor",
     "method"
   ],
   [

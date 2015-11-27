@@ -20,6 +20,7 @@ export class Instance {
     this._rawActions = rawActions;
     this._actions = null;
     this._localBackend = false;
+    this._isBackend = false;
     this._cache = null;
     this._security = null;
   }
@@ -71,6 +72,20 @@ export class Instance {
    */
   set localBackend(state) {
     this._localBackend = state;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isBackend() {
+    return this._isBackend;
+  }
+
+  /**
+   * @param {Boolean} state
+   */
+  set isBackend(state) {
+    this._isBackend = state;
   }
 
   /**
