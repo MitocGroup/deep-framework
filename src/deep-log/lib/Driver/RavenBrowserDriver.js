@@ -47,6 +47,7 @@ export class RavenBrowserDriver extends AbstractDriver {
   log(msg, level, context) {
     let nativeLevel = RavenBrowserDriver._mapLevel(level);
 
+
     Raven.captureMessage(msg, {
       level: nativeLevel,
       extra: context,

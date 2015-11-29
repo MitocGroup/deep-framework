@@ -153,7 +153,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\n\n/**\n * Console native logging\n */\nexport class ConsoleDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._console = ConsoleDriver._buildConsole();\n  }\n\n  /**\n   * @returns {Object}\n   * @private\n   */\n  static _buildConsole() {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n    let console = {};\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      // Fixes issue with node env\n      if (method === 'debug' &&\n        typeof nativeConsole[method] === 'undefined') {\n        method = 'log';\n      }\n\n      console[method] = nativeConsole[method];\n    }\n\n    return console;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeMethod = 'log';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.ERROR:\n      case Log.CRITICAL:\n        nativeMethod = 'error';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n        nativeMethod = 'warn';\n        break;\n      case Log.NOTICE:\n        nativeMethod = 'log';\n        break;\n      case Log.INFO:\n        nativeMethod = 'info';\n        break;\n      case Log.DEBUG:\n        nativeMethod = 'debug';\n        break;\n    }\n\n    // Fixes issue with node env\n    (this._console[nativeMethod] || this._console.log)(AbstractDriver.timeString, msg);\n\n    // @todo: figure out a better way of dumping context\n    if (context) {\n      // Fixes issue with node env\n      (this._console.debug || this._console.log)('[DEBUG]', context);\n    }\n  }\n\n  /**\n   * @returns {ConsoleDriver}\n   */\n  overrideNative() {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      nativeConsole[method] = (...args) => {\n        this._console[method](AbstractDriver.timeString, ...args);\n      };\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get nativeConsole() {\n    return typeof window === 'undefined' ? console : window.console;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get METHODS_TO_OVERRIDE() {\n    return ['error', 'log', 'warn', 'info', 'debug'];\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\n\n/**\n * Console native logging\n */\nexport class ConsoleDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._console = ConsoleDriver._buildConsole();\n  }\n\n  /**\n   * @returns {Object}\n   * @private\n   */\n  static _buildConsole() {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n    let console = {};\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      // Fixes issue with node env\n      if (method === 'debug' &&\n        typeof nativeConsole[method] === 'undefined') {\n        method = 'log';\n      }\n\n      console[method] = nativeConsole[method];\n    }\n\n    return console;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeMethod = 'log';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.ERROR:\n      case Log.CRITICAL:\n        nativeMethod = 'error';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n        nativeMethod = 'warn';\n        break;\n      case Log.NOTICE:\n        nativeMethod = 'log';\n        break;\n      case Log.INFO:\n        nativeMethod = 'info';\n        break;\n      case Log.DEBUG:\n        nativeMethod = 'debug';\n        break;\n    }\n\n    // Fixes issue with node env\n    (this._console[nativeMethod] || this._console.log)(AbstractDriver.timeString, msg);\n\n    // @todo: figure out a better way of dumping context\n    if (context) {\n      // Fixes issue with node env\n      (this._console.debug || this._console.log)('[DEBUG]', context);\n    }\n  }\n\n  /**\n   * @param {Boolean} turnOff\n   * @returns {ConsoleDriver}\n   */\n  overrideNative(turnOff = false) {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      nativeConsole[method] = (...args) => {\n        if (!turnOff) {\n          this._console[method](AbstractDriver.timeString, ...args);\n        }\n      };\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get nativeConsole() {\n    return typeof window === 'undefined' ? console : window.console;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get METHODS_TO_OVERRIDE() {\n    return ['error', 'log', 'warn', 'info', 'debug'];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -284,14 +284,25 @@
     "longname": "lib/Driver/ConsoleDriver.js~ConsoleDriver#overrideNative",
     "access": null,
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 90,
     "unknown": [
       {
         "tagName": "@returns",
         "tagValue": "{ConsoleDriver}"
       }
     ],
-    "params": [],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "turnOff",
+        "description": ""
+      }
+    ],
     "return": {
       "nullable": null,
       "types": [
@@ -311,7 +322,7 @@
     "longname": "lib/Driver/ConsoleDriver.js~ConsoleDriver.nativeConsole",
     "access": null,
     "description": null,
-    "lineNumber": 110,
+    "lineNumber": 113,
     "unknown": [
       {
         "tagName": "@returns",
@@ -342,7 +353,7 @@
     "longname": "lib/Driver/ConsoleDriver.js~ConsoleDriver.METHODS_TO_OVERRIDE",
     "access": null,
     "description": null,
-    "lineNumber": 117,
+    "lineNumber": 120,
     "unknown": [
       {
         "tagName": "@returns",
@@ -374,7 +385,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport url from 'url';\n\n/**\n * Raven/Sentry logging for browser\n *\n * @todo replace it on compile time rather than runtime!\n */\nexport class RavenBrowserDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    Raven.config(RavenBrowserDriver._prepareDsn(dsn)).install();\n  }\n\n  /**\n   * @todo: tmp hook, remove it before persisting frontend config\n   *\n   * Remove password from url to not expose it into browser\n   *\n   * @param {String} dsn\n   * @returns {String}\n   */\n  static _prepareDsn(dsn) {\n    let parsedDsn = url.parse(dsn);\n    parsedDsn.auth = parsedDsn.auth.split(':')[0];\n\n    return url.format(parsedDsn);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenBrowserDriver._mapLevel(level);\n\n    Raven.captureMessage(msg, {\n      level: nativeLevel,\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport url from 'url';\n\n/**\n * Raven/Sentry logging for browser\n *\n * @todo replace it on compile time rather than runtime!\n */\nexport class RavenBrowserDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    Raven.config(RavenBrowserDriver._prepareDsn(dsn)).install();\n  }\n\n  /**\n   * @todo: tmp hook, remove it before persisting frontend config\n   *\n   * Remove password from url to not expose it into browser\n   *\n   * @param {String} dsn\n   * @returns {String}\n   */\n  static _prepareDsn(dsn) {\n    let parsedDsn = url.parse(dsn);\n    parsedDsn.auth = parsedDsn.auth.split(':')[0];\n\n    return url.format(parsedDsn);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenBrowserDriver._mapLevel(level);\n\n\n    Raven.captureMessage(msg, {\n      level: nativeLevel,\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -516,7 +527,7 @@
     "longname": "lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver._mapLevel",
     "access": "private",
     "description": null,
-    "lineNumber": 64,
+    "lineNumber": 65,
     "unknown": [
       {
         "tagName": "@returns",

@@ -402,16 +402,22 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/containeraware.js~containeraware#container",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-container",
-    "lib/ContainerAware.js~ContainerAware#container",
-    "member"
-  ],
-  [
     "lib/containeraware.js~containeraware#get",
     "class/lib/ContainerAware.js~ContainerAware.html#instance-method-get",
     "lib/ContainerAware.js~ContainerAware#get",
     "method"
+  ],
+  [
+    "lib/containeraware.js~containeraware#kernel",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-kernel",
+    "lib/ContainerAware.js~ContainerAware#kernel",
+    "member"
+  ],
+  [
+    "lib/containeraware.js~containeraware#kernel",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-kernel",
+    "lib/ContainerAware.js~ContainerAware#kernel",
+    "member"
   ],
   [
     "lib/containeraware.js~containeraware#localbackend",

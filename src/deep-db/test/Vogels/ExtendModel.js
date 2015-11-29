@@ -1,83 +1,28 @@
 'use strict';
 
 import chai from 'chai';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
 import {ExtendModel} from '../../lib.compiled/Vogels/ExtendModel';
 import {Exception} from '../../lib.compiled/Vogels/Exceptions/Exception';
 import {UndefinedMethodException} from '../../lib.compiled/Vogels/Exceptions/UndefinedMethodException';
+import {ModelMock} from '../../test/Mock/ModelMock';
+import {ExtendModelMock} from '../../test/Mock/ExtendModelMock';
 
-
-class ExtendModelMock extends ExtendModel {
-  constructor(model) {
-    super(model);
-  }
-
-  scan() {
-    return 'scanned';
-  }
-
-  loadAll() {
-    return 'loaded';
-  }
-
-  exec(cb) {
-    return cb(null, 'result');
-  }
-
-  startKey() {
-    return 'startKey';
-  }
-
-  limit() {
-    return 'limit';
-  }
-
-  where() {
-    return 'where';
-  }
-
-  update(id, data) {
-    return 'update';
-  }
-
-  create() {
-    return 'create';
-  }
-
-  filterExpression() {
-    return 'filterExpression';
-  }
-
-  expressionAttributeValues() {
-    return 'expressionAttributeValues';
-  }
-
-  expressionAttributeNames() {
-    return 'expressionAttributeNames';
-  }
-}
-
-class ExtendModelMockException extends ExtendModelMock {
-  constructor(model) {
-    super(model);
-  }
-
-  exec(cb) {
-    cb(null, 'result');
-    return cb(null, 'result');
-  }
-
-  throwException(message) {
-    throw new Exception(message);
-  }
-
-  throwUndefinedMethodException(name, methods) {
-    throw new UndefinedMethodException(name, methods);
-  }
-}
+chai.use(sinonChai);
 
 suite('Vogels/ExtendModel', function() {
-  let model = {name: 'userName'};
+  let model = {
+    Name: {
+      Name: 'string',
+      Id: 'timeUUID',
+    },
+  };
   let extendModel = new ExtendModel(model);
+
+  let modelMock = new ModelMock();
+  modelMock.setMode(ModelMock.NO_RESULT_MODE);
+  let mockedExtendModel = new ExtendModel(modelMock);
 
   test('Class ExtendModel exists in Vogels/ExtendModel', function() {
     chai.expect(typeof ExtendModel).to.equal('function');
@@ -115,18 +60,6 @@ suite('Vogels/ExtendModel', function() {
     chai.expect(extendModel.inject()).to.be.eql(model);
   });
 
-  test('Check inject() method with one method ', function() {
-    let error = null;
-
-    try {
-      extendModel.inject('findAlll');
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.not.equal(null);
-  });
-
   test('Check methods() getter', function() {
     let actualResult = extendModel.methods;
     let methods = Object.keys(actualResult);
@@ -146,215 +79,162 @@ suite('Vogels/ExtendModel', function() {
   });
 
   test('Check method.findAll() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findAll();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findAll(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findAllPaginated() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findAllPaginated();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findAllPaginated('startKey', 'limit', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findOneById() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findOneById();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findOneById('id', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findOneBy() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findOneBy();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findOneBy('fieldName', 'value', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findBy() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findBy();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findBy('fieldName', 'value', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findAllBy() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findAllBy();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findAllBy('fieldName', 'value', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findAllByPaginated() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findAllByPaginated();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findAllByPaginated('fieldName', 'value', 'startKey', 'limit', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findMatching() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findMatching();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findMatching({}, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findOneMatching() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findOneMatching();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findOneMatching({}, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findAllMatching() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findAllMatching();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findAllMatching({}, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.findAllMatchingPaginated() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.findAllMatchingPaginated();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.findAllMatchingPaginated({}, 'startKey', 'limit', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.deleteById() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.deleteById();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.deleteById('id', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.deleteByIdConditional() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.deleteByIdConditional();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.deleteByIdConditional('id', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.createItem() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.createItem();
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.createItem('data', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.updateItem() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.updateItem('id', {});
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.updateItem('id', {key: 'test value'}, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
   test('Check method.updateItemConditional() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMock({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.updateItemConditional('id', {}, 'condition');
-    } catch (e) {
-      error = e;
-    }
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    mockedExtendModel.methods.updateItemConditional('id', {key: 'test value'}, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
-  test('Check method.createUniqueOnFields() exist and can be called', function() {
-    let mockedExtendModel = new ExtendModelMockException({name: 'userName'});
-    let error = null;
-    try {
-      mockedExtendModel.methods.createUniqueOnFields(['id', 'name'], {id: 'testId', name: 'testName'});
-    } catch (e) {
-      error = e;
-    }
+  test('Check method.createUniqueOnFields() for already existed item', function() {
+    let spyCallback = sinon.spy();
 
-    chai.expect(error).to.be.not.equal(null);
+    modelMock.setMode(ModelMock.DATA_WITH_COUNT_MODE, ['exec']);
+
+    mockedExtendModel.methods.createUniqueOnFields('fields', {Count: false}, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWith();
+
+    chai.expect(spyCallback.args[0][0]).to.contains('already exists');
   });
 
-  test('Check \'Exception\' exception can be called', function() {
-    let mockedExtendModel = new ExtendModelMockException();
+  test('Check method.createUniqueOnFields() for new fields', function() {
+    let spyCallback = sinon.spy();
+
+    modelMock.setMode(ModelMock.DATA_MODE, ['exec']);
+
+    mockedExtendModel.methods.createUniqueOnFields('fields', {Count: false}, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
+  });
+
+  test('Check "Exception" exception can be called', function() {
+    let extendModelMock = new ExtendModelMock();
     let error = null;
     let msg = 'Test message';
+
     try {
-      mockedExtendModel.throwException(msg);
+      extendModelMock.throwException(msg);
     } catch (e) {
       error = e;
     }
@@ -362,17 +242,20 @@ suite('Vogels/ExtendModel', function() {
     chai.assert.instanceOf(error, Exception, 'error is an instance of Exception');
   });
 
-  test('Check \'UndefinedMethodException\' exception can be called', function() {
-    let mockedExtendModel = new ExtendModelMockException();
+  test('Check "UndefinedMethodException" exception can be called', function() {
     let error = null;
     let method = 'test';
     let predefinedMethods = ['firstMethod', 'secondMethod'];
+    let extendModelMock = new ExtendModelMock();
+
     try {
-      mockedExtendModel.throwUndefinedMethodException(method, predefinedMethods);
+      extendModelMock.throwUndefinedMethodException(method, predefinedMethods);
     } catch (e) {
       error = e;
     }
 
-    chai.assert.instanceOf(error, UndefinedMethodException, 'error is an instance of UndefinedMethodException');
+    chai.assert.instanceOf(
+      error, UndefinedMethodException, 'error is an instance of UndefinedMethodException'
+    );
   });
 });

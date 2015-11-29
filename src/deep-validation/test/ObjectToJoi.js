@@ -16,81 +16,71 @@ suite('ObjectToJoi', function() {
     chai.expect(objectToJoi.baseObject).to.be.eql(baseObject);
   });
 
-  test('Check _transform() static method throws \'InvalidSchemaException\'', function() {
-    let error = null;
-    let actualResult = null;
-    let invalidObjectInput = {firstKey: 'value1'};
-    try {
-      actualResult = ObjectToJoi._transform(invalidObjectInput);
-    } catch (e) {
-      error = e;
-    }
-
-    chai.expect(error).to.be.not.equal(null);
-    chai.expect(error).to.be.an.instanceof(InvalidSchemaException);
-    chai.expect(error.message).to.be.equal(`deep-db model ${JSON.stringify(invalidObjectInput)} validation schema fails: Unknown field type ${invalidObjectInput.firstKey}`);
-  });
-
   test('Check _transform() static method returns valid object', function() {
-    let error = null;
-    let actualResult = null;
-    let invalidObjectInput = {firstKey: 'string'};
-    try {
-      actualResult = ObjectToJoi._transform(invalidObjectInput);
-    } catch (e) {
-      error = e;
-    }
+    let validObjectInput = {firstKey: 'string'};
 
-    chai.expect(error).to.be.equal(null);
+    let actualResult = ObjectToJoi._transform(validObjectInput);
+
     chai.expect(typeof actualResult).to.be.equal('object');
   });
 
-  test('Check _transform(obj) static method returns valid object typeof value === \'object\'', function() {
-    let error = null;
-    let actualResult = null;
-    let invalidObjectInput = {
-      firstKey: {
-        name: 'string',
-      },
-    };
-    try {
-      actualResult = ObjectToJoi._transform(invalidObjectInput);
-    } catch (e) {
-      error = e;
+  test(
+    'Check _transform(obj) static method returns valid object typeof value === "object"',
+    function() {
+      let validObjectInput = {
+        firstKey: {
+          name: 'string',
+        },
+      };
+
+      let actualResult = ObjectToJoi._transform(validObjectInput);
+
+      chai.expect(typeof actualResult).to.be.equal('object');
     }
+  );
 
-    chai.expect(error).to.be.equal(null);
-    chai.expect(typeof actualResult).to.be.equal('object');
-  });
+  test('Check _transform() static method throws "InvalidSchemaException"',
+    function() {
+      let error = null;
+      let invalidObjectInput = {firstKey: 'value1'};
 
-  test('Check transform() method throws \'InvalidSchemaException\'', function() {
+      try {
+        ObjectToJoi._transform(invalidObjectInput);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.an.instanceof(InvalidSchemaException);
+      chai.expect(error.message).to.be.equal(
+        `deep-db model ${
+          JSON.stringify(invalidObjectInput)
+          } validation schema fails: Unknown field type ${
+          invalidObjectInput.firstKey
+          }`
+      );
+    }
+  );
+
+  test('Check transform() method throws "InvalidSchemaException"', function() {
     let error = null;
-    let actualResult = null;
     let invalidObjectInput = {firstKey: 'value1'};
     let objectToJoiTest = new ObjectToJoi(invalidObjectInput);
+
     try {
-      actualResult = objectToJoiTest.transform();
+      objectToJoiTest.transform();
     } catch (e) {
       error = e;
     }
 
-    chai.expect(error).to.be.not.equal(null);
     chai.expect(error).to.be.an.instanceof(InvalidSchemaException);
-    chai.expect(error.message).to.be.contains(`deep-db model ${JSON.stringify(invalidObjectInput)} validation schema fails`);
   });
 
   test('Check transform() method returns valid object', function() {
-    let error = null;
-    let actualResult = null;
-    let invalidObjectInput = {firstKey: 'string'};
-    let objectToJoiTest = new ObjectToJoi(invalidObjectInput);
-    try {
-      actualResult = objectToJoiTest.transform();
-    } catch (e) {
-      error = e;
-    }
+    let validObjectInput = {firstKey: 'string'};
+    let objectToJoiTest = new ObjectToJoi(validObjectInput);
 
-    chai.expect(error).to.be.equal(null);
+    let actualResult = objectToJoiTest.transform();
+
     chai.expect(typeof actualResult).to.be.equal('object');
   });
 });
