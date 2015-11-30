@@ -135,7 +135,7 @@ export class CredentialsManager {
       onFailure: (error) => {
         callback(error, null);
       },
-      onConflict: (dataset, conflicts, callback) => {
+      onConflict: (dataset, conflicts) => {
         let resolved = [];
 
         for (let i = 0; i < conflicts.length; i++) {
@@ -147,10 +147,10 @@ export class CredentialsManager {
           return callback(true);
         });
       },
-      onDatasetDeleted: (dataset, datasetName, callback) => {
+      onDatasetDeleted: (dataset, datasetName) => {
         return callback(true);
       },
-      onDatasetMerged: (dataset, datasetNames, callback) => {
+      onDatasetMerged: (dataset, datasetNames) => {
         return callback(true);
       }
     });

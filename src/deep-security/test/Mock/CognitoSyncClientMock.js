@@ -15,11 +15,11 @@ export class CognitoSyncClientMock {
 
   /**
    * Returns callback for method based on behavior from _methodsBehavior map
-   * @param {String} method
+   * @param {String} mode
    * @param {Function} callback
    */
-  getCallbackByMethod(method, callback) {
-    switch (method) {
+  getCallbackByMode(mode, callback) {
+    switch (mode) {
       case CognitoSyncClientMock.NO_RESULT_MODE:
         callback(null, null);
         break;
@@ -56,7 +56,7 @@ export class CognitoSyncClientMock {
    * @returns {CognitoSyncClientMock}
    */
   openOrCreateDataset(datasetName, callback) {
-    this.getCallbackByMethod(this._methodsBehavior.get('openOrCreateDataset'), callback);
+    this.getCallbackByMode(this._methodsBehavior.get('openOrCreateDataset'), callback);
 
     return this;
   }

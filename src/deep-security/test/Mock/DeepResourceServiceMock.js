@@ -13,11 +13,11 @@ export class DeepResourceServiceMock {
 
   /**
    * Returns callback for method based on behavior from _methodsBehavior map
-   * @param {String} method
+   * @param {String} mode
    * @param {Function} callback
    */
-  getCallbackByMethod(method, callback) {
-    switch (method) {
+  getCallbackByMode(mode, callback) {
+    switch (mode) {
       case DeepResourceServiceMock.NO_RESULT_MODE:
         callback(null);
         break;
@@ -53,7 +53,7 @@ export class DeepResourceServiceMock {
    * @returns {DeepResourceServiceMock}
    */
   send(callback) {
-    this.getCallbackByMethod(this._methodsBehavior.get('send'), callback);
+    this.getCallbackByMode(this._methodsBehavior.get('send'), callback);
 
     return this;
   }

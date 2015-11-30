@@ -12,7 +12,7 @@ import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 
 chai.use(sinonChai);
 
-suite('Security', function () {
+suite('Security', function() {
   let resourceName = 'sample';
   let deepResourceServiceMock = new DeepResourceServiceMock();
   let userProvider = new UserProvider(resourceName, deepResourceServiceMock);
@@ -20,7 +20,7 @@ suite('Security', function () {
   let backendKernelInstance = null;
   let frontendKernelInstance = null;
 
-  test('Load Kernel by using Kernel.load()', function (done) {
+  test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (frontendKernel, backendKernel) => {
       chai.assert.instanceOf(
         frontendKernel, Kernel, 'frontendKernel is an instance of Kernel'
@@ -43,7 +43,7 @@ suite('Security', function () {
   });
 
 
-  test('Class Security exists in Security', function () {
+  test('Class Security exists in Security', function() {
     chai.expect(typeof Security).to.equal('function');
   });
 

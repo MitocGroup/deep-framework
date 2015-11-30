@@ -11,19 +11,17 @@ export class Dataset {
     //set data mode as initial values
     this.setMode(Dataset.DATA_MODE);
 
-    console.log('default set mode: ', mode)
-
     //set mode based on args
     this.setMode(mode, methods);
   }
 
   /**
    * Returns callback for method based on behavior from _methodsBehavior map
-   * @param {String} method
+   * @param {String} mode
    * @param {Function} callback
    */
-  getCallbackByMethod(method, callback) {
-    switch (method) {
+  getCallbackByMode(mode, callback) {
+    switch (mode) {
       case Dataset.NO_RESULT_MODE:
         callback(null, null);
         break;
@@ -45,19 +43,52 @@ export class Dataset {
    * @returns {Dataset}
    */
   put(recordName, credentials ,callback) {
-    this.getCallbackByMethod(this._methodsBehavior.get('put'), callback);
+    this.getCallbackByMode(this._methodsBehavior.get('put'), callback);
 
     return this;
   }
 
   /**
-   * @param {Object} object
+   * @param {Conflict[]} resolved
+   * @param {Function} callback
    * @returns {Dataset}
    */
-  synchronize(object) {
-    console.log('object', object);
+  resolve(resolved, callback) {
+    callback(true);
 
-    //this.getCallbackByMethod(this._methodsBehavior.get('synchronize'), callback);
+    return this;
+  }
+
+  /**
+   * @param {Object} datasetModeImpl
+   * @returns {Dataset}
+   */
+  synchronize(datasetModeImpl) {
+    switch (this._methodsBehavior.get('synchronize')) {
+      case Dataset.NO_RESULT_MODE:
+        //no behavior for this mode in synchronize
+        break;
+
+      case Dataset.FAILURE_MODE:
+        datasetModeImpl.onFailure(this, Dataset.ERROR);
+        break;
+
+      case Dataset.SYNCRONIZE_CONFLICT_MODE:
+        datasetModeImpl.onConflict(this, []);
+        break;
+
+      case Dataset.DATA_MODE:
+        datasetModeImpl.onSuccess(this, Dataset.DATA);
+        break;
+
+      case Dataset.SYNCRONIZE_DATASET_DELETED_MODE:
+        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName');
+        break;
+
+      case Dataset.SYNCRONIZE_DATASET_MERGED_MODE:
+        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName');
+        break;
+    }
 
     return this;
   }
@@ -102,8 +133,32 @@ export class Dataset {
    * @returns {number}
    * @constructor
    */
-  static get DATA_MODE() {
+  static get SYNCRONIZE_CONFLICT_MODE() {
     return 2;
+  }
+
+  /**
+   * @returns {number}
+   * @constructor
+   */
+  static get DATA_MODE() {
+    return 3;
+  }
+
+  /**
+   * @returns {number}
+   * @constructor
+   */
+  static get SYNCRONIZE_DATASET_DELETED_MODE() {
+    return 4;
+  }
+
+  /**
+   * @returns {number}
+   * @constructor
+   */
+  static get SYNCRONIZE_DATASET_MERGED_MODE() {
+    return 5;
   }
 
   /**
@@ -114,7 +169,10 @@ export class Dataset {
     return [
       Dataset.NO_RESULT_MODE,
       Dataset.FAILURE_MODE,
+      Dataset.SYNCRONIZE_CONFLICT_MODE,
       Dataset.DATA_MODE,
+      Dataset.SYNCRONIZE_DATASET_DELETED_MODE,
+      Dataset.SYNCRONIZE_DATASET_MERGED_MODE,
     ];
   }
 

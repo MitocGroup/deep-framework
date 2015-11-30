@@ -8,7 +8,11 @@ import {CredentialsManager} from '../lib.compiled/CredentialsManager';
 import CognitoSyncManager from 'amazon-cognito-js';
 import credentials from './common/credentials';
 import cognitoSyncClient from './Mock/cognitoSyncClient';
+import cognitoSyncDataMode from './Mock/cognitoSyncDataMode';
+import cognitoSyncFailureMode from './Mock/cognitoSyncFailureMode';
 import {CognitoSyncClientMock} from './Mock/CognitoSyncClientMock';
+import {CognitoSyncMock} from './Mock/CognitoSyncMock';
+import {Dataset} from './Mock/Dataset';
 import requireProxy from 'proxyquire';
 import {CreateCognitoDatasetException} from '../lib.compiled/Exception/CreateCognitoDatasetException';
 import {PutCognitoRecordException} from '../lib.compiled/Exception/PutCognitoRecordException';
@@ -25,6 +29,7 @@ suite('CredentialsManager', function() {
 
   let CredentialsManager = credentialsManagerExport.CredentialsManager;
   let credentialsManager = new CredentialsManager(identityPoolId);
+
 
   test('Class CredentialsManager exists in CredentialsManager', function() {
     chai.expect(typeof CredentialsManager).to.equal('function');
@@ -147,12 +152,96 @@ suite('CredentialsManager', function() {
 
     let callbackArg = spyCallback.args[0];
 
-    //@todo - need to be check if able to check
-    //chai.assert.instanceOf(
-    //  callbackArg[0],
-    //  SynchronizeCognitoDatasetException,
-    //  'callback error argument is an instance of SynchronizeCognitoDatasetException'
-    //);
-    //chai.expect(callbackArg[1]).to.equal(null);
+    chai.assert.instanceOf(
+      callbackArg[0],
+      SynchronizeCognitoDatasetException,
+      'callback error argument is an instance of SynchronizeCognitoDatasetException'
+    );
+    chai.expect(callbackArg[1]).to.equal(null);
+  });
+
+  test('Check saveCredentials() executes successfully', function() {
+    let spyCallback = sinon.spy();
+
+    //set modes
+    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']);
+
+    credentialsManager.saveCredentials(credentials, spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.expect(callbackArg[0]).to.equal(null);
+    chai.expect(callbackArg[1]).to.eql(Dataset.DATA);
+  });
+
+  test('Check _synchronizeDataset() executes onConflict', function() {
+    let spyCallback = sinon.spy();
+
+    //set modes
+    let dataset = new Dataset(Dataset.SYNCRONIZE_CONFLICT_MODE, ['synchronize'])
+
+    credentialsManager._synchronizeDataset(dataset, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(true);
+  });
+
+  test('Check _synchronizeDataset() executes onDatasetDeleted', function() {
+    let spyCallback = sinon.spy();
+
+    //set modes
+    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_DELETED_MODE, ['synchronize'])
+
+    credentialsManager._synchronizeDataset(dataset, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(true);
+  });
+
+  test('Check _synchronizeDataset() executes onDatasetMerged', function() {
+    let spyCallback = sinon.spy();
+
+    //set modes
+    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_MERGED_MODE, ['synchronize'])
+
+    credentialsManager._synchronizeDataset(dataset, spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(true);
+  });
+
+  test('Check loadCredentials() executes with error in listRecords()', function() {
+    let spyCallback = sinon.spy();
+
+    //mocking AWS.CognitoSync
+    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+      'aws-sdk': cognitoSyncFailureMode,
+    });
+
+    CredentialsManager = credentialsManagerExport.CredentialsManager;
+    credentialsManager = new CredentialsManager(identityPoolId);
+
+    credentialsManager.loadCredentials('test_identityID', spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.expect(callbackArg[0]).to.eql(CognitoSyncMock.ERROR);
+    chai.expect(callbackArg[1]).to.equal(null);
+  });
+
+  test('Check loadCredentials() executes with data in listRecords()', function() {
+    let spyCallback = sinon.spy();
+
+    //mocking AWS.CognitoSync
+    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+      'aws-sdk': cognitoSyncDataMode,
+    });
+
+    CredentialsManager = credentialsManagerExport.CredentialsManager;
+    credentialsManager = new CredentialsManager(identityPoolId);
+
+    credentialsManager.loadCredentials('test_identityID', spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.expect(callbackArg[0]).to.eql(null);
+    chai.expect(callbackArg[1]).to.eql({token: 'test_session_creds'});
   });
 });
