@@ -28,7 +28,13 @@ export class MethodsProxy {
   proxyOverride(handler, ...explMethods) {
     let methods = Object.keys(handler).concat(explMethods);
 
-    for (let prop of methods) {
+    for (let i in methods) {
+      if (!methods.hasOwnProperty(i)) {
+        continue;
+      }
+
+      let prop = methods[i];
+
       if (!handler.hasOwnProperty(prop) &&
         explMethods.indexOf(prop) === -1) {
         continue;
