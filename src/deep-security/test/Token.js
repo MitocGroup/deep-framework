@@ -92,13 +92,7 @@ suite('Token', function() {
     chai.expect(token.isAnonymous).to.be.equal(true);
   });
 
-  test('Check getUser() method for _isAnonymous', function() {
-    let spyCallback = sinon.spy();
 
-    token.getUser(spyCallback);
-
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null);
-  });
 
   test('Check identityProvider setter',
     function() {
@@ -124,6 +118,14 @@ suite('Token', function() {
   test('Check _validCredentials returns null', function() {
     chai.expect(token._validCredentials()).to.be.equal(null);
   });
+
+  //test('Check getUser() method for _isAnonymous', function() {
+  //  let spyCallback = sinon.spy();
+  //
+  //  token.getUser(spyCallback);
+  //
+  //  chai.expect(spyCallback).to.have.been.calledWithExactly(null);
+  //});
 
   //@todo - uncomment when credentials uploaded
   //test('Check identityId getter for credentials', function() {
