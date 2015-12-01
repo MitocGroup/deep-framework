@@ -39,7 +39,6 @@ export class Request {
     // Avoid _data key listing on Object.keys(request)
     Object.defineProperty(this, '_data', {
       configurable: false,
-      enumerable: false,
     });
   }
 
