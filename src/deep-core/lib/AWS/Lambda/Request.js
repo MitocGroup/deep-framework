@@ -14,7 +14,7 @@ export class Request {
    * @param {*} data
    */
   constructor(data = {}) {
-    this._data = typeof data === 'object' ? qs.parse(data) : data;
+    this._data = !Array.isArray(data) ? qs.parse(data) : data;
 
     this._registerDataAsParams();
   }
