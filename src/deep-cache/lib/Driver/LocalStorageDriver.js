@@ -92,7 +92,7 @@ export class LocalStorageDriver extends AbstractDriver {
    * @private
    */
   static get _now() {
-    return new Date().getTime() / 1000;
+    return parseInt(new Date().getTime() / 1000);
   }
 
   /**
