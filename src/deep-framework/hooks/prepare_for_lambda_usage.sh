@@ -19,17 +19,16 @@ assure_npm
 # browser build is useless in a lambda
 rm -rf "${path}"/../browser
 
-# hook directory is useless in a lambda
-rm -rf "${path}"/../hooks
-
 # scripts directory is useless in a lambda
 rm -rf "${path}"/../scripts
 
 # aws-sdk is loaded by default in lambdas
-find "${path}"/../ -name aws-sdk -print0 | xargs -0 rm -rf
+find "${path}"/.. -type f -iname aws-sdk -print0 | xargs -0 rm -rf
 
 # remove markdown files
-find "${path}"/../ -name *.md -print0 | xargs -0 rm -rf
+find "${path}"/.. -type f -not -name "*.js" -a -not -name "*.sh" -a -not -name "*.json" -a -not -ipath */bin/* -print0 | xargs -0 rm -rf
 
-# remove *.es6 source files
-find "${path}"/../ -name *.es6 -print0 | xargs -0 rm -rf
+### LEAVE IT THE LAST STEP!!! ###
+
+# hook directory is useless in a lambda
+rm -rf "${path}"/../hooks
