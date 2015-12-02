@@ -102,6 +102,6 @@ export class InMemoryDriver extends AbstractDriver {
    * @private
    */
   static get _now() {
-    return new Date().getTime();
+    return new Date().getTime() / 1000;
   }
 }
