@@ -17,6 +17,9 @@ assure_npm() {
 assure_npm
 
 cd ${path}/../
+
+# browser build is useless in a lambda
 rm -rf ./browser
 
-# @todo: add other optimisations!
+# aws-sdk is loaded by default in lambdas
+find . -name aws-sdk -print0 | xargs -0 rm -rf

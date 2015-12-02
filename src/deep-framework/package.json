@@ -1,6 +1,6 @@
 {
   "name": "deep-framework",
-  "version": "1.3.3",
+  "version": "1.3.5",
   "description": "DEEP Framework",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -70,9 +70,9 @@
     "prepare-browserify": "npm run compile",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile && npm run browser-build",
-    "browser-build": "if [ -d 'scripts/' ] then scripts/browser_build.sh; fi",
+    "browser-build": "if [ -d 'scripts/' ]; then scripts/browser_build.sh; fi",
     "pretest": "npm link deep-log deep-core deep-asset deep-cache deep-db deep-validation deep-di deep-event deep-fs deep-kernel deep-resource deep-security deep-notification",
-    "prepare-production": "hooks/prepare_production.sh"
+    "prepare-for-lambda-usage": "hooks/prepare_for_lambda_usage.sh"
   },
   "dependencies": {
     "deep-log": "^1.x.x",
