@@ -5,7 +5,7 @@ npm=$(which npm)
 browserify=$(which browserify)
 brew=$(which brew)
 uglifyjs=$(which uglifyjs)
-browser_build_path=${path}"/../browser"
+browser_build_path="${path}/../browser"
 DEEP_AWS_SERVICES=lambda,cognitoidentity,cognitosync
 
 assure_brew() {
@@ -60,7 +60,7 @@ mkdir -p ${browser_build_path}
 echo "- execute prepare hooks"
 
 # @todo: move this into another script?
-cd ${path}/../node_modules/deep-log && \
+cd "${path}"/../node_modules/deep-log && \
     ${npm} run prepare-browserify
 
 echo "- lookup for node modules to require"
@@ -70,7 +70,7 @@ NPM_REGEX='(src/deep-framework|.*((deep\-(fs|db|event)).*|lsmod|ioredis|vogels|r
 
 # require
 browserify_require=""
-npm_modules=($(${path}/npm_modules_lookup.js ${path}/../ "($NPM_REGEX)" 'raven-js:raven'))
+npm_modules=($("${path}"/npm_modules_lookup.js "${path}"/../ "($NPM_REGEX)" 'raven-js:raven'))
 for module_entry_point in ${npm_modules[@]}; do
     browserify_require=${browserify_require}' -r '${module_entry_point}' '
 done
@@ -83,7 +83,7 @@ echo "- start transpiling"
 
 __FW=${browser_build_path}"/framework.js"
 
-cd ${path}/../
+cd "${path}"/../
 ${npm} run prepare-browserify
 echo '/** Built on '$(date) > ${__FW}
 ${npm} ls --long=false --global=false --depth=0 --production=true | sed 's/ \/.*//' | grep deep- >> ${__FW}
