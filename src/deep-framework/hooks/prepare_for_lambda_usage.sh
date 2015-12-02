@@ -23,7 +23,7 @@ rm -rf "${path}"/../browser
 rm -rf "${path}"/../scripts
 
 # aws-sdk is loaded by default in lambdas
-find "${path}"/.. -type f -iname aws-sdk -print0 | xargs -0 rm -rf
+find "${path}"/.. -type d -name aws-sdk -print0 | xargs -0 rm -rf
 
 # remove markdown files
 find "${path}"/.. -type f -not -name "*.js" -a -not -name "*.sh" -a -not -name "*.json" -a -not -ipath */bin/* -print0 | xargs -0 rm -rf
