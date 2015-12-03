@@ -22,9 +22,6 @@ rm -rf "${path}"/../browser
 echo "Removing script directory due to uselessness"
 rm -rf "${path}"/../scripts
 
-echo "Removing aws-sdk recursively"
-find "${path}"/.. -type d -iname aws-sdk -print0 | xargs -0 rm -rf
-
 echo "Removing garbage (!*.{js,json} && !*/bin/*)"
 find "${path}"/.. -type f -not -iname "*.js" -a -not -iname "*.json" -a -not -iname "*.sh" -a -not -ipath */bin/* -print0 | xargs -0 rm -rf
 
