@@ -20,6 +20,8 @@ import qs from 'qs';
 import Core from 'deep-core';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
 import {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';
+import {DirectCallNotAvailableException} from './Exception/DirectCallNotAvailableException';
+import {LambdaParamsCompatibilityException} from './Exception/LambdaParamsCompatibilityException';
 import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import Security from 'deep-security';
 import crypto from 'crypto';
@@ -45,6 +47,7 @@ export class Request {
 
     this._async = false;
     this._native = false;
+    this._returnLogs = false;
   }
 
   /**
@@ -62,6 +65,13 @@ export class Request {
       throw new AsyncCallNotAvailableException(this._action.type);
     }
 
+    if (this._returnLogs) {
+      throw new LambdaParamsCompatibilityException({
+        InvocationType: 'Event',
+        LogType: 'Tail',
+      });
+    }
+
     this._native = true;
     this._async = true;
 
@@ -76,10 +86,23 @@ export class Request {
   }
 
   /**
+   * @param {Boolean} returnLogs
    * @returns {Request}
    */
-  useDirectCall() {
+  useDirectCall(returnLogs = false) {
+    if (!this.isLambda) {
+      throw new DirectCallNotAvailableException(this._action.type);
+    }
+
+    if (this._async && returnLogs) {
+      throw new LambdaParamsCompatibilityException({
+        InvocationType: 'Event',
+        LogType: 'Tail',
+      });
+    }
+
     this._native = true;
+    this._returnLogs = returnLogs;
 
     return this;
   }
@@ -374,6 +397,7 @@ export class Request {
       FunctionName: this._action.source.original,
       Payload: JSON.stringify(this.payload),
       InvocationType: this._async ? 'Event' : 'RequestResponse',
+      LogType: this._returnLogs ? 'Tail' : 'None',
     };
 
     this._loadSecurityCredentials((error, credentials) => {
