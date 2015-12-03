@@ -26,7 +26,7 @@ echo "Removing aws-sdk recursively"
 find "${path}"/.. -type d -iname aws-sdk -print0 | xargs -0 rm -rf
 
 echo "Removing garbage (!*.{js,json} && !*/bin/*)"
-find "${path}"/.. -type f -not -iname "*.js" -a -not -iname "*.json" -a -not -ipath */bin/* -print0 | xargs -0 rm -rf
+find "${path}"/.. -type f -not -iname "*.js" -a -not -iname "*.json" -a -not -iname "*.sh" -a -not -ipath */bin/* -print0 | xargs -0 rm -rf
 
 echo "Removing README files"
 find "${path}"/.. -type f -iname README | xargs -0 rm -rf
@@ -36,8 +36,3 @@ find "${path}"/.. -type d -iname test -o -iname tests -print0 | xargs -0 rm -rf
 
 echo "Removing empty files and directories"
 find "${path}"/.. -empty -print0 | xargs -0 rm -rf
-
-### LEAVE IT THE LAST STEP!!! ###
-
-echo "Removing hooks directory due to uselessness"
-rm -rf "${path}"/../hooks
