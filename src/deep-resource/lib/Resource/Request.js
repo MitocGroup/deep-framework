@@ -439,7 +439,7 @@ export class Request {
         if (parsedUrl.query || payload) {
 
           //assure parsedUrl.query is a valid object
-          if (parsedUrl.query !== null && typeof parsedUrl.query !== 'object') {
+          if (parsedUrl.query === null || typeof parsedUrl.query !== 'object') {
             parsedUrl.query = {};
           }
 
