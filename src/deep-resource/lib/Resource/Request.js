@@ -437,6 +437,8 @@ export class Request {
       case 'get':
       case 'delete':
         if (parsedUrl.query || payload) {
+
+          //assure parsedUrl.query is a valid object
           if (parsedUrl.query !== null && typeof parsedUrl.query !== 'object') {
             parsedUrl.query = {};
           }
