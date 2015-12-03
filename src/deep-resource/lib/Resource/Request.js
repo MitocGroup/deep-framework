@@ -437,7 +437,11 @@ export class Request {
       case 'get':
       case 'delete':
         if (parsedUrl.query || payload) {
-          let mergedPayload = Object.assign(parsedUrl.query || {}, payload);
+          if (parsedUrl.query !== null && typeof parsedUrl.query !== 'object') {
+            parsedUrl.query = {};
+          }
+
+          let mergedPayload = Object.assign(parsedUrl.query, payload);
 
           opsToSign.path += `?${qs.stringify(mergedPayload)}`;
 
