@@ -8,7 +8,7 @@ import {IdentityProvider} from '../lib.compiled/IdentityProvider';
 
 chai.use(sinonChai);
 
-suite('LocalToken', function() {
+suite('LocalToken', function () {
   let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
   let localToken = new LocalToken(identityPoolId);
   let providerName = 'amazon';
@@ -30,21 +30,21 @@ suite('LocalToken', function() {
   };
   let identityProvider = new IdentityProvider(providers, providerName, userToken, userId);
 
-  test('Class LocalToken exists in LocalToken', function() {
+  test('Class LocalToken exists in LocalToken', function () {
     chai.expect(typeof LocalToken).to.equal('function');
   });
 
-  test('Check loadCredentials() method for !identityProvider', function() {
+  test('Check loadCredentials() method for !identityProvider', function () {
     let spyCallback = sinon.spy();
 
     localToken.loadCredentials(spyCallback);
 
     chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
-    chai.expect(localToken._identityId).to.equal(null);
+    chai.expect(localToken._credentials).to.eql({identityId: null});
   });
 
   test('Check identityProvider setter',
-    function() {
+    function () {
       localToken.identityProvider = identityProvider;
 
       chai.expect(localToken.identityProvider).to.be.equal(identityProvider);
@@ -54,12 +54,12 @@ suite('LocalToken', function() {
     }
   );
 
-  test('Check loadCredentials() method for identityProvider', function() {
+  test('Check loadCredentials() method for identityProvider', function () {
     let spyCallback = sinon.spy();
 
     localToken.loadCredentials(spyCallback);
 
     chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
-    chai.expect(localToken._identityId).to.equal(identityProvider.userId);
+    chai.expect(localToken._credentials).to.eql({identityId: identityProvider.userId});
   });
 });

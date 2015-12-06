@@ -89,10 +89,7 @@ export class CredentialsManager {
       IdentityPoolId: this._identityPoolId,
     };
 
-    console.log(' cognitosync.listRecords: ',  cognitosync.listRecords);
-
     cognitosync.listRecords(params, (error, data) => {
-      console.log('data:', data)
       if (error) {
         callback(error, null);
         return;

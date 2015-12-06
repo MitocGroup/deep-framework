@@ -143,8 +143,8 @@ export class Token {
   get identityId() {
     let identityId = null;
 
-    if (this.credentials && this.credentials.hasOwnProperty('IdentityId')) {
-      identityId = this.credentials.IdentityId;
+    if (this.credentials && this.credentials.hasOwnProperty('identityId')) {
+      identityId = this.credentials.identityId;
     } else if (this.lambdaContext) {
       identityId = this.lambdaContext.identity.cognitoIdentityId;
     }

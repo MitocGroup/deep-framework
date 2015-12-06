@@ -5,6 +5,7 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Security} from '../lib.compiled/Security';
 import {UserProvider} from '../lib.compiled/UserProvider';
+import {Exception} from '../lib.compiled/Exception/Exception';
 import {MissingLoginProviderException} from '../lib.compiled/Exception/MissingLoginProviderException';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
@@ -19,6 +20,8 @@ suite('Security', function() {
 
   let backendKernelInstance = null;
   let frontendKernelInstance = null;
+  let securityFrontend = null;
+  let securityBackend = null;
 
   test('Load Kernel by using Kernel.load()', function(done) {
     let callback = (frontendKernel, backendKernel) => {
@@ -31,6 +34,9 @@ suite('Security', function() {
 
       frontendKernelInstance = frontendKernel;
       backendKernelInstance = backendKernel;
+
+      securityFrontend = frontendKernel.get('security');
+      securityBackend = backendKernel.get('security');
 
       // complete the async
       done();
@@ -45,6 +51,18 @@ suite('Security', function() {
 
   test('Class Security exists in Security', function() {
     chai.expect(typeof Security).to.equal('function');
+  });
+
+  test('Check warmupBackendLogin throws "Exception" for frontend', function() {
+    let error = null;
+
+    try {
+      securityFrontend.warmupBackendLogin();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(error, Exception, 'error is an instance of Exception');
   });
 
   // @note - this is goning to be refactored (https://github.com/MitocGroup/deep-framework/issues/52)
@@ -64,45 +82,6 @@ suite('Security', function() {
   //  chai.expect(security._userProviderEndpoint).to.be.eql(null);
   //});
   //
-
-  //
-  //test('Check PROVIDER_AMAZON static getter returns value \'www.amazon.com\'', function() {
-  //  chai.expect(Security.PROVIDER_AMAZON).to.be.equal('www.amazon.com');
-  //});
-  //
-  //test('Check PROVIDER_FACEBOOK static getter returns value \'graph.facebook.com\'', function() {
-  //  chai.expect(Security.PROVIDER_FACEBOOK).to.be.equal('graph.facebook.com');
-  //});
-  //
-  //test('Check PROVIDER_GOOGLE static getter returns value \'accounts.google.com\'', function() {
-  //  chai.expect(Security.PROVIDER_GOOGLE).to.be.equal('accounts.google.com');
-  //});
-  //
-  //test('Check getLoginProviderConfig returns amazon provider', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  try {
-  //    actualResult = security.getLoginProviderConfig(Security.PROVIDER_AMAZON);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(actualResult).to.be.eql(identityProvidersMock[Security.PROVIDER_AMAZON]);
-  //});
-  //
-  //test('Check getLoginProviderConfig method throws \'MissingLoginProviderException\' exception', function() {
-  //  let error = null;
-  //  try {
-  //    security.getLoginProviderConfig('test');
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.expect(error).to.be.an.instanceof(MissingLoginProviderException);
-  //});
-  //
   //test('Check amazonLoginProviderConfig getter returns amazon provider', function() {
   //  let error = null;
   //  let actualResult = null;
@@ -114,32 +93,6 @@ suite('Security', function() {
   //
   //  chai.expect(error).to.be.equal(null);
   //  chai.expect(actualResult).to.be.eql(identityProvidersMock[Security.PROVIDER_AMAZON]);
-  //});
-  //
-  //test('Check facebookLoginProviderConfig getter returns facebook provider', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  try {
-  //    actualResult = security.facebookLoginProviderConfig;
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(actualResult).to.be.eql(identityProvidersMock[Security.PROVIDER_FACEBOOK]);
-  //});
-  //
-  //test('Check googleLoginProviderConfig getter returns google provider', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  try {
-  //    actualResult = security.googleLoginProviderConfig;
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(actualResult).to.be.eql(identityProvidersMock[Security.PROVIDER_GOOGLE]);
   //});
   //
   //test('Check login() method returns valid token', function() {

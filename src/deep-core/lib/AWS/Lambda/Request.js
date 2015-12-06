@@ -14,7 +14,7 @@ export class Request {
    * @param {*} data
    */
   constructor(data = {}) {
-    this._data = typeof data === 'object' ? qs.parse(data) : data;
+    this._data = !Array.isArray(data) ? qs.parse(data) : data;
 
     this._registerDataAsParams();
   }
@@ -39,7 +39,6 @@ export class Request {
     // Avoid _data key listing on Object.keys(request)
     Object.defineProperty(this, '_data', {
       configurable: false,
-      enumerable: false,
     });
   }
 
