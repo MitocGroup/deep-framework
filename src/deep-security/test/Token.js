@@ -8,21 +8,18 @@ import {Token} from '../lib.compiled/Token';
 import {UserProvider} from '../lib.compiled/UserProvider';
 import {IdentityProvider} from '../lib.compiled/IdentityProvider';
 import {CredentialsManager} from '../lib.compiled/CredentialsManager';
+import {DescribeIdentityException} from '../lib.compiled/Exception/DescribeIdentityException';
 import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
+import {CognitoIdentityMock} from './Mock/CognitoIdentityMock';
+import cognitoIdentityDataMode from './Mock/cognitoIdentityDataMode';
+import cognitoIdentityFailureMode from './Mock/cognitoIdentityFailureMode';
+import cognitoSyncDataMode from './Mock/cognitoSyncDataMode';
+import cognitoSyncFailureMode from './Mock/cognitoSyncFailureMode'
+import requireProxy from 'proxyquire';
 
 chai.use(sinonChai);
 
 suite('Token', function() {
-  //mocking Config
-  //AWS.mock(
-  //  'Config',       //the name of the AWS service that the method belongs
-  //  'update',       //the service's method to be be mocked
-  //  {               //the test data that the mocked method should return
-  //    Payload: {dataKey: "testValue"},
-  //    StatusCode: 201,
-  //  }
-  //);
-
   let lambdaContext = {
     context: 'test context',
     identity: {
@@ -93,7 +90,6 @@ suite('Token', function() {
   });
 
 
-
   test('Check identityProvider setter',
     function() {
       token.identityProvider = identityProvider;
@@ -119,13 +115,6 @@ suite('Token', function() {
     chai.expect(token._validCredentials()).to.be.equal(null);
   });
 
-  //test('Check getUser() method for _isAnonymous', function() {
-  //  let spyCallback = sinon.spy();
-  //
-  //  token.getUser(spyCallback);
-  //
-  //  chai.expect(spyCallback).to.have.been.calledWithExactly(null);
-  //});
 
   //@todo - uncomment when credentials uploaded
   //test('Check identityId getter for credentials', function() {
@@ -145,27 +134,6 @@ suite('Token', function() {
 
     chai.expect(token._userProvider).to.be.equal(userProvider);
   });
-
-  //@todo - uncomment when credentials uploaded
-  //test('Check getUser() method for !_user', function() {
-  //  let spyCallback = sinon.spy();
-  //
-  //  token.getUser(spyCallback);
-  //
-  //  chai.expect(spyCallback).to.have.been.calledWithExactly(
-  //    JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
-  //  );
-  //});
-  //
-  //test('Check getUser() method for !_user', function() {
-  //  let spyCallback = sinon.spy();
-  //
-  //  token.getUser(spyCallback);
-  //
-  //  chai.expect(spyCallback).to.have.been.calledWithExactly(
-  //    JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
-  //  );
-  //});
 
   test('Check _getRegionFromIdentityPoolId returns region', function() {
     let expectedResult = identityPoolId.split(':')[0];
@@ -216,4 +184,120 @@ suite('Token', function() {
   //
   //  chai.expect(error).to.be.equal(null);
   //});
+
+
+  test('Check _describeIdentity() returns []', function() {
+    chai.expect(token._identityLogins).to.eql([]);
+  });
+
+  test('Check _describeIdentity() throws "DescribeIdentityException"', function() {
+    let spyCallback = sinon.spy();
+    let error = null;
+
+    //mocking AWS.CognitoIdentity
+    let tokenExport = requireProxy('../lib.compiled/Token', {
+      'aws-sdk': cognitoIdentityFailureMode,
+    });
+
+    let Token = tokenExport.Token;
+    token = new Token(identityPoolId);
+
+    try {
+      token._describeIdentity('test_identityID', spyCallback);
+    }
+    catch (e) {
+      error = e;
+    }
+
+    chai.expect(spyCallback).to.not.have.been.calledWith();
+    chai.assert.instanceOf(
+      error, DescribeIdentityException, 'error is an instance of DescribeIdentityException'
+    );
+  });
+
+  test('Check _describeIdentity() executes successfully for !_identityMetadata', function() {
+    let spyCallback = sinon.spy();
+
+    //mocking AWS.CognitoIdentity
+    let tokenExport = requireProxy('../lib.compiled/Token', {
+      'aws-sdk': cognitoIdentityDataMode,
+    });
+
+    let Token = tokenExport.Token;
+    token = new Token(identityPoolId);
+
+    token._describeIdentity('test_identityID', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(CognitoIdentityMock.DATA);
+    chai.expect(token._identityLogins).to.eql(CognitoIdentityMock.DATA.Logins);
+  });
+
+  test('Check _describeIdentity() executes successfully for _identityMetadata', function() {
+    let spyCallback = sinon.spy();
+
+    token._describeIdentity('test_identityID', spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(CognitoIdentityMock.DATA);
+    chai.expect(token._identityLogins).to.eql(CognitoIdentityMock.DATA.Logins);
+  });
+
+  test('Check getUser() executes successfully for !isAnonymous', function() {
+    let spyCallback = sinon.spy();
+
+    token.getUser(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null);
+  });
+
+  test('Check getUser() method for !_user', function() {
+    let spyCallback = sinon.spy();
+    let resourceName = 'sample';
+    let deepResourceServiceMock = new DeepResourceServiceMock();
+    let userProvider = new UserProvider(resourceName, deepResourceServiceMock);
+
+    deepResourceServiceMock.setMode(DeepResourceServiceMock.DATA_MODE, ['send']);
+    token.userProvider = userProvider;
+    token.lambdaContext = lambdaContext;
+
+    token.getUser(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(
+      JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
+    );
+  });
+
+  test('Check getUser() method for _user', function() {
+    let spyCallback = sinon.spy();
+  
+    token.getUser(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(
+      JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
+    );
+  });
+
+  test('Check loadCredentials() executes with data when this.lambdaContext', function() {
+    let spyCallback = sinon.spy();
+
+    //mocking AWS.CognitoSync for CredentialsManager
+    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+      'aws-sdk': cognitoSyncDataMode,
+    });
+    let CredentialsManager = credentialsManagerExport.CredentialsManager;
+    //CredentialsManager = credentialsManagerExport.CredentialsManager;
+    let credentialsManager = new CredentialsManager(identityPoolId);
+
+    token._credsManager = credentialsManager
+
+    token.lambdaContext = lambdaContext;
+
+    token.loadCredentials(spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.expect(callbackArg[0]).to.eql(null);
+    chai.expect(callbackArg[1]).to.eql({token: 'test_session_creds'});
+    chai.expect(token.credentials).to.eql({token: 'test_session_creds'});
+  });
+
 });
