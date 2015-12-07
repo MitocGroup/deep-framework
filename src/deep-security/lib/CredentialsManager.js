@@ -148,10 +148,10 @@ export class CredentialsManager {
         });
       },
       onDatasetDeleted: (dataset, datasetName, cb) => {
-        return callback(true);
+        return cb(true);
       },
       onDatasetMerged: (dataset, datasetNames, cb) => {
-        return callback(true);
+        return cb(true);
       }
     });
   }
