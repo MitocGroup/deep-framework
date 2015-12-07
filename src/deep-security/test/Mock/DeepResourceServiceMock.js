@@ -37,6 +37,7 @@ export class DeepResourceServiceMock {
    * @returns {DeepResourceServiceMock}
    */
   get(name) {
+    this.name = name;
     return this;
   }
 
@@ -45,6 +46,7 @@ export class DeepResourceServiceMock {
    * @returns {DeepResourceServiceMock}
    */
   request(id) {
+    this.id = id;
     return this;
   }
 

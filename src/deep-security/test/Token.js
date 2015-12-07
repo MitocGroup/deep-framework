@@ -3,18 +3,24 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import AWS from 'mock-aws';
 import {Token} from '../lib.compiled/Token';
 import {UserProvider} from '../lib.compiled/UserProvider';
 import {IdentityProvider} from '../lib.compiled/IdentityProvider';
 import {CredentialsManager} from '../lib.compiled/CredentialsManager';
 import {DescribeIdentityException} from '../lib.compiled/Exception/DescribeIdentityException';
+import {AuthException} from '../lib.compiled/Exception/AuthException';
 import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 import {CognitoIdentityMock} from './Mock/CognitoIdentityMock';
+import {CognitoSyncMock} from './Mock/CognitoSyncMock';
+import {CognitoSyncClientMock} from './Mock/CognitoSyncClientMock';
 import cognitoIdentityDataMode from './Mock/cognitoIdentityDataMode';
 import cognitoIdentityFailureMode from './Mock/cognitoIdentityFailureMode';
 import cognitoSyncDataMode from './Mock/cognitoSyncDataMode';
-import cognitoSyncFailureMode from './Mock/cognitoSyncFailureMode'
+import cognitoSyncFailureMode from './Mock/cognitoSyncFailureMode';
+import cognitoIdentityCredentialsDataMode from './Mock/cognitoIdentityCredentialsDataMode';
+import cognitoIdentityCredentialsFailureMode from './Mock/cognitoIdentityCredentialsFailureMode';
+import cognitoSyncClient from './Mock/cognitoSyncClient';
+import credentials from './common/credentials';
 import requireProxy from 'proxyquire';
 
 chai.use(sinonChai);
@@ -170,22 +176,6 @@ suite('Token', function() {
     chai.expect(actualResult.lambdaContext).to.be.equal(lambdaContext);
   });
 
-  //test('Check getCredentials() method', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let user = { user: 'testUser' };
-  //
-  //  try {
-  //    token._user = user;
-  //    token.getCredentials(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //});
-
-
   test('Check _describeIdentity() returns []', function() {
     chai.expect(token._identityLogins).to.eql([]);
   });
@@ -268,12 +258,34 @@ suite('Token', function() {
 
   test('Check getUser() method for _user', function() {
     let spyCallback = sinon.spy();
-  
+
     token.getUser(spyCallback);
 
     chai.expect(spyCallback).to.have.been.calledWithExactly(
       JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
     );
+  });
+
+  test('Check loadCredentials() executes with error when this.lambdaContext', function() {
+    let spyCallback = sinon.spy();
+
+    //mocking AWS.CognitoSync for CredentialsManager
+    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+      'aws-sdk': cognitoSyncFailureMode,
+    });
+    let CredentialsManager = credentialsManagerExport.CredentialsManager;
+    let credentialsManager = new CredentialsManager(identityPoolId);
+
+    token._credsManager = credentialsManager;
+
+    token.lambdaContext = lambdaContext;
+
+    token.loadCredentials(spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.expect(callbackArg[0]).to.eql(CognitoSyncMock.ERROR);
+    chai.expect(callbackArg[1]).to.eql(null);
   });
 
   test('Check loadCredentials() executes with data when this.lambdaContext', function() {
@@ -286,7 +298,7 @@ suite('Token', function() {
     let CredentialsManager = credentialsManagerExport.CredentialsManager;
     let credentialsManager = new CredentialsManager(identityPoolId);
 
-    token._credsManager = credentialsManager
+    token._credsManager = credentialsManager;
 
     token.lambdaContext = lambdaContext;
 
@@ -299,4 +311,112 @@ suite('Token', function() {
     chai.expect(token.credentials).to.eql({token: 'test_session_creds'});
   });
 
+  test('Check _validCredentials() returns false', function() {
+    chai.expect(token._validCredentials()).to.equal(false);
+  });
+
+  test('Check _validCredentials() returns true', function() {
+    token._credentials = credentials;
+    chai.expect(token._validCredentials()).to.equal(true);
+  });
+
+  test('Check loadCredentials() for _validCredentials', function() {
+    let spyCallback = sinon.spy();
+
+    let actualResult = token.loadCredentials(spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.expect(callbackArg[0]).to.eql(null);
+    chai.expect(callbackArg[1]).to.eql(credentials);
+    chai.expect(actualResult).to.equal(undefined);
+  });
+
+  test(
+    'Check loadCredentials() executes with AuthException in cb when !this.lambdaContext',
+    function() {
+      let spyCallback = sinon.spy();
+
+      //mocking AWS.CognitoSync for CredentialsManager
+      let tokenExport = requireProxy('../lib.compiled/Token', {
+        'aws-sdk': cognitoIdentityCredentialsFailureMode,
+      });
+      let Token = tokenExport.Token;
+      let token = new Token(identityPoolId);
+
+      token.loadCredentials(spyCallback);
+
+      let callbackArg = spyCallback.args[0];
+
+      chai.assert.instanceOf(
+        callbackArg[0], AuthException, 'error in cb is an instance of AuthException'
+      );
+    }
+  );
+
+  test(
+    'Check loadCredentials() executes with data in cb when !this.lambdaContext',
+    function() {
+      let spyCallback = sinon.spy();
+
+      //mocking AWS.CognitoIdentityCredentials for Token
+      let tokenExport = requireProxy('../lib.compiled/Token', {
+        'aws-sdk': cognitoIdentityCredentialsDataMode,
+      });
+      let Token = tokenExport.Token;
+      let token = new Token(identityPoolId);
+
+      //mocking AWS.CognitoSyncClient for CredentialsManager
+      let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+        'aws-sdk': cognitoSyncClient,
+      });
+      let CredentialsManager = credentialsManagerExport.CredentialsManager;
+      let credentialsManager = new CredentialsManager(identityPoolId);
+      //set modes
+      credentialsManager.cognitoSyncClient.setMode(
+        CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']
+      );
+      token._credsManager = credentialsManager;
+
+      token.loadCredentials(spyCallback);
+
+      let callbackArg = spyCallback.args[0];
+
+      chai.expect(callbackArg[0]).to.equal(null);
+      chai.expect(callbackArg[1].constructor.name).to.equal('CognitoIdentityCredentialsMock');
+    }
+  );
+
+  test(
+    'Check loadCredentials() executes with error in cb when !this.lambdaContext',
+    function() {
+      let spyCallback = sinon.spy();
+
+      //mocking AWS.CognitoIdentityCredentials for Token
+      let tokenExport = requireProxy('../lib.compiled/Token', {
+        'aws-sdk': cognitoIdentityCredentialsDataMode,
+      });
+      let Token = tokenExport.Token;
+      let token = new Token(identityPoolId);
+
+      //mocking AWS.CognitoSyncClient for CredentialsManager
+      let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+        'aws-sdk': cognitoSyncClient,
+      });
+      let CredentialsManager = credentialsManagerExport.CredentialsManager;
+      let credentialsManager = new CredentialsManager(identityPoolId);
+      //set modes
+      credentialsManager.cognitoSyncClient.setMode(
+        CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']
+      );
+      token._credsManager = credentialsManager;
+
+      token.loadCredentials(spyCallback);
+
+      let callbackArg = spyCallback.args[0];
+
+      chai.expect(callbackArg[0]).to.eql({});
+      chai.expect(callbackArg[1]).to.equal(null);
+    }
+  );
 });

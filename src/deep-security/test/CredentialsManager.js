@@ -4,8 +4,6 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import AWS from 'aws-sdk';
-import {CredentialsManager} from '../lib.compiled/CredentialsManager';
-import CognitoSyncManager from 'amazon-cognito-js';
 import credentials from './common/credentials';
 import cognitoSyncClient from './Mock/cognitoSyncClient';
 import cognitoSyncDataMode from './Mock/cognitoSyncDataMode';
@@ -128,7 +126,9 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set modes
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_PUT_DATASET, ['openOrCreateDataset']);
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_PUT_DATASET, ['openOrCreateDataset']
+    );
 
     credentialsManager.saveCredentials(credentials, spyCallback);
 
@@ -146,7 +146,9 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set modes
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']);
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']
+    );
 
     credentialsManager.saveCredentials(credentials, spyCallback);
 
@@ -164,7 +166,9 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set modes
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']);
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']
+    );
 
     credentialsManager.saveCredentials(credentials, spyCallback);
 
@@ -178,7 +182,7 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_CONFLICT_MODE, ['synchronize'])
+    let dataset = new Dataset(Dataset.SYNCRONIZE_CONFLICT_MODE, ['synchronize']);
 
     credentialsManager._synchronizeDataset(dataset, spyCallback);
 
@@ -189,7 +193,7 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_DELETED_MODE, ['synchronize'])
+    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_DELETED_MODE, ['synchronize']);
 
     credentialsManager._synchronizeDataset(dataset, spyCallback);
 
@@ -200,7 +204,7 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_MERGED_MODE, ['synchronize'])
+    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_MERGED_MODE, ['synchronize']);
 
     credentialsManager._synchronizeDataset(dataset, spyCallback);
 

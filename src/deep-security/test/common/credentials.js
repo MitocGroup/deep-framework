@@ -4,9 +4,9 @@
 export default {
   secretAccessKey: 'dgd34rgdfs45r568356sadasdaskjkj',
   expired: false,
-  expireTime: '2015-11-20T17:24:07.000Z',
+  expireTime: '2016-12-20T17:24:07.000Z',
   accessKeyId: '78464j4o5ktpsgoguecgt',
-  sessionToken: 'AQoDYXdzMFG//////////wEasAUcsAsb0kzbFk1VUOwZVl8F7IGk7JS++suLw9uXRhR97+PTDywnDI1PZXs2bJV/5tRCpVsGMyESW664jWXa7EdcVi8tyTsMzLrUYp6T3oZu4hMAcWK0VoKbRNZfOZepuaSev5q8mbE9Avu8TPJztKj/ZZ92QeXfVys7z090f5zDgTjBfy+XKRfSGEcPIKRWeUlP+QuFLyLSxQ+sBgU7kyIXEWCC0W1gQiMBoU5Y3NUmL8rhGvfoieFqAh6MjzKamq4Z7uwDRWIZyAcUBG88gmVWN7kkRcnQJukY8LlDltz1Rpgsx/Y+BcZ0iYm2uM8SLsg2MuG0D5H4A+vLx7xSVfmxctnByeagOS0boh5v6BAM1FxppOmnu7CaOB6ZwcW2SrbeMNMV6W06y1PSUu64iVaF9D/Ju4XY+V4/mcGJDLu5Clu/nK0GkZpqO3ngV+r7e1MlnUcnobx/v/a7ljmRSJJ9DJDheA0QjxsGGSNFRqD8NnyOZsyq0qiWnZugHl4pxdEQ7pCahPwYHXnJiQUi1kWqwd0YSIx7jhBBBfjG+1rtwjnEro5vxz0ItrHIPXuDdWzb2fdcBSMrgycalDYSl2e9H4Kq4h73GV0guFHTcc5+tU36Lmu9IlaF++w/ZSS4RqgVz4aAsabMNVViq+zhKL75JS66bXR+Gicu5TWFTCYZnkxic7vJ24y0z4DddRGQxlyF1II5H564dCqEQ1Z1AYEMgmq3KTKnMel7vEOuaof4qaeZgcwz5TBvXviR5e3eK8H48hjvTki9DMHciT94UNlhrk1dATkSUg1eQMq78o1S/kzvBT4R/Vr053ELRcPIp2tipKkv64/nrLwS7ELNDRPyJG2naNsMTRHSz4pJeN2M/sn02T6Q19BtFoMV1Qm3EMMGVPjJYsSXLjCGSD7qLIQNIKeSvbIF',
+  sessionToken: 'AQoDYXdzMFG//////////wEasAUcsAsb0kzbFk1VUOwZVl8F7IGk7JS++suLw9uXRhR97+PTDywnDI1PZXs2bJV/5tRCp',
   params: {
     IdentityPoolId: 'us-east-1:7e2e9d57-wswed-asdasdas-22f4-595e1d8128c5',
     RoleSessionName: 'web-identity',
@@ -17,7 +17,7 @@ export default {
     Credentials: {
       AccessKeyId: 'ASIAJ76WBDMQ633S2EIA',
       SecretKey: '45645knlaskdasdasd',
-      SessionToken: 'AQoDYXdzMFG//////////wEasAUcsAsb0kzbFk1VUOwZVl8F7IGk7JS++suLw9uXRhR97+PTDywnDI1PZXs2bJV/5tRCpVsGMyESW664jWXa7EdcVi8tyTsMzLrUYp6T3oZu4hMAcWK0VoKbRNZfOZepuaSev5q8mbE9Avu8TPJztKj/ZZ92QeXfVys7z090f5zDgTjBfy+XKRfSGEcPIKRWeUlP+QuFLyLSxQ+sBgU7kyIXEWCC0W1gQiMBoU5Y3NUmL8rhGvfoieFqAh6MjzKamq4Z7uwDRWIZyAcUBG88gmVWN7kkRcnQJukY8LlDltz1Rpgsx/Y+BcZ0iYm2uM8SLsg2MuG0D5H4A+vLx7xSVfmxctnByeagOS0boh5v6BAM1FxppOmnu7CaOB6ZwcW2SrbeMNMV6W06y1PSUu64iVaF9D/Ju4XY+V4/mcGJDLu5Clu/nK0GkZpqO3ngV+r7e1MlnUcnobx/v/a7ljmRSJJ9DJDheA0QjxsGGSNFRqD8NnyOZsyq0qiWnZugHl4pxdEQ7pCahPwYHXnJiQUi1kWqwd0YSIx7jhBBBfjG+1rtwjnEro5vxz0ItrHIPXuDdWzb2fdcBSMrgycalDYSl2e9H4Kq4h73GV0guFHTcc5+tU36Lmu9IlaF++w/ZSS4RqgVz4aAsabMNVViq+zhKL75JS66bXR+Gicu5TWFTCYZnkxic7vJ24y0z4DddRGQxlyF1II5H564dCqEQ1Z1AYEMgmq3KTKnMel7vEOuaof4qaeZgcwz5TBvXviR5e3eK8H48hjvTki9DMHciT94UNlhrk1dATkSUg1eQMq78o1S/kzvBT4R/Vr053ELRcPIp2tipKkv64/nrLwS7ELNDRPyJG2naNsMTRHSz4pJeN2M/sn02T6Q19BtFoMV1Qm3EMMGVPjJYsSXLjCGSD7qLIQNIKeSvbIF',
+      SessionToken: 'AQoDYXdzMFG//////////wEasAUcsAsb0kzbFk1VUOwZVl8F7IGk7JS++suLw9uXRhR97+PTDywnDI1PZXs2bJV/5tRCp',
       Expiration: '2015-11-20T17:24:07.000Z',
     },
   },
