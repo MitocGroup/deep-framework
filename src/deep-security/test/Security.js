@@ -5,7 +5,6 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Security} from '../lib.compiled/Security';
 import {UserProvider} from '../lib.compiled/UserProvider';
-import {IdentityProvider} from '../lib.compiled/IdentityProvider';
 import {LocalToken} from '../lib.compiled/LocalToken';
 import {Token} from '../lib.compiled/Token';
 import {Exception} from '../lib.compiled/Exception/Exception';
