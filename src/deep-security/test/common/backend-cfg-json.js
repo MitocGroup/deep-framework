@@ -61,8 +61,24 @@ export default {
     },
     'deep.ng.root': {
       isRoot: true,
-      parameters: {},
       resources: {},
+      parameters: {
+        frontend: {},
+        backend: {},
+        globals: {
+          userProviderEndpoint: '@deep.mg.auth:user-retrieve',
+          logDrivers: {
+            sentry: {
+              dsn: 'https://765456poi50e46a293e367d9db7c69ac:b98d6dcc48514731a35e34d57e388bcb@app.getsentry.com/48098',
+            },
+          },
+          security: {
+            identityProviders: {
+              'www.amazon.com': 'amzn1.application.3b5k2jb65432352gfd5b23kj5hb',
+            },
+          },
+        },
+      },
     },
   },
   globals: {

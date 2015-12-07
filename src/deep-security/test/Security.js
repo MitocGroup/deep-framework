@@ -5,6 +5,9 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Security} from '../lib.compiled/Security';
 import {UserProvider} from '../lib.compiled/UserProvider';
+import {IdentityProvider} from '../lib.compiled/IdentityProvider';
+import {LocalToken} from '../lib.compiled/LocalToken';
+import {Token} from '../lib.compiled/Token';
 import {Exception} from '../lib.compiled/Exception/Exception';
 import {MissingLoginProviderException} from '../lib.compiled/Exception/MissingLoginProviderException';
 import Kernel from 'deep-kernel';
@@ -13,9 +16,18 @@ import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 
 chai.use(sinonChai);
 
-suite('Security', function() {
+suite('Security', function () {
   let resourceName = 'sample';
   let deepResourceServiceMock = new DeepResourceServiceMock();
+  let lambdaContext = {
+    context: 'test context',
+    identity: {
+      cognitoIdentityId: 'us-east-1:b5487645-61bd-4c3b-dd54-5cba66070e7c',
+    },
+  };
+  let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
+  let identityProviders = {'www.amazon.com': 'amzn1.application.3b5k2jb65432352gfd5b23kj5hb'};
+  let userProviderEndpoint = '@deep.auth:user-retrieve';
   let userProvider = new UserProvider(resourceName, deepResourceServiceMock);
 
   let backendKernelInstance = null;
@@ -23,7 +35,7 @@ suite('Security', function() {
   let securityFrontend = null;
   let securityBackend = null;
 
-  test('Load Kernel by using Kernel.load()', function(done) {
+  test('Load Kernel by using Kernel.load()', function (done) {
     let callback = (frontendKernel, backendKernel) => {
       chai.assert.instanceOf(
         frontendKernel, Kernel, 'frontendKernel is an instance of Kernel'
@@ -49,11 +61,26 @@ suite('Security', function() {
   });
 
 
-  test('Class Security exists in Security', function() {
+  test('Class Security exists in Security', function () {
     chai.expect(typeof Security).to.equal('function');
   });
 
-  test('Check warmupBackendLogin throws "Exception" for frontend', function() {
+  test('Check constructor sets token=null', function () {
+    chai.expect(securityBackend.token).to.be.eql(null);
+    chai.expect(securityFrontend.token).to.be.eql(null);
+  });
+
+  test('Check constructor sets identityPoolId', function () {
+    chai.expect(securityBackend.identityPoolId).to.be.eql(identityPoolId);
+    chai.expect(securityFrontend.identityPoolId).to.be.eql(identityPoolId);
+  });
+
+  test('Check constructor sets _userProviderEndpoint', function() {
+    chai.expect(securityBackend._userProviderEndpoint).to.be.eql(userProviderEndpoint);
+    chai.expect(securityFrontend._userProviderEndpoint).to.be.eql(userProviderEndpoint);
+  });
+
+  test('Check warmupBackendLogin() throws "Exception" for frontend', function () {
     let error = null;
 
     try {
@@ -65,90 +92,106 @@ suite('Security', function() {
     chai.assert.instanceOf(error, Exception, 'error is an instance of Exception');
   });
 
-  // @note - this is goning to be refactored (https://github.com/MitocGroup/deep-framework/issues/52)
-  //test('Check constructor sets _identityPoolId', function() {
-  //  chai.expect(security.identityPoolId).to.be.equal(identityPoolId);
-  //});
-  //
-  //test('Check constructor sets _identityProviders={}', function() {
-  //  chai.expect(security.identityProviders).to.be.eql(identityProvidersMock);
-  //});
-  //
-  //test('Check constructor sets _token=null', function() {
-  //  chai.expect(security.token).to.be.eql(null);
-  //});
-  //
-  //test('Check constructor sets _userProviderEndpoint=null', function() {
-  //  chai.expect(security._userProviderEndpoint).to.be.eql(null);
-  //});
-  //
-  //test('Check amazonLoginProviderConfig getter returns amazon provider', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  try {
-  //    actualResult = security.amazonLoginProviderConfig;
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(actualResult).to.be.eql(identityProvidersMock[Security.PROVIDER_AMAZON]);
-  //});
-  //
-  //test('Check login() method returns valid token', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let userToken = 'userToken';
-  //  let userId = 'UserId';
-  //  let spyCallback = sinon.spy();
-  //  chai.expect(security.localBackend).to.be.equal(false);
-  //
-  //  try {
-  //    actualResult = security.login(Security.PROVIDER_AMAZON, userToken, userId, spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //});
-  //
-  //test('Check anonymousLogin() method returns valid token', function() {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let spyCallback = sinon.spy();
-  //
-  //  try {
-  //    actualResult = security.anonymousLogin(spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //});
-  //
-  //test('Check boot() method boots security data and runs callback', function() {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //  let kernelMock = {
-  //    config: {
-  //      globals: {
-  //        logDrivers: {
-  //          sentry: {
-  //            dns: 'https://test3751cb500b56b4d:test7bf9aa66707c65cc31d@app.getsentry.com/48093'
-  //          },
-  //        },
-  //        userProviderEndpoint: '@deep.test:create',
-  //        security: {
-  //          identityProviders: {
-  //            'www.amazon.com': 'amzn1.application.test',
-  //          },
-  //        },
-  //      },
-  //    },
-  //  };
-  //  try {
-  //    security.boot(kernelMock, spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.expect(spyCallback).to.have.been.calledWith();
-  //});
+  test('Check warmupBackendLogin() returns valid instance of Token for !localBackend', function () {
+
+    //hack for failing during this.container.get('resource')
+    securityBackend._userProvider = userProvider;
+
+    let actualResult = securityBackend.warmupBackendLogin(lambdaContext);
+
+    chai.assert.instanceOf(actualResult, Token, 'actualResult is an instance of Token');
+    chai.assert.instanceOf(securityBackend.token, Token, 'token is an instance of Token');
+    chai.expect(actualResult._userProvider).to.eql(userProvider);
+  });
+
+  test('Check warmupBackendLogin() returns valid instance of LocalToken for localBackend', function () {
+
+    //hack for failing during this.container.get('resource')
+    securityBackend.localBackend = true;
+    securityBackend._userProvider = userProvider;
+
+    let actualResult = securityBackend.warmupBackendLogin(lambdaContext);
+
+    chai.assert.instanceOf(actualResult, LocalToken, 'actualResult is an instance of LocalToken');
+    chai.assert.instanceOf(securityBackend.token, LocalToken, 'token is an instance of LocalToken');
+    chai.expect(actualResult._userProvider).to.eql(userProvider);
+  });
+
+  test('Check login() method returns valid instance of Token for !localBackend', function() {
+    let providerName = 'www.amazon.com';
+    let userToken = 'test_userToken';
+    let userId = 'test_userId';
+    let spyCallback = sinon.spy();
+
+    securityBackend.localBackend = false;
+    securityBackend._userProvider = userProvider;
+
+    let actualResult = securityBackend.login(providerName, userToken, userId, spyCallback);
+
+    chai.assert.instanceOf(actualResult, Token, 'actualResult is an instance of Token');
+    chai.assert.instanceOf(securityBackend.token, Token, 'token is an instance of Token');
+    chai.expect(actualResult._userProvider).to.eql(userProvider);
+  });
+
+  test('Check login() method returns valid instance of LocalToken for localBackend', function() {
+    let providerName = 'www.amazon.com';
+    let userToken = 'test_userToken';
+    let userId = 'test_userId';
+    let spyCallback = sinon.spy();
+
+    securityBackend.localBackend = true;
+    securityBackend._userProvider = userProvider;
+
+    let actualResult = securityBackend.login(providerName, userToken, userId, spyCallback);
+
+    chai.assert.instanceOf(actualResult, LocalToken, 'actualResult is an instance of LocalToken');
+    chai.assert.instanceOf(securityBackend.token, LocalToken, 'token is an instance of LocalToken');
+    chai.expect(actualResult._userProvider).to.eql(userProvider);
+  });
+
+  test('Check anonymousLogin() returns valid instance of LocalToken for localBackend', function() {
+    let spyCallback = sinon.spy();
+    securityBackend._userProvider = userProvider;
+    securityBackend.localBackend = true;
+
+    let actualResult = securityBackend.anonymousLogin(spyCallback);
+
+    chai.assert.instanceOf(actualResult, LocalToken, 'actualResult is an instance of LocalToken');
+    chai.assert.instanceOf(securityBackend.token, LocalToken, 'token is an instance of LocalToken');
+    chai.expect(actualResult._userProvider).to.eql(userProvider);
+  });
+
+  test('Check anonymousLogin() returns valid instance of Token for !localBackend', function() {
+    let spyCallback = sinon.spy();
+    securityBackend._userProvider = userProvider;
+    securityBackend.localBackend = false;
+
+    let actualResult = securityBackend.anonymousLogin(spyCallback);
+
+    chai.assert.instanceOf(actualResult, Token, 'actualResult is an instance of Token');
+    chai.assert.instanceOf(securityBackend.token, Token, 'token is an instance of Token');
+    chai.expect(actualResult._userProvider).to.eql(userProvider);
+  });
+
+  test('Check boot() method for backend boots security data and runs callback', function () {
+    let spyBackendCallback = sinon.spy();
+
+    securityBackend.boot(backendKernelInstance, spyBackendCallback);
+
+    chai.expect(spyBackendCallback).to.have.been.calledWithExactly();
+    chai.expect(securityBackend.identityPoolId).to.be.equal(identityPoolId);
+    chai.expect(securityBackend._identityProviders).to.be.eql(identityProviders);
+    chai.expect(securityBackend._userProviderEndpoint).to.be.equal(userProviderEndpoint);
+  });
+
+  test('Check boot() method for frontend boots security data and runs callback', function () {
+    let spyFrontendCallback = sinon.spy();
+
+    securityBackend.boot(backendKernelInstance, spyFrontendCallback);
+
+    chai.expect(spyFrontendCallback).to.have.been.calledWithExactly();
+    chai.expect(securityFrontend.identityPoolId).to.be.equal(identityPoolId);
+    chai.expect(securityFrontend._identityProviders).to.be.eql(identityProviders);
+    chai.expect(securityFrontend._userProviderEndpoint).to.be.equal(userProviderEndpoint);
+  });
 });

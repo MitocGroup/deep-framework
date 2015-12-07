@@ -284,7 +284,6 @@ suite('Token', function() {
       'aws-sdk': cognitoSyncDataMode,
     });
     let CredentialsManager = credentialsManagerExport.CredentialsManager;
-    //CredentialsManager = credentialsManagerExport.CredentialsManager;
     let credentialsManager = new CredentialsManager(identityPoolId);
 
     token._credsManager = credentialsManager
