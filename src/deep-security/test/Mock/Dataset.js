@@ -78,15 +78,15 @@ export class Dataset {
         break;
 
       case Dataset.SYNCRONIZE_CONFLICT_MODE:
-        datasetModeImpl.onConflict(this, [], (response) => {});
+        datasetModeImpl.onConflict(this, [], (result) => { return result});
         break;
 
       case Dataset.SYNCRONIZE_DATASET_DELETED_MODE:
-        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', (response) => {});
+        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', (result) => { return result});
         break;
 
       case Dataset.SYNCRONIZE_DATASET_MERGED_MODE:
-        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', (response) => {});
+        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', (result) => { return result});
         break;
     }
 
