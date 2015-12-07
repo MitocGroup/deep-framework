@@ -73,20 +73,20 @@ export class Dataset {
         datasetModeImpl.onFailure(this, Dataset.ERROR);
         break;
 
-      case Dataset.SYNCRONIZE_CONFLICT_MODE:
-        datasetModeImpl.onConflict(this, []);
-        break;
-
       case Dataset.DATA_MODE:
         datasetModeImpl.onSuccess(this, Dataset.DATA);
         break;
 
+      case Dataset.SYNCRONIZE_CONFLICT_MODE:
+        datasetModeImpl.onConflict(this, [], (response) => {});
+        break;
+
       case Dataset.SYNCRONIZE_DATASET_DELETED_MODE:
-        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName');
+        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', (response) => {});
         break;
 
       case Dataset.SYNCRONIZE_DATASET_MERGED_MODE:
-        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName');
+        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', (response) => {});
         break;
     }
 
