@@ -42,7 +42,7 @@ export class Dataset {
    * @param {Function} callback
    * @returns {Dataset}
    */
-  put(recordName, credentials ,callback) {
+  put(recordName, credentials, callback) {
     this.getCallbackByMode(this._methodsBehavior.get('put'), callback);
 
     return this;
@@ -78,15 +78,21 @@ export class Dataset {
         break;
 
       case Dataset.SYNCRONIZE_CONFLICT_MODE:
-        datasetModeImpl.onConflict(this, [], (result) => { return result});
+        datasetModeImpl.onConflict(this, [], (result) => {
+          return result;
+        });
         break;
 
       case Dataset.SYNCRONIZE_DATASET_DELETED_MODE:
-        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', (result) => { return result});
+        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', (result) => {
+          return result;
+        });
         break;
 
       case Dataset.SYNCRONIZE_DATASET_MERGED_MODE:
-        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', (result) => { return result});
+        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', (result) => {
+          return result;
+        });
         break;
     }
 

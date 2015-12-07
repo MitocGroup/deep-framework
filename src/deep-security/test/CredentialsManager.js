@@ -208,7 +208,7 @@ suite('CredentialsManager', function() {
     //set modes
     let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_MERGED_MODE, ['synchronize']);
 
-    let actualResult = credentialsManager._synchronizeDataset(dataset, spyCallback);
+    credentialsManager._synchronizeDataset(dataset, spyCallback);
 
     //@todo - unable to check cb in passed arg
     //chai.expect(spyCallback).to.have.been.calledWithExactly(true);
