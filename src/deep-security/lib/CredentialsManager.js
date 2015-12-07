@@ -147,10 +147,10 @@ export class CredentialsManager {
           return callback(true);
         });
       },
-      onDatasetDeleted: (dataset, datasetName) => {
+      onDatasetDeleted: (dataset, datasetName, cb) => {
         return callback(true);
       },
-      onDatasetMerged: (dataset, datasetNames) => {
+      onDatasetMerged: (dataset, datasetNames, cb) => {
         return callback(true);
       }
     });
