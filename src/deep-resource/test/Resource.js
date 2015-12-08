@@ -9,7 +9,7 @@ import {Action} from '../lib/Resource/Action';
 import {MissingResourceException} from '../lib/Exception/MissingResourceException';
 import {MissingActionException} from '../lib/Resource/Exception/MissingActionException';
 import {InvalidDeepIdentifierException}
-  from '../node_modules/deep-kernel/lib/Exception/InvalidDeepIdentifierException';
+  from '../node_modules/deep-kernel/lib.compiled/Exception/InvalidDeepIdentifierException';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
