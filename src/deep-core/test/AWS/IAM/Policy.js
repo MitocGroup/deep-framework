@@ -2,7 +2,6 @@
 
 import chai from 'chai';
 import {Policy} from '../../../lib/AWS/IAM/Policy';
-import {Collection} from '../../../lib/AWS/IAM/Collection';
 
 suite('AWS/IAM/Policy', function() {
   let policy = new Policy();

@@ -2,7 +2,6 @@
 
 import chai from 'chai';
 import {Factory} from '../../../lib/AWS/IAM/Factory';
-import {Statement} from '../../../lib/AWS/IAM/Statement';
 import {Collection} from '../../../lib/AWS/IAM/Collection';
 import {Policy} from '../../../lib/AWS/IAM/Policy';
 import {Extractor} from './Extractable';
