@@ -29,7 +29,7 @@ echo "Removing README files"
 find "${path}"/.. -type f -iname README | xargs -0 rm -rf
 
 echo "Removing tests recursively"
-find "${path}"/.. -type d -iname test -o -iname tests -print0 | xargs -0 rm -rf
+find "${path}"/.. -type d -iname "test*" -print0 | xargs -0 rm -rf
 
 echo "Removing empty files and directories"
 find "${path}"/.. -empty -print0 | xargs -0 rm -rf
