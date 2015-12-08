@@ -90,7 +90,7 @@ export class Joi {
 
     return strJoiObj.hasOwnProperty('uri')
       ? strJoiObj.uri()
-      : uriRegexp.createUriRegex();
+      : strJoiObj.regex(uriRegexp.createUriRegex());
   }
 
   /**

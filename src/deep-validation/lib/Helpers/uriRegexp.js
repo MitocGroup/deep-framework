@@ -6,26 +6,20 @@
 
 import RFC3986 from './rfc3986';
 
-const internals = {
-  Uri: {
-    createUriRegex: function (optionalScheme) {
+export default {
+  createUriRegex: (optionalScheme) => {
+    let scheme = RFC3986.scheme;
 
-      let scheme = RFC3986.scheme;
+    // If we were passed a scheme, use it instead of the generic one
+    if (optionalScheme) {
 
-      // If we were passed a scheme, use it instead of the generic one
-      if (optionalScheme) {
-
-        // Have to put this in a non-capturing group to handle the OR statements
-        scheme = '(?:' + optionalScheme + ')';
-      }
-
-      /**
-       * URI = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
-       */
-      return new RegExp('^' + scheme + ':' + RFC3986.hierPart + '(?:\\?' + RFC3986.query + ')?' + '(?:#' + RFC3986.fragment + ')?$');
+      // Have to put this in a non-capturing group to handle the OR statements
+      scheme = '(?:' + optionalScheme + ')';
     }
-  }
+
+    /**
+     * URI = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
+     */
+    return new RegExp('^' + scheme + ':' + RFC3986.hierPart + '(?:\\?' + RFC3986.query + ')?' + '(?:#' + RFC3986.fragment + ')?$');
+  },
 };
-
-
-export default internals.Uri;

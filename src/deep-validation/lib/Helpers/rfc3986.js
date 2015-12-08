@@ -4,7 +4,7 @@
 
 'use strict';
 
-const internals = {
+let internals = {
   rfc3986: {}
 };
 
