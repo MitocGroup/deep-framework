@@ -4,7 +4,6 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Validation} from '../lib/Validation';
-import {ObjectToJoi} from '../lib/ObjectToJoi';
 import {Exception} from '../lib/Exception/Exception';
 import {ModelNotFoundException} from '../lib/Exception/ModelNotFoundException';
 import {ObjectValidationFailedException} from '../lib/Exception/ObjectValidationFailedException';

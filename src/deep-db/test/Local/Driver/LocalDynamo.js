@@ -3,7 +3,6 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {LocalDynamo} from '../../../lib/Local/Driver/LocalDynamo';
 import {AbstractDriver} from '../../../lib/Local/Driver/AbstractDriver';
 import {LocalDynamoServerMock} from '../../Mock/LocalDynamoServerMock';
 import requireProxy from 'proxyquire';

@@ -8,7 +8,6 @@ import {UserProvider} from '../lib/UserProvider';
 import {LocalToken} from '../lib/LocalToken';
 import {Token} from '../lib/Token';
 import {Exception} from '../lib/Exception/Exception';
-import {MissingLoginProviderException} from '../lib/Exception/MissingLoginProviderException';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
 import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';

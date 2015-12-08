@@ -3,10 +3,8 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Dynalite} from '../../../lib/Local/Driver/Dynalite';
 import DynaliteServer from 'dynalite';
 import dynaliteServerMock from '../../Mock/dynaliteServerMock';
-import {FailedToStartServerException} from '../../../lib/Local/Driver/Exception/FailedToStartServerException';
 import requireProxy from 'proxyquire';
 
 chai.use(sinonChai);

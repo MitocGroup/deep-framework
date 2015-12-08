@@ -5,7 +5,6 @@ import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {ContainerAware} from '../lib/ContainerAware';
 import {Instance} from '../lib/Microservice/Instance';
-import {DI} from '../node_modules/deep-di/lib/DI';
 import {InvalidDeepIdentifierException} from '../lib/Exception/InvalidDeepIdentifierException';
 import KernelFactory from './common/KernelFactory';
 import {Kernel} from '../lib/Kernel';

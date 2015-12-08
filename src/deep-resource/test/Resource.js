@@ -10,7 +10,6 @@ import {MissingResourceException} from '../lib/Exception/MissingResourceExceptio
 import {MissingActionException} from '../lib/Resource/Exception/MissingActionException';
 import {InvalidDeepIdentifierException}
   from '../node_modules/deep-kernel/lib/Exception/InvalidDeepIdentifierException';
-import {Instance} from '../node_modules/deep-kernel/lib/Microservice/Instance';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';

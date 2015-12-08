@@ -1,7 +1,6 @@
 'use strict';
 
 import chai from 'chai';
-import {RavenDriver} from '../../lib/Driver/RavenDriver';
 import requireProxy from 'proxyquire';
 import ravenMock from '../Mock/ravenMock';
 

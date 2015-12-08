@@ -3,7 +3,8 @@
 import chai from 'chai';
 import {Injectable} from '../../lib/Microservice/Injectable';
 import {Instance} from '../../lib/Microservice/Instance';
-import {MissingWorkingMicroserviceException} from '../../lib/Microservice/Exception/MissingWorkingMicroserviceException';
+import {MissingWorkingMicroserviceException} from
+  '../../lib/Microservice/Exception/MissingWorkingMicroserviceException';
 import Core from 'deep-core';
 import backendConfig from '../common/backend-cfg-json';
 
