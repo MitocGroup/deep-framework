@@ -135,7 +135,7 @@ export class CredentialsManager {
       onFailure: (error) => {
         callback(error, null);
       },
-      onConflict: (dataset, conflicts, callback) => {
+      onConflict: (dataset, conflicts, cb) => {
         let resolved = [];
 
         for (let i = 0; i < conflicts.length; i++) {
@@ -144,14 +144,14 @@ export class CredentialsManager {
         }
 
         dataset.resolve(resolved, () => {
-          return callback(true);
+          return cb(true);
         });
       },
-      onDatasetDeleted: (dataset, datasetName, callback) => {
-        return callback(true);
+      onDatasetDeleted: (dataset, datasetName, cb) => {
+        return cb(true);
       },
-      onDatasetMerged: (dataset, datasetNames, callback) => {
-        return callback(true);
+      onDatasetMerged: (dataset, datasetNames, cb) => {
+        return cb(true);
       }
     });
   }
