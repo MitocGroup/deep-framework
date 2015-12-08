@@ -3,7 +3,6 @@
 import chai from 'chai';
 import {Joi} from '../../lib.compiled/Helpers/Joi';
 import Vogels from '../../lib.compiled/Helpers/vogelsPolyfill';
-import uriRegexp from '../../lib.compiled/Helpers/uriRegexp';
 import BaseJoi from 'joi';
 
 suite('Helpers/Joi', function() {
