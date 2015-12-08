@@ -1,8 +1,8 @@
 'use strict';
 
-import {AbstractDriver} from '../../lib.compiled/Driver/AbstractDriver';
-import {NoFlushException} from '../../lib.compiled/Driver/Exception/NoFlushException';
-import {DriverException} from '../../lib.compiled/Driver/Exception/DriverException';
+import {AbstractDriver} from '../../lib/Driver/AbstractDriver';
+import {NoFlushException} from '../../lib/Driver/Exception/NoFlushException';
+import {DriverException} from '../../lib/Driver/Exception/DriverException';
 
 export class AbstractDriverMock extends AbstractDriver {
   /**

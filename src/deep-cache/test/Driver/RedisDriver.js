@@ -4,8 +4,8 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Redis from 'ioredis';
-import {RedisDriver} from '../../lib.compiled/Driver/RedisDriver';
-import {RedisClusterException} from '../../lib.compiled/Driver/Exception/RedisClusterException';
+import {RedisDriver} from '../../lib/Driver/RedisDriver';
+import {RedisClusterException} from '../../lib/Driver/Exception/RedisClusterException';
 import {RedisMock} from './../Mocks/RedisMock';
 import {RedisDriverMock} from './../Mocks/RedisDriverMock';
 

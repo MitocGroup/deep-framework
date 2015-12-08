@@ -3,8 +3,8 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {UserProvider} from '../lib.compiled/UserProvider';
-import {LoadUserException} from '../lib.compiled/Exception/LoadUserException';
+import {UserProvider} from '../lib/UserProvider';
+import {LoadUserException} from '../lib/Exception/LoadUserException';
 import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 
 chai.use(sinonChai);

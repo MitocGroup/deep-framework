@@ -5,8 +5,8 @@
 'use strict';
 
 import chai from 'chai';
-import {Interface} from '../../lib.compiled/OOP/Interface';
-import {MethodsNotImplementedException} from '../../lib.compiled/Exception/MethodsNotImplementedException';
+import {Interface} from '../../lib/OOP/Interface';
+import {MethodsNotImplementedException} from '../../lib/Exception/MethodsNotImplementedException';
 
 class FailTest extends Interface {
   constructor() {

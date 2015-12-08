@@ -3,11 +3,11 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Validation} from '../lib.compiled/Validation';
-import {ObjectToJoi} from '../lib.compiled/ObjectToJoi';
-import {Exception} from '../lib.compiled/Exception/Exception';
-import {ModelNotFoundException} from '../lib.compiled/Exception/ModelNotFoundException';
-import {ObjectValidationFailedException} from '../lib.compiled/Exception/ObjectValidationFailedException';
+import {Validation} from '../lib/Validation';
+import {ObjectToJoi} from '../lib/ObjectToJoi';
+import {Exception} from '../lib/Exception/Exception';
+import {ModelNotFoundException} from '../lib/Exception/ModelNotFoundException';
+import {ObjectValidationFailedException} from '../lib/Exception/ObjectValidationFailedException';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
 

@@ -1,9 +1,9 @@
 'use strict';
 
 import chai from 'chai';
-import {Action} from '../../../lib.compiled/AWS/IAM/Action';
-import {Policy} from '../../../lib.compiled/AWS/IAM/Policy';
-import {InvalidArgumentException} from '../../../lib.compiled/Exception/InvalidArgumentException';
+import {Action} from '../../../lib/AWS/IAM/Action';
+import {Policy} from '../../../lib/AWS/IAM/Policy';
+import {InvalidArgumentException} from '../../../lib/Exception/InvalidArgumentException';
 
 suite('AWS/IAM/Action', function() {
   let action = new Action();

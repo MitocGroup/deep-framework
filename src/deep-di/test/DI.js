@@ -1,9 +1,9 @@
 'use strict';
 
 import chai from 'chai';
-import {DI} from '../lib.compiled/DI';
+import {DI} from '../lib/DI';
 import Bottle from 'bottlejs';
-import {MissingServiceException} from '../lib.compiled/Exception/MissingServiceException';
+import {MissingServiceException} from '../lib/Exception/MissingServiceException';
 import Core from 'deep-core';
 
 class FactoryClass {

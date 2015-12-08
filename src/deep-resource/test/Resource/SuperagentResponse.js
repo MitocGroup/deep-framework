@@ -1,10 +1,10 @@
 'use strict';
 
 import chai from 'chai';
-import {SuperagentResponse} from '../../lib.compiled/Resource/SuperagentResponse';
-import {Resource} from '../../lib.compiled/Resource';
-import {Request} from '../../lib.compiled/Resource/Request';
-import {Action} from '../../lib.compiled/Resource/Action';
+import {SuperagentResponse} from '../../lib/Resource/SuperagentResponse';
+import {Resource} from '../../lib/Resource';
+import {Request} from '../../lib/Resource/Request';
+import {Action} from '../../lib/Resource/Action';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';

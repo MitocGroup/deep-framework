@@ -1,7 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-import {AbstractDriver} from '../../lib.compiled/Driver/AbstractDriver';
+import {AbstractDriver} from '../../lib/Driver/AbstractDriver';
 import {AbstractDriverMock} from '../Mock/AbstractDriverMock';
 
 suite('Driver/AbstractDriver', function() {

@@ -3,10 +3,10 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Dynalite} from '../../../lib.compiled/Local/Driver/Dynalite';
+import {Dynalite} from '../../../lib/Local/Driver/Dynalite';
 import DynaliteServer from 'dynalite';
 import dynaliteServerMock from '../../Mock/dynaliteServerMock';
-import {FailedToStartServerException} from '../../../lib.compiled/Local/Driver/Exception/FailedToStartServerException';
+import {FailedToStartServerException} from '../../../lib/Local/Driver/Exception/FailedToStartServerException';
 import requireProxy from 'proxyquire';
 
 chai.use(sinonChai);
@@ -14,7 +14,7 @@ chai.use(sinonChai);
 suite('Local/Driver/Dynalite', function() {
 
   //mocking dynalite
-  let dynalityExport = requireProxy('../../../lib.compiled/Local/Driver/Dynalite', {
+  let dynalityExport = requireProxy('../../../lib/Local/Driver/Dynalite', {
     'dynalite': dynaliteServerMock,
   });
 

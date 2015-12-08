@@ -1,7 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-import {ObjectVector} from '../../lib.compiled/Generic/ObjectVector';
+import {ObjectVector} from '../../lib/Generic/ObjectVector';
 
 suite('Generic/ObjectVector', function() {
   var TestProto = () => {

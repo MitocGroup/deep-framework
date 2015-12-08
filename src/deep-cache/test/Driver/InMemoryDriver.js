@@ -3,7 +3,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {InMemoryDriver} from '../../lib.compiled/Driver/InMemoryDriver';
+import {InMemoryDriver} from '../../lib/Driver/InMemoryDriver';
 
 chai.use(sinonChai);
 

@@ -3,12 +3,12 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Token} from '../lib.compiled/Token';
-import {UserProvider} from '../lib.compiled/UserProvider';
-import {IdentityProvider} from '../lib.compiled/IdentityProvider';
-import {CredentialsManager} from '../lib.compiled/CredentialsManager';
-import {DescribeIdentityException} from '../lib.compiled/Exception/DescribeIdentityException';
-import {AuthException} from '../lib.compiled/Exception/AuthException';
+import {Token} from '../lib/Token';
+import {UserProvider} from '../lib/UserProvider';
+import {IdentityProvider} from '../lib/IdentityProvider';
+import {CredentialsManager} from '../lib/CredentialsManager';
+import {DescribeIdentityException} from '../lib/Exception/DescribeIdentityException';
+import {AuthException} from '../lib/Exception/AuthException';
 import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 import {CognitoIdentityMock} from './Mock/CognitoIdentityMock';
 import {CognitoSyncMock} from './Mock/CognitoSyncMock';
@@ -185,7 +185,7 @@ suite('Token', function() {
     let error = null;
 
     //mocking AWS.CognitoIdentity
-    let tokenExport = requireProxy('../lib.compiled/Token', {
+    let tokenExport = requireProxy('../lib/Token', {
       'aws-sdk': cognitoIdentityFailureMode,
     });
 
@@ -209,7 +209,7 @@ suite('Token', function() {
     let spyCallback = sinon.spy();
 
     //mocking AWS.CognitoIdentity
-    let tokenExport = requireProxy('../lib.compiled/Token', {
+    let tokenExport = requireProxy('../lib/Token', {
       'aws-sdk': cognitoIdentityDataMode,
     });
 
@@ -270,7 +270,7 @@ suite('Token', function() {
     let spyCallback = sinon.spy();
 
     //mocking AWS.CognitoSync for CredentialsManager
-    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
       'aws-sdk': cognitoSyncFailureMode,
     });
     let CredentialsManager = credentialsManagerExport.CredentialsManager;
@@ -292,7 +292,7 @@ suite('Token', function() {
     let spyCallback = sinon.spy();
 
     //mocking AWS.CognitoSync for CredentialsManager
-    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
       'aws-sdk': cognitoSyncDataMode,
     });
     let CredentialsManager = credentialsManagerExport.CredentialsManager;
@@ -338,7 +338,7 @@ suite('Token', function() {
       let spyCallback = sinon.spy();
 
       //mocking AWS.CognitoSync for CredentialsManager
-      let tokenExport = requireProxy('../lib.compiled/Token', {
+      let tokenExport = requireProxy('../lib/Token', {
         'aws-sdk': cognitoIdentityCredentialsFailureMode,
       });
       let Token = tokenExport.Token;
@@ -360,14 +360,14 @@ suite('Token', function() {
       let spyCallback = sinon.spy();
 
       //mocking AWS.CognitoIdentityCredentials for Token
-      let tokenExport = requireProxy('../lib.compiled/Token', {
+      let tokenExport = requireProxy('../lib/Token', {
         'aws-sdk': cognitoIdentityCredentialsDataMode,
       });
       let Token = tokenExport.Token;
       let token = new Token(identityPoolId);
 
       //mocking AWS.CognitoSyncClient for CredentialsManager
-      let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+      let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
         'aws-sdk': cognitoSyncClient,
       });
       let CredentialsManager = credentialsManagerExport.CredentialsManager;
@@ -393,14 +393,14 @@ suite('Token', function() {
       let spyCallback = sinon.spy();
 
       //mocking AWS.CognitoIdentityCredentials for Token
-      let tokenExport = requireProxy('../lib.compiled/Token', {
+      let tokenExport = requireProxy('../lib/Token', {
         'aws-sdk': cognitoIdentityCredentialsDataMode,
       });
       let Token = tokenExport.Token;
       let token = new Token(identityPoolId);
 
       //mocking AWS.CognitoSyncClient for CredentialsManager
-      let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+      let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
         'aws-sdk': cognitoSyncClient,
       });
       let CredentialsManager = credentialsManagerExport.CredentialsManager;

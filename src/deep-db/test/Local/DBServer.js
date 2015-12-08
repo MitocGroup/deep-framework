@@ -1,9 +1,9 @@
 'use strict';
 
 import chai from 'chai';
-import {DBServer} from '../../lib.compiled/Local/DBServer';
-import {LocalDynamo} from '../../lib.compiled/Local/Driver/LocalDynamo';
-import {Dynalite} from '../../lib.compiled/Local/Driver/Dynalite';
+import {DBServer} from '../../lib/Local/DBServer';
+import {LocalDynamo} from '../../lib/Local/Driver/LocalDynamo';
+import {Dynalite} from '../../lib/Local/Driver/Dynalite';
 
 suite('Local/DBServer', function() {
   let dbServer = new DBServer();

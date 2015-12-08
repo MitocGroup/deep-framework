@@ -3,10 +3,10 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {AbstractDriver} from '../../lib.compiled/Driver/AbstractDriver';
-import {NoFlushException} from '../../lib.compiled/Driver/Exception/NoFlushException';
-import {DriverException} from '../../lib.compiled/Driver/Exception/DriverException';
-import {MissingCacheException} from '../../lib.compiled/Driver/Exception/MissingCacheException';
+import {AbstractDriver} from '../../lib/Driver/AbstractDriver';
+import {NoFlushException} from '../../lib/Driver/Exception/NoFlushException';
+import {DriverException} from '../../lib/Driver/Exception/DriverException';
+import {MissingCacheException} from '../../lib/Driver/Exception/MissingCacheException';
 import {AbstractDriverMock} from '../Mocks/AbstractDriverMock';
 chai.use(sinonChai);
 

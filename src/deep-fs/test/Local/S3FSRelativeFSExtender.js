@@ -3,7 +3,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {S3FSRelativeFSExtender} from '../../lib.compiled/Local/S3FSRelativeFSExtender';
+import {S3FSRelativeFSExtender} from '../../lib/Local/S3FSRelativeFSExtender';
 import path from 'path';
 import nodeFS from 'fs';
 

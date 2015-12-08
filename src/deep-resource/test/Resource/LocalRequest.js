@@ -3,16 +3,16 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Action} from '../../lib.compiled/Resource/Action';
-import {Instance} from '../../lib.compiled/Resource/Instance';
-import {Resource} from '../../lib.compiled/Resource';
+import {Action} from '../../lib/Resource/Action';
+import {Instance} from '../../lib/Resource/Instance';
+import {Resource} from '../../lib/Resource';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import KernelFactory from '../common/KernelFactory';
 import requireProxy from 'proxyquire';
 import {HttpMock} from '../Mock/HttpMock';
-import {LocalRequest} from '../../lib.compiled/Resource/LocalRequest';
+import {LocalRequest} from '../../lib/Resource/LocalRequest';
 
 chai.use(sinonChai);
 
@@ -81,7 +81,7 @@ suite('Resource/LocalRequest', function() {
 
     httpMock.fixBabelTranspile();
 
-    let localRequestExport = requireProxy('../../lib.compiled/Resource/LocalRequest', {
+    let localRequestExport = requireProxy('../../lib/Resource/LocalRequest', {
       'superagent': httpMock,
     });
 
