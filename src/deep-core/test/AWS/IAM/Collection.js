@@ -1,9 +1,9 @@
 'use strict';
 
 import chai from 'chai';
-import {Collection} from '../../../lib.compiled/AWS/IAM/Collection';
-import {Extractable} from '../../../lib.compiled/AWS/IAM/Extractable';
-import {InvalidArgumentException} from '../../../lib.compiled/Exception/InvalidArgumentException';
+import {Collection} from '../../../lib/AWS/IAM/Collection';
+import {Extractable} from '../../../lib/AWS/IAM/Extractable';
+import {InvalidArgumentException} from '../../../lib/Exception/InvalidArgumentException';
 import {Extractor} from './Extractable';
 
 suite('AWS/IAM/Collection', function() {

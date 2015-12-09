@@ -1,11 +1,11 @@
 'use strict';
 
 import chai from 'chai';
-import {Action} from '../../lib.compiled/Resource/Action';
-import {Request} from '../../lib.compiled/Resource/Request';
-import {Resource} from '../../lib.compiled/Resource';
-import {Instance as ResourceInstance} from '../../lib.compiled/Resource/Instance';
-import {UnknownMethodException} from '../../lib.compiled/Resource/Exception/UnknownMethodException';
+import {Action} from '../../lib/Resource/Action';
+import {Request} from '../../lib/Resource/Request';
+import {Resource} from '../../lib/Resource';
+import {Instance as ResourceInstance} from '../../lib/Resource/Instance';
+import {UnknownMethodException} from '../../lib/Resource/Exception/UnknownMethodException';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';

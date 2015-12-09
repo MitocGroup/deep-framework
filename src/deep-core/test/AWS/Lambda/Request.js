@@ -1,7 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-import {Request} from '../../../lib.compiled/AWS/Lambda/Request';
+import {Request} from '../../../lib/AWS/Lambda/Request';
 
 suite('AWS/Lambda/Request', function() {
   let data = {firstKey: 'firstValue'};

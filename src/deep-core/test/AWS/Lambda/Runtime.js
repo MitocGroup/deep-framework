@@ -1,9 +1,9 @@
 'use strict';
 
 import chai from 'chai';
-import {Runtime} from '../../../lib.compiled/AWS/Lambda/Runtime';
-import {Request} from '../../../lib.compiled/AWS/Lambda/Request';
-import {Response} from '../../../lib.compiled/AWS/Lambda/Response';
+import {Runtime} from '../../../lib/AWS/Lambda/Runtime';
+import {Request} from '../../../lib/AWS/Lambda/Request';
+import {Response} from '../../../lib/AWS/Lambda/Response';
 
 
 class RuntimeTest extends Runtime {

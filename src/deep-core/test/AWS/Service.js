@@ -2,7 +2,7 @@
 'use strict';
 
 import chai from 'chai';
-import {Service} from '../../lib.compiled/AWS/Service';
+import {Service} from '../../lib/AWS/Service';
 
 suite('AWS/Service', function() {
   let service = new Service();

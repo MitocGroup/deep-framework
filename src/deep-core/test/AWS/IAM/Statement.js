@@ -1,8 +1,8 @@
 'use strict';
 
 import chai from 'chai';
-import {Statement} from '../../../lib.compiled/AWS/IAM/Statement';
-import {InvalidArgumentException} from '../../../lib.compiled/Exception/InvalidArgumentException';
+import {Statement} from '../../../lib/AWS/IAM/Statement';
+import {InvalidArgumentException} from '../../../lib/Exception/InvalidArgumentException';
 
 suite('AWS/IAM/Statement', function() {
   let statement = new Statement();

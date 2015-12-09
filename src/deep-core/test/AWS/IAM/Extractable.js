@@ -1,7 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-import {Extractable} from '../../../lib.compiled/AWS/IAM/Extractable';
+import {Extractable} from '../../../lib/AWS/IAM/Extractable';
 
 export class Extractor extends Extractable {
   constructor() {

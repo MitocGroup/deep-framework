@@ -3,8 +3,8 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {LocalToken} from '../lib.compiled/LocalToken';
-import {IdentityProvider} from '../lib.compiled/IdentityProvider';
+import {LocalToken} from '../lib/LocalToken';
+import {IdentityProvider} from '../lib/IdentityProvider';
 
 chai.use(sinonChai);
 

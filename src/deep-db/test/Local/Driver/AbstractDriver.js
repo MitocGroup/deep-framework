@@ -3,9 +3,9 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {AbstractDriver} from '../../../lib.compiled/Local/Driver/AbstractDriver';
-import {ServerAlreadyRunningException} from '../../../lib.compiled/Local/Driver/Exception/ServerAlreadyRunningException';
-import {ServerTtsExceededException} from '../../../lib.compiled/Local/Driver/Exception/ServerTtsExceededException';
+import {AbstractDriver} from '../../../lib/Local/Driver/AbstractDriver';
+import {ServerAlreadyRunningException} from '../../../lib/Local/Driver/Exception/ServerAlreadyRunningException';
+import {ServerTtsExceededException} from '../../../lib/Local/Driver/Exception/ServerTtsExceededException';
 import {AbstractDriverMock} from '../../Mock/Driver/AbstractDriverMock';
 
 chai.use(sinonChai);

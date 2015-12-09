@@ -1,8 +1,8 @@
 'use strict';
 
 import chai from 'chai';
-import {Response} from '../../../lib.compiled/AWS/Lambda/Response';
-import {MissingRuntimeContextException} from '../../../lib.compiled/AWS/Lambda/Exception/MissingRuntimeContextException';
+import {Response} from '../../../lib/AWS/Lambda/Response';
+import {MissingRuntimeContextException} from '../../../lib/AWS/Lambda/Exception/MissingRuntimeContextException';
 
 
 suite('AWS/Lambda/Response', function() {

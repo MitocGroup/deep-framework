@@ -1,7 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-import {ObjectStorage} from '../../lib.compiled/Generic/ObjectStorage';
+import {ObjectStorage} from '../../lib/Generic/ObjectStorage';
 
 suite('Generic/ObjectStorage', function() {
   let inputArray = [{firstItem: 'value0'}, {secondItem: 'value1'}];

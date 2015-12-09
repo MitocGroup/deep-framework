@@ -2,7 +2,7 @@
 
 import chai from 'chai';
 import {ConsoleDriverMock} from '../../test/Mock/ConsoleDriverMock';
-import {ConsoleDriver} from '../../lib.compiled/Driver/ConsoleDriver';
+import {ConsoleDriver} from '../../lib/Driver/ConsoleDriver';
 
 suite('Driver/ConsoleDriver', function() {
   let consoleDriver = new ConsoleDriverMock();

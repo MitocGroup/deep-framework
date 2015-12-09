@@ -1,8 +1,8 @@
 'use strict';
 
 import chai from 'chai';
-import {Instance} from '../../lib.compiled/Microservice/Instance';
-import {Injectable} from '../../lib.compiled/Microservice/Injectable';
+import {Instance} from '../../lib/Microservice/Instance';
+import {Injectable} from '../../lib/Microservice/Injectable';
 import Core from 'deep-core';
 import backendConfig from '../common/backend-cfg-json';
 

@@ -4,10 +4,10 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import Validation from 'deep-validation';
-import {DB} from '../lib.compiled/DB';
-import {ModelNotFoundException} from '../lib.compiled/Exception/ModelNotFoundException';
-import {FailedToCreateTableException} from '../lib.compiled/Exception/FailedToCreateTableException';
-import {FailedToCreateTablesException} from '../lib.compiled/Exception/FailedToCreateTablesException';
+import {DB} from '../lib/DB';
+import {ModelNotFoundException} from '../lib/Exception/ModelNotFoundException';
+import {FailedToCreateTableException} from '../lib/Exception/FailedToCreateTableException';
+import {FailedToCreateTablesException} from '../lib/Exception/FailedToCreateTablesException';
 import Joi from 'joi';
 import Vogels from 'vogels';
 import Kernel from 'deep-kernel';
@@ -56,7 +56,7 @@ suite('DB', function() {
 
     //mocking Vogels
     vogelsMock.fixBabelTranspile();
-    let vogelsExport = requireProxy('../lib.compiled/DB', {
+    let vogelsExport = requireProxy('../lib/DB', {
       'vogels': vogelsMock,
     });
     let DBProxy = vogelsExport.DB;

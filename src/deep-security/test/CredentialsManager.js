@@ -12,16 +12,16 @@ import {CognitoSyncClientMock} from './Mock/CognitoSyncClientMock';
 import {CognitoSyncMock} from './Mock/CognitoSyncMock';
 import {Dataset} from './Mock/Dataset';
 import requireProxy from 'proxyquire';
-import {CreateCognitoDatasetException} from '../lib.compiled/Exception/CreateCognitoDatasetException';
-import {PutCognitoRecordException} from '../lib.compiled/Exception/PutCognitoRecordException';
-import {SynchronizeCognitoDatasetException} from '../lib.compiled/Exception/SynchronizeCognitoDatasetException';
+import {CreateCognitoDatasetException} from '../lib/Exception/CreateCognitoDatasetException';
+import {PutCognitoRecordException} from '../lib/Exception/PutCognitoRecordException';
+import {SynchronizeCognitoDatasetException} from '../lib/Exception/SynchronizeCognitoDatasetException';
 
 chai.use(sinonChai);
 
 suite('CredentialsManager', function() {
   let identityPoolId = 'us-east-1:7e2e9d57-wswed-asdasdas-22f4-595e1d8128c5';
 
-  let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+  let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
     'aws-sdk': cognitoSyncClient,
   });
 
@@ -60,7 +60,7 @@ suite('CredentialsManager', function() {
     AWS.config.region = 'us-east-1';
     AWS.config.credentials = credentials;
 
-    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
       'aws-sdk': cognitoSyncClient,
     });
 
@@ -218,7 +218,7 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //mocking AWS.CognitoSync
-    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
       'aws-sdk': cognitoSyncFailureMode,
     });
 
@@ -237,7 +237,7 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //mocking AWS.CognitoSync
-    let credentialsManagerExport = requireProxy('../lib.compiled/CredentialsManager', {
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
       'aws-sdk': cognitoSyncDataMode,
     });
 

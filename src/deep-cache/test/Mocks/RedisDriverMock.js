@@ -2,7 +2,7 @@
 
 
 import {RedisMock} from './RedisMock';
-import {RedisDriver} from '../../lib.compiled/Driver/RedisDriver';
+import {RedisDriver} from '../../lib/Driver/RedisDriver';
 
 export class RedisDriverMock extends RedisDriver {
   /**

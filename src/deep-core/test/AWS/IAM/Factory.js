@@ -1,10 +1,9 @@
 'use strict';
 
 import chai from 'chai';
-import {Factory} from '../../../lib.compiled/AWS/IAM/Factory';
-import {Statement} from '../../../lib.compiled/AWS/IAM/Statement';
-import {Collection} from '../../../lib.compiled/AWS/IAM/Collection';
-import {Policy} from '../../../lib.compiled/AWS/IAM/Policy';
+import {Factory} from '../../../lib/AWS/IAM/Factory';
+import {Collection} from '../../../lib/AWS/IAM/Collection';
+import {Policy} from '../../../lib/AWS/IAM/Policy';
 import {Extractor} from './Extractable';
 
 suite('AWS/IAM/Factory', function() {

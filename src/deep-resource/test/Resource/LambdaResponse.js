@@ -1,10 +1,10 @@
 'use strict';
 
 import chai from 'chai';
-import {LambdaResponse} from '../../lib.compiled/Resource/LambdaResponse';
-import {Resource} from '../../lib.compiled/Resource';
-import {Action} from '../../lib.compiled/Resource/Action';
-import {Request} from '../../lib.compiled/Resource/Request';
+import {LambdaResponse} from '../../lib/Resource/LambdaResponse';
+import {Resource} from '../../lib/Resource';
+import {Action} from '../../lib/Resource/Action';
+import {Request} from '../../lib/Resource/Request';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';

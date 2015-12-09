@@ -1,9 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-import {Policy} from '../../../lib.compiled/AWS/IAM/Policy';
-import {Collection} from '../../../lib.compiled/AWS/IAM/Collection';
-import {Statement} from '../../../lib.compiled/AWS/IAM/Statement';
+import {Policy} from '../../../lib/AWS/IAM/Policy';
 
 suite('AWS/IAM/Policy', function() {
   let policy = new Policy();
