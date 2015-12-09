@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <base data-ice="baseUrl" href="../../../">
-  <title data-ice="title">lib/Helpers/Joi.js | DEEP Validation Library API Document</title>
+  <title data-ice="title">lib/Helpers/uriRegexp.js | DEEP Validation Library API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -41,122 +41,32 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/Helpers/Joi.js</h1>
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Helpers/uriRegexp.js</h1>
 <pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
- * Created by AlexanderC on 5/25/15.
+ * Created by AlexanderC on 12/8/15.
  */
 
 &apos;use strict&apos;;
 
-import BaseJoi from &apos;joi&apos;;
-import Vogels from &apos;./vogelsPolyfill&apos;;
-import uriRegexp from &apos;./uriRegexp&apos;;
+import RFC3986 from &apos;./rfc3986&apos;;
 
-/**
- * Abstraction on Joi validation expressions
- */
-export class Joi {
-  /**
-   * @returns {Object}
-   */
-  static get uuid() {
-    return Vogels.types.uuid();
-  }
+export default {
+  createUriRegex: (optionalScheme) =&gt; {
+    let scheme = RFC3986.scheme;
 
-  /**
-   * @returns {Object}
-   */
-  static get timeUUID() {
-    return Vogels.types.timeUUID();
-  }
+    // If we were passed a scheme, use it instead of the generic one
+    if (optionalScheme) {
 
-  /**
-   * @returns {Object}
-   */
-  static get stringSet() {
-    return Vogels.types.stringSet();
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get numberSet() {
-    return Vogels.types.numberSet();
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get binarySet() {
-    return Vogels.types.binarySet();
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get binary() {
-    return BaseJoi.binary();
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get number() {
-    return BaseJoi.number();
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get string() {
-    return BaseJoi.string();
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get boolean() {
-    return BaseJoi.boolean();
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get email() {
-    return BaseJoi.string().email();
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get website() {
-    let strJoiObj = BaseJoi.string();
-
-    // Fix for Joi v5.x.x
-    return strJoiObj.hasOwnProperty(&apos;uri&apos;)
-      ? strJoiObj.uri()
-      : strJoiObj.regex(uriRegexp.createUriRegex());
-  }
-
-  /**
-   * @returns {Object}
-   */
-  static get map() {
-    return BaseJoi.object();
-  }
-
-  /**
-   * @returns {*}
-   */
-  static get mapSet() {
-    let array = BaseJoi.array();
-    if (array.includes) {
-      return array.includes(BaseJoi.object());
+      // Have to put this in a non-capturing group to handle the OR statements
+      scheme = &apos;(?:&apos; + optionalScheme + &apos;)&apos;;
     }
 
-    return array.items(BaseJoi.object());
-  }
-}
+    /**
+     * URI = scheme &quot;:&quot; hier-part [ &quot;?&quot; query ] [ &quot;#&quot; fragment ]
+     */
+    return new RegExp(&apos;^&apos; + scheme + &apos;:&apos; + RFC3986.hierPart + &apos;(?:\\?&apos; + RFC3986.query + &apos;)?&apos; + &apos;(?:#&apos; + RFC3986.fragment + &apos;)?$&apos;);
+  },
+};
 </code></pre>
 
 </div>

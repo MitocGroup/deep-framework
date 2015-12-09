@@ -744,14 +744,26 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
-    "lib/Resource/Instance.js~Instance#localBackend",
+    "lib/resource/instance.js~instance#isbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-isBackend",
+    "lib/Resource/Instance.js~Instance#isBackend",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#isbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-isBackend",
+    "lib/Resource/Instance.js~Instance#isBackend",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
     "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
+    "lib/Resource/Instance.js~Instance#localBackend",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#localbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
