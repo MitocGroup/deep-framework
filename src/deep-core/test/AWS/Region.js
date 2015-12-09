@@ -1,7 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-import {Region} from '../../lib.compiled/AWS/Region';
+import {Region} from '../../lib/AWS/Region';
 
 suite('AWS/Region', function() {
   let region = new Region();

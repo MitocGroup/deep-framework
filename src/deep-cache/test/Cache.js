@@ -3,10 +3,10 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Cache} from '../lib.compiled/Cache';
-import {InMemoryDriver} from '../lib.compiled/Driver/InMemoryDriver';
-import {RedisDriver} from '../lib.compiled/Driver/RedisDriver';
-import {Exception} from '../lib.compiled/Exception/Exception';
+import {Cache} from '../lib/Cache';
+import {InMemoryDriver} from '../lib/Driver/InMemoryDriver';
+import {RedisDriver} from '../lib/Driver/RedisDriver';
+import {Exception} from '../lib/Exception/Exception';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
 

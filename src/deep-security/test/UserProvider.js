@@ -3,59 +3,40 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {UserProvider} from '../lib.compiled/UserProvider';
-import {LoadUserException} from '../lib.compiled/Exception/LoadUserException';
+import {UserProvider} from '../lib/UserProvider';
+import {LoadUserException} from '../lib/Exception/LoadUserException';
+import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 
 chai.use(sinonChai);
 
 suite('UserProvider', function() {
-  let userProvider = null;
+  let resourceName = 'sample';
+  let deepResourceServiceMock = new DeepResourceServiceMock();
+  let userProvider = new UserProvider(resourceName, deepResourceServiceMock);
 
   test('Class UserProvider exists in UserProvider', function() {
     chai.expect(typeof UserProvider).to.equal('function');
   });
 
   test('Check constructor sets values', function() {
-    userProvider = new UserProvider('userResource', 'deepResource');
-    chai.expect(userProvider._retrieveUserResource).to.be.equal('userResource');
-    chai.expect(userProvider._deepResource).to.be.equal('deepResource');
+    chai.expect(userProvider._retrieveUserResource).to.be.equal(resourceName);
+    chai.expect(userProvider._deepResource).to.be.equal(deepResourceServiceMock);
   });
 
-  test('Check constructor sets default values', function() {
-    userProvider = new UserProvider();
-    chai.expect(userProvider._retrieveUserResource).to.be.equal(undefined);
-    chai.expect(userProvider._deepResource).to.be.equal(undefined);
-  });
-
-  test('Check loadUserByIdentityId() method throws \'LoadUserException\' exception', function() {
+  test('Check loadUserByIdentityId() method throws "LoadUserException"', function() {
     let error = null;
     let actualResult = null;
     let spyCallback = sinon.spy();
-    let deepResourceServiceMock = {
-      get: function(name) {
-        return {
-          data: name,
-          request: function(id) {
-            return {
-              id: id,
-              send: function(callback) {
-                callback({error: 'test LoadException'});
-                return;
-              },
-            };
-          },
-        };
-      },
-    };
+
+    deepResourceServiceMock.setMode(DeepResourceServiceMock.FAILURE_MODE, ['send']);
 
     try {
-      userProvider = new UserProvider(null, deepResourceServiceMock);
-      actualResult = userProvider.loadUserByIdentityId('idhere', spyCallback);
+      actualResult = userProvider.loadUserByIdentityId('test_id', spyCallback);
     } catch (e) {
       error = e;
     }
 
-    chai.expect(error).to.be.not.equal(null);
+    chai.expect(spyCallback).to.not.have.been.calledWith();
     chai.assert.instanceOf(error, LoadUserException, 'error is an instance of LoadUserException');
   });
 
@@ -63,36 +44,14 @@ suite('UserProvider', function() {
     let error = null;
     let actualResult = null;
     let spyCallback = sinon.spy();
-    let response = {
-      data: {
-        Payload: '{"message":"User loaded successfully"}',
-      },
-    };
-    let deepResourceServiceMock = {
-      get: function(name) {
-        return {
-          data: name,
-          request: function(id) {
-            return {
-              id: id,
-              send: function(callback) {
-                callback(response);
-                return;
-              },
-            };
-          },
-        };
-      },
-    };
 
-    try {
-      userProvider = new UserProvider(null, deepResourceServiceMock);
-      actualResult = userProvider.loadUserByIdentityId('idhere', spyCallback);
-    } catch (e) {
-      error = e;
-    }
+    deepResourceServiceMock.setMode(DeepResourceServiceMock.DATA_MODE, ['send']);
+
+    actualResult = userProvider.loadUserByIdentityId('test_id', spyCallback);
 
     chai.expect(error).to.be.equal(null);
-    chai.expect(spyCallback).to.have.been.calledWith(JSON.parse(response.data.Payload));
+    chai.expect(spyCallback).to.have.been.calledWith(
+      JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
+    );
   });
 });

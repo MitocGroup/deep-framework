@@ -6,7 +6,7 @@ source $(dirname $0)/_head.sh
 
 COVERAGE_PATH=${__SCRIPT_PATH}"/../coverage"
 
-istanbul-combine -d ${COVERAGE_PATH} -r lcov -p none \
+istanbul-combine -d ${COVERAGE_PATH} -r lcov -p both \
   ${__SRC_PATH}/*/coverage/*.json
 
 ### Upload Coverage info to Codacy ###

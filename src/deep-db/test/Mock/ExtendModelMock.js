@@ -1,8 +1,8 @@
 'use strict';
 
-import {ExtendModel} from '../../lib.compiled/Vogels/ExtendModel';
-import {UndefinedMethodException} from '../../lib.compiled/Vogels/Exceptions/UndefinedMethodException';
-import {Exception} from '../../lib.compiled/Vogels/Exceptions/Exception';
+import {ExtendModel} from '../../lib/Vogels/ExtendModel';
+import {UndefinedMethodException} from '../../lib/Vogels/Exceptions/UndefinedMethodException';
+import {Exception} from '../../lib/Vogels/Exceptions/Exception';
 
 /**
  * Extends ExtendModel to test exceptions

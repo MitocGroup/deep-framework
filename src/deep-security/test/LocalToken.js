@@ -1,68 +1,65 @@
 'use strict';
 
 import chai from 'chai';
-import {LocalToken} from '../lib.compiled/LocalToken';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+import {LocalToken} from '../lib/LocalToken';
+import {IdentityProvider} from '../lib/IdentityProvider';
 
-suite('LocalToken', function() {
-  let identityPoolId = 'us-west-2:identityPoolIdTest';
+chai.use(sinonChai);
+
+suite('LocalToken', function () {
+  let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
   let localToken = new LocalToken(identityPoolId);
-  let callbackFunction = (error, data) => {
-    return data;
+  let providerName = 'amazon';
+  let userToken = 'test_userToken';
+  let userId = 'test_userId';
+  let providers = {
+    amazon: {
+      name: IdentityProvider.AMAZON,
+      data: {},
+    },
+    facebook: {
+      name: IdentityProvider.FACEBOOK,
+      data: {},
+    },
+    google: {
+      name: IdentityProvider.GOOGLE,
+      data: {},
+    },
   };
+  let identityProvider = new IdentityProvider(providers, providerName, userToken, userId);
 
-  test('Class LocalToken exists in LocalToken', function() {
+  test('Class LocalToken exists in LocalToken', function () {
     chai.expect(typeof LocalToken).to.equal('function');
   });
 
-  // @note - this is goning to be refactored (https://github.com/MitocGroup/deep-framework/issues/52)
-  //test('Check constructor sets _identityPoolId', function() {
-  //  chai.expect(localToken._identityPoolId).to.be.equal(identityPoolId);
-  //});
-  //
-  //test('Check constructor sets _providerName=null', function() {
-  //  chai.expect(localToken.providerName).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _providerUserToken=null', function() {
-  //  chai.expect(localToken.providerUserToken).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _providerUserId=null', function() {
-  //  chai.expect(localToken.providerUserId).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _user=null', function() {
-  //  chai.expect(localToken._user).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _userProvider=null', function() {
-  //  chai.expect(localToken._userProvider).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _identityId=null', function() {
-  //  chai.expect(localToken.identityId).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _credentials=null', function() {
-  //  chai.expect(localToken.credentials).to.be.equal(null);
-  //});
-  //
-  //test('Check constructor sets _isAnonymous=true', function() {
-  //  chai.expect(localToken.isAnonymous).to.be.equal(true);
-  //});
-  //
-  //test('Check userProvider setter sets new provider', function() {
-  //  localToken.userProvider = null;
-  //  chai.expect(localToken._userProvider).to.be.equal(null);
-  //  let newUserProvider = 'userProviderTest';
-  //  localToken.userProvider = newUserProvider;
-  //  chai.expect(localToken._userProvider).to.be.equal(newUserProvider);
-  //});
-  //
-  //test('Check getCredentials method', function() {
-  //  let providerUserId = {data: 'providerUserId'};
-  //  localToken._providerUserId = providerUserId;
-  //  localToken.getCredentials(callbackFunction)
-  //  chai.expect(localToken.identityId).to.be.eql(providerUserId);
-  //});
+  test('Check loadCredentials() method for !identityProvider', function () {
+    let spyCallback = sinon.spy();
+
+    localToken.loadCredentials(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
+    chai.expect(localToken._credentials).to.eql({identityId: null});
+  });
+
+  test('Check identityProvider setter',
+    function () {
+      localToken.identityProvider = identityProvider;
+
+      chai.expect(localToken.identityProvider).to.be.equal(identityProvider);
+      chai.assert.instanceOf(
+        localToken.identityProvider, IdentityProvider, 'localToken.identityProvider is an instance of IdentityProvider'
+      );
+    }
+  );
+
+  test('Check loadCredentials() method for identityProvider', function () {
+    let spyCallback = sinon.spy();
+
+    localToken.loadCredentials(spyCallback);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
+    chai.expect(localToken._credentials).to.eql({identityId: identityProvider.userId});
+  });
 });

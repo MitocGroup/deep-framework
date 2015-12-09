@@ -1,7 +1,7 @@
 'use strict';
 
-import {AbstractDriver} from '../../../lib.compiled/Local/Driver/AbstractDriver';
-import {ServerTtsExceededException} from '../../../lib.compiled/Local/Driver/Exception/ServerTtsExceededException';
+import {AbstractDriver} from '../../../lib/Local/Driver/AbstractDriver';
+import {ServerTtsExceededException} from '../../../lib/Local/Driver/Exception/ServerTtsExceededException';
 
 export class AbstractDriverMock extends AbstractDriver {
   constructor() {

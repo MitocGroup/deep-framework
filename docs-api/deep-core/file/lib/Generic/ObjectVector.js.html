@@ -80,7 +80,13 @@ export class ObjectVector {
    * @param {Object[]|*} instances
    */
   add(...instances) {
-    for (let instance of instances) {
+    for (let i in instances) {
+      if (!instances.hasOwnProperty(i)) {
+        continue;
+      }
+
+      let instance = instances[i];
+
       if (!(instance instanceof this._proto)) {
         throw new Error(
           `The object ${instance.constructor.name} is not an instance of ${this._proto.name}`

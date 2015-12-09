@@ -3,14 +3,13 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Resource} from '../lib.compiled/Resource';
-import {Instance as ResourceInstance} from '../lib.compiled/Resource/Instance';
-import {Action} from '../lib.compiled/Resource/Action';
-import {MissingResourceException} from '../lib.compiled/Exception/MissingResourceException';
-import {MissingActionException} from '../lib.compiled/Resource/Exception/MissingActionException';
+import {Resource} from '../lib/Resource';
+import {Instance as ResourceInstance} from '../lib/Resource/Instance';
+import {Action} from '../lib/Resource/Action';
+import {MissingResourceException} from '../lib/Exception/MissingResourceException';
+import {MissingActionException} from '../lib/Resource/Exception/MissingActionException';
 import {InvalidDeepIdentifierException}
   from '../node_modules/deep-kernel/lib.compiled/Exception/InvalidDeepIdentifierException';
-import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';

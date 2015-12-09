@@ -1,7 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-//import {LocalStorageDriver} from '../../lib.compiled/Driver/LocalStorageDriver';
+//import {LocalStorageDriver} from '../../lib/Driver/LocalStorageDriver';
 
 suite('Driver/LocalStorageDriver', function() {
   test(

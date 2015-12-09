@@ -1,9 +1,9 @@
 'use strict';
 
 import chai from 'chai';
-import {Resource} from '../../../lib.compiled/AWS/IAM/Resource';
-import {InvalidArgumentException} from '../../../lib.compiled/Exception/InvalidArgumentException';
-import {InvalidArnException} from '../../../lib.compiled/AWS/IAM/Exception/InvalidArnException';
+import {Resource} from '../../../lib/AWS/IAM/Resource';
+import {InvalidArgumentException} from '../../../lib/Exception/InvalidArgumentException';
+import {InvalidArnException} from '../../../lib/AWS/IAM/Exception/InvalidArnException';
 
 suite('AWS/IAM/Resource', function() {
   let resource = new Resource();

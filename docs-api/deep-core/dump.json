@@ -2723,7 +2723,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport qs from 'qs';\n\n/**\n * Request received by the lambda context\n */\nexport class Request {\n  /**\n   * @param {*} data\n   */\n  constructor(data = {}) {\n    this._data = typeof data === 'object' ? qs.parse(data) : data;\n\n    this._registerDataAsParams();\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsParams() {\n    for (let key in this._data) {\n      if (!this._data.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._data[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_data', {\n      configurable: false,\n      enumerable: false,\n    });\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @param {String} name\n   * @param {String|Object|null} defaultValue\n   *\n   * @returns {String|Object|null}\n   */\n  getParam(name, defaultValue = undefined) {\n    return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport qs from 'qs';\n\n/**\n * Request received by the lambda context\n */\nexport class Request {\n  /**\n   * @param {*} data\n   */\n  constructor(data = {}) {\n    this._data = !Array.isArray(data) ? qs.parse(data) : data;\n\n    this._registerDataAsParams();\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsParams() {\n    for (let key in this._data) {\n      if (!this._data.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._data[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_data', {\n      configurable: false,\n    });\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @param {String} name\n   * @param {String|Object|null} defaultValue\n   *\n   * @returns {String|Object|null}\n   */\n  getParam(name, defaultValue = undefined) {\n    return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2803,7 +2803,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#data",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 48,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2834,7 +2834,7 @@
     "longname": "lib/AWS/Lambda/Request.js~Request#getParam",
     "access": null,
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 58,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5005,7 +5005,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 11/10/15.\n */\n\n'use strict';\n\n\nexport class MethodsProxy {\n  /**\n   * @param {Object} target\n   */\n  constructor(target) {\n    this._target = target;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get target() {\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   */\n  proxyOverride(handler, ...explMethods) {\n    let methods = Object.keys(handler).concat(explMethods);\n\n    for (let prop of methods) {\n      if (!handler.hasOwnProperty(prop) &&\n        explMethods.indexOf(prop) === -1) {\n        continue;\n      }\n\n      if (typeof handler[prop] === 'function') {\n        Object.defineProperty(\n          this._target,\n          prop,\n          {\n            value: (...args) => {\n              return handler[prop](...args);\n            },\n          }\n        );\n      }\n    }\n\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   *\n   * @todo Replace typeof hook with hasOwnProperty() when get rid of babel\n   */\n  proxy(handler, ...explMethods) {\n    return this.proxyOverride(\n      handler,\n      ...(explMethods.filter((prop) => typeof this._target[prop] === 'undefined'))\n    );\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 11/10/15.\n */\n\n'use strict';\n\n\nexport class MethodsProxy {\n  /**\n   * @param {Object} target\n   */\n  constructor(target) {\n    this._target = target;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get target() {\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   */\n  proxyOverride(handler, ...explMethods) {\n    let methods = Object.keys(handler).concat(explMethods);\n\n    for (let i in methods) {\n      if (!methods.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let prop = methods[i];\n\n      if (!handler.hasOwnProperty(prop) &&\n        explMethods.indexOf(prop) === -1) {\n        continue;\n      }\n\n      if (typeof handler[prop] === 'function') {\n        Object.defineProperty(\n          this._target,\n          prop,\n          {\n            value: (...args) => {\n              return handler[prop](...args);\n            },\n          }\n        );\n      }\n    }\n\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   *\n   * @todo Replace typeof hook with hasOwnProperty() when get rid of babel\n   */\n  proxy(handler, ...explMethods) {\n    return this.proxyOverride(\n      handler,\n      ...(explMethods.filter((prop) => typeof this._target[prop] === 'undefined'))\n    );\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -5153,7 +5153,7 @@
     "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#proxy",
     "access": null,
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 66,
     "todo": [
       "Replace typeof hook with hasOwnProperty() when get rid of babel"
     ],
@@ -5393,7 +5393,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "'use strict';\n\nexport class ObjectVector {\n\n  /**\n   * @param {Function} proto\n   * @param {Object[]|*} instances\n   */\n  constructor(proto, ...instances) {\n    this._proto = proto;\n    this._vector = [];\n\n    this.add(...instances);\n  }\n\n  /**\n   * Add new instances to collection\n   * @param {Object[]|*} instances\n   */\n  add(...instances) {\n    for (let instance of instances) {\n      if (!(instance instanceof this._proto)) {\n        throw new Error(\n          `The object ${instance.constructor.name} is not an instance of ${this._proto.name}`\n        );\n      }\n\n      this._vector.push(instance);\n    }\n\n    return this;\n  }\n\n  /**\n   * Get collection of instances\n   * @returns {Object[]}\n   */\n  get collection() {\n    return this._vector;\n  }\n}\n"
+    "content": "'use strict';\n\nexport class ObjectVector {\n\n  /**\n   * @param {Function} proto\n   * @param {Object[]|*} instances\n   */\n  constructor(proto, ...instances) {\n    this._proto = proto;\n    this._vector = [];\n\n    this.add(...instances);\n  }\n\n  /**\n   * Add new instances to collection\n   * @param {Object[]|*} instances\n   */\n  add(...instances) {\n    for (let i in instances) {\n      if (!instances.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let instance = instances[i];\n\n      if (!(instance instanceof this._proto)) {\n        throw new Error(\n          `The object ${instance.constructor.name} is not an instance of ${this._proto.name}`\n        );\n      }\n\n      this._vector.push(instance);\n    }\n\n    return this;\n  }\n\n  /**\n   * Get collection of instances\n   * @returns {Object[]}\n   */\n  get collection() {\n    return this._vector;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -5519,7 +5519,7 @@
     "longname": "lib/Generic/ObjectVector.js~ObjectVector#collection",
     "access": null,
     "description": "Get collection of instances",
-    "lineNumber": 38,
+    "lineNumber": 44,
     "unknown": [
       {
         "tagName": "@returns",
