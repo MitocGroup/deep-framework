@@ -15,56 +15,45 @@ export class SuperagentResponse extends Response {
   constructor(request, data, error) {
     super(...arguments);
 
-    this._error = error;
+    this._populateData(data);
+    this._populateError(data, error, request.isLambda);
+    this._populateStatusCode(data);
+  }
 
-    // @todo: treat the empty body somehow else?
-    if (!data.body) {
-      if (!data.status || data.status > 300) {
-        this._error = data.error || 'Unexpected error occurred';
-        this._statusCode = data.status || 500;
+  /**
+   * @param {Object} data
+   * @private
+   */
+  _populateData(data) {
+    this._data = data && data.body ? data.body : null;
+  }
+
+  /**
+   * @param {Object} data
+   * @param {Object} error
+   * @param {Boolean} isLambda
+   * @private
+   */
+  _populateError(data, error, isLambda) {
+    if (error) {
+      this._error = error;
+    } else if (data) {
+      if (isLambda) {
+        this._error = data.body && data.body.errorMessage ? data.body.errorMessage : null;
       } else {
-        this._statusCode = data.status;
+        this._error = data.error || null;
       }
     } else {
-      this._data = request.isLambda
-        ? this._parseLambdaResponse(data)
-        : this._parseResponse(data);
+      this._error = 'Unexpected error occurred';
     }
   }
 
   /**
-   * Parse response given by superagent library
-   * for Lambdas proxied through ApiGateway
-   *
-   * @param {Object} response
-   * @returns {Object}
+   * @param {Object} data
    * @private
    */
-  _parseLambdaResponse(response) {
-    if (typeof response.body.errorMessage === 'string') {
-      this._error = response.body.errorMessage;
-    }
-
-    this._statusCode = this._error ? 500 : response.status;
-
-    return this._error ? null : response.body;
-  }
-
-  /**
-   * Parse response given by superagent library
-   *
-   * @param {Object} response
-   * @returns {Object}
-   * @private
-   */
-  _parseResponse(response) {
-    if (response.error) {
-      this._error = response.error;
-    }
-
-    this._statusCode = response.status;
-
-    return response.body;
+  _populateStatusCode(data) {
+    this._statusCode = data && data.status ? data.status : 500;
   }
 
   /**
