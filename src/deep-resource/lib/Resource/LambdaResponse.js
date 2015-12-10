@@ -19,6 +19,12 @@ export class LambdaResponse extends Response {
     super(...arguments);
 
     this._errorType = null;
+
+    // pre populate data, error, etc when instance is created
+    this._data = this.data;
+    this._error = this.error;
+    this._errorType = this.errorType;
+    this._statusCode = this.statusCode;
   }
 
   /**
