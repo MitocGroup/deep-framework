@@ -70,10 +70,6 @@ suite('Resource/SuperagentResponse', function() {
     );
   });
 
-  test('Check constructor sets _data', function() {
-    chai.expect(superagentResponse.data).to.be.equal(null);
-  });
-
   test('Check constructor sets _error', function() {
     chai.expect(superagentResponse.error).to.be.eql(rawError);
   });
@@ -86,32 +82,6 @@ suite('Resource/SuperagentResponse', function() {
     chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
   });
 
-  test('Check _parseResponse()', function() {
-    let actualResult = superagentResponse._parseResponse(rawData);
-
-    chai.expect(superagentResponse.isError).to.be.equal(true);
-    chai.expect(superagentResponse.error).to.be.equal(rawData.error);
-    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
-    chai.expect(actualResult).to.be.equal(rawData.body);
-  });
-
-  test('Check _parseLambdaResponse()', function() {
-    rawData = {
-      status: 500,
-      body: {
-        errorMessage: 'test error message',
-      },
-    };
-    let actualResult = superagentResponse._parseLambdaResponse(rawData);
-
-    chai.expect(superagentResponse.isError).to.be.equal(true);
-    chai.expect(superagentResponse.error).to.be.equal(
-      rawData.body.errorMessage
-    );
-    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
-    chai.expect(actualResult).to.be.equal(null);
-  });
-
   test('Check constructor for !data.body && status < 300', function() {
     rawData = {Payload: '{"dataKey":"testValue"}', status: 201};
     rawError = null;
@@ -119,23 +89,6 @@ suite('Resource/SuperagentResponse', function() {
     superagentResponse = new SuperagentResponse(request, rawData, rawError);
 
     chai.expect(superagentResponse.isError).to.be.equal(false);
-    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
-  });
-
-  test('Check constructor for !data.body && status > 300', function() {
-    rawData = {
-      Payload: '{"dataKey":"testValue"}',
-      status: 404,
-      error: {
-        message: 'errorMessage',
-      },
-    };
-    rawError = null;
-
-    superagentResponse = new SuperagentResponse(request, rawData, rawError);
-
-    chai.expect(superagentResponse.isError).to.be.equal(true);
-    chai.expect(superagentResponse.error).to.be.equal(rawData.error);
     chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
   });
 });
