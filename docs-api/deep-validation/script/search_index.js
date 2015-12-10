@@ -498,6 +498,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/helpers/rfc3986.js",
+    "file/lib/Helpers/rfc3986.js.html",
+    "lib/Helpers/rfc3986.js",
+    "file"
+  ],
+  [
+    "lib/helpers/uriregexp.js",
+    "file/lib/Helpers/uriRegexp.js.html",
+    "lib/Helpers/uriRegexp.js",
+    "file"
+  ],
+  [
     "lib/helpers/vogelspolyfill.js",
     "file/lib/Helpers/vogelsPolyfill.js.html",
     "lib/Helpers/vogelsPolyfill.js",

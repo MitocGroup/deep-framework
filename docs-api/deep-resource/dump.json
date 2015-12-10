@@ -1244,7 +1244,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {MissingActionException} from './Exception/MissingActionException';\nimport {Action} from './Action';\n\n/**\n * Resource instance\n */\nexport class Instance {\n  /**\n   * @param {String} name\n   * @param {Object} rawActions\n   */\n  constructor(name, rawActions) {\n    this._name = name;\n    this._rawActions = rawActions;\n    this._actions = null;\n    this._localBackend = false;\n    this._cache = null;\n    this._security = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get security() {\n    return this._security;\n  }\n\n  /**\n   * @param {Object} security\n   */\n  set security(security) {\n    this._security = security;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cache() {\n    return this._cache;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cache(cache) {\n    this._cache = cache;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get actions() {\n    if (this._actions === null) {\n      this._actions = {};\n\n      for (let actionName in this._rawActions) {\n        if (!this._rawActions.hasOwnProperty(actionName)) {\n          continue;\n        }\n\n        let actionMetadata = this._rawActions[actionName];\n\n        this._actions[actionName] = new Action(\n          this,\n          actionName,\n          actionMetadata.type,\n          actionMetadata.methods,\n          actionMetadata.source,\n          actionMetadata.region,\n          actionMetadata.forceUserIdentity\n        );\n      }\n    }\n\n    return this._actions;\n  }\n\n  /**\n   * @param {String} actionName\n   * @returns {boolean}\n   */\n  has(actionName) {\n    return this.actions.hasOwnProperty(actionName);\n  }\n\n  /**\n   * @param actionName\n   * @returns {Action}\n   */\n  action(actionName) {\n    if (!this.has(actionName)) {\n      throw new MissingActionException(this.name, actionName);\n    }\n\n    return this.actions[actionName];\n  }\n\n  /**\n   * @param {String} actionName\n   * @param {*} args\n   */\n  request(actionName, ...args) {\n    return this.action(actionName).request(...args);\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {MissingActionException} from './Exception/MissingActionException';\nimport {Action} from './Action';\n\n/**\n * Resource instance\n */\nexport class Instance {\n  /**\n   * @param {String} name\n   * @param {Object} rawActions\n   */\n  constructor(name, rawActions) {\n    this._name = name;\n    this._rawActions = rawActions;\n    this._actions = null;\n    this._localBackend = false;\n    this._isBackend = false;\n    this._cache = null;\n    this._security = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get security() {\n    return this._security;\n  }\n\n  /**\n   * @param {Object} security\n   */\n  set security(security) {\n    this._security = security;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cache() {\n    return this._cache;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cache(cache) {\n    this._cache = cache;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._isBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set isBackend(state) {\n    this._isBackend = state;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get actions() {\n    if (this._actions === null) {\n      this._actions = {};\n\n      for (let actionName in this._rawActions) {\n        if (!this._rawActions.hasOwnProperty(actionName)) {\n          continue;\n        }\n\n        let actionMetadata = this._rawActions[actionName];\n\n        this._actions[actionName] = new Action(\n          this,\n          actionName,\n          actionMetadata.type,\n          actionMetadata.methods,\n          actionMetadata.source,\n          actionMetadata.region,\n          actionMetadata.forceUserIdentity\n        );\n      }\n    }\n\n    return this._actions;\n  }\n\n  /**\n   * @param {String} actionName\n   * @returns {boolean}\n   */\n  has(actionName) {\n    return this.actions.hasOwnProperty(actionName);\n  }\n\n  /**\n   * @param actionName\n   * @returns {Action}\n   */\n  action(actionName) {\n    if (!this.has(actionName)) {\n      throw new MissingActionException(this.name, actionName);\n    }\n\n    return this.actions[actionName];\n  }\n\n  /**\n   * @param {String} actionName\n   * @param {*} args\n   */\n  request(actionName, ...args) {\n    return this.action(actionName).request(...args);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1367,12 +1367,29 @@
     "kind": "member",
     "static": false,
     "variation": null,
+    "name": "_isBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_isBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
     "name": "_cache",
     "memberof": "lib/Resource/Instance.js~Instance",
     "longname": "lib/Resource/Instance.js~Instance#_cache",
     "access": null,
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -1389,7 +1406,7 @@
     "longname": "lib/Resource/Instance.js~Instance#_security",
     "access": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 25,
     "undocument": true,
     "type": {
       "types": [
@@ -1406,7 +1423,7 @@
     "longname": "lib/Resource/Instance.js~Instance#security",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 31,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1437,7 +1454,7 @@
     "longname": "lib/Resource/Instance.js~Instance#security",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 38,
     "params": [
       {
         "nullable": null,
@@ -1466,7 +1483,7 @@
     "longname": "lib/Resource/Instance.js~Instance#_security",
     "access": null,
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 39,
     "undocument": true,
     "type": {
       "types": [
@@ -1483,7 +1500,7 @@
     "longname": "lib/Resource/Instance.js~Instance#name",
     "access": null,
     "description": null,
-    "lineNumber": 44,
+    "lineNumber": 45,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1514,7 +1531,7 @@
     "longname": "lib/Resource/Instance.js~Instance#cache",
     "access": null,
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 52,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1545,7 +1562,7 @@
     "longname": "lib/Resource/Instance.js~Instance#cache",
     "access": null,
     "description": null,
-    "lineNumber": 58,
+    "lineNumber": 59,
     "params": [
       {
         "nullable": null,
@@ -1574,7 +1591,7 @@
     "longname": "lib/Resource/Instance.js~Instance#_cache",
     "access": null,
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 60,
     "undocument": true,
     "type": {
       "types": [
@@ -1591,7 +1608,7 @@
     "longname": "lib/Resource/Instance.js~Instance#localBackend",
     "access": null,
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 66,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1622,7 +1639,7 @@
     "longname": "lib/Resource/Instance.js~Instance#localBackend",
     "access": null,
     "description": null,
-    "lineNumber": 72,
+    "lineNumber": 73,
     "params": [
       {
         "nullable": null,
@@ -1651,7 +1668,84 @@
     "longname": "lib/Resource/Instance.js~Instance#_localBackend",
     "access": null,
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 74,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "isBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#isBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 80,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "isBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#isBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 87,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "state",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_isBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_isBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 88,
     "undocument": true,
     "type": {
       "types": [
@@ -1668,7 +1762,7 @@
     "longname": "lib/Resource/Instance.js~Instance#actions",
     "access": null,
     "description": null,
-    "lineNumber": 79,
+    "lineNumber": 94,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1699,7 +1793,7 @@
     "longname": "lib/Resource/Instance.js~Instance#_actions",
     "access": null,
     "description": null,
-    "lineNumber": 81,
+    "lineNumber": 96,
     "undocument": true,
     "type": {
       "types": [
@@ -1716,7 +1810,7 @@
     "longname": "lib/Resource/Instance.js~Instance#has",
     "access": null,
     "description": null,
-    "lineNumber": 109,
+    "lineNumber": 124,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1754,7 +1848,7 @@
     "longname": "lib/Resource/Instance.js~Instance#action",
     "access": null,
     "description": null,
-    "lineNumber": 117,
+    "lineNumber": 132,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1792,7 +1886,7 @@
     "longname": "lib/Resource/Instance.js~Instance#request",
     "access": null,
     "description": null,
-    "lineNumber": 129,
+    "lineNumber": 144,
     "params": [
       {
         "nullable": null,
@@ -2412,7 +2506,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {SuperagentResponse} from './SuperagentResponse';\nimport {LambdaResponse} from './LambdaResponse';\nimport {Response} from './Response';\nimport {Exception} from '../Exception/Exception';\nimport {Action} from './Action';\nimport Http from 'superagent';\nimport AWS from 'aws-sdk';\nimport {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';\nimport {CachedRequestException} from './Exception/CachedRequestException';\nimport {NotAuthenticatedException} from './Exception/NotAuthenticatedException';\nimport aws4 from 'aws4';\nimport urlParse from 'url-parse';\nimport qs from 'qs';\nimport Core from 'deep-core';\nimport {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';\nimport {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';\nimport {LoadCredentialsException} from './Exception/LoadCredentialsException';\nimport Security from 'deep-security';\nimport crypto from 'crypto';\n\n/**\n * Action request instance\n */\nexport class Request {\n  /**\n   * @param {Action} action\n   * @param {Object} payload\n   * @param {String} method\n   */\n  constructor(action, payload, method) {\n    this._action = action;\n    this._payload = payload;\n    this._method = method;\n    this._lambda = null;\n\n    this._cacheImpl = null;\n    this._cacheTtl = Request.TTL_FOREVER;\n    this._cached = false;\n\n    this._async = false;\n    this._native = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get async() {\n    return this._async;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  invokeAsync() {\n    if (!this.isLambda) {\n      throw new AsyncCallNotAvailableException(this._action.type);\n    }\n\n    this._native = true;\n    this._async = true;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get native() {\n    return this._native;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  useDirectCall() {\n    this._native = true;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isCached() {\n    return this._cacheImpl && this._cached;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  enableCache() {\n    this._cached = true;\n    return this;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  disableCache() {\n    this._cached = false;\n    return this;\n  }\n\n  /**\n   * @param {Number} ttl\n   * @returns {Request}\n   */\n  cache(ttl = Request.TTL_FOREVER) {\n    if (!this._cacheImpl) {\n      throw new MissingCacheImplementationException();\n    }\n\n    this._cacheTtl = ttl;\n    this.enableCache();\n\n    return this;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get cacheTtl() {\n    return this._cacheTtl;\n  }\n\n  /**\n   * @param {Number} ttl\n   */\n  set cacheTtl(ttl) {\n    this._cacheTtl = ttl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cacheImpl() {\n    return this._cacheImpl;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cacheImpl(cache) {\n    this._cacheImpl = cache;\n\n    // @todo: do we really have to force it?\n    this.cache(Request.TTL_DEFAULT);\n  }\n\n  /**\n   * @returns {String}\n   * @private\n   */\n  _buildCacheKey() {\n    let payload = Request._md5(JSON.stringify(this._payload));\n    let endpoint = this.native ? this._action.source.original : this._action.source.api;\n\n    return `${this._method}:${this._action.type}:${endpoint}#${payload}`;\n  }\n\n  /**\n   * @param {String} str\n   * @returns {String}\n   */\n  static _md5(str) {\n    var md5sum = crypto.createHash('md5');\n\n    md5sum.update(str);\n\n    return md5sum.digest('hex');\n  }\n\n  /**\n   * @param {Response} response\n   * @returns {String}\n   * @private\n   */\n  static _stringifyResponse(response) {\n    return JSON.stringify({\n      _class: response.constructor.name,\n      data: response.rawData,\n      error: response.rawError,\n    });\n  }\n\n  /**\n   * @param {String} rawData\n   * @returns {Response}\n   * @private\n   */\n  _rebuildResponse(rawData) {\n    let response = JSON.parse(rawData);\n\n    if (!response) {\n      throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);\n    }\n\n    let ResponseImpl = Request._chooseResponseImpl(response._class);\n\n    if (!ResponseImpl) {\n      throw new Exception(`Unknown Response implementation ${response._class}`);\n    }\n\n    return new ResponseImpl(this, response.data, response.error);\n  }\n\n  /**\n   * @param {String} className\n   * @returns {*}\n   * @private\n   */\n  static _chooseResponseImpl(className) {\n    let implMap = {};\n\n    implMap[Response.name] = Response;\n    implMap[LambdaResponse.name] = LambdaResponse;\n    implMap[SuperagentResponse.name] = SuperagentResponse;\n\n    return implMap[className];\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  invalidateCache(callback = () => {}) {\n    if (!this.isCached) {\n      callback(true);\n\n      return this;\n    }\n\n    let cache = this._cacheImpl;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, (error, result) => {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result) {\n        cache.invalidate(cacheKey, 0, (error, result) => {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback(result);\n        });\n\n        return;\n      }\n\n      callback(true);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  send(callback = () => {}) {\n    if (!this.isCached || this._async) {\n      return this._send(callback);\n    }\n\n    let cache = this._cacheImpl;\n    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, (error, result) => {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result && !invalidateCache) {\n        cache.get(cacheKey, (error, result) => {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback(this._rebuildResponse(result));\n        });\n\n        return;\n      }\n\n      this._send((response) => {\n        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {\n          if (!result) {\n            error = `Unable to persist request cache under key ${cacheKey}`;\n          }\n\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n        });\n\n        // @todo: do it synchronous?\n        callback(response);\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   *\n   * @todo: remove this?\n   */\n  get isLambda() {\n    return this._action.type === Action.LAMBDA;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   */\n  _send(callback = () => {}) {\n    if (!this._native) {\n      return this._sendThroughApi(callback);\n    }\n\n    switch (this._action.type) {\n      case Action.LAMBDA:\n        this._sendLambda(callback);\n        break;\n      case Action.EXTERNAL:\n        this._sendExternal(callback);\n        break;\n      default: throw new Exception(`Request of type ${this._action.type} is not implemented`);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendThroughApi(callback = () => {}) {\n    let endpoint = this._action.source.api;\n\n    this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {\n      signedRequest.end((error, response) => {\n        callback(new SuperagentResponse(this, response, error));\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendLambda(callback = () => {}) {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let options = {\n      region: this._action.region,\n    };\n\n    let invocationParameters = {\n      FunctionName: this._action.source.original,\n      Payload: JSON.stringify(this.payload),\n      InvocationType: this._async ? 'Event' : 'RequestResponse',\n    };\n\n    this._loadSecurityCredentials((error, credentials) => {\n      // use cognito identity credentials if present\n      // if not, fallback to lambda execution role permissions\n      if (!error && credentials) {\n        options.credentials = credentials;\n      }\n\n      this._lambda = new AWS.Lambda(options);\n\n      this._lambda.invoke(invocationParameters, (error, data) => {\n        callback(new LambdaResponse(this, data, error));\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendExternal(callback = () => {}) {\n    Http[Request._httpRealMethod(this._method)](this._action.source.original)\n      .send(this.payload)\n      .end((error, response) => {\n        callback(new SuperagentResponse(this, response, error));\n      });\n\n    return this;\n  }\n\n  /**\n   * @param {String} url\n   * @param {String} httpMethod\n   * @param {Object} payload\n   * @param {Function} callback\n   * @private\n   */\n  _createAws4SignedRequest(url, httpMethod, payload, callback) {\n    let parsedUrl = urlParse(url, qs);\n    let apiHost = parsedUrl.hostname;\n    let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';\n    \n    let opsToSign = {\n      service: Core.AWS.Service.API_GATEWAY_EXECUTE,\n      region: this.getEndpointHostRegion(apiHost),\n      host: apiHost,\n      method: httpMethod,\n      path: apiPath,\n      headers: {\n        'Content-Type': 'application/json; charset=UTF-8',\n      },\n    };\n\n    httpMethod = httpMethod.toLowerCase();\n\n    switch (httpMethod) {\n      case 'get':\n      case 'delete':\n        if (parsedUrl.query || payload) {\n          let mergedPayload = Object.assign(parsedUrl.query, payload);\n\n          opsToSign.path += `?${qs.stringify(mergedPayload)}`;\n\n          // pass payload as query string\n          parsedUrl.set('query', mergedPayload, qs.parse);\n          url = parsedUrl.toString(qs.stringify);\n          payload = null; // reset it coz superagent overrides url query string\n        }\n        break;\n      case 'post':\n      case 'put':\n      case 'patch':\n        opsToSign.body = JSON.stringify(payload);\n        break;\n    }\n\n    this._loadSecurityCredentials((error, credentials) => {\n      if (error) {\n        throw error;\n      }\n\n      let signature = aws4.sign(opsToSign, credentials);\n\n      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)\n        .set('Content-Type', 'application/json; charset=UTF-8')\n        .set('X-Amz-Date', signature.headers['X-Amz-Date'])\n        .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])\n        .set('Authorization', signature.headers.Authorization);\n\n      if (signature.headers.hasOwnProperty('Content-Length')) {\n        request.set('Content-Length', signature.headers['Content-Length']);\n      }\n\n      callback(request);\n    });\n  }\n\n  /**\n   * @param {String} httpMethod\n   * @returns {String}\n   * @private\n   */\n  static _httpRealMethod(httpMethod) {\n    let method = httpMethod.toLowerCase();\n\n    // @see https://visionmedia.github.io/superagent/\n    if (method === 'delete') {\n      method = 'del';\n    }\n\n    return method;\n  }\n\n  /**\n   * @returns {Request}\n   * @private\n   */\n  _loadSecurityCredentials(callback) {\n    let securityService = this._action.resource.security;\n\n    if (!(securityService instanceof Security)) {\n      callback(new MissingSecurityServiceException(), null);\n      return this;\n    }\n\n    if (!securityService.token) {\n      callback(new NotAuthenticatedException(), null);\n      return this;\n    }\n\n    securityService.token.loadCredentials((error, credentials) => {\n      if (error) {\n        callback(new LoadCredentialsException(error), null);\n        return;\n      }\n\n      callback(null, credentials);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} endpointHost\n   * @returns {String}\n   */\n  getEndpointHostRegion(endpointHost) {\n    let regionParts = endpointHost.match(/\\.([^\\.]+)\\.amazonaws\\.com$/i);\n\n    // @todo - expose API region into config provision section\n    return regionParts ? regionParts[1] : this._action.region; // use action region as fallback\n  }\n\n  /**\n   * @returns {Action}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get payload() {\n    return this._payload;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get method() {\n    return this._method;\n  }\n\n  /**\n   * @returns {Number}\n   * @constructor\n   */\n  static get TTL_DEFAULT() {\n    return 10;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_INVALIDATE() {\n    return -1;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_FOREVER() {\n    return 0;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {SuperagentResponse} from './SuperagentResponse';\nimport {LambdaResponse} from './LambdaResponse';\nimport {Response} from './Response';\nimport {Exception} from '../Exception/Exception';\nimport {Action} from './Action';\nimport Http from 'superagent';\nimport AWS from 'aws-sdk';\nimport {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';\nimport {CachedRequestException} from './Exception/CachedRequestException';\nimport {NotAuthenticatedException} from './Exception/NotAuthenticatedException';\nimport aws4 from 'aws4';\nimport urlParse from 'url-parse';\nimport qs from 'qs';\nimport Core from 'deep-core';\nimport {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';\nimport {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';\nimport {LoadCredentialsException} from './Exception/LoadCredentialsException';\nimport Security from 'deep-security';\nimport crypto from 'crypto';\n\n/**\n * Action request instance\n */\nexport class Request {\n  /**\n   * @param {Action} action\n   * @param {Object} payload\n   * @param {String} method\n   */\n  constructor(action, payload, method) {\n    this._action = action;\n    this._payload = payload;\n    this._method = method;\n    this._lambda = null;\n\n    this._cacheImpl = null;\n    this._cacheTtl = Request.TTL_FOREVER;\n    this._cached = false;\n\n    this._async = false;\n    this._native = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get async() {\n    return this._async;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  invokeAsync() {\n    if (!this.isLambda) {\n      throw new AsyncCallNotAvailableException(this._action.type);\n    }\n\n    this._native = true;\n    this._async = true;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get native() {\n    return this._native;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  useDirectCall() {\n    this._native = true;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isCached() {\n    return this._cacheImpl && this._cached;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  enableCache() {\n    this._cached = true;\n    return this;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  disableCache() {\n    this._cached = false;\n    return this;\n  }\n\n  /**\n   * @param {Number} ttl\n   * @returns {Request}\n   */\n  cache(ttl = Request.TTL_FOREVER) {\n    if (!this._cacheImpl) {\n      throw new MissingCacheImplementationException();\n    }\n\n    this._cacheTtl = ttl;\n    this.enableCache();\n\n    return this;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get cacheTtl() {\n    return this._cacheTtl;\n  }\n\n  /**\n   * @param {Number} ttl\n   */\n  set cacheTtl(ttl) {\n    this._cacheTtl = ttl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cacheImpl() {\n    return this._cacheImpl;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cacheImpl(cache) {\n    this._cacheImpl = cache;\n\n    // @todo: do we really have to force it?\n    this.cache(Request.TTL_DEFAULT);\n  }\n\n  /**\n   * @returns {String}\n   * @private\n   */\n  _buildCacheKey() {\n    let payload = Request._md5(JSON.stringify(this._payload));\n    let endpoint = this.native ? this._action.source.original : this._action.source.api;\n\n    return `${this._method}:${this._action.type}:${endpoint}#${payload}`;\n  }\n\n  /**\n   * @param {String} str\n   * @returns {String}\n   */\n  static _md5(str) {\n    var md5sum = crypto.createHash('md5');\n\n    md5sum.update(str);\n\n    return md5sum.digest('hex');\n  }\n\n  /**\n   * @param {Response} response\n   * @returns {String}\n   * @private\n   */\n  static _stringifyResponse(response) {\n    return JSON.stringify({\n      _class: response.constructor.name,\n      data: response.rawData,\n      error: response.rawError,\n    });\n  }\n\n  /**\n   * @param {String} rawData\n   * @returns {Response}\n   * @private\n   */\n  _rebuildResponse(rawData) {\n    let response = JSON.parse(rawData);\n\n    if (!response) {\n      throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);\n    }\n\n    let ResponseImpl = Request._chooseResponseImpl(response._class);\n\n    if (!ResponseImpl) {\n      throw new Exception(`Unknown Response implementation ${response._class}`);\n    }\n\n    return new ResponseImpl(this, response.data, response.error);\n  }\n\n  /**\n   * @param {String} className\n   * @returns {*}\n   * @private\n   */\n  static _chooseResponseImpl(className) {\n    let implMap = {};\n\n    implMap[Response.name] = Response;\n    implMap[LambdaResponse.name] = LambdaResponse;\n    implMap[SuperagentResponse.name] = SuperagentResponse;\n\n    return implMap[className];\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  invalidateCache(callback = () => {}) {\n    if (!this.isCached) {\n      callback(true);\n\n      return this;\n    }\n\n    let cache = this._cacheImpl;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, (error, result) => {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result) {\n        cache.invalidate(cacheKey, 0, (error, result) => {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback(result);\n        });\n\n        return;\n      }\n\n      callback(true);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  send(callback = () => {}) {\n    if (!this.isCached || this._async) {\n      return this._send(callback);\n    }\n\n    let cache = this._cacheImpl;\n    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, (error, result) => {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result && !invalidateCache) {\n        cache.get(cacheKey, (error, result) => {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback(this._rebuildResponse(result));\n        });\n\n        return;\n      }\n\n      this._send((response) => {\n        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {\n          if (!result) {\n            error = `Unable to persist request cache under key ${cacheKey}`;\n          }\n\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n        });\n\n        // @todo: do it synchronous?\n        callback(response);\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   *\n   * @todo: remove this?\n   */\n  get isLambda() {\n    return this._action.type === Action.LAMBDA;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   */\n  _send(callback = () => {}) {\n    if (!this._native) {\n      return this._sendThroughApi(callback);\n    }\n\n    switch (this._action.type) {\n      case Action.LAMBDA:\n        this._sendLambda(callback);\n        break;\n      case Action.EXTERNAL:\n        this._sendExternal(callback);\n        break;\n      default: throw new Exception(`Request of type ${this._action.type} is not implemented`);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendThroughApi(callback = () => {}) {\n    let endpoint = this._action.source.api;\n\n    this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {\n      signedRequest.end((error, response) => {\n        callback(new SuperagentResponse(this, response, error));\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendLambda(callback = () => {}) {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let options = {\n      region: this._action.region,\n    };\n\n    let invocationParameters = {\n      FunctionName: this._action.source.original,\n      Payload: JSON.stringify(this.payload),\n      InvocationType: this._async ? 'Event' : 'RequestResponse',\n    };\n\n    this._loadSecurityCredentials((error, credentials) => {\n      // use cognito identity credentials if present\n      // if not, fallback to lambda execution role permissions\n      if (!error && credentials) {\n        options.credentials = credentials;\n      }\n\n      this._lambda = new AWS.Lambda(options);\n\n      this._lambda.invoke(invocationParameters, (error, data) => {\n        callback(new LambdaResponse(this, data, error));\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendExternal(callback = () => {}) {\n    Http[Request._httpRealMethod(this._method)](this._action.source.original)\n      .send(this.payload)\n      .end((error, response) => {\n        callback(new SuperagentResponse(this, response, error));\n      });\n\n    return this;\n  }\n\n  /**\n   * @param {String} url\n   * @param {String} httpMethod\n   * @param {Object} payload\n   * @param {Function} callback\n   * @private\n   */\n  _createAws4SignedRequest(url, httpMethod, payload, callback) {\n    let parsedUrl = urlParse(url, qs);\n    let apiHost = parsedUrl.hostname;\n    let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';\n    \n    let opsToSign = {\n      service: Core.AWS.Service.API_GATEWAY_EXECUTE,\n      region: this.getEndpointHostRegion(apiHost),\n      host: apiHost,\n      method: httpMethod,\n      path: apiPath,\n      headers: {\n        'Content-Type': 'application/json; charset=UTF-8',\n      },\n    };\n\n    httpMethod = httpMethod.toLowerCase();\n\n    switch (httpMethod) {\n      case 'get':\n      case 'delete':\n        if (parsedUrl.query || payload) {\n\n          //assure parsedUrl.query is a valid object\n          if (parsedUrl.query === null || typeof parsedUrl.query !== 'object') {\n            parsedUrl.query = {};\n          }\n\n          let mergedPayload = Object.assign(parsedUrl.query, payload);\n\n          opsToSign.path += `?${qs.stringify(mergedPayload)}`;\n\n          // pass payload as query string\n          parsedUrl.set('query', mergedPayload, qs.parse);\n          url = parsedUrl.toString(qs.stringify);\n          payload = null; // reset it coz superagent overrides url query string\n        }\n        break;\n      case 'post':\n      case 'put':\n      case 'patch':\n        opsToSign.body = JSON.stringify(payload);\n        break;\n    }\n\n    this._loadSecurityCredentials((error, credentials) => {\n      if (error) {\n        throw error;\n      }\n\n      let signature = aws4.sign(opsToSign, credentials);\n\n      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)\n        .set('Content-Type', 'application/json; charset=UTF-8')\n        .set('X-Amz-Date', signature.headers['X-Amz-Date'])\n        .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])\n        .set('Authorization', signature.headers.Authorization);\n\n      if (this.action.resource.isBackend && signature.headers.hasOwnProperty('Content-Length')) {\n        request.set('Content-Length', signature.headers['Content-Length']);\n      }\n\n      callback(request);\n    });\n  }\n\n  /**\n   * @param {String} httpMethod\n   * @returns {String}\n   * @private\n   */\n  static _httpRealMethod(httpMethod) {\n    let method = httpMethod.toLowerCase();\n\n    // @see https://visionmedia.github.io/superagent/\n    if (method === 'delete') {\n      method = 'del';\n    }\n\n    return method;\n  }\n\n  /**\n   * @returns {Request}\n   * @private\n   */\n  _loadSecurityCredentials(callback) {\n    let securityService = this._action.resource.security;\n\n    if (!(securityService instanceof Security)) {\n      callback(new MissingSecurityServiceException(), null);\n      return this;\n    }\n\n    if (!securityService.token) {\n      callback(new NotAuthenticatedException(), null);\n      return this;\n    }\n\n    securityService.token.loadCredentials((error, credentials) => {\n      if (error) {\n        callback(new LoadCredentialsException(error), null);\n        return;\n      }\n\n      callback(null, credentials);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} endpointHost\n   * @returns {String}\n   */\n  getEndpointHostRegion(endpointHost) {\n    let regionParts = endpointHost.match(/\\.([^\\.]+)\\.amazonaws\\.com$/i);\n\n    // @todo - expose API region into config provision section\n    return regionParts ? regionParts[1] : this._action.region; // use action region as fallback\n  }\n\n  /**\n   * @returns {Action}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get payload() {\n    return this._payload;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get method() {\n    return this._method;\n  }\n\n  /**\n   * @returns {Number}\n   * @constructor\n   */\n  static get TTL_DEFAULT() {\n    return 10;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_INVALIDATE() {\n    return -1;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_FOREVER() {\n    return 0;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -3621,7 +3715,7 @@
     "longname": "lib/Resource/Request.js~Request._httpRealMethod",
     "access": "private",
     "description": null,
-    "lineNumber": 483,
+    "lineNumber": 489,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3659,7 +3753,7 @@
     "longname": "lib/Resource/Request.js~Request#_loadSecurityCredentials",
     "access": "private",
     "description": null,
-    "lineNumber": 498,
+    "lineNumber": 504,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3693,7 +3787,7 @@
     "longname": "lib/Resource/Request.js~Request#getEndpointHostRegion",
     "access": null,
     "description": null,
-    "lineNumber": 527,
+    "lineNumber": 533,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3731,7 +3825,7 @@
     "longname": "lib/Resource/Request.js~Request#action",
     "access": null,
     "description": null,
-    "lineNumber": 537,
+    "lineNumber": 543,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3762,7 +3856,7 @@
     "longname": "lib/Resource/Request.js~Request#payload",
     "access": null,
     "description": null,
-    "lineNumber": 544,
+    "lineNumber": 550,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3793,7 +3887,7 @@
     "longname": "lib/Resource/Request.js~Request#method",
     "access": null,
     "description": null,
-    "lineNumber": 551,
+    "lineNumber": 557,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3824,7 +3918,7 @@
     "longname": "lib/Resource/Request.js~Request.TTL_DEFAULT",
     "access": null,
     "description": null,
-    "lineNumber": 559,
+    "lineNumber": 565,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3859,7 +3953,7 @@
     "longname": "lib/Resource/Request.js~Request.TTL_INVALIDATE",
     "access": null,
     "description": null,
-    "lineNumber": 566,
+    "lineNumber": 572,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3890,7 +3984,7 @@
     "longname": "lib/Resource/Request.js~Request.TTL_FOREVER",
     "access": null,
     "description": null,
-    "lineNumber": 573,
+    "lineNumber": 579,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4809,7 +4903,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {Instance as ResourceInstance} from './Resource/Instance';\nimport {MissingResourceException} from './Exception/MissingResourceException';\n\n/**\n * Bundle resource\n */\nexport class Resource extends Kernel.ContainerAware {\n  /**\n   * @param {Object} resources\n   */\n  constructor(resources = {}) {\n    super();\n\n    this._resources = resources;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Boolean}\n   */\n  has(identifier) {\n    return this._resources[this.microservice.identifier].hasOwnProperty(identifier);\n  }\n\n  /**\n   * @param {String} identifier (e.g @microservice_identifier:resource_name[:action_name])\n   * @returns {ResourceInstance}\n   */\n  get(identifier) {\n    let parsedIdentifier = this._parseResourceIdentifier(\n      this._resolveIdentifier(identifier) // it also binds 'working' microservice to this instance\n    );\n\n    let resourceIdentifier = parsedIdentifier.resource;\n    let actionIdentifier = parsedIdentifier.action;\n\n    let microserviceIdentifier = this.microservice.identifier;\n\n    if (!this.has(resourceIdentifier)) {\n      throw new MissingResourceException(microserviceIdentifier, resourceIdentifier);\n    }\n\n    let resource = this._resources[microserviceIdentifier][resourceIdentifier];\n\n    // inject dependencies\n    resource.cache = this.container.get('cache');\n    resource.security = this.container.get('security');\n\n    return actionIdentifier ? resource.action(actionIdentifier) : resource;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get list() {\n    let map = {};\n\n    for (let microservice in this._resources) {\n      if (!this._resources.hasOwnProperty(microservice)) {\n        continue;\n      }\n\n      map[microservice] = Object.keys(this._resources[microservice]);\n    }\n\n    return map;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Object}\n   * @private\n   */\n  _parseResourceIdentifier(identifier) {\n    let parts = identifier.split(':').map((part) => {\n      return part.trim();\n    });\n\n    return {\n      resource: parts.shift(),\n      action: parts.length > 0 ? parts.join(':') : null,\n    };\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let resourcesVector = [];\n\n    for (let microserviceKey in kernel.microservices) {\n      if (!kernel.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = kernel.microservices[microserviceKey];\n\n      this._resources[microservice.identifier] = {};\n\n      for (let resourceName in microservice.rawResources) {\n        if (!microservice.rawResources.hasOwnProperty(resourceName)) {\n          continue;\n        }\n\n        let resource = new ResourceInstance(\n          resourceName,\n          microservice.rawResources[resourceName]\n        );\n\n        resource.localBackend = this._localBackend;\n\n        this._resources[microservice.identifier][resourceName] = resource;\n\n        resourcesVector.push(resource);\n      }\n    }\n\n    callback();\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {Instance as ResourceInstance} from './Resource/Instance';\nimport {MissingResourceException} from './Exception/MissingResourceException';\n\n/**\n * Bundle resource\n */\nexport class Resource extends Kernel.ContainerAware {\n  /**\n   * @param {Object} resources\n   */\n  constructor(resources = {}) {\n    super();\n\n    this._resources = resources;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Boolean}\n   */\n  has(identifier) {\n    return this._resources[this.microservice.identifier].hasOwnProperty(identifier);\n  }\n\n  /**\n   * @param {String} identifier (e.g @microservice_identifier:resource_name[:action_name])\n   * @returns {ResourceInstance}\n   */\n  get(identifier) {\n    let parsedIdentifier = this._parseResourceIdentifier(\n      this._resolveIdentifier(identifier) // it also binds 'working' microservice to this instance\n    );\n\n    let resourceIdentifier = parsedIdentifier.resource;\n    let actionIdentifier = parsedIdentifier.action;\n\n    let microserviceIdentifier = this.microservice.identifier;\n\n    if (!this.has(resourceIdentifier)) {\n      throw new MissingResourceException(microserviceIdentifier, resourceIdentifier);\n    }\n\n    let resource = this._resources[microserviceIdentifier][resourceIdentifier];\n\n    // inject dependencies\n    resource.cache = this.container.get('cache');\n    resource.security = this.container.get('security');\n\n    return actionIdentifier ? resource.action(actionIdentifier) : resource;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get list() {\n    let map = {};\n\n    for (let microservice in this._resources) {\n      if (!this._resources.hasOwnProperty(microservice)) {\n        continue;\n      }\n\n      map[microservice] = Object.keys(this._resources[microservice]);\n    }\n\n    return map;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Object}\n   * @private\n   */\n  _parseResourceIdentifier(identifier) {\n    let parts = identifier.split(':').map((part) => {\n      return part.trim();\n    });\n\n    return {\n      resource: parts.shift(),\n      action: parts.length > 0 ? parts.join(':') : null,\n    };\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let resourcesVector = [];\n\n    for (let microserviceKey in kernel.microservices) {\n      if (!kernel.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = kernel.microservices[microserviceKey];\n\n      this._resources[microservice.identifier] = {};\n\n      for (let resourceName in microservice.rawResources) {\n        if (!microservice.rawResources.hasOwnProperty(resourceName)) {\n          continue;\n        }\n\n        let resource = new ResourceInstance(\n          resourceName,\n          microservice.rawResources[resourceName]\n        );\n\n        resource.localBackend = this.localBackend;\n        resource.isBackend = this.kernel.isBackend;\n\n        this._resources[microservice.identifier][resourceName] = resource;\n\n        resourcesVector.push(resource);\n      }\n    }\n\n    callback();\n  }\n}\n"
   },
   {
     "kind": "class",
