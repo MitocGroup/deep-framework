@@ -8,6 +8,7 @@ import {Response} from './Response';
 import {Request} from './Request';
 import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';
 import {MissingUserContextException} from './Exception/MissingUserContextException';
+import {Context} from './Context';
 
 /**
  * Lambda runtime context
@@ -51,6 +52,13 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @returns {null|Context}
+   */
+  get context() {
+    return this._context;
+  }
+
+  /**
    * @returns {Function}
    */
   get lambda() {
@@ -62,16 +70,26 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @returns {String}
+   */
+  get buildSharedCacheKey() {
+    let payload = JSON.stringify(this._request.data);
+
+    return this._context && this._context.has('invokedFunctionArn')
+      ? `${this._context.getOption('invokedFunctionArn')}#${payload}`
+      : null;
+  }
+
+  /**
    * @param {*} event
    * @param {*} context
    * @returns {Runtime}
    */
   run(event, context) {
-    this._context = context;
-    this._addExceptionListener();
-    
+    this._context = new Context(context);
     this._request = new Request(event);
-    
+
+    this._addExceptionListener();
     this._fillUserContext();
 
     if (!this._loggedUserId && this._forceUserIdentity) {
@@ -159,7 +177,7 @@ export class Runtime extends Interface {
    */
   _fillUserContext() {
     if (this._context &&
-      this._context.hasOwnProperty('identity') &&
+      this._context.has('identity') &&
       this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&
       this._context.identity.hasOwnProperty('cognitoIdentityId')
     ) {

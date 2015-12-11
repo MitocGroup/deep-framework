@@ -7,6 +7,7 @@
 import Kernel from 'deep-kernel';
 import Core from 'deep-core';
 import {Exception} from './Exception/Exception';
+import {SharedCache} from './SharedCache';
 
 /**
  * Cache manager
@@ -39,6 +40,12 @@ export class Cache extends Kernel.ContainerAware {
       case 'local-storage':
         DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;
         break;
+      case 's3fs':
+        DriverPrototype = require('./Driver/S3FSDriver').S3FSDriver;
+        break;
+      case 'cloud-front':
+        DriverPrototype = require('./Driver/CloudFrontDriver').CloudFrontDriver;
+        break;
       default:
         throw new Exception(`Missing driver ${name}`);
     }
@@ -55,12 +62,23 @@ export class Cache extends Kernel.ContainerAware {
   boot(kernel, callback) {
 
     // @todo: switch to redis when issue with Elasticache is fixed
-    let driverName = kernel.isFrontend ? 'local-storage' : 'memory'/*'redis'*/;
 
-    this._driver = Cache.createDriver(driverName/*, kernel.config.cacheDsn*/);
+    let [driverArgs, sharedCacheDriverArgs] = kernel.isFrontend
+      ? [['local-storage'], ['cloud-front', this]]
+      : [['memory'], ['s3fs', this.container.get('fs').public]];
+
+    this._driver = Cache.createDriver(...driverArgs);
     this._driver.buildId = kernel.buildId;
+    this._shared = new SharedCache(this, Cache.createDriver(...sharedCacheDriverArgs));
 
     callback();
+  }
+
+  /**
+   * @returns {SharedCache}
+   */
+  get shared() {
+    return this._shared;
   }
 
   /**
