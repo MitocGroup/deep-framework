@@ -1,5 +1,4 @@
-
-import crypto from 'crypto';/**
+/**
  * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.
  */
 
@@ -43,7 +42,7 @@ export class CloudFrontDriver extends AbstractFsDriver {
    * @param {Function} callback
    * @private
    */
-  _get(key, callback = ) {
+  _get(key, callback = () => {}) {
     this._request(key, (err, data) => {
       if (err) {
         return callback(err, null);

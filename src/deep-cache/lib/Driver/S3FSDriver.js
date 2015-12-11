@@ -63,7 +63,7 @@ export class S3FSDriver extends AbstractFsDriver {
   _set(key, value, ttl, callback = () => {}) {
     let strObject = JSON.stringify({
       expires: ttl > 0 ? AbstractFsDriver._now + ttl : false,
-      value: value
+      value: value,
     });
 
     this._fs.writeFile(key, strObject, (err) => {
