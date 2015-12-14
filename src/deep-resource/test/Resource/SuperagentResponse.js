@@ -21,7 +21,7 @@ suite('Resource/SuperagentResponse', function() {
   let payload = '{"body":"bodyData"}';
   let method = 'POST';
   let rawData = {status: 500, body: 'bodyTest', error: 'errorMessage',};
-  let rawError = {message: 'errorMessage'};
+  let rawError = new Error('errorMessage');
 
   test('Class SuperagentResponse exists in Resource/SuperagentResponse',
     function() {
@@ -68,10 +68,6 @@ suite('Resource/SuperagentResponse', function() {
       SuperagentResponse,
       'superagentResponse is an instance of SuperagentResponse'
     );
-  });
-
-  test('Check constructor sets _error', function() {
-    chai.expect(superagentResponse.error).to.be.eql(rawError);
   });
 
   test('Check isError getter returns true', function() {

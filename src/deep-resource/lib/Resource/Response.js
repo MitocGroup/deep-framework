@@ -19,6 +19,10 @@ export class Response {
     this._rawError = error;
     this._rawData = data;
 
+    if (this._rawError) {
+      this._rawError = Response._toErrorObj(this._rawError);
+    }
+
     this._statusCode = null;
     this._data = null;
     this._error = null;
@@ -53,7 +57,14 @@ export class Response {
   }
 
   /**
-   * @returns {String}
+   * @returns {Number}
+   */
+  get statusCode() {
+    return this._statusCode;
+  }
+
+  /**
+   * @returns {Error}
    */
   get error() {
     return this._error;
@@ -63,6 +74,17 @@ export class Response {
    * @returns {Boolean}
    */
   get isError() {
-    return typeof this.error === 'string';
+    return !!this.error;
+  }
+
+  /**
+   * @param {String|Error|*} rawError
+   * @returns {Error}
+   * @private
+   */
+  static _toErrorObj(rawError) {
+    return rawError instanceof Error
+      ? rawError
+      : new Error(rawError.toString());
   }
 }
