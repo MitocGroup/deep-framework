@@ -60,7 +60,7 @@ export class LambdaResponse extends Response {
    * @private
    */
   _fillStatusCode() {
-    this._statusCode = Math.parseInt(this._rawData.StatusCode || this._rawData.Status || 500);
+    this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status || 500);
   }
 
   /**

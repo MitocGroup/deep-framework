@@ -21,7 +21,7 @@ suite('Resource/SuperagentResponse', function() {
   let payload = '{"body":"bodyData"}';
   let method = 'POST';
   let rawData = {status: 500, body: 'bodyTest', error: 'errorMessage',};
-  let rawError = {message: 'errorMessage'};
+  let rawError = new Error('errorMessage');
 
   test('Class SuperagentResponse exists in Resource/SuperagentResponse',
     function() {

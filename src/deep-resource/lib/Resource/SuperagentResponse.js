@@ -25,6 +25,8 @@ export class SuperagentResponse extends Response {
    * @private
    */
   _parseLambda() {
+    this._parseExternal();
+
     // check if any Lambda response available
     if (this._data && !this._error) {
       let dataObj = this._data;
@@ -55,7 +57,7 @@ export class SuperagentResponse extends Response {
 
     // @todo: treat Response.status lack somehow else?
     if (data && data.status) {
-      this._statusCode = Math.parseInt(data.status);
+      this._statusCode = parseInt(data.status);
     } else if (this._data && !this._error) {
       this._statusCode = 200;
     } else {
