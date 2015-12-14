@@ -32,7 +32,7 @@ export class ErrorResponse extends Response {
         errorStack: error.stack || (new Error(error.message)).stack,
       };
     } else {
-      let plainError = error.toString();
+      let plainError = (error || 'Unexpected error occurred.').toString();
 
       errorObj = {
         errorType: 'Error',
