@@ -70,10 +70,6 @@ suite('Resource/SuperagentResponse', function() {
     );
   });
 
-  test('Check constructor sets _error', function() {
-    chai.expect(superagentResponse.error).to.be.eql(rawError);
-  });
-
   test('Check isError getter returns true', function() {
     chai.expect(superagentResponse.isError).to.be.equal(true);
   });

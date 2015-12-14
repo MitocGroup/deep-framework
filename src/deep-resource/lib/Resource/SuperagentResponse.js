@@ -5,82 +5,61 @@
 'use strict';
 
 import {Response} from './Response';
+import {LambdaResponse} from './LambdaResponse';
 
 export class SuperagentResponse extends Response {
   /**
-   * @param {Request} request
-   * @param {Object} data
-   * @param {String} error
+   * @param {*} args
    */
-  constructor(request, data, error) {
-    super(...arguments);
+  constructor(...args) {
+    super(...args);
 
-    this._populateData(data);
-    this._populateError(data, error, request.isLambda);
-    this._populateStatusCode(data);
-  }
-
-  /**
-   * @param {Object} data
-   * @private
-   */
-  _populateData(data) {
-    this._data = data && data.body ? data.body : null;
-  }
-
-  /**
-   * @param {Object} data
-   * @param {Object} error
-   * @param {Boolean} isLambda
-   * @private
-   */
-  _populateError(data, error, isLambda) {
-    if (error) {
-      this._error = error;
-    } else if (data) {
-      if (isLambda) {
-        this._error = data.body && data.body.errorMessage ? data.body.errorMessage : null;
-      } else {
-        this._error = data.error || null;
-      }
+    if (this._request.isLambda) {
+      this._parseLambda();
     } else {
-      this._error = 'Unexpected error occurred';
+      this._parseExternal();
     }
   }
 
   /**
-   * @param {Object} data
    * @private
    */
-  _populateStatusCode(data) {
-    this._statusCode = data && data.status ? data.status : 500;
+  _parseLambda() {
+    // check if any Lambda response available
+    if (this._data && !this._error) {
+      let dataObj = this._data;
+
+      // check whether Lambda execution failed
+      if (dataObj.errorMessage) {
+        this._error = LambdaResponse.getPayloadError(dataObj);
+      } else {
+        this._data = dataObj;
+      }
+    }
   }
 
   /**
-   * @returns {Object}
+   * @private
    */
-  get data() {
-    return this._data;
-  }
+  _parseExternal() {
+    let data = this._rawData;
+    let error = this._rawError;
 
-  /**
-   * @returns {Boolean}
-   */
-  get isError() {
-    return !!this._error;
-  }
+    if (error) {
+      this._error = error;
+    } else if(data && data.error) { // weird case...
+      this._error = data.error;
+    } else {
+      this._data = data && data.body ? data.body : null;
+    }
 
-  /**
-   * @returns {String}
-   */
-  get error() {
-    return this._error;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get statusCode() {
-    return this._statusCode;
+    // @todo: treat Response.status lack somehow else?
+    if (data && data.status) {
+      this._statusCode = Math.parseInt(data.status);
+    } else if (this._data && !this._error) {
+      this._statusCode = 200;
+    } else {
+      this._statusCode = 500;
+    }
   }
 }
