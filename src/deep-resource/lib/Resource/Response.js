@@ -83,10 +83,8 @@ export class Response {
    * @private
    */
   static _toErrorObj(rawError) {
-    if (typeof rawError === 'object' && rawError instanceof Error) {
-      return rawError;
-    }
-
-    return new Error(rawError.toString());
+    return rawError instanceof Error
+      ? rawError
+      : new Error(rawError.toString());
   }
 }

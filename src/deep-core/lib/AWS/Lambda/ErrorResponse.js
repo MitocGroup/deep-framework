@@ -25,7 +25,7 @@ export class ErrorResponse extends Response {
   static createErrorObject(error) {
     let errorObj = {};
 
-    if (typeof error === 'object' && error instanceof Error) {
+    if (error instanceof Error) {
       errorObj = {
         errorType: error.name,
         errorMessage: error.message,
