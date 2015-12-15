@@ -9,11 +9,11 @@ import {Exception} from './Exception';
 /**
  * Thrown when a method is not available
  */
-export class MethodNotAvailableException {
+export class MethodNotAvailableException extends Exception {
   /**
    * @param {String} name
    */
   constructor(name) {
-    super(`Method '${methodName}' is not available`);
+    super(`Method '${name}' is not available`);
   }
 }

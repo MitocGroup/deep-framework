@@ -6,19 +6,20 @@
 
 import {AbstractFsDriver} from './AbstractFsDriver';
 import {Exception} from '../Exception/Exception';
+import path from 'path';
 
 /**
  * S3FS Cache Driver
  */
 export class S3FSDriver extends AbstractFsDriver {
   /**
-   * @param {S3FS} s3fs
+   * @param {ContainerAware} containerAware
    * @param {String} directory
    */
-  constructor(s3fs, directory = AbstractFsDriver.DEFAULT_DIRECTORY) {
+  constructor(containerAware, directory = AbstractFsDriver.DEFAULT_DIRECTORY) {
     super(directory);
 
-    this._fs = s3fs;
+    this._containerAware = containerAware;
   }
 
   /**
@@ -40,16 +41,24 @@ export class S3FSDriver extends AbstractFsDriver {
   _get(key, callback = () => {}) {
     this._fs.readFile(key, (err, data) => {
       if (err) {
-        return callback(err, null);
+        callback(err, null);
+
+        return;
       }
 
-      let parsedData = JSON.parse(data);
+      try {
+        var parsedData = JSON.parse(data);
 
-      if (parsedData.expires && parsedData.expires < AbstractFsDriver._now) {
-        return callback(null, null);
+        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now) {
+          throw new Exception('Expired');
+        }
+
+        callback(null, parsedData.value);
+      } catch (e) {
+        this._invalidate(key);
+
+        callback(null, null);
       }
-
-      callback(null, parsedData.value);
     });
   }
 
@@ -60,23 +69,50 @@ export class S3FSDriver extends AbstractFsDriver {
    * @param {Function} callback
    * @private
    */
-  _set(key, value, ttl, callback = () => {}) {
+  _set(key, value, ttl = 0, callback = () => {}) {
     let strObject = JSON.stringify({
-      expires: ttl > 0 ? AbstractFsDriver._now + ttl : false,
+      expires: ttl > 0 ? AbstractFsDriver._now + ttl : null,
       value: value,
     });
 
-    this._fs.writeFile(key, strObject, (err) => {
-      callback(err, null);
+    this._fs.mkdirp(this._directory, () => {
+      this._fs.writeFile(key, strObject, (err) => {
+        callback(err, !err);
+      });
     });
   }
 
   /**
-   * @param {String} key
-   * @param {Function} callback
+   * @param key
+   * @param timeout
+   * @param callback
    * @private
    */
-  _invalidate(key, callback = () => {}) {
-    this._fs.unlink(key, callback);
+  _invalidate(key, timeout = 0, callback = () => {}) {
+    if (timeout <= 0) {
+      this._fs.unlink(key, (err) => {
+        callback(err, !err);
+      });
+
+      return;
+    }
+
+    this._get(key, (err, data) => {
+      if (err) {
+        callback(err, null);
+
+        return;
+      }
+
+      this._set(key, data.value, timeout, callback);
+    });
+  }
+
+  /**
+   * @returns {s3fs}
+   * @private
+   */
+  get _fs() {
+    return this._containerAware.container.get('fs').public;
   }
 }

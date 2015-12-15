@@ -23,7 +23,6 @@ export class CloudFrontDriver extends AbstractFsDriver {
     super(directory);
 
     this._containerAware = containerAware;
-    this._asset = containerAware.container.get('asset');
   }
 
   /**
@@ -32,7 +31,7 @@ export class CloudFrontDriver extends AbstractFsDriver {
    * @private
    */
   _has(key, callback = () => {}) {
-    this._request(key, (err, data) => {
+    this._get(key, (err, data) => {
       callback(err, data !== null);
     });
   }
@@ -48,13 +47,18 @@ export class CloudFrontDriver extends AbstractFsDriver {
         return callback(err, null);
       }
 
-      let parsedData = JSON.parse(data);
+      try {
+        let parsedData = JSON.parse(data);
 
-      if (parsedData.expires && parsedData.expires < AbstractFsDriver._now) {
-        return callback(null, null);
+        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now) {
+          throw new Exception('Expired');
+        }
+
+        callback(null, parsedData.value);
+      } catch (e) {
+        // @todo: Find a way to invalidate broken or expired keys
+        callback(null, null);
       }
-
-      callback(null, parsedData.value);
     });
   }
 
@@ -69,11 +73,12 @@ export class CloudFrontDriver extends AbstractFsDriver {
   }
 
   /**
-   * @param {String} key
-   * @param {Function} callback
+   * @param key
+   * @param timeout
+   * @param callback
    * @private
    */
-  _invalidate(key, callback = () => {}) {
+  _invalidate(key, timeout = 0, callback = () => {}) {
     throw new MethodNotAvailableException('invalidate');
   }
 
@@ -83,9 +88,7 @@ export class CloudFrontDriver extends AbstractFsDriver {
    * @private
    */
   _buildKey(key) {
-    let microservice = this._containerAware.microservice;
-
-    return this._asset.locate(`@${microservice}:${super._buildKey(key)}`);
+    return this._asset.locate(`@${this._microservice}:${super._buildKey(key)}`);
   }
 
   /**
@@ -108,5 +111,23 @@ export class CloudFrontDriver extends AbstractFsDriver {
 
     client.open('GET', url);
     client.send();
+  }
+
+  /**
+   * Returns the microservice binded to `resource` service
+   *
+   * @returns {Instance}
+   * @private
+   */
+  get _microservice() {
+    return this._containerAware.container.get('resource').microservice;
+  }
+
+  /**
+   * @returns {Asset}
+   * @private
+   */
+  get _asset() {
+    return this._containerAware.container.get('asset');
   }
 }

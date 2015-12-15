@@ -12,7 +12,7 @@ import crypto from 'crypto';
  */
 export class AbstractFsDriver extends AbstractDriver {
   /**
-   * @returns {string}
+   * @returns {String}
    */
   static get DEFAULT_DIRECTORY() {
     return '__cache__';

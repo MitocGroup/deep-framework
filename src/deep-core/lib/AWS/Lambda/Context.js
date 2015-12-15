@@ -6,10 +6,10 @@
 
 export class Context {
   /**
-   * @param {Object} data
+   * @param {Object} options
    */
-  constructor(data) {
-    this._data = data;
+  constructor(options) {
+    this._options = options;
 
     this._registerDataAsOptions();
   }
@@ -17,21 +17,21 @@ export class Context {
   /**
    * @returns {Object}
    */
-  get data() {
-    return this._data;
+  get options() {
+    return this._options;
   }
 
   /**
    * @private
    */
   _registerDataAsOptions() {
-    for (let key in this._data) {
-      if (!this._data.hasOwnProperty(key)) {
+    for (let key in this._options) {
+      if (!this._options.hasOwnProperty(key)) {
         continue;
       }
 
       Object.defineProperty(this, key, {
-        value: this._data[key],
+        value: this._options[key],
         writable: false,
         configurable: false,
         enumerable: true,
@@ -39,25 +39,25 @@ export class Context {
     }
 
     // Avoid _data key listing on Object.keys(request)
-    Object.defineProperty(this, '_data', {
+    Object.defineProperty(this, '_options', {
       configurable: false,
     });
   }
 
   /**
-   * @param {String} name
+   * @param {String} option
    * @returns {boolean}
    */
-  has(name) {
-    return this._data.hasOwnProperty(name);
+  has(option) {
+    return this._options.hasOwnProperty(option);
   }
 
   /**
-   * @param {String} name
+   * @param {String} option
    * @param {*} defaultValue
    * @returns {*}
    */
-  getOption(name, defaultValue = undefined) {
-    return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;
+  getOption(option, defaultValue = undefined) {
+    return this._options.hasOwnProperty(option) ? this._options[option] : defaultValue;
   }
 }

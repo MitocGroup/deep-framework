@@ -70,17 +70,6 @@ export class Runtime extends Interface {
   }
 
   /**
-   * @returns {String}
-   */
-  get buildSharedCacheKey() {
-    let payload = JSON.stringify(this._request.data);
-
-    return this._context && this._context.has('invokedFunctionArn')
-      ? `${this._context.getOption('invokedFunctionArn')}#${payload}`
-      : null;
-  }
-
-  /**
    * @param {*} event
    * @param {*} context
    * @returns {Runtime}
