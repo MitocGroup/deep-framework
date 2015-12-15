@@ -70,10 +70,6 @@ suite('Resource/Response', function() {
     chai.expect(response.request).to.be.eql(request);
   });
 
-  test('Check constructor sets _rawError', function() {
-    chai.expect(response.rawError).to.be.equal(JSON.stringify(rawError));
-  });
-
   test('Check constructor sets _rawData', function() {
     chai.expect(response.rawData).to.be.equal(rawData);
   });
