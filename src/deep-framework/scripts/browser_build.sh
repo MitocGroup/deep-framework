@@ -53,17 +53,17 @@ assure_npm
 assure_browserify
 assure_uglifyjs
 
-echo "- assure build directory"
+echo "- Assure build directory"
 
 mkdir -p ${browser_build_path}
 
-echo "- execute prepare hooks"
+echo "- Execute prepare hooks"
 
 # @todo: move this into another script?
 cd "${path}"/../node_modules/deep-log && \
     ${npm} run prepare-browserify
 
-echo "- lookup for node modules to require"
+echo "- Lookup for node modules to require"
 
 # used to require/exclude modules
 NPM_REGEX='(src/deep-framework|.*((deep\-(fs|db|event)).*|lsmod|ioredis|vogels|raven(?!-js)).*)$'
@@ -79,17 +79,17 @@ echo ""
 echo ${browserify_require}
 echo ""
 
-echo "- start transpiling"
+cd "${path}"/../
+
+echo "- Start transpiling ES6"
+${npm} run compile
 
 __FW=${browser_build_path}"/framework.js"
-
-cd "${path}"/../
-${npm} run prepare-browserify
 echo '/** Built on '$(date) > ${__FW}
 ${npm} ls --long=false --global=false --depth=0 --production=true | sed 's/ \/.*//' | grep deep- >> ${__FW}
 echo '*/' >> ${__FW}
 AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -d ${browserify_require} lib.compiled/browser-framework.js | uglifyjs >> ${__FW}
 
 echo ""
-echo "Completed!"
+echo "- Completed!"
 echo ""

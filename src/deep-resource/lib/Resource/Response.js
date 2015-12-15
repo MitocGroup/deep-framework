@@ -19,6 +19,10 @@ export class Response {
     this._rawError = error;
     this._rawData = data;
 
+    if (this._rawError) {
+      this._rawError = Response._toErrorObj(this._rawError);
+    }
+
     this._statusCode = null;
     this._data = null;
     this._error = null;
@@ -49,59 +53,38 @@ export class Response {
    * @returns {Object}
    */
   get data() {
-    if (this._data) {
-      return this._data;
-    }
-
-    if (this._rawData) {
-      var response = JSON.parse(this._rawData.Payload);
-      if (response && typeof response.errorMessage === 'undefined') {
-        this._data = response;
-      }
-    }
-
     return this._data;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  get statusCode() {
+    return this._statusCode;
+  }
+
+  /**
+   * @returns {Error}
+   */
+  get error() {
+    return this._error;
   }
 
   /**
    * @returns {Boolean}
    */
   get isError() {
-    return typeof this.error === 'string';
+    return !!this.error;
   }
 
   /**
-   * @returns {String}
+   * @param {String|Error|*} rawError
+   * @returns {Error}
+   * @private
    */
-  get error() {
-    if (this._error) {
-      return this._error;
-    }
-
-    if (this._rawError) {
-      this._error = this._rawError;
-    } else {
-      var response = JSON.parse(this._rawData.Payload);
-      if (response && typeof response.errorMessage !== 'undefined') {
-        this._error = response.errorMessage;
-      }
-    }
-
-    return this._error;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get statusCode() {
-    if (this._statusCode) {
-      return this._statusCode;
-    }
-
-    if (this._rawData) {
-      this._statusCode = this._rawData.StatusCode;
-    }
-
-    return this._statusCode;
+  static _toErrorObj(rawError) {
+    return rawError instanceof Error
+      ? rawError
+      : new Error(rawError.toString());
   }
 }

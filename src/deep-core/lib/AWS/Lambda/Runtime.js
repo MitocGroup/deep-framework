@@ -5,6 +5,7 @@
 
 import {Interface} from '../../OOP/Interface';
 import {Response} from './Response';
+import {ErrorResponse} from './ErrorResponse';
 import {Request} from './Request';
 import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';
 import {MissingUserContextException} from './Exception/MissingUserContextException';
@@ -25,8 +26,23 @@ export class Runtime extends Interface {
 
     this._loggedUserId = null;
     this._forceUserIdentity = false;
+    this._contextSent = false;
 
     this._fillDenyMissingUserContextOption();
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get context() {
+    return this._context;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get contextSent() {
+    return this._contextSent;
   }
 
   /**
@@ -62,12 +78,15 @@ export class Runtime extends Interface {
   }
 
   /**
-   * @param {*} event
-   * @param {*} context
+   * @param {Object} event
+   * @param {Object} context
    * @returns {Runtime}
    */
   run(event, context) {
+
+    // @todo: move to constructor
     this._context = context;
+
     this._addExceptionListener();
     
     this._request = new Request(event);
@@ -87,46 +106,23 @@ export class Runtime extends Interface {
    * @private
    */
   _addExceptionListener() {
-    process.removeAllListeners('uncaughtException');
-    process.on('uncaughtException', function(error) {
-      return this.createError(error).send();
-    }.bind(this));
+    process.once('uncaughtException', (error) => {
+      this.createError(error).send();
+    });
   }
 
   /**
-   * @param {String} iError
+   * @param {String|Error|*} error
    */
-  createError(iError) {
-    let oError = {};
-
-    if (typeof iError === 'string') {
-      oError = {
-        errorType: 'Error',
-        errorMessage: iError,
-        errorStack: (new Error(iError)).stack,
-      };
-    } else {
-      oError = {
-        errorType: iError.name,
-        errorMessage: iError.message,
-        errorStack: iError.stack,
-      };
-    }
-
-    let response = new Response(oError);
-    response.runtimeContext = this._context;
-
-    return response;
+  createError(error) {
+    return new ErrorResponse(this, error);
   }
 
   /**
    * @param {Object} data
    */
   createResponse(data) {
-    let response = new Response(data);
-    response.runtimeContext = this._context;
-
-    return response;
+    return new Response(this, data);
   }
 
   /**

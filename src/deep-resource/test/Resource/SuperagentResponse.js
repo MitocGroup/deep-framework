@@ -21,7 +21,7 @@ suite('Resource/SuperagentResponse', function() {
   let payload = '{"body":"bodyData"}';
   let method = 'POST';
   let rawData = {status: 500, body: 'bodyTest', error: 'errorMessage',};
-  let rawError = {message: 'errorMessage'};
+  let rawError = new Error('errorMessage');
 
   test('Class SuperagentResponse exists in Resource/SuperagentResponse',
     function() {
@@ -70,46 +70,12 @@ suite('Resource/SuperagentResponse', function() {
     );
   });
 
-  test('Check constructor sets _data', function() {
-    chai.expect(superagentResponse.data).to.be.equal(null);
-  });
-
-  test('Check constructor sets _error', function() {
-    chai.expect(superagentResponse.error).to.be.eql(rawError);
-  });
-
   test('Check isError getter returns true', function() {
     chai.expect(superagentResponse.isError).to.be.equal(true);
   });
 
   test(`Check statusCode getter returns ${rawData.status}`, function() {
     chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
-  });
-
-  test('Check _parseResponse()', function() {
-    let actualResult = superagentResponse._parseResponse(rawData);
-
-    chai.expect(superagentResponse.isError).to.be.equal(true);
-    chai.expect(superagentResponse.error).to.be.equal(rawData.error);
-    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
-    chai.expect(actualResult).to.be.equal(rawData.body);
-  });
-
-  test('Check _parseLambdaResponse()', function() {
-    rawData = {
-      status: 500,
-      body: {
-        errorMessage: 'test error message',
-      },
-    };
-    let actualResult = superagentResponse._parseLambdaResponse(rawData);
-
-    chai.expect(superagentResponse.isError).to.be.equal(true);
-    chai.expect(superagentResponse.error).to.be.equal(
-      rawData.body.errorMessage
-    );
-    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
-    chai.expect(actualResult).to.be.equal(null);
   });
 
   test('Check constructor for !data.body && status < 300', function() {
@@ -119,23 +85,6 @@ suite('Resource/SuperagentResponse', function() {
     superagentResponse = new SuperagentResponse(request, rawData, rawError);
 
     chai.expect(superagentResponse.isError).to.be.equal(false);
-    chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
-  });
-
-  test('Check constructor for !data.body && status > 300', function() {
-    rawData = {
-      Payload: '{"dataKey":"testValue"}',
-      status: 404,
-      error: {
-        message: 'errorMessage',
-      },
-    };
-    rawError = null;
-
-    superagentResponse = new SuperagentResponse(request, rawData, rawError);
-
-    chai.expect(superagentResponse.isError).to.be.equal(true);
-    chai.expect(superagentResponse.error).to.be.equal(rawData.error);
     chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
   });
 });
