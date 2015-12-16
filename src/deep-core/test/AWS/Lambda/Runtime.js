@@ -57,7 +57,7 @@ suite('AWS/Lambda/Runtime', function() {
     let actualResult = runtimeTest.createResponse(data);
     chai.expect(actualResult).to.be.an.instanceof(Response);
     chai.expect(actualResult.rawData).to.be.eql(data);
-    chai.expect(actualResult.runtime.context).to.be.an.instanceof(Context)
+    chai.expect(actualResult.runtime.context).to.be.an.instanceof(Context);
   });
 
   test('Check createError() method returns valid object for string error', function() {
