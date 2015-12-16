@@ -63,22 +63,20 @@ export class CloudFrontDriver extends AbstractFsDriver {
   }
 
   /**
-   * @param {String} key
-   * @param {Object} value
-   * @param {Function} callback
+   * Throw MethodNotAvailableException
+   *
    * @private
    */
-  _set(key, value, callback = () => {}) {
+  _set() {
     throw new MethodNotAvailableException('set');
   }
 
   /**
-   * @param key
-   * @param timeout
-   * @param callback
+   * Throw MethodNotAvailableException
+   *
    * @private
    */
-  _invalidate(key, timeout = 0, callback = () => {}) {
+  _invalidate() {
     throw new MethodNotAvailableException('invalidate');
   }
 
@@ -100,8 +98,8 @@ export class CloudFrontDriver extends AbstractFsDriver {
     var client = new XMLHttpRequest();
 
     client.onreadystatechange = function() {
-      if (client.readyState == 4) {
-        if (client.status != 200) {
+      if (client.readyState === 4) {
+        if (client.status !== 200) {
           return callback(client.statusText, null);
         }
 

@@ -6,7 +6,6 @@
 
 import {AbstractFsDriver} from './AbstractFsDriver';
 import {Exception} from '../Exception/Exception';
-import path from 'path';
 
 /**
  * S3FS Cache Driver
