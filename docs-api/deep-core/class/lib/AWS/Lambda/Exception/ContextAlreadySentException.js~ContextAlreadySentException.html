@@ -2,8 +2,8 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <base data-ice="baseUrl" href="../../../../">
-  <title data-ice="title">lib/AWS/IAM/Resource.js | DEEP Core Library API Document</title>
+  <base data-ice="baseUrl" href="../../../../../">
+  <title data-ice="title">ContextAlreadySentException | DEEP Core Library API Document</title>
   <link type="text/css" rel="stylesheet" href="css/style.css">
   <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
   <script src="script/prettify/prettify.js"></script>
@@ -60,133 +60,129 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1 data-ice="title">lib/AWS/IAM/Resource.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
- * Created by AlexanderC on 5/27/15.
- */
+<div class="content" data-ice="content"><div class="header-notice">
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {ContextAlreadySentException} from &apos;<span><a href="file/lib/AWS/Lambda/Exception/ContextAlreadySentException.js.html#lineNumber9">deep-core/lib/AWS/Lambda/Exception/ContextAlreadySentException.js</a></span>&apos;</code></pre></div>
+  <span data-ice="access">public</span>
+  <span data-ice="kind">class</span>
+  
+  
+  
+  <span data-ice="source">| <span><a href="file/lib/AWS/Lambda/Exception/ContextAlreadySentException.js.html#lineNumber9">source</a></span></span>
+</div>
 
-&apos;use strict&apos;;
+<div class="self-detail detail">
+  <h1 data-ice="name">ContextAlreadySentException</h1>
 
-import {Extractable} from &apos;./Extractable&apos;;
-import {Region} from &apos;../Region&apos;;
-import {Service} from &apos;../Service&apos;;
-import {InvalidArgumentException} from &apos;../../Exception/InvalidArgumentException&apos;;
-import {InvalidArnException} from &apos;./Exception/InvalidArnException&apos;;
+  
 
-/**
- * IAM statement resource
- */
-export class Resource extends Extractable {
-  constructor(service = Service.ANY, region = &apos;&apos;, accountId = &apos;&apos;, descriptor = &apos;&apos;) {
-    super();
+  
+  
+  <div class="flat-list" data-ice="extendsChain"><h4>Extends:</h4><div><span>lib/Exception/Exception~Exception</span> &#x2192; ContextAlreadySentException</div></div>
+  
+  
+  
+  
+  
+  
 
-    this._service = null;
-    this._region = null;
-    this._accountId = accountId;
-    this._descriptor = descriptor;
+  
+  
+  
 
-    this.service = service;
-    this.region = region;
-  }
+  
 
-  /**
-   * @param {String} identifier
-   */
-  set accountId(identifier) {
-    this._accountId = identifier;
-  }
+  
 
-  /**
-   * @returns {String}
-   */
-  get accountId() {
-    return this._accountId;
-  }
+  
 
-  /**
-   * @param {String} descriptor
-   */
-  set descriptor(descriptor) {
-    this._descriptor = descriptor;
-  }
+  
+</div>
 
-  /**
-   * @returns {String}
-   */
-  get descriptor() {
-    return this._descriptor;
-  }
 
-  /**
-   * @param {String} name
-   */
-  set region(name) {
-    if (!Region.exists(name)) {
-      throw new InvalidArgumentException(name, Region);
-    }
 
-    this._region = name;
-  }
+<div data-ice="constructorSummary"><h2>Constructor Summary</h2><table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3">Public Constructor</td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/ContextAlreadySentException.js~ContextAlreadySentException.html#instance-constructor-constructor">constructor</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
 
-  /**
-   * @returns {String}
-   */
-  get region() {
-    return this._region;
-  }
 
-  /**
-   * @param {String} name
-   */
-  set service(name) {
-    if (!Service.exists(name)) {
-      throw new InvalidArgumentException(name, Service);
-    }
 
-    this._service = name;
-  }
 
-  /**
-   * @returns {String}
-   */
-  get service() {
-    return this._service;
-  }
 
-  /**
-   * @see - http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
-   *
-   * @param {string} arn
-   * @returns {Resource}
-   */
-  updateFromArn(arn) {
-    let arnParts = arn.split(&apos;:&apos;);
 
-    if (arnParts.length &lt; 6) {
-      throw new InvalidArnException(arn);
-    }
 
-    this.service = arnParts[2];
-    this.region = arnParts[3];
-    this.accountId = arnParts[4];
-    this.descriptor = arnParts.slice(5).join(&apos;:&apos;);
+<div data-ice="constructorDetails"><h2 data-ice="title">Public Constructors</h2>
 
-    return this;
-  }
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-constructor-constructor">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">constructor</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Exception/ContextAlreadySentException.js.html#lineNumber10">source</a></span></span>
+    </span>
+  </h3>
 
-  /**
-   * @returns {String}
-   */
-  extract() {
-    let service = this._service;
-    let region = this._region;
-    let accountId = this._accountId;
-    let descriptor = this._descriptor;
+  
+  
+  
+  
 
-    return `arn:aws:${service}:${region}:${accountId}:${descriptor}`;
-  }
-}
-</code></pre>
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+</div>
+
 
 </div>
 
