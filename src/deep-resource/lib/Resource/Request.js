@@ -23,6 +23,7 @@ import {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableE
 import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import Security from 'deep-security';
 import crypto from 'crypto';
+import util from 'util';
 
 /**
  * Action request instance
@@ -443,7 +444,7 @@ export class Request {
             parsedUrl.query = {};
           }
 
-          let mergedPayload = Object.assign(parsedUrl.query, payload);
+          let mergedPayload = util._extend(parsedUrl.query, payload);
 
           opsToSign.path += `?${qs.stringify(mergedPayload)}`;
 
