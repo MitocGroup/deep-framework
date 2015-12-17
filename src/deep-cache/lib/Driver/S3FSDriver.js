@@ -22,8 +22,8 @@ export class S3FSDriver extends AbstractFsDriver {
   }
 
   /**
-   * @param key
-   * @param callback
+   * @param {String} key
+   * @param {Function} callback
    * @private
    */
   _has(key, callback = () => {}) {
@@ -48,8 +48,12 @@ export class S3FSDriver extends AbstractFsDriver {
       try {
         var parsedData = JSON.parse(data);
 
-        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now) {
-          throw new Exception('Expired');
+        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now || parsedData.buildId !== this._buildId) {
+          this._invalidate(key);
+
+          callback(null, null);
+
+          return;
         }
 
         callback(null, parsedData.value);
@@ -72,6 +76,7 @@ export class S3FSDriver extends AbstractFsDriver {
     let strObject = JSON.stringify({
       expires: ttl > 0 ? AbstractFsDriver._now + ttl : null,
       value: value,
+      buildId: this._buildId,
     });
 
     this._fs.mkdirp(this._directory, () => {
@@ -82,9 +87,9 @@ export class S3FSDriver extends AbstractFsDriver {
   }
 
   /**
-   * @param key
-   * @param timeout
-   * @param callback
+   * @param {String} key
+   * @param {Number} timeout
+   * @param {Function} callback
    * @private
    */
   _invalidate(key, timeout = 0, callback = () => {}) {

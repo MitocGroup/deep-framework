@@ -12,14 +12,7 @@ import crypto from 'crypto';
  */
 export class AbstractFsDriver extends AbstractDriver {
   /**
-   * @returns {String}
-   */
-  static get DEFAULT_DIRECTORY() {
-    return '__cache__';
-  }
-
-  /**
-   * @param directory
+   * @param {String} directory
    */
   constructor(directory = AbstractFsDriver.DEFAULT_DIRECTORY) {
     super();
@@ -32,8 +25,7 @@ export class AbstractFsDriver extends AbstractDriver {
    * @private
    */
   _buildKey(key) {
-    return `${this._directory}/${AbstractFsDriver._hash(key, 'sha1')}` +
-           `|${AbstractFsDriver._hash(key, 'md5')}.${this._buildId}`;
+    return `${this._directory}/${AbstractFsDriver._hash(key, 'sha1')}.${AbstractFsDriver._hash(key, 'md5')}`;
   }
 
   /**
@@ -51,5 +43,12 @@ export class AbstractFsDriver extends AbstractDriver {
    */
   static get _now() {
     return parseInt(new Date().getTime() / 1000);
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEFAULT_DIRECTORY() {
+    return '__cache__';
   }
 }

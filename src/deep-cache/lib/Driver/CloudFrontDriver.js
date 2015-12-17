@@ -37,6 +37,8 @@ export class CloudFrontDriver extends AbstractFsDriver {
   }
 
   /**
+   * @todo: Find a way to invalidate broken or expired keys
+   *
    * @param {String} key
    * @param {Function} callback
    * @private
@@ -50,13 +52,14 @@ export class CloudFrontDriver extends AbstractFsDriver {
       try {
         let parsedData = JSON.parse(data);
 
-        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now) {
-          throw new Exception('Expired');
+        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now || parsedData.buildId !== this._buildId) {
+          callback(null, null);
+
+          return;
         }
 
         callback(null, parsedData.value);
       } catch (e) {
-        // @todo: Find a way to invalidate broken or expired keys
         callback(null, null);
       }
     });

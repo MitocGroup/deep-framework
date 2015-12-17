@@ -94,10 +94,10 @@ export class SharedCache {
   /**
    * If key exists do nothing, else create it with specified parameters
    *
-   * @param key
-   * @param value
-   * @param ttl
-   * @param callback
+   * @param {String} key
+   * @param {Object} value
+   * @param {Number} ttl
+   * @param {Function} callback
    */
   assure(key, value, ttl = 0, callback = () => {}) {
     this._driver.has(key, (err, has) => {
