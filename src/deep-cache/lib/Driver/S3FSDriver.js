@@ -5,7 +5,6 @@
 'use strict';
 
 import {AbstractFsDriver} from './AbstractFsDriver';
-import {Exception} from '../Exception/Exception';
 
 /**
  * S3FS Cache Driver

@@ -14,6 +14,7 @@ suite('Asset', function() {
   let assetService = null;
   let backendKernelInstance = null;
   let frontendKernelInstance = null;
+  let buildId = 'm3hb5jh8';
 
   test('Class Asset exists in Asset', function() {
     chai.expect(typeof Asset).to.equal('function');
@@ -26,6 +27,8 @@ suite('Asset', function() {
       chai.assert.instanceOf(frontendKernel, Kernel, 'frontendKernel is an instance of Kernel');
       frontendKernelInstance = frontendKernel;
       assetService = frontendKernel.get('asset');
+
+      assetService.injectBuildId = false;
 
       // complete the async
       done();
@@ -55,6 +58,15 @@ suite('Asset', function() {
 
   test('Check locate() method returns valid string for !isRoot', function() {
     let expectedResult = 'hello.world.example/bootstrap.js';
+    let actualResult = assetService.locate('@hello.world.example:bootstrap.js');
+    chai.expect(actualResult).to.be.equal(expectedResult);
+  });
+
+  test(`Check locate() method returns asset with buildId injected (...?_v=${buildId})`, function() {
+    assetService._buildId = buildId;
+    assetService.injectBuildId = true;
+
+    let expectedResult = `hello.world.example/bootstrap.js?_v=${buildId}`;
     let actualResult = assetService.locate('@hello.world.example:bootstrap.js');
     chai.expect(actualResult).to.be.equal(expectedResult);
   });

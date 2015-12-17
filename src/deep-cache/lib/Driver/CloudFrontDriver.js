@@ -6,7 +6,6 @@
 
 import {AbstractFsDriver} from './AbstractFsDriver';
 import {MethodNotAvailableException} from '../Exception/MethodNotAvailableException';
-import {Exception} from '../Exception/Exception';
 
 /**
  * CloudFront Cache Driver

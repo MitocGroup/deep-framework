@@ -1135,7 +1135,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 11/03/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class NotAuthenticatedException extends Exception {\n  constructor() {\n    super(\n      `Missing authentication token! You may authenticate the user first(ex. security.anonymousLogin()).`\n    );\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 11/03/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class NotAuthenticatedException extends Exception {\n  constructor() {\n    super(\n      `Missing authentication token! You may want to authenticate the user first(ex. security.anonymousLogin()).`\n    );\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1926,7 +1926,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\n/**\n * Response object\n */\nexport class LambdaResponse extends Response {\n  /**\n   * @param {Request} request\n   * @param {Object} data\n   * @param {String} error\n   */\n  constructor(request, data, error) {\n    super(...arguments);\n\n    this._errorType = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get data() {\n    if (this._data) {\n      return this._data;\n    }\n\n    if (this._rawData && !this._request.async) {\n      let response = this._getPayload();\n\n      if (response && typeof response.errorMessage === 'undefined') {\n        this._data = response;\n      }\n    }\n\n    return this._data;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get error() {\n    if (this._error) {\n      return this._error;\n    }\n\n    if (this._rawError) {\n      this._error = this._rawError;\n    } else {\n      if (!this._request.async) {\n        let response = this._getPayload();\n\n        if (response && typeof response.errorMessage !== 'undefined') {\n          this._error = response.errorMessage;\n        }\n      } else {\n        this._error = 'Unknown async invocation error';\n      }\n    }\n\n    return this._error;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get errorType() {\n    if (this._errorType) {\n      return this._errorType;\n    }\n\n    if (this._rawError) {\n      this._errorType = (this._rawError && this._rawError.name) ? this._rawError.name : 'Error';\n    } else {\n      if (!this._request.async) {\n        let response = this._getPayload();\n\n        if (response && typeof response.errorType !== 'undefined') {\n          this._errorType = response.errorType;\n        } else {\n          this._errorType = 'Error';\n        }\n      } else {\n        this._errorType = 'AsyncInvocationError';\n      }\n    }\n\n    return this._errorType;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get statusCode() {\n    if (this._statusCode) {\n      return this._statusCode;\n    }\n\n    if (this._rawData) {\n      this._statusCode = this._rawData.StatusCode || this._rawData.Status;\n    }\n\n    return this._statusCode;\n  }\n\n  /**\n   * @returns {Object|null}\n   * @private\n   */\n  _getPayload() {\n    if (typeof this._rawData === 'object' &&\n      this._rawData.hasOwnProperty('Payload')) {\n      let payload = this._rawData.Payload;\n\n      return typeof payload === 'string' ? JSON.parse(payload) : payload;\n    }\n\n    return null;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\n/**\n * Response object\n */\nexport class LambdaResponse extends Response {\n  /**\n   * @param {*} args\n   */\n  constructor(...args) {\n    super(...args);\n\n    // assure calling the very first!\n    this._fillStatusCode();\n\n    let responsePayload = this._decodePayload();\n\n    this._fillData(responsePayload);\n    this._fillError(responsePayload);\n  }\n\n  /**\n   * @param {Object|null} responsePayload\n   * @private\n   */\n  _fillData(responsePayload) {\n    if (responsePayload &&\n      !this._request.async &&\n      !responsePayload.hasOwnProperty('errorMessage')) {\n\n      this._data = responsePayload;\n    }\n  }\n\n  /**\n   * @param {Object|null} responsePayload\n   * @private\n   */\n  _fillError(responsePayload) {\n    if (this._rawError) {\n      this._error = this._rawError;\n    } else if (!this._request.async) {\n      if (!responsePayload) {\n        this._error = new Error('There is no error nor payload in Lambda response');\n      } else if (responsePayload.hasOwnProperty('errorMessage')) {\n        this._error = LambdaResponse.getPayloadError(responsePayload);\n      }\n    } else if (this._statusCode !== 202) { // check for failed async invocation\n      this._error = new Error('Unknown async invocation error');\n    }\n  }\n\n  /**\n   * @private\n   */\n  _fillStatusCode() {\n    this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status || 500);\n  }\n\n  /**\n   * @returns {Object|null}\n   * @private\n   */\n  _decodePayload() {\n    if (typeof this._rawData === 'object' &&\n      this._rawData.hasOwnProperty('Payload')) {\n      let payload = this._rawData.Payload;\n\n      return typeof payload === 'string' ? JSON.parse(payload) : payload;\n    }\n\n    return null;\n  }\n\n  /**\n   * @param {Object} payload\n   * @returns {Error|null}\n   */\n  static getPayloadError(payload) {\n    if (payload.errorMessage) {\n\n      // check for error object (on context.failed called)\n      if (!payload.hasOwnProperty('errorType') &&\n        !payload.hasOwnProperty('errorStack')) {\n\n        let rawErrorObj = null;\n\n        try {\n          rawErrorObj = JSON.parse(payload.errorMessage);\n          rawErrorObj = rawErrorObj || {\n              errorMessage: 'Unknown error occurred.',\n              errorStack: null,\n              errorType: 'UnknownError'\n            };\n\n          rawErrorObj.errorMessage = rawErrorObj.errorMessage || 'Unknown error occurred.';\n          rawErrorObj.errorType = rawErrorObj.errorType || 'UnknownError';\n        } catch (e) {\n        }\n\n        payload = rawErrorObj || {\n            errorMessage: payload.errorMessage,\n            errorStack: null,\n            errorType: 'UnknownError'\n          };\n      } else {\n        payload.errorType = payload.errorType || 'UnknownError';\n      }\n\n      let errorObj = new Error(payload.errorMessage);\n\n      errorObj.constructor.name = payload.errorType;\n\n      Object.defineProperty(errorObj, 'stack', {\n        value: payload.errorStack,\n      });\n\n      return errorObj;\n    }\n\n    return null;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1955,87 +1955,44 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 16,
     "params": [
       {
         "nullable": null,
         "types": [
-          "Request"
+          "*"
         ],
         "spread": false,
         "optional": false,
-        "name": "request",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "data",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "error",
+        "name": "args",
         "description": ""
       }
     ],
     "generator": false
   },
   {
-    "kind": "member",
+    "kind": "method",
     "static": false,
     "variation": null,
-    "name": "_errorType",
+    "name": "_fillData",
     "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
-    "access": null,
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_fillData",
+    "access": "private",
     "description": null,
-    "lineNumber": 21,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "data",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#data",
-    "access": null,
-    "description": null,
-    "lineNumber": 27,
-    "unknown": [
+    "lineNumber": 32,
+    "params": [
       {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
+        "nullable": null,
+        "types": [
+          "Object",
+          "null"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "responsePayload",
+        "description": ""
       }
     ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
     "generator": false
   },
   {
@@ -2047,7 +2004,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_data",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 37,
     "undocument": true,
     "type": {
       "types": [
@@ -2056,35 +2013,63 @@
     }
   },
   {
-    "kind": "get",
+    "kind": "method",
     "static": false,
     "variation": null,
-    "name": "error",
+    "name": "_fillError",
     "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#error",
-    "access": null,
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_fillError",
+    "access": "private",
     "description": null,
-    "lineNumber": 46,
-    "unknown": [
+    "lineNumber": 45,
+    "params": [
       {
-        "tagName": "@returns",
-        "tagValue": "{String}"
+        "nullable": null,
+        "types": [
+          "Object",
+          "null"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "responsePayload",
+        "description": ""
       }
     ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 47,
+    "undocument": true,
     "type": {
       "types": [
         "*"
       ]
-    },
-    "generator": false
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 50,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
   },
   {
     "kind": "member",
@@ -2112,171 +2097,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
     "access": null,
     "description": null,
-    "lineNumber": 58,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_error",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
-    "access": null,
-    "description": null,
-    "lineNumber": 61,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "errorType",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#errorType",
-    "access": null,
-    "description": null,
-    "lineNumber": 71,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_errorType",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
-    "access": null,
-    "description": null,
-    "lineNumber": 77,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_errorType",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
-    "access": null,
-    "description": null,
-    "lineNumber": 83,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_errorType",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
-    "access": null,
-    "description": null,
-    "lineNumber": 85,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_errorType",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_errorType",
-    "access": null,
-    "description": null,
-    "lineNumber": 88,
-    "undocument": true,
-    "type": {
-      "types": [
-        "string"
-      ]
-    }
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "statusCode",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#statusCode",
-    "access": null,
-    "description": null,
-    "lineNumber": 98,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_statusCode",
-    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_statusCode",
-    "access": null,
-    "description": null,
-    "lineNumber": 104,
+    "lineNumber": 55,
     "undocument": true,
     "type": {
       "types": [
@@ -2288,12 +2109,42 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "_getPayload",
+    "name": "_fillStatusCode",
     "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
-    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_getPayload",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_fillStatusCode",
     "access": "private",
     "description": null,
-    "lineNumber": 114,
+    "lineNumber": 62,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statusCode",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 63,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_decodePayload",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_decodePayload",
+    "access": "private",
+    "description": null,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2305,6 +2156,45 @@
       "nullable": null,
       "types": [
         "Object",
+        "null"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "getPayloadError",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse.getPayloadError",
+    "access": null,
+    "description": null,
+    "lineNumber": 85,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Error|null}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "payload",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Error",
         "null"
       ],
       "spread": false,
@@ -4016,7 +3906,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\n/**\n * Response object\n */\nexport class Response {\n  /**\n   * @param {Request|*} request\n   * @param {Object} data\n   * @param {String} error\n   */\n  constructor(request, data, error) {\n    this._request = request;\n\n    this._rawError = error;\n    this._rawData = data;\n\n    this._statusCode = null;\n    this._data = null;\n    this._error = null;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get rawData() {\n    return this._rawData;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get rawError() {\n    return this._rawError;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get data() {\n    if (this._data) {\n      return this._data;\n    }\n\n    if (this._rawData) {\n      var response = JSON.parse(this._rawData.Payload);\n      if (response && typeof response.errorMessage === 'undefined') {\n        this._data = response;\n      }\n    }\n\n    return this._data;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isError() {\n    return typeof this.error === 'string';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get error() {\n    if (this._error) {\n      return this._error;\n    }\n\n    if (this._rawError) {\n      this._error = this._rawError;\n    } else {\n      var response = JSON.parse(this._rawData.Payload);\n      if (response && typeof response.errorMessage !== 'undefined') {\n        this._error = response.errorMessage;\n      }\n    }\n\n    return this._error;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get statusCode() {\n    if (this._statusCode) {\n      return this._statusCode;\n    }\n\n    if (this._rawData) {\n      this._statusCode = this._rawData.StatusCode;\n    }\n\n    return this._statusCode;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\n/**\n * Response object\n */\nexport class Response {\n  /**\n   * @param {Request|*} request\n   * @param {Object} data\n   * @param {String} error\n   */\n  constructor(request, data, error) {\n    this._request = request;\n\n    this._rawError = error;\n    this._rawData = data;\n\n    if (this._rawError) {\n      this._rawError = Response._toErrorObj(this._rawError);\n    }\n\n    this._statusCode = null;\n    this._data = null;\n    this._error = null;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get rawData() {\n    return this._rawData;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get rawError() {\n    return this._rawError;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get statusCode() {\n    return this._statusCode;\n  }\n\n  /**\n   * @returns {Error}\n   */\n  get error() {\n    return this._error;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isError() {\n    return !!this.error;\n  }\n\n  /**\n   * @param {String|Error|*} rawError\n   * @returns {Error}\n   * @private\n   */\n  static _toErrorObj(rawError) {\n    return rawError instanceof Error\n      ? rawError\n      : new Error(rawError.toString());\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -4133,12 +4023,29 @@
     "kind": "member",
     "static": false,
     "variation": null,
+    "name": "_rawError",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#_rawError",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
     "name": "_statusCode",
     "memberof": "lib/Resource/Response.js~Response",
     "longname": "lib/Resource/Response.js~Response#_statusCode",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 26,
     "undocument": true,
     "type": {
       "types": [
@@ -4155,7 +4062,7 @@
     "longname": "lib/Resource/Response.js~Response#_data",
     "access": null,
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 27,
     "undocument": true,
     "type": {
       "types": [
@@ -4172,7 +4079,7 @@
     "longname": "lib/Resource/Response.js~Response#_error",
     "access": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 28,
     "undocument": true,
     "type": {
       "types": [
@@ -4189,7 +4096,7 @@
     "longname": "lib/Resource/Response.js~Response#rawData",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 34,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4220,7 +4127,7 @@
     "longname": "lib/Resource/Response.js~Response#rawError",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 41,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4251,7 +4158,7 @@
     "longname": "lib/Resource/Response.js~Response#request",
     "access": null,
     "description": null,
-    "lineNumber": 44,
+    "lineNumber": 48,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4282,7 +4189,7 @@
     "longname": "lib/Resource/Response.js~Response#data",
     "access": null,
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 55,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4305,42 +4212,25 @@
     "generator": false
   },
   {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_data",
-    "memberof": "lib/Resource/Response.js~Response",
-    "longname": "lib/Resource/Response.js~Response#_data",
-    "access": null,
-    "description": null,
-    "lineNumber": 59,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
     "kind": "get",
     "static": false,
     "variation": null,
-    "name": "isError",
+    "name": "statusCode",
     "memberof": "lib/Resource/Response.js~Response",
-    "longname": "lib/Resource/Response.js~Response#isError",
+    "longname": "lib/Resource/Response.js~Response#statusCode",
     "access": null,
     "description": null,
-    "lineNumber": 69,
+    "lineNumber": 62,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{Boolean}"
+        "tagValue": "{Number}"
       }
     ],
     "return": {
       "nullable": null,
       "types": [
-        "Boolean"
+        "Number"
       ],
       "spread": false,
       "description": ""
@@ -4361,434 +4251,17 @@
     "longname": "lib/Resource/Response.js~Response#error",
     "access": null,
     "description": null,
-    "lineNumber": 76,
+    "lineNumber": 69,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{String}"
+        "tagValue": "{Error}"
       }
     ],
     "return": {
       "nullable": null,
       "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_error",
-    "memberof": "lib/Resource/Response.js~Response",
-    "longname": "lib/Resource/Response.js~Response#_error",
-    "access": null,
-    "description": null,
-    "lineNumber": 82,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_error",
-    "memberof": "lib/Resource/Response.js~Response",
-    "longname": "lib/Resource/Response.js~Response#_error",
-    "access": null,
-    "description": null,
-    "lineNumber": 86,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "statusCode",
-    "memberof": "lib/Resource/Response.js~Response",
-    "longname": "lib/Resource/Response.js~Response#statusCode",
-    "access": null,
-    "description": null,
-    "lineNumber": 96,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_statusCode",
-    "memberof": "lib/Resource/Response.js~Response",
-    "longname": "lib/Resource/Response.js~Response#_statusCode",
-    "access": null,
-    "description": null,
-    "lineNumber": 102,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "file",
-    "static": true,
-    "variation": null,
-    "name": "lib/Resource/SuperagentResponse.js",
-    "memberof": null,
-    "longname": "lib/Resource/SuperagentResponse.js",
-    "access": null,
-    "description": null,
-    "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\nexport class SuperagentResponse extends Response {\n  /**\n   * @param {Request} request\n   * @param {Object} data\n   * @param {String} error\n   */\n  constructor(request, data, error) {\n    super(...arguments);\n\n    this._error = error;\n\n    // @todo: treat the empty body somehow else?\n    if (!data.body) {\n      if (!data.status || data.status > 300) {\n        this._error = data.error || 'Unexpected error occurred';\n        this._statusCode = data.status || 500;\n      } else {\n        this._statusCode = data.status;\n      }\n    } else {\n      this._data = request.isLambda\n        ? this._parseLambdaResponse(data)\n        : this._parseResponse(data);\n    }\n  }\n\n  /**\n   * Parse response given by superagent library\n   * for Lambdas proxied through ApiGateway\n   *\n   * @param {Object} response\n   * @returns {Object}\n   * @private\n   */\n  _parseLambdaResponse(response) {\n    if (typeof response.body.errorMessage === 'string') {\n      this._error = response.body.errorMessage;\n    }\n\n    this._statusCode = this._error ? 500 : response.status;\n\n    return this._error ? null : response.body;\n  }\n\n  /**\n   * Parse response given by superagent library\n   *\n   * @param {Object} response\n   * @returns {Object}\n   * @private\n   */\n  _parseResponse(response) {\n    if (response.error) {\n      this._error = response.error;\n    }\n\n    this._statusCode = response.status;\n\n    return response.body;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isError() {\n    return !!this._error;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get error() {\n    return this._error;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get statusCode() {\n    return this._statusCode;\n  }\n}\n"
-  },
-  {
-    "kind": "class",
-    "static": true,
-    "variation": null,
-    "name": "SuperagentResponse",
-    "memberof": "lib/Resource/SuperagentResponse.js",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "access": null,
-    "export": true,
-    "importPath": "deep-resource/lib/Resource/SuperagentResponse.js",
-    "importStyle": "{SuperagentResponse}",
-    "description": null,
-    "lineNumber": 9,
-    "undocument": true,
-    "interface": false,
-    "extends": [
-      "lib/Resource/Response~Response"
-    ]
-  },
-  {
-    "kind": "constructor",
-    "static": false,
-    "variation": null,
-    "name": "constructor",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#constructor",
-    "access": null,
-    "description": null,
-    "lineNumber": 15,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Request"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "request",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "data",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "error",
-        "description": ""
-      }
-    ],
-    "generator": false
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_error",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
-    "access": null,
-    "description": null,
-    "lineNumber": 18,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_error",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
-    "access": null,
-    "description": null,
-    "lineNumber": 23,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_statusCode",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_statusCode",
-    "access": null,
-    "description": null,
-    "lineNumber": 24,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_statusCode",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_statusCode",
-    "access": null,
-    "description": null,
-    "lineNumber": 26,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_data",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_data",
-    "access": null,
-    "description": null,
-    "lineNumber": 29,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "_parseLambdaResponse",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_parseLambdaResponse",
-    "access": "private",
-    "description": "Parse response given by superagent library\nfor Lambdas proxied through ApiGateway",
-    "lineNumber": 43,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "response",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_error",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
-    "access": null,
-    "description": null,
-    "lineNumber": 45,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_statusCode",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_statusCode",
-    "access": null,
-    "description": null,
-    "lineNumber": 48,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "_parseResponse",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_parseResponse",
-    "access": "private",
-    "description": "Parse response given by superagent library",
-    "lineNumber": 60,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "response",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_error",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
-    "access": null,
-    "description": null,
-    "lineNumber": 62,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_statusCode",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_statusCode",
-    "access": null,
-    "description": null,
-    "lineNumber": 65,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "data",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#data",
-    "access": null,
-    "description": null,
-    "lineNumber": 73,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
+        "Error"
       ],
       "spread": false,
       "description": ""
@@ -4805,11 +4278,11 @@
     "static": false,
     "variation": null,
     "name": "isError",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#isError",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response#isError",
     "access": null,
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 76,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4832,66 +4305,261 @@
     "generator": false
   },
   {
-    "kind": "get",
-    "static": false,
+    "kind": "method",
+    "static": true,
     "variation": null,
-    "name": "error",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#error",
-    "access": null,
+    "name": "_toErrorObj",
+    "memberof": "lib/Resource/Response.js~Response",
+    "longname": "lib/Resource/Response.js~Response._toErrorObj",
+    "access": "private",
     "description": null,
-    "lineNumber": 87,
+    "lineNumber": 85,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{String}"
+        "tagValue": "{Error}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String",
+          "Error",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "rawError",
+        "description": ""
       }
     ],
     "return": {
       "nullable": null,
       "types": [
-        "String"
+        "Error"
       ],
       "spread": false,
       "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
     },
     "generator": false
   },
   {
-    "kind": "get",
-    "static": false,
+    "kind": "file",
+    "static": true,
     "variation": null,
-    "name": "statusCode",
-    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
-    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#statusCode",
+    "name": "lib/Resource/SuperagentResponse.js",
+    "memberof": null,
+    "longname": "lib/Resource/SuperagentResponse.js",
     "access": null,
     "description": null,
-    "lineNumber": 94,
-    "unknown": [
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\nimport {LambdaResponse} from './LambdaResponse';\n\nexport class SuperagentResponse extends Response {\n  /**\n   * @param {*} args\n   */\n  constructor(...args) {\n    super(...args);\n\n    if (this._request.isLambda) {\n      this._parseLambda();\n    } else {\n      this._parseExternal();\n    }\n  }\n\n  /**\n   * @private\n   */\n  _parseLambda() {\n    this._parseExternal();\n\n    // check if any Lambda response available\n    if (this._data && !this._error) {\n      let dataObj = this._data;\n\n      // check whether Lambda execution failed\n      if (dataObj.errorMessage) {\n        this._error = LambdaResponse.getPayloadError(dataObj);\n      } else {\n        this._data = dataObj;\n      }\n    }\n  }\n\n  /**\n   * @private\n   */\n  _parseExternal() {\n    let data = this._rawData;\n    let error = this._rawError;\n\n    if (error) {\n      this._error = error;\n    } else if(data && data.error) { // weird case...\n      this._error = data.error;\n    } else {\n      this._data = data && data.body ? data.body : null;\n    }\n\n    // @todo: treat Response.status lack somehow else?\n    if (data && data.status) {\n      this._statusCode = parseInt(data.status);\n    } else if (this._data && !this._error) {\n      this._statusCode = 200;\n    } else {\n      this._statusCode = 500;\n    }\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "SuperagentResponse",
+    "memberof": "lib/Resource/SuperagentResponse.js",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/SuperagentResponse.js",
+    "importStyle": "{SuperagentResponse}",
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Resource/Response~Response"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "params": [
       {
-        "tagName": "@returns",
-        "tagValue": "{String}"
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
       }
     ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_parseLambda",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_parseLambda",
+    "access": "private",
+    "description": null,
+    "lineNumber": 27,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
     "type": {
       "types": [
         "*"
       ]
-    },
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_parseExternal",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_parseExternal",
+    "access": "private",
+    "description": null,
+    "lineNumber": 46,
+    "params": [],
     "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_error",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_error",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 55,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statusCode",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statusCode",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 62,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_statusCode",
+    "memberof": "lib/Resource/SuperagentResponse.js~SuperagentResponse",
+    "longname": "lib/Resource/SuperagentResponse.js~SuperagentResponse#_statusCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 64,
+    "undocument": true,
+    "type": {
+      "types": [
+        "number"
+      ]
+    }
   },
   {
     "kind": "file",
