@@ -13,6 +13,23 @@ import Path from 'path';
 export class Asset extends Kernel.ContainerAware {
   constructor() {
     super();
+
+    this._injectBuildId = Asset.INJECT_BUILD_ID_STATE;
+    this._buildId = null;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get injectBuildId() {
+    return this._injectBuildId;
+  }
+
+  /**
+   * @param {Boolean} state
+   */
+  set injectBuildId(state) {
+    this._injectBuildId = state;
   }
 
   /**
@@ -22,6 +39,8 @@ export class Asset extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
+    this._buildId = kernel.buildId;
+
     if (kernel.isFrontend) {
       let loadVector = [];
       let microservices = kernel.microservices;
@@ -57,10 +76,21 @@ export class Asset extends Kernel.ContainerAware {
   locate(assetIdentifier, suffix = '') {
     let path = this._resolveIdentifier(assetIdentifier);
 
-    if (this.microservice.isRoot) {
-      return Path.join(path) + suffix;
-    } else {
-      return Path.join(this.microservice.toString(), path) + suffix;
-    }
+    let basePath = this.microservice.isRoot
+      ? Path.join(path)
+      : Path.join(this.microservice.toString(), path);
+
+    let internalSuffix = this._injectBuildId && this._buildId
+      ? `?_v=${this._buildId}`
+      : '';
+
+    return `${basePath}${suffix}${internalSuffix}`;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  static get INJECT_BUILD_ID_STATE() {
+    return true;
   }
 }
