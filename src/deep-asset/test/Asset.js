@@ -28,6 +28,8 @@ suite('Asset', function() {
       frontendKernelInstance = frontendKernel;
       assetService = frontendKernel.get('asset');
 
+      assetService.injectBuildId = false;
+
       // complete the async
       done();
     };
@@ -62,7 +64,7 @@ suite('Asset', function() {
 
   test(`Check locate() method returns asset with buildId injected (...?_v=${buildId})`, function() {
     assetService._buildId = buildId;
-    assetService._injectBuildId = true;
+    assetService.injectBuildId = true;
 
     let expectedResult = `hello.world.example/bootstrap.js?_v=${buildId}`;
     let actualResult = assetService.locate('@hello.world.example:bootstrap.js');
