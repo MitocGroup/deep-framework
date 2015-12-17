@@ -113,18 +113,15 @@ export class LambdaResponse extends Response {
         payload.errorType = payload.errorType || 'UnknownError';
       }
 
-      let proto = Error
-
       let errorObj = new Error(payload.errorMessage);
 
+      // try to define a custom constructor name
+      // fail silently in case of readonly property...
       try {
         Object.defineProperty(errorObj, 'name', {
           value: payload.errorType,
         });
-      } catch (e) {
-
-        // @todo: how to define the class name in such cases?
-      }
+      } catch (e) {   }
 
       Object.defineProperty(errorObj, 'stack', {
         value: payload.errorStack,
