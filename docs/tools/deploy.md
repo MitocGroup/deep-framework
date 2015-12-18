@@ -61,4 +61,5 @@ Available hooks
 
 The list of available hooks:
  
- - [Post Deploy](deploy/hooks/post-deploy.md)
+ - [Initialize](hooks/on-init.md)
+ - [Post Deploy](hooks/post-deploy.md)
