@@ -31,7 +31,7 @@ export class Action {
     this._region = region;
     this._forceUserIdentity = forceUserIdentity;
     this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;
-    this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : -1;
+    this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
   }
 
   /**
