@@ -438,13 +438,16 @@ export class Request {
       case 'get':
       case 'delete':
         if (parsedUrl.query || payload) {
-
           //assure parsedUrl.query is a valid object
           if (parsedUrl.query === null || typeof parsedUrl.query !== 'object') {
             parsedUrl.query = {};
           }
 
           let mergedPayload = util._extend(parsedUrl.query, payload);
+
+          if (this.action.apiCacheEnabled) {
+            mergedPayload[Action.DEEP_CACHE_QS_PARAM] = Request._md5(qs.stringify(mergedPayload));
+          }
 
           opsToSign.path += `?${qs.stringify(mergedPayload)}`;
 

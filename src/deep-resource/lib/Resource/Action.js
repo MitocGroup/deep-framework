@@ -138,4 +138,11 @@ export class Action {
   static get EXTERNAL() {
     return 'external';
   }
+
+  /**
+   * @returns {string}
+   */
+  static get DEEP_CACHE_QS_PARAM() {
+    return '_deepQsHash';
+  }
 }
