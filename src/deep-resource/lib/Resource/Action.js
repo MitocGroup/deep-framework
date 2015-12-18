@@ -20,8 +20,9 @@ export class Action {
    * @param {Object} source
    * @param {String} region
    * @param {Boolean} forceUserIdentity
+   * @param {Object} apiCache
    */
-  constructor(resource, name, type, methods, source, region, forceUserIdentity) {
+  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache) {
     this._resource = resource;
     this._name = name;
     this._type = type;
@@ -29,6 +30,8 @@ export class Action {
     this._source = source;
     this._region = region;
     this._forceUserIdentity = forceUserIdentity;
+    this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;
+    this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : -1;
   }
 
   /**
@@ -99,6 +102,20 @@ export class Action {
    */
   get region() {
     return this._region;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get apiCacheEnabled() {
+    return this._apiCacheEnabled;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  get apiCacheTtl() {
+    return this._apiCacheTtl;
   }
 
   /**
