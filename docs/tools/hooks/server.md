@@ -26,6 +26,8 @@ var exports = module.exports = function(callback) {
     console.log('Triggered after the server have started...');
   }
 
-  // ...
+  // your stuff here...
+  
+  callback();
 };
 ```

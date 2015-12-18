@@ -24,6 +24,8 @@ var exports = module.exports = function(callback) {
     console.log('Updating web app...');
   }
 
-  // ...
+  // your stuff here...
+    
+  callback();
 };
 ```

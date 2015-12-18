@@ -19,6 +19,8 @@ Example of `${web-app}/${microservice}/hook.init.js` hook file
 var exports = module.exports = function(callback) {
   var microservice = this.microservice;
   
-  // ...
+  // your stuff here...
+    
+  callback();
 };
 ```
