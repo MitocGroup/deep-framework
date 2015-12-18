@@ -107,7 +107,7 @@ export class LocalStorageDriver extends AbstractDriver {
       return false;
     }
 
-    if (response.exd && response.exd !== null && response.exd <= LocalStorageDriver._now) {
+    if (response.exd && response.exd <= LocalStorageDriver._now) {
       LocalStorage.remove(key);
       return false;
     }

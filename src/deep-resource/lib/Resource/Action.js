@@ -17,7 +17,7 @@ export class Action {
    * @param {String} name
    * @param {String} type
    * @param {Array} methods
-   * @param {String} source
+   * @param {Object} source
    * @param {String} region
    * @param {Boolean} forceUserIdentity
    */

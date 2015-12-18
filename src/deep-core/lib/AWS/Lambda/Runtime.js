@@ -9,6 +9,7 @@ import {ErrorResponse} from './ErrorResponse';
 import {Request} from './Request';
 import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';
 import {MissingUserContextException} from './Exception/MissingUserContextException';
+import {Context} from './Context';
 
 /**
  * Lambda runtime context
@@ -32,7 +33,7 @@ export class Runtime extends Interface {
   }
 
   /**
-   * @returns {Object}
+   * @returns {null|Context}
    */
   get context() {
     return this._context;
@@ -83,14 +84,10 @@ export class Runtime extends Interface {
    * @returns {Runtime}
    */
   run(event, context) {
-
-    // @todo: move to constructor
-    this._context = context;
+    this._context = new Context(context);
+    this._request = new Request(event);
 
     this._addExceptionListener();
-    
-    this._request = new Request(event);
-    
     this._fillUserContext();
 
     if (!this._loggedUserId && this._forceUserIdentity) {
@@ -155,7 +152,7 @@ export class Runtime extends Interface {
    */
   _fillUserContext() {
     if (this._context &&
-      this._context.hasOwnProperty('identity') &&
+      this._context.has('identity') &&
       this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&
       this._context.identity.hasOwnProperty('cognitoIdentityId')
     ) {

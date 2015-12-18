@@ -96,7 +96,7 @@ export class LambdaResponse extends Response {
           rawErrorObj = rawErrorObj || {
               errorMessage: 'Unknown error occurred.',
               errorStack: null,
-              errorType: 'UnknownError'
+              errorType: 'UnknownError',
             };
 
           rawErrorObj.errorMessage = rawErrorObj.errorMessage || 'Unknown error occurred.';
@@ -107,7 +107,7 @@ export class LambdaResponse extends Response {
         payload = rawErrorObj || {
             errorMessage: payload.errorMessage,
             errorStack: null,
-            errorType: 'UnknownError'
+            errorType: 'UnknownError',
           };
       } else {
         payload.errorType = payload.errorType || 'UnknownError';
