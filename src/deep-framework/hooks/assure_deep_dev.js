@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 /**
  * Created by AlexanderC on 8/13/15.
+ *
+ * @todo: reuse this script from deep-framework
  */
 
 // hook to make jscs tests pass!
@@ -11,6 +13,8 @@ var skipModules = [
   'mocha', 'chai', 'sinon',
   'sinon-chai', 'istanbul',
   'jscoverage', 'jshint', 'jshint-stylish',
+  'coveralls', 'karma', 'karma-mocha',
+  'mocha-lcov-reporter'
 ];
 
 if (process.env[npmEnvKey] !== 'true') {
@@ -19,6 +23,11 @@ if (process.env[npmEnvKey] !== 'true') {
   var exec = require('child_process').exec;
 
   var deepModulePath = path.join(__dirname, '../node_modules');
+
+  if (!fs.existsSync(deepModulePath)) {
+    console.error('Missing node_modules in ' + deepModulePath + '. Skipping...');
+    process.exit(0);
+  }
 
   fs.readdir(deepModulePath, function (error, files) {
     if (error) {
@@ -31,6 +40,11 @@ if (process.env[npmEnvKey] !== 'true') {
 
       if (['.', '..'].indexOf(basename) === -1 && basename.indexOf('deep-') === 0) {
         var modulePath = path.join(deepModulePath, basename);
+
+        if (!fs.existsSync(modulePath)) {
+          console.error('Missing node_modules in ' + modulePath + '. Skipping...');
+          continue;
+        }
 
         fs.stat(modulePath, function (modulePath, error, stats) {
           if (error) {
@@ -80,13 +94,13 @@ if (process.env[npmEnvKey] !== 'true') {
 
                 console.log('Running: ' + installCmd);
 
-                exec(installCmd + ' &>/dev/null', function (error, stdout, stderr) {
-                    if (error) {
-                      console.error('Error while installing npm packages ' + pckgsToInstall.join(', ') + ': ' + stderr);
-                      return;
-                    }
+                exec(installCmd + ' &>/dev/null', function (error) {
+                  if (error) {
+                    console.error('Error while installing npm packages ' + pckgsToInstall.join(', ') + ': ' + error);
+                    return;
+                  }
 
-                    console.log('The following NPM packages have been installed ' + pckgsToInstall.join(', '));
+                  console.log('The following NPM packages have been installed ' + pckgsToInstall.join(', '));
                 }.bind(this));
               }
             }.bind(this));
