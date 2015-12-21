@@ -22,6 +22,18 @@ find "${path}"/.. -type f -iname "*.sh" -print0 | xargs -0 rm -rf
 echo "Removing aws-sdk recursively"
 find "${path}"/.. -type d -iname "aws-sdk*" -print0 | xargs -0 rm -rf
 
+echo "Removing local-dynamo recursively"
+find "${path}"/.. -type d -iname "local-dynamo*" -print0 | xargs -0 rm -rf
+
+echo "Removing dynalite recursively"
+find "${path}"/.. -type d -iname "dynalite*" -print0 | xargs -0 rm -rf
+
+echo "Removing relative-fs recursively"
+find "${path}"/.. -type d -iname "relative-fs*" -print0 | xargs -0 rm -rf
+
+#echo "Removing fs-extra recursively"
+#find "${path}"/.. -type d -iname "fs-extra*" -print0 | xargs -0 rm -rf
+
 echo "Removing grunt configuration files recursively"
 find "${path}"/.. -type f -iname "gruntfile.js" -print0 | xargs -0 rm -rf
 
