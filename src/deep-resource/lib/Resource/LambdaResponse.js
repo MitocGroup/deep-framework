@@ -72,7 +72,13 @@ export class LambdaResponse extends Response {
       this._rawData.hasOwnProperty('Payload')) {
       let payload = this._rawData.Payload;
 
-      return typeof payload === 'string' ? JSON.parse(payload) : payload;
+      if (typeof payload === 'string') {
+        try {
+          payload = JSON.parse(payload);
+        } catch(e) {}
+      }
+
+      return payload;
     }
 
     return null;
