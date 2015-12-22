@@ -9,7 +9,6 @@ import Kernel from 'deep-kernel';
 import {UnknownFolderException} from './Exception/UnknownFolderException';
 import OS from 'os';
 import Path from 'path';
-import fse from 'fs-extra';
 
 /**
  * Deep FS implementation
@@ -126,7 +125,7 @@ export class FS extends Kernel.ContainerAware {
   static _getTmpDir(subpath) {
     let dir = Path.join(OS.tmpdir(), subpath);
 
-    fse.mkdirpSync(dir);
+    require('fs-extra').mkdirpSync(dir);
 
     return dir;
   }
