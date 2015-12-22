@@ -7,10 +7,8 @@ esdoc=$(which esdoc)
 publish_npm_package() {
     name=$(basename $1)
 
-    echo "Publishing "${name}
-
     if [ -z $2 ] || ! $2; then
-        cd $1 && rm -rf node_modules/ && npm install --production && ${npm} version $3 && ${npm} publish
+        cd $1 && rm -rf node_modules/ && npm install --production --no-bin-links --no-optional && ${npm} version $3 && ${npm} publish
     else
         cd $1 && ${npm} version $3
     fi
