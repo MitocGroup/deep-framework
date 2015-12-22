@@ -105,6 +105,7 @@ export class Token {
       if (this.identityProvider) {
         cognitoParams.Logins = {};
         cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
+        cognitoParams.LoginId = this.identityProvider.userId;
       }
 
       this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
