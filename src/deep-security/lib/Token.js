@@ -6,6 +6,7 @@
 
 import AWS from 'aws-sdk';
 import {AuthException} from './Exception/AuthException';
+import {IdentityProviderTokenExpiredException} from './Exception/IdentityProviderTokenExpiredException';
 import {DescribeIdentityException} from './Exception/DescribeIdentityException';
 import {CredentialsManager} from './CredentialsManager';
 
@@ -103,6 +104,16 @@ export class Token {
       };
 
       if (this.identityProvider) {
+        if (!this.identityProvider.isTokenValid()) {
+          let error = new IdentityProviderTokenExpiredException(
+            this.identityProvider.name,
+            this.identityProvider.tokenExpirationTime
+          );
+
+          callback(error, null);
+          return;
+        }
+
         cognitoParams.Logins = {};
         cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
         cognitoParams.LoginId = this.identityProvider.userId;
