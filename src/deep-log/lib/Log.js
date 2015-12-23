@@ -89,12 +89,12 @@ export class Log extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {Boolean} coloredOutput
+   * @param {*} args
    * @returns {Log}
    *
    * @todo: do we need this here?
    */
-  overrideJsConsole(coloredOutput = true) {
+  overrideJsConsole(...args) {
     let consoleDriver = this._drivers.find(ConsoleDriver);
 
     if (!consoleDriver) {
@@ -102,7 +102,7 @@ export class Log extends Kernel.ContainerAware {
     }
 
     (consoleDriver || this._drivers.find(ConsoleDriver))
-      .overrideNative(coloredOutput);
+      .overrideNative(...args);
 
     return this;
   }
