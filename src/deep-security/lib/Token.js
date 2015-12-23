@@ -9,6 +9,7 @@ import {AuthException} from './Exception/AuthException';
 import {IdentityProviderTokenExpiredException} from './Exception/IdentityProviderTokenExpiredException';
 import {DescribeIdentityException} from './Exception/DescribeIdentityException';
 import {CredentialsManager} from './CredentialsManager';
+import {Exception as CoreException} from 'deep-core';
 
 /**
  * Security token holds details about logged user
@@ -26,6 +27,7 @@ export class Token {
     this._userProvider = null;
     this._credentials = null;
     this._identityMetadata = null;
+    this._tokenExpiredCallback = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -105,13 +107,17 @@ export class Token {
 
       if (this.identityProvider) {
         if (!this.identityProvider.isTokenValid()) {
-          let error = new IdentityProviderTokenExpiredException(
-            this.identityProvider.name,
-            this.identityProvider.tokenExpirationTime
-          );
+          if (typeof this._tokenExpiredCallback === 'function') {
+            this._tokenExpiredCallback(this.identityProvider);
+          } else {
+            let error = new IdentityProviderTokenExpiredException(
+              this.identityProvider.name,
+              this.identityProvider.tokenExpirationTime
+            );
 
-          callback(error, null);
-          return;
+            callback(error, null);
+            return;
+          }
         }
 
         cognitoParams.Logins = {};
@@ -293,5 +299,19 @@ export class Token {
     return this._identityMetadata && this._identityMetadata.hasOwnProperty('Logins') ?
       this._identityMetadata.Logins :
       [];
+  }
+
+  /**
+   * @param {Function} callback
+   * @returns {Token}
+   */
+  registerTokenExpiredCallback(callback) {
+    if (typeof callback !== 'function') {
+      throw new CoreException.InvalidArgumentException(callback, 'function');
+    }
+
+    this._tokenExpiredCallback = callback;
+
+    return this;
   }
 }

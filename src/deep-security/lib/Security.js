@@ -30,7 +30,6 @@ export class Security extends Kernel.ContainerAware {
     this._token = null;
     this._userProvider = null;
     this._userProviderEndpoint = null;
-    this._tokenExpiredCallbacks = [];
   }
 
   /**
@@ -132,22 +131,5 @@ export class Security extends Kernel.ContainerAware {
     this._token.userProvider = this.userProvider;
 
     return this._token;
-  }
-
-  /**
-   * @returns {Array}
-   */
-  get tokenExpiredCallbacks() {
-    return this._tokenExpiredCallbacks;
-  }
-
-  /**
-   * @param {Function} callback
-   * @returns {Security}
-   */
-  registerTokenExpiredCallback(callback) {
-    this._tokenExpiredCallbacks.push(callback);
-
-    return this;
   }
 }
