@@ -84,11 +84,12 @@ export class ConsoleDriver extends AbstractDriver {
   }
 
   /**
+   * @param {Boolean} logTime
    * @param {Boolean} coloredOutput
    * @param {Boolean} turnOff
    * @returns {ConsoleDriver}
    */
-  overrideNative(coloredOutput, turnOff = false) {
+  overrideNative(logTime = true, coloredOutput = true, turnOff = false) {
     let nativeConsole = ConsoleDriver.nativeConsole;
 
     for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {
@@ -100,10 +101,17 @@ export class ConsoleDriver extends AbstractDriver {
 
       nativeConsole[method] = (...args) => {
         if (!turnOff) {
-          this._console[method](
-            AbstractDriver.timeString,
-            ...ConsoleDriver._colorOutput(method, args)
-          );
+          let nativeArgs = args;
+
+          if (logTime) {
+            nativeArgs.unshift(AbstractDriver.timeString);
+          }
+
+          if (coloredOutput) {
+            nativeArgs = ConsoleDriver._colorOutput(method, nativeArgs);
+          }
+
+          this._console[method](...nativeArgs);
         }
       };
     }
