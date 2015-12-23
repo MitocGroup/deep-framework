@@ -125,21 +125,21 @@ export class Token {
       IdentityPoolId: this._identityPoolId,
     };
 
-    if (this.identityProvider) {
-      if (!this.identityProvider.isTokenValid()) {
-        if (typeof this._tokenExpiredCallback === 'function') {
-          this._tokenExpiredCallback(this.identityProvider);
-        } else {
-          let error = new IdentityProviderTokenExpiredException(
-            this.identityProvider.name,
-            this.identityProvider.tokenExpirationTime
-          );
+    if (this.identityProvider && !this.identityProvider.isTokenValid()) {
+      if (typeof this._tokenExpiredCallback === 'function') {
+        this._tokenExpiredCallback(this.identityProvider);
+      } else {
+        let error = new IdentityProviderTokenExpiredException(
+          this.identityProvider.name,
+          this.identityProvider.tokenExpirationTime
+        );
 
-          callback(error, null);
-          return;
-        }
+        callback(error, null);
       }
+      return;
+    }
 
+    if (this.identityProvider) {
       cognitoParams.Logins = {};
       cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
       cognitoParams.LoginId = this.identityProvider.userId;
@@ -155,9 +155,8 @@ export class Token {
 
       AWS.config.credentials = this._credentials;
 
-      // @todo - save creds in background to not affect page load time
+      // @todo - save credentials in background not to affect page load time
       this._credsManager.saveCredentials(this._credentials, (error, record) => {
-        // @todo - try saving them again later without throwing an error
         if (error) {
           callback(error, null);
           return;
