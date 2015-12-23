@@ -6,6 +6,7 @@
 
 import {MissingLoginProviderException} from './Exception/MissingLoginProviderException';
 import {IdentityProviderMismatchException} from './Exception/IdentityProviderMismatchException';
+import {InvalidProviderIdentityException} from './Exception/InvalidProviderIdentityException';
 
 /**
  * 3rd Party identity provider (Amazon, Facebook, Google, etc.)
@@ -69,10 +70,14 @@ export class IdentityProvider {
       throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);
     }
 
+    if (!identityMetadata.access_token || !identityMetadata.tokenExpirationTime) {
+      throw new InvalidProviderIdentityException(providerName);
+    }
+
     this._providers = providers;
     this._name = providerName;
-    this._userToken = identityMetadata.access_token || null;
-    this._tokenExpTime = identityMetadata.tokenExpirationTime ? new Date(identityMetadata.tokenExpirationTime) : null;
+    this._userToken = identityMetadata.access_token;
+    this._tokenExpTime = new Date(identityMetadata.tokenExpirationTime);
     this._userId = identityMetadata.user_id || null;
   }
 
@@ -98,7 +103,7 @@ export class IdentityProvider {
   }
 
   /**
-   * @returns {Date|null}
+   * @returns {Date}
    */
   get tokenExpirationTime() {
     return this._tokenExpTime;
