@@ -89,16 +89,20 @@ export class Log extends Kernel.ContainerAware {
   }
 
   /**
+   * @param {Boolean} coloredOutput
    * @returns {Log}
    *
    * @todo: do we need this here?
    */
-  overrideJsConsole() {
-    if (!this._drivers.find(ConsoleDriver)) {
+  overrideJsConsole(coloredOutput = true) {
+    let consoleDriver = this._drivers.find(ConsoleDriver);
+
+    if (!consoleDriver) {
       this.register('console');
     }
 
-    this._drivers.find(ConsoleDriver).overrideNative();
+    (consoleDriver || this._drivers.find(ConsoleDriver))
+      .overrideNative(coloredOutput);
 
     return this;
   }
