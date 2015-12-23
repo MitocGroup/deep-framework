@@ -103,12 +103,12 @@ export class ConsoleDriver extends AbstractDriver {
         if (!turnOff) {
           let nativeArgs = args;
 
-          if (logTime) {
-            nativeArgs.unshift(AbstractDriver.timeString);
-          }
-
           if (coloredOutput) {
             nativeArgs = ConsoleDriver._colorOutput(method, nativeArgs);
+          }
+
+          if (logTime) {
+            nativeArgs.unshift(AbstractDriver.timeString);
           }
 
           this._console[method](...nativeArgs);
