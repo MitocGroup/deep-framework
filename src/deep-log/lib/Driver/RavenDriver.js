@@ -7,6 +7,7 @@
 import {AbstractDriver} from './AbstractDriver';
 import {Log} from '../Log';
 import Raven from 'raven';
+import util from 'util';
 
 /**
  * Raven/Sentry logging
@@ -14,9 +15,14 @@ import Raven from 'raven';
 export class RavenDriver extends AbstractDriver {
   /**
    * @param {String} dsn
+   * @param {Object} options
    */
-  constructor(dsn) {
+  constructor(dsn, options = {}) {
     super();
+
+    options = util._extend(options, {
+      maxMessageLength: 256
+    });
 
     this._clients = {};
 
@@ -25,13 +31,11 @@ export class RavenDriver extends AbstractDriver {
         continue;
       }
 
-      let level = Log.LEVELS[levelKey];
+      let nativeLevel = RavenDriver._mapLevel(Log.LEVELS[levelKey]);
 
-      let nativeLevel = RavenDriver._mapLevel(level);
+      options.level = nativeLevel;
 
-      this._clients[nativeLevel] = new Raven.Client(dsn, {
-        level: nativeLevel,
-      });
+      this._clients[nativeLevel] = new Raven.Client(dsn, options);
     }
   }
 

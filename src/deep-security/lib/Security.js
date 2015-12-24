@@ -77,13 +77,12 @@ export class Security extends Kernel.ContainerAware {
 
   /**
    * @param {String} providerName
-   * @param {String} userToken
-   * @param {String} userId
+   * @param {Object} identityMetadata
    * @param {Function} callback
    * @returns {Token}
    */
-  login(providerName, userToken, userId, callback) {
-    let identityProvider = new IdentityProvider(this._identityProviders, providerName, userToken, userId);
+  login(providerName, identityMetadata, callback) {
+    let identityProvider = new IdentityProvider(this._identityProviders, providerName, identityMetadata);
 
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 

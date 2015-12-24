@@ -8,6 +8,7 @@ import {AbstractDriver} from './AbstractDriver';
 import {Log} from '../Log';
 import Raven from 'raven';
 import url from 'url';
+import util from 'util';
 
 /**
  * Raven/Sentry logging for browser
@@ -17,11 +18,16 @@ import url from 'url';
 export class RavenBrowserDriver extends AbstractDriver {
   /**
    * @param {String} dsn
+   * @param {Object} options
    */
-  constructor(dsn) {
+  constructor(dsn, options = {}) {
     super();
 
-    Raven.config(RavenBrowserDriver._prepareDsn(dsn)).install();
+    options = util._extend(options, {
+      maxMessageLength: 256
+    });
+
+    Raven.config(RavenBrowserDriver._prepareDsn(dsn), options).install();
   }
 
   /**
