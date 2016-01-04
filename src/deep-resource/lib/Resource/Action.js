@@ -17,11 +17,12 @@ export class Action {
    * @param {String} name
    * @param {String} type
    * @param {Array} methods
-   * @param {String} source
+   * @param {Object} source
    * @param {String} region
    * @param {Boolean} forceUserIdentity
+   * @param {Object} apiCache
    */
-  constructor(resource, name, type, methods, source, region, forceUserIdentity) {
+  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache) {
     this._resource = resource;
     this._name = name;
     this._type = type;
@@ -29,6 +30,8 @@ export class Action {
     this._source = source;
     this._region = region;
     this._forceUserIdentity = forceUserIdentity;
+    this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;
+    this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
   }
 
   /**
@@ -102,6 +105,20 @@ export class Action {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  get apiCacheEnabled() {
+    return this._apiCacheEnabled;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  get apiCacheTtl() {
+    return this._apiCacheTtl;
+  }
+
+  /**
    * @returns {Array}
    */
   static get HTTP_VERBS() {
@@ -120,5 +137,12 @@ export class Action {
    */
   static get EXTERNAL() {
     return 'external';
+  }
+
+  /**
+   * @returns {string}
+   */
+  static get DEEP_CACHE_QS_PARAM() {
+    return '_deepQsHash';
   }
 }

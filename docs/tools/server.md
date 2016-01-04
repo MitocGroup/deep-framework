@@ -29,4 +29,5 @@ Available hooks
 
 The list of available hooks:
  
- - [On Start](server/hooks/on-start-hook.md)
+ - [Initialize](hooks/on-init.md)
+ - [On Before/After Start](hooks/server.md)

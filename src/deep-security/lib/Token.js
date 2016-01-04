@@ -6,8 +6,11 @@
 
 import AWS from 'aws-sdk';
 import {AuthException} from './Exception/AuthException';
+import {IdentityProviderTokenExpiredException} from './Exception/IdentityProviderTokenExpiredException';
 import {DescribeIdentityException} from './Exception/DescribeIdentityException';
 import {CredentialsManager} from './CredentialsManager';
+import {Exception} from './Exception/Exception';
+import {Exception as CoreException} from 'deep-core';
 
 /**
  * Security token holds details about logged user
@@ -25,6 +28,7 @@ export class Token {
     this._userProvider = null;
     this._credentials = null;
     this._identityMetadata = null;
+    this._tokenExpiredCallback = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -87,46 +91,80 @@ export class Token {
     }
 
     if (this.lambdaContext) {
-      this._credsManager.loadCredentials(this.identityId, (error, credentials) => {
+      this._backendLoadCredentials(callback);
+    } else {
+      this._frontendLoadCredentials(callback);
+    }
+  }
+
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _backendLoadCredentials(callback) {
+    if (!this.lambdaContext) {
+      throw new Exception('Call to _backendLoadCredentials method is not allowed from frontend context.');
+    }
+
+    this._credsManager.loadCredentials(this.identityId, (error, credentials) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+
+      callback(null, this._credentials = credentials);
+    });
+  }
+
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _frontendLoadCredentials(callback) {
+    let cognitoParams = {
+      IdentityPoolId: this._identityPoolId,
+    };
+
+    if (this.identityProvider && !this.identityProvider.isTokenValid()) {
+      if (typeof this._tokenExpiredCallback === 'function') {
+        this._tokenExpiredCallback(this.identityProvider);
+      } else {
+        let error = new IdentityProviderTokenExpiredException(
+          this.identityProvider.name,
+          this.identityProvider.tokenExpirationTime
+        );
+
+        callback(error, null);
+      }
+      return;
+    }
+
+    if (this.identityProvider) {
+      cognitoParams.Logins = {};
+      cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
+      cognitoParams.LoginId = this.identityProvider.userId;
+    }
+
+    this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+
+    this._credentials.refresh((error) => {
+      if (error) {
+        callback(new AuthException(error), null);
+        return;
+      }
+
+      AWS.config.credentials = this._credentials;
+
+      // @todo - save credentials in background not to affect page load time
+      this._credsManager.saveCredentials(this._credentials, (error, record) => {
         if (error) {
           callback(error, null);
           return;
         }
 
-        this._credentials = credentials;
-
         callback(null, this._credentials);
       });
-    } else {
-      let cognitoParams = {
-        IdentityPoolId: this._identityPoolId,
-      };
-
-      if (this.identityProvider) {
-        cognitoParams.Logins = {};
-        cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
-      }
-
-      this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
-
-      this._credentials.refresh((error) => {
-        if (error) {
-          callback(new AuthException(error), null);
-          return;
-        }
-
-        AWS.config.credentials = this._credentials;
-
-        this._credsManager.saveCredentials(this._credentials, (error, record) => {
-          if (error) {
-            callback(error, null);
-            return;
-          }
-
-          callback(null, this._credentials);
-        });
-      });
-    }
+    });
   }
 
   /**
@@ -281,5 +319,19 @@ export class Token {
     return this._identityMetadata && this._identityMetadata.hasOwnProperty('Logins') ?
       this._identityMetadata.Logins :
       [];
+  }
+
+  /**
+   * @param {Function} callback
+   * @returns {Token}
+   */
+  registerTokenExpiredCallback(callback) {
+    if (typeof callback !== 'function') {
+      throw new CoreException.InvalidArgumentException(callback, 'function');
+    }
+
+    this._tokenExpiredCallback = callback;
+
+    return this;
   }
 }

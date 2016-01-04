@@ -12,8 +12,11 @@ suite('LocalToken', function () {
   let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
   let localToken = new LocalToken(identityPoolId);
   let providerName = 'amazon';
-  let userToken = 'test_userToken';
-  let userId = 'test_userId';
+  let identityMetadata = {
+    access_token: 'test_userToken',
+    tokenExpirationTime: new Date(),
+    user_id: 'test_userId',
+  };
   let providers = {
     amazon: {
       name: IdentityProvider.AMAZON,
@@ -28,7 +31,7 @@ suite('LocalToken', function () {
       data: {},
     },
   };
-  let identityProvider = new IdentityProvider(providers, providerName, userToken, userId);
+  let identityProvider = new IdentityProvider(providers, providerName, identityMetadata);
 
   test('Class LocalToken exists in LocalToken', function () {
     chai.expect(typeof LocalToken).to.equal('function');

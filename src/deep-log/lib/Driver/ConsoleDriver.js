@@ -84,10 +84,12 @@ export class ConsoleDriver extends AbstractDriver {
   }
 
   /**
+   * @param {Boolean} logTime
+   * @param {Boolean} coloredOutput
    * @param {Boolean} turnOff
    * @returns {ConsoleDriver}
    */
-  overrideNative(turnOff = false) {
+  overrideNative(logTime = true, coloredOutput = true, turnOff = false) {
     let nativeConsole = ConsoleDriver.nativeConsole;
 
     for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {
@@ -99,12 +101,47 @@ export class ConsoleDriver extends AbstractDriver {
 
       nativeConsole[method] = (...args) => {
         if (!turnOff) {
-          this._console[method](AbstractDriver.timeString, ...args);
+          let nativeArgs = args;
+
+          if (coloredOutput) {
+            nativeArgs = ConsoleDriver._colorOutput(method, nativeArgs);
+          }
+
+          if (logTime) {
+            nativeArgs.unshift(AbstractDriver.timeString);
+          }
+
+          this._console[method](...nativeArgs);
         }
       };
     }
 
     return this;
+  }
+
+  /**
+   * @param {String} type
+   * @param {Array} args
+   * @returns {Array}
+   * @private
+   */
+  static _colorOutput(type, args) {
+    let color = null;
+
+    switch(type.toLowerCase()) {
+      case 'error':
+        color = 31; // red
+        break;
+      case 'warn':
+        color = 33; // yellow
+        break;
+      default: color = 32; // green
+    }
+
+    args.unshift(`\x1b[${color}m`);
+    args.push('\x1b[0m');
+
+    return args;
   }
 
   /**
