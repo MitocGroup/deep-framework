@@ -70,4 +70,17 @@ suite('Asset', function() {
     let actualResult = assetService.locate('@hello.world.example:bootstrap.js');
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
+
+  test('Check injectBuildId() getter/setter', function() {
+    let injectBuildId = assetService.injectBuildId;
+
+    assetService.injectBuildId = false;
+    chai.expect(assetService.injectBuildId).to.equal(false);
+
+    assetService.injectBuildId = true;
+    chai.expect(assetService.injectBuildId).to.equal(true);
+
+    assetService.injectBuildId = injectBuildId;
+    chai.expect(assetService.injectBuildId).to.equal(injectBuildId);
+  });
 });
