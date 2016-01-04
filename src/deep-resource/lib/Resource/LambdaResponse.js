@@ -72,8 +72,7 @@ export class LambdaResponse extends Response {
    * @private
    */
   _decodePayload() {
-    if (typeof this._rawData === 'object' &&
-      this._rawData.hasOwnProperty('Payload')) {
+    if (this._rawData && this._rawData.hasOwnProperty('Payload')) {
       let payload = this._rawData.Payload;
 
       if (typeof payload === 'string') {
