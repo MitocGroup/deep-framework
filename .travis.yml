@@ -2,6 +2,12 @@ language: node_js
 sudo: false
 node_js:
   - '0.12'
+  - '4.2'
+  - '5.3'
+cache:
+  directories:
+  - "$(npm root -g)"
+  - node_modules
 cache:
   directories:
     - $(npm root -g)
