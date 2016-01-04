@@ -238,24 +238,36 @@ export class Token {
    * @param {Function} callback
    */
   getUser(callback) {
-    this._describeIdentity(this.identityId, () => {
-      if (this.isAnonymous) {
-        callback(null);
-        return;
-      }
+    if (this.lambdaContext) {
+      this._describeIdentity(this.identityId, () => {
+        this._loadUser(callback);
+      });
+    } else {
+      this._loadUser(callback);
+    }
+  }
 
-      if (!this._user) {
-        this._userProvider.loadUserByIdentityId(this.identityId, (user) => {
-          this._user = user;
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _loadUser(callback) {
+    if (this.isAnonymous) {
+      callback(null);
+      return;
+    }
 
-          callback(this._user);
-        });
+    if (!this._user) {
+      this._userProvider.loadUserByIdentityId(this.identityId, (user) => {
+        this._user = user;
 
-        return;
-      }
+        callback(this._user);
+      });
 
-      callback(this._user);
-    });
+      return;
+    }
+
+    callback(this._user);
   }
 
   /**
