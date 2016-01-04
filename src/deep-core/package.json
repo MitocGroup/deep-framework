@@ -53,6 +53,7 @@
   },
   "scripts": {
     "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd",
+    "debug-test": "`which istanbul` cover _mocha -- --compilers js:babel/register --reporter spec --ui tdd",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile"
   },
