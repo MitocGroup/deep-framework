@@ -30,14 +30,23 @@ subpath_run_cmd () {
 
 eval_or_exit() {
     local RET_CODE
+    local COMMAND
+
+    COMMAND="`which istanbul` cover _mocha -- --compilers js:babel/register --reporter spec --ui tdd"
 
     eval "$1"
     RET_CODE=$?
 
-    if [ ${RET_CODE} == 0 ]; then
-        echo "[SUCCEED] $1"
-    else
+    if [[ ${RET_CODE} != 0 ]]  &&  [[ $1 == "npm run test" ]]; then
+
+        #Run test-debug to show error
+        subpath_run_cmd ${__SRC_PATH} ${COMMAND}
+        echo "[FAILED] $1, try to re-run to show error in debug mode"
+
+    elif [ ${RET_CODE} != 0 ]; then
         echo "[FAILED] $1"
         exit 1
+    else
+        echo "[SUCCEED] $1"
     fi
 }
