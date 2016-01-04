@@ -3,7 +3,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Asset} from '../lib.compiled/Asset';
+import {Asset} from '../lib/Asset';
 import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
@@ -69,5 +69,18 @@ suite('Asset', function() {
     let expectedResult = `hello.world.example/bootstrap.js?_v=${buildId}`;
     let actualResult = assetService.locate('@hello.world.example:bootstrap.js');
     chai.expect(actualResult).to.be.equal(expectedResult);
+  });
+
+  test('Check injectBuildId() getter/setter', function() {
+    let injectBuildId = assetService.injectBuildId;
+
+    assetService.injectBuildId = false;
+    chai.expect(assetService.injectBuildId).to.equal(false);
+
+    assetService.injectBuildId = true;
+    chai.expect(assetService.injectBuildId).to.equal(true);
+
+    assetService.injectBuildId = injectBuildId;
+    chai.expect(assetService.injectBuildId).to.equal(injectBuildId);
   });
 });
