@@ -1,6 +1,6 @@
 {
   "name": "deep-validation",
-  "version": "1.3.7",
+  "version": "1.5.0",
   "description": "DEEP Validation Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -55,7 +55,7 @@
     "url": "https://github.com/MitocGroup/deep.git"
   },
   "scripts": {
-    "test": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
+    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core"

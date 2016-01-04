@@ -3,9 +3,9 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {ExtendModel} from '../../lib.compiled/Vogels/ExtendModel';
-import {Exception} from '../../lib.compiled/Vogels/Exceptions/Exception';
-import {UndefinedMethodException} from '../../lib.compiled/Vogels/Exceptions/UndefinedMethodException';
+import {ExtendModel} from '../../lib/Vogels/ExtendModel';
+import {Exception} from '../../lib/Vogels/Exceptions/Exception';
+import {UndefinedMethodException} from '../../lib/Vogels/Exceptions/UndefinedMethodException';
 import {ModelMock} from '../../test/Mock/ModelMock';
 import {ExtendModelMock} from '../../test/Mock/ExtendModelMock';
 

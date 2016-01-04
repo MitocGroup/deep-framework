@@ -1,7 +1,6 @@
 'use strict';
 
 import chai from 'chai';
-import {RavenDriver} from '../../lib.compiled/Driver/RavenDriver';
 import requireProxy from 'proxyquire';
 import ravenMock from '../Mock/ravenMock';
 
@@ -14,7 +13,7 @@ suite('Driver/RavenDriver', function() {
   });
 
   let localRavenDriverExport = requireProxy(
-    '../../lib.compiled/Driver/RavenDriver',
+    '../../lib/Driver/RavenDriver',
     {
       'raven': ravenMock,
     }

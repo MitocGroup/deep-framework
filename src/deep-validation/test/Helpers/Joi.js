@@ -1,8 +1,8 @@
 'use strict';
 
 import chai from 'chai';
-import {Joi} from '../../lib.compiled/Helpers/Joi';
-import Vogels from '../../lib.compiled/Helpers/vogelsPolyfill';
+import {Joi} from '../../lib/Helpers/Joi';
+import Vogels from '../../lib/Helpers/vogelsPolyfill';
 import BaseJoi from 'joi';
 
 suite('Helpers/Joi', function() {
@@ -93,10 +93,9 @@ suite('Helpers/Joi', function() {
 
   test('Check website static getter returns valid object', function() {
     let actualResult = Joi.website;
-    let expectedResult = BaseJoi.string().uri();
 
-    chai.expect(actualResult.isJoi).to.be.eql(expectedResult.isJoi);
-    chai.expect(actualResult._type).to.be.eql(expectedResult._type);
+    chai.expect(actualResult.isJoi).to.be.equal(true);
+    chai.expect(actualResult._type).to.be.equal('string');
   });
 
   test('Check map static getter returns valid object', function() {

@@ -1,9 +1,10 @@
 'use strict';
 
 import chai from 'chai';
-import {Runtime} from '../../../lib.compiled/AWS/Lambda/Runtime';
-import {Request} from '../../../lib.compiled/AWS/Lambda/Request';
-import {Response} from '../../../lib.compiled/AWS/Lambda/Response';
+import {Runtime} from '../../../lib/AWS/Lambda/Runtime';
+import {Request} from '../../../lib/AWS/Lambda/Request';
+import {Response} from '../../../lib/AWS/Lambda/Response';
+import {ErrorResponse} from '../../../lib/AWS/Lambda/ErrorResponse';
 
 
 class RuntimeTest extends Runtime {
@@ -40,8 +41,8 @@ suite('AWS/Lambda/Runtime', function() {
     chai.expect(runtimeTest.request).to.be.equal(null);
   });
 
-  test('Check constructor sets _context=null', function() {
-    chai.expect(runtimeTest._context).to.be.equal(null);
+  test('Check constructor sets context=null', function() {
+    chai.expect(runtimeTest.context).to.be.equal(null);
   });
 
   test('Check run() method returns valid object', function() {
@@ -54,29 +55,14 @@ suite('AWS/Lambda/Runtime', function() {
   test('Check createResponse() method returns valid object', function() {
     let actualResult = runtimeTest.createResponse(data);
     chai.expect(actualResult).to.be.an.instanceof(Response);
-    chai.expect(actualResult.data).to.be.eql(data);
-    chai.expect(actualResult.runtimeContext).to.be.eql(context);
+    chai.expect(actualResult.rawData).to.be.eql(data);
+    chai.expect(actualResult.runtime.context).to.be.eql(context);
   });
 
   test('Check createError() method returns valid object for string error', function() {
     let errorString = 'Error was throw: stacktrace stacktrace';
     let actualResult = runtimeTest.createError(errorString);
-    chai.expect(actualResult).to.be.an.instanceof(Response);
-    chai.expect(actualResult.data.errorType).to.be.equal('Error');
-    chai.expect(actualResult.data.errorMessage).to.be.equal(errorString);
-    chai.expect(actualResult.runtimeContext).to.be.eql(context);
-  });
-
-  test('Check createError() method returns valid object for string error', function() {
-    let error = {
-      message: 'Error was throw: stacktrace stacktrace',
-      name: 'RuntimeException',
-    };
-    let actualResult = runtimeTest.createError(error);
-    chai.expect(actualResult).to.be.an.instanceof(Response);
-    chai.expect(actualResult.data.errorType).to.be.equal(error.name);
-    chai.expect(actualResult.data.errorMessage).to.be.equal(error.message);
-    chai.expect(actualResult.runtimeContext).to.be.eql(context);
+    chai.expect(actualResult).to.be.an.instanceof(ErrorResponse);
   });
 
   test('Check lambda() method returns valid object ', function() {

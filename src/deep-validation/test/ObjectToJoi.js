@@ -1,8 +1,8 @@
 'use strict';
 
 import chai from 'chai';
-import {ObjectToJoi} from '../lib.compiled/ObjectToJoi';
-import {InvalidSchemaException} from '../lib.compiled/Exception/InvalidSchemaException';
+import {ObjectToJoi} from '../lib/ObjectToJoi';
+import {InvalidSchemaException} from '../lib/Exception/InvalidSchemaException';
 
 suite('ObjectToJoi', function() {
   let baseObject = 'baseObject';

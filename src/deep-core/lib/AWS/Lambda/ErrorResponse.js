@@ -11,16 +11,52 @@ import {Response} from './Response';
  */
 export class ErrorResponse extends Response {
   /**
-   * @param {*} args
+   * @param {Runtime} runtime
+   * @param {Error|String|*} error
    */
-  constructor(...args) {
-    super(...args);
+  constructor(runtime, error) {
+    super(runtime, ErrorResponse.createErrorObject(error));
+  }
+
+  /**
+   * @param {Error|String|*} error
+   * @returns {Object}
+   */
+  static createErrorObject(error) {
+    let errorObj = {};
+
+    if (error instanceof Error) {
+      errorObj = {
+        errorType: error.name,
+        errorMessage: error.message,
+        errorStack: error.stack || (new Error(error.message)).stack,
+      };
+    } else {
+      let plainError = (error || 'Unexpected error occurred.').toString();
+
+      errorObj = {
+        errorType: 'Error',
+        errorMessage: plainError,
+        errorStack: (new Error(plainError)).stack,
+      };
+    }
+
+    return errorObj;
+  }
+
+  /**
+   *
+   * @returns {Object}
+   * @private
+   */
+  get data() {
+    return JSON.stringify(this._data);
   }
 
   /**
    * @returns {String}
    */
-  get contextMethod() {
+  static get contextMethod() {
     return 'fail';
   }
 }

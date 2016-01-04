@@ -1,7 +1,7 @@
 'use strict';
 
 import chai from 'chai';
-import {PathAwareDriver} from '../../../lib.compiled/Local/Driver/PathAwareDriver';
+import {PathAwareDriver} from '../../../lib/Local/Driver/PathAwareDriver';
 import {PathAwareDriverMock} from '../../../test/Mock/Driver/PathAwareDriverMock';
 import nodeFS from 'fs';
 

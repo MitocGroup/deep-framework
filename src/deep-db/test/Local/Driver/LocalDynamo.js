@@ -3,8 +3,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {LocalDynamo} from '../../../lib.compiled/Local/Driver/LocalDynamo';
-import {AbstractDriver} from '../../../lib.compiled/Local/Driver/AbstractDriver';
+import {AbstractDriver} from '../../../lib/Local/Driver/AbstractDriver';
 import {LocalDynamoServerMock} from '../../Mock/LocalDynamoServerMock';
 import requireProxy from 'proxyquire';
 
@@ -15,7 +14,7 @@ suite('Local/Driver/LocalDynamo', function() {
   let localDynamoServerMock = new LocalDynamoServerMock();
 
   localDynamoServerMock.fixBabelTranspile();
-  let localDynamoExport = requireProxy('../../../lib.compiled/Local/Driver/LocalDynamo', {
+  let localDynamoExport = requireProxy('../../../lib/Local/Driver/LocalDynamo', {
     'local-dynamo': localDynamoServerMock,
   });
 

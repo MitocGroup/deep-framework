@@ -1,8 +1,8 @@
 'use strict';
 
 import chai from 'chai';
-import {IdentityProvider} from '../lib.compiled/IdentityProvider';
-import {MissingLoginProviderException} from '../lib.compiled/Exception/MissingLoginProviderException';
+import {IdentityProvider} from '../lib/IdentityProvider';
+import {MissingLoginProviderException} from '../lib/Exception/MissingLoginProviderException';
 
 suite('IdentityProvider', function() {
   let identityProvider = null;

@@ -245,7 +245,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport BaseJoi from 'joi';\nimport Vogels from './vogelsPolyfill';\n\n/**\n * Abstraction on Joi validation expressions\n */\nexport class Joi {\n  /**\n   * @returns {Object}\n   */\n  static get uuid() {\n    return Vogels.types.uuid();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get timeUUID() {\n    return Vogels.types.timeUUID();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get stringSet() {\n    return Vogels.types.stringSet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get numberSet() {\n    return Vogels.types.numberSet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get binarySet() {\n    return Vogels.types.binarySet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get binary() {\n    return BaseJoi.binary();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get number() {\n    return BaseJoi.number();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get string() {\n    return BaseJoi.string();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get boolean() {\n    return BaseJoi.boolean();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get email() {\n    return BaseJoi.string().email();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get website() {\n    return BaseJoi.string().uri();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get map() {\n    return BaseJoi.object();\n  }\n\n  /**\n   * @returns {*}\n   */\n  static get mapSet() {\n    let array = BaseJoi.array();\n    if (array.includes) {\n      return array.includes(BaseJoi.object());\n    }\n\n    return array.items(BaseJoi.object());\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport BaseJoi from 'joi';\nimport Vogels from './vogelsPolyfill';\nimport uriRegexp from './uriRegexp';\n\n/**\n * Abstraction on Joi validation expressions\n */\nexport class Joi {\n  /**\n   * @returns {Object}\n   */\n  static get uuid() {\n    return Vogels.types.uuid();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get timeUUID() {\n    return Vogels.types.timeUUID();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get stringSet() {\n    return Vogels.types.stringSet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get numberSet() {\n    return Vogels.types.numberSet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get binarySet() {\n    return Vogels.types.binarySet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get binary() {\n    return BaseJoi.binary();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get number() {\n    return BaseJoi.number();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get string() {\n    return BaseJoi.string();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get boolean() {\n    return BaseJoi.boolean();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get email() {\n    return BaseJoi.string().email();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get website() {\n    let strJoiObj = BaseJoi.string();\n\n    // Fix for Joi v5.x.x\n    return strJoiObj.hasOwnProperty('uri')\n      ? strJoiObj.uri()\n      : strJoiObj.regex(uriRegexp.createUriRegex());\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get map() {\n    return BaseJoi.object();\n  }\n\n  /**\n   * @returns {*}\n   */\n  static get mapSet() {\n    let array = BaseJoi.array();\n    if (array.includes) {\n      return array.includes(BaseJoi.object());\n    }\n\n    return array.items(BaseJoi.object());\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -259,7 +259,7 @@
     "importPath": "deep-validation/lib/Helpers/Joi.js",
     "importStyle": "{Joi}",
     "description": "Abstraction on Joi validation expressions",
-    "lineNumber": 13,
+    "lineNumber": 14,
     "interface": false
   },
   {
@@ -271,7 +271,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.uuid",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 18,
     "unknown": [
       {
         "tagName": "@returns",
@@ -302,7 +302,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.timeUUID",
     "access": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 25,
     "unknown": [
       {
         "tagName": "@returns",
@@ -333,7 +333,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.stringSet",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 32,
     "unknown": [
       {
         "tagName": "@returns",
@@ -364,7 +364,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.numberSet",
     "access": null,
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 39,
     "unknown": [
       {
         "tagName": "@returns",
@@ -395,7 +395,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.binarySet",
     "access": null,
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 46,
     "unknown": [
       {
         "tagName": "@returns",
@@ -426,7 +426,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.binary",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 53,
     "unknown": [
       {
         "tagName": "@returns",
@@ -457,7 +457,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.number",
     "access": null,
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 60,
     "unknown": [
       {
         "tagName": "@returns",
@@ -488,7 +488,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.string",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 67,
     "unknown": [
       {
         "tagName": "@returns",
@@ -519,7 +519,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.boolean",
     "access": null,
     "description": null,
-    "lineNumber": 73,
+    "lineNumber": 74,
     "unknown": [
       {
         "tagName": "@returns",
@@ -550,7 +550,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.email",
     "access": null,
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 81,
     "unknown": [
       {
         "tagName": "@returns",
@@ -581,7 +581,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.website",
     "access": null,
     "description": null,
-    "lineNumber": 87,
+    "lineNumber": 88,
     "unknown": [
       {
         "tagName": "@returns",
@@ -612,7 +612,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.map",
     "access": null,
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 100,
     "unknown": [
       {
         "tagName": "@returns",
@@ -643,7 +643,7 @@
     "longname": "lib/Helpers/Joi.js~Joi.mapSet",
     "access": null,
     "description": null,
-    "lineNumber": 101,
+    "lineNumber": 107,
     "unknown": [
       {
         "tagName": "@returns",
@@ -664,6 +664,67 @@
       ]
     },
     "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Helpers/rfc3986.js",
+    "memberof": null,
+    "longname": "lib/Helpers/rfc3986.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 12/8/15.\n */\n\n'use strict';\n\nlet internals = {\n  rfc3986: {}\n};\n\ninternals.generate = function () {\n\n  /**\n   * elements separated by forward slash (\"/\") are alternatives.\n   */\n  const or = '|';\n\n  /**\n   * DIGIT = %x30-39 ; 0-9\n   */\n  const digit = '0-9';\n  const digitOnly = '[' + digit + ']';\n\n  /**\n   * ALPHA = %x41-5A / %x61-7A   ; A-Z / a-z\n   */\n  const alpha = 'a-zA-Z';\n  const alphaOnly = '[' + alpha + ']';\n\n  /**\n   * cidr       = DIGIT                ; 0-9\n   *            / %x31-32 DIGIT         ; 10-29\n   *            / \"3\" %x30-32           ; 30-32\n   */\n  internals.rfc3986.cidr = digitOnly + or + '[1-2]' + digitOnly + or + '3' + '[0-2]';\n\n  /**\n   * HEXDIG = DIGIT / \"A\" / \"B\" / \"C\" / \"D\" / \"E\" / \"F\"\n   */\n  const hexDigit = digit + 'A-Fa-f';\n  const hexDigitOnly = '[' + hexDigit + ']';\n\n  /**\n   * unreserved = ALPHA / DIGIT / \"-\" / \".\" / \"_\" / \"~\"\n   */\n  const unreserved = alpha + digit + '-\\\\._~';\n\n  /**\n   * sub-delims = \"!\" / \"$\" / \"&\" / \"'\" / \"(\" / \")\" / \"*\" / \"+\" / \",\" / \";\" / \"=\"\n   */\n  const subDelims = '!\\\\$&\\'\\\\(\\\\)\\\\*\\\\+,;=';\n\n  /**\n   * pct-encoded = \"%\" HEXDIG HEXDIG\n   */\n  const pctEncoded = '%' + hexDigit;\n\n  /**\n   * pchar = unreserved / pct-encoded / sub-delims / \":\" / \"@\"\n   */\n  const pchar = unreserved + pctEncoded + subDelims + ':@';\n  const pcharOnly = '[' + pchar + ']';\n\n  /**\n   * Rule to support zero-padded addresses.\n   */\n  const zeroPad = '0?';\n\n  /**\n   * dec-octet   = DIGIT                 ; 0-9\n   *            / %x31-39 DIGIT         ; 10-99\n   *            / \"1\" 2DIGIT            ; 100-199\n   *            / \"2\" %x30-34 DIGIT     ; 200-249\n   *            / \"25\" %x30-35          ; 250-255\n   */\n  const decOctect = '(?:' + zeroPad + zeroPad + digitOnly + or + zeroPad + '[1-9]' + digitOnly + or + '1' + digitOnly + digitOnly + or + '2' + '[0-4]' + digitOnly + or + '25' + '[0-5])';\n\n  /**\n   * IPv4address = dec-octet \".\" dec-octet \".\" dec-octet \".\" dec-octet\n   */\n  internals.rfc3986.IPv4address = '(?:' + decOctect + '\\\\.){3}' + decOctect;\n\n  /**\n   * h16 = 1*4HEXDIG ; 16 bits of address represented in hexadecimal\n   * ls32 = ( h16 \":\" h16 ) / IPv4address ; least-significant 32 bits of address\n   * IPv6address =                            6( h16 \":\" ) ls32\n   *             /                       \"::\" 5( h16 \":\" ) ls32\n   *             / [               h16 ] \"::\" 4( h16 \":\" ) ls32\n   *             / [ *1( h16 \":\" ) h16 ] \"::\" 3( h16 \":\" ) ls32\n   *             / [ *2( h16 \":\" ) h16 ] \"::\" 2( h16 \":\" ) ls32\n   *             / [ *3( h16 \":\" ) h16 ] \"::\"    h16 \":\"   ls32\n   *             / [ *4( h16 \":\" ) h16 ] \"::\"              ls32\n   *             / [ *5( h16 \":\" ) h16 ] \"::\"              h16\n   *             / [ *6( h16 \":\" ) h16 ] \"::\"\n   */\n  const h16 = hexDigitOnly + '{1,4}';\n  const ls32 = '(?:' + h16 + ':' + h16 + '|' + internals.rfc3986.IPv4address + ')';\n  const IPv6SixHex = '(?:' + h16 + ':){6}' + ls32;\n  const IPv6FiveHex = '::(?:' + h16 + ':){5}' + ls32;\n  const IPv6FourHex = h16 + '::(?:' + h16 + ':){4}' + ls32;\n  const IPv6ThreeHex = '(?:' + h16 + ':){0,1}' + h16 + '::(?:' + h16 + ':){3}' + ls32;\n  const IPv6TwoHex = '(?:' + h16 + ':){0,2}' + h16 + '::(?:' + h16 + ':){2}' + ls32;\n  const IPv6OneHex = '(?:' + h16 + ':){0,3}' + h16 + '::' + h16 + ':' + ls32;\n  const IPv6NoneHex = '(?:' + h16 + ':){0,4}' + h16 + '::' + ls32;\n  const IPv6NoneHex2 = '(?:' + h16 + ':){0,5}' + h16 + '::' + h16;\n  const IPv6NoneHex3 = '(?:' + h16 + ':){0,6}' + h16 + '::';\n  internals.rfc3986.IPv6address = '(?:' + IPv6SixHex + or + IPv6FiveHex + or + IPv6FourHex + or + IPv6ThreeHex + or + IPv6TwoHex + or + IPv6OneHex + or + IPv6NoneHex + or + IPv6NoneHex2 + or + IPv6NoneHex3 + ')';\n\n  /**\n   * IPvFuture = \"v\" 1*HEXDIG \".\" 1*( unreserved / sub-delims / \":\" )\n   */\n  internals.rfc3986.IPvFuture = 'v' + hexDigitOnly + '+\\\\.[' + unreserved + subDelims + ':]+';\n\n  /**\n   * scheme = ALPHA *( ALPHA / DIGIT / \"+\" / \"-\" / \".\" )\n   */\n  internals.rfc3986.scheme = alphaOnly + '[' + alpha + digit + '+-\\\\.]*';\n\n  /**\n   * userinfo = *( unreserved / pct-encoded / sub-delims / \":\" )\n   */\n  const userinfo = '[' + unreserved + pctEncoded + subDelims + ':]*';\n\n  /**\n   * IP-literal = \"[\" ( IPv6address / IPvFuture  ) \"]\"\n   */\n  const IPLiteral = '\\\\[(?:' + internals.rfc3986.IPv6address + or + internals.rfc3986.IPvFuture + ')\\\\]';\n\n  /**\n   * reg-name = *( unreserved / pct-encoded / sub-delims )\n   */\n  const regName = '[' + unreserved + pctEncoded + subDelims + ']{0,255}';\n\n  /**\n   * host = IP-literal / IPv4address / reg-name\n   */\n  const host = '(?:' + IPLiteral + or + internals.rfc3986.IPv4address + or + regName + ')';\n\n  /**\n   * port = *DIGIT\n   */\n  const port = digitOnly + '*';\n\n  /**\n   * authority   = [ userinfo \"@\" ] host [ \":\" port ]\n   */\n  const authority = '(?:' + userinfo + '@)?' + host + '(?::' + port + ')?';\n\n  /**\n   * segment       = *pchar\n   * segment-nz    = 1*pchar\n   * path          = path-abempty    ; begins with \"/\" or is empty\n   *               / path-absolute   ; begins with \"/\" but not \"//\"\n   *               / path-noscheme   ; begins with a non-colon segment\n   *               / path-rootless   ; begins with a segment\n   *               / path-empty      ; zero characters\n   * path-abempty  = *( \"/\" segment )\n   * path-absolute = \"/\" [ segment-nz *( \"/\" segment ) ]\n   * path-rootless = segment-nz *( \"/\" segment )\n   */\n  const segment = pcharOnly + '*';\n  const segmentNz = pcharOnly + '+';\n  const pathAbEmpty = '(?:\\\\/' + segment + ')*';\n  const pathAbsolute = '\\\\/(?:' + segmentNz + pathAbEmpty + ')?';\n  const pathRootless = segmentNz + pathAbEmpty;\n\n  /**\n   * hier-part = \"//\" authority path\n   */\n  internals.rfc3986.hierPart = '(?:\\\\/\\\\/' + authority + pathAbEmpty + or + pathAbsolute + or + pathRootless + ')';\n\n  /**\n   * query = *( pchar / \"/\" / \"?\" )\n   */\n  internals.rfc3986.query = '[' + pchar + '\\\\/\\\\?]*(?=#|$)'; //Finish matching either at the fragment part or end of the line.\n\n  /**\n   * fragment = *( pchar / \"/\" / \"?\" )\n   */\n  internals.rfc3986.fragment = '[' + pchar + '\\\\/\\\\?]*';\n};\n\n\ninternals.generate();\n\nexport default internals.rfc3986;\n"
+  },
+  {
+    "kind": "variable",
+    "static": true,
+    "variation": null,
+    "name": "internals",
+    "memberof": "lib/Helpers/rfc3986.js",
+    "longname": "lib/Helpers/rfc3986.js~internals",
+    "access": null,
+    "export": false,
+    "importPath": "deep-validation/lib/Helpers/rfc3986.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 7,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "function",
+    "static": true,
+    "variation": null,
+    "name": "generate",
+    "memberof": "lib/Helpers/rfc3986.js",
+    "longname": "lib/Helpers/rfc3986.js~generate",
+    "access": null,
+    "export": false,
+    "importPath": "deep-validation/lib/Helpers/rfc3986.js",
+    "importStyle": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Helpers/uriRegexp.js",
+    "memberof": null,
+    "longname": "lib/Helpers/uriRegexp.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 12/8/15.\n */\n\n'use strict';\n\nimport RFC3986 from './rfc3986';\n\nexport default {\n  createUriRegex: (optionalScheme) => {\n    let scheme = RFC3986.scheme;\n\n    // If we were passed a scheme, use it instead of the generic one\n    if (optionalScheme) {\n\n      // Have to put this in a non-capturing group to handle the OR statements\n      scheme = '(?:' + optionalScheme + ')';\n    }\n\n    /**\n     * URI = scheme \":\" hier-part [ \"?\" query ] [ \"#\" fragment ]\n     */\n    return new RegExp('^' + scheme + ':' + RFC3986.hierPart + '(?:\\\\?' + RFC3986.query + ')?' + '(?:#' + RFC3986.fragment + ')?$');\n  },\n};\n"
   },
   {
     "kind": "file",

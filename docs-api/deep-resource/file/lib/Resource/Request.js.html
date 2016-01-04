@@ -494,6 +494,12 @@ export class Request {
       case &apos;get&apos;:
       case &apos;delete&apos;:
         if (parsedUrl.query || payload) {
+
+          //assure parsedUrl.query is a valid object
+          if (parsedUrl.query === null || typeof parsedUrl.query !== &apos;object&apos;) {
+            parsedUrl.query = {};
+          }
+
           let mergedPayload = Object.assign(parsedUrl.query, payload);
 
           opsToSign.path += `?${qs.stringify(mergedPayload)}`;
@@ -524,7 +530,7 @@ export class Request {
         .set(&apos;X-Amz-Security-Token&apos;, signature.headers[&apos;X-Amz-Security-Token&apos;])
         .set(&apos;Authorization&apos;, signature.headers.Authorization);
 
-      if (signature.headers.hasOwnProperty(&apos;Content-Length&apos;)) {
+      if (this.action.resource.isBackend &amp;&amp; signature.headers.hasOwnProperty(&apos;Content-Length&apos;)) {
         request.set(&apos;Content-Length&apos;, signature.headers[&apos;Content-Length&apos;]);
       }
 

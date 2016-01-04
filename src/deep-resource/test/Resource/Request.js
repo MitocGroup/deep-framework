@@ -3,15 +3,15 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {Resource} from '../../lib.compiled/Resource';
-import {Action} from '../../lib.compiled/Resource/Action';
-import {Response} from '../../lib.compiled/Resource/Response';
-import {SuperagentResponse} from '../../lib.compiled/Resource/SuperagentResponse';
-import {LambdaResponse} from '../../lib.compiled/Resource/LambdaResponse';
-import {Instance} from '../../lib.compiled/Resource/Instance';
-import {MissingCacheImplementationException} from '../../lib.compiled/Resource/Exception/MissingCacheImplementationException';
-import {Exception} from '../../lib.compiled/Exception/Exception';
-import {CachedRequestException} from '../../lib.compiled/Resource/Exception/CachedRequestException';
+import {Resource} from '../../lib/Resource';
+import {Action} from '../../lib/Resource/Action';
+import {Response} from '../../lib/Resource/Response';
+import {SuperagentResponse} from '../../lib/Resource/SuperagentResponse';
+import {LambdaResponse} from '../../lib/Resource/LambdaResponse';
+import {Instance} from '../../lib/Resource/Instance';
+import {MissingCacheImplementationException} from '../../lib/Resource/Exception/MissingCacheImplementationException';
+import {Exception} from '../../lib/Exception/Exception';
+import {CachedRequestException} from '../../lib/Resource/Exception/CachedRequestException';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
@@ -19,7 +19,7 @@ import KernelFactory from '../common/KernelFactory';
 import requireProxy from 'proxyquire';
 import AWS from 'mock-aws';
 import {HttpMock} from '../Mock/HttpMock';
-import {Request} from '../../lib.compiled/Resource/Request';
+import {Request} from '../../lib/Resource/Request';
 import {CacheMock} from '../Mock/CacheMock';
 
 chai.use(sinonChai);
@@ -419,7 +419,7 @@ suite('Resource/Request', function() {
 
     //mocking Http
     httpMock.fixBabelTranspile();
-    let requestExport = requireProxy('../../lib.compiled/Resource/Request', {
+    let requestExport = requireProxy('../../lib/Resource/Request', {
       'superagent': httpMock,
     });
     let RequestProxy = requestExport.Request;
@@ -610,7 +610,7 @@ suite('Resource/Request', function() {
 
     //mocking Http
     httpMock.fixBabelTranspile();
-    let requestExport = requireProxy('../../lib.compiled/Resource/Request', {
+    let requestExport = requireProxy('../../lib/Resource/Request', {
       'superagent': httpMock,
     });
     let RequestProxy = requestExport.Request;
@@ -625,13 +625,13 @@ suite('Resource/Request', function() {
     }
 
     // @todo - un comment this use case once deep-resource will be published
-    //let actualResult = spyCallback.args[0][0];
+    let actualResult = spyCallback.args[0][0];
 
-    //chai.expect(spyCallback).to.have.been.calledWith();
-    //chai.assert.instanceOf(
-    //  actualResult,
-    //  SuperagentResponse,
-    //  'result is an instance of SuperagentResponse'
-    //);
+    chai.expect(spyCallback).to.have.been.calledWith();
+    chai.assert.instanceOf(
+      actualResult,
+      SuperagentResponse,
+      'result is an instance of SuperagentResponse'
+    );
   });
 });

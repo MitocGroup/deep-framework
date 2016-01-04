@@ -721,13 +721,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#cache",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-cache",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-cache",
     "lib/Resource/Instance.js~Instance#cache",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#cache",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-cache",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-cache",
     "lib/Resource/Instance.js~Instance#cache",
     "member"
   ],
@@ -742,6 +742,18 @@ window.esdocSearchIndex = [
     "class/lib/Resource/Instance.js~Instance.html#instance-method-has",
     "lib/Resource/Instance.js~Instance#has",
     "method"
+  ],
+  [
+    "lib/resource/instance.js~instance#isbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-isBackend",
+    "lib/Resource/Instance.js~Instance#isBackend",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#isbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-isBackend",
+    "lib/Resource/Instance.js~Instance#isBackend",
+    "member"
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
@@ -792,28 +804,10 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/resource/lambdaresponse.js~lambdaresponse#data",
-    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-get-data",
-    "lib/Resource/LambdaResponse.js~LambdaResponse#data",
-    "member"
-  ],
-  [
-    "lib/resource/lambdaresponse.js~lambdaresponse#error",
-    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-get-error",
-    "lib/Resource/LambdaResponse.js~LambdaResponse#error",
-    "member"
-  ],
-  [
-    "lib/resource/lambdaresponse.js~lambdaresponse#errortype",
-    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-get-errorType",
-    "lib/Resource/LambdaResponse.js~LambdaResponse#errorType",
-    "member"
-  ],
-  [
-    "lib/resource/lambdaresponse.js~lambdaresponse#statuscode",
-    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-get-statusCode",
-    "lib/Resource/LambdaResponse.js~LambdaResponse#statusCode",
-    "member"
+    "lib/resource/lambdaresponse.js~lambdaresponse.getpayloaderror",
+    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#static-method-getPayloadError",
+    "lib/Resource/LambdaResponse.js~LambdaResponse.getPayloadError",
+    "method"
   ],
   [
     "lib/resource/localrequest.js",
@@ -883,13 +877,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/request.js~request#cachettl",
-    "class/lib/Resource/Request.js~Request.html#instance-get-cacheTtl",
+    "class/lib/Resource/Request.js~Request.html#instance-set-cacheTtl",
     "lib/Resource/Request.js~Request#cacheTtl",
     "member"
   ],
   [
     "lib/resource/request.js~request#cachettl",
-    "class/lib/Resource/Request.js~Request.html#instance-set-cacheTtl",
+    "class/lib/Resource/Request.js~Request.html#instance-get-cacheTtl",
     "lib/Resource/Request.js~Request#cacheTtl",
     "member"
   ],
@@ -1054,30 +1048,6 @@ window.esdocSearchIndex = [
     "class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html#instance-constructor-constructor",
     "lib/Resource/SuperagentResponse.js~SuperagentResponse#constructor",
     "method"
-  ],
-  [
-    "lib/resource/superagentresponse.js~superagentresponse#data",
-    "class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html#instance-get-data",
-    "lib/Resource/SuperagentResponse.js~SuperagentResponse#data",
-    "member"
-  ],
-  [
-    "lib/resource/superagentresponse.js~superagentresponse#error",
-    "class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html#instance-get-error",
-    "lib/Resource/SuperagentResponse.js~SuperagentResponse#error",
-    "member"
-  ],
-  [
-    "lib/resource/superagentresponse.js~superagentresponse#iserror",
-    "class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html#instance-get-isError",
-    "lib/Resource/SuperagentResponse.js~SuperagentResponse#isError",
-    "member"
-  ],
-  [
-    "lib/resource/superagentresponse.js~superagentresponse#statuscode",
-    "class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html#instance-get-statusCode",
-    "lib/Resource/SuperagentResponse.js~SuperagentResponse#statusCode",
-    "member"
   ],
   [
     "lib/bootstrap.js",

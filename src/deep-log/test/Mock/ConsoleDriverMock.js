@@ -1,6 +1,6 @@
 'use strict';
 
-import {ConsoleDriver} from '../../lib.compiled/Driver/ConsoleDriver';
+import {ConsoleDriver} from '../../lib/Driver/ConsoleDriver';
 
 /**
  * Console native logging

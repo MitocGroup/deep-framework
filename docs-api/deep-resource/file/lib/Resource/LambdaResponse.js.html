@@ -68,112 +68,117 @@ import {Response} from &apos;./Response&apos;;
  */
 export class LambdaResponse extends Response {
   /**
-   * @param {Request} request
-   * @param {Object} data
-   * @param {String} error
+   * @param {*} args
    */
-  constructor(request, data, error) {
-    super(...arguments);
+  constructor(...args) {
+    super(...args);
 
-    this._errorType = null;
+    // assure calling the very first!
+    this._fillStatusCode();
+
+    let responsePayload = this._decodePayload();
+
+    this._fillData(responsePayload);
+    this._fillError(responsePayload);
   }
 
   /**
-   * @returns {Object}
+   * @param {Object|null} responsePayload
+   * @private
    */
-  get data() {
-    if (this._data) {
-      return this._data;
+  _fillData(responsePayload) {
+    if (responsePayload &amp;&amp;
+      !this._request.async &amp;&amp;
+      !responsePayload.hasOwnProperty(&apos;errorMessage&apos;)) {
+
+      this._data = responsePayload;
     }
-
-    if (this._rawData &amp;&amp; !this._request.async) {
-      let response = this._getPayload();
-
-      if (response &amp;&amp; typeof response.errorMessage === &apos;undefined&apos;) {
-        this._data = response;
-      }
-    }
-
-    return this._data;
   }
 
   /**
-   * @returns {String}
+   * @param {Object|null} responsePayload
+   * @private
    */
-  get error() {
-    if (this._error) {
-      return this._error;
-    }
-
+  _fillError(responsePayload) {
     if (this._rawError) {
       this._error = this._rawError;
-    } else {
-      if (!this._request.async) {
-        let response = this._getPayload();
-
-        if (response &amp;&amp; typeof response.errorMessage !== &apos;undefined&apos;) {
-          this._error = response.errorMessage;
-        }
-      } else {
-        this._error = &apos;Unknown async invocation error&apos;;
+    } else if (!this._request.async) {
+      if (!responsePayload) {
+        this._error = new Error(&apos;There is no error nor payload in Lambda response&apos;);
+      } else if (responsePayload.hasOwnProperty(&apos;errorMessage&apos;)) {
+        this._error = LambdaResponse.getPayloadError(responsePayload);
       }
+    } else if (this._statusCode !== 202) { // check for failed async invocation
+      this._error = new Error(&apos;Unknown async invocation error&apos;);
     }
-
-    return this._error;
   }
 
   /**
-   * @returns {String}
+   * @private
    */
-  get errorType() {
-    if (this._errorType) {
-      return this._errorType;
-    }
-
-    if (this._rawError) {
-      this._errorType = (this._rawError &amp;&amp; this._rawError.name) ? this._rawError.name : &apos;Error&apos;;
-    } else {
-      if (!this._request.async) {
-        let response = this._getPayload();
-
-        if (response &amp;&amp; typeof response.errorType !== &apos;undefined&apos;) {
-          this._errorType = response.errorType;
-        } else {
-          this._errorType = &apos;Error&apos;;
-        }
-      } else {
-        this._errorType = &apos;AsyncInvocationError&apos;;
-      }
-    }
-
-    return this._errorType;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get statusCode() {
-    if (this._statusCode) {
-      return this._statusCode;
-    }
-
-    if (this._rawData) {
-      this._statusCode = this._rawData.StatusCode || this._rawData.Status;
-    }
-
-    return this._statusCode;
+  _fillStatusCode() {
+    this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status || 500);
   }
 
   /**
    * @returns {Object|null}
    * @private
    */
-  _getPayload() {
+  _decodePayload() {
     if (typeof this._rawData === &apos;object&apos; &amp;&amp;
       this._rawData.hasOwnProperty(&apos;Payload&apos;)) {
       let payload = this._rawData.Payload;
 
       return typeof payload === &apos;string&apos; ? JSON.parse(payload) : payload;
+    }
+
+    return null;
+  }
+
+  /**
+   * @param {Object} payload
+   * @returns {Error|null}
+   */
+  static getPayloadError(payload) {
+    if (payload.errorMessage) {
+
+      // check for error object (on context.failed called)
+      if (!payload.hasOwnProperty(&apos;errorType&apos;) &amp;&amp;
+        !payload.hasOwnProperty(&apos;errorStack&apos;)) {
+
+        let rawErrorObj = null;
+
+        try {
+          rawErrorObj = JSON.parse(payload.errorMessage);
+          rawErrorObj = rawErrorObj || {
+              errorMessage: &apos;Unknown error occurred.&apos;,
+              errorStack: null,
+              errorType: &apos;UnknownError&apos;
+            };
+
+          rawErrorObj.errorMessage = rawErrorObj.errorMessage || &apos;Unknown error occurred.&apos;;
+          rawErrorObj.errorType = rawErrorObj.errorType || &apos;UnknownError&apos;;
+        } catch (e) {
+        }
+
+        payload = rawErrorObj || {
+            errorMessage: payload.errorMessage,
+            errorStack: null,
+            errorType: &apos;UnknownError&apos;
+          };
+      } else {
+        payload.errorType = payload.errorType || &apos;UnknownError&apos;;
+      }
+
+      let errorObj = new Error(payload.errorMessage);
+
+      errorObj.constructor.name = payload.errorType;
+
+      Object.defineProperty(errorObj, &apos;stack&apos;, {
+        value: payload.errorStack,
+      });
+
+      return errorObj;
     }
 
     return null;

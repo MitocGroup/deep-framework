@@ -44,7 +44,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html">Runtime</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html">InvalidCognitoIdentityException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/ContextAlreadySentException.js~ContextAlreadySentException.html">ContextAlreadySentException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html">InvalidCognitoIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException.html">MissingRuntimeContextException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException.html">MissingUserContextException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DatabaseOperationException.js~DatabaseOperationException.html">DatabaseOperationException</a></span></span></li>
@@ -76,7 +77,7 @@ export class Request {
    * @param {*} data
    */
   constructor(data = {}) {
-    this._data = typeof data === &apos;object&apos; ? qs.parse(data) : data;
+    this._data = !Array.isArray(data) ? qs.parse(data) : data;
 
     this._registerDataAsParams();
   }
@@ -101,7 +102,6 @@ export class Request {
     // Avoid _data key listing on Object.keys(request)
     Object.defineProperty(this, &apos;_data&apos;, {
       configurable: false,
-      enumerable: false,
     });
   }
 

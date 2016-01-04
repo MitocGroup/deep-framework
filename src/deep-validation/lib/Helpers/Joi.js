@@ -88,6 +88,7 @@ export class Joi {
   static get website() {
     let strJoiObj = BaseJoi.string();
 
+    // Fix for Joi v5.x.x
     return strJoiObj.hasOwnProperty('uri')
       ? strJoiObj.uri()
       : strJoiObj.regex(uriRegexp.createUriRegex());

@@ -3,12 +3,11 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
-import {ContainerAware} from '../lib.compiled/ContainerAware';
-import {Instance} from '../lib.compiled/Microservice/Instance';
-import {DI} from '../node_modules/deep-di/lib.compiled/DI';
-import {InvalidDeepIdentifierException} from '../lib.compiled/Exception/InvalidDeepIdentifierException';
+import {ContainerAware} from '../lib/ContainerAware';
+import {Instance} from '../lib/Microservice/Instance';
+import {InvalidDeepIdentifierException} from '../lib/Exception/InvalidDeepIdentifierException';
 import KernelFactory from './common/KernelFactory';
-import {Kernel} from '../lib.compiled/Kernel';
+import {Kernel} from '../lib/Kernel';
 
 chai.use(sinonChai);
 
