@@ -40,7 +40,7 @@ function eval_or_exit() {
     if [[ ${RET_CODE} != 0 ]]  &&  [[ $1 == "npm run test" ]]; then
         #Run DEBUG_TEST_CMD command to show error in log
         echo "[FAILED] $1 -> try to re-run to show error in debug mode"
-        local DEBUG_TEST_CMD="`which istanbul` cover _mocha -- --compilers js:babel/register --reporter spec --ui tdd"
+        local DEBUG_TEST_CMD="mocha --ui tdd --compilers js:mocha-babel --recursive --reporter spec"
         eval_or_exit "$DEBUG_TEST_CMD"
     elif [ ${RET_CODE} != 0 ]; then
         echo "[FAILED] $1"
