@@ -10,7 +10,7 @@ subpath_run_cmd () {
     local DIR
     local CMD
     local EXPR
-    local RET_CODE=0
+    local EXIT_CODE=0
 
     DIR=$(cd $1 && pwd -P)
     CMD=$2
@@ -25,11 +25,17 @@ subpath_run_cmd () {
     do
         if [ -d ${subpath} ]; then
             cd ${subpath} && eval_or_exit "$CMD"
+            local res=$?
+            echo "RESULT: $res"
+            EXIT_CODE=$((EXIT_CODE+$res))
         fi
     done
+
+    echo "FINAL: $EXIT_CODE"
+    exit $EXIT_CODE
 }
 
-eval_or_exit() {
+function eval_or_exit() {
     eval "$1"
 
     local RET_CODE=$?
@@ -41,7 +47,7 @@ eval_or_exit() {
         eval_or_exit "$DEBUG_TEST_CMD"
     elif [ ${RET_CODE} != 0 ]; then
         echo "[FAILED] $1"
-        exit 1
+        return 1
     else
         echo "[SUCCEED] $1"
     fi
