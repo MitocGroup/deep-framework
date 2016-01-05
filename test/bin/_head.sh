@@ -25,13 +25,10 @@ subpath_run_cmd () {
     do
         if [ -d ${subpath} ]; then
             cd ${subpath} && eval_or_exit "$CMD"
-            local res=$?
-            echo "RESULT: $res"
-            EXIT_CODE=$((EXIT_CODE+$res))
+            EXIT_CODE=$((EXIT_CODE+$?))
         fi
     done
 
-    echo "FINAL: $EXIT_CODE"
     exit $EXIT_CODE
 }
 
