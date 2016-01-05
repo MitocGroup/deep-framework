@@ -15,10 +15,8 @@ subpath_run_cmd () {
     CMD=$2
 
     if [ -z $3 ]; then
-        echo "don't exists"
         EXPR="*"
     else
-        echo "exists"
         EXPR=$3
     fi
 
@@ -40,6 +38,7 @@ eval_or_exit() {
         #Run DEBUG_TEST_CMD command to show error in log
         local DEBUG_TEST_CMD="`which istanbul` cover _mocha -- --compilers js:babel/register --reporter spec --ui tdd"
         eval "$DEBUG_TEST_CMD"
+        exit 1
     elif [ ${RET_CODE} != 0 ]; then
         echo "[FAILED] $1"
         exit 1
