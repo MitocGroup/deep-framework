@@ -11,6 +11,7 @@ import KernelFactory from './common/KernelFactory';
 chai.use(sinonChai);
 
 suite('Asset', function() {
+  sfsdfs dzfds
   let assetService = null;
   let backendKernelInstance = null;
   let frontendKernelInstance = null;
