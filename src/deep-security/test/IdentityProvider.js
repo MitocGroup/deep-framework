@@ -7,7 +7,6 @@ import {MissingLoginProviderException} from '../lib/Exception/MissingLoginProvid
 suite('IdentityProvider', function() {
   let identityProvider = null;
   let providerName = 'facebook';
-  cxzcxzcxz fdsfds fdsfds,fdsfds
   let identityMetadata = {
     access_token: 'test_userToken',
     tokenExpirationTime: new Date(),
