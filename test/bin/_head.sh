@@ -10,6 +10,7 @@ subpath_run_cmd () {
     local DIR
     local CMD
     local EXPR
+    local RET_CODE=0
 
     DIR=$(cd $1 && pwd -P)
     CMD=$2
@@ -34,11 +35,10 @@ eval_or_exit() {
     local RET_CODE=$?
 
     if [[ ${RET_CODE} != 0 ]]  &&  [[ $1 == "npm run test" ]]; then
-        echo "[FAILED] $1, try to re-run to show error in debug mode"
+        echo "[FAILED] $1 -> try to re-run to show error in debug mode"
         #Run DEBUG_TEST_CMD command to show error in log
         local DEBUG_TEST_CMD="`which istanbul` cover _mocha -- --compilers js:babel/register --reporter spec --ui tdd"
-        eval "$DEBUG_TEST_CMD"
-        exit 1
+        eval_or_exit "$DEBUG_TEST_CMD"
     elif [ ${RET_CODE} != 0 ]; then
         echo "[FAILED] $1"
         exit 1
