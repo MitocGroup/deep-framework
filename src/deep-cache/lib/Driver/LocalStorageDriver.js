@@ -114,4 +114,13 @@ export class LocalStorageDriver extends AbstractDriver {
 
     return true;
   }
+
+  /**
+   * Checks for browser local storage availability
+   *
+   * @returns {boolean}
+   */
+  static isAvailable() {
+    return LocalStorage.enabled;
+  }
 }
