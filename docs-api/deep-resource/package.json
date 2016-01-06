@@ -1,6 +1,6 @@
 {
   "name": "deep-resource",
-  "version": "1.5.0",
+  "version": "1.5.9",
   "description": "DEEP Resource Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -56,10 +56,10 @@
   "main": "lib.compiled/bootstrap.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MitocGroup/deep.git"
+    "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd",
+    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd --timeout 4s",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core deep-cache deep-security"
@@ -70,9 +70,11 @@
     "deep-cache": "^1.x.x",
     "deep-security": "^1.x.x",
     "superagent": "^1.4.x",
-    "aws4": "^1.1.x",
+    "aws4": "1.1.x",
     "url-parse": "^1.0.x",
-    "qs": "^5.2.x",
+    "qs": "^5.2.x"
+  },
+  "optionalDependencies": {
     "aws-sdk": "^2.2.x"
   },
   "devDependencies": {

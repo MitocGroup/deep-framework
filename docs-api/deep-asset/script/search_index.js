@@ -354,10 +354,28 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/asset.js~asset#injectbuildid",
+    "class/lib/Asset.js~Asset.html#instance-set-injectBuildId",
+    "lib/Asset.js~Asset#injectBuildId",
+    "member"
+  ],
+  [
+    "lib/asset.js~asset#injectbuildid",
+    "class/lib/Asset.js~Asset.html#instance-get-injectBuildId",
+    "lib/Asset.js~Asset#injectBuildId",
+    "member"
+  ],
+  [
     "lib/asset.js~asset#locate",
     "class/lib/Asset.js~Asset.html#instance-method-locate",
     "lib/Asset.js~Asset#locate",
     "method"
+  ],
+  [
+    "lib/asset.js~asset.inject_build_id_state",
+    "class/lib/Asset.js~Asset.html#static-get-INJECT_BUILD_ID_STATE",
+    "lib/Asset.js~Asset.INJECT_BUILD_ID_STATE",
+    "member"
   ],
   [
     "lib/exception/exception.js",

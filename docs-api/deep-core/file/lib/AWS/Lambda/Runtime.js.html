@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -40,7 +40,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Resource.js~Resource.html">Resource</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Statement.js~Statement.html">Statement</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/IAM/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Exception/InvalidArnException.js~InvalidArnException.html">InvalidArnException</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Context.js~Context.html">Context</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html">Runtime</a></span></span></li>
@@ -72,6 +73,8 @@ import {ErrorResponse} from &apos;./ErrorResponse&apos;;
 import {Request} from &apos;./Request&apos;;
 import {InvalidCognitoIdentityException} from &apos;./Exception/InvalidCognitoIdentityException&apos;;
 import {MissingUserContextException} from &apos;./Exception/MissingUserContextException&apos;;
+import {Context} from &apos;./Context&apos;;
+import domain from &apos;domain&apos;;
 
 /**
  * Lambda runtime context
@@ -95,7 +98,7 @@ export class Runtime extends Interface {
   }
 
   /**
-   * @returns {Object}
+   * @returns {null|Context}
    */
   get context() {
     return this._context;
@@ -146,32 +149,26 @@ export class Runtime extends Interface {
    * @returns {Runtime}
    */
   run(event, context) {
-
-    // @todo: move to constructor
-    this._context = context;
-
-    this._addExceptionListener();
-    
+    this._context = new Context(context);
     this._request = new Request(event);
-    
-    this._fillUserContext();
 
-    if (!this._loggedUserId &amp;&amp; this._forceUserIdentity) {
-      throw new MissingUserContextException();
-    }
+    let execDomain = domain.create();
 
-    this.handle(this._request);
-
-    return this;
-  }
-
-  /**
-   * @private
-   */
-  _addExceptionListener() {
-    process.once(&apos;uncaughtException&apos;, (error) =&gt; {
+    execDomain.on(&apos;error&apos;, (error) =&gt; {
       this.createError(error).send();
     });
+
+    execDomain.run(() =&gt; {
+      this._fillUserContext();
+
+      if (!this._loggedUserId &amp;&amp; this._forceUserIdentity) {
+        throw new MissingUserContextException();
+      }
+
+      this.handle(this._request);
+    });
+
+    return this;
   }
 
   /**
@@ -218,7 +215,7 @@ export class Runtime extends Interface {
    */
   _fillUserContext() {
     if (this._context &amp;&amp;
-      this._context.hasOwnProperty(&apos;identity&apos;) &amp;&amp;
+      this._context.has(&apos;identity&apos;) &amp;&amp;
       this._context.identity.hasOwnProperty(&apos;cognitoIdentityPoolId&apos;) &amp;&amp;
       this._context.identity.hasOwnProperty(&apos;cognitoIdentityId&apos;)
     ) {

@@ -68,22 +68,6 @@ Note 2: Alternatively, to use `DEEP Framework` as dependency, include it in `pac
 }
 ```
 
-Note 3: Also, when needed, consider specifying only some libraries instead of entire framework. For example:
-```
-{
-  "name": "say-hello-world",
-  "version": "0.0.1",
-  "description": "AWS Lambda that says hello to the world",
-  "dependencies": {
-    "deep-db": "1.0.*",
-    "deep-event": "1.0.*",
-    "deep-resource": "1.0.*",
-    ...
-  },
-  ...
-}
-```
-
 ## What is DEEP Framework? [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
 `DEEP Framework` is a nodejs package that is published on npmjs: https://www.npmjs.com/package/deep-framework.

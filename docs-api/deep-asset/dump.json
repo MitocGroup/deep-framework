@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Path from 'path';\n\n/**\n * @temp Asset class definition\n */\nexport class Asset extends Kernel.ContainerAware {\n  constructor() {\n    super();\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    if (kernel.isFrontend) {\n      let loadVector = [];\n      let microservices = kernel.microservices;\n\n      for (let microserviceKey in microservices) {\n        if (!microservices.hasOwnProperty(microserviceKey)) {\n          continue;\n        }\n\n        let microservice = microservices[microserviceKey];\n\n        if (microservice.isRoot) {\n          continue;\n        }\n\n        loadVector.push(this.locate(`@${microservice.identifier}:bootstrap.js`));\n      }\n\n      kernel.container.addParameter(\n        Kernel.FRONTEND_BOOTSTRAP_VECTOR,\n        loadVector\n      );\n    }\n\n    callback();\n  }\n\n  /**\n   * @param {String} assetIdentifier (e.g. @microservice_identifier:asset_path)\n   * @param {String} suffix\n   * @returns {String}\n   */\n  locate(assetIdentifier, suffix = '') {\n    let path = this._resolveIdentifier(assetIdentifier);\n\n    if (this.microservice.isRoot) {\n      return Path.join(path) + suffix;\n    } else {\n      return Path.join(this.microservice.toString(), path) + suffix;\n    }\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Path from 'path';\n\n/**\n * @temp Asset class definition\n */\nexport class Asset extends Kernel.ContainerAware {\n  constructor() {\n    super();\n\n    this._injectBuildId = Asset.INJECT_BUILD_ID_STATE;\n    this._buildId = null;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get injectBuildId() {\n    return this._injectBuildId;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set injectBuildId(state) {\n    this._injectBuildId = state;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._buildId = kernel.buildId;\n\n    if (kernel.isFrontend) {\n      let loadVector = [];\n      let microservices = kernel.microservices;\n\n      for (let microserviceKey in microservices) {\n        if (!microservices.hasOwnProperty(microserviceKey)) {\n          continue;\n        }\n\n        let microservice = microservices[microserviceKey];\n\n        if (microservice.isRoot) {\n          continue;\n        }\n\n        loadVector.push(this.locate(`@${microservice.identifier}:bootstrap.js`));\n      }\n\n      kernel.container.addParameter(\n        Kernel.FRONTEND_BOOTSTRAP_VECTOR,\n        loadVector\n      );\n    }\n\n    callback();\n  }\n\n  /**\n   * @param {String} assetIdentifier (e.g. @microservice_identifier:asset_path)\n   * @param {String} suffix\n   * @returns {String}\n   */\n  locate(assetIdentifier, suffix = '') {\n    let path = this._resolveIdentifier(assetIdentifier);\n\n    let basePath = this.microservice.isRoot\n      ? Path.join(path)\n      : Path.join(this.microservice.toString(), path);\n\n    let internalSuffix = this._injectBuildId && this._buildId\n      ? `?_v=${this._buildId}`\n      : '';\n\n    return `${basePath}${suffix}${internalSuffix}`;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  static get INJECT_BUILD_ID_STATE() {\n    return true;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -50,6 +50,117 @@
     "generator": false
   },
   {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_injectBuildId",
+    "memberof": "lib/Asset.js~Asset",
+    "longname": "lib/Asset.js~Asset#_injectBuildId",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_buildId",
+    "memberof": "lib/Asset.js~Asset",
+    "longname": "lib/Asset.js~Asset#_buildId",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "injectBuildId",
+    "memberof": "lib/Asset.js~Asset",
+    "longname": "lib/Asset.js~Asset#injectBuildId",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "injectBuildId",
+    "memberof": "lib/Asset.js~Asset",
+    "longname": "lib/Asset.js~Asset#injectBuildId",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "state",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_injectBuildId",
+    "memberof": "lib/Asset.js~Asset",
+    "longname": "lib/Asset.js~Asset#_injectBuildId",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -58,7 +169,7 @@
     "longname": "lib/Asset.js~Asset#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 24,
+    "lineNumber": 41,
     "params": [
       {
         "nullable": null,
@@ -84,6 +195,23 @@
     "generator": false
   },
   {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_buildId",
+    "memberof": "lib/Asset.js~Asset",
+    "longname": "lib/Asset.js~Asset#_buildId",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -92,7 +220,7 @@
     "longname": "lib/Asset.js~Asset#locate",
     "access": null,
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 76,
     "unknown": [
       {
         "tagName": "@returns",
@@ -128,6 +256,37 @@
       ],
       "spread": false,
       "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "INJECT_BUILD_ID_STATE",
+    "memberof": "lib/Asset.js~Asset",
+    "longname": "lib/Asset.js~Asset.INJECT_BUILD_ID_STATE",
+    "access": null,
+    "description": null,
+    "lineNumber": 93,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "boolean"
+      ]
     },
     "generator": false
   },

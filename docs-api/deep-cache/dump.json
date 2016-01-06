@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Exception} from './Exception/Exception';\n\n/**\n * Cache manager\n */\nexport class Cache extends Kernel.ContainerAware {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver = null) {\n    super();\n\n    this._driver = driver;\n  }\n\n  /**\n   * @param {String} name\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  static createDriver(name, ...args) {\n    let DriverPrototype = null;\n\n    switch (name) {\n      case 'memory':\n        DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        break;\n      case 'redis':\n        DriverPrototype = require('./Driver/RedisDriver').RedisDriver;\n        break;\n      case 'local-storage':\n        DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;\n        break;\n      default:\n        throw new Exception(`Missing driver ${name}`);\n    }\n\n    return new DriverPrototype(...args);\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n\n    // @todo: switch to redis when issue with Elasticache is fixed\n    let driverName = kernel.isFrontend ? 'local-storage' : 'memory'/*'redis'*/;\n\n    this._driver = Cache.createDriver(driverName/*, kernel.config.cacheDsn*/);\n    this._driver.buildId = kernel.buildId;\n\n    callback();\n  }\n\n  /**\n   * @param {AbstractDriver} target\n   * @param {*} args\n   * @returns {*}\n   */\n  apply(target, ...args) {\n    return target(...args);\n  }\n\n  /**\n   * DO NOT REMOVE THIS!\n   * It's used while kernel boot\n   *\n   * @returns {Object}\n   */\n  get service() {\n    return new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush'\n    );\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set driver(driver) {\n    this._driver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get driver() {\n    return this._driver;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Exception} from './Exception/Exception';\nimport {SharedCache} from './SharedCache';\n\n/**\n * Cache manager\n */\nexport class Cache extends Kernel.ContainerAware {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver = null) {\n    super();\n\n    this._driver = driver;\n  }\n\n  /**\n   * @param {String} name\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  static createDriver(name, ...args) {\n    let DriverPrototype = null;\n\n    switch (name) {\n      case 'memory':\n        DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        break;\n      case 'redis':\n        DriverPrototype = require('./Driver/RedisDriver').RedisDriver;\n        break;\n      case 'local-storage':\n        DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;\n        break;\n      case 's3fs':\n        DriverPrototype = require('./Driver/S3FSDriver').S3FSDriver;\n        break;\n      case 'cloud-front':\n        DriverPrototype = require('./Driver/CloudFrontDriver').CloudFrontDriver;\n        break;\n      default:\n        throw new Exception(`Missing driver ${name}`);\n    }\n\n    return new DriverPrototype(...args);\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let sharedCacheDriver;\n    let driver;\n\n    if (kernel.isFrontend) {\n      driver = Cache.createDriver('local-storage');\n      sharedCacheDriver = Cache.createDriver('cloud-front', this);\n    } else {\n      // @todo: switch to redis when issue with Elasticache is fixed\n      driver = Cache.createDriver('memory');\n      sharedCacheDriver = Cache.createDriver('s3fs', this);\n    }\n\n    [driver, sharedCacheDriver].map(function(driver) {\n      driver.buildId = kernel.buildId;\n    });\n\n    this._driver = driver;\n    this._shared = new SharedCache(sharedCacheDriver);\n\n    callback();\n  }\n\n  /**\n   * @returns {SharedCache}\n   */\n  get shared() {\n    return this._shared;\n  }\n\n  /**\n   * @param {AbstractDriver} target\n   * @param {*} args\n   * @returns {*}\n   */\n  apply(target, ...args) {\n    return target(...args);\n  }\n\n  /**\n   * DO NOT REMOVE THIS!\n   * It's used while kernel boot\n   *\n   * @returns {Object}\n   */\n  get service() {\n    return new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush'\n    );\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set driver(driver) {\n    this._driver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get driver() {\n    return this._driver;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -23,7 +23,7 @@
     "importPath": "deep-cache/lib/Cache.js",
     "importStyle": "{Cache}",
     "description": "Cache manager",
-    "lineNumber": 14,
+    "lineNumber": 15,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
@@ -38,7 +38,7 @@
     "longname": "lib/Cache.js~Cache#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 19,
     "params": [
       {
         "nullable": null,
@@ -62,7 +62,7 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 22,
     "undocument": true,
     "type": {
       "types": [
@@ -79,7 +79,7 @@
     "longname": "lib/Cache.js~Cache.createDriver",
     "access": null,
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 30,
     "unknown": [
       {
         "tagName": "@returns",
@@ -127,7 +127,7 @@
     "longname": "lib/Cache.js~Cache#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 55,
+    "lineNumber": 62,
     "params": [
       {
         "nullable": null,
@@ -161,13 +161,61 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 79,
     "undocument": true,
     "type": {
       "types": [
         "*"
       ]
     }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_shared",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#_shared",
+    "access": null,
+    "description": null,
+    "lineNumber": 80,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "shared",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#shared",
+    "access": null,
+    "description": null,
+    "lineNumber": 88,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{SharedCache}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "SharedCache"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
   },
   {
     "kind": "method",
@@ -178,7 +226,7 @@
     "longname": "lib/Cache.js~Cache#apply",
     "access": null,
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 97,
     "unknown": [
       {
         "tagName": "@returns",
@@ -226,7 +274,7 @@
     "longname": "lib/Cache.js~Cache#service",
     "access": null,
     "description": "DO NOT REMOVE THIS!\nIt's used while kernel boot",
-    "lineNumber": 81,
+    "lineNumber": 107,
     "unknown": [
       {
         "tagName": "@returns",
@@ -257,7 +305,7 @@
     "longname": "lib/Cache.js~Cache#driver",
     "access": null,
     "description": null,
-    "lineNumber": 93,
+    "lineNumber": 119,
     "params": [
       {
         "nullable": null,
@@ -286,7 +334,7 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 120,
     "undocument": true,
     "type": {
       "types": [
@@ -303,7 +351,7 @@
     "longname": "lib/Cache.js~Cache#driver",
     "access": null,
     "description": null,
-    "lineNumber": 100,
+    "lineNumber": 126,
     "unknown": [
       {
         "tagName": "@returns",
@@ -959,6 +1007,537 @@
       ],
       "spread": false,
       "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Driver/AbstractFsDriver.js",
+    "memberof": null,
+    "longname": "lib/Driver/AbstractFsDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/11/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport crypto from 'crypto';\n\n/**\n * Abstract FileSystem Driver\n */\nexport class AbstractFsDriver extends AbstractDriver {\n  /**\n   * @param {String} directory\n   */\n  constructor(directory = AbstractFsDriver.DEFAULT_DIRECTORY) {\n    super();\n\n    this._directory = directory;\n  }\n\n  /**\n   * @param {String} key\n   * @private\n   */\n  _buildKey(key) {\n    return `${this._directory}/${AbstractFsDriver._hash(key, 'sha1')}.${AbstractFsDriver._hash(key, 'md5')}`;\n  }\n\n  /**\n   * @param {String} text\n   * @param {String} alg\n   * @returns {String}\n   * @private\n   */\n  static _hash(text, alg) {\n    return crypto.createHash(alg).update(text).digest('hex');\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get _now() {\n    return parseInt(new Date().getTime() / 1000);\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_DIRECTORY() {\n    return '__cache__';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "AbstractFsDriver",
+    "memberof": "lib/Driver/AbstractFsDriver.js",
+    "longname": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-cache/lib/Driver/AbstractFsDriver.js",
+    "importStyle": "{AbstractFsDriver}",
+    "description": "Abstract FileSystem Driver",
+    "lineNumber": 13,
+    "interface": false,
+    "extends": [
+      "lib/Driver/AbstractDriver~AbstractDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver",
+    "longname": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "directory",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_directory",
+    "memberof": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver",
+    "longname": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver#_directory",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_buildKey",
+    "memberof": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver",
+    "longname": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver#_buildKey",
+    "access": "private",
+    "description": null,
+    "lineNumber": 27,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_hash",
+    "memberof": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver",
+    "longname": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver._hash",
+    "access": "private",
+    "description": null,
+    "lineNumber": 37,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "text",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "alg",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "_now",
+    "memberof": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver",
+    "longname": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver._now",
+    "access": null,
+    "description": null,
+    "lineNumber": 44,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DEFAULT_DIRECTORY",
+    "memberof": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver",
+    "longname": "lib/Driver/AbstractFsDriver.js~AbstractFsDriver.DEFAULT_DIRECTORY",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Driver/CloudFrontDriver.js",
+    "memberof": null,
+    "longname": "lib/Driver/CloudFrontDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nimport {AbstractFsDriver} from './AbstractFsDriver';\nimport {MethodNotAvailableException} from '../Exception/MethodNotAvailableException';\n\n/**\n * CloudFront Cache Driver\n */\nexport class CloudFrontDriver extends AbstractFsDriver {\n\n  /**\n   * @todo: Find better way to extract the working microservice identifier\n   *\n   * @param {ContainerAware} containerAware\n   * @param {String} directory\n   */\n  constructor(containerAware, directory = AbstractFsDriver.DEFAULT_DIRECTORY) {\n    super(directory);\n\n    this._containerAware = containerAware;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @private\n   */\n  _has(key, callback = () => {}) {\n    this._get(key, (err, data) => {\n      callback(err, data !== null);\n    });\n  }\n\n  /**\n   * @todo: Find a way to invalidate broken or expired keys\n   *\n   * @param {String} key\n   * @param {Function} callback\n   * @private\n   */\n  _get(key, callback = () => {}) {\n    this._request(key, (err, data) => {\n      if (err) {\n        return callback(err, null);\n      }\n\n      try {\n        let parsedData = JSON.parse(data);\n\n        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now || parsedData.buildId !== this._buildId) {\n          callback(null, null);\n\n          return;\n        }\n\n        callback(null, parsedData.value);\n      } catch (e) {\n        callback(null, null);\n      }\n    });\n  }\n\n  /**\n   * Throw MethodNotAvailableException\n   *\n   * @private\n   */\n  _set() {\n    throw new MethodNotAvailableException('set');\n  }\n\n  /**\n   * Throw MethodNotAvailableException\n   *\n   * @private\n   */\n  _invalidate() {\n    throw new MethodNotAvailableException('invalidate');\n  }\n\n  /**\n   * @param {String} key\n   * @returns {String}\n   * @private\n   */\n  _buildKey(key) {\n    return this._asset.locate(`@${this._microservice}:${super._buildKey(key)}`);\n  }\n\n  /**\n   * @param {String} url\n   * @param {Function} callback\n   * @private\n   */\n  _request(url, callback) {\n    var client = new XMLHttpRequest();\n\n    client.onreadystatechange = function() {\n      if (client.readyState === 4) {\n        if (client.status !== 200) {\n          return callback(client.statusText, null);\n        }\n\n        callback(null, client.responseText);\n      }\n    };\n\n    client.open('GET', url);\n    client.send();\n  }\n\n  /**\n   * Returns the microservice binded to `resource` service\n   *\n   * @returns {Instance}\n   * @private\n   */\n  get _microservice() {\n    return this._containerAware.container.get('resource').microservice;\n  }\n\n  /**\n   * @returns {Asset}\n   * @private\n   */\n  get _asset() {\n    return this._containerAware.container.get('asset');\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "CloudFrontDriver",
+    "memberof": "lib/Driver/CloudFrontDriver.js",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-cache/lib/Driver/CloudFrontDriver.js",
+    "importStyle": "{CloudFrontDriver}",
+    "description": "CloudFront Cache Driver",
+    "lineNumber": 13,
+    "interface": false,
+    "extends": [
+      "lib/Driver/AbstractFsDriver~AbstractFsDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "unknown": [
+      {
+        "tagName": "@todo: Find better way to extract the working microservice identifier\n\n",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "ContainerAware"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "containerAware",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "directory",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_containerAware",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_containerAware",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_has",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_has",
+    "access": "private",
+    "description": null,
+    "lineNumber": 32,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_get",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_get",
+    "access": "private",
+    "description": null,
+    "lineNumber": 45,
+    "unknown": [
+      {
+        "tagName": "@todo: Find a way to invalidate broken or expired keys\n\n",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_set",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_set",
+    "access": "private",
+    "description": "Throw MethodNotAvailableException",
+    "lineNumber": 72,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_invalidate",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_invalidate",
+    "access": "private",
+    "description": "Throw MethodNotAvailableException",
+    "lineNumber": 81,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_buildKey",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_buildKey",
+    "access": "private",
+    "description": null,
+    "lineNumber": 90,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_request",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_request",
+    "access": "private",
+    "description": null,
+    "lineNumber": 99,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "url",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "_microservice",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_microservice",
+    "access": "private",
+    "description": "Returns the microservice binded to `resource` service",
+    "lineNumber": 122,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Instance}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Instance"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "_asset",
+    "memberof": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver",
+    "longname": "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#_asset",
+    "access": "private",
+    "description": null,
+    "lineNumber": 130,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Asset}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Asset"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
     },
     "generator": false
   },
@@ -1686,7 +2265,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport LocalStorage from 'store';\n\n/**\n * In memory driver implementation\n */\nexport class LocalStorageDriver extends AbstractDriver {\n  constructor() {\n    super();\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    callback(null, LocalStorageDriver._isAlive(LocalStorage.get(key), key));\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    let record = LocalStorage.get(key);\n\n    callback(null, LocalStorageDriver._isAlive(record, key) ? record.value : null);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    if (ttl <= 0) {\n      LocalStorage.set(key, {value: value, exd: null});\n    } else {\n      LocalStorage.set(key, {value: value, exd: (LocalStorageDriver._now + ttl)});\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      LocalStorage.remove(key);\n\n      callback(null, true);\n\n      return;\n    }\n\n    try {\n      let record = LocalStorage.get(key);\n\n      record.exd = LocalStorageDriver._now + timeout;\n\n      LocalStorage.set(key, record);\n    } catch (e) {\n      // do nothing...\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    LocalStorage.clear();\n\n    callback(null, true);\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return parseInt(new Date().getTime() / 1000);\n  }\n\n  /**\n   *\n   * @param {Object} response\n   * @param {String} key\n   * @returns {Boolean}\n   * @private\n   */\n  static _isAlive(response, key) {\n    if (!response) {\n      return false;\n    }\n\n    if (response.exd && response.exd !== null && response.exd <= LocalStorageDriver._now) {\n      LocalStorage.remove(key);\n      return false;\n    }\n\n    return true;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport LocalStorage from 'store';\n\n/**\n * In memory driver implementation\n */\nexport class LocalStorageDriver extends AbstractDriver {\n  constructor() {\n    super();\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    callback(null, LocalStorageDriver._isAlive(LocalStorage.get(key), key));\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    let record = LocalStorage.get(key);\n\n    callback(null, LocalStorageDriver._isAlive(record, key) ? record.value : null);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    if (ttl <= 0) {\n      LocalStorage.set(key, {value: value, exd: null});\n    } else {\n      LocalStorage.set(key, {value: value, exd: (LocalStorageDriver._now + ttl)});\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      LocalStorage.remove(key);\n\n      callback(null, true);\n\n      return;\n    }\n\n    try {\n      let record = LocalStorage.get(key);\n\n      record.exd = LocalStorageDriver._now + timeout;\n\n      LocalStorage.set(key, record);\n    } catch (e) {\n      // do nothing...\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    LocalStorage.clear();\n\n    callback(null, true);\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return parseInt(new Date().getTime() / 1000);\n  }\n\n  /**\n   *\n   * @param {Object} response\n   * @param {String} key\n   * @returns {Boolean}\n   * @private\n   */\n  static _isAlive(response, key) {\n    if (!response) {\n      return false;\n    }\n\n    if (response.exd && response.exd <= LocalStorageDriver._now) {\n      LocalStorage.remove(key);\n      return false;\n    }\n\n    return true;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2378,6 +2957,284 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/Driver/S3FSDriver.js",
+    "memberof": null,
+    "longname": "lib/Driver/S3FSDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nimport {AbstractFsDriver} from './AbstractFsDriver';\n\n/**\n * S3FS Cache Driver\n */\nexport class S3FSDriver extends AbstractFsDriver {\n  /**\n   * @param {ContainerAware} containerAware\n   * @param {String} directory\n   */\n  constructor(containerAware, directory = AbstractFsDriver.DEFAULT_DIRECTORY) {\n    super(directory);\n\n    this._containerAware = containerAware;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @private\n   */\n  _has(key, callback = () => {}) {\n    this._get(key, (err, data) => {\n      callback(err, data !== null);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @private\n   */\n  _get(key, callback = () => {}) {\n    this._fs.readFile(key, (err, data) => {\n      if (err) {\n        callback(err, null);\n\n        return;\n      }\n\n      try {\n        var parsedData = JSON.parse(data);\n\n        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now || parsedData.buildId !== this._buildId) {\n          this._invalidate(key);\n\n          callback(null, null);\n\n          return;\n        }\n\n        callback(null, parsedData.value);\n      } catch (e) {\n        this._invalidate(key);\n\n        callback(null, null);\n      }\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Object} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @private\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    let strObject = JSON.stringify({\n      expires: ttl > 0 ? AbstractFsDriver._now + ttl : null,\n      value: value,\n      buildId: this._buildId,\n    });\n\n    this._fs.mkdirp(this._directory, () => {\n      this._fs.writeFile(key, strObject, (err) => {\n        callback(err, !err);\n      });\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   * @private\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      this._fs.unlink(key, (err) => {\n        callback(err, !err);\n      });\n\n      return;\n    }\n\n    this._get(key, (err, data) => {\n      if (err) {\n        callback(err, null);\n\n        return;\n      }\n\n      this._set(key, data.value, timeout, callback);\n    });\n  }\n\n  /**\n   * @returns {s3fs}\n   * @private\n   */\n  get _fs() {\n    return this._containerAware.container.get('fs').public;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "S3FSDriver",
+    "memberof": "lib/Driver/S3FSDriver.js",
+    "longname": "lib/Driver/S3FSDriver.js~S3FSDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-cache/lib/Driver/S3FSDriver.js",
+    "importStyle": "{S3FSDriver}",
+    "description": "S3FS Cache Driver",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Driver/AbstractFsDriver~AbstractFsDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Driver/S3FSDriver.js~S3FSDriver",
+    "longname": "lib/Driver/S3FSDriver.js~S3FSDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "ContainerAware"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "containerAware",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "directory",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_containerAware",
+    "memberof": "lib/Driver/S3FSDriver.js~S3FSDriver",
+    "longname": "lib/Driver/S3FSDriver.js~S3FSDriver#_containerAware",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_has",
+    "memberof": "lib/Driver/S3FSDriver.js~S3FSDriver",
+    "longname": "lib/Driver/S3FSDriver.js~S3FSDriver#_has",
+    "access": "private",
+    "description": null,
+    "lineNumber": 28,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_get",
+    "memberof": "lib/Driver/S3FSDriver.js~S3FSDriver",
+    "longname": "lib/Driver/S3FSDriver.js~S3FSDriver#_get",
+    "access": "private",
+    "description": null,
+    "lineNumber": 39,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_set",
+    "memberof": "lib/Driver/S3FSDriver.js~S3FSDriver",
+    "longname": "lib/Driver/S3FSDriver.js~S3FSDriver#_set",
+    "access": "private",
+    "description": null,
+    "lineNumber": 74,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "value",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ttl",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_invalidate",
+    "memberof": "lib/Driver/S3FSDriver.js~S3FSDriver",
+    "longname": "lib/Driver/S3FSDriver.js~S3FSDriver#_invalidate",
+    "access": "private",
+    "description": null,
+    "lineNumber": 94,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "timeout",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "_fs",
+    "memberof": "lib/Driver/S3FSDriver.js~S3FSDriver",
+    "longname": "lib/Driver/S3FSDriver.js~S3FSDriver#_fs",
+    "access": "private",
+    "description": null,
+    "lineNumber": 118,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{s3fs}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "s3fs"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/Exception/Exception.js",
     "memberof": null,
     "longname": "lib/Exception/Exception.js",
@@ -2423,6 +3280,348 @@
         "spread": false,
         "optional": false,
         "name": "args",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/MethodNotAvailableException.js",
+    "memberof": null,
+    "longname": "lib/Exception/MethodNotAvailableException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when a method is not available\n */\nexport class MethodNotAvailableException extends Exception {\n  /**\n   * @param {String} name\n   */\n  constructor(name) {\n    super(`Method '${name}' is not available`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "MethodNotAvailableException",
+    "memberof": "lib/Exception/MethodNotAvailableException.js",
+    "longname": "lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-cache/lib/Exception/MethodNotAvailableException.js",
+    "importStyle": "{MethodNotAvailableException}",
+    "description": "Thrown when a method is not available",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException",
+    "longname": "lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/SharedCache.js",
+    "memberof": null,
+    "longname": "lib/SharedCache.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Shared Cache\n */\nexport class SharedCache {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver) {\n    this._driver = driver;\n\n    new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush'\n    );\n  }\n\n  /**\n   * @todo: use Promise when get rid of transpiler\n   *\n   * @param {Request} requestObject\n   * @param {Function} callback\n   * @returns {Promise}\n   */\n  request(requestObject, callback = () => {}) {\n    let cacheKey = this.buildKeyFromRequest(requestObject);\n\n    this._driver.has(cacheKey, (err, has) => {\n      if (has) {\n        this._driver.get(cacheKey, (err, data) => {\n          if (err) {\n            requestObject.send(callback);\n\n            return;\n          }\n\n          callback(this._createSuccessfulResponse(data));\n        });\n\n        return;\n      }\n\n      requestObject.send(callback);\n    });\n  }\n\n  /**\n   * @param {Request} request\n   * @returns {String}\n   * @private\n   */\n  buildKeyFromRequest(request) {\n    let action = request.action;\n    let requestIdentifier = action.source[request.isLambda ? 'original' : 'api'];\n\n    return `${requestIdentifier}#${JSON.stringify(request.payload)}`;\n  }\n\n  /**\n   * @param {Runtime} runtime\n   * @returns {String}\n   */\n  buildKeyFromLambdaRuntime(runtime) {\n    let payload = JSON.stringify(runtime.request.data);\n\n    return runtime.context && runtime.context.has('invokedFunctionArn')\n      ? `${runtime.context.getOption('invokedFunctionArn')}#${payload}`\n      : null;\n  }\n\n  /**\n   * @param {Object} data\n   * @returns {{isError: boolean, data: *, error: null, statusCode: number}}\n   * @private\n   */\n  _createSuccessfulResponse(data) {\n    return {\n      data: data,\n      statusCode: 200,\n      isError: false,\n      error: null,\n    };\n  }\n\n  /**\n   * If key exists do nothing, else create it with specified parameters\n   *\n   * @param {String} key\n   * @param {Object} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   */\n  assure(key, value, ttl = 0, callback = () => {}) {\n    this._driver.has(key, (err, has) => {\n      if (!has) {\n        this._driver.set(key, value, ttl, callback);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "SharedCache",
+    "memberof": "lib/SharedCache.js",
+    "longname": "lib/SharedCache.js~SharedCache",
+    "access": null,
+    "export": true,
+    "importPath": "deep-cache/lib/SharedCache.js",
+    "importStyle": "{SharedCache}",
+    "description": "Shared Cache",
+    "lineNumber": 12,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/SharedCache.js~SharedCache",
+    "longname": "lib/SharedCache.js~SharedCache#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "driver",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_driver",
+    "memberof": "lib/SharedCache.js~SharedCache",
+    "longname": "lib/SharedCache.js~SharedCache#_driver",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "request",
+    "memberof": "lib/SharedCache.js~SharedCache",
+    "longname": "lib/SharedCache.js~SharedCache#request",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "unknown": [
+      {
+        "tagName": "@todo: use Promise when get rid of transpiler\n\n",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@returns",
+        "tagValue": "{Promise}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Request"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "requestObject",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Promise"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "buildKeyFromRequest",
+    "memberof": "lib/SharedCache.js~SharedCache",
+    "longname": "lib/SharedCache.js~SharedCache#buildKeyFromRequest",
+    "access": "private",
+    "description": null,
+    "lineNumber": 61,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Request"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "request",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "buildKeyFromLambdaRuntime",
+    "memberof": "lib/SharedCache.js~SharedCache",
+    "longname": "lib/SharedCache.js~SharedCache#buildKeyFromLambdaRuntime",
+    "access": null,
+    "description": null,
+    "lineNumber": 72,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Runtime"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "runtime",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_createSuccessfulResponse",
+    "memberof": "lib/SharedCache.js~SharedCache",
+    "longname": "lib/SharedCache.js~SharedCache#_createSuccessfulResponse",
+    "access": "private",
+    "description": null,
+    "lineNumber": 85,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{{isError: boolean, data: *, error: null, statusCode: number}}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "{isError: boolean, data: *, error: null, statusCode: number}"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "assure",
+    "memberof": "lib/SharedCache.js~SharedCache",
+    "longname": "lib/SharedCache.js~SharedCache#assure",
+    "access": null,
+    "description": "If key exists do nothing, else create it with specified parameters",
+    "lineNumber": 102,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "value",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ttl",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
         "description": ""
       }
     ],

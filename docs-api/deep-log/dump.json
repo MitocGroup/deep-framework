@@ -153,7 +153,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\n\n/**\n * Console native logging\n */\nexport class ConsoleDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._console = ConsoleDriver._buildConsole();\n  }\n\n  /**\n   * @returns {Object}\n   * @private\n   */\n  static _buildConsole() {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n    let console = {};\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      // Fixes issue with node env\n      if (method === 'debug' &&\n        typeof nativeConsole[method] === 'undefined') {\n        method = 'log';\n      }\n\n      console[method] = nativeConsole[method];\n    }\n\n    return console;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeMethod = 'log';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.ERROR:\n      case Log.CRITICAL:\n        nativeMethod = 'error';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n        nativeMethod = 'warn';\n        break;\n      case Log.NOTICE:\n        nativeMethod = 'log';\n        break;\n      case Log.INFO:\n        nativeMethod = 'info';\n        break;\n      case Log.DEBUG:\n        nativeMethod = 'debug';\n        break;\n    }\n\n    // Fixes issue with node env\n    (this._console[nativeMethod] || this._console.log)(AbstractDriver.timeString, msg);\n\n    // @todo: figure out a better way of dumping context\n    if (context) {\n      // Fixes issue with node env\n      (this._console.debug || this._console.log)('[DEBUG]', context);\n    }\n  }\n\n  /**\n   * @param {Boolean} turnOff\n   * @returns {ConsoleDriver}\n   */\n  overrideNative(turnOff = false) {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      nativeConsole[method] = (...args) => {\n        if (!turnOff) {\n          this._console[method](AbstractDriver.timeString, ...args);\n        }\n      };\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get nativeConsole() {\n    return typeof window === 'undefined' ? console : window.console;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get METHODS_TO_OVERRIDE() {\n    return ['error', 'log', 'warn', 'info', 'debug'];\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\n\n/**\n * Console native logging\n */\nexport class ConsoleDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._console = ConsoleDriver._buildConsole();\n  }\n\n  /**\n   * @returns {Object}\n   * @private\n   */\n  static _buildConsole() {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n    let console = {};\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      // Fixes issue with node env\n      if (method === 'debug' &&\n        typeof nativeConsole[method] === 'undefined') {\n        method = 'log';\n      }\n\n      console[method] = nativeConsole[method];\n    }\n\n    return console;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeMethod = 'log';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.ERROR:\n      case Log.CRITICAL:\n        nativeMethod = 'error';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n        nativeMethod = 'warn';\n        break;\n      case Log.NOTICE:\n        nativeMethod = 'log';\n        break;\n      case Log.INFO:\n        nativeMethod = 'info';\n        break;\n      case Log.DEBUG:\n        nativeMethod = 'debug';\n        break;\n    }\n\n    // Fixes issue with node env\n    (this._console[nativeMethod] || this._console.log)(AbstractDriver.timeString, msg);\n\n    // @todo: figure out a better way of dumping context\n    if (context) {\n      // Fixes issue with node env\n      (this._console.debug || this._console.log)('[DEBUG]', context);\n    }\n  }\n\n  /**\n   * @param {Boolean} logTime\n   * @param {Boolean} coloredOutput\n   * @param {Boolean} turnOff\n   * @returns {ConsoleDriver}\n   */\n  overrideNative(logTime = true, coloredOutput = true, turnOff = false) {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      nativeConsole[method] = (...args) => {\n        if (!turnOff) {\n          let nativeArgs = args;\n\n          if (coloredOutput) {\n            nativeArgs = ConsoleDriver._colorOutput(method, nativeArgs);\n          }\n\n          if (logTime) {\n            nativeArgs.unshift(AbstractDriver.timeString);\n          }\n\n          this._console[method](...nativeArgs);\n        }\n      };\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} type\n   * @param {Array} args\n   * @returns {Array}\n   * @private\n   */\n  static _colorOutput(type, args) {\n    let color = null;\n\n    switch(type.toLowerCase()) {\n      case 'error':\n        color = 31; // red\n        break;\n      case 'warn':\n        color = 33; // yellow\n        break;\n      default: color = 32; // green\n    }\n\n    args.unshift(`\\x1b[${color}m`);\n    args.push('\\x1b[0m');\n\n    return args;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get nativeConsole() {\n    return typeof window === 'undefined' ? console : window.console;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get METHODS_TO_OVERRIDE() {\n    return ['error', 'log', 'warn', 'info', 'debug'];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -284,7 +284,7 @@
     "longname": "lib/Driver/ConsoleDriver.js~ConsoleDriver#overrideNative",
     "access": null,
     "description": null,
-    "lineNumber": 90,
+    "lineNumber": 92,
     "unknown": [
       {
         "tagName": "@returns",
@@ -292,6 +292,26 @@
       }
     ],
     "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "logTime",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "coloredOutput",
+        "description": ""
+      },
       {
         "nullable": null,
         "types": [
@@ -314,6 +334,54 @@
     "generator": false
   },
   {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_colorOutput",
+    "memberof": "lib/Driver/ConsoleDriver.js~ConsoleDriver",
+    "longname": "lib/Driver/ConsoleDriver.js~ConsoleDriver._colorOutput",
+    "access": "private",
+    "description": null,
+    "lineNumber": 128,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "type",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": true,
     "variation": null,
@@ -322,7 +390,7 @@
     "longname": "lib/Driver/ConsoleDriver.js~ConsoleDriver.nativeConsole",
     "access": null,
     "description": null,
-    "lineNumber": 113,
+    "lineNumber": 150,
     "unknown": [
       {
         "tagName": "@returns",
@@ -353,7 +421,7 @@
     "longname": "lib/Driver/ConsoleDriver.js~ConsoleDriver.METHODS_TO_OVERRIDE",
     "access": null,
     "description": null,
-    "lineNumber": 120,
+    "lineNumber": 157,
     "unknown": [
       {
         "tagName": "@returns",
@@ -385,7 +453,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport url from 'url';\n\n/**\n * Raven/Sentry logging for browser\n *\n * @todo replace it on compile time rather than runtime!\n */\nexport class RavenBrowserDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    Raven.config(RavenBrowserDriver._prepareDsn(dsn)).install();\n  }\n\n  /**\n   * @todo: tmp hook, remove it before persisting frontend config\n   *\n   * Remove password from url to not expose it into browser\n   *\n   * @param {String} dsn\n   * @returns {String}\n   */\n  static _prepareDsn(dsn) {\n    let parsedDsn = url.parse(dsn);\n    parsedDsn.auth = parsedDsn.auth.split(':')[0];\n\n    return url.format(parsedDsn);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenBrowserDriver._mapLevel(level);\n\n\n    Raven.captureMessage(msg, {\n      level: nativeLevel,\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport url from 'url';\nimport util from 'util';\n\n/**\n * Raven/Sentry logging for browser\n *\n * @todo replace it on compile time rather than runtime!\n */\nexport class RavenBrowserDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   * @param {Object} options\n   */\n  constructor(dsn, options = {}) {\n    super();\n\n    options = util._extend(options, {\n      maxMessageLength: 256\n    });\n\n    Raven.config(RavenBrowserDriver._prepareDsn(dsn), options).install();\n  }\n\n  /**\n   * @todo: tmp hook, remove it before persisting frontend config\n   *\n   * Remove password from url to not expose it into browser\n   *\n   * @param {String} dsn\n   * @returns {String}\n   */\n  static _prepareDsn(dsn) {\n    let parsedDsn = url.parse(dsn);\n    parsedDsn.auth = parsedDsn.auth.split(':')[0];\n\n    return url.format(parsedDsn);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenBrowserDriver._mapLevel(level);\n\n\n    Raven.captureMessage(msg, {\n      level: nativeLevel,\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -399,7 +467,7 @@
     "importPath": "deep-log/lib/Driver/RavenBrowserDriver.js",
     "importStyle": "{RavenBrowserDriver}",
     "description": "Raven/Sentry logging for browser",
-    "lineNumber": 17,
+    "lineNumber": 18,
     "todo": [
       "replace it on compile time rather than runtime!"
     ],
@@ -417,7 +485,7 @@
     "longname": "lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 23,
     "params": [
       {
         "nullable": null,
@@ -427,6 +495,16 @@
         "spread": false,
         "optional": false,
         "name": "dsn",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
         "description": ""
       }
     ],
@@ -441,7 +519,7 @@
     "longname": "lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver._prepareDsn",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 41,
     "unknown": [
       {
         "tagName": "@todo: tmp hook, remove it before persisting frontend config\n\nRemove password from url to not expose it into browser\n\n",
@@ -483,7 +561,7 @@
     "longname": "lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver#log",
     "access": null,
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 53,
     "params": [
       {
         "nullable": null,
@@ -527,7 +605,7 @@
     "longname": "lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver._mapLevel",
     "access": "private",
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 71,
     "unknown": [
       {
         "tagName": "@returns",
@@ -566,7 +644,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\n\n/**\n * Raven/Sentry logging\n */\nexport class RavenDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    this._clients = {};\n\n    for (let levelKey in Log.LEVELS) {\n      if (!Log.LEVELS.hasOwnProperty(levelKey)) {\n        continue;\n      }\n\n      let level = Log.LEVELS[levelKey];\n\n      let nativeLevel = RavenDriver._mapLevel(level);\n\n      this._clients[nativeLevel] = new Raven.Client(dsn, {\n        level: nativeLevel,\n      });\n    }\n  }\n\n  /**\n   * @returns {Raven.Client[]}\n   */\n  get clients() {\n    return this._clients;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenDriver._mapLevel(level);\n\n    this._clients[nativeLevel].captureMessage(msg, {\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport util from 'util';\n\n/**\n * Raven/Sentry logging\n */\nexport class RavenDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   * @param {Object} options\n   */\n  constructor(dsn, options = {}) {\n    super();\n\n    options = util._extend(options, {\n      maxMessageLength: 256\n    });\n\n    this._clients = {};\n\n    for (let levelKey in Log.LEVELS) {\n      if (!Log.LEVELS.hasOwnProperty(levelKey)) {\n        continue;\n      }\n\n      let nativeLevel = RavenDriver._mapLevel(Log.LEVELS[levelKey]);\n\n      options.level = nativeLevel;\n\n      this._clients[nativeLevel] = new Raven.Client(dsn, options);\n    }\n  }\n\n  /**\n   * @returns {Raven.Client[]}\n   */\n  get clients() {\n    return this._clients;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenDriver._mapLevel(level);\n\n    this._clients[nativeLevel].captureMessage(msg, {\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -580,7 +658,7 @@
     "importPath": "deep-log/lib/Driver/RavenDriver.js",
     "importStyle": "{RavenDriver}",
     "description": "Raven/Sentry logging",
-    "lineNumber": 14,
+    "lineNumber": 15,
     "interface": false,
     "extends": [
       "lib/Driver/AbstractDriver~AbstractDriver"
@@ -595,7 +673,7 @@
     "longname": "lib/Driver/RavenDriver.js~RavenDriver#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 20,
     "params": [
       {
         "nullable": null,
@@ -605,6 +683,16 @@
         "spread": false,
         "optional": false,
         "name": "dsn",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
         "description": ""
       }
     ],
@@ -619,7 +707,7 @@
     "longname": "lib/Driver/RavenDriver.js~RavenDriver#_clients",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 27,
     "undocument": true,
     "type": {
       "types": [
@@ -636,7 +724,7 @@
     "longname": "lib/Driver/RavenDriver.js~RavenDriver#clients",
     "access": null,
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 45,
     "unknown": [
       {
         "tagName": "@returns",
@@ -667,7 +755,7 @@
     "longname": "lib/Driver/RavenDriver.js~RavenDriver#log",
     "access": null,
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 54,
     "params": [
       {
         "nullable": null,
@@ -711,7 +799,7 @@
     "longname": "lib/Driver/RavenDriver.js~RavenDriver._mapLevel",
     "access": "private",
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -804,7 +892,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {ConsoleDriver} from './Driver/ConsoleDriver';\nimport {RavenDriver} from './Driver/RavenDriver';\nimport {RavenBrowserDriver} from './Driver/RavenBrowserDriver';\nimport {AbstractDriver} from './Driver/AbstractDriver';\n\n/**\n * Logging manager\n */\nexport class Log extends Kernel.ContainerAware {\n  /**\n   * @param {Object} drivers\n   */\n  constructor(drivers = {}) {\n    super();\n\n    this._drivers = new Core.Generic.ObjectStorage();\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: remove this compatibility hook\n    let globals = kernel.config.globals || kernel.config;\n\n    let drivers = globals.logDrivers;\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n\n    callback();\n  }\n\n  /**\n   *\n   * @param {String} type\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  create(type, ...args) {\n    var driver;\n\n    switch (type.toLowerCase()) {\n      case 'console':\n        driver = new ConsoleDriver(...args);\n        break;\n      case 'raven':\n      case 'sentry':\n        let DriverPrototype = this.container.get(Kernel.CONTEXT).isFrontend ? RavenBrowserDriver : RavenDriver;\n\n        driver = new DriverPrototype(\n          args.length > 0 && typeof args[0] === 'object'\n            ? args[0].dsn\n            : null\n        );\n        break;\n      default:\n        throw new Core.Exception.InvalidArgumentException(\n          type,\n          '[Console, Raven, Sentry]'\n        );\n    }\n\n    return driver;\n  }\n\n  /**\n   * @returns {Log}\n   *\n   * @todo: do we need this here?\n   */\n  overrideJsConsole() {\n    if (!this._drivers.find(ConsoleDriver)) {\n      this.register('console');\n    }\n\n    this._drivers.find(ConsoleDriver).overrideNative();\n\n    return this;\n  }\n\n  /**\n   * @param {AbstractDriver|String} driver\n   * @param {Array} args\n   * @returns {Log}\n   */\n  register(driver, ...args) {\n    if (typeof driver === 'string') {\n      driver = this.create(driver, ...args);\n    }\n\n    if (!(driver instanceof AbstractDriver)) {\n      throw new Core.Exception.InvalidArgumentException(driver, 'AbstractDriver');\n    }\n\n    this._drivers.add(driver);\n\n    return this;\n  }\n\n  /**\n   * @returns {Core.Generic.ObjectStorage}\n   */\n  get drivers() {\n    return this._drivers;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   * @returns Log\n   */\n  log(msg, level = Log.INFO, context = {}) {\n    let driversArr = this.drivers.iterator;\n\n    for (let driverKey in driversArr) {\n      if (!driversArr.hasOwnProperty(driverKey)) {\n        continue;\n      }\n\n      let driver = driversArr[driverKey];\n\n      driver.log(msg, level, context);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  debug(msg, context = {}) {\n    return this.log(msg, Log.DEBUG, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  err(msg, context = {}) {\n    return this.log(msg, Log.ERROR, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  error(...args) {\n    return this.err(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  info(msg, context = {}) {\n    return this.log(msg, Log.INFO, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  warn(msg, context = {}) {\n    return this.log(msg, Log.WARNING, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  warning(...args) {\n    return this.warn(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  emerg(msg, context = {}) {\n    return this.log(msg, Log.EMERGENCY, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  emergency(...args) {\n    return this.emerg(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  crit(msg, context = {}) {\n    return this.log(msg, Log.CRITICAL, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  critical(...args) {\n    return this.crit(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  notice(msg, context = {}) {\n    return this.log(msg, Log.NOTICE, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  alert(msg, context = {}) {\n    return this.log(msg, Log.ALERT, context);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get LEVELS() {\n    return [\n      Log.EMERGENCY,\n      Log.ALERT,\n      Log.CRITICAL,\n      Log.ERROR,\n      Log.WARNING,\n      Log.NOTICE,\n      Log.INFO,\n      Log.DEBUG,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EMERGENCY() {\n    return 'emergency';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ALERT() {\n    return 'alert';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CRITICAL() {\n    return 'critical';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ERROR() {\n    return 'error';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get WARNING() {\n    return 'warning';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get NOTICE() {\n    return 'notice';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get INFO() {\n    return 'info';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEBUG() {\n    return 'debug';\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {ConsoleDriver} from './Driver/ConsoleDriver';\nimport {RavenDriver} from './Driver/RavenDriver';\nimport {RavenBrowserDriver} from './Driver/RavenBrowserDriver';\nimport {AbstractDriver} from './Driver/AbstractDriver';\n\n/**\n * Logging manager\n */\nexport class Log extends Kernel.ContainerAware {\n  /**\n   * @param {Object} drivers\n   */\n  constructor(drivers = {}) {\n    super();\n\n    this._drivers = new Core.Generic.ObjectStorage();\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: remove this compatibility hook\n    let globals = kernel.config.globals || kernel.config;\n\n    let drivers = globals.logDrivers;\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n\n    callback();\n  }\n\n  /**\n   *\n   * @param {String} type\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  create(type, ...args) {\n    var driver;\n\n    switch (type.toLowerCase()) {\n      case 'console':\n        driver = new ConsoleDriver(...args);\n        break;\n      case 'raven':\n      case 'sentry':\n        let DriverPrototype = this.container.get(Kernel.CONTEXT).isFrontend ? RavenBrowserDriver : RavenDriver;\n\n        driver = new DriverPrototype(\n          args.length > 0 && typeof args[0] === 'object'\n            ? args[0].dsn\n            : null\n        );\n        break;\n      default:\n        throw new Core.Exception.InvalidArgumentException(\n          type,\n          '[Console, Raven, Sentry]'\n        );\n    }\n\n    return driver;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {Log}\n   *\n   * @todo: do we need this here?\n   */\n  overrideJsConsole(...args) {\n    let consoleDriver = this._drivers.find(ConsoleDriver);\n\n    if (!consoleDriver) {\n      this.register('console');\n    }\n\n    (consoleDriver || this._drivers.find(ConsoleDriver))\n      .overrideNative(...args);\n\n    return this;\n  }\n\n  /**\n   * @param {AbstractDriver|String} driver\n   * @param {Array} args\n   * @returns {Log}\n   */\n  register(driver, ...args) {\n    if (typeof driver === 'string') {\n      driver = this.create(driver, ...args);\n    }\n\n    if (!(driver instanceof AbstractDriver)) {\n      throw new Core.Exception.InvalidArgumentException(driver, 'AbstractDriver');\n    }\n\n    this._drivers.add(driver);\n\n    return this;\n  }\n\n  /**\n   * @returns {Core.Generic.ObjectStorage}\n   */\n  get drivers() {\n    return this._drivers;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   * @returns Log\n   */\n  log(msg, level = Log.INFO, context = {}) {\n    let driversArr = this.drivers.iterator;\n\n    for (let driverKey in driversArr) {\n      if (!driversArr.hasOwnProperty(driverKey)) {\n        continue;\n      }\n\n      let driver = driversArr[driverKey];\n\n      driver.log(msg, level, context);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  debug(msg, context = {}) {\n    return this.log(msg, Log.DEBUG, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  err(msg, context = {}) {\n    return this.log(msg, Log.ERROR, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  error(...args) {\n    return this.err(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  info(msg, context = {}) {\n    return this.log(msg, Log.INFO, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  warn(msg, context = {}) {\n    return this.log(msg, Log.WARNING, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  warning(...args) {\n    return this.warn(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  emerg(msg, context = {}) {\n    return this.log(msg, Log.EMERGENCY, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  emergency(...args) {\n    return this.emerg(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  crit(msg, context = {}) {\n    return this.log(msg, Log.CRITICAL, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  critical(...args) {\n    return this.crit(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  notice(msg, context = {}) {\n    return this.log(msg, Log.NOTICE, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  alert(msg, context = {}) {\n    return this.log(msg, Log.ALERT, context);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get LEVELS() {\n    return [\n      Log.EMERGENCY,\n      Log.ALERT,\n      Log.CRITICAL,\n      Log.ERROR,\n      Log.WARNING,\n      Log.NOTICE,\n      Log.INFO,\n      Log.DEBUG,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EMERGENCY() {\n    return 'emergency';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ALERT() {\n    return 'alert';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CRITICAL() {\n    return 'critical';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ERROR() {\n    return 'error';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get WARNING() {\n    return 'warning';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get NOTICE() {\n    return 'notice';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get INFO() {\n    return 'info';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEBUG() {\n    return 'debug';\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -956,14 +1044,25 @@
     "longname": "lib/Log.js~Log#overrideJsConsole",
     "access": null,
     "description": null,
-    "lineNumber": 96,
+    "lineNumber": 97,
     "unknown": [
       {
         "tagName": "@returns",
         "tagValue": "{Log}\n\n@todo: do we need this here?"
       }
     ],
-    "params": [],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
     "return": {
       "nullable": null,
       "types": [
@@ -983,7 +1082,7 @@
     "longname": "lib/Log.js~Log#register",
     "access": null,
     "description": null,
-    "lineNumber": 111,
+    "lineNumber": 115,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1032,7 +1131,7 @@
     "longname": "lib/Log.js~Log#drivers",
     "access": null,
     "description": null,
-    "lineNumber": 128,
+    "lineNumber": 132,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1063,7 +1162,7 @@
     "longname": "lib/Log.js~Log#log",
     "access": null,
     "description": null,
-    "lineNumber": 138,
+    "lineNumber": 142,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1121,7 +1220,7 @@
     "longname": "lib/Log.js~Log#debug",
     "access": null,
     "description": null,
-    "lineNumber": 159,
+    "lineNumber": 163,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1169,7 +1268,7 @@
     "longname": "lib/Log.js~Log#err",
     "access": null,
     "description": null,
-    "lineNumber": 168,
+    "lineNumber": 172,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1217,7 +1316,7 @@
     "longname": "lib/Log.js~Log#error",
     "access": null,
     "description": null,
-    "lineNumber": 175,
+    "lineNumber": 179,
     "params": [
       {
         "nullable": null,
@@ -1246,7 +1345,7 @@
     "longname": "lib/Log.js~Log#info",
     "access": null,
     "description": null,
-    "lineNumber": 184,
+    "lineNumber": 188,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1294,7 +1393,7 @@
     "longname": "lib/Log.js~Log#warn",
     "access": null,
     "description": null,
-    "lineNumber": 193,
+    "lineNumber": 197,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1342,7 +1441,7 @@
     "longname": "lib/Log.js~Log#warning",
     "access": null,
     "description": null,
-    "lineNumber": 200,
+    "lineNumber": 204,
     "params": [
       {
         "nullable": null,
@@ -1371,7 +1470,7 @@
     "longname": "lib/Log.js~Log#emerg",
     "access": null,
     "description": null,
-    "lineNumber": 209,
+    "lineNumber": 213,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1419,7 +1518,7 @@
     "longname": "lib/Log.js~Log#emergency",
     "access": null,
     "description": null,
-    "lineNumber": 216,
+    "lineNumber": 220,
     "params": [
       {
         "nullable": null,
@@ -1448,7 +1547,7 @@
     "longname": "lib/Log.js~Log#crit",
     "access": null,
     "description": null,
-    "lineNumber": 225,
+    "lineNumber": 229,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1496,7 +1595,7 @@
     "longname": "lib/Log.js~Log#critical",
     "access": null,
     "description": null,
-    "lineNumber": 232,
+    "lineNumber": 236,
     "params": [
       {
         "nullable": null,
@@ -1525,7 +1624,7 @@
     "longname": "lib/Log.js~Log#notice",
     "access": null,
     "description": null,
-    "lineNumber": 241,
+    "lineNumber": 245,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1573,7 +1672,7 @@
     "longname": "lib/Log.js~Log#alert",
     "access": null,
     "description": null,
-    "lineNumber": 250,
+    "lineNumber": 254,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1621,7 +1720,7 @@
     "longname": "lib/Log.js~Log.LEVELS",
     "access": null,
     "description": null,
-    "lineNumber": 257,
+    "lineNumber": 261,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1652,7 +1751,7 @@
     "longname": "lib/Log.js~Log.EMERGENCY",
     "access": null,
     "description": null,
-    "lineNumber": 273,
+    "lineNumber": 277,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1683,7 +1782,7 @@
     "longname": "lib/Log.js~Log.ALERT",
     "access": null,
     "description": null,
-    "lineNumber": 280,
+    "lineNumber": 284,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1714,7 +1813,7 @@
     "longname": "lib/Log.js~Log.CRITICAL",
     "access": null,
     "description": null,
-    "lineNumber": 287,
+    "lineNumber": 291,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1745,7 +1844,7 @@
     "longname": "lib/Log.js~Log.ERROR",
     "access": null,
     "description": null,
-    "lineNumber": 294,
+    "lineNumber": 298,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1776,7 +1875,7 @@
     "longname": "lib/Log.js~Log.WARNING",
     "access": null,
     "description": null,
-    "lineNumber": 301,
+    "lineNumber": 305,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1807,7 +1906,7 @@
     "longname": "lib/Log.js~Log.NOTICE",
     "access": null,
     "description": null,
-    "lineNumber": 308,
+    "lineNumber": 312,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1838,7 +1937,7 @@
     "longname": "lib/Log.js~Log.INFO",
     "access": null,
     "description": null,
-    "lineNumber": 315,
+    "lineNumber": 319,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1869,7 +1968,7 @@
     "longname": "lib/Log.js~Log.DEBUG",
     "access": null,
     "description": null,
-    "lineNumber": 322,
+    "lineNumber": 326,
     "unknown": [
       {
         "tagName": "@returns",

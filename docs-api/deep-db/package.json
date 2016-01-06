@@ -1,6 +1,6 @@
 {
   "name": "deep-db",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "DEEP Database Library",
   "keywords": [
     "Digital End-To-End Enterprise Platform",
@@ -52,10 +52,10 @@
   "main": "lib.compiled/bootstrap.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MitocGroup/deep.git"
+    "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd",
+    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd --timeout 4s",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core deep-validation"
@@ -67,10 +67,12 @@
     "joi": "^5.x.x",
     "vogels": "^2.1.x"
   },
-  "devDependencies": {
+  "optionalDependencies": {
     "local-dynamo": "MitocGroup/local-dynamo",
     "dynalite": "^0.17.x",
-    "fs-extra": "^0.26.x",
+    "fs-extra": "^0.26.x"
+  },
+  "devDependencies": {
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
     "sinon-chai": "^2.8.x",

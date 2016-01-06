@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -52,6 +52,23 @@ import Path from &apos;path&apos;;
 export class Asset extends Kernel.ContainerAware {
   constructor() {
     super();
+
+    this._injectBuildId = Asset.INJECT_BUILD_ID_STATE;
+    this._buildId = null;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get injectBuildId() {
+    return this._injectBuildId;
+  }
+
+  /**
+   * @param {Boolean} state
+   */
+  set injectBuildId(state) {
+    this._injectBuildId = state;
   }
 
   /**
@@ -61,6 +78,8 @@ export class Asset extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
+    this._buildId = kernel.buildId;
+
     if (kernel.isFrontend) {
       let loadVector = [];
       let microservices = kernel.microservices;
@@ -96,11 +115,22 @@ export class Asset extends Kernel.ContainerAware {
   locate(assetIdentifier, suffix = &apos;&apos;) {
     let path = this._resolveIdentifier(assetIdentifier);
 
-    if (this.microservice.isRoot) {
-      return Path.join(path) + suffix;
-    } else {
-      return Path.join(this.microservice.toString(), path) + suffix;
-    }
+    let basePath = this.microservice.isRoot
+      ? Path.join(path)
+      : Path.join(this.microservice.toString(), path);
+
+    let internalSuffix = this._injectBuildId &amp;&amp; this._buildId
+      ? `?_v=${this._buildId}`
+      : &apos;&apos;;
+
+    return `${basePath}${suffix}${internalSuffix}`;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  static get INJECT_BUILD_ID_STATE() {
+    return true;
   }
 }
 </code></pre>
