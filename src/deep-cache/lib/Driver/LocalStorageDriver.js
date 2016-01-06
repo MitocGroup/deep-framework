@@ -41,13 +41,16 @@ export class LocalStorageDriver extends AbstractDriver {
    * @returns {Boolean}
    */
   _set(key, value, ttl = 0, callback = () => {}) {
-    if (ttl <= 0) {
-      LocalStorage.set(key, {value: value, exd: null});
-    } else {
-      LocalStorage.set(key, {value: value, exd: (LocalStorageDriver._now + ttl)});
-    }
+    let exd = ttl > 0 ? LocalStorageDriver._now + ttl : null;
 
-    callback(null, true);
+    try {
+      LocalStorage.set(key, {value: value, exd: exd});
+      callback(null, true);
+
+    } catch(error) {
+      // @todo - check for QUOTA_EXCEEDED_ERR and find out a solution to cleanup "stale" values and re-try to set it
+      callback(error, false);
+    }
   }
 
   /**
