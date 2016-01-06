@@ -39,6 +39,11 @@ export class Cache extends Kernel.ContainerAware {
         break;
       case 'local-storage':
         DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;
+
+        // fallback to in-memory driver if localStorage is not available
+        if (!DriverPrototype.isAvailable()) {
+          DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;
+        }
         break;
       case 's3fs':
         DriverPrototype = require('./Driver/S3FSDriver').S3FSDriver;
