@@ -47,8 +47,12 @@ export class LocalStorageDriver extends AbstractDriver {
       LocalStorage.set(key, {value: value, exd: exd});
       callback(null, true);
 
-    } catch(error) {
-      // @todo - check for QUOTA_EXCEEDED_ERR and find out a solution to cleanup "stale" values and re-try to set it
+    } catch (error) {
+      // @todo - check if error is QUOTA_EXCEEDED_ERR (@see http://chrisberkhout.com/blog/localstorage-errors/)
+      if (error && this._flushStale()) {
+        this._set(key, value, ttl, callback);
+      }
+
       callback(error, false);
     }
   }
@@ -88,6 +92,22 @@ export class LocalStorageDriver extends AbstractDriver {
     LocalStorage.clear();
 
     callback(null, true);
+  }
+
+  /**
+   * @returns {boolean}
+   * @private
+   */
+  _flushStale() {
+    let removedKeys = [];
+
+    LocalStorage.forEach((key, val) => {
+      if (this.isDeepKey(key) && !LocalStorageDriver._isAlive(val, key)) {
+        removedKeys.push(key);
+      }
+    });
+
+    return removedKeys.length > 0;
   }
 
   /**
