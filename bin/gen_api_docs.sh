@@ -23,7 +23,7 @@ for lib in ${path}/../src/deep-*/; do
   sed "1s/.*/$pck_name ($name)/" ${path}/../README.md > ${lib}/README.md
 
   if [ ${name} != 'deep-framework' ]; then
-    tmp_esdoc_cfg=$(mktemp)
+    tmp_esdoc_cfg=$(mktemp -t deep_tmp_esdoc_cfg)
     esdoc_cfg=$(echo ${ESDOC_CFG_TPL} | sed "s/{src}/$lib_path/" | sed "s/{dest}/$docs_path/" | sed "s/{title}/$pck_name/" | sed "s/{pkg}/$npm_pkg/" | sed "s/{readme}/$readme/")
 
     echo ${esdoc_cfg} > ${tmp_esdoc_cfg}

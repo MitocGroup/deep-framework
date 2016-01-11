@@ -390,6 +390,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -805,13 +811,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/token.js~token#identityprovider",
-    "class/lib/Token.js~Token.html#instance-set-identityProvider",
+    "class/lib/Token.js~Token.html#instance-get-identityProvider",
     "lib/Token.js~Token#identityProvider",
     "member"
   ],
   [
     "lib/token.js~token#identityprovider",
-    "class/lib/Token.js~Token.html#instance-get-identityProvider",
+    "class/lib/Token.js~Token.html#instance-set-identityProvider",
     "lib/Token.js~Token#identityProvider",
     "member"
   ],

@@ -140,16 +140,15 @@ Our short-to-medium-term roadmap items, in order of descending priority:
 
 Feature | Details | Owner
 --------|---------|------
+Implement [RUM](https://en.wikipedia.org/wiki/Real_user_monitoring) as part of deep-logs | Achieve real user monitoring by logging all user actions and visualize them with an [ELK stack](https://www.elastic.co/webinars/introduction-elk-stack) | [@mgoria](https://github.com/mgoria)
+Implement deep-search | Full text search service on top of [Amazon CloudSearch](https://aws.amazon.com/cloudsearch/) | [@alexanderc](https://github.com/alexanderc)
 Implement deep-security | Security service on top of [IAM](https://aws.amazon.com/iam/) | [@mgoria](https://github.com/mgoria)
 Implement deep-notification | Push notification service on top of [SNS](https://aws.amazon.com/sns/) that supports push to mobile devices, web browsers, email and sms. | [@alexanderc](https://github.com/alexanderc)
-Implement deep-search | Full text search service on top of [Amazon CloudSearch](https://aws.amazon.com/cloudsearch/) | [@alexanderc](https://github.com/alexanderc)
 Implement deep-event | Event manager service using Lambda scheduling, Kinesis stream, Dynamo streaming, SQS, etc. | ...
 Implement deep-db "eventual consistency" | Achieve "eventual consistency" by offloading data to [SQS](https://aws.amazon.com/sqs/) as the default option | [@alexanderc](https://github.com/alexanderc)
 Improve deep-db "strong consistency" | Achieve "strong consistency" by increasing Reads/Writes per second in runtime (as other option for special DB operations) | ...
 Integrate deep-db with deep-cache natively (blocked by VPC support in Lambda) | Cache fetched data by default using deep-cache library | ...
 Implement deep-cache | Cache service on top of [Elasticache](https://aws.amazon.com/elasticache/) ([Redis](http://redis.io)) inside Lambdas (blocked by VPC support in Lambda) | ...
-Implement [RUM](https://en.wikipedia.org/wiki/Real_user_monitoring) as part of deep-logs | Achieve real user monitoring by logging all user actions and visualize them with an [ELK stack](https://www.elastic.co/webinars/introduction-elk-stack) | ...
-Optimize the framework to reduce the size of Lambda functions | Optimize deps and packing as well as browserify process to reduce framework size | [@alexanderc](https://github.com/alexanderc)
 Improve documentation for each deep-* library | Update docs for deep libraries and development tools | [@alexanderc](https://github.com/alexanderc) [@mgoria](https://github.com/mgoria)
 
 ### Changelog

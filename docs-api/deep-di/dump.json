@@ -1,5 +1,6 @@
 [
   {
+    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -12,6 +13,7 @@
     "content": "/**\n * Created by mgoria on 5/26/2015\n */\n\n'use strict';\n\nimport Bottle from 'bottlejs';\nimport {MissingServiceException} from './Exception/MissingServiceException';\nimport Core from 'deep-core';\n\n/**\n * Deep dependency injection module\n */\nexport class DI {\n  constructor() {\n    this._bottle = new Bottle();\n  }\n\n  /**\n   * Registers a service to container\n   *\n   * @param {String} serviceName\n   * @param {Object} serviceClass\n   * @param {String[]} dependencies\n   */\n  register(serviceName, serviceClass, dependencies) {\n    var args = [serviceName, serviceClass];\n\n    if (dependencies) {\n      args = args.concat(dependencies);\n    }\n\n    this._bottle.service.apply(this._bottle, args);\n  }\n\n  /**\n   * Defines a factory method to create a service\n   *\n   * @param {String} serviceName\n   * @param {Object} factoryClass\n   */\n  factory(serviceName, factoryClass) {\n    this._bottle.factory(serviceName, factoryClass);\n  }\n\n  /**\n   * Adds a parameter into container\n   *\n   * @param {String} name\n   * @param {*} value\n   */\n  addParameter(name, value) {\n    this._bottle.value(name, value);\n  }\n\n  /**\n   * Adds an instantiated service into container\n   *\n   * @param {String} name\n   * @param {Object} value\n   */\n  addService(name, value) {\n    if (!(value instanceof Object)) {\n      throw new Core.Exception.InvalidArgumentException(value, 'Object');\n    }\n\n    this._bottle.value(name, value);\n  }\n\n  /**\n   * Returns a service / parameter from container\n   *\n   * @returns {Object}\n   */\n  get(key) {\n    if (typeof this._bottle.container[key] === 'undefined') {\n      throw new MissingServiceException(`Unregistered service or parameter \"${key}\"`);\n    }\n\n    return this._bottle.container[key];\n  }\n}\n"
   },
   {
+    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -27,6 +29,7 @@
     "interface": false
   },
   {
+    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -41,6 +44,7 @@
     "generator": false
   },
   {
+    "__docId__": 3,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -58,6 +62,7 @@
     }
   },
   {
+    "__docId__": 4,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -102,6 +107,7 @@
     "generator": false
   },
   {
+    "__docId__": 5,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -136,6 +142,7 @@
     "generator": false
   },
   {
+    "__docId__": 6,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -170,6 +177,7 @@
     "generator": false
   },
   {
+    "__docId__": 7,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -204,6 +212,7 @@
     "generator": false
   },
   {
+    "__docId__": 8,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -238,6 +247,7 @@
     "generator": false
   },
   {
+    "__docId__": 9,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -250,6 +260,7 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
+    "__docId__": 10,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -268,6 +279,7 @@
     ]
   },
   {
+    "__docId__": 11,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -292,6 +304,7 @@
     "generator": false
   },
   {
+    "__docId__": 12,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -304,6 +317,7 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when requested service is missing\n */\nexport class MissingServiceException extends Exception {\n  /**\n   * @param {String} serviceName\n   */\n  constructor(serviceName) {\n    super(`Missing service ${serviceName} in deep-kernel`);\n  }\n}\n"
   },
   {
+    "__docId__": 13,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -322,6 +336,7 @@
     ]
   },
   {
+    "__docId__": 14,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -346,6 +361,7 @@
     "generator": false
   },
   {
+    "__docId__": 15,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -358,6 +374,7 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {DI} from './DI';\n\nlet exports = module.exports = DI;\n"
   },
   {
+    "__docId__": 16,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -378,6 +395,7 @@
     }
   },
   {
+    "__docId__": 18,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -390,6 +408,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 19,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -402,6 +421,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 20,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -414,6 +434,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 21,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -426,6 +447,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 22,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -438,6 +460,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 23,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -450,6 +473,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 24,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -462,6 +486,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 25,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -474,6 +499,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 26,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -486,6 +512,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 27,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -498,6 +525,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 28,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -510,6 +538,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 29,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -522,6 +551,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 30,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -534,6 +564,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 31,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -546,6 +577,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 32,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -558,6 +590,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 33,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -570,6 +603,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 34,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -582,6 +616,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 35,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -594,6 +629,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 36,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -606,6 +642,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 37,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -618,6 +655,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 38,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -630,6 +668,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 39,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -642,6 +681,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 40,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -654,6 +694,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -666,6 +707,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -678,6 +720,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -690,6 +733,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -702,6 +746,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -714,6 +759,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -726,6 +772,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -738,6 +785,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -750,6 +798,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -762,6 +811,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -774,6 +824,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -786,6 +837,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -798,6 +850,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -810,6 +863,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -822,6 +876,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -834,6 +889,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -846,6 +902,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -858,6 +915,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -870,6 +928,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -882,6 +941,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -894,6 +954,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -906,6 +967,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -918,6 +980,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -930,6 +993,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -942,6 +1006,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -954,6 +1019,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -966,6 +1032,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -978,6 +1045,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -990,6 +1058,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1002,6 +1071,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1014,6 +1084,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1021,6 +1092,19 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 73,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

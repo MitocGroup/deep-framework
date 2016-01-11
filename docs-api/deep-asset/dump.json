@@ -1,5 +1,6 @@
 [
   {
+    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -12,6 +13,7 @@
     "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Path from 'path';\n\n/**\n * @temp Asset class definition\n */\nexport class Asset extends Kernel.ContainerAware {\n  constructor() {\n    super();\n\n    this._injectBuildId = Asset.INJECT_BUILD_ID_STATE;\n    this._buildId = null;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get injectBuildId() {\n    return this._injectBuildId;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set injectBuildId(state) {\n    this._injectBuildId = state;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._buildId = kernel.buildId;\n\n    if (kernel.isFrontend) {\n      let loadVector = [];\n      let microservices = kernel.microservices;\n\n      for (let microserviceKey in microservices) {\n        if (!microservices.hasOwnProperty(microserviceKey)) {\n          continue;\n        }\n\n        let microservice = microservices[microserviceKey];\n\n        if (microservice.isRoot) {\n          continue;\n        }\n\n        loadVector.push(this.locate(`@${microservice.identifier}:bootstrap.js`));\n      }\n\n      kernel.container.addParameter(\n        Kernel.FRONTEND_BOOTSTRAP_VECTOR,\n        loadVector\n      );\n    }\n\n    callback();\n  }\n\n  /**\n   * @param {String} assetIdentifier (e.g. @microservice_identifier:asset_path)\n   * @param {String} suffix\n   * @returns {String}\n   */\n  locate(assetIdentifier, suffix = '') {\n    let path = this._resolveIdentifier(assetIdentifier);\n\n    let basePath = this.microservice.isRoot\n      ? Path.join(path)\n      : Path.join(this.microservice.toString(), path);\n\n    let internalSuffix = this._injectBuildId && this._buildId\n      ? `?_v=${this._buildId}`\n      : '';\n\n    return `${basePath}${suffix}${internalSuffix}`;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  static get INJECT_BUILD_ID_STATE() {\n    return true;\n  }\n}\n"
   },
   {
+    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -36,6 +38,7 @@
     ]
   },
   {
+    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -50,6 +53,7 @@
     "generator": false
   },
   {
+    "__docId__": 3,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -67,6 +71,7 @@
     }
   },
   {
+    "__docId__": 4,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -84,6 +89,7 @@
     }
   },
   {
+    "__docId__": 5,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -115,6 +121,7 @@
     "generator": false
   },
   {
+    "__docId__": 6,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -144,6 +151,7 @@
     "generator": false
   },
   {
+    "__docId__": 7,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -161,6 +169,7 @@
     }
   },
   {
+    "__docId__": 8,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -195,6 +204,7 @@
     "generator": false
   },
   {
+    "__docId__": 9,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -212,6 +222,7 @@
     }
   },
   {
+    "__docId__": 10,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -260,6 +271,7 @@
     "generator": false
   },
   {
+    "__docId__": 11,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -291,6 +303,7 @@
     "generator": false
   },
   {
+    "__docId__": 12,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -303,6 +316,7 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
+    "__docId__": 13,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -321,6 +335,7 @@
     ]
   },
   {
+    "__docId__": 14,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -345,6 +360,7 @@
     "generator": false
   },
   {
+    "__docId__": 15,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -357,6 +373,7 @@
     "content": "/**\n * Created by mgoria on 5/27/2015\n */\n\n'use strict';\n\nimport {Asset} from './Asset';\n\nlet exports = module.exports = Asset;\n"
   },
   {
+    "__docId__": 16,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -377,6 +394,7 @@
     }
   },
   {
+    "__docId__": 18,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -389,6 +407,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 19,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -401,6 +420,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 20,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -413,6 +433,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 21,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -425,6 +446,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 22,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -437,6 +459,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 23,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -449,6 +472,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 24,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -461,6 +485,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 25,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -473,6 +498,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 26,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -485,6 +511,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 27,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -497,6 +524,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 28,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -509,6 +537,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 29,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -521,6 +550,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 30,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -533,6 +563,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 31,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -545,6 +576,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 32,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -557,6 +589,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 33,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -569,6 +602,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 34,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -581,6 +615,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 35,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -593,6 +628,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 36,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -605,6 +641,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 37,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -617,6 +654,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 38,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -629,6 +667,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 39,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -641,6 +680,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 40,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -653,6 +693,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -665,6 +706,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -677,6 +719,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -689,6 +732,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -701,6 +745,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -713,6 +758,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -725,6 +771,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -737,6 +784,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -749,6 +797,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -761,6 +810,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -773,6 +823,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -785,6 +836,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -797,6 +849,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -809,6 +862,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -821,6 +875,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -833,6 +888,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -845,6 +901,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -857,6 +914,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -869,6 +927,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -881,6 +940,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -893,6 +953,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -905,6 +966,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -917,6 +979,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -929,6 +992,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -941,6 +1005,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -953,6 +1018,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -965,6 +1031,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -977,6 +1044,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -989,6 +1057,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1001,6 +1070,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1013,6 +1083,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1020,6 +1091,19 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 73,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

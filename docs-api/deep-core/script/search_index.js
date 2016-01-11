@@ -444,6 +444,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -493,13 +499,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
@@ -517,13 +523,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
@@ -739,13 +745,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
@@ -829,13 +835,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
@@ -1221,6 +1227,12 @@ window.esdocSearchIndex = [
     "lib/aws/service.js~service.cloud_front",
     "class/lib/AWS/Service.js~Service.html#static-get-CLOUD_FRONT",
     "lib/AWS/Service.js~Service.CLOUD_FRONT",
+    "member"
+  ],
+  [
+    "lib/aws/service.js~service.cloud_search",
+    "class/lib/AWS/Service.js~Service.html#static-get-CLOUD_SEARCH",
+    "lib/AWS/Service.js~Service.CLOUD_SEARCH",
     "member"
   ],
   [
