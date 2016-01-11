@@ -48,8 +48,7 @@ export class LocalStorageDriver extends AbstractDriver {
       callback(null, true);
 
     } catch (error) {
-      // @todo - check if error is QUOTA_EXCEEDED_ERR (@see http://chrisberkhout.com/blog/localstorage-errors/)
-      if (error && this._flushStale()) {
+      if (this._isQuotaExceededError(error) && this._flushStale()) {
         this._set(key, value, ttl, callback);
       }
 
@@ -108,6 +107,23 @@ export class LocalStorageDriver extends AbstractDriver {
     });
 
     return removedKeys.length > 0;
+  }
+
+  /**
+   * @see http://chrisberkhout.com/blog/localstorage-errors/
+   *
+   * @param {Object} error
+   * @returns {Boolean}
+   * @private
+   */
+  _isQuotaExceededError(error) {
+    let quotaExceededErrors = [
+      'QuotaExceededError',
+      'QUOTA_EXCEEDED_ERR',
+      'NS_ERROR_DOM_QUOTA_REACHED'
+    ];
+
+    return quotaExceededErrors.indexOf(error.name) !== -1;
   }
 
   /**
