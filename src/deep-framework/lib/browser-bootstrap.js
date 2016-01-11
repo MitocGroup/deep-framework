@@ -11,6 +11,7 @@ import DeepSecurity from 'deep-security';
 import DeepResource from 'deep-resource';
 import DeepLog from 'deep-log';
 import DeepValidation from 'deep-validation';
+import DeepSearch from 'deep-search';
 
 //import DeepNotification from 'deep-notification';
 
@@ -21,6 +22,7 @@ let exports = module.exports = new Framework({
   Resource: DeepResource,
   Log: DeepLog,
   Validation: DeepValidation,
+  Search: DeepSearch,
 
   //Notification: DeepNotification,
 }, Framework.FRONTEND_CONTEXT);
