@@ -9,15 +9,17 @@
   <script src="script/prettify/prettify.js"></script>
   
   
+  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container">
+<body class="layout-container" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  <a href="identifiers.html">Identifier</a>
+  
+  <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -40,7 +42,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Resource.js~Resource.html">Resource</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Statement.js~Statement.html">Statement</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/IAM/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Exception/InvalidArnException.js~InvalidArnException.html">InvalidArnException</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Context.js~Context.html">Context</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html">Runtime</a></span></span></li>
@@ -61,13 +64,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Runtime} from &apos;<span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber16">deep-core/lib/AWS/Lambda/Runtime.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Runtime} from &apos;<span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber18">deep-core/lib/AWS/Lambda/Runtime.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber16">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber18">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -148,7 +151,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-context">context</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-context">context</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span> | <span><a href="class/lib/AWS/Lambda/Context.js~Context.html">Context</a></span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -440,7 +443,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber20">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber22">source</a></span></span>
     </span>
   </h3>
 
@@ -495,11 +498,11 @@
     <span class="kind" data-ice="kind">get</span>
     
     
-    <span data-ice="name">context</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>: <span>*</span></span>
+    <span data-ice="name">context</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span> | <span><a href="class/lib/AWS/Lambda/Context.js~Context.html">Context</a></span>: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber37">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber39">source</a></span></span>
     </span>
   </h3>
 
@@ -517,7 +520,7 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span> | <span><a href="class/lib/AWS/Lambda/Context.js~Context.html">Context</a></span></td>
         
       </tr>
     </table>
@@ -549,7 +552,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber44">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber46">source</a></span></span>
     </span>
   </h3>
 
@@ -599,7 +602,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber58">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber60">source</a></span></span>
     </span>
   </h3>
 
@@ -649,7 +652,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber65">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber67">source</a></span></span>
     </span>
   </h3>
 
@@ -699,7 +702,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber72">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber74">source</a></span></span>
     </span>
   </h3>
 
@@ -749,7 +752,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber51">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber53">source</a></span></span>
     </span>
   </h3>
 
@@ -799,7 +802,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber131">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber127">source</a></span></span>
     </span>
   </h3>
 
@@ -849,7 +852,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber138">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber134">source</a></span></span>
     </span>
   </h3>
 
@@ -902,7 +905,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber117">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber113">source</a></span></span>
     </span>
   </h3>
 
@@ -968,7 +971,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber124">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber120">source</a></span></span>
     </span>
   </h3>
 
@@ -1034,7 +1037,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber85">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/AWS/Lambda/Runtime.js.html#lineNumber87">source</a></span></span>
     </span>
   </h3>
 
@@ -1099,7 +1102,7 @@
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

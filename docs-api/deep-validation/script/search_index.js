@@ -324,6 +324,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -571,13 +577,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/validation.js~validation#immutable",
-    "class/lib/Validation.js~Validation.html#instance-get-immutable",
+    "class/lib/Validation.js~Validation.html#instance-set-immutable",
     "lib/Validation.js~Validation#immutable",
     "member"
   ],
   [
     "lib/validation.js~validation#immutable",
-    "class/lib/Validation.js~Validation.html#instance-set-immutable",
+    "class/lib/Validation.js~Validation.html#instance-get-immutable",
     "lib/Validation.js~Validation#immutable",
     "member"
   ],

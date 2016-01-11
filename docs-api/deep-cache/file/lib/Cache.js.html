@@ -9,15 +9,17 @@
   <script src="script/prettify/prettify.js"></script>
   
   
+  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container">
+<body class="layout-container" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  <a href="identifiers.html">Identifier</a>
+  
+  <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -31,16 +33,21 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -55,6 +62,7 @@
 import Kernel from &apos;deep-kernel&apos;;
 import Core from &apos;deep-core&apos;;
 import {Exception} from &apos;./Exception/Exception&apos;;
+import {SharedCache} from &apos;./SharedCache&apos;;
 
 /**
  * Cache manager
@@ -86,6 +94,17 @@ export class Cache extends Kernel.ContainerAware {
         break;
       case &apos;local-storage&apos;:
         DriverPrototype = require(&apos;./Driver/LocalStorageDriver&apos;).LocalStorageDriver;
+
+        // fallback to in-memory driver if localStorage is not available
+        if (!DriverPrototype.isAvailable()) {
+          DriverPrototype = require(&apos;./Driver/InMemoryDriver&apos;).InMemoryDriver;
+        }
+        break;
+      case &apos;s3fs&apos;:
+        DriverPrototype = require(&apos;./Driver/S3FSDriver&apos;).S3FSDriver;
+        break;
+      case &apos;cloud-front&apos;:
+        DriverPrototype = require(&apos;./Driver/CloudFrontDriver&apos;).CloudFrontDriver;
         break;
       default:
         throw new Exception(`Missing driver ${name}`);
@@ -101,14 +120,33 @@ export class Cache extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
+    let sharedCacheDriver;
+    let driver;
 
-    // @todo: switch to redis when issue with Elasticache is fixed
-    let driverName = kernel.isFrontend ? &apos;local-storage&apos; : &apos;memory&apos;/*&apos;redis&apos;*/;
+    if (kernel.isFrontend) {
+      driver = Cache.createDriver(&apos;local-storage&apos;);
+      sharedCacheDriver = Cache.createDriver(&apos;cloud-front&apos;, this);
+    } else {
+      // @todo: switch to redis when issue with Elasticache is fixed
+      driver = Cache.createDriver(&apos;memory&apos;);
+      sharedCacheDriver = Cache.createDriver(&apos;s3fs&apos;, this);
+    }
 
-    this._driver = Cache.createDriver(driverName/*, kernel.config.cacheDsn*/);
-    this._driver.buildId = kernel.buildId;
+    [driver, sharedCacheDriver].map(function(driver) {
+      driver.buildId = kernel.buildId;
+    });
+
+    this._driver = driver;
+    this._shared = new SharedCache(sharedCacheDriver);
 
     callback();
+  }
+
+  /**
+   * @returns {SharedCache}
+   */
+  get shared() {
+    return this._shared;
   }
 
   /**
@@ -154,7 +192,7 @@ export class Cache extends Kernel.ContainerAware {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

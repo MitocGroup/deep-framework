@@ -3,6 +3,7 @@
 import chai from 'chai';
 import {Runtime} from '../../../lib/AWS/Lambda/Runtime';
 import {Request} from '../../../lib/AWS/Lambda/Request';
+import {Context} from '../../../lib/AWS/Lambda/Context';
 import {Response} from '../../../lib/AWS/Lambda/Response';
 import {ErrorResponse} from '../../../lib/AWS/Lambda/ErrorResponse';
 
@@ -47,7 +48,7 @@ suite('AWS/Lambda/Runtime', function() {
 
   test('Check run() method returns valid object', function() {
     let actualResult = runtimeTest.run(event, context);
-    chai.expect(actualResult._context).to.be.eql(context);
+    chai.expect(actualResult.context).to.be.an.instanceof(Context);
     chai.expect(actualResult.kernel).to.be.eql('handled');
     chai.expect(actualResult.request).to.be.an.instanceof(Request);
   });
@@ -56,7 +57,7 @@ suite('AWS/Lambda/Runtime', function() {
     let actualResult = runtimeTest.createResponse(data);
     chai.expect(actualResult).to.be.an.instanceof(Response);
     chai.expect(actualResult.rawData).to.be.eql(data);
-    chai.expect(actualResult.runtime.context).to.be.eql(context);
+    chai.expect(actualResult.runtime.context).to.be.an.instanceof(Context);
   });
 
   test('Check createError() method returns valid object for string error', function() {

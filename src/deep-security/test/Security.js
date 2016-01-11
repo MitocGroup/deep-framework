@@ -117,14 +117,17 @@ suite('Security', function () {
 
   test('Check login() method returns valid instance of Token for !localBackend', function() {
     let providerName = 'www.amazon.com';
-    let userToken = 'test_userToken';
-    let userId = 'test_userId';
+    let identityMetadata = {
+      access_token: 'test_userToken',
+      tokenExpirationTime: new Date(),
+      user_id: 'test_userId',
+    };
     let spyCallback = sinon.spy();
 
     securityBackend.localBackend = false;
     securityBackend._userProvider = userProvider;
 
-    let actualResult = securityBackend.login(providerName, userToken, userId, spyCallback);
+    let actualResult = securityBackend.login(providerName, identityMetadata, spyCallback);
 
     chai.assert.instanceOf(actualResult, Token, 'actualResult is an instance of Token');
     chai.assert.instanceOf(securityBackend.token, Token, 'token is an instance of Token');
@@ -133,14 +136,17 @@ suite('Security', function () {
 
   test('Check login() method returns valid instance of LocalToken for localBackend', function() {
     let providerName = 'www.amazon.com';
-    let userToken = 'test_userToken';
-    let userId = 'test_userId';
+    let identityMetadata = {
+      access_token: 'test_userToken',
+      tokenExpirationTime: new Date(),
+      user_id: 'test_userId',
+    };
     let spyCallback = sinon.spy();
 
     securityBackend.localBackend = true;
     securityBackend._userProvider = userProvider;
 
-    let actualResult = securityBackend.login(providerName, userToken, userId, spyCallback);
+    let actualResult = securityBackend.login(providerName, identityMetadata, spyCallback);
 
     chai.assert.instanceOf(actualResult, LocalToken, 'actualResult is an instance of LocalToken');
     chai.assert.instanceOf(securityBackend.token, LocalToken, 'token is an instance of LocalToken');

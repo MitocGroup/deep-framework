@@ -12,6 +12,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-core/lib/aws/lambda/context.js~context",
+    "class/lib/AWS/Lambda/Context.js~Context.html",
+    "<span>Context</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/Lambda/Context.js</span>",
+    "class"
+  ],
+  [
     "deep-core/lib/aws/lambda/exception/contextalreadysentexception.js~contextalreadysentexception",
     "class/lib/AWS/Lambda/Exception/ContextAlreadySentException.js~ContextAlreadySentException.html",
     "<span>ContextAlreadySentException</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/Lambda/Exception/ContextAlreadySentException.js</span>",
@@ -438,6 +444,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -487,13 +499,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
@@ -511,13 +523,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
@@ -745,13 +757,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#service",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-service",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-service",
     "lib/AWS/IAM/Resource.js~Resource#service",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#service",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-service",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-service",
     "lib/AWS/IAM/Resource.js~Resource#service",
     "member"
   ],
@@ -775,13 +787,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
@@ -793,13 +805,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
@@ -823,13 +835,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
@@ -849,6 +861,36 @@ window.esdocSearchIndex = [
     "lib/aws/iam/statement.js~statement.deny",
     "class/lib/AWS/IAM/Statement.js~Statement.html#static-get-DENY",
     "lib/AWS/IAM/Statement.js~Statement.DENY",
+    "member"
+  ],
+  [
+    "lib/aws/lambda/context.js",
+    "file/lib/AWS/Lambda/Context.js.html",
+    "lib/AWS/Lambda/Context.js",
+    "file"
+  ],
+  [
+    "lib/aws/lambda/context.js~context#constructor",
+    "class/lib/AWS/Lambda/Context.js~Context.html#instance-constructor-constructor",
+    "lib/AWS/Lambda/Context.js~Context#constructor",
+    "method"
+  ],
+  [
+    "lib/aws/lambda/context.js~context#getoption",
+    "class/lib/AWS/Lambda/Context.js~Context.html#instance-method-getOption",
+    "lib/AWS/Lambda/Context.js~Context#getOption",
+    "method"
+  ],
+  [
+    "lib/aws/lambda/context.js~context#has",
+    "class/lib/AWS/Lambda/Context.js~Context.html#instance-method-has",
+    "lib/AWS/Lambda/Context.js~Context#has",
+    "method"
+  ],
+  [
+    "lib/aws/lambda/context.js~context#options",
+    "class/lib/AWS/Lambda/Context.js~Context.html#instance-get-options",
+    "lib/AWS/Lambda/Context.js~Context#options",
     "member"
   ],
   [
@@ -1185,6 +1227,12 @@ window.esdocSearchIndex = [
     "lib/aws/service.js~service.cloud_front",
     "class/lib/AWS/Service.js~Service.html#static-get-CLOUD_FRONT",
     "lib/AWS/Service.js~Service.CLOUD_FRONT",
+    "member"
+  ],
+  [
+    "lib/aws/service.js~service.cloud_search",
+    "class/lib/AWS/Service.js~Service.html#static-get-CLOUD_SEARCH",
+    "lib/AWS/Service.js~Service.CLOUD_SEARCH",
     "member"
   ],
   [

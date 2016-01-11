@@ -9,15 +9,17 @@
   <script src="script/prettify/prettify.js"></script>
   
   
+  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container">
+<body class="layout-container" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  <a href="identifiers.html">Identifier</a>
+  
+  <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -31,28 +33,33 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Cache} from &apos;<span><a href="file/lib/Cache.js.html#lineNumber14">deep-cache/lib/Cache.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Cache} from &apos;<span><a href="file/lib/Cache.js.html#lineNumber15">deep-cache/lib/Cache.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/Cache.js.html#lineNumber14">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/Cache.js.html#lineNumber15">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -220,8 +227,34 @@
       <div>
         
         
-        <div data-ice="description">DO NOT REMOVE THIS!
-It&apos;s used while kernel boot</div>
+        <div data-ice="description"><p>DO NOT REMOVE THIS!
+It&apos;s used while kernel boot</p>
+</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-get-shared">shared</a></span></span><span data-ice="signature">: <span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -278,7 +311,8 @@ It&apos;s used while kernel boot</div>
       <div>
         
         
-        <div data-ice="description">Booting a certain service</div>
+        <div data-ice="description"><p>Booting a certain service</p>
+</div>
       </div>
     </td>
     <td>
@@ -306,7 +340,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber29">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber30">source</a></span></span>
     </span>
   </h3>
 
@@ -381,7 +415,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber18">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber19">source</a></span></span>
     </span>
   </h3>
 
@@ -440,7 +474,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber93">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber124">source</a></span></span>
     </span>
   </h3>
 
@@ -480,7 +514,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber100">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber131">source</a></span></span>
     </span>
   </h3>
 
@@ -530,7 +564,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber81">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber112">source</a></span></span>
     </span>
   </h3>
 
@@ -571,6 +605,56 @@ It&apos;s used while kernel boot</p>
   
   
 </div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-shared">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">shared</span><span data-ice="signature">: <span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber93">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
 </div>
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
@@ -585,7 +669,7 @@ It&apos;s used while kernel boot</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber71">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber102">source</a></span></span>
     </span>
   </h3>
 
@@ -657,7 +741,7 @@ It&apos;s used while kernel boot</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber55">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber67">source</a></span></span>
     </span>
   </h3>
 
@@ -713,7 +797,7 @@ It&apos;s used while kernel boot</p>
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

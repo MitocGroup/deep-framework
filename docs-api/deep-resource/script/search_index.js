@@ -402,6 +402,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -510,6 +516,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "lib/resource/action.js~action#apicacheenabled",
+    "class/lib/Resource/Action.js~Action.html#instance-get-apiCacheEnabled",
+    "lib/Resource/Action.js~Action#apiCacheEnabled",
+    "member"
+  ],
+  [
+    "lib/resource/action.js~action#apicachettl",
+    "class/lib/Resource/Action.js~Action.html#instance-get-apiCacheTtl",
+    "lib/Resource/Action.js~Action#apiCacheTtl",
+    "member"
+  ],
+  [
     "lib/resource/action.js~action#constructor",
     "class/lib/Resource/Action.js~Action.html#instance-constructor-constructor",
     "lib/Resource/Action.js~Action#constructor",
@@ -561,6 +579,12 @@ window.esdocSearchIndex = [
     "lib/resource/action.js~action#type",
     "class/lib/Resource/Action.js~Action.html#instance-get-type",
     "lib/Resource/Action.js~Action#type",
+    "member"
+  ],
+  [
+    "lib/resource/action.js~action.deep_cache_qs_param",
+    "class/lib/Resource/Action.js~Action.html#static-get-DEEP_CACHE_QS_PARAM",
+    "lib/Resource/Action.js~Action.DEEP_CACHE_QS_PARAM",
     "member"
   ],
   [
@@ -781,13 +805,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#security",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-security",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-security",
     "lib/Resource/Instance.js~Instance#security",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#security",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-security",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-security",
     "lib/Resource/Instance.js~Instance#security",
     "member"
   ],

@@ -49,7 +49,7 @@ export class SuperagentResponse extends Response {
 
     if (error) {
       this._error = error;
-    } else if(data && data.error) { // weird case...
+    } else if (data && data.error) { // weird case...
       this._error = data.error;
     } else {
       this._data = data && data.body ? data.body : null;

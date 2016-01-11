@@ -60,7 +60,11 @@ export class LambdaResponse extends Response {
    * @private
    */
   _fillStatusCode() {
-    this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status || 500);
+    if (this._rawData) {
+      this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status);
+    } else {
+      this._statusCode = 500;
+    }
   }
 
   /**
@@ -68,11 +72,16 @@ export class LambdaResponse extends Response {
    * @private
    */
   _decodePayload() {
-    if (typeof this._rawData === 'object' &&
-      this._rawData.hasOwnProperty('Payload')) {
+    if (this._rawData && this._rawData.hasOwnProperty('Payload')) {
       let payload = this._rawData.Payload;
 
-      return typeof payload === 'string' ? JSON.parse(payload) : payload;
+      if (typeof payload === 'string') {
+        try {
+          payload = JSON.parse(payload);
+        } catch(e) {}
+      }
+
+      return payload;
     }
 
     return null;
@@ -96,7 +105,7 @@ export class LambdaResponse extends Response {
           rawErrorObj = rawErrorObj || {
               errorMessage: 'Unknown error occurred.',
               errorStack: null,
-              errorType: 'UnknownError'
+              errorType: 'UnknownError',
             };
 
           rawErrorObj.errorMessage = rawErrorObj.errorMessage || 'Unknown error occurred.';
@@ -107,7 +116,7 @@ export class LambdaResponse extends Response {
         payload = rawErrorObj || {
             errorMessage: payload.errorMessage,
             errorStack: null,
-            errorType: 'UnknownError'
+            errorType: 'UnknownError',
           };
       } else {
         payload.errorType = payload.errorType || 'UnknownError';
@@ -115,7 +124,13 @@ export class LambdaResponse extends Response {
 
       let errorObj = new Error(payload.errorMessage);
 
-      errorObj.constructor.name = payload.errorType;
+      // try to define a custom constructor name
+      // fail silently in case of readonly property...
+      try {
+        Object.defineProperty(errorObj, 'name', {
+          value: payload.errorType,
+        });
+      } catch (e) {   }
 
       Object.defineProperty(errorObj, 'stack', {
         value: payload.errorStack,

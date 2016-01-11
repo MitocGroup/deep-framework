@@ -1,24 +1,24 @@
 {
   "name": "deep-security",
-  "version": "1.5.0",
+  "version": "1.5.2",
   "description": "DEEP Security Library",
   "keywords": [
-    "Digital End-To-End Enterprise Platform",
-    "Amazon Web Services",
-    "Platform-as-a-Service",
-    "DEEP",
-    "AWS",
-    "PaaS",
-    "Cloud",
-    "Computing",
-    "Microservices",
-    "Architecture",
-    "Serverless",
-    "Abstracted",
-    "Core",
-    "Library",
-    "Security",
-    "Auth"
+    "digital enterprise end-to-end platform",
+    "amazon web services",
+    "platform-as-a-service",
+    "deep",
+    "aws",
+    "paas",
+    "cloud",
+    "computing",
+    "microservices",
+    "architecture",
+    "serverless",
+    "abstracted",
+    "core",
+    "library",
+    "security",
+    "auth"
   ],
   "homepage": "https://github.com/MitocGroup/deep-framework",
   "bugs": {
@@ -55,10 +55,10 @@
   "main": "lib.compiled/bootstrap.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MitocGroup/deep.git"
+    "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd",
+    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd --timeout 4s",
     "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core"
@@ -66,8 +66,10 @@
   "dependencies": {
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
-    "aws-sdk": "^2.2.x",
-    "amazon-cognito-js": "mgoria/amazon-cognito-js"
+    "amazon-cognito-js": "MitocGroup/amazon-cognito-js"
+  },
+  "optionalDependencies": {
+    "aws-sdk": "^2.2.x"
   },
   "devDependencies": {
     "chai": "^3.2.x",

@@ -186,4 +186,12 @@ export class AbstractDriver extends Core.OOP.Interface {
   _buildKey(key) {
     return `${this._buildId}:${this._namespace}#${key}`;
   }
+
+  /**
+   * @param {String} key
+   * @returns {Boolean}
+   */
+  isDeepKey(key) {
+    return /.+:.*#.+/.test(key);
+  }
 }

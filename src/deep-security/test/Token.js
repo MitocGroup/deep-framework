@@ -34,8 +34,11 @@ suite('Token', function() {
   };
   let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
   let providerName = 'facebook';
-  let userToken = 'test_userToken';
-  let userId = 'test_userId';
+  let identityMetadata = {
+    access_token: 'test_userToken',
+    tokenExpirationTime: new Date(),
+    user_id: 'test_userId',
+  };
   let providers = {
     amazon: {
       name: IdentityProvider.AMAZON,
@@ -50,7 +53,7 @@ suite('Token', function() {
       data: {},
     },
   };
-  let identityProvider = new IdentityProvider(providers, providerName, userToken, userId);
+  let identityProvider = new IdentityProvider(providers, providerName, identityMetadata);
   let token = new Token(identityPoolId);
 
 
@@ -157,7 +160,7 @@ suite('Token', function() {
 
   test('Check createFromIdentityProvider() returns new instance of Token', function() {
     let identityPoolId = 'us-east-1:provider-a2v2-465a-877v-12fd264525ef';
-    identityProvider = new IdentityProvider(providers, 'amazon', userToken, userId);
+    identityProvider = new IdentityProvider(providers, 'amazon', identityMetadata);
 
     let actualResult = Token.createFromIdentityProvider(identityPoolId, identityProvider);
 

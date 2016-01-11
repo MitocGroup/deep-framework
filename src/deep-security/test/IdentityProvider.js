@@ -7,8 +7,11 @@ import {MissingLoginProviderException} from '../lib/Exception/MissingLoginProvid
 suite('IdentityProvider', function() {
   let identityProvider = null;
   let providerName = 'facebook';
-  let userToken = 'test_userToken';
-  let userId = 'test_userId';
+  let identityMetadata = {
+    access_token: 'test_userToken',
+    tokenExpirationTime: new Date(),
+    user_id: 'test_userId',
+  };
   let providers = {
     amazon: {
       name: IdentityProvider.AMAZON,
@@ -41,19 +44,20 @@ suite('IdentityProvider', function() {
   });
 
   test('Check constructor sets values by default', function() {
-    identityProvider = new IdentityProvider(providers, providerName, userToken, userId);
+    identityProvider = new IdentityProvider(providers, providerName, identityMetadata);
 
     chai.expect(identityProvider.providers).to.be.eql(providers);
     chai.expect(identityProvider.name).to.be.eql(providerName);
-    chai.expect(identityProvider.userToken).to.be.eql(userToken);
-    chai.expect(identityProvider.userId).to.be.eql(userId);
+    chai.expect(identityProvider.userToken).to.be.eql(identityMetadata.access_token);
+    chai.expect(identityProvider.userId).to.be.eql(identityMetadata.user_id);
+    chai.expect(identityProvider.tokenExpirationTime).to.be.eql(identityMetadata.tokenExpirationTime);
   });
 
   test('Check constructor throws "MissingLoginProviderException" for missing provider', function() {
     let error = null;
 
     try {
-      identityProvider = new IdentityProvider(providers, 'missing_provider', userToken, userId);
+      identityProvider = new IdentityProvider(providers, 'missing_provider', identityMetadata);
     } catch (e) {
       error = e;
     }

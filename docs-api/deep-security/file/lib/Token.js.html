@@ -9,15 +9,17 @@
   <script src="script/prettify/prettify.js"></script>
   
   
+  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container">
+<body class="layout-container" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  <a href="identifiers.html">Identifier</a>
+  
+  <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -41,6 +43,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DescribeIdentityException.js~DescribeIdentityException.html">DescribeIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException.html">GetCognitoRecordException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/IdentityProviderMismatchException.js~IdentityProviderMismatchException.html">IdentityProviderMismatchException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/IdentityProviderTokenExpiredException.js~IdentityProviderTokenExpiredException.html">IdentityProviderTokenExpiredException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidProviderIdentityException.js~InvalidProviderIdentityException.html">InvalidProviderIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/LoadUserException.js~LoadUserException.html">LoadUserException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingLoginProviderException.js~MissingLoginProviderException.html">MissingLoginProviderException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException.html">PutCognitoRecordException</a></span></span></li>
@@ -58,8 +63,11 @@
 
 import AWS from &apos;aws-sdk&apos;;
 import {AuthException} from &apos;./Exception/AuthException&apos;;
+import {IdentityProviderTokenExpiredException} from &apos;./Exception/IdentityProviderTokenExpiredException&apos;;
 import {DescribeIdentityException} from &apos;./Exception/DescribeIdentityException&apos;;
 import {CredentialsManager} from &apos;./CredentialsManager&apos;;
+import {Exception} from &apos;./Exception/Exception&apos;;
+import {Exception as CoreException} from &apos;deep-core&apos;;
 
 /**
  * Security token holds details about logged user
@@ -77,6 +85,7 @@ export class Token {
     this._userProvider = null;
     this._credentials = null;
     this._identityMetadata = null;
+    this._tokenExpiredCallback = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -139,46 +148,80 @@ export class Token {
     }
 
     if (this.lambdaContext) {
-      this._credsManager.loadCredentials(this.identityId, (error, credentials) =&gt; {
+      this._backendLoadCredentials(callback);
+    } else {
+      this._frontendLoadCredentials(callback);
+    }
+  }
+
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _backendLoadCredentials(callback) {
+    if (!this.lambdaContext) {
+      throw new Exception(&apos;Call to _backendLoadCredentials method is not allowed from frontend context.&apos;);
+    }
+
+    this._credsManager.loadCredentials(this.identityId, (error, credentials) =&gt; {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+
+      callback(null, this._credentials = credentials);
+    });
+  }
+
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _frontendLoadCredentials(callback) {
+    let cognitoParams = {
+      IdentityPoolId: this._identityPoolId,
+    };
+
+    if (this.identityProvider &amp;&amp; !this.identityProvider.isTokenValid()) {
+      if (typeof this._tokenExpiredCallback === &apos;function&apos;) {
+        this._tokenExpiredCallback(this.identityProvider);
+      } else {
+        let error = new IdentityProviderTokenExpiredException(
+          this.identityProvider.name,
+          this.identityProvider.tokenExpirationTime
+        );
+
+        callback(error, null);
+      }
+      return;
+    }
+
+    if (this.identityProvider) {
+      cognitoParams.Logins = {};
+      cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
+      cognitoParams.LoginId = this.identityProvider.userId;
+    }
+
+    this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+
+    this._credentials.refresh((error) =&gt; {
+      if (error) {
+        callback(new AuthException(error), null);
+        return;
+      }
+
+      AWS.config.credentials = this._credentials;
+
+      // @todo - save credentials in background not to affect page load time
+      this._credsManager.saveCredentials(this._credentials, (error, record) =&gt; {
         if (error) {
           callback(error, null);
           return;
         }
 
-        this._credentials = credentials;
-
         callback(null, this._credentials);
       });
-    } else {
-      let cognitoParams = {
-        IdentityPoolId: this._identityPoolId,
-      };
-
-      if (this.identityProvider) {
-        cognitoParams.Logins = {};
-        cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
-      }
-
-      this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
-
-      this._credentials.refresh((error) =&gt; {
-        if (error) {
-          callback(new AuthException(error), null);
-          return;
-        }
-
-        AWS.config.credentials = this._credentials;
-
-        this._credsManager.saveCredentials(this._credentials, (error, record) =&gt; {
-          if (error) {
-            callback(error, null);
-            return;
-          }
-
-          callback(null, this._credentials);
-        });
-      });
-    }
+    });
   }
 
   /**
@@ -252,24 +295,36 @@ export class Token {
    * @param {Function} callback
    */
   getUser(callback) {
-    this._describeIdentity(this.identityId, () =&gt; {
-      if (this.isAnonymous) {
-        callback(null);
-        return;
-      }
+    if (this.lambdaContext) {
+      this._describeIdentity(this.identityId, () =&gt; {
+        this._loadUser(callback);
+      });
+    } else {
+      this._loadUser(callback);
+    }
+  }
 
-      if (!this._user) {
-        this._userProvider.loadUserByIdentityId(this.identityId, (user) =&gt; {
-          this._user = user;
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _loadUser(callback) {
+    if (this.isAnonymous) {
+      callback(null);
+      return;
+    }
 
-          callback(this._user);
-        });
+    if (!this._user) {
+      this._userProvider.loadUserByIdentityId(this.identityId, (user) =&gt; {
+        this._user = user;
 
-        return;
-      }
+        callback(this._user);
+      });
 
-      callback(this._user);
-    });
+      return;
+    }
+
+    callback(this._user);
   }
 
   /**
@@ -334,13 +389,27 @@ export class Token {
       this._identityMetadata.Logins :
       [];
   }
+
+  /**
+   * @param {Function} callback
+   * @returns {Token}
+   */
+  registerTokenExpiredCallback(callback) {
+    if (typeof callback !== &apos;function&apos;) {
+      throw new CoreException.InvalidArgumentException(callback, &apos;function&apos;);
+    }
+
+    this._tokenExpiredCallback = callback;
+
+    return this;
+  }
 }
 </code></pre>
 
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

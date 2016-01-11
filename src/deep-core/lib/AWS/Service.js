@@ -88,6 +88,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get CLOUD_SEARCH() {
+    return 'cloudsearch';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get SECURITY_TOKEN_SERVICE() {
     return 'sts';
   }
@@ -149,6 +156,7 @@ export class Service {
       Service.CLOUD_WATCH_LOGS,
       Service.API_GATEWAY,
       Service.API_GATEWAY_EXECUTE,
+      Service.CLOUD_SEARCH,
     ];
   }
 }

@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/Driver/S3FSDriver.js | DEEP Cache Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+  <script src="script/manual.js"></script>
+</head>
+<body class="layout-container" data-ice="rootContainer">
+
+<header>
+  <a href="./">Home</a>
+  
+  <a href="identifiers.html">Reference</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Driver/S3FSDriver.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by CCristi &lt;ccovali@mitocgroup.com&gt; on 12/10/15.
+ */
+
+&apos;use strict&apos;;
+
+import {AbstractFsDriver} from &apos;./AbstractFsDriver&apos;;
+
+/**
+ * S3FS Cache Driver
+ */
+export class S3FSDriver extends AbstractFsDriver {
+  /**
+   * @param {ContainerAware} containerAware
+   * @param {String} directory
+   */
+  constructor(containerAware, directory = AbstractFsDriver.DEFAULT_DIRECTORY) {
+    super(directory);
+
+    this._containerAware = containerAware;
+  }
+
+  /**
+   * @param {String} key
+   * @param {Function} callback
+   * @private
+   */
+  _has(key, callback = () =&gt; {}) {
+    this._get(key, (err, data) =&gt; {
+      callback(err, data !== null);
+    });
+  }
+
+  /**
+   * @param {String} key
+   * @param {Function} callback
+   * @private
+   */
+  _get(key, callback = () =&gt; {}) {
+    this._fs.readFile(key, (err, data) =&gt; {
+      if (err) {
+        callback(err, null);
+
+        return;
+      }
+
+      try {
+        var parsedData = JSON.parse(data);
+
+        if (parsedData.expires &amp;&amp; parsedData.expires &lt; AbstractFsDriver._now || parsedData.buildId !== this._buildId) {
+          this._invalidate(key);
+
+          callback(null, null);
+
+          return;
+        }
+
+        callback(null, parsedData.value);
+      } catch (e) {
+        this._invalidate(key);
+
+        callback(null, null);
+      }
+    });
+  }
+
+  /**
+   * @param {String} key
+   * @param {Object} value
+   * @param {Number} ttl
+   * @param {Function} callback
+   * @private
+   */
+  _set(key, value, ttl = 0, callback = () =&gt; {}) {
+    let strObject = JSON.stringify({
+      expires: ttl &gt; 0 ? AbstractFsDriver._now + ttl : null,
+      value: value,
+      buildId: this._buildId,
+    });
+
+    this._fs.mkdirp(this._directory, () =&gt; {
+      this._fs.writeFile(key, strObject, (err) =&gt; {
+        callback(err, !err);
+      });
+    });
+  }
+
+  /**
+   * @param {String} key
+   * @param {Number} timeout
+   * @param {Function} callback
+   * @private
+   */
+  _invalidate(key, timeout = 0, callback = () =&gt; {}) {
+    if (timeout &lt;= 0) {
+      this._fs.unlink(key, (err) =&gt; {
+        callback(err, !err);
+      });
+
+      return;
+    }
+
+    this._get(key, (err, data) =&gt; {
+      if (err) {
+        callback(err, null);
+
+        return;
+      }
+
+      this._set(key, data.value, timeout, callback);
+    });
+  }
+
+  /**
+   * @returns {s3fs}
+   * @private
+   */
+  get _fs() {
+    return this._containerAware.container.get(&apos;fs&apos;).public;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

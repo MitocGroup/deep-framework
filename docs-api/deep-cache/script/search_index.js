@@ -6,9 +6,21 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-cache/lib/driver/abstractfsdriver.js~abstractfsdriver",
+    "class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html",
+    "<span>AbstractFsDriver</span> <span class=\"search-result-import-path\">deep-cache/lib/Driver/AbstractFsDriver.js</span>",
+    "class"
+  ],
+  [
     "deep-cache/lib/cache.js~cache",
     "class/lib/Cache.js~Cache.html",
     "<span>Cache</span> <span class=\"search-result-import-path\">deep-cache/lib/Cache.js</span>",
+    "class"
+  ],
+  [
+    "deep-cache/lib/driver/cloudfrontdriver.js~cloudfrontdriver",
+    "class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html",
+    "<span>CloudFrontDriver</span> <span class=\"search-result-import-path\">deep-cache/lib/Driver/CloudFrontDriver.js</span>",
     "class"
   ],
   [
@@ -42,6 +54,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-cache/lib/exception/methodnotavailableexception.js~methodnotavailableexception",
+    "class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html",
+    "<span>MethodNotAvailableException</span> <span class=\"search-result-import-path\">deep-cache/lib/Exception/MethodNotAvailableException.js</span>",
+    "class"
+  ],
+  [
     "deep-cache/lib/driver/exception/missingcacheexception.js~missingcacheexception",
     "class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html",
     "<span>MissingCacheException</span> <span class=\"search-result-import-path\">deep-cache/lib/Driver/Exception/MissingCacheException.js</span>",
@@ -63,6 +81,18 @@ window.esdocSearchIndex = [
     "deep-cache/lib/driver/redisdriver.js~redisdriver",
     "class/lib/Driver/RedisDriver.js~RedisDriver.html",
     "<span>RedisDriver</span> <span class=\"search-result-import-path\">deep-cache/lib/Driver/RedisDriver.js</span>",
+    "class"
+  ],
+  [
+    "deep-cache/lib/driver/s3fsdriver.js~s3fsdriver",
+    "class/lib/Driver/S3FSDriver.js~S3FSDriver.html",
+    "<span>S3FSDriver</span> <span class=\"search-result-import-path\">deep-cache/lib/Driver/S3FSDriver.js</span>",
+    "class"
+  ],
+  [
+    "deep-cache/lib/sharedcache.js~sharedcache",
+    "class/lib/SharedCache.js~SharedCache.html",
+    "<span>SharedCache</span> <span class=\"search-result-import-path\">deep-cache/lib/SharedCache.js</span>",
     "class"
   ],
   [
@@ -348,6 +378,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -432,6 +468,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/cache.js~cache#shared",
+    "class/lib/Cache.js~Cache.html#instance-get-shared",
+    "lib/Cache.js~Cache#shared",
+    "member"
+  ],
+  [
     "lib/cache.js~cache.createdriver",
     "class/lib/Cache.js~Cache.html#static-method-createDriver",
     "lib/Cache.js~Cache.createDriver",
@@ -486,14 +528,20 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/driver/abstractdriver.js~abstractdriver#isdeepkey",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-isDeepKey",
+    "lib/Driver/AbstractDriver.js~AbstractDriver#isDeepKey",
+    "method"
+  ],
+  [
     "lib/driver/abstractdriver.js~abstractdriver#namespace",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-namespace",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-namespace",
     "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "member"
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#namespace",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-namespace",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-namespace",
     "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "member"
   ],
@@ -505,15 +553,45 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#silent",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-silent",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-silent",
     "lib/Driver/AbstractDriver.js~AbstractDriver#silent",
     "member"
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#silent",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-silent",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-silent",
     "lib/Driver/AbstractDriver.js~AbstractDriver#silent",
     "member"
+  ],
+  [
+    "lib/driver/abstractfsdriver.js",
+    "file/lib/Driver/AbstractFsDriver.js.html",
+    "lib/Driver/AbstractFsDriver.js",
+    "file"
+  ],
+  [
+    "lib/driver/abstractfsdriver.js~abstractfsdriver#constructor",
+    "class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html#instance-constructor-constructor",
+    "lib/Driver/AbstractFsDriver.js~AbstractFsDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/abstractfsdriver.js~abstractfsdriver.default_directory",
+    "class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html#static-get-DEFAULT_DIRECTORY",
+    "lib/Driver/AbstractFsDriver.js~AbstractFsDriver.DEFAULT_DIRECTORY",
+    "member"
+  ],
+  [
+    "lib/driver/cloudfrontdriver.js",
+    "file/lib/Driver/CloudFrontDriver.js.html",
+    "lib/Driver/CloudFrontDriver.js",
+    "file"
+  ],
+  [
+    "lib/driver/cloudfrontdriver.js~cloudfrontdriver#constructor",
+    "class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html#instance-constructor-constructor",
+    "lib/Driver/CloudFrontDriver.js~CloudFrontDriver#constructor",
+    "method"
   ],
   [
     "lib/driver/exception/driverexception.js",
@@ -618,6 +696,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/driver/localstoragedriver.js~localstoragedriver.isavailable",
+    "class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html#static-method-isAvailable",
+    "lib/Driver/LocalStorageDriver.js~LocalStorageDriver.isAvailable",
+    "method"
+  ],
+  [
     "lib/driver/redisdriver.js",
     "file/lib/Driver/RedisDriver.js.html",
     "lib/Driver/RedisDriver.js",
@@ -642,6 +726,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/driver/s3fsdriver.js",
+    "file/lib/Driver/S3FSDriver.js.html",
+    "lib/Driver/S3FSDriver.js",
+    "file"
+  ],
+  [
+    "lib/driver/s3fsdriver.js~s3fsdriver#constructor",
+    "class/lib/Driver/S3FSDriver.js~S3FSDriver.html#instance-constructor-constructor",
+    "lib/Driver/S3FSDriver.js~S3FSDriver#constructor",
+    "method"
+  ],
+  [
     "lib/exception/exception.js",
     "file/lib/Exception/Exception.js.html",
     "lib/Exception/Exception.js",
@@ -651,6 +747,48 @@ window.esdocSearchIndex = [
     "lib/exception/exception.js~exception#constructor",
     "class/lib/Exception/Exception.js~Exception.html#instance-constructor-constructor",
     "lib/Exception/Exception.js~Exception#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/methodnotavailableexception.js",
+    "file/lib/Exception/MethodNotAvailableException.js.html",
+    "lib/Exception/MethodNotAvailableException.js",
+    "file"
+  ],
+  [
+    "lib/exception/methodnotavailableexception.js~methodnotavailableexception#constructor",
+    "class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html#instance-constructor-constructor",
+    "lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException#constructor",
+    "method"
+  ],
+  [
+    "lib/sharedcache.js",
+    "file/lib/SharedCache.js.html",
+    "lib/SharedCache.js",
+    "file"
+  ],
+  [
+    "lib/sharedcache.js~sharedcache#assure",
+    "class/lib/SharedCache.js~SharedCache.html#instance-method-assure",
+    "lib/SharedCache.js~SharedCache#assure",
+    "method"
+  ],
+  [
+    "lib/sharedcache.js~sharedcache#buildkeyfromlambdaruntime",
+    "class/lib/SharedCache.js~SharedCache.html#instance-method-buildKeyFromLambdaRuntime",
+    "lib/SharedCache.js~SharedCache#buildKeyFromLambdaRuntime",
+    "method"
+  ],
+  [
+    "lib/sharedcache.js~sharedcache#constructor",
+    "class/lib/SharedCache.js~SharedCache.html#instance-constructor-constructor",
+    "lib/SharedCache.js~SharedCache#constructor",
+    "method"
+  ],
+  [
+    "lib/sharedcache.js~sharedcache#request",
+    "class/lib/SharedCache.js~SharedCache.html#instance-method-request",
+    "lib/SharedCache.js~SharedCache#request",
     "method"
   ],
   [
