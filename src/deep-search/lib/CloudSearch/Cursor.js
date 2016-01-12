@@ -11,6 +11,8 @@ export class Cursor extends NativeParameter {
    * @param {String} val
    */
   constructor(val = Cursor.RETRIEVE) {
+    super();
+
     this._val = val.toString();
   }
 

@@ -12,6 +12,8 @@ export class Facet extends NativeParameter {
    * @param {Item|*} facets
    */
   constructor(...facets) {
+    super();
+
     this._items = facets;
   }
 

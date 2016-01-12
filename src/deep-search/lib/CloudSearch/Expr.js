@@ -12,6 +12,8 @@ export class Expr extends NativeParameter {
    * @param {Item|*} items
    */
   constructor(...items) {
+    super();
+
     this._items = items;
   }
 

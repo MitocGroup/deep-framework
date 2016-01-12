@@ -12,6 +12,8 @@ export class Highlight extends NativeParameter {
    * @param {Item|*} highlights
    */
   constructor(...highlights) {
+    super();
+
     this._items = highlights;
   }
 

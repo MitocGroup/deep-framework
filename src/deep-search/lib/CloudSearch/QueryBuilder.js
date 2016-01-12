@@ -8,8 +8,12 @@ import {Cursor} from './Cursor';
 import {NativeParameter} from './NativeParameter';
 import {Expr} from './Expr';
 import {Item as ExprItem} from './Expr/Item';
+import {Item as HighlightItem} from './Highlight/Item';
 import {Facet} from './Facet';
 import {Highlight} from 'Highlight';
+import {QueryOptions} from 'QueryOptions';
+import {Query} from 'Query';
+import util from 'util';
 
 export class QueryBuilder {
   constructor() {
@@ -20,11 +24,165 @@ export class QueryBuilder {
     this._facet = null;
     this._highlight = null;
     this._partial = null;
-
-
-    // @todo: TBD
-    this._query = null;
+    this._queryOptions = null;
     this._filterQuery = null;
+
+    this._query = Query.create();
+    this._sort = [];
+    this._return = [QueryBuilder.RETURN_ALL,];
+  }
+
+  /**
+   * Return specific fields
+   *
+   * @param {String|*} fields
+   * @returns {QueryBuilder}
+   */
+  returnFields(...fields) {
+    if (fields.length <= 0) {
+      return this;
+    }
+
+    if (this._return.length === 1 && this._return[0] === QueryBuilder.RETURN_ALL) {
+      this._return = [];
+    }
+
+    fields.forEach((field) => {
+      this._return.push(field.toString());
+    });
+
+    return this;
+  }
+
+  /**
+   * Return result score only
+   *
+   * @returns {QueryBuilder}
+   */
+  returnScore() {
+    return this.returnFields(QueryBuilder.RETURN_SCORE);
+  }
+
+  /**
+   * Return only doc ids
+   *
+   * @returns {QueryBuilder}
+   */
+  returnIdOnly() {
+    this._return = [QueryBuilder.RETURN_ID_ONLY,];
+
+    return this;
+  }
+
+  /**
+   * Reset query and use a simple query parser
+   *
+   * @param {String|Function} valueOrClosure
+   * @returns {QueryBuilder}
+   */
+  simpleQuery(valueOrClosure) {
+    this._query = Query.create(Query.SIMPLE);
+
+    return this.query(valueOrClosure);
+  }
+
+  /**
+   * Reset query and use a dismax query parser
+   *
+   * @param {String|Function} valueOrClosure
+   * @returns {QueryBuilder}
+   */
+  dismaxQuery(valueOrClosure) {
+    this._query = Query.create(Query.DISMAX);
+
+    return this.query(valueOrClosure);
+  }
+
+  /**
+   * Reset query and use a structured query parser
+   *
+   * @param {String|Function} valueOrClosure
+   * @returns {QueryBuilder}
+   */
+  structuredQuery(valueOrClosure) {
+    this._query = Query.create(Query.STRUCTURED);
+
+    return this.query(valueOrClosure);
+  }
+
+  /**
+   * Reset query and use a lucene query parser
+   *
+   * @param {String|Function} valueOrClosure
+   * @returns {QueryBuilder}
+   */
+  luceneQuery(valueOrClosure) {
+    this._query = Query.create(Query.LUCENE);
+
+    return this.query(valueOrClosure);
+  }
+
+  /**
+   * Query to search for
+   *
+   * @param {String|Function} valueOrClosure
+   * @returns {QueryBuilder}
+   *
+   * @example qb.query('some text to search')
+   *
+   * @example qb.query((query) => {
+   *  query.query('some text to search');
+   * })
+   */
+  query(valueOrClosure) {
+    if (typeof valueOrClosure === 'function') {
+      valueOrClosure(this._query);
+    } else {
+      this._query.query(valueOrClosure);
+    }
+
+    return this;
+  }
+
+  /**
+   * Specifies a structured query that filters the results of a
+   * search without affecting how the results are scored and sorted
+   *
+   * @param {String|Function} valueOrClosure
+   * @returns {QueryBuilder}
+   *
+   * @example qb.filterQuery("available:'true'")
+   *
+   * @example qb.filterQuery((filterQuery) => {
+   *  filterQuery.query("available:'true'");
+   * })
+   */
+  filterQuery(valueOrClosure) {
+    this._filterQuery = this._filterQuery || Query.create(Query.STRUCTURED);
+
+    if (typeof valueOrClosure === 'function') {
+      valueOrClosure(this._filterQuery);
+    } else {
+      this._filterQuery.query(valueOrClosure);
+    }
+
+    return this;
+  }
+
+  /**
+   * @param {Function} closure
+   * @returns {QueryBuilder}
+   *
+   * @example qb.queryOptions((options) => {
+   *    options.field('title', 3).defaultOperator('and');
+   * })
+   */
+  queryOptions(closure) {
+    this._queryOptions = this._queryOptions || new QueryOptions();
+
+    closure(closure);
+
+    return this;
   }
 
   /**
@@ -64,11 +222,9 @@ export class QueryBuilder {
     // case only a closure is provided
     if (typeof field === 'function') {
       field(this._highlight);
-
-      return this;
+    } else {
+      this._highlight.add(field, closure);
     }
-
-    this._highlight.add(field, closure);
 
     return this;
   }
@@ -96,11 +252,9 @@ export class QueryBuilder {
     // case only a closure is provided
     if (typeof field === 'function') {
       field(this._facet);
-
-      return this;
+    } else {
+      this._facet.add(field, closure);
     }
-
-    this._facet.add(field, closure);
 
     return this;
   }
@@ -214,6 +368,34 @@ export class QueryBuilder {
   }
 
   /**
+   * @returns {String}
+   */
+  static get HIGHLIGHT_TEXT() {
+    return HighlightItem.TEXT;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get RETURN_ALL() {
+    return 'all_fields';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get RETURN_ID_ONLY() {
+    return 'no_fields';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get RETURN_SCORE() {
+    return '_score';
+  }
+
+  /**
    * @param {Object} payload
    * @param {String} key
    * @param {*} val
@@ -225,9 +407,11 @@ export class QueryBuilder {
       return this;
     } else if (typeof val === 'object' && val instanceof NativeParameter) {
       payload[key] = val.export();
+    } else if (util.isArray(val)) {
+      payload[key] = val.join(',');
+    } else {
+      payload[key] = val;
     }
-
-    payload[key] = val;
 
     return this;
   }
@@ -236,7 +420,10 @@ export class QueryBuilder {
    * @returns {Object}
    */
   get searchPayload() {
-    let payload = {};
+    let payload = {
+      queryParser: this._query.type,
+      query: this._query.export(),
+    };
 
     this
       ._payloadInject(payload, 'cursor', this._cursor)
@@ -246,6 +433,9 @@ export class QueryBuilder {
       ._payloadInject(payload, 'facet', this._facet)
       ._payloadInject(payload, 'highlight', this._highlight)
       ._payloadInject(payload, 'partial', this._partial)
+      ._payloadInject(payload, 'queryOptions', this._queryOptions)
+      ._payloadInject(payload, 'return', this._return)
+      ._payloadInject(payload, 'filterQuery', this._filterQuery)
     ;
 
     return payload;
