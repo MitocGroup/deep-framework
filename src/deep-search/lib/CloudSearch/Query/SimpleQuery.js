@@ -10,4 +10,11 @@ export class SimpleQuery extends Query {
   constructor() {
     super();
   }
+
+  /**
+   * @returns {String}
+   */
+  get type() {
+    return Query.SIMPLE;
+  }
 }

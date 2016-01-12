@@ -10,4 +10,11 @@ export class StructuredQuery extends Query {
   constructor() {
     super();
   }
+
+  /**
+   * @returns {String}
+   */
+  get type() {
+    return Query.STRUCTURED;
+  }
 }

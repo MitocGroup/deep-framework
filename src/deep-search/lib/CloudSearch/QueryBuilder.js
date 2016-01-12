@@ -10,9 +10,9 @@ import {Expr} from './Expr';
 import {Item as ExprItem} from './Expr/Item';
 import {Item as HighlightItem} from './Highlight/Item';
 import {Facet} from './Facet';
-import {Highlight} from 'Highlight';
-import {QueryOptions} from 'QueryOptions';
-import {Query} from 'Query';
+import {Highlight} from './Highlight';
+import {QueryOptions} from './QueryOptions';
+import {Query} from './Query';
 import util from 'util';
 
 export class QueryBuilder {
@@ -199,7 +199,7 @@ export class QueryBuilder {
   queryOptions(closure) {
     this._queryOptions = this._queryOptions || new QueryOptions();
 
-    closure(closure);
+    closure(this._queryOptions);
 
     return this;
   }
@@ -436,14 +436,16 @@ export class QueryBuilder {
    * @private
    */
   _payloadInject(payload, key, val) {
-    if (val === null) {
-      return this;
-    } else if (typeof val === 'object' && val instanceof NativeParameter) {
-      payload[key] = val.export();
-    } else if (util.isArray(val)) {
-      payload[key] = val.join(',');
-    } else {
-      payload[key] = val;
+    if (val !== null) {
+      if (util.isArray(val)) {
+        if (val.length > 0) {
+          payload[key] = val.join(',');
+        }
+      } else if (typeof val === 'object' && val instanceof NativeParameter) {
+        payload[key] = val.export();
+      } else {
+        payload[key] = val;
+      }
     }
 
     return this;

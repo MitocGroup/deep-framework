@@ -22,7 +22,7 @@ export class Expr extends NativeParameter {
    * @returns {Expr}
    */
   value(value) {
-    this._items = new Item(value);
+    this._items = [new Item(value)];
 
     return this;
   }

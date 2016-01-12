@@ -10,4 +10,11 @@ export class DisMaxQuery extends Query {
   constructor() {
     super();
   }
+
+  /**
+   * @returns {String}
+   */
+  get type() {
+    return Query.DISMAX;
+  }
 }

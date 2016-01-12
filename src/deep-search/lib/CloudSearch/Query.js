@@ -5,10 +5,6 @@
 'use strict';
 
 import {NativeParameter} from './NativeParameter';
-import {SimpleQuery} from './Query/SimpleQuery';
-import {StructuredQuery} from './Query/StructuredQuery';
-import {LuceneQuery} from './Query/LuceneQuery';
-import {DisMaxQuery} from './Query/DisMaxQuery';
 
 export class Query extends NativeParameter {
   constructor() {
@@ -31,19 +27,7 @@ export class Query extends NativeParameter {
    * @returns {String}
    */
   get type() {
-    let type = null;
-
-    if (this instanceof SimpleQuery) {
-      type = Query.SIMPLE;
-    } else if (this instanceof StructuredQuery) {
-      type = Query.STRUCTURED;
-    } else if (this instanceof LuceneQuery) {
-      type = Query.LUCENE;
-    } else if (this instanceof DisMaxQuery) {
-      type = Query.DISMAX;
-    }
-
-    return type;
+    return null;
   }
 
   /**
@@ -52,23 +36,25 @@ export class Query extends NativeParameter {
    * @returns {Query|SimpleQuery|StructuredQuery|LuceneQuery|DisMaxQuery}
    */
   static create(type = Query.SIMPLE, ...args) {
-    let Proto = null;
+    let name = null;
 
     switch(type.toLowerCase()) {
       case Query.SIMPLE:
-        Proto = new SimpleQuery();
+        name = 'Simple';
         break;
       case Query.STRUCTURED:
-        Proto = new StructuredQuery();
+        name = 'Structured';
         break;
       case Query.LUCENE:
-        Proto = new LuceneQuery();
+        name = 'Lucene';
         break;
       case Query.DISMAX:
-        Proto = new DisMaxQuery();
+        name = 'DisMax';
         break;
       default: throw new Error(`Unknown CloudSearch query type ${type}. Available: ${Query.TYPES.join(', ')}`);
     }
+
+    let Proto = require(`./Query/${name}Query`)[`${name}Query`];
 
     return new Proto(...args);
   }
@@ -99,6 +85,10 @@ export class Query extends NativeParameter {
    */
   static get DISMAX() {
     return 'dismax';
+  }
+
+  static get TYPES() {
+    return [Query.SIMPLE, Query.STRUCTURED, Query.LUCENE, Query.DISMAX,];
   }
 
   /**

@@ -27,7 +27,11 @@ export class Facet extends NativeParameter {
    * })
    */
   add(field, closure) {
-    closure(new Item(field));
+    let item = new Item(field);
+
+    this._items.push(item);
+
+    closure(item);
 
     return this;
   }
