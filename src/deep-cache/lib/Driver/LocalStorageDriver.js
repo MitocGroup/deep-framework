@@ -98,15 +98,20 @@ export class LocalStorageDriver extends AbstractDriver {
    * @private
    */
   _flushStale() {
-    let removedKeys = [];
+    let keysToRemove = [];
 
     LocalStorage.forEach((key, val) => {
-      if (this.isDeepKey(key) && !LocalStorageDriver._isAlive(val, key)) {
-        removedKeys.push(key);
+      // @note - do not remove keys from cache at iteration time, it breaks the loop
+      if (this.isDeepKey(key) && !LocalStorageDriver._isAlive(val, key, false)) {
+        keysToRemove.push(key);
       }
     });
 
-    return removedKeys.length > 0;
+    keysToRemove.forEach((key) => {
+      LocalStorage.remove(key);
+    });
+
+    return keysToRemove.length > 0;
   }
 
   /**
@@ -138,16 +143,19 @@ export class LocalStorageDriver extends AbstractDriver {
    *
    * @param {Object} response
    * @param {String} key
+   * @param {Boolean} removeStale
    * @returns {Boolean}
    * @private
    */
-  static _isAlive(response, key) {
+  static _isAlive(response, key, removeStale = true) {
     if (!response) {
       return false;
     }
 
     if (response.exd && response.exd <= LocalStorageDriver._now) {
-      LocalStorage.remove(key);
+      if (removeStale) {
+        LocalStorage.remove(key);
+      }
       return false;
     }
 
