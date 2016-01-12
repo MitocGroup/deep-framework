@@ -292,15 +292,17 @@ export class Request {
       }
 
       this._send((response) => {
-        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
-          if (!result) {
-            error = `Unable to persist request cache under key ${cacheKey}`;
-          }
+        if (!response.isError) {
+          cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
+            if (!result) {
+              error = `Unable to persist request cache under key ${cacheKey}`;
+            }
 
-          if (error) {
-            throw new CachedRequestException(error);
-          }
-        });
+            if (error) {
+              throw new CachedRequestException(error);
+            }
+          });
+        }
 
         // @todo: do it synchronous?
         callback(response);
