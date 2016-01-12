@@ -15,7 +15,7 @@ import {QueryOptions} from './QueryOptions';
 import {Query} from './Query';
 import util from 'util';
 
-export class QueryBuilder {
+export class Builder {
   constructor() {
     this._cursor = null;
     this._size = null;
@@ -29,20 +29,20 @@ export class QueryBuilder {
 
     this._query = Query.create();
     this._sort = [];
-    this._return = [QueryBuilder.RETURN_ALL,];
+    this._return = [Builder.RETURN_ALL,];
   }
 
   /**
    * @param {String} field
    * @param {String} type
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
-  sortBy(field, type = QueryBuilder.SORT_ASC) {
+  sortBy(field, type = Builder.SORT_ASC) {
     type = type.toLowerCase();
 
-    if (type !== QueryBuilder.SORT_ASC && type !== QueryBuilder.SORT_DESC) {
+    if (type !== Builder.SORT_ASC && type !== Builder.SORT_DESC) {
       throw new Error(
-        `Unknown sort type ${type}. Allowed: ${QueryBuilder.SORT_ASC}, ${QueryBuilder.SORT_DESC}`
+        `Unknown sort type ${type}. Allowed: ${Builder.SORT_ASC}, ${Builder.SORT_DESC}`
       );
     }
 
@@ -55,14 +55,14 @@ export class QueryBuilder {
    * Return specific fields
    *
    * @param {String|*} fields
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
   returnFields(...fields) {
     if (fields.length <= 0) {
       return this;
     }
 
-    if (this._return.length === 1 && this._return[0] === QueryBuilder.RETURN_ALL) {
+    if (this._return.length === 1 && this._return[0] === Builder.RETURN_ALL) {
       this._return = [];
     }
 
@@ -76,19 +76,19 @@ export class QueryBuilder {
   /**
    * Return result score only
    *
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
   returnScore() {
-    return this.returnFields(QueryBuilder.RETURN_SCORE);
+    return this.returnFields(Builder.RETURN_SCORE);
   }
 
   /**
    * Return only doc ids
    *
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
   returnIdOnly() {
-    this._return = [QueryBuilder.RETURN_ID_ONLY,];
+    this._return = [Builder.RETURN_ID_ONLY,];
 
     return this;
   }
@@ -97,7 +97,7 @@ export class QueryBuilder {
    * Reset query and use a simple query parser
    *
    * @param {String|Function} valueOrClosure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
   simpleQuery(valueOrClosure) {
     this._query = Query.create(Query.SIMPLE);
@@ -109,7 +109,7 @@ export class QueryBuilder {
    * Reset query and use a dismax query parser
    *
    * @param {String|Function} valueOrClosure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
   dismaxQuery(valueOrClosure) {
     this._query = Query.create(Query.DISMAX);
@@ -121,7 +121,7 @@ export class QueryBuilder {
    * Reset query and use a structured query parser
    *
    * @param {String|Function} valueOrClosure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
   structuredQuery(valueOrClosure) {
     this._query = Query.create(Query.STRUCTURED);
@@ -133,7 +133,7 @@ export class QueryBuilder {
    * Reset query and use a lucene query parser
    *
    * @param {String|Function} valueOrClosure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
   luceneQuery(valueOrClosure) {
     this._query = Query.create(Query.LUCENE);
@@ -145,7 +145,7 @@ export class QueryBuilder {
    * Query to search for
    *
    * @param {String|Function} valueOrClosure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.query('some text to search')
    *
@@ -168,7 +168,7 @@ export class QueryBuilder {
    * search without affecting how the results are scored and sorted
    *
    * @param {String|Function} valueOrClosure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.filterQuery("available:'true'")
    *
@@ -190,7 +190,7 @@ export class QueryBuilder {
 
   /**
    * @param {Function} closure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.queryOptions((options) => {
    *    options.field('title', 3).defaultOperator('and');
@@ -208,7 +208,7 @@ export class QueryBuilder {
    * Enables partial results to be returned if one or more index partitions are unavailable.
    * By default the query fails with 5xx when unavailable
    *
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    */
   partial() {
     this._partial = true;
@@ -221,7 +221,7 @@ export class QueryBuilder {
    *
    * @param {String|Function} field
    * @param {Function} closure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.highlight('title')
    *
@@ -253,7 +253,7 @@ export class QueryBuilder {
    *
    * @param {String|Function} field
    * @param {Function} closure
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.facet('year', (facet) => {
    *    facet.sortByCount().top(3);
@@ -282,7 +282,7 @@ export class QueryBuilder {
    * Sort results or specify search or filter criteria (single expression)
    *
    * @param {String} value
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.expr('(0.3*popularity)+(0.7*_score)')
    */
@@ -297,7 +297,7 @@ export class QueryBuilder {
    *
    * @param {String} value
    * @param {String} name
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.addExpr('(0.3*popularity)+(0.7*_score)', 'expression1')
    */
@@ -313,7 +313,7 @@ export class QueryBuilder {
    * Result set size
    *
    * @param {Number} size
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.size(100)
    */
@@ -327,14 +327,14 @@ export class QueryBuilder {
    * Result set offset
    *
    * @param {Number} offset
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.offset(200)
    */
   offset(offset) {
     this._start = Math.abs(parseInt(offset));
 
-    this._size = this._size || QueryBuilder.DEFAULT_SIZE;
+    this._size = this._size || Builder.DEFAULT_SIZE;
     this._cursor = null;
 
     return this;
@@ -344,7 +344,7 @@ export class QueryBuilder {
    * Cursors are used to page through the large
    * result sets
    *
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    *
    * @example qb.useCursor()
    *          qb.useCursor('some_cursor_value')
@@ -352,7 +352,7 @@ export class QueryBuilder {
   useCursor(cursorVal = null) {
     this._cursor = cursorVal ? new Cursor(cursorVal) : new Cursor();
 
-    this._size = this._size || QueryBuilder.DEFAULT_SIZE;
+    this._size = this._size || Builder.DEFAULT_SIZE;
     this._start = null;
 
     return this;
@@ -432,7 +432,7 @@ export class QueryBuilder {
    * @param {Object} payload
    * @param {String} key
    * @param {*} val
-   * @returns {QueryBuilder}
+   * @returns {Builder}
    * @private
    */
   _payloadInject(payload, key, val) {

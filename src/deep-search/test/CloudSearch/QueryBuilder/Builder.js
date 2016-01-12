@@ -3,16 +3,16 @@
 'use strict';
 
 import chai from 'chai';
-import {QueryBuilder} from '../../lib.compiled/CloudSearch/QueryBuilder';
+import {Builder} from '../../../lib.compiled/CloudSearch/QueryBuilder/Builder';
 
 // @todo: Add more advanced tests
-suite("CloudSearch/QueryBuilder", function() {
-  test('Class QueryBuilder exists in CloudSearch/QueryBuilder', function() {
-    chai.expect(typeof QueryBuilder).to.equal('function');
+suite("CloudSearch/QueryBuilder/Builder", function() {
+  test('Class Builder exists in CloudSearch/QueryBuilder/Builder', function() {
+    chai.expect(typeof Builder).to.equal('function');
   });
 
-  test('General QueryBuilder test', function() {
-    let qb = new QueryBuilder();
+  test('General Builder test', function() {
+    let qb = new Builder();
 
     qb
       .query((query) => {
