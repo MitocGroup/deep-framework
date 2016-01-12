@@ -33,6 +33,25 @@ export class QueryBuilder {
   }
 
   /**
+   * @param {String} field
+   * @param {String} type
+   * @returns {QueryBuilder}
+   */
+  sortBy(field, type = QueryBuilder.SORT_ASC) {
+    type = type.toLowerCase();
+
+    if (type !== QueryBuilder.SORT_ASC && type !== QueryBuilder.SORT_DESC) {
+      throw new Error(
+        `Unknown sort type ${type}. Allowed: ${QueryBuilder.SORT_ASC}, ${QueryBuilder.SORT_DESC}`
+      );
+    }
+
+    this._sort.push(`${field} ${type}`);
+
+    return this;
+  }
+
+  /**
    * Return specific fields
    *
    * @param {String|*} fields
@@ -396,6 +415,20 @@ export class QueryBuilder {
   }
 
   /**
+   * @returns {String}
+   */
+  static get SORT_ASC() {
+    return 'asc';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SORT_DESC() {
+    return 'desc';
+  }
+
+  /**
    * @param {Object} payload
    * @param {String} key
    * @param {*} val
@@ -429,6 +462,7 @@ export class QueryBuilder {
       ._payloadInject(payload, 'cursor', this._cursor)
       ._payloadInject(payload, 'size', this._size)
       ._payloadInject(payload, 'start', this._start)
+      ._payloadInject(payload, 'sort', this._sort)
       ._payloadInject(payload, 'expr', this._expr)
       ._payloadInject(payload, 'facet', this._facet)
       ._payloadInject(payload, 'highlight', this._highlight)
