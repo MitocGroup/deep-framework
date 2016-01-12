@@ -5,21 +5,29 @@
 'use strict';
 
 import {Item} from './Item';
+import {Response as BaseResponse} from '../Response';
 
-export class Response {
+export class Response extends BaseResponse {
   /**
    * @param {Error|null} error
    * @param {Object} data
    */
   constructor(error, data) {
-    this._error = error;
-    this._executionTime = null;
+    super(error, data);
+
     this._totalMatched = null;
     this._suggestions = [];
 
-
     if (data) {
-      this._parseRawData(data);
+      this._totalMatched = data.suggest.found;
+
+      data.suggest.suggestions.forEach((rawSuggestion) => {
+        this._suggestions.push(new Item(
+          rawSuggestion.id,
+          rawSuggestion.score,
+          rawSuggestion.suggestion
+        ));
+      });
     }
   }
 
@@ -35,43 +43,5 @@ export class Response {
    */
   get totalMatched() {
     return this._totalMatched;
-  }
-
-  /**
-   * @returns {Number}
-   */
-  get executionTime() {
-    return this._executionTime;
-  }
-
-  /**
-   * @returns {Error|null}
-   */
-  get error() {
-    return this._error;
-  }
-
-  /**
-   * @returns {Boolean}
-   */
-  get isError() {
-    return !!this._error;
-  }
-
-  /**
-   * @param {Object} data
-   * @private
-   */
-  _parseRawData(data) {
-    this._executionTime = data.status.timems;
-    this._totalMatched = data.suggest.found;
-
-    data.suggest.suggestions.forEach((rawSuggestion) => {
-      this._suggestions.push(new Item(
-        rawSuggestion.id,
-        rawSuggestion.score,
-        rawSuggestion.suggestion
-      ));
-    });
   }
 }
