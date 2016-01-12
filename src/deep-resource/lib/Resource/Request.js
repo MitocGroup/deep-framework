@@ -294,8 +294,8 @@ export class Request {
       this._send((response) => {
         if (!response.isError) {
           cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
-            if (!result) {
-              error = `Unable to persist request cache under key ${cacheKey}`;
+            if (!error && !result) {
+              error = `Unable to persist request cache under key ${cacheKey}.`;
             }
 
             if (error) {
