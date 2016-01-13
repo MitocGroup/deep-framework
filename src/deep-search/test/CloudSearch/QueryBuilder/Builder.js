@@ -16,7 +16,7 @@ suite("CloudSearch/QueryBuilder/Builder", function() {
 
     qb
       .query((query) => {
-        query.query('some query');
+        query.query('some title query');
       })
       .filterQuery("updatedAt:''")
       .queryOptions((queryOptions) => {
@@ -39,9 +39,9 @@ suite("CloudSearch/QueryBuilder/Builder", function() {
       .partial()
     ;
 
-    chai.expect(qb.searchPayload).to.deep.equal({
+    chai.expect(qb.generateSearchPayload()).to.deep.equal({
       queryParser: 'simple',
-      query: 'some query',
+      query: 'some title query',
       size: 10,
       start: 2,
       sort: 'title asc,createdAt desc',
@@ -56,9 +56,9 @@ suite("CloudSearch/QueryBuilder/Builder", function() {
 
     qb.useCursor();
 
-    chai.expect(qb.searchPayload).to.deep.equal({
+    chai.expect(qb.generateSearchPayload()).to.deep.equal({
       queryParser: 'simple',
-      query: 'some query',
+      query: 'some title query',
       size: 10,
       cursor: 'initial',
       sort: 'title asc,createdAt desc',
@@ -68,6 +68,21 @@ suite("CloudSearch/QueryBuilder/Builder", function() {
       partial: true,
       queryOptions: '{"fields":["title^3"]}',
       'return': 'title,description,_score',
+      filterQuery: 'updatedAt:\'\''
+    });
+
+    chai.expect(qb.generateSearchPayload({title: 'titleReplaced',})).to.deep.equal({
+      queryParser: 'simple',
+      query: 'some titleReplaced query',
+      size: 10,
+      cursor: 'initial',
+      sort: 'titleReplaced asc,createdAt desc',
+      expr: '{"expression1":"(0.3*createdAt)+(0.7*_score)","expr2":"(0.3*createdAt)+(0.7*_score)"}',
+      facet: '{"createdAt":{"sort":"bucket","size":10}}',
+      highlight: '{"titleReplaced":{"max_phrases":2,"format":"text"}}',
+      partial: true,
+      queryOptions: '{"fields":["titleReplaced^3"]}',
+      'return': 'titleReplaced,description,_score',
       filterQuery: 'updatedAt:\'\''
     });
   });

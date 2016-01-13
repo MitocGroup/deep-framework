@@ -44,13 +44,14 @@ export class Highlight extends NativeParameter {
   }
 
   /**
+   * @param {Object} indexes
    * @returns {String}
    */
-  export() {
+  export(indexes) {
     let highlights = {};
 
     this._items.forEach((highlight) => {
-      highlights[highlight.field] = highlight.options;
+      highlights[NativeParameter._swapIndexFields(indexes, highlight.field)] = highlight.options;
     });
 
     return JSON.stringify(highlights);

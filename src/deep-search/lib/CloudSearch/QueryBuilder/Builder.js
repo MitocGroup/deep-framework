@@ -430,21 +430,22 @@ export class Builder {
 
   /**
    * @param {Object} payload
+   * @param {Object} indexes
    * @param {String} key
    * @param {*} val
    * @returns {Builder}
    * @private
    */
-  _payloadInject(payload, key, val) {
+  _payloadInject(payload, indexes, key, val) {
     if (val !== null) {
       if (util.isArray(val)) {
         if (val.length > 0) {
-          payload[key] = val.join(',');
+          payload[key] = val.map((str) => Builder._swapIndexFields(indexes, str)).join(',');
         }
       } else if (typeof val === 'object' && val instanceof NativeParameter) {
-        payload[key] = val.export();
+        payload[key] = val.export(indexes);
       } else {
-        payload[key] = val;
+        payload[key] = Builder._swapIndexFields(indexes, val);
       }
     }
 
@@ -452,26 +453,52 @@ export class Builder {
   }
 
   /**
+   * @param {Object} indexes
+   * @param {String} str
+   * @returns {String}
+   */
+  static _swapIndexFields(indexes, str) {
+    if (typeof str !== 'string') {
+      return str;
+    }
+
+    for (let field in indexes) {
+      if (!indexes.hasOwnProperty(field)) {
+        continue;
+      }
+
+      let realField = indexes[field];
+
+      str = str.replace(
+        new RegExp(`^(.*[^a-z0-9_])?(${field})([^a-z0-9_].*)?$`, 'gi'),
+        `$1${realField}$3`
+      );
+    }
+
+    return str;
+  }
+
+  /**
    * @returns {Object}
    */
-  get searchPayload() {
+  generateSearchPayload(indexes = {}) {
     let payload = {
       queryParser: this._query.type,
-      query: this._query.export(),
+      query: this._query.export(indexes),
     };
 
     this
-      ._payloadInject(payload, 'cursor', this._cursor)
-      ._payloadInject(payload, 'size', this._size)
-      ._payloadInject(payload, 'start', this._start)
-      ._payloadInject(payload, 'sort', this._sort)
-      ._payloadInject(payload, 'expr', this._expr)
-      ._payloadInject(payload, 'facet', this._facet)
-      ._payloadInject(payload, 'highlight', this._highlight)
-      ._payloadInject(payload, 'partial', this._partial)
-      ._payloadInject(payload, 'queryOptions', this._queryOptions)
-      ._payloadInject(payload, 'return', this._return)
-      ._payloadInject(payload, 'filterQuery', this._filterQuery)
+      ._payloadInject(payload, indexes, 'cursor', this._cursor)
+      ._payloadInject(payload, indexes, 'size', this._size)
+      ._payloadInject(payload, indexes, 'start', this._start)
+      ._payloadInject(payload, indexes, 'sort', this._sort)
+      ._payloadInject(payload, indexes, 'expr', this._expr)
+      ._payloadInject(payload, indexes, 'facet', this._facet)
+      ._payloadInject(payload, indexes, 'highlight', this._highlight)
+      ._payloadInject(payload, indexes, 'partial', this._partial)
+      ._payloadInject(payload, indexes, 'queryOptions', this._queryOptions)
+      ._payloadInject(payload, indexes, 'return', this._return)
+      ._payloadInject(payload, indexes, 'filterQuery', this._filterQuery)
     ;
 
     return payload;

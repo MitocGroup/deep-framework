@@ -59,17 +59,18 @@ export class Expr extends NativeParameter {
   }
 
   /**
+   * @param {Object} indexes
    * @returns {String}
    */
-  export() {
+  export(indexes) {
     if (this.isSimple) {
-      return this._items[0].value;
+      return NativeParameter._swapIndexFields(indexes, this._items[0].value);
     }
 
     let expr = {};
 
     this._items.forEach((item) => {
-      expr[item.name] = item.value;
+      expr[item.name] = NativeParameter._swapIndexFields(indexes, item.value);
     });
 
     return JSON.stringify(expr);

@@ -175,9 +175,20 @@ export class QueryOptions extends NativeParameter {
   }
 
   /**
+   * @param {Object} indexes
    * @returns {String}
    */
-  export() {
+  export(indexes) {
+    if (this._options.hasOwnProperty('fields')) {
+      this._options['fields'] = this._options['fields']
+        .map((field) => NativeParameter._swapIndexFields(indexes, field));
+    }
+
+    if (this._options.hasOwnProperty('phraseFields')) {
+      this._options['phraseFields'] = this._options['phraseFields']
+        .map((field) => NativeParameter._swapIndexFields(indexes, field));
+    }
+
     return JSON.stringify(this._options);
   }
 }

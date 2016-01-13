@@ -7,6 +7,8 @@
 import AWS from 'aws-sdk';
 import {MissingSuggesterException} from './Exception/MissingSuggesterException';
 import {Suggestion} from './Suggestion';
+import {Builder as QueryBuilder} from './QueryBuilder/Builder';
+import {Query} from './Query';
 
 export class DomainConsumer {
   /**
@@ -18,6 +20,24 @@ export class DomainConsumer {
     this._cloudSearchDomain = cloudSearchDomain;
     this._indexes = indexes;
     this._suggesters = suggesters;
+  }
+
+  /**
+   * @returns {QueryBuilder}
+   */
+  createQueryBuilder() {
+    return new QueryBuilder();
+  }
+
+  /**
+   * @param {QueryBuilder} queryBuilder
+   */
+  query(queryBuilder) {
+    return new Query(
+      this._cloudSearchDomain,
+      this._indexes,
+      queryBuilder
+    );
   }
 
   /**

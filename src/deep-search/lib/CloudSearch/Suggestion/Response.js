@@ -15,7 +15,7 @@ export class Response extends BaseResponse {
   constructor(error, data) {
     super(error, data);
 
-    this._totalMatched = null;
+    this._totalMatched = 0;
     this._suggestions = [];
 
     if (data) {

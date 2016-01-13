@@ -92,9 +92,10 @@ export class Query extends NativeParameter {
   }
 
   /**
+   * @param {Object} indexes
    * @returns {String}
    */
-  export() {
-    return this._query.toString();
+  export(indexes) {
+    return NativeParameter._swapIndexFields(indexes, this._query.toString());
   }
 }

@@ -44,13 +44,14 @@ export class Facet extends NativeParameter {
   }
 
   /**
+   * @param {Object} indexes
    * @returns {String}
    */
-  export() {
+  export(indexes) {
     let facets = {};
 
     this._items.forEach((facet) => {
-      facets[facet.field] = facet.options;
+      facets[NativeParameter._swapIndexFields(indexes, facet.field)] = facet.options;
     });
 
     return JSON.stringify(facets);
