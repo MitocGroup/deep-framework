@@ -35,6 +35,7 @@ Structure
         - Frontend
         - ...
     - `deepkg.json` # **required**
+    - `search.json` # @see [docs](components/search.md#configuration-file-searchjson)
     - `parameters.json`
 
 Configuration file (`deepkg.json`)
