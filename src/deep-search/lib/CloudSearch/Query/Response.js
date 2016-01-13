@@ -5,6 +5,7 @@
 'use strict';
 
 import {Response as BaseResponse} from '../Response';
+import {IndexNameNormalizer} from '../IndexNameNormalizer';
 
 export class Response extends BaseResponse {
   /**
@@ -95,6 +96,9 @@ export class Response extends BaseResponse {
    * @private
    */
   _manageHitsAndFacets(data) {
+    (new IndexNameNormalizer(this._query.indexes))
+      .normalizeSearchResponseData(data);
+
     if (data.hits) {
       this._totalMatched = data.hits.found;
       this._start = data.hits.start;
