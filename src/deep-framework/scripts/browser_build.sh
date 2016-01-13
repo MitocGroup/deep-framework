@@ -6,7 +6,7 @@ browserify=$(which browserify)
 brew=$(which brew)
 uglifyjs=$(which uglifyjs)
 browser_build_path="${path}/../browser"
-DEEP_AWS_SERVICES=lambda,cognitoidentity,cognitosync
+DEEP_AWS_SERVICES=lambda,cognitoidentity,cognitosync,cloudsearchdomain
 
 assure_brew() {
     if [ -z ${brew} ]; then

@@ -12,7 +12,7 @@ import {Query} from './Query';
 
 export class DomainConsumer {
   /**
-   * @param {AWS.CloudSearchDomain} cloudSearchDomain
+   * @param {AWS.CloudSearchDomain|Object} cloudSearchDomain
    * @param {Object} indexes
    * @param {Object} suggesters
    */
@@ -63,6 +63,23 @@ export class DomainConsumer {
    */
   get suggesters() {
     return this._suggesters;
+  }
+
+  /**
+   * @param {Object} config
+   */
+  static createFakeClientFromSearchConfig(config) {
+    let indexes = config.indexes;
+    let suggesters = config.suggesters;
+
+    return new DomainConsumer({
+      suggest: (payload, cb) => {
+        cb(new Error('Autocomplete not allowed on localhost'), null);
+      },
+      search: (payload, cb) => {
+        cb(new Error('Search not allowed on localhost'), null);
+      },
+    }, indexes, suggesters);
   }
 
   /**

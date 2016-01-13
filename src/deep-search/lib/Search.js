@@ -75,6 +75,9 @@ export class Search extends Kernel.ContainerAware {
    */
   boot(kernel, callback) {
     let config = kernel.config.search;
+    let createMethod = kernel.isLocalhost
+      ? 'createFakeClientFromSearchConfig'
+      : 'createFromSearchConfig';
 
     for (let modelName in config) {
       if (!config.hasOwnProperty(modelName)) {
@@ -83,7 +86,7 @@ export class Search extends Kernel.ContainerAware {
 
       let domainConfig = config[modelName];
 
-      this._domainsConsumers[modelName] = DomainConsumer.createFromSearchConfig(domainConfig);
+      this._domainsConsumers[modelName] = DomainConsumer[createMethod](domainConfig);
 
       if (kernel.isBackend) {
         this._domainsConfig[modelName]= DomainConfig.createFromSearchConfig(domainConfig);
