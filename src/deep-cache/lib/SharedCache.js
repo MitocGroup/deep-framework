@@ -5,6 +5,7 @@
 'use strict';
 
 import Core from 'deep-core';
+import util from 'util';
 
 /**
  * Shared Cache
@@ -70,9 +71,9 @@ export class SharedCache {
    * @returns {String}
    */
   buildKeyFromLambdaRuntime(runtime) {
-    return runtime.context && runtime.context.has('invokedFunctionArn')
-      ? `${runtime.context.getOption('invokedFunctionArn')}#${SharedCache._stringifyPayload(runtime.request.data)}`
-      : null;
+    return runtime.context && runtime.context.has('invokedFunctionArn') ?
+      `${runtime.context.getOption('invokedFunctionArn')}#${SharedCache._stringifyPayload(runtime.request.data)}` :
+      null;
   }
 
   /**
@@ -94,7 +95,15 @@ export class SharedCache {
     let normalizedData = {};
 
     Object.keys(data).sort().forEach((key) => {
-      normalizedData[key] = data[key];
+      let value = data[key];
+
+      if (util.isArray(value)) {
+        value = value.sort();
+      } else if(value !== null && typeof value === 'object') {
+        value = SharedCache._normalizeObject(value);
+      }
+
+      normalizedData[key] = value;
     });
 
     return normalizedData;
