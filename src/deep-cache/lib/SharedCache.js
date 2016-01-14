@@ -62,7 +62,7 @@ export class SharedCache {
     let action = request.action;
     let requestIdentifier = action.source[request.isLambda ? 'original' : 'api'];
 
-    return `${requestIdentifier}#${JSON.stringify(request.payload)}`;
+    return `${requestIdentifier}#${SharedCache._stringifyPayload(request.payload)}`;
   }
 
   /**
@@ -70,11 +70,34 @@ export class SharedCache {
    * @returns {String}
    */
   buildKeyFromLambdaRuntime(runtime) {
-    let payload = JSON.stringify(runtime.request.data);
-
     return runtime.context && runtime.context.has('invokedFunctionArn')
-      ? `${runtime.context.getOption('invokedFunctionArn')}#${payload}`
+      ? `${runtime.context.getOption('invokedFunctionArn')}#${SharedCache._stringifyPayload(runtime.request.data)}`
       : null;
+  }
+
+  /**
+   * @param {Object} payload
+   * @private
+   */
+  static _stringifyPayload(payload) {
+    return JSON.stringify(
+      SharedCache._normalizeObject(payload)
+    );
+  }
+
+  /**
+   * @param {Object} data
+   * @returns {Object}
+   * @private
+   */
+  static _normalizeObject(data) {
+    let normalizedData = {};
+
+    Object.keys(data).sort().forEach((key) => {
+      normalizedData[key] = data[key];
+    });
+
+    return normalizedData;
   }
 
   /**
