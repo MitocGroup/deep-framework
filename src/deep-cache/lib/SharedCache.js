@@ -6,6 +6,7 @@
 
 import Core from 'deep-core';
 import util from 'util';
+import crypto from 'crypto';
 
 /**
  * Shared Cache
@@ -57,13 +58,12 @@ export class SharedCache {
   /**
    * @param {Request} request
    * @returns {String}
-   * @private
    */
   buildKeyFromRequest(request) {
     let action = request.action;
     let requestIdentifier = action.source[request.isLambda ? 'original' : 'api'];
 
-    return `${requestIdentifier}#${SharedCache._stringifyPayload(request.payload)}`;
+    return `${requestIdentifier}#${SharedCache._payloadHash(request.payload)}`;
   }
 
   /**
@@ -72,8 +72,17 @@ export class SharedCache {
    */
   buildKeyFromLambdaRuntime(runtime) {
     return runtime.context && runtime.context.has('invokedFunctionArn') ?
-      `${runtime.context.getOption('invokedFunctionArn')}#${SharedCache._stringifyPayload(runtime.request.data)}` :
+      `${runtime.context.getOption('invokedFunctionArn')}#${SharedCache._payloadHash(runtime.request.data)}` :
       null;
+  }
+
+  /**
+   * @param {Object} payload
+   * @returns {String}
+   * @private
+   */
+  static _payloadHash(payload) {
+    return SharedCache._hash(SharedCache._stringifyPayload(payload));
   }
 
   /**
@@ -84,6 +93,16 @@ export class SharedCache {
     return JSON.stringify(
       SharedCache._normalizeObject(payload)
     );
+  }
+
+  /**
+   * @param {String} text
+   * @param {String} alg
+   * @returns {String}
+   * @private
+   */
+  static _hash(text, alg = 'sha1') {
+    return crypto.createHash(alg).update(text).digest('hex');
   }
 
   /**
