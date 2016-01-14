@@ -50,14 +50,10 @@ export class CloudFrontDriver extends AbstractFsDriver {
 
       if (parsedData.expires && parsedData.expires < AbstractFsDriver._now || parsedData.buildId !== this._buildId) {
         delete this._cache[key];
-
-        callback(null, null);
-
+      } else {
+        callback(null, this._cache[key].value);
         return;
       }
-
-      callback(null, this._cache[key]);
-      return;
     }
 
     this._request(key, (err, data) => {
@@ -74,7 +70,7 @@ export class CloudFrontDriver extends AbstractFsDriver {
           return;
         }
 
-        this._cache[key] = parsedData.value;
+        this._cache[key] = parsedData;
 
         callback(null, parsedData.value);
       } catch (e) {
