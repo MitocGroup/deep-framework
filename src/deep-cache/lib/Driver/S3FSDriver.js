@@ -59,7 +59,7 @@ export class S3FSDriver extends AbstractFsDriver {
       } catch (e) {
         this._invalidate(key);
 
-        callback(null, null);
+        callback(e, null);
       }
     });
   }

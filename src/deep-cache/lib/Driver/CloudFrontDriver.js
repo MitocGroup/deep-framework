@@ -22,6 +22,7 @@ export class CloudFrontDriver extends AbstractFsDriver {
     super(directory);
 
     this._containerAware = containerAware;
+    this._cache = {};
   }
 
   /**
@@ -43,6 +44,22 @@ export class CloudFrontDriver extends AbstractFsDriver {
    * @private
    */
   _get(key, callback = () => {}) {
+    // @todo: get rid of this cache?
+    if (this._cache.hasOwnProperty(key)) {
+      let parsedData = this._cache[key];
+
+      if (parsedData.expires && parsedData.expires < AbstractFsDriver._now || parsedData.buildId !== this._buildId) {
+        delete this._cache[key];
+
+        callback(null, null);
+
+        return;
+      }
+
+      callback(null, this._cache[key]);
+      return;
+    }
+
     this._request(key, (err, data) => {
       if (err) {
         return callback(err, null);
@@ -57,9 +74,11 @@ export class CloudFrontDriver extends AbstractFsDriver {
           return;
         }
 
+        this._cache[key] = parsedData.value;
+
         callback(null, parsedData.value);
       } catch (e) {
-        callback(null, null);
+        callback(e, null);
       }
     });
   }
