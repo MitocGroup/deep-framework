@@ -378,6 +378,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -445,13 +451,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/cache.js~cache#driver",
-    "class/lib/Cache.js~Cache.html#instance-set-driver",
+    "class/lib/Cache.js~Cache.html#instance-get-driver",
     "lib/Cache.js~Cache#driver",
     "member"
   ],
   [
     "lib/cache.js~cache#driver",
-    "class/lib/Cache.js~Cache.html#instance-get-driver",
+    "class/lib/Cache.js~Cache.html#instance-set-driver",
     "lib/Cache.js~Cache#driver",
     "member"
   ],
@@ -481,13 +487,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#buildid",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-buildId",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-buildId",
     "lib/Driver/AbstractDriver.js~AbstractDriver#buildId",
     "member"
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#buildid",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-buildId",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-buildId",
     "lib/Driver/AbstractDriver.js~AbstractDriver#buildId",
     "member"
   ],
@@ -519,6 +525,12 @@ window.esdocSearchIndex = [
     "lib/driver/abstractdriver.js~abstractdriver#invalidate",
     "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-invalidate",
     "lib/Driver/AbstractDriver.js~AbstractDriver#invalidate",
+    "method"
+  ],
+  [
+    "lib/driver/abstractdriver.js~abstractdriver#isdeepkey",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-isDeepKey",
+    "lib/Driver/AbstractDriver.js~AbstractDriver#isDeepKey",
     "method"
   ],
   [
@@ -681,6 +693,12 @@ window.esdocSearchIndex = [
     "lib/driver/localstoragedriver.js~localstoragedriver#constructor",
     "class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html#instance-constructor-constructor",
     "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/localstoragedriver.js~localstoragedriver.isavailable",
+    "class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html#static-method-isAvailable",
+    "lib/Driver/LocalStorageDriver.js~LocalStorageDriver.isAvailable",
     "method"
   ],
   [

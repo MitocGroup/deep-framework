@@ -402,6 +402,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -739,13 +745,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#cache",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-cache",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-cache",
     "lib/Resource/Instance.js~Instance#cache",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#cache",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-cache",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-cache",
     "lib/Resource/Instance.js~Instance#cache",
     "member"
   ],
@@ -763,25 +769,25 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#isbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-isBackend",
-    "lib/Resource/Instance.js~Instance#isBackend",
-    "member"
-  ],
-  [
-    "lib/resource/instance.js~instance#isbackend",
     "class/lib/Resource/Instance.js~Instance.html#instance-get-isBackend",
     "lib/Resource/Instance.js~Instance#isBackend",
     "member"
   ],
   [
-    "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
-    "lib/Resource/Instance.js~Instance#localBackend",
+    "lib/resource/instance.js~instance#isbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-isBackend",
+    "lib/Resource/Instance.js~Instance#isBackend",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
     "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
+    "lib/Resource/Instance.js~Instance#localBackend",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#localbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
@@ -799,13 +805,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#security",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-security",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-security",
     "lib/Resource/Instance.js~Instance#security",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#security",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-security",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-security",
     "lib/Resource/Instance.js~Instance#security",
     "member"
   ],
@@ -883,13 +889,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/request.js~request#cacheimpl",
-    "class/lib/Resource/Request.js~Request.html#instance-set-cacheImpl",
+    "class/lib/Resource/Request.js~Request.html#instance-get-cacheImpl",
     "lib/Resource/Request.js~Request#cacheImpl",
     "member"
   ],
   [
     "lib/resource/request.js~request#cacheimpl",
-    "class/lib/Resource/Request.js~Request.html#instance-get-cacheImpl",
+    "class/lib/Resource/Request.js~Request.html#instance-set-cacheImpl",
     "lib/Resource/Request.js~Request#cacheImpl",
     "member"
   ],

@@ -1,5 +1,6 @@
 [
   {
+    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -9,9 +10,10 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Exception} from './Exception/Exception';\nimport {SharedCache} from './SharedCache';\n\n/**\n * Cache manager\n */\nexport class Cache extends Kernel.ContainerAware {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver = null) {\n    super();\n\n    this._driver = driver;\n  }\n\n  /**\n   * @param {String} name\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  static createDriver(name, ...args) {\n    let DriverPrototype = null;\n\n    switch (name) {\n      case 'memory':\n        DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        break;\n      case 'redis':\n        DriverPrototype = require('./Driver/RedisDriver').RedisDriver;\n        break;\n      case 'local-storage':\n        DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;\n        break;\n      case 's3fs':\n        DriverPrototype = require('./Driver/S3FSDriver').S3FSDriver;\n        break;\n      case 'cloud-front':\n        DriverPrototype = require('./Driver/CloudFrontDriver').CloudFrontDriver;\n        break;\n      default:\n        throw new Exception(`Missing driver ${name}`);\n    }\n\n    return new DriverPrototype(...args);\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let sharedCacheDriver;\n    let driver;\n\n    if (kernel.isFrontend) {\n      driver = Cache.createDriver('local-storage');\n      sharedCacheDriver = Cache.createDriver('cloud-front', this);\n    } else {\n      // @todo: switch to redis when issue with Elasticache is fixed\n      driver = Cache.createDriver('memory');\n      sharedCacheDriver = Cache.createDriver('s3fs', this);\n    }\n\n    [driver, sharedCacheDriver].map(function(driver) {\n      driver.buildId = kernel.buildId;\n    });\n\n    this._driver = driver;\n    this._shared = new SharedCache(sharedCacheDriver);\n\n    callback();\n  }\n\n  /**\n   * @returns {SharedCache}\n   */\n  get shared() {\n    return this._shared;\n  }\n\n  /**\n   * @param {AbstractDriver} target\n   * @param {*} args\n   * @returns {*}\n   */\n  apply(target, ...args) {\n    return target(...args);\n  }\n\n  /**\n   * DO NOT REMOVE THIS!\n   * It's used while kernel boot\n   *\n   * @returns {Object}\n   */\n  get service() {\n    return new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush'\n    );\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set driver(driver) {\n    this._driver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get driver() {\n    return this._driver;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Exception} from './Exception/Exception';\nimport {SharedCache} from './SharedCache';\n\n/**\n * Cache manager\n */\nexport class Cache extends Kernel.ContainerAware {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver = null) {\n    super();\n\n    this._driver = driver;\n  }\n\n  /**\n   * @param {String} name\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  static createDriver(name, ...args) {\n    let DriverPrototype = null;\n\n    switch (name) {\n      case 'memory':\n        DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        break;\n      case 'redis':\n        DriverPrototype = require('./Driver/RedisDriver').RedisDriver;\n        break;\n      case 'local-storage':\n        DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;\n\n        // fallback to in-memory driver if localStorage is not available\n        if (!DriverPrototype.isAvailable()) {\n          DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        }\n        break;\n      case 's3fs':\n        DriverPrototype = require('./Driver/S3FSDriver').S3FSDriver;\n        break;\n      case 'cloud-front':\n        DriverPrototype = require('./Driver/CloudFrontDriver').CloudFrontDriver;\n        break;\n      default:\n        throw new Exception(`Missing driver ${name}`);\n    }\n\n    return new DriverPrototype(...args);\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let sharedCacheDriver;\n    let driver;\n\n    if (kernel.isFrontend) {\n      driver = Cache.createDriver('local-storage');\n      sharedCacheDriver = Cache.createDriver('cloud-front', this);\n    } else {\n      // @todo: switch to redis when issue with Elasticache is fixed\n      driver = Cache.createDriver('memory');\n      sharedCacheDriver = Cache.createDriver('s3fs', this);\n    }\n\n    [driver, sharedCacheDriver].map(function(driver) {\n      driver.buildId = kernel.buildId;\n    });\n\n    this._driver = driver;\n    this._shared = new SharedCache(sharedCacheDriver);\n\n    callback();\n  }\n\n  /**\n   * @returns {SharedCache}\n   */\n  get shared() {\n    return this._shared;\n  }\n\n  /**\n   * @param {AbstractDriver} target\n   * @param {*} args\n   * @returns {*}\n   */\n  apply(target, ...args) {\n    return target(...args);\n  }\n\n  /**\n   * DO NOT REMOVE THIS!\n   * It's used while kernel boot\n   *\n   * @returns {Object}\n   */\n  get service() {\n    return new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush'\n    );\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set driver(driver) {\n    this._driver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get driver() {\n    return this._driver;\n  }\n}\n"
   },
   {
+    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -30,6 +32,7 @@
     ]
   },
   {
+    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -54,6 +57,7 @@
     "generator": false
   },
   {
+    "__docId__": 3,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -71,6 +75,7 @@
     }
   },
   {
+    "__docId__": 4,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -119,6 +124,7 @@
     "generator": false
   },
   {
+    "__docId__": 5,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -127,7 +133,7 @@
     "longname": "lib/Cache.js~Cache#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 62,
+    "lineNumber": 67,
     "params": [
       {
         "nullable": null,
@@ -153,6 +159,7 @@
     "generator": false
   },
   {
+    "__docId__": 6,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -161,7 +168,7 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 79,
+    "lineNumber": 84,
     "undocument": true,
     "type": {
       "types": [
@@ -170,6 +177,7 @@
     }
   },
   {
+    "__docId__": 7,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -178,7 +186,7 @@
     "longname": "lib/Cache.js~Cache#_shared",
     "access": null,
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 85,
     "undocument": true,
     "type": {
       "types": [
@@ -187,6 +195,7 @@
     }
   },
   {
+    "__docId__": 8,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -195,7 +204,7 @@
     "longname": "lib/Cache.js~Cache#shared",
     "access": null,
     "description": null,
-    "lineNumber": 88,
+    "lineNumber": 93,
     "unknown": [
       {
         "tagName": "@returns",
@@ -218,6 +227,7 @@
     "generator": false
   },
   {
+    "__docId__": 9,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -226,7 +236,7 @@
     "longname": "lib/Cache.js~Cache#apply",
     "access": null,
     "description": null,
-    "lineNumber": 97,
+    "lineNumber": 102,
     "unknown": [
       {
         "tagName": "@returns",
@@ -266,6 +276,7 @@
     "generator": false
   },
   {
+    "__docId__": 10,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -274,7 +285,7 @@
     "longname": "lib/Cache.js~Cache#service",
     "access": null,
     "description": "DO NOT REMOVE THIS!\nIt's used while kernel boot",
-    "lineNumber": 107,
+    "lineNumber": 112,
     "unknown": [
       {
         "tagName": "@returns",
@@ -297,6 +308,7 @@
     "generator": false
   },
   {
+    "__docId__": 11,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -305,7 +317,7 @@
     "longname": "lib/Cache.js~Cache#driver",
     "access": null,
     "description": null,
-    "lineNumber": 119,
+    "lineNumber": 124,
     "params": [
       {
         "nullable": null,
@@ -326,6 +338,7 @@
     "generator": false
   },
   {
+    "__docId__": 12,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -334,7 +347,7 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 120,
+    "lineNumber": 125,
     "undocument": true,
     "type": {
       "types": [
@@ -343,6 +356,7 @@
     }
   },
   {
+    "__docId__": 13,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -351,7 +365,7 @@
     "longname": "lib/Cache.js~Cache#driver",
     "access": null,
     "description": null,
-    "lineNumber": 126,
+    "lineNumber": 131,
     "unknown": [
       {
         "tagName": "@returns",
@@ -374,6 +388,7 @@
     "generator": false
   },
   {
+    "__docId__": 14,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -383,9 +398,10 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {MissingCacheException} from './Exception/MissingCacheException';\nimport {NoFlushException} from './Exception/NoFlushException';\nimport {DriverException} from './Exception/DriverException';\n\n/**\n * Abstract driver implementation\n */\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super([\n      '_get', '_has',\n      '_set', '_invalidate',\n    ]);\n\n    this._buildId = '';\n    this._namespace = '';\n    this._silent = false;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._buildId;\n  }\n\n  /**\n   * @param {String} id\n   */\n  set buildId(id) {\n    this._buildId = id;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  has(key, callback = () => {}) {\n    try {\n      this._has(this._buildKey(key), callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  get(key, callback = () => {}) {\n    try {\n      this.has(key, (error, result) => {\n        if (error) {\n          callback(new DriverException(error), null);\n\n          return;\n        }\n\n        if (!result && !this._silent) {\n          callback(new MissingCacheException(key), null);\n\n          return;\n        }\n\n        this._get(this._buildKey(key), callback);\n      });\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  set(key, value, ttl = 0, callback = () => {}) {\n    try {\n      this._set(this._buildKey(key), value, ttl, callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  invalidate(key, timeout = 0, callback = () => {}) {\n    try {\n      this.has(key, (exception, result) => {\n        if (exception) {\n          callback(new DriverException(exception), null);\n\n          return;\n        }\n\n        if (!result) {\n          callback(null, true);\n\n          return;\n        }\n\n        this._invalidate(this._buildKey(key), timeout, callback);\n      });\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  flush(callback = () => {}) {\n    try {\n      this._flush(callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _flush() {\n    throw new NoFlushException();\n  }\n\n  /**\n   * @returns {String}\n   */\n  get namespace() {\n    return this._namespace;\n  }\n\n  /**\n   * @param {String} ns\n   */\n  set namespace(ns) {\n    this._namespace = ns;\n  }\n\n  /**\n   * @param {Boolean} value\n   */\n  set silent(value) {\n    this._silent = value;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get silent() {\n    return this._silent;\n  }\n\n  /**\n   * @param {String} key\n   * @returns {String}\n   * @private\n   */\n  _buildKey(key) {\n    return `${this._buildId}:${this._namespace}#${key}`;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {MissingCacheException} from './Exception/MissingCacheException';\nimport {NoFlushException} from './Exception/NoFlushException';\nimport {DriverException} from './Exception/DriverException';\n\n/**\n * Abstract driver implementation\n */\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super([\n      '_get', '_has',\n      '_set', '_invalidate',\n    ]);\n\n    this._buildId = '';\n    this._namespace = '';\n    this._silent = false;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._buildId;\n  }\n\n  /**\n   * @param {String} id\n   */\n  set buildId(id) {\n    this._buildId = id;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  has(key, callback = () => {}) {\n    try {\n      this._has(this._buildKey(key), callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  get(key, callback = () => {}) {\n    try {\n      this.has(key, (error, result) => {\n        if (error) {\n          callback(new DriverException(error), null);\n\n          return;\n        }\n\n        if (!result && !this._silent) {\n          callback(new MissingCacheException(key), null);\n\n          return;\n        }\n\n        this._get(this._buildKey(key), callback);\n      });\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  set(key, value, ttl = 0, callback = () => {}) {\n    try {\n      this._set(this._buildKey(key), value, ttl, callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  invalidate(key, timeout = 0, callback = () => {}) {\n    try {\n      this.has(key, (exception, result) => {\n        if (exception) {\n          callback(new DriverException(exception), null);\n\n          return;\n        }\n\n        if (!result) {\n          callback(null, true);\n\n          return;\n        }\n\n        this._invalidate(this._buildKey(key), timeout, callback);\n      });\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  flush(callback = () => {}) {\n    try {\n      this._flush(callback);\n    } catch (e) {\n      callback(new DriverException(e), null);\n    }\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _flush() {\n    throw new NoFlushException();\n  }\n\n  /**\n   * @returns {String}\n   */\n  get namespace() {\n    return this._namespace;\n  }\n\n  /**\n   * @param {String} ns\n   */\n  set namespace(ns) {\n    this._namespace = ns;\n  }\n\n  /**\n   * @param {Boolean} value\n   */\n  set silent(value) {\n    this._silent = value;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get silent() {\n    return this._silent;\n  }\n\n  /**\n   * @param {String} key\n   * @returns {String}\n   * @private\n   */\n  _buildKey(key) {\n    return `${this._buildId}:${this._namespace}#${key}`;\n  }\n\n  /**\n   * @param {String} key\n   * @returns {Boolean}\n   */\n  isDeepKey(key) {\n    return /.+:.*#.+/.test(key);\n  }\n}\n"
   },
   {
+    "__docId__": 15,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -404,6 +420,7 @@
     ]
   },
   {
+    "__docId__": 16,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -418,6 +435,7 @@
     "generator": false
   },
   {
+    "__docId__": 17,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -435,6 +453,7 @@
     }
   },
   {
+    "__docId__": 18,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -452,6 +471,7 @@
     }
   },
   {
+    "__docId__": 19,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -469,6 +489,7 @@
     }
   },
   {
+    "__docId__": 20,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -500,6 +521,7 @@
     "generator": false
   },
   {
+    "__docId__": 21,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -529,6 +551,7 @@
     "generator": false
   },
   {
+    "__docId__": 22,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -546,6 +569,7 @@
     }
   },
   {
+    "__docId__": 23,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -594,6 +618,7 @@
     "generator": false
   },
   {
+    "__docId__": 24,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -642,6 +667,7 @@
     "generator": false
   },
   {
+    "__docId__": 25,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -710,6 +736,7 @@
     "generator": false
   },
   {
+    "__docId__": 26,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -768,6 +795,7 @@
     "generator": false
   },
   {
+    "__docId__": 27,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -806,6 +834,7 @@
     "generator": false
   },
   {
+    "__docId__": 28,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -819,6 +848,7 @@
     "generator": false
   },
   {
+    "__docId__": 29,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -850,6 +880,7 @@
     "generator": false
   },
   {
+    "__docId__": 30,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -879,6 +910,7 @@
     "generator": false
   },
   {
+    "__docId__": 31,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -896,6 +928,7 @@
     }
   },
   {
+    "__docId__": 32,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -925,6 +958,7 @@
     "generator": false
   },
   {
+    "__docId__": 33,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -942,6 +976,7 @@
     }
   },
   {
+    "__docId__": 34,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -973,6 +1008,7 @@
     "generator": false
   },
   {
+    "__docId__": 35,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1011,6 +1047,46 @@
     "generator": false
   },
   {
+    "__docId__": 36,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "isDeepKey",
+    "memberof": "lib/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Driver/AbstractDriver.js~AbstractDriver#isDeepKey",
+    "access": null,
+    "description": null,
+    "lineNumber": 194,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 37,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1023,6 +1099,7 @@
     "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/11/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport crypto from 'crypto';\n\n/**\n * Abstract FileSystem Driver\n */\nexport class AbstractFsDriver extends AbstractDriver {\n  /**\n   * @param {String} directory\n   */\n  constructor(directory = AbstractFsDriver.DEFAULT_DIRECTORY) {\n    super();\n\n    this._directory = directory;\n  }\n\n  /**\n   * @param {String} key\n   * @private\n   */\n  _buildKey(key) {\n    return `${this._directory}/${AbstractFsDriver._hash(key, 'sha1')}.${AbstractFsDriver._hash(key, 'md5')}`;\n  }\n\n  /**\n   * @param {String} text\n   * @param {String} alg\n   * @returns {String}\n   * @private\n   */\n  static _hash(text, alg) {\n    return crypto.createHash(alg).update(text).digest('hex');\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get _now() {\n    return parseInt(new Date().getTime() / 1000);\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_DIRECTORY() {\n    return '__cache__';\n  }\n}\n"
   },
   {
+    "__docId__": 38,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1041,6 +1118,7 @@
     ]
   },
   {
+    "__docId__": 39,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1065,6 +1143,7 @@
     "generator": false
   },
   {
+    "__docId__": 40,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1082,6 +1161,7 @@
     }
   },
   {
+    "__docId__": 41,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1111,6 +1191,7 @@
     "generator": false
   },
   {
+    "__docId__": 42,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1159,6 +1240,7 @@
     "generator": false
   },
   {
+    "__docId__": 43,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1190,6 +1272,7 @@
     "generator": false
   },
   {
+    "__docId__": 44,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1221,6 +1304,7 @@
     "generator": false
   },
   {
+    "__docId__": 45,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1233,6 +1317,7 @@
     "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nimport {AbstractFsDriver} from './AbstractFsDriver';\nimport {MethodNotAvailableException} from '../Exception/MethodNotAvailableException';\n\n/**\n * CloudFront Cache Driver\n */\nexport class CloudFrontDriver extends AbstractFsDriver {\n\n  /**\n   * @todo: Find better way to extract the working microservice identifier\n   *\n   * @param {ContainerAware} containerAware\n   * @param {String} directory\n   */\n  constructor(containerAware, directory = AbstractFsDriver.DEFAULT_DIRECTORY) {\n    super(directory);\n\n    this._containerAware = containerAware;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @private\n   */\n  _has(key, callback = () => {}) {\n    this._get(key, (err, data) => {\n      callback(err, data !== null);\n    });\n  }\n\n  /**\n   * @todo: Find a way to invalidate broken or expired keys\n   *\n   * @param {String} key\n   * @param {Function} callback\n   * @private\n   */\n  _get(key, callback = () => {}) {\n    this._request(key, (err, data) => {\n      if (err) {\n        return callback(err, null);\n      }\n\n      try {\n        let parsedData = JSON.parse(data);\n\n        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now || parsedData.buildId !== this._buildId) {\n          callback(null, null);\n\n          return;\n        }\n\n        callback(null, parsedData.value);\n      } catch (e) {\n        callback(null, null);\n      }\n    });\n  }\n\n  /**\n   * Throw MethodNotAvailableException\n   *\n   * @private\n   */\n  _set() {\n    throw new MethodNotAvailableException('set');\n  }\n\n  /**\n   * Throw MethodNotAvailableException\n   *\n   * @private\n   */\n  _invalidate() {\n    throw new MethodNotAvailableException('invalidate');\n  }\n\n  /**\n   * @param {String} key\n   * @returns {String}\n   * @private\n   */\n  _buildKey(key) {\n    return this._asset.locate(`@${this._microservice}:${super._buildKey(key)}`);\n  }\n\n  /**\n   * @param {String} url\n   * @param {Function} callback\n   * @private\n   */\n  _request(url, callback) {\n    var client = new XMLHttpRequest();\n\n    client.onreadystatechange = function() {\n      if (client.readyState === 4) {\n        if (client.status !== 200) {\n          return callback(client.statusText, null);\n        }\n\n        callback(null, client.responseText);\n      }\n    };\n\n    client.open('GET', url);\n    client.send();\n  }\n\n  /**\n   * Returns the microservice binded to `resource` service\n   *\n   * @returns {Instance}\n   * @private\n   */\n  get _microservice() {\n    return this._containerAware.container.get('resource').microservice;\n  }\n\n  /**\n   * @returns {Asset}\n   * @private\n   */\n  get _asset() {\n    return this._containerAware.container.get('asset');\n  }\n}\n"
   },
   {
+    "__docId__": 46,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1251,6 +1336,7 @@
     ]
   },
   {
+    "__docId__": 47,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1291,6 +1377,7 @@
     "generator": false
   },
   {
+    "__docId__": 48,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1308,6 +1395,7 @@
     }
   },
   {
+    "__docId__": 49,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1342,6 +1430,7 @@
     "generator": false
   },
   {
+    "__docId__": 50,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1382,6 +1471,7 @@
     "generator": false
   },
   {
+    "__docId__": 51,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1395,6 +1485,7 @@
     "generator": false
   },
   {
+    "__docId__": 52,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1408,6 +1499,7 @@
     "generator": false
   },
   {
+    "__docId__": 53,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1446,6 +1538,7 @@
     "generator": false
   },
   {
+    "__docId__": 54,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1480,6 +1573,7 @@
     "generator": false
   },
   {
+    "__docId__": 55,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1511,6 +1605,7 @@
     "generator": false
   },
   {
+    "__docId__": 56,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1542,6 +1637,7 @@
     "generator": false
   },
   {
+    "__docId__": 57,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1554,6 +1650,7 @@
     "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Base exception\n */\nexport class DriverException extends Exception {\n  /**\n   * @param {Error} originalException\n   */\n  constructor(originalException) {\n    super(originalException);\n\n    this._originalException = originalException instanceof Error ? originalException : new Error(originalException);\n  }\n\n  /**\n   * @returns {Error}\n   */\n  get originalException() {\n    return this._originalException;\n  }\n}\n"
   },
   {
+    "__docId__": 58,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1572,6 +1669,7 @@
     ]
   },
   {
+    "__docId__": 59,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1596,6 +1694,7 @@
     "generator": false
   },
   {
+    "__docId__": 60,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1613,6 +1712,7 @@
     }
   },
   {
+    "__docId__": 61,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1644,6 +1744,7 @@
     "generator": false
   },
   {
+    "__docId__": 62,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1656,6 +1757,7 @@
     "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {Exception as BaseException} from '../../Exception/Exception';\n\n/**\n * Base exception\n */\nexport class Exception extends BaseException {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
+    "__docId__": 63,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1674,6 +1776,7 @@
     ]
   },
   {
+    "__docId__": 64,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1698,6 +1801,7 @@
     "generator": false
   },
   {
+    "__docId__": 65,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1710,6 +1814,7 @@
     "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when missing an item from cache\n */\nexport class MissingCacheException extends Exception {\n  /**\n   * @param {String} cacheKey\n   */\n  constructor(cacheKey) {\n    super(`Missing key ${cacheKey} from cache`);\n  }\n}\n"
   },
   {
+    "__docId__": 66,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1728,6 +1833,7 @@
     ]
   },
   {
+    "__docId__": 67,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1752,6 +1858,7 @@
     "generator": false
   },
   {
+    "__docId__": 68,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1764,6 +1871,7 @@
     "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown if flush() is not implemented\n */\nexport class NoFlushException extends Exception {\n  constructor() {\n    super('Flush is not implemented for this driver');\n  }\n}\n"
   },
   {
+    "__docId__": 69,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1782,6 +1890,7 @@
     ]
   },
   {
+    "__docId__": 70,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1796,6 +1905,7 @@
     "generator": false
   },
   {
+    "__docId__": 71,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1808,6 +1918,7 @@
     "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when redis cluster returned an error\n */\nexport class RedisClusterException extends Exception {\n  /**\n   * @param {String} error\n   */\n  constructor(error) {\n    let originalException = error instanceof Error ? error : null;\n    let errorPlain = originalException !== null ? originalException.message : error.toString();\n\n    super(`Redis cluster operation failed: ${errorPlain}`);\n\n    this._originalException = originalException;\n  }\n\n  /**\n   * @returns {Error}\n   */\n  get originalException() {\n    return this._originalException;\n  }\n}\n"
   },
   {
+    "__docId__": 72,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1826,6 +1937,7 @@
     ]
   },
   {
+    "__docId__": 73,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1850,6 +1962,7 @@
     "generator": false
   },
   {
+    "__docId__": 74,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1867,6 +1980,7 @@
     }
   },
   {
+    "__docId__": 75,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1898,6 +2012,7 @@
     "generator": false
   },
   {
+    "__docId__": 76,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1910,6 +2025,7 @@
     "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\n/**\n * In memory driver implementation\n */\nexport class InMemoryDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._storage = {};\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get storage() {\n    return this._storage;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    if (!this._storage.hasOwnProperty(key) || this._storage[key][1] === false) {\n      callback(null, false);\n\n      return;\n    }\n\n    let timedOut = this._storage[key][1] < InMemoryDriver._now;\n\n    if (timedOut) {\n      this._invalidate(key);\n\n      callback(null, false);\n\n      return;\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    callback(null, this._storage[key]);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    this._storage[key] = [value, ttl <= 0 ? false : (InMemoryDriver._now + ttl)];\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      delete this._storage[key];\n\n      callback(null, true);\n\n      return;\n    }\n\n    this._storage[key][1] = InMemoryDriver._now + timeout;\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    this._storage = {};\n\n    callback(null, true);\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return parseInt(new Date().getTime() / 1000);\n  }\n}\n"
   },
   {
+    "__docId__": 77,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1928,6 +2044,7 @@
     ]
   },
   {
+    "__docId__": 78,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1942,6 +2059,7 @@
     "generator": false
   },
   {
+    "__docId__": 79,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1959,6 +2077,7 @@
     }
   },
   {
+    "__docId__": 80,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1990,6 +2109,7 @@
     "generator": false
   },
   {
+    "__docId__": 81,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2024,6 +2144,7 @@
     "generator": false
   },
   {
+    "__docId__": 82,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2058,6 +2179,7 @@
     "generator": false
   },
   {
+    "__docId__": 83,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2126,6 +2248,7 @@
     "generator": false
   },
   {
+    "__docId__": 84,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2170,6 +2293,7 @@
     "generator": false
   },
   {
+    "__docId__": 85,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2208,6 +2332,7 @@
     "generator": false
   },
   {
+    "__docId__": 86,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2225,6 +2350,7 @@
     }
   },
   {
+    "__docId__": 87,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2256,6 +2382,7 @@
     "generator": false
   },
   {
+    "__docId__": 88,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2265,9 +2392,10 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport LocalStorage from 'store';\n\n/**\n * In memory driver implementation\n */\nexport class LocalStorageDriver extends AbstractDriver {\n  constructor() {\n    super();\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    callback(null, LocalStorageDriver._isAlive(LocalStorage.get(key), key));\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    let record = LocalStorage.get(key);\n\n    callback(null, LocalStorageDriver._isAlive(record, key) ? record.value : null);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    if (ttl <= 0) {\n      LocalStorage.set(key, {value: value, exd: null});\n    } else {\n      LocalStorage.set(key, {value: value, exd: (LocalStorageDriver._now + ttl)});\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      LocalStorage.remove(key);\n\n      callback(null, true);\n\n      return;\n    }\n\n    try {\n      let record = LocalStorage.get(key);\n\n      record.exd = LocalStorageDriver._now + timeout;\n\n      LocalStorage.set(key, record);\n    } catch (e) {\n      // do nothing...\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    LocalStorage.clear();\n\n    callback(null, true);\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return parseInt(new Date().getTime() / 1000);\n  }\n\n  /**\n   *\n   * @param {Object} response\n   * @param {String} key\n   * @returns {Boolean}\n   * @private\n   */\n  static _isAlive(response, key) {\n    if (!response) {\n      return false;\n    }\n\n    if (response.exd && response.exd <= LocalStorageDriver._now) {\n      LocalStorage.remove(key);\n      return false;\n    }\n\n    return true;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport LocalStorage from 'store';\n\n/**\n * In memory driver implementation\n */\nexport class LocalStorageDriver extends AbstractDriver {\n  constructor() {\n    super();\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    callback(null, LocalStorageDriver._isAlive(LocalStorage.get(key), key));\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    let record = LocalStorage.get(key);\n\n    callback(null, LocalStorageDriver._isAlive(record, key) ? record.value : null);\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    let exd = ttl > 0 ? LocalStorageDriver._now + ttl : null;\n\n    try {\n      LocalStorage.set(key, {value: value, exd: exd});\n      callback(null, true);\n\n    } catch (error) {\n      if (this._isQuotaExceededError(error) && this._flushStale()) {\n        this._set(key, value, ttl, callback);\n      }\n\n      callback(error, false);\n    }\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      LocalStorage.remove(key);\n\n      callback(null, true);\n\n      return;\n    }\n\n    try {\n      let record = LocalStorage.get(key);\n\n      record.exd = LocalStorageDriver._now + timeout;\n\n      LocalStorage.set(key, record);\n    } catch (e) {\n      // do nothing...\n    }\n\n    callback(null, true);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    LocalStorage.clear();\n\n    callback(null, true);\n  }\n\n  /**\n   * @returns {boolean}\n   * @private\n   */\n  _flushStale() {\n    let removedKeys = [];\n\n    LocalStorage.forEach((key, val) => {\n      if (this.isDeepKey(key) && !LocalStorageDriver._isAlive(val, key)) {\n        removedKeys.push(key);\n      }\n    });\n\n    return removedKeys.length > 0;\n  }\n\n  /**\n   * @see http://chrisberkhout.com/blog/localstorage-errors/\n   *\n   * @param {Object} error\n   * @returns {Boolean}\n   * @private\n   */\n  _isQuotaExceededError(error) {\n    let quotaExceededErrors = [\n      'QuotaExceededError',\n      'QUOTA_EXCEEDED_ERR',\n      'NS_ERROR_DOM_QUOTA_REACHED'\n    ];\n\n    return quotaExceededErrors.indexOf(error.name) !== -1;\n  }\n\n  /**\n   * @returns {Number}\n   * @private\n   */\n  static get _now() {\n    return parseInt(new Date().getTime() / 1000);\n  }\n\n  /**\n   *\n   * @param {Object} response\n   * @param {String} key\n   * @returns {Boolean}\n   * @private\n   */\n  static _isAlive(response, key) {\n    if (!response) {\n      return false;\n    }\n\n    if (response.exd && response.exd <= LocalStorageDriver._now) {\n      LocalStorage.remove(key);\n      return false;\n    }\n\n    return true;\n  }\n\n  /**\n   * Checks for browser local storage availability\n   *\n   * @returns {boolean}\n   */\n  static isAvailable() {\n    return LocalStorage.enabled;\n  }\n}\n"
   },
   {
+    "__docId__": 89,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2286,6 +2414,7 @@
     ]
   },
   {
+    "__docId__": 90,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2300,6 +2429,7 @@
     "generator": false
   },
   {
+    "__docId__": 91,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2334,6 +2464,7 @@
     "generator": false
   },
   {
+    "__docId__": 92,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2368,6 +2499,7 @@
     "generator": false
   },
   {
+    "__docId__": 93,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2436,6 +2568,7 @@
     "generator": false
   },
   {
+    "__docId__": 94,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2444,7 +2577,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#_invalidate",
     "access": null,
     "description": null,
-    "lineNumber": 58,
+    "lineNumber": 64,
     "params": [
       {
         "nullable": null,
@@ -2480,6 +2613,7 @@
     "generator": false
   },
   {
+    "__docId__": 95,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2488,7 +2622,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#_flush",
     "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 90,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2518,6 +2652,77 @@
     "generator": false
   },
   {
+    "__docId__": 96,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_flushStale",
+    "memberof": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver",
+    "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#_flushStale",
+    "access": "private",
+    "description": null,
+    "lineNumber": 100,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{boolean}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 97,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_isQuotaExceededError",
+    "memberof": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver",
+    "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver#_isQuotaExceededError",
+    "access": "private",
+    "description": null,
+    "see": [
+      "http://chrisberkhout.com/blog/localstorage-errors/"
+    ],
+    "lineNumber": 119,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 98,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2526,7 +2731,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver._now",
     "access": "private",
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 133,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2549,6 +2754,7 @@
     "generator": false
   },
   {
+    "__docId__": 99,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2557,7 +2763,7 @@
     "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver._isAlive",
     "access": "private",
     "description": "",
-    "lineNumber": 105,
+    "lineNumber": 144,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2597,6 +2803,35 @@
     "generator": false
   },
   {
+    "__docId__": 100,
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "isAvailable",
+    "memberof": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver",
+    "longname": "lib/Driver/LocalStorageDriver.js~LocalStorageDriver.isAvailable",
+    "access": null,
+    "description": "Checks for browser local storage availability",
+    "lineNumber": 162,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{boolean}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "__docId__": 101,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2609,6 +2844,7 @@
     "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {RedisClusterException} from './Exception/RedisClusterException';\nimport Redis from 'ioredis';\n\n/**\n * Redis/Elasticache driver implementation\n */\nexport class RedisDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   */\n  constructor(dsn) {\n    super();\n\n    let nativeDriver = this.NATIVE_DRIVER;\n\n    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();\n  }\n\n  /**\n   * @returns {Redis}\n   */\n  get client() {\n    return this._client;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _has(key, callback = () => {}) {\n    this._client.exists(key, (error, results) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, results);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   */\n  _get(key, callback = () => {}) {\n    this._client.get(key, (error, results) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, results);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @returns {Boolean}\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    this._client.set(key, value, ttl, (error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    this._client.del(key, timeout, (error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {AbstractDriver}\n   */\n  _flush(callback = () => {}) {\n    this._client.flushall((error) => {\n      if (error) {\n        callback(new RedisClusterException(error), null);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n\n  /**\n   * @returns {*|exports|module.exports}\n   * @constructor\n   */\n  get NATIVE_DRIVER() {\n    return Redis;\n  }\n}\n"
   },
   {
+    "__docId__": 102,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2627,6 +2863,7 @@
     ]
   },
   {
+    "__docId__": 103,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2651,6 +2888,7 @@
     "generator": false
   },
   {
+    "__docId__": 104,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2668,6 +2906,7 @@
     }
   },
   {
+    "__docId__": 105,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2699,6 +2938,7 @@
     "generator": false
   },
   {
+    "__docId__": 106,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2733,6 +2973,7 @@
     "generator": false
   },
   {
+    "__docId__": 107,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2767,6 +3008,7 @@
     "generator": false
   },
   {
+    "__docId__": 108,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2835,6 +3077,7 @@
     "generator": false
   },
   {
+    "__docId__": 109,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2879,6 +3122,7 @@
     "generator": false
   },
   {
+    "__docId__": 110,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2917,6 +3161,7 @@
     "generator": false
   },
   {
+    "__docId__": 111,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2954,6 +3199,7 @@
     "generator": false
   },
   {
+    "__docId__": 112,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2966,6 +3212,7 @@
     "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nimport {AbstractFsDriver} from './AbstractFsDriver';\n\n/**\n * S3FS Cache Driver\n */\nexport class S3FSDriver extends AbstractFsDriver {\n  /**\n   * @param {ContainerAware} containerAware\n   * @param {String} directory\n   */\n  constructor(containerAware, directory = AbstractFsDriver.DEFAULT_DIRECTORY) {\n    super(directory);\n\n    this._containerAware = containerAware;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @private\n   */\n  _has(key, callback = () => {}) {\n    this._get(key, (err, data) => {\n      callback(err, data !== null);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} callback\n   * @private\n   */\n  _get(key, callback = () => {}) {\n    this._fs.readFile(key, (err, data) => {\n      if (err) {\n        callback(err, null);\n\n        return;\n      }\n\n      try {\n        var parsedData = JSON.parse(data);\n\n        if (parsedData.expires && parsedData.expires < AbstractFsDriver._now || parsedData.buildId !== this._buildId) {\n          this._invalidate(key);\n\n          callback(null, null);\n\n          return;\n        }\n\n        callback(null, parsedData.value);\n      } catch (e) {\n        this._invalidate(key);\n\n        callback(null, null);\n      }\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Object} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   * @private\n   */\n  _set(key, value, ttl = 0, callback = () => {}) {\n    let strObject = JSON.stringify({\n      expires: ttl > 0 ? AbstractFsDriver._now + ttl : null,\n      value: value,\n      buildId: this._buildId,\n    });\n\n    this._fs.mkdirp(this._directory, () => {\n      this._fs.writeFile(key, strObject, (err) => {\n        callback(err, !err);\n      });\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {Number} timeout\n   * @param {Function} callback\n   * @private\n   */\n  _invalidate(key, timeout = 0, callback = () => {}) {\n    if (timeout <= 0) {\n      this._fs.unlink(key, (err) => {\n        callback(err, !err);\n      });\n\n      return;\n    }\n\n    this._get(key, (err, data) => {\n      if (err) {\n        callback(err, null);\n\n        return;\n      }\n\n      this._set(key, data.value, timeout, callback);\n    });\n  }\n\n  /**\n   * @returns {s3fs}\n   * @private\n   */\n  get _fs() {\n    return this._containerAware.container.get('fs').public;\n  }\n}\n"
   },
   {
+    "__docId__": 113,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2984,6 +3231,7 @@
     ]
   },
   {
+    "__docId__": 114,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3018,6 +3266,7 @@
     "generator": false
   },
   {
+    "__docId__": 115,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3035,6 +3284,7 @@
     }
   },
   {
+    "__docId__": 116,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3069,6 +3319,7 @@
     "generator": false
   },
   {
+    "__docId__": 117,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3103,6 +3354,7 @@
     "generator": false
   },
   {
+    "__docId__": 118,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3157,6 +3409,7 @@
     "generator": false
   },
   {
+    "__docId__": 119,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3201,6 +3454,7 @@
     "generator": false
   },
   {
+    "__docId__": 120,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3232,6 +3486,7 @@
     "generator": false
   },
   {
+    "__docId__": 121,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3244,6 +3499,7 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
+    "__docId__": 122,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3262,6 +3518,7 @@
     ]
   },
   {
+    "__docId__": 123,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3286,6 +3543,7 @@
     "generator": false
   },
   {
+    "__docId__": 124,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3298,6 +3556,7 @@
     "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when a method is not available\n */\nexport class MethodNotAvailableException extends Exception {\n  /**\n   * @param {String} name\n   */\n  constructor(name) {\n    super(`Method '${name}' is not available`);\n  }\n}\n"
   },
   {
+    "__docId__": 125,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3316,6 +3575,7 @@
     ]
   },
   {
+    "__docId__": 126,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3340,6 +3600,7 @@
     "generator": false
   },
   {
+    "__docId__": 127,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3352,6 +3613,7 @@
     "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Shared Cache\n */\nexport class SharedCache {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver) {\n    this._driver = driver;\n\n    new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush'\n    );\n  }\n\n  /**\n   * @todo: use Promise when get rid of transpiler\n   *\n   * @param {Request} requestObject\n   * @param {Function} callback\n   * @returns {Promise}\n   */\n  request(requestObject, callback = () => {}) {\n    let cacheKey = this.buildKeyFromRequest(requestObject);\n\n    this._driver.has(cacheKey, (err, has) => {\n      if (has) {\n        this._driver.get(cacheKey, (err, data) => {\n          if (err) {\n            requestObject.send(callback);\n\n            return;\n          }\n\n          callback(this._createSuccessfulResponse(data));\n        });\n\n        return;\n      }\n\n      requestObject.send(callback);\n    });\n  }\n\n  /**\n   * @param {Request} request\n   * @returns {String}\n   * @private\n   */\n  buildKeyFromRequest(request) {\n    let action = request.action;\n    let requestIdentifier = action.source[request.isLambda ? 'original' : 'api'];\n\n    return `${requestIdentifier}#${JSON.stringify(request.payload)}`;\n  }\n\n  /**\n   * @param {Runtime} runtime\n   * @returns {String}\n   */\n  buildKeyFromLambdaRuntime(runtime) {\n    let payload = JSON.stringify(runtime.request.data);\n\n    return runtime.context && runtime.context.has('invokedFunctionArn')\n      ? `${runtime.context.getOption('invokedFunctionArn')}#${payload}`\n      : null;\n  }\n\n  /**\n   * @param {Object} data\n   * @returns {{isError: boolean, data: *, error: null, statusCode: number}}\n   * @private\n   */\n  _createSuccessfulResponse(data) {\n    return {\n      data: data,\n      statusCode: 200,\n      isError: false,\n      error: null,\n    };\n  }\n\n  /**\n   * If key exists do nothing, else create it with specified parameters\n   *\n   * @param {String} key\n   * @param {Object} value\n   * @param {Number} ttl\n   * @param {Function} callback\n   */\n  assure(key, value, ttl = 0, callback = () => {}) {\n    this._driver.has(key, (err, has) => {\n      if (!has) {\n        this._driver.set(key, value, ttl, callback);\n\n        return;\n      }\n\n      callback(null, true);\n    });\n  }\n}\n"
   },
   {
+    "__docId__": 128,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3367,6 +3629,7 @@
     "interface": false
   },
   {
+    "__docId__": 129,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3391,6 +3654,7 @@
     "generator": false
   },
   {
+    "__docId__": 130,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3408,6 +3672,7 @@
     }
   },
   {
+    "__docId__": 131,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3460,6 +3725,7 @@
     "generator": false
   },
   {
+    "__docId__": 132,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3498,6 +3764,7 @@
     "generator": false
   },
   {
+    "__docId__": 133,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3536,6 +3803,7 @@
     "generator": false
   },
   {
+    "__docId__": 134,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3574,6 +3842,7 @@
     "generator": false
   },
   {
+    "__docId__": 135,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3628,6 +3897,7 @@
     "generator": false
   },
   {
+    "__docId__": 136,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3640,6 +3910,7 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Cache} from './Cache';\n\nlet exports = module.exports = Cache;\n"
   },
   {
+    "__docId__": 137,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -3660,6 +3931,7 @@
     }
   },
   {
+    "__docId__": 139,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3672,6 +3944,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 140,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3684,6 +3957,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 141,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3696,6 +3970,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 142,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3708,6 +3983,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 143,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3720,6 +3996,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 144,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3732,6 +4009,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 145,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3744,6 +4022,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 146,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3756,6 +4035,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 147,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3768,6 +4048,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 148,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3780,6 +4061,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 149,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3792,6 +4074,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 150,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3804,6 +4087,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 151,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3816,6 +4100,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 152,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3828,6 +4113,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 153,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3840,6 +4126,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 154,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3852,6 +4139,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 155,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3864,6 +4152,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 156,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3876,6 +4165,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 157,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3888,6 +4178,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 158,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3900,6 +4191,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 159,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3912,6 +4204,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 160,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3924,6 +4217,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 161,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3936,6 +4230,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 162,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3948,6 +4243,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 163,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3960,6 +4256,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 164,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3972,6 +4269,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 165,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3984,6 +4282,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 166,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3996,6 +4295,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 167,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4008,6 +4308,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 168,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4020,6 +4321,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 169,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4032,6 +4334,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 170,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4044,6 +4347,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 171,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4056,6 +4360,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 172,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4068,6 +4373,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 173,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4080,6 +4386,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 174,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4092,6 +4399,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 175,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4104,6 +4412,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 176,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4116,6 +4425,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 177,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4128,6 +4438,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 178,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4140,6 +4451,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 179,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4152,6 +4464,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 180,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4164,6 +4477,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 181,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4176,6 +4490,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 182,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4188,6 +4503,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 183,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4200,6 +4516,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 184,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4212,6 +4529,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 185,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4224,6 +4542,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 187,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4236,6 +4555,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 188,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4248,6 +4568,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 189,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4260,6 +4581,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 190,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4272,6 +4594,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 191,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4284,6 +4607,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 192,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4296,6 +4620,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 193,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4303,6 +4628,19 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 194,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true
