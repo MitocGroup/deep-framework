@@ -3,38 +3,26 @@
 path=$(cd $(dirname $0); pwd -P)
 npm=$(which npm)
 browserify=$(which browserify)
-brew=$(which brew)
 uglifyjs=$(which uglifyjs)
 browser_build_path="${path}/../browser"
 DEEP_AWS_SERVICES=lambda,cognitoidentity,cognitosync
-
-assure_brew() {
-    if [ -z ${brew} ]; then
-        echo "You may install Homebrew first!"
-        exit 1
-    fi
-}
 
 assure_uglifyjs() {
     if [ -z ${uglifyjs} ]; then
         assure_npm
 
         echo "Installing uglify-js..."
-        ${npm} install -g uglify-js
+        "${npm}" install -g uglify-js
 
         uglifyjs=$(which uglifyjs)
+
+        echo "uglifyjs path: ${uglifyjs}"
     fi
 }
 
-
 assure_npm() {
-    if [ -z ${npm} ]; then
-        assure_brew
-
-        echo "Installing nodejs..."
-        ${brew} install nodejs
-
-        npm=$(which npm)
+    if [ -z "${npm}" ]; then
+        echo "You may install NPM first!"
     fi
 }
 
@@ -43,9 +31,10 @@ assure_browserify() {
         assure_npm
 
         echo "Installing browserify..."
-        ${npm} install -g browserify
+        "${npm}" install -g browserify
 
         browserify=$(which browserify)
+        echo "browserify path: ${browserify}"
     fi
 }
 
@@ -61,7 +50,7 @@ echo "- Execute prepare hooks"
 
 # @todo: move this into another script?
 cd "${path}"/../node_modules/deep-log && \
-    ${npm} run prepare-browserify
+    "${npm}" run prepare-browserify
 
 echo "- Lookup for node modules to require"
 
@@ -82,11 +71,13 @@ echo ""
 cd "${path}"/../
 
 echo "- Start transpiling ES6"
-${npm} run compile
+"${npm}" run compile
+
+echo "Done transpiling ES6"
 
 __FW=${browser_build_path}"/framework.js"
 echo '/** Built on '$(date) > ${__FW}
-${npm} ls --long=false --global=false --depth=0 --production=true | sed 's/ \/.*//' | grep deep- >> ${__FW}
+"${npm}" ls --long=false --global=false --depth=0 --production=true | sed 's/ [\/|\\].*//' | grep deep- >> ${__FW}
 echo '*/' >> ${__FW}
 AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -d ${browserify_require} lib.compiled/browser-framework.js | uglifyjs >> ${__FW}
 
