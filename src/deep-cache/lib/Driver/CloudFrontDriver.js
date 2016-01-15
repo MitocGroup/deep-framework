@@ -73,8 +73,8 @@ export class CloudFrontDriver extends AbstractFsDriver {
         this._cache[key] = parsedData;
 
         callback(null, parsedData.value);
-      } catch (e) {
-        callback(e, null);
+      } catch (e) { // avoid parse error on missing or broken object in S3
+        callback(null, null);
       }
     });
   }

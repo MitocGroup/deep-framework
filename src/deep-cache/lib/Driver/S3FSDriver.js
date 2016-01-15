@@ -56,10 +56,10 @@ export class S3FSDriver extends AbstractFsDriver {
         }
 
         callback(null, parsedData.value);
-      } catch (e) {
+      } catch (e) { // avoid parse error on missing or broken object in S3
         this._invalidate(key);
 
-        callback(e, null);
+        callback(null, null);
       }
     });
   }
