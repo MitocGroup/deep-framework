@@ -63,7 +63,7 @@ export class SharedCache {
     let action = request.action;
     let requestIdentifier = action.source[request.isLambda ? 'original' : 'api'];
 
-    return `${requestIdentifier}#${SharedCache._payloadHash(request.payload)}`;
+    return `${requestIdentifier}#${SharedCache._stringifyPayload(request.payload)}`;
   }
 
   /**
@@ -72,17 +72,8 @@ export class SharedCache {
    */
   buildKeyFromLambdaRuntime(runtime) {
     return runtime.context && runtime.context.has('invokedFunctionArn') ?
-      `${runtime.context.getOption('invokedFunctionArn')}#${SharedCache._payloadHash(runtime.request.data)}` :
+      `${runtime.context.getOption('invokedFunctionArn')}#${SharedCache._stringifyPayload(runtime.request.data)}` :
       null;
-  }
-
-  /**
-   * @param {Object} payload
-   * @returns {String}
-   * @private
-   */
-  static _payloadHash(payload) {
-    return SharedCache._hash(SharedCache._stringifyPayload(payload));
   }
 
   /**
