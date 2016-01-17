@@ -77,7 +77,7 @@ echo "Done transpiling ES6"
 
 __FW=${browser_build_path}"/framework.js"
 echo '/** Built on '$(date) > ${__FW}
-"${npm}" ls --long=false --global=false --depth=0 --production=true | sed 's/ [\/|\\].*//' | grep deep- >> ${__FW}
+"${npm}" ls --long=false --global=false --depth=0 --production=true | sed 's/ \/.*//' | grep deep- >> ${__FW}
 echo '*/' >> ${__FW}
 AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -d ${browserify_require} lib.compiled/browser-framework.js | uglifyjs >> ${__FW}
 
