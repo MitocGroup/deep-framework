@@ -46,8 +46,8 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
-    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
+    "test": "bash bin/test.sh",
+    "compile": "bash bin/compile.sh",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core"
   },
