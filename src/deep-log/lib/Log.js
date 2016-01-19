@@ -9,6 +9,7 @@ import Core from 'deep-core';
 import {ConsoleDriver} from './Driver/ConsoleDriver';
 import {RavenDriver} from './Driver/RavenDriver';
 import {RavenBrowserDriver} from './Driver/RavenBrowserDriver';
+import {RumSqsDriver} from './Driver/RumSqsDriver';
 import {AbstractDriver} from './Driver/AbstractDriver';
 
 /**
@@ -76,10 +77,13 @@ export class Log extends Kernel.ContainerAware {
             : null
         );
         break;
+      case 'rum':
+        driver = new RumSqsDriver(...args);
+        break;
       default:
         throw new Core.Exception.InvalidArgumentException(
           type,
-          '[Console, Raven, Sentry]'
+          '[Console, Raven, Sentry, RUM]'
         );
     }
 
@@ -147,10 +151,27 @@ export class Log extends Kernel.ContainerAware {
 
       let driver = driversArr[driverKey];
 
+      // do not log common messages into RUM
+      if (driver instanceof RumSqsDriver) {
+        continue;
+      }
+
       driver.log(msg, level, context);
     }
 
     return this;
+  }
+
+  /**
+   * @param {Object} event
+   */
+  rumLog(event) {
+    let driver = this.drivers.find(RumSqsDriver);
+
+    // checks if RUM is enabled
+    if (driver) {
+      driver.log(event);
+    }
   }
 
   /**
