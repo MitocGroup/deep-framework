@@ -82,12 +82,19 @@ suite('AWS/Service', function() {
     }
   );
 
+  test(
+    'Check SIMPLE_QUEUE_SERVICE static getter returns "sqs"',
+    function() {
+      chai.expect(Service.SIMPLE_QUEUE_SERVICE).to.be.equal('sqs');
+    }
+  );
+
   test(`Check identifier() static method returns ${serviceName}.amazonaws.com`, function() {
     chai.expect(Service.identifier(serviceName)).to.be.equal(`${serviceName}.amazonaws.com`);
   });
 
   test('Check all() static method returns array of Service alias', function() {
-    chai.expect(Service.list().length).to.be.equal(16);
+    chai.expect(Service.list().length).to.be.equal(17);
     chai.expect(Service.list()).to.be.include(Service.ANY);
     chai.expect(Service.list()).to.be.include(Service.LAMBDA);
     chai.expect(Service.list()).to.be.include(Service.SIMPLE_STORAGE_SERVICE);
@@ -104,6 +111,7 @@ suite('AWS/Service', function() {
     chai.expect(Service.list()).to.be.include(Service.API_GATEWAY);
     chai.expect(Service.list()).to.be.include(Service.API_GATEWAY_EXECUTE);
     chai.expect(Service.list()).to.be.include(Service.CLOUD_SEARCH);
+    chai.expect(Service.list()).to.be.include(Service.SIMPLE_QUEUE_SERVICE);
   });
 
   test('Check exists() static method returns true if Service exists', function() {
