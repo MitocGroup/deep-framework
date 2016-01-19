@@ -25,6 +25,13 @@ export class Region {
   /**
    * @returns {String}
    */
+  static get ASIA_PACIFIC_SEOUL() {
+    return 'ap-northeast-2';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get ASIA_PACIFIC_SINGAPORE() {
     return 'ap-southeast-1';
   }
@@ -93,6 +100,7 @@ export class Region {
     return [
       Region.ANY,
       Region.ASIA_PACIFIC_TOKYO,
+      Region.ASIA_PACIFIC_SEOUL,
       Region.ASIA_PACIFIC_SYDNEY,
       Region.ASIA_PACIFIC_SINGAPORE,
       Region.EU_FRANKFURT,
