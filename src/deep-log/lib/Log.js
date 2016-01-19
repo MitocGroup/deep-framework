@@ -39,10 +39,8 @@ export class Log extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    // @todo: remove this compatibility hook
-    let globals = kernel.config.globals || kernel.config;
-
-    let drivers = globals.logDrivers;
+    let globals = kernel.config.globals;
+    let drivers = globals.logDrivers || {};
 
     for (let driverName in drivers) {
       if (!drivers.hasOwnProperty(driverName)) {
