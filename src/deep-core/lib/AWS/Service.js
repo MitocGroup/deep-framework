@@ -121,6 +121,13 @@ export class Service {
   }
 
   /**
+   * @returns {String}
+   */
+  static get SIMPLE_QUEUE_SERVICE() {
+    return 'sqs';
+  }
+
+  /**
    * @param {String} service
    * @returns {String}
    */
@@ -157,6 +164,7 @@ export class Service {
       Service.API_GATEWAY,
       Service.API_GATEWAY_EXECUTE,
       Service.CLOUD_SEARCH,
+      Service.SIMPLE_QUEUE_SERVICE,
     ];
   }
 }

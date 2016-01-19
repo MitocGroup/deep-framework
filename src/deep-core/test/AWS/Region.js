@@ -18,6 +18,10 @@ suite('AWS/Region', function() {
     chai.expect(Region.ASIA_PACIFIC_TOKYO).to.be.equal('ap-northeast-1');
   });
 
+  test('Check ASIA_PACIFIC_SEOUL static getter returns "ap-northeast-2"', function() {
+    chai.expect(Region.ASIA_PACIFIC_SEOUL).to.be.equal('ap-northeast-2');
+  });
+
   test('Check ASIA_PACIFIC_SINGAPORE static getter returns "ap-southeast-1"', function() {
     chai.expect(Region.ASIA_PACIFIC_SINGAPORE).to.be.equal('ap-southeast-1');
   });
@@ -51,9 +55,10 @@ suite('AWS/Region', function() {
   });
 
   test('Check list() static method returns array of regions', function() {
-    chai.expect(Region.list().length).to.be.equal(10);
+    chai.expect(Region.list().length).to.be.equal(11);
     chai.expect(Region.list()).to.be.include(Region.ANY);
     chai.expect(Region.list()).to.be.include(Region.ASIA_PACIFIC_TOKYO);
+    chai.expect(Region.list()).to.be.include(Region.ASIA_PACIFIC_SEOUL);
     chai.expect(Region.list()).to.be.include(Region.ASIA_PACIFIC_SYDNEY);
     chai.expect(Region.list()).to.be.include(Region.ASIA_PACIFIC_SINGAPORE);
     chai.expect(Region.list()).to.be.include(Region.EU_FRANKFURT);
@@ -65,9 +70,10 @@ suite('AWS/Region', function() {
   });
 
   test('Check all() static method returns array of region alias', function() {
-    chai.expect(Region.all().length).to.be.equal(10);
+    chai.expect(Region.all().length).to.be.equal(11);
     chai.expect(Region.all()).to.be.include(Region.ANY);
     chai.expect(Region.all()).to.be.include(Region.ASIA_PACIFIC_TOKYO);
+    chai.expect(Region.all()).to.be.include(Region.ASIA_PACIFIC_SEOUL);
     chai.expect(Region.all()).to.be.include(Region.ASIA_PACIFIC_SYDNEY);
     chai.expect(Region.all()).to.be.include(Region.ASIA_PACIFIC_SINGAPORE);
     chai.expect(Region.all()).to.be.include(Region.EU_FRANKFURT);
