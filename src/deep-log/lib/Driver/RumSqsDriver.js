@@ -58,11 +58,8 @@ export class RumSqsDriver extends AbstractDriver {
    * @private
    */
   _sendMessage(message, callback) {
-    // @todo - move stringify to separate method
-    message = message && typeof message === 'object' ? JSON.stringify(message) : message;
-
     let params = {
-      MessageBody: message,
+      MessageBody: this._stringifyMessage(message),
       QueueUrl: this.queueUrl,
     };
 
@@ -73,5 +70,44 @@ export class RumSqsDriver extends AbstractDriver {
 
       callback(error, data);
     });
+  }
+
+  /**
+   * @param {Array} messages
+   * @param callback
+   * @private
+   */
+  _sendMessageBatch(messages, callback) {
+    let entries = [];
+    messages.forEach((message, index) => {
+      message = this._stringifyMessage(message);
+      let id = `${AbstractDriver._md5(message)}-${new Date().getTime()}-${index}`;
+
+      entries.push({
+        Id: id,
+        MessageBody: message,
+      });
+    });
+
+    var params = {
+      QueueUrl: this.queueUrl,
+      Entries: entries
+    };
+
+    this._sqs.sendMessageBatch(params, (error, data) => {
+      if (error) {
+        error = new FailedToSendBatchSqsMessageException(params.QueueUrl, params.QueueUrl, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {String} message
+   * @private
+   */
+  _stringifyMessage(message) {
+    return message && typeof message === 'object' ? JSON.stringify(message) : message;
   }
 }
