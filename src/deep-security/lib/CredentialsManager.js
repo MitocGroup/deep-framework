@@ -80,7 +80,7 @@ export class CredentialsManager {
    * @param {String} identityId
    * @param {Function} callback
    */
-  loadCredentials(identityId, callback) {
+  loadBackendCredentials(identityId, callback) {
     let cognitosync = new AWS.CognitoSync();
 
     let params = {
@@ -104,6 +104,27 @@ export class CredentialsManager {
       });
 
       callback(null, creds);
+    });
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  loadFrontendCredentials(callback) {
+    this._createOrGetDataset((error, dataset) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+
+      dataset.get(CredentialsManager.RECORD_NAME, (error, data) => {
+        if (error) {
+          callback(error, null);
+          return;
+        }
+
+        callback(null, this._decodeCredentials(data));
+      });
     });
   }
 
@@ -170,7 +191,12 @@ export class CredentialsManager {
       configurable: true
     });
 
-    return JSON.stringify(credentials);
+    // @todo - check why credentials cannot by stringified
+    try {
+      return JSON.stringify(credentials);
+    } catch(e) {
+      return '';
+    }
   }
 
   /**
@@ -180,6 +206,6 @@ export class CredentialsManager {
    * @returns {Object}
    */
   _decodeCredentials(credentials) {
-    return JSON.parse(credentials);
+    return credentials && typeof credentials == 'object' ? JSON.parse(credentials) : credentials;
   }
 }

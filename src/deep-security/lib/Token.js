@@ -106,7 +106,7 @@ export class Token {
       throw new Exception('Call to _backendLoadCredentials method is not allowed from frontend context.');
     }
 
-    this._credsManager.loadCredentials(this.identityId, (error, credentials) => {
+    this._credsManager.loadBackendCredentials(this.identityId, (error, credentials) => {
       if (error) {
         callback(error, null);
         return;
@@ -147,19 +147,16 @@ export class Token {
 
     this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 
-    if (this.identityId) {
-      // trying to load old credentials from CognitoSync
-       this._credsManager.loadCredentials(this.identityId, (error, credentials) => {
-         if (!error && credentials && this.validCredentials(credentials)) {
-           callback(null, AWS.config.credentials = this._credentials = credentials);
-           return;
-         } else {
-           this._refreshCredentials(this._credentials, callback);
-         }
-       });
-    } else {
-      this._refreshCredentials(this._credentials, callback);
-    }
+    AWS.config.credentials = this._credentials;
+
+    // trying to load old credentials from cache or CognitoSync
+    this._credsManager.loadFrontendCredentials((error, credentials) => {
+      if (!error && credentials && this.validCredentials(credentials)) {
+        callback(null, AWS.config.credentials = this._credentials = credentials);
+      } else {
+        this._refreshCredentials(this._credentials, callback);
+      }
+    });
   }
 
   /**
@@ -181,8 +178,6 @@ export class Token {
         callback(new AuthException(error), null);
         return;
       }
-
-      AWS.config.credentials = this._credentials;
 
       // @todo - save credentials in background not to affect page load time
       this._credsManager.saveCredentials(credentials, (error, record) => {
@@ -211,9 +206,9 @@ export class Token {
     let identityId = null;
 
     if (this.credentials) {
-      if (this.credentials.hasOwnProperty('identityId')) {
+      if (this.credentials.identityId) {
         identityId = this.credentials.identityId;
-      } else if (this.credentials.params && this.credentials.params.hasOwnProperty('IdentityId')) {
+      } else if (this.credentials.params && this.credentials.params.IdentityId) {
         // load IdentityId from localStorage cache
         identityId = this.credentials.params.IdentityId;
       }
