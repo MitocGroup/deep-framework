@@ -174,7 +174,7 @@ export class CredentialsManager {
   }
 
   /**
-   * @todo: implement an encoding method
+   * @todo: implement a decoding method
    *
    * @param {String} credentials
    * @returns {Object}

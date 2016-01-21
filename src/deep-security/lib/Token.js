@@ -85,7 +85,7 @@ export class Token {
    */
   loadCredentials(callback = () => {}) {
     // avoid refreshing or loading credentials for each request
-    if (this._validCredentials()) {
+    if (this.validCredentials(this.credentials)) {
       callback(null, this.credentials);
       return;
     }
@@ -147,22 +147,51 @@ export class Token {
 
     this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 
-    this._credentials.refresh((error) => {
+    AWS.config.credentials = this._credentials;
+
+    if (this.identityId) {
+      // trying to load old credentials from CognitoSync
+       this._credsManager.loadCredentials(this.identityId, (error, credentials) => {
+         if (!error && credentials && this.validCredentials(credentials)) {
+           callback(null, this._credentials = credentials);
+           return;
+         } else {
+           this._refreshCredentials(this._credentials, callback);
+         }
+       });
+    } else {
+      this._refreshCredentials(this._credentials, callback);
+    }
+  }
+
+  /**
+   * @param {AWS.CognitoIdentityCredentials} credentials
+   * @param {Function} callback
+   * @private
+   */
+  _refreshCredentials(credentials, callback) {
+    if (!(credentials instanceof AWS.CognitoIdentityCredentials)) {
+      let error = new AuthException(
+        'Invalid credentials instance. Passed credentials must be an instance of AWS.CognitoIdentityCredentials.'
+      );
+      callback(error, null);
+      return;
+    }
+
+    credentials.refresh((error) => {
       if (error) {
         callback(new AuthException(error), null);
         return;
       }
 
-      AWS.config.credentials = this._credentials;
-
       // @todo - save credentials in background not to affect page load time
-      this._credsManager.saveCredentials(this._credentials, (error, record) => {
+      this._credsManager.saveCredentials(credentials, (error, record) => {
         if (error) {
           callback(error, null);
           return;
         }
 
-        callback(null, this._credentials);
+        callback(null, credentials);
       });
     });
   }
@@ -181,8 +210,13 @@ export class Token {
   get identityId() {
     let identityId = null;
 
-    if (this.credentials && this.credentials.hasOwnProperty('identityId')) {
-      identityId = this.credentials.identityId;
+    if (this.credentials) {
+      if (this.credentials.hasOwnProperty('identityId')) {
+        identityId = this.credentials.identityId;
+      } else if (this.credentials.params && this.credentials.params.hasOwnProperty('IdentityId')) {
+        // load IdentityId from localStorage cache
+        identityId = this.credentials.params.IdentityId;
+      }
     } else if (this.lambdaContext) {
       identityId = this.lambdaContext.identity.cognitoIdentityId;
     }
@@ -198,23 +232,24 @@ export class Token {
   }
 
   /**
+   * @param {Object} credentials
    * @returns {boolean}
-   * @private
    */
-  _validCredentials() {
-    return this.credentials && this.expireDateTime > new Date();
+  validCredentials(credentials) {
+    return credentials && this.getCredentialsExpireDateTime(credentials) > new Date();
   }
 
   /**
+   * @param {Object} credentials
    * @returns {Date}
    */
-  get expireDateTime() {
+  getCredentialsExpireDateTime(credentials) {
     let dateTime = null;
 
-    if (this.credentials.hasOwnProperty('expireTime')) {
-      dateTime = this.credentials.expireTime instanceof Date ?
-        this.credentials.expireTime :
-        new Date(this.credentials.expireTime);
+    if (credentials && credentials.hasOwnProperty('expireTime')) {
+      dateTime = credentials.expireTime instanceof Date ?
+        credentials.expireTime :
+        new Date(credentials.expireTime);
     }
 
     return dateTime;
