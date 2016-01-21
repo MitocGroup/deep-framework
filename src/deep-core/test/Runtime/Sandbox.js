@@ -6,7 +6,6 @@
 
 import chai from 'chai';
 import {Sandbox} from '../../lib/Runtime/Sandbox';
-import {MethodsNotImplementedException} from '../../lib/Exception/MethodsNotImplementedException';
 
 suite('OOP/Sandbox', () => {
   test('Test throw exception', (done) => {
