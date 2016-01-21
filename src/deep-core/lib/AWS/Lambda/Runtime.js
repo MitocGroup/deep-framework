@@ -10,7 +10,7 @@ import {Request} from './Request';
 import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';
 import {MissingUserContextException} from './Exception/MissingUserContextException';
 import {Context} from './Context';
-import domain from 'domain';
+import {Sandbox} from '../../Runtime/Sandbox';
 
 /**
  * Lambda runtime context
@@ -88,13 +88,7 @@ export class Runtime extends Interface {
     this._context = new Context(context);
     this._request = new Request(event);
 
-    let execDomain = domain.create();
-
-    execDomain.on('error', (error) => {
-      this.createError(error).send();
-    });
-
-    execDomain.run(() => {
+    new Sandbox(() => {
       this._fillUserContext();
 
       if (!this._loggedUserId && this._forceUserIdentity) {
@@ -102,7 +96,11 @@ export class Runtime extends Interface {
       }
 
       this.handle(this._request);
-    });
+    })
+      .fail((error) => {
+        this.createError(error).send();
+      })
+      .run();
 
     return this;
   }
