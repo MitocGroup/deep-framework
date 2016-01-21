@@ -12,10 +12,9 @@ import {LogDriverException} from './LogDriverException';
 export class FailedToSendBatchSqsMessageException extends LogDriverException {
   /**
    * @param {String} sqsQueueUrl
-   * @param {String} message
    * @param {Object} error
    */
-  constructor(sqsQueueUrl, message, error) {
-    super(`Failed to send "${message}" batch message to ${sqsQueueUrl} SQS queue. ${error}`);
+  constructor(sqsQueueUrl, error) {
+    super(`Failed to send batch messages to ${sqsQueueUrl} SQS queue. ${error}`);
   }
 }

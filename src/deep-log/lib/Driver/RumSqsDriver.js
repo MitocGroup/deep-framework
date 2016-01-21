@@ -6,8 +6,9 @@
 
 import AWS from 'aws-sdk';
 import {AbstractDriver} from './AbstractDriver';
-import {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException'
-import {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException'
+import {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException';
+import {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';
+import {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';
 
 /**
  * SQS logging driver
@@ -19,12 +20,16 @@ export class RumSqsDriver extends AbstractDriver {
    * @param {Boolean} enabled
    */
   constructor(queueUrl, kernelContext, enabled = false) {
+    super();
+
     this._queueUrl = queueUrl;
     this._kernelContext = kernelContext;
     this._enabled = enabled;
 
     this._messagesBatch = [];
-    this._sqs = new AWS.SQS();
+    this._sqs = new AWS.SQS({
+      region: RumSqsDriver.getRegionFromSqsQueueUrl(queueUrl)
+    });
   }
 
   /**
@@ -65,7 +70,7 @@ export class RumSqsDriver extends AbstractDriver {
       return;
     }
 
-    // @todo - validate message object and add context related stuff (userId, requestId, sessionId, etc)
+    // @todo - validate message object schema and add context related stuff (userId, requestId, sessionId, etc)
     // @todo - check message size, max is 256 KB (262,144 bytes)
 
     if (this.kernelContext.isBackend) {
@@ -96,7 +101,7 @@ export class RumSqsDriver extends AbstractDriver {
 
     this._sqs.sendMessage(params, (error, data) => {
       if (error) {
-        error = new FailedToSendSqsMessageException(params.QueueUrl, params.QueueUrl, error);
+        error = new FailedToSendSqsMessageException(params.QueueUrl, params.MessageBody, error);
       }
 
       callback(error, data);
@@ -127,7 +132,7 @@ export class RumSqsDriver extends AbstractDriver {
 
     this._sqs.sendMessageBatch(params, (error, data) => {
       if (error) {
-        error = new FailedToSendBatchSqsMessageException(params.QueueUrl, params.QueueUrl, error);
+        error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);
       }
 
       callback(error, data);
@@ -140,5 +145,19 @@ export class RumSqsDriver extends AbstractDriver {
    */
   _stringifyMessage(message) {
     return message && typeof message === 'object' ? JSON.stringify(message) : message;
+  }
+
+  /**
+   * @param {String} queueUrl
+   * @returns {String}
+   */
+  static getRegionFromSqsQueueUrl(queueUrl) {
+    let regionParts = queueUrl.match(/\.([^\.]+)\.amazonaws\.com\/.*/i);
+
+    if (!regionParts || regionParts.length === 0) {
+      throw new InvalidSqsQueueUrlException(queueUrl, 'Unable to extract AWS region.');
+    }
+
+    return regionParts[1];
   }
 }
