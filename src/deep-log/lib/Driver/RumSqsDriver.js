@@ -7,6 +7,7 @@
 import AWS from 'aws-sdk';
 import {AbstractDriver} from './AbstractDriver';
 import {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException'
+import {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException'
 
 /**
  * SQS logging driver
@@ -14,13 +15,23 @@ import {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessag
 export class RumSqsDriver extends AbstractDriver {
   /**
    * @param {String} queueUrl
+   * @param {Object} kernelContext
    * @param {Boolean} enabled
    */
-  constructor(queueUrl, enabled = false) {
+  constructor(queueUrl, kernelContext, enabled = false) {
     this._queueUrl = queueUrl;
+    this._kernelContext = kernelContext;
     this._enabled = enabled;
 
+    this._messagesBatch = [];
     this._sqs = new AWS.SQS();
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get BATCH_SIZE() {
+    return 10;
   }
 
   /**
@@ -31,6 +42,13 @@ export class RumSqsDriver extends AbstractDriver {
   }
 
   /**
+   * @returns {Object}
+   */
+  get kernelContext() {
+    return this._kernelContext;
+  }
+
+  /**
    * @returns {Boolean}
    */
   get enabled() {
@@ -38,22 +56,35 @@ export class RumSqsDriver extends AbstractDriver {
   }
 
   /**
-   * @param {Object} event
+   * @param {Object} message
+   * @param {Function} callback
    */
-  log(event, callback) {
+  log(message, callback) {
     if (!this.enabled) {
       callback(null, null);
       return;
     }
 
-    // @todo - validate event object and add context related stuff (userId, requestId, sessionId, etc)
+    // @todo - validate message object and add context related stuff (userId, requestId, sessionId, etc)
+    // @todo - check message size, max is 256 KB (262,144 bytes)
 
-    //@todo - send batch messages in backend context
-    this._sendMessage(event, callback);
+    if (this.kernelContext.isBackend) {
+      if (this._messagesBatch.length < RumSqsDriver.BATCH_SIZE) {
+        this._messagesBatch.push(message);
+      }
+
+      if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {
+        this._sendMessageBatch(this._messagesBatch, callback);
+      } else {
+        callback(null, null);
+      }
+    } else {
+      this._sendMessage(message, callback);
+    }
   }
 
   /**
-   * @param {String} message
+   * @param {Object} message
    * @param callback
    * @private
    */
