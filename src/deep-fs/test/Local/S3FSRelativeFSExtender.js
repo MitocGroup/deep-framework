@@ -21,15 +21,10 @@ suite('Local/S3FSRelativeFSExtender', function() {
 
   test('Check _readdirp() returns valid [] of files in dir', function() {
     let expectedResult = [
-      'deep-framework/src/deep-fs/test/.gitkeep',
-      'deep-framework/src/deep-fs/test/FS.js',
-      'deep-framework/src/deep-fs/test/Local',
-      'deep-framework/src/deep-fs/test/Local/S3FSRelativeFSExtender.js',
-      'deep-framework/src/deep-fs/test/common',
-      'deep-framework/src/deep-fs/test/common/KernelFactory.js',
-      'deep-framework/src/deep-fs/test/common/backend-cfg-json.js',
+      'deep-framework/src/deep-fs/test/_test_readdirp/test_file',
+      'deep-framework/src/deep-fs/test/_test_readdirp/test_file_2',
     ];
-    let dir = process.cwd() + '/test';
+    let dir = process.cwd() + '/test/_test_readdirp';
 
     actualResult = S3FSRelativeFSExtender._readdirp(dir);
 
