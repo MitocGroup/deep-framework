@@ -147,13 +147,11 @@ export class Token {
 
     this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 
-    AWS.config.credentials = this._credentials;
-
     if (this.identityId) {
       // trying to load old credentials from CognitoSync
        this._credsManager.loadCredentials(this.identityId, (error, credentials) => {
          if (!error && credentials && this.validCredentials(credentials)) {
-           callback(null, this._credentials = credentials);
+           callback(null, AWS.config.credentials = this._credentials = credentials);
            return;
          } else {
            this._refreshCredentials(this._credentials, callback);
@@ -183,6 +181,8 @@ export class Token {
         callback(new AuthException(error), null);
         return;
       }
+
+      AWS.config.credentials = this._credentials;
 
       // @todo - save credentials in background not to affect page load time
       this._credsManager.saveCredentials(credentials, (error, record) => {
