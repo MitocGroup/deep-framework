@@ -1,6 +1,6 @@
 {
   "name": "deep-framework",
-  "version": "1.6.6",
+  "version": "1.6.8",
   "description": "DEEP Framework",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -66,13 +66,13 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which istanbul` cover --report lcovonly _mocha -- --ui tdd --recursive --reporter spec",
-    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
+    "test": "bash node-bin/test.sh",
+    "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile && npm run browser-build",
-    "browser-build": "if [ -d 'scripts/' ]; then scripts/browser_build.sh; fi",
+    "browser-build": "bash scripts/browser_build.sh",
     "pretest": "npm link deep-log deep-core deep-asset deep-cache deep-db deep-validation deep-di deep-event deep-fs deep-kernel deep-resource deep-security deep-notification",
-    "prepare-production": "if [ -d 'hooks/' ]; then hooks/prepare_production.sh; fi",
-    "final-prepare-production": "if [ -d 'hooks/' ]; then hooks/final_prepare_production.sh; fi"
+    "prepare-production": "bash hooks/prepare_production.sh",
+    "final-prepare-production": "bash hooks/final_prepare_production.sh"
   },
   "dependencies": {
     "deep-log": "file:../deep-log",
@@ -99,9 +99,6 @@
     "node": ">=0.12",
     "npm": ">=2.10"
   },
-  "os": [
-    "!win32"
-  ],
   "preferGlobal": false,
   "analyze": true,
   "jspm": {
