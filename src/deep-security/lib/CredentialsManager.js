@@ -191,12 +191,16 @@ export class CredentialsManager {
       configurable: true
     });
 
-    // @todo - check why credentials cannot by stringified
-    try {
-      return JSON.stringify(credentials);
-    } catch(e) {
-      return '';
-    }
+    // save only credentials instead of all CognitoIdentityCredentials instance
+    let awsCredentials = {
+      expired: credentials.expired,
+      expireTime: credentials.expireTime,
+      accessKeyId: credentials.accessKeyId,
+      secretAccessKey: credentials.secretAccessKey,
+      sessionToken: credentials.sessionToken,
+    };
+
+    return JSON.stringify(awsCredentials);
   }
 
   /**
@@ -206,6 +210,16 @@ export class CredentialsManager {
    * @returns {Object}
    */
   _decodeCredentials(credentials) {
-    return credentials && typeof credentials == 'object' ? JSON.parse(credentials) : credentials;
+    if (credentials && typeof credentials == 'string') {
+      credentials = JSON.parse(credentials);
+      let expireTime = credentials.expireTime;
+
+      credentials = new AWS.Credentials(credentials);
+
+      // restore expireTime because AWS.Credentials resets it to null
+      credentials.expireTime = expireTime;
+    }
+
+    return credentials;
   }
 }
