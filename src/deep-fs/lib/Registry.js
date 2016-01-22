@@ -287,7 +287,7 @@ export class Registry {
     if (util.isArray(value)) {
       type = 'arr';
       val = JSON.stringify(value);
-    } else if(util.isBuffer(value)) {
+    } else if(Buffer.isBuffer(value)) {
       val = value.toString();
     } else if(util.isObject(value)) {
       type = 'obj';
