@@ -37,6 +37,14 @@ export class FS extends Kernel.ContainerAware {
 
   /**
    * @returns {Registry}
+   * @constructor
+   */
+  static get RegistryInstance() {
+    return Registry;
+  }
+
+  /**
+   * @returns {Registry}
    */
   get registry() {
     return this._registry;
