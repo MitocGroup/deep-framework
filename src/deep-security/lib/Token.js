@@ -121,32 +121,9 @@ export class Token {
    * @private
    */
   _frontendLoadCredentials(callback) {
-    let cognitoParams = {
-      IdentityPoolId: this._identityPoolId,
-    };
+    this._credentials = this._createCognitoIdentityCredentials();
 
-    if (this.identityProvider && !this.identityProvider.isTokenValid()) {
-      if (typeof this._tokenExpiredCallback === 'function') {
-        this._tokenExpiredCallback(this.identityProvider);
-      } else {
-        let error = new IdentityProviderTokenExpiredException(
-          this.identityProvider.name,
-          this.identityProvider.tokenExpirationTime
-        );
-
-        callback(error, null);
-      }
-      return;
-    }
-
-    if (this.identityProvider) {
-      cognitoParams.Logins = {};
-      cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
-      cognitoParams.LoginId = this.identityProvider.userId;
-    }
-
-    this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
-
+    // set AWS credentials before loading credentials from cache coz amazon-cognito-js uses them
     AWS.config.credentials = this._credentials;
 
     // trying to load old credentials from cache or CognitoSync
@@ -173,6 +150,20 @@ export class Token {
       return;
     }
 
+    if (this.identityProvider && !this.identityProvider.isTokenValid()) {
+      if (typeof this._tokenExpiredCallback === 'function') {
+        this._tokenExpiredCallback(this.identityProvider);
+      } else {
+        let error = new IdentityProviderTokenExpiredException(
+          this.identityProvider.name,
+          this.identityProvider.tokenExpirationTime
+        );
+
+        callback(error, null);
+      }
+      return;
+    }
+
     credentials.refresh((error) => {
       if (error) {
         callback(new AuthException(error), null);
@@ -189,6 +180,24 @@ export class Token {
         callback(null, credentials);
       });
     });
+  }
+
+  /**
+   * @returns {AWS.CognitoIdentityCredentials}
+   * @private
+   */
+  _createCognitoIdentityCredentials() {
+    let cognitoParams = {
+      IdentityPoolId: this._identityPoolId,
+    };
+
+    if (this.identityProvider) {
+      cognitoParams.Logins = {};
+      cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
+      cognitoParams.LoginId = this.identityProvider.userId;
+    }
+
+    return new AWS.CognitoIdentityCredentials(cognitoParams);
   }
 
   /**
@@ -375,5 +384,20 @@ export class Token {
     this._tokenExpiredCallback = callback;
 
     return this;
+  }
+
+  /**
+   * Removes identity credentials related cached stuff
+   */
+  destroy() {
+    if (!(this._credentials instanceof AWS.CognitoIdentityCredentials)) {
+      this._credentials = this._createCognitoIdentityCredentials();
+    }
+
+    this._credsManager.deleteCredentials();
+    this._credentials.clearCachedId();
+
+    this._credentials = null;
+    this._credsManager = null;
   }
 }

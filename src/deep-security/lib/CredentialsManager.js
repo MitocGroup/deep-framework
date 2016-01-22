@@ -129,6 +129,17 @@ export class CredentialsManager {
   }
 
   /**
+   * Deletes cached credentials from local storage
+   *
+   * @returns {CredentialsManager}
+   */
+  deleteCredentials() {
+    this.cognitoSyncClient.wipeData();
+
+    return this;
+  }
+
+  /**
    * @param {Function} callback
    * @private
    */
