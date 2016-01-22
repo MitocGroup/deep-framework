@@ -93,7 +93,7 @@ export class FS extends Kernel.ContainerAware {
       this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
     }
 
-    this._registry = Registry.createFromFS(this.public);
+    this._registry = Registry.createFromFS(this.system);
 
     callback();
   }
