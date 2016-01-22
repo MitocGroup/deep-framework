@@ -9,6 +9,7 @@ import Kernel from 'deep-kernel';
 import {UnknownFolderException} from './Exception/UnknownFolderException';
 import OS from 'os';
 import Path from 'path';
+import {Registry} from './Registry';
 
 /**
  * Deep FS implementation
@@ -30,6 +31,23 @@ export class FS extends Kernel.ContainerAware {
     this._buckets[FS.TMP] = tmpFsBucket;
     this._buckets[FS.PUBLIC] = publicFsBucket;
     this._buckets[FS.SYSTEM] = systemFsBucket;
+
+    this._registry = null;
+  }
+
+  /**
+   * @returns {Registry}
+   * @constructor
+   */
+  static get RegistryInstance() {
+    return Registry;
+  }
+
+  /**
+   * @returns {Registry}
+   */
+  get registry() {
+    return this._registry;
   }
 
   /**
@@ -82,6 +100,8 @@ export class FS extends Kernel.ContainerAware {
 
       this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
     }
+
+    this._registry = Registry.createFromFS(this.system);
 
     callback();
   }
