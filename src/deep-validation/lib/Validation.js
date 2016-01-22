@@ -32,8 +32,6 @@ export class Validation extends Kernel.ContainerAware {
    * @returns {Validation}
    */
   validateRuntimeInput(lambdaRuntime, schemaName, cb) {
-    let data = lambdaRuntime.request.data;
-
     if (!this.hasSchema(schemaName)) {
       lambdaRuntime.createError(new ValidationSchemaNotFoundException(schemaName));
       return this;
