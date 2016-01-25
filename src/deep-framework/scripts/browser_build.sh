@@ -5,7 +5,7 @@ npm=$(which npm)
 browserify=$(which browserify)
 uglifyjs=$(which uglifyjs)
 browser_build_path="${path}/../browser"
-DEEP_AWS_SERVICES=lambda,cognitoidentity,cognitosync
+DEEP_AWS_SERVICES=lambda,cognitoidentity,cognitosync,cloudsearchdomain
 
 assure_uglifyjs() {
     if [ -z ${uglifyjs} ]; then

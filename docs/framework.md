@@ -17,6 +17,7 @@ Main modules:
 - [deep-notification](components/notification.md) (Broadcasting notifications to the end user)
 - [deep-resource](components/resource.md) (Resources management and invocation)
 - [deep-security](components/security.md) (Managing and injecting user context into the runtime)
+- [deep-search](components/search.md) (Searching through the specified model data)
 
 The deep-framework Anatomy
 -------------------------

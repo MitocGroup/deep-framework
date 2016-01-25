@@ -1,0 +1,61 @@
+{
+  "name": "deep-search",
+  "version": "1.0.0",
+  "description": "DEEP Search Library",
+  "keywords": [
+    "digital enterprise end-to-end platform",
+    "amazon web services",
+    "platform-as-a-service",
+    "deep",
+    "aws",
+    "paas",
+    "cloud",
+    "computing",
+    "microservices",
+    "architecture",
+    "serverless",
+    "abstracted",
+    "core",
+    "library",
+    "search",
+    "CloudSearch"
+  ],
+  "homepage": "https://github.com/MitocGroup/deep-framework",
+  "bugs": {
+    "url": "https://github.com/MitocGroup/deep-framework/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Mitoc Group",
+    "email": "hello@mitocgroup.com",
+    "url": "http://www.mitocgroup.com"
+  },
+  "contributors": [
+    {
+      "name": "AlexanderC",
+      "email": "alexanderc@mitocgroup.com"
+    }
+  ],
+  "main": "lib.compiled/bootstrap.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MitocGroup/deep-framework.git"
+  },
+  "scripts": {
+    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd",
+    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
+    "prepublish": "npm run compile",
+    "pretest": "npm link deep-kernel deep-core"
+  },
+  "dependencies": {
+    "deep-kernel": "^1.x.x",
+    "deep-core": "^1.x.x"
+  },
+  "devDependencies": {
+    "chai": "^3.2.x",
+    "sinon": "^1.17.x",
+    "sinon-chai": "^2.8.x"
+  },
+  "preferGlobal": false,
+  "analyze": true
+}
