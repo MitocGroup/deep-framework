@@ -84,13 +84,13 @@ export class DB extends Kernel.ContainerAware {
     options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);
     options[modelName] = options;
 
-    Vogels.createTables(options, function(error) {
+    Vogels.createTables(options, (error) => {
       if (error) {
         throw new FailedToCreateTableException(modelName);
       }
 
       callback();
-    }.bind(this));
+    });
 
     return this;
   }
@@ -113,13 +113,13 @@ export class DB extends Kernel.ContainerAware {
       allModelNames.push(modelName);
     }
 
-    Vogels.createTables(allModelsOptions, function(error) {
+    Vogels.createTables(allModelsOptions, (error) => {
       if (error) {
         throw new FailedToCreateTablesException(allModelNames, error);
       }
 
       callback();
-    }.bind(this));
+    });
 
     return this;
   }
@@ -131,9 +131,7 @@ export class DB extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    this._validation.boot(kernel, function() {
-      this._validation.immutable = true;
-
+    this._validation.boot(kernel, () => {
       this._tablesNames = kernel.config.tablesNames;
       this._models = this._rawModelsToVogels(kernel.config.models);
 
@@ -142,7 +140,7 @@ export class DB extends Kernel.ContainerAware {
       } else {
         callback();
       }
-    }.bind(this));
+    });
   }
 
   /**
@@ -238,7 +236,7 @@ export class DB extends Kernel.ContainerAware {
       hashKey: 'Id',
       timestamps: true,
       tableName: this._tablesNames[name],
-      schema: this._validation.get(name),
+      schema: this._validation.getSchema(name),
     };
   }
 

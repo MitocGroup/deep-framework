@@ -80,6 +80,19 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @param {String} schemaName
+   * @param {Function} cb
+   * @returns {Runtime}
+   */
+  validateInput(schemaName, cb) {
+    let validation = this._kernel.get('validation');
+
+    validation.validateRuntimeInput(this, schemaName, cb);
+
+    return this;
+  }
+
+  /**
    * @param {Object} event
    * @param {Object} context
    * @returns {Runtime}
@@ -95,7 +108,24 @@ export class Runtime extends Interface {
         throw new MissingUserContextException();
       }
 
-      this.handle(this._request);
+      let validationSchema = this.validationSchema; // may be missing!
+
+      if (validationSchema) {
+        let validationSchemaName = validationSchema;
+
+        if (typeof validationSchema !== 'string') {
+          let validation = this._kernel.get('validation');
+          let setSchemaMethod = validationSchema.isJoi ? 'setSchema' : 'setSchemaRaw';
+
+          validationSchemaName = `DeepHandlerValidation_${new Date().getTime()}`;
+
+          validation[setSchemaMethod](validationSchemaName, validationSchema);
+        }
+
+        this.validateInput(validationSchemaName, this.handle);
+      } else {
+        this.handle(this._request);
+      }
     })
       .fail((error) => {
         this.createError(error).send();
