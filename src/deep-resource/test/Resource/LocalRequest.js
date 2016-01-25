@@ -9,6 +9,7 @@ import {Resource} from '../../lib/Resource';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
+import Validation from 'deep-validation';
 import KernelFactory from '../common/KernelFactory';
 import requireProxy from 'proxyquire';
 import {HttpMock} from '../Mock/HttpMock';
@@ -49,6 +50,7 @@ suite('Resource/LocalRequest', function() {
       Cache: Cache,
       Security: Security,
       Resource: Resource,
+      Validation: Validation,
     }, callback);
   });
 

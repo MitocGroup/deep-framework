@@ -30,6 +30,8 @@ export class Runtime extends Interface {
     this._forceUserIdentity = false;
     this._contextSent = false;
 
+    this._calleeConfig = null;
+
     this._fillDenyMissingUserContextOption();
   }
 
@@ -108,7 +110,7 @@ export class Runtime extends Interface {
         throw new MissingUserContextException();
       }
 
-      let validationSchema = this.validationSchema; // may be missing!
+      let validationSchema = this.validationSchema;
 
       if (validationSchema) {
         let validationSchemaName = validationSchema;
@@ -147,6 +149,31 @@ export class Runtime extends Interface {
    */
   createResponse(data) {
     return new Response(this, data);
+  }
+
+  /**
+   * @returns {null|Object}
+   */
+  get calleeConfig() {
+    if (!this._calleeConfig &&
+      this._context &&
+      this._kernel &&
+      this._context.has('invokedFunctionArn')) {
+
+      let resource = this._kernel.get('resource');
+      let calleeArn = this._context.getOption('invokedFunctionArn');
+
+      this._calleeConfig = resource.getActionConfig(calleeArn);
+    }
+
+    return this._calleeConfig;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get validationSchema() {
+    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;
   }
 
   /**

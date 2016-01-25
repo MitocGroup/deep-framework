@@ -8,6 +8,7 @@ import {Action} from '../../lib/Resource/Action';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
+import Validation from 'deep-validation';
 import KernelFactory from '../common/KernelFactory';
 
 suite('Resource/SuperagentResponse', function() {
@@ -46,6 +47,7 @@ suite('Resource/SuperagentResponse', function() {
       Cache: Cache,
       Security: Security,
       Resource: Resource,
+      Validation: Validation,
     }, callback);
   });
 
