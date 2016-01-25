@@ -35,13 +35,6 @@ export class Response {
   }
 
   /**
-   * @returns {Log}
-   */
-  get logService() {
-    return this.runtime.kernel.get('log');
-  }
-
-  /**
    * @returns {Response}
    */
   send() {
@@ -52,12 +45,12 @@ export class Response {
     }
 
     // flush RUM batched messages if any
-    this.logService.rumFlush();
+    this.runtime.logService.rumFlush((error, data) => {
+      // @todo: via setter?
+      this._runtime._contextSent = true;
 
-    // @todo: via setter?
-    this._runtime._contextSent = true;
-
-    this._runtime.context[this.constructor.contextMethod](this.data);
+      this._runtime.context[this.constructor.contextMethod](this.data);
+    });
 
     return this;
   }

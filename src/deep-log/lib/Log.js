@@ -183,16 +183,21 @@ export class Log extends Kernel.ContainerAware {
   /**
    * Flushes RUM batch messages
    */
-  rumFlush() {
+  rumFlush(callback) {
     let driver = this._rumDriver();
 
-    if (driver) {
-      driver.flush((error, data) => {
-        if (error) {
-          this.log(error, Log.ERROR);
-        }
-      });
+    if (!driver) {
+      callback(null, null);
+      return;
     }
+
+    driver.flush((error, data) => {
+      if (error) {
+        this.log(error, Log.ERROR);
+      }
+
+      callback(error, data);
+    });
   }
 
   /**

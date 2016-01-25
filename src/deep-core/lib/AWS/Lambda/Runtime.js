@@ -164,6 +164,13 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @returns {Object}
+   */
+  get logService() {
+    return this.kernel.get('log');
+  }
+
+  /**
    * @private
    */
   _fillDenyMissingUserContextOption() {
