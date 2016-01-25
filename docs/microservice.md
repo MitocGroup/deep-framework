@@ -23,9 +23,9 @@ Structure
                 - `bootstrap.js` # **required**
                 - `Handler.js`
                 - ...
-    - `Models`/
-        - `User.json`
-        - `Property.json`
+    - `Models`/ 
+        - `User.json` # @see [structure](components/validation.md#models-anatomy)
+        - `Property.json` # ...
         - ...
     - `Docs`/
         - `index.md`
