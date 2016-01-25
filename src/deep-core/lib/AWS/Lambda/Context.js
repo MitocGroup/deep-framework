@@ -41,6 +41,7 @@ export class Context {
     // Avoid _data key listing on Object.keys(request)
     Object.defineProperty(this, '_options', {
       configurable: false,
+      enumerable: false,
     });
   }
 
