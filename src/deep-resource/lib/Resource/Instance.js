@@ -24,6 +24,67 @@ export class Instance {
     this._cache = null;
     this._security = null;
     this._validation = null;
+
+    this._fillActions();
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get actionsConfig() {
+    let config = {};
+
+    for (let actionName in this.actions) {
+      if (!this.actions.hasOwnProperty(actionName)) {
+        continue;
+      }
+
+      let action = this.actions[actionName];
+
+      config[action.sourceId] = {
+        resource: this._name,
+        name: action.name,
+        type: action.type,
+        methods: action.methods,
+        source: action.source,
+        region: action.region,
+        forceUserIdentity: action.forceUserIdentity,
+      };
+    }
+
+    return config;
+  }
+
+  /**
+   * @private
+   */
+  _fillActions() {
+    this._actions = {};
+
+    for (let actionName in this._rawActions) {
+      if (!this._rawActions.hasOwnProperty(actionName)) {
+        continue;
+      }
+
+      let actionMetadata = this._rawActions[actionName];
+
+      let actionInstance = new Action(
+        this,
+        actionName,
+        actionMetadata.type,
+        actionMetadata.methods,
+        actionMetadata.source,
+        actionMetadata.region,
+        actionMetadata.forceUserIdentity,
+        actionMetadata.apiCache
+      );
+
+      if (actionMetadata.validationSchema) {
+        actionInstance.validationSchemaName = actionMetadata.validationSchema;
+      }
+
+      this._actions[actionName] = actionInstance;
+    }
   }
 
   /**
@@ -107,35 +168,6 @@ export class Instance {
    * @returns {Object}
    */
   get actions() {
-    if (this._actions === null) {
-      this._actions = {};
-
-      for (let actionName in this._rawActions) {
-        if (!this._rawActions.hasOwnProperty(actionName)) {
-          continue;
-        }
-
-        let actionMetadata = this._rawActions[actionName];
-
-        let actionInstance = new Action(
-          this,
-          actionName,
-          actionMetadata.type,
-          actionMetadata.methods,
-          actionMetadata.source,
-          actionMetadata.region,
-          actionMetadata.forceUserIdentity,
-          actionMetadata.apiCache
-        );
-
-        if (actionMetadata.validationSchema) {
-          actionInstance.validationSchemaName = actionMetadata.validationSchema;
-        }
-
-        this._actions[actionName] = actionInstance;
-      }
-    }
-
     return this._actions;
   }
 

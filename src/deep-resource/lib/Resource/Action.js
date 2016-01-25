@@ -74,6 +74,15 @@ export class Action {
   }
 
   /**
+   * @returns {String}
+   */
+  get sourceId() {
+    return this._type === Action.LAMBDA ?
+      this._source.original :
+      this._source.api;
+  }
+
+  /**
    * @returns {Boolean}
    */
   get forceUserIdentity() {

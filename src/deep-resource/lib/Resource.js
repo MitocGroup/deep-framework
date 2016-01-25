@@ -19,6 +19,24 @@ export class Resource extends Kernel.ContainerAware {
     super();
 
     this._resources = resources;
+    this._actionsConfig = {};
+  }
+
+  /**
+   * @param {String} sourceId
+   * @returns {Object|null}
+   */
+  getActionConfig(sourceId) {
+    return this._actionsConfig.hasOwnProperty(sourceId) ?
+      this._actionsConfig[sourceId] :
+      null;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get actionsConfig() {
+    return this._actionsConfig;
   }
 
   /**
@@ -124,6 +142,16 @@ export class Resource extends Kernel.ContainerAware {
         this._resources[microservice.identifier][resourceName] = resource;
 
         resourcesVector.push(resource);
+
+        let actionsConfig = resource.actionsConfig;
+
+        for (let actionSourceId in actionsConfig) {
+          if (!actionsConfig.hasOwnProperty(actionSourceId)) {
+            continue;
+          }
+
+          this._actionsConfig[actionSourceId] = actionsConfig[actionSourceId];
+        }
       }
     }
 

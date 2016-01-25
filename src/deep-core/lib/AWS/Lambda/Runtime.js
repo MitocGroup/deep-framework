@@ -160,46 +160,10 @@ export class Runtime extends Interface {
         this._kernel &&
         this._context.has('invokedFunctionArn')) {
 
+        let resource = this._kernel.get('resource');
         let calleeArn = this._context.getOption('invokedFunctionArn');
 
-        for (let microserviceKey in this._kernel.microservices) {
-          if (!this._kernel.microservices.hasOwnProperty(microserviceKey)) {
-            continue;
-          }
-
-          let microservice = this._kernel.microservices[microserviceKey];
-
-          for (let resourceName in microservice.rawResources) {
-            if (!microservice.rawResources.hasOwnProperty(resourceName)) {
-              continue;
-            }
-
-            let rawActions = microservice.rawResources[resourceName];
-
-            for (let actionName in rawActions) {
-              if (!rawActions.hasOwnProperty(actionName)) {
-                continue;
-              }
-
-              let actionMetadata = rawActions[actionName];
-
-              if (actionMetadata.type === 'lambda' &&
-                actionMetadata.source.original === calleeArn) {
-
-                this._calleeConfig = actionMetadata;
-
-                return this._calleeConfig;
-              }
-            }
-          }
-        }
-      }
-
-      // case something missing...
-      if (this._context &&
-        this._kernel) {
-
-        this._calleeConfig = {};
+        this._calleeConfig = resource.getActionConfig(calleeArn);
       }
     }
 
