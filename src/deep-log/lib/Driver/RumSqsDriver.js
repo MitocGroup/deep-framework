@@ -27,9 +27,7 @@ export class RumSqsDriver extends AbstractDriver {
     this._enabled = enabled;
 
     this._messagesBatch = [];
-    this._sqs = new AWS.SQS({
-      region: RumSqsDriver.getRegionFromSqsQueueUrl(queueUrl)
-    });
+    this._sqs = null;
   }
 
   /**
@@ -58,6 +56,19 @@ export class RumSqsDriver extends AbstractDriver {
    */
   get enabled() {
     return this._enabled;
+  }
+
+  /**
+   * @returns {AWS.SQS}
+   */
+  get sqs() {
+    if (!this._sqs) {
+      this._sqs = new AWS.SQS({
+        region: RumSqsDriver.getRegionFromSqsQueueUrl(this.queueUrl)
+      });
+    }
+
+    return this._sqs;
   }
 
   /**
@@ -99,7 +110,7 @@ export class RumSqsDriver extends AbstractDriver {
       QueueUrl: this.queueUrl,
     };
 
-    this._sqs.sendMessage(params, (error, data) => {
+    this.sqs.sendMessage(params, (error, data) => {
       if (error) {
         error = new FailedToSendSqsMessageException(params.QueueUrl, params.MessageBody, error);
       }
@@ -130,7 +141,7 @@ export class RumSqsDriver extends AbstractDriver {
       Entries: entries
     };
 
-    this._sqs.sendMessageBatch(params, (error, data) => {
+    this.sqs.sendMessageBatch(params, (error, data) => {
       if (error) {
         error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);
       }
