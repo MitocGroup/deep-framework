@@ -149,9 +149,7 @@ suite('DB', function() {
     chai.expect(actualResult.hashKey).to.equal('Id');
     chai.expect(actualResult.timestamps).to.equal(true);
     chai.expect(actualResult.tableName).to.contains('DeepDevName');
-    chai.expect(Object.keys(actualResult.schema)).to.eql(['Name', 'Id']);
-    chai.expect(actualResult.schema.Id.isJoi).to.equal(true);
-    chai.expect(actualResult.schema.Name.isJoi).to.equal(true);
+    chai.expect(actualResult.schema.isJoi).to.equal(true);
   });
 
   test('Check _wrapModelSchema() throws ModelNotFoundException for invalid model name', function() {
@@ -163,7 +161,7 @@ suite('DB', function() {
       error = e;
     }
 
-    chai.expect(error.constructor.name).to.be.equal('ModelNotFoundException');
+    chai.expect(error.constructor.name).to.be.equal('ValidationSchemaNotFoundException');
   });
 
   test('Check assureTable() return valid object', function() {

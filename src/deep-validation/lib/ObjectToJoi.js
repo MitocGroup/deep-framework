@@ -5,6 +5,7 @@
 'use strict';
 
 import {Joi as JoiHelper} from './Helpers/Joi';
+import Joi from 'joi';
 import {InvalidSchemaException} from './Exception/InvalidSchemaException';
 
 /**
@@ -64,6 +65,6 @@ export class ObjectToJoi {
       }
     }
 
-    return transObj;
+    return Joi.object().keys(transObj);
   }
 }
