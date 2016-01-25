@@ -49,6 +49,7 @@ export class Instance {
         source: action.source,
         region: action.region,
         forceUserIdentity: action.forceUserIdentity,
+        validationSchema: action.validationSchemaName,
       };
     }
 
