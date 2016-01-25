@@ -155,16 +155,15 @@ export class Runtime extends Interface {
    * @returns {null|Object}
    */
   get calleeConfig() {
-    if (!this._calleeConfig) {
-      if (this._context &&
-        this._kernel &&
-        this._context.has('invokedFunctionArn')) {
+    if (!this._calleeConfig &&
+      this._context &&
+      this._kernel &&
+      this._context.has('invokedFunctionArn')) {
 
-        let resource = this._kernel.get('resource');
-        let calleeArn = this._context.getOption('invokedFunctionArn');
+      let resource = this._kernel.get('resource');
+      let calleeArn = this._context.getOption('invokedFunctionArn');
 
-        this._calleeConfig = resource.getActionConfig(calleeArn);
-      }
+      this._calleeConfig = resource.getActionConfig(calleeArn);
     }
 
     return this._calleeConfig;
