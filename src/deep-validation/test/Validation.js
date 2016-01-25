@@ -24,6 +24,14 @@ suite('Validation', function() {
   let frontendKernelInstance = null;
   let rawModelName = 'rawUserModel';
   let rawModelSchema = {username: 'string'};
+  let rawModels = [
+    {
+      "Name": {
+        "Name": "string",
+        "Id": "timeUUID"
+      }
+    }
+  ];
 
   test('Class Validation exists in Validation', function() {
     chai.expect(typeof Validation).to.equal('function');
@@ -54,10 +62,10 @@ suite('Validation', function() {
     KernelFactory.create({Validation: Validation}, callback);
   });
 
-  //test('Check constructor sets default values', function() {
-  //  chai.expect(validation.immutable).to.be.equal(false);
-  //  chai.expect(validation.models).to.be.object_;
-  //});
+  test('Check constructor sets schemas', function() {
+    chai.expect(validation.schemas.constructor.name).to.be.equal('Object');
+    chai.expect(Object.keys(validation.schemas)).to.be.eql(['Name']);
+  });
 
   //
   //test('Check immutable getter returns [false]', function() {
