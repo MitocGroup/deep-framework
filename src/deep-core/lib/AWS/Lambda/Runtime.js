@@ -30,6 +30,8 @@ export class Runtime extends Interface {
     this._forceUserIdentity = false;
     this._contextSent = false;
 
+    this._calleeConfig = null;
+
     this._fillDenyMissingUserContextOption();
   }
 
@@ -108,7 +110,7 @@ export class Runtime extends Interface {
         throw new MissingUserContextException();
       }
 
-      let validationSchema = this.validationSchema; // may be missing!
+      let validationSchema = this.validationSchema;
 
       if (validationSchema) {
         let validationSchemaName = validationSchema;
@@ -147,6 +149,68 @@ export class Runtime extends Interface {
    */
   createResponse(data) {
     return new Response(this, data);
+  }
+
+  /**
+   * @returns {null|Object}
+   */
+  get calleeConfig() {
+    if (!this._calleeConfig) {
+      if (this._context &&
+        this._kernel &&
+        this._context.has('invokedFunctionArn')) {
+
+        let calleeArn = this._context.getOption('invokedFunctionArn');
+
+        for (let microserviceKey in this._kernel.microservices) {
+          if (!this._kernel.microservices.hasOwnProperty(microserviceKey)) {
+            continue;
+          }
+
+          let microservice = this._kernel.microservices[microserviceKey];
+
+          for (let resourceName in microservice.rawResources) {
+            if (!microservice.rawResources.hasOwnProperty(resourceName)) {
+              continue;
+            }
+
+            let rawActions = microservice.rawResources[resourceName];
+
+            for (let actionName in rawActions) {
+              if (!rawActions.hasOwnProperty(actionName)) {
+                continue;
+              }
+
+              let actionMetadata = rawActions[actionName];
+
+              if (actionMetadata.type === 'lambda' &&
+                actionMetadata.source.original === calleeArn) {
+
+                this._calleeConfig = actionMetadata;
+
+                return this._calleeConfig;
+              }
+            }
+          }
+        }
+      }
+
+      // case something missing...
+      if (this._context &&
+        this._kernel) {
+
+        this._calleeConfig = {};
+      }
+    }
+
+    return this._calleeConfig;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get validationSchema() {
+    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;
   }
 
   /**
