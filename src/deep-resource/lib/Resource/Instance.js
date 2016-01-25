@@ -23,6 +23,21 @@ export class Instance {
     this._isBackend = false;
     this._cache = null;
     this._security = null;
+    this._validation = null;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get validation() {
+    return this._validation;
+  }
+
+  /**
+   * @param {Object} validation
+   */
+  set validation(validation) {
+    this._validation = validation;
   }
 
   /**
@@ -102,7 +117,7 @@ export class Instance {
 
         let actionMetadata = this._rawActions[actionName];
 
-        this._actions[actionName] = new Action(
+        let actionInstance = new Action(
           this,
           actionName,
           actionMetadata.type,
@@ -112,6 +127,12 @@ export class Instance {
           actionMetadata.forceUserIdentity,
           actionMetadata.apiCache
         );
+
+        if (actionMetadata.validationSchema) {
+          actionInstance.validationSchemaName = actionMetadata.validationSchema;
+        }
+
+        this._actions[actionName] = actionInstance;
       }
     }
 

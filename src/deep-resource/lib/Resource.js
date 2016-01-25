@@ -52,6 +52,7 @@ export class Resource extends Kernel.ContainerAware {
     // inject dependencies
     resource.cache = this.container.get('cache');
     resource.security = this.container.get('security');
+    resource.validation = this.container.get('validation');
 
     return actionIdentifier ? resource.action(actionIdentifier) : resource;
   }

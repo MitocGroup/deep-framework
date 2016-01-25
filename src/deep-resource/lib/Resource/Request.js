@@ -46,6 +46,38 @@ export class Request {
 
     this._async = false;
     this._native = false;
+
+    this._validationSchemaName = null;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  skipPreValidation() {
+    this._validationSchemaName = null;
+
+    return this;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isPreValidated() {
+    return !!this._validationSchemaName;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get validationSchemaName() {
+    return this._validationSchemaName;
+  }
+
+  /**
+   * @param {String} validationSchemaName
+   */
+  set validationSchemaName(validationSchemaName) {
+    this._validationSchemaName = validationSchemaName;
   }
 
   /**
@@ -159,7 +191,7 @@ export class Request {
    * @private
    */
   _buildCacheKey() {
-    let payload = Request._md5(JSON.stringify(this._payload));
+    let payload = Request._md5(JSON.stringify(this.payload));
     let endpoint = this.native ? this._action.source.original : this._action.source.api;
 
     return `${this._method}:${this._action.type}:${endpoint}#${payload}`;
@@ -326,6 +358,23 @@ export class Request {
    * @returns {Request}
    */
   _send(callback = () => {}) {
+     if (this.isPreValidated) {
+      let validation = this._action.resource.validation;
+
+      let validationResult = validation.validate(this._validationSchemaName, this.payload, true);
+
+      if (validationResult.error) {
+        callback(new LambdaResponse(this, {
+          errorType: error.name,
+          errorMessage: error.annotate(),
+          errorStack: error.stack || (new Error(error.message)).stack,
+          validationErrors: error.details,
+        }, null));
+
+        return this;
+      }
+    }
+
     if (!this._native) {
       return this._sendThroughApi(callback);
     }
