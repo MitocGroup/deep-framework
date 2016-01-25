@@ -26,6 +26,7 @@ export default {
               'POST',
             ],
             forceUserIdentity: true,
+            validationSchema: 'Sample',
             region: 'us-west-2',
             source: {
               api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',

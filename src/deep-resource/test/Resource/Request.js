@@ -15,6 +15,7 @@ import {CachedRequestException} from '../../lib/Resource/Exception/CachedRequest
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
+import Validation from 'deep-validation';
 import KernelFactory from '../common/KernelFactory';
 import requireProxy from 'proxyquire';
 import AWS from 'mock-aws';
@@ -64,6 +65,7 @@ suite('Resource/Request', function() {
       Cache: Cache,
       Security: Security,
       Resource: Resource,
+      Validation: Validation,
     }, callback);
   });
 

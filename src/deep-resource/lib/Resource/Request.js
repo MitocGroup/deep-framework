@@ -21,7 +21,6 @@ import Core from 'deep-core';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
 import {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';
 import {LoadCredentialsException} from './Exception/LoadCredentialsException';
-import Security from 'deep-security';
 import crypto from 'crypto';
 import util from 'util';
 
@@ -561,7 +560,7 @@ export class Request {
   _loadSecurityCredentials(callback) {
     let securityService = this._action.resource.security;
 
-    if (!(securityService instanceof Security)) {
+    if (!securityService) {
       callback(new MissingSecurityServiceException(), null);
       return this;
     }
