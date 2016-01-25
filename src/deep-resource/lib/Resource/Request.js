@@ -364,6 +364,8 @@ export class Request {
       let validationResult = validation.validate(this._validationSchemaName, this.payload, true);
 
       if (validationResult.error) {
+        let error = validationResult.error;
+
         callback(new LambdaResponse(this, {
           errorType: error.name,
           errorMessage: error.annotate(),
