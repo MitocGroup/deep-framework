@@ -169,7 +169,7 @@ export class Log extends Kernel.ContainerAware {
    * @param {Object} event
    */
   rumLog(event) {
-    let driver = this.drivers.find(RumSqsDriver);
+    let driver = this._rumDriver();
 
     if (driver) {
       driver.log(event, (error, data) => {
@@ -178,6 +178,29 @@ export class Log extends Kernel.ContainerAware {
         }
       });
     }
+  }
+
+  /**
+   * Flushes RUM batch messages
+   */
+  rumFlush() {
+    let driver = this._rumDriver();
+
+    if (driver) {
+      driver.flush((error, data) => {
+        if (error) {
+          this.log(error, Log.ERROR);
+        }
+      });
+    }
+  }
+
+  /**
+   * @returns {RumSqsDriver}
+   * @private
+   */
+  _rumDriver() {
+    return this.drivers.find(RumSqsDriver);
   }
 
   /**

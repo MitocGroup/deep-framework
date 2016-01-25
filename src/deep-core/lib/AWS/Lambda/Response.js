@@ -35,6 +35,13 @@ export class Response {
   }
 
   /**
+   * @returns {Log}
+   */
+  get logService() {
+    return this.runtime.kernel.get('log');
+  }
+
+  /**
    * @returns {Response}
    */
   send() {
@@ -43,6 +50,9 @@ export class Response {
     } else if (this.contextSent) {
       throw new ContextAlreadySentException();
     }
+
+    // flush RUM batched messages if any
+    this.logService.rumFlush();
 
     // @todo: via setter?
     this._runtime._contextSent = true;

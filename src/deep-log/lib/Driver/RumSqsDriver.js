@@ -90,13 +90,28 @@ export class RumSqsDriver extends AbstractDriver {
       }
 
       if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {
-        this._sendMessageBatch(this._messagesBatch, callback);
+        this.flush(callback);
       } else {
         callback(null, null);
       }
     } else {
       this._sendMessage(message, callback);
     }
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  flush(callback) {
+    if (!this.enabled || this._messagesBatch.length === 0) {
+      callback(null, null);
+      return;
+    }
+
+    this._sendMessageBatch(this._messagesBatch, (error, data) => {
+      this._messagesBatch = [];
+      callback(error, data);
+    });
   }
 
   /**
