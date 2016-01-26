@@ -208,23 +208,23 @@ suite('Validation', function() {
     chai.expect(validationInstance.schemasNames).to.be.eql(['Name']);
 
     chai.expect(
-      validationInstance.schemas['Name']._inner.children[0].key
+      validationInstance.schemas.Name._inner.children[0].key
     ).to.be.equal('Name');
     chai.expect(
-      validationInstance.schemas['Name']._inner.children[0].schema._type
+      validationInstance.schemas.Name._inner.children[0].schema._type
     ).to.be.equal('string');
     chai.expect(
-      validationInstance.schemas['Name']._inner.children[0].schema.isJoi
+      validationInstance.schemas.Name._inner.children[0].schema.isJoi
     ).to.be.equal(true);
 
     chai.expect(
-      validationInstance.schemas['Name']._inner.children[1].key
+      validationInstance.schemas.Name._inner.children[1].key
     ).to.be.equal('Id');
     chai.expect(
-      validationInstance.schemas['Name']._inner.children[1].schema._type
+      validationInstance.schemas.Name._inner.children[1].schema._type
     ).to.be.equal('string');
     chai.expect(
-      validationInstance.schemas['Name']._inner.children[1].schema.isJoi
+      validationInstance.schemas.Name._inner.children[1].schema.isJoi
     ).to.be.equal(true);
 
     chai.expect(spyCallback).to.have.been.calledWithExactly();
