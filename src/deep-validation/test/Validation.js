@@ -12,7 +12,6 @@ import {InvalidJoiSchemaException} from '../lib/Exception/InvalidJoiSchemaExcept
 import {ObjectValidationFailedException} from '../lib/Exception/ObjectValidationFailedException';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
-import Joi from 'joi';
 
 chai.use(sinonChai);
 
