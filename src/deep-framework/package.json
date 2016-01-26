@@ -1,6 +1,6 @@
 {
   "name": "deep-framework",
-  "version": "1.6.9",
+  "version": "1.6.11",
   "description": "DEEP Framework",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -69,7 +69,7 @@
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile && npm run browser-build",
-    "browser-build": "bash scripts/browser_build.sh",
+    "browser-build": "bash node-bin/browser_build.sh",
     "pretest": "npm link deep-log deep-core deep-asset deep-cache deep-db deep-validation deep-di deep-event deep-fs deep-kernel deep-resource deep-security deep-notification",
     "prepare-production": "bash hooks/prepare_production.sh",
     "final-prepare-production": "bash hooks/final_prepare_production.sh"
