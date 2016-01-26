@@ -419,6 +419,7 @@ export class Request {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
+    let that = this;
     let options = {
       region: this._action.region,
     };
@@ -438,8 +439,12 @@ export class Request {
 
       this._lambda = new AWS.Lambda(options);
 
-      this._lambda.invoke(invocationParameters, (error, data) => {
-        callback(new LambdaResponse(this, data, error));
+      // @note - don't replace this callback function with an arrow one (we need injected context to access AWS.Response)
+      this._lambda.invoke(invocationParameters, function(error, data) {
+        let lambdaResponse = new LambdaResponse(that, data, error);
+        lambdaResponse.originalResponse = this; // this is an instance of AWS.Response
+
+        callback(lambdaResponse);
       });
     });
 

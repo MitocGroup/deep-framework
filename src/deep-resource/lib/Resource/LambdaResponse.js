@@ -17,6 +17,8 @@ export class LambdaResponse extends Response {
   constructor(...args) {
     super(...args);
 
+    this._originalResponse = null;
+
     // assure calling the very first!
     this._fillStatusCode();
 
@@ -24,6 +26,21 @@ export class LambdaResponse extends Response {
 
     this._fillData(responsePayload);
     this._fillError(responsePayload);
+  }
+
+  /**
+   * @param {AWS.Response|null} response
+   */
+  set originalResponse(response) {
+    this._originalResponse = response;
+  }
+
+  /**
+   *
+   * @returns {AWS.Response|null}
+   */
+  get originalResponse() {
+    return this._originalResponse;
   }
 
   /**
