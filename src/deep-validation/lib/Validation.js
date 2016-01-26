@@ -80,6 +80,16 @@ export class Validation extends Kernel.ContainerAware {
   }
 
   /**
+   * @todo: find a better way to inject libraries...
+   *
+   * @param {Function} cb
+   * @returns {Object}
+   */
+  schemaFromValidationCb(cb) {
+    return cb(Joi);
+  }
+
+  /**
    * @returns {Object[]}
    */
   get schemas() {

@@ -160,6 +160,11 @@ export class Runtime extends Interface {
    */
   _injectValidationSchema(schema, name = null) {
     let validation = this._kernel.get('validation');
+
+    if (typeof schema === 'function') {
+      schema = validation.schemaFromValidationCb(schema);
+    }
+
     let setSchemaMethod = schema.isJoi ? 'setSchema' : 'setSchemaRaw';
 
     name = name || `DeepHandlerValidation_${new Date().getTime()}`;
