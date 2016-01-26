@@ -53,8 +53,13 @@ class Handler {
   // ... or a Joi object
   // return Joi.object().keys({...});
   
-  // ... or even a model like object
+  // ... or a model like object
   // return {'Name': 'string'};
+  
+  // ... or even a callback that returns both Joi or a mode like object
+  // return (Joi) => {
+  //  return Joi.object().keys({...});
+  //};
  }
 }
 
@@ -111,3 +116,21 @@ The following types are supported:
 - boolean
 - email
 - website
+
+
+Validation Schema Anatomy
+-----------------------
+
+Here's a sample validation schema:
+
+```js
+'use strict';
+
+export default (Joi) => {
+	return Joi.object().keys({
+		Name: Joi.string().alphanum().min(2).max(255).required()
+	});
+};
+```
+
+> You should `export default` any values allowed by the `get validationSchema()` getter in your handler
