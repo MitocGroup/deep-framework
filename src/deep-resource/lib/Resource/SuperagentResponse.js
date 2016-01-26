@@ -22,6 +22,29 @@ export class SuperagentResponse extends Response {
   }
 
   /**
+   * @returns {Object}
+   */
+  get headers() {
+    // rawData in this case is superagent original Response object
+    return this.rawData && this.rawData.headers ? this.rawData.headers : {};
+  }
+
+  /**
+   * @returns {String|null}
+   */
+  get requestId() {
+    if (!this._requestId && this.headers) {
+      if (this.headers[Response.ORIGINAL_REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.ORIGINAL_REQUEST_ID_HEADER.toLowerCase()];
+      } else if (this.headers[Response.REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.REQUEST_ID_HEADER.toLowerCase()];
+      }
+    }
+
+    return this._requestId;
+  }
+
+  /**
    * @private
    */
   _parseLambda() {

@@ -26,6 +26,21 @@ export class Response {
     this._statusCode = null;
     this._data = null;
     this._error = null;
+    this._requestId = null;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ORIGINAL_REQUEST_ID_HEADER() {
+    return 'x-amzn-original-RequestId';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get REQUEST_ID_HEADER() {
+    return 'x-amzn-RequestId';
   }
 
   /**
@@ -68,6 +83,13 @@ export class Response {
    */
   get error() {
     return this._error;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get requestId() {
+    return this._requestId;
   }
 
   /**
