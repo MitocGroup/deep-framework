@@ -44,7 +44,7 @@ export class Validation extends Kernel.ContainerAware {
       return this;
     }
 
-    lambdaRuntime.createError(validationResult.error);
+    lambdaRuntime.createError(validationResult.error).send();
 
     return this;
   }
