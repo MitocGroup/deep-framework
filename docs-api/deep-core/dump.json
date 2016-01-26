@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {Policy} from './Policy';\n\n/**\n * Iam statement action\n */\nexport class Action extends Extractable {\n  /**\n   * @param {String} service\n   * @param {String} actionName\n   */\n  constructor(service = Service.ANY, actionName = Policy.ANY) {\n    super();\n\n    this._service = null;\n    this._action = actionName;\n\n    this.service = service;\n  }\n\n  /**\n   * @param {String} action\n   */\n  set action(action) {\n    this._action = action;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let action = this._action;\n\n    return `${service}:${action}`;\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -32,7 +30,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -67,7 +64,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -85,7 +81,6 @@
     }
   },
   {
-    "__docId__": 4,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -103,7 +98,6 @@
     }
   },
   {
-    "__docId__": 5,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -121,7 +115,6 @@
     }
   },
   {
-    "__docId__": 6,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -151,7 +144,6 @@
     "generator": false
   },
   {
-    "__docId__": 7,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -169,7 +161,6 @@
     }
   },
   {
-    "__docId__": 8,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -201,7 +192,6 @@
     "generator": false
   },
   {
-    "__docId__": 9,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -231,7 +221,6 @@
     "generator": false
   },
   {
-    "__docId__": 10,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -249,7 +238,6 @@
     }
   },
   {
-    "__docId__": 11,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -281,7 +269,6 @@
     "generator": false
   },
   {
-    "__docId__": 12,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -309,7 +296,6 @@
     "generator": false
   },
   {
-    "__docId__": 13,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -322,7 +308,6 @@
     "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\n\n/**\n * Collection of something\n */\nexport class Collection extends Extractable {\n  /**\n   * @param {Object} prototype\n   */\n  constructor(prototype) {\n    super();\n\n    if (prototype.__proto__ !== Extractable) {\n      throw new InvalidArgumentException(prototype, Extractable);\n    }\n\n    this._prototype = prototype;\n    this._vector = [];\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get prototype() {\n    return this._prototype;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {Object}\n   */\n  create(...args) {\n    return new this._prototype(...args);\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {Object}\n   */\n  add(...args) {\n    let instance = args.length === 1 && args[0] instanceof this._prototype\n      ? args[0]\n      : this.create(...args);\n\n    this._vector.push(instance);\n\n    return instance;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  count() {\n    return this._vector.length;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  list() {\n    return this._vector;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  extract() {\n    let vector = [];\n\n    for (let itemKey in this._vector) {\n      if (!this._vector.hasOwnProperty(itemKey)) {\n        continue;\n      }\n\n      let item = this._vector[itemKey];\n\n      vector.push(item.extract());\n    }\n\n    return vector;\n  }\n}\n"
   },
   {
-    "__docId__": 14,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -341,7 +326,6 @@
     ]
   },
   {
-    "__docId__": 15,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -366,7 +350,6 @@
     "generator": false
   },
   {
-    "__docId__": 16,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -384,7 +367,6 @@
     }
   },
   {
-    "__docId__": 17,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -402,7 +384,6 @@
     }
   },
   {
-    "__docId__": 18,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -434,7 +415,6 @@
     "generator": false
   },
   {
-    "__docId__": 19,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -473,7 +453,6 @@
     "generator": false
   },
   {
-    "__docId__": 20,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -512,7 +491,6 @@
     "generator": false
   },
   {
-    "__docId__": 21,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -540,7 +518,6 @@
     "generator": false
   },
   {
-    "__docId__": 22,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -568,7 +545,6 @@
     "generator": false
   },
   {
-    "__docId__": 23,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -596,7 +572,6 @@
     "generator": false
   },
   {
-    "__docId__": 24,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -609,7 +584,6 @@
     "content": "/**\n * Created by AlexanderC on 6/12/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when ARN is invalid\n */\nexport class InvalidArnException extends Exception {\n  /**\n   * @param {String} arn\n   */\n  constructor(arn) {\n    super(`Invalid arn string \"${arn}\".`);\n  }\n}\n\n"
   },
   {
-    "__docId__": 25,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -628,7 +602,6 @@
     ]
   },
   {
-    "__docId__": 26,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -653,7 +626,6 @@
     "generator": false
   },
   {
-    "__docId__": 27,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -666,7 +638,6 @@
     "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\n\n/**\n * Extractable helper\n */\nexport class Extractable extends Interface {\n  constructor() {\n    super(['extract']);\n  }\n}\n"
   },
   {
-    "__docId__": 28,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -685,7 +656,6 @@
     ]
   },
   {
-    "__docId__": 29,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -700,7 +670,6 @@
     "generator": false
   },
   {
-    "__docId__": 30,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -713,7 +682,6 @@
     "content": "/**\n * Created by AlexanderC on 6/2/15.\n */\n\n'use strict';\n\nimport {Resource} from './Resource';\nimport {Collection} from './Collection';\nimport {Action} from './Action';\nimport {Policy} from './Policy';\nimport {Statement} from './Statement';\n\n/**\n *  AWS IAM factory\n */\nexport class Factory {\n  /**\n   * @param {Function|*} Prototype\n   * @param {Array} args\n   * @returns {Object}\n   */\n  static create(Prototype, ...args) {\n    Prototype = Factory._assurePrototype(Prototype);\n\n    return new Prototype(...args);\n  }\n\n  /**\n   * @param {Function|*} Prototype\n   * @returns {Collection}\n   */\n  static createCollection(Prototype) {\n    Prototype = Factory._assurePrototype(Prototype);\n\n    return new Collection(Prototype);\n  }\n\n  /**\n   * @param {Function|*} Prototype\n   * @returns {Function}\n   * @private\n   */\n  static _assurePrototype(Prototype) {\n    if (typeof Prototype === 'string') {\n      Prototype = Factory[Prototype.toUpperCase()];\n    }\n\n    return Prototype;\n  }\n\n  /**\n   * @returns {Policy}\n   * @constructor\n   */\n  static get POLICY() {\n    return Policy;\n  }\n\n  /**\n   * @returns {Action}\n   * @constructor\n   */\n  static get RESOURCE() {\n    return Resource;\n  }\n\n  /**\n   * @returns {Resource}\n   * @constructor\n   */\n  static get ACTION() {\n    return Action;\n  }\n\n  /**\n   * @returns {Statement}\n   * @constructor\n   */\n  static get STATEMENT() {\n    return Statement;\n  }\n}\n"
   },
   {
-    "__docId__": 31,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -729,7 +697,6 @@
     "interface": false
   },
   {
-    "__docId__": 32,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -779,7 +746,6 @@
     "generator": false
   },
   {
-    "__docId__": 33,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -819,7 +785,6 @@
     "generator": false
   },
   {
-    "__docId__": 34,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -859,7 +824,6 @@
     "generator": false
   },
   {
-    "__docId__": 35,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -895,7 +859,6 @@
     "generator": false
   },
   {
-    "__docId__": 36,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -931,7 +894,6 @@
     "generator": false
   },
   {
-    "__docId__": 37,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -967,7 +929,6 @@
     "generator": false
   },
   {
-    "__docId__": 38,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1003,7 +964,6 @@
     "generator": false
   },
   {
-    "__docId__": 39,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1016,7 +976,6 @@
     "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Collection} from './Collection';\nimport {Statement} from './Statement';\n\n/**\n * IAM policy\n */\nexport class Policy extends Extractable {\n  constructor() {\n    super();\n\n    this._version = Policy.DEFAULT_VERSION;\n    this._statement = new Collection(Statement);\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_VERSION() {\n    return '2012-10-17';\n  }\n\n  /**\n   * @param {String} version\n   */\n  set version(version) {\n    this._version = version;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get version() {\n    return this._version;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get statement() {\n    return this._statement;\n  }\n\n  /**\n   * @return {Object}\n   */\n  extract() {\n    return {\n      Version: this._version,\n      Statement: this._statement.extract(),\n    };\n  }\n\n  /**\n   * @return {String}\n   */\n  toString() {\n    return JSON.stringify(this.extract());\n  }\n}\n"
   },
   {
-    "__docId__": 40,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1035,7 +994,6 @@
     ]
   },
   {
-    "__docId__": 41,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1050,7 +1008,6 @@
     "generator": false
   },
   {
-    "__docId__": 42,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1068,7 +1025,6 @@
     }
   },
   {
-    "__docId__": 43,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1086,7 +1042,6 @@
     }
   },
   {
-    "__docId__": 44,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1118,7 +1073,6 @@
     "generator": false
   },
   {
-    "__docId__": 45,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1150,7 +1104,6 @@
     "generator": false
   },
   {
-    "__docId__": 46,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -1180,7 +1133,6 @@
     "generator": false
   },
   {
-    "__docId__": 47,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1198,7 +1150,6 @@
     }
   },
   {
-    "__docId__": 48,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1230,7 +1181,6 @@
     "generator": false
   },
   {
-    "__docId__": 49,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1262,7 +1212,6 @@
     "generator": false
   },
   {
-    "__docId__": 50,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1284,7 +1233,6 @@
     "generator": false
   },
   {
-    "__docId__": 51,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1306,7 +1254,6 @@
     "generator": false
   },
   {
-    "__docId__": 52,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1319,7 +1266,6 @@
     "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Region} from '../Region';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {InvalidArnException} from './Exception/InvalidArnException';\n\n/**\n * IAM statement resource\n */\nexport class Resource extends Extractable {\n  constructor(service = Service.ANY, region = '', accountId = '', descriptor = '') {\n    super();\n\n    this._service = null;\n    this._region = null;\n    this._accountId = accountId;\n    this._descriptor = descriptor;\n\n    this.service = service;\n    this.region = region;\n  }\n\n  /**\n   * @param {String} identifier\n   */\n  set accountId(identifier) {\n    this._accountId = identifier;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get accountId() {\n    return this._accountId;\n  }\n\n  /**\n   * @param {String} descriptor\n   */\n  set descriptor(descriptor) {\n    this._descriptor = descriptor;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get descriptor() {\n    return this._descriptor;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set region(name) {\n    if (!Region.exists(name)) {\n      throw new InvalidArgumentException(name, Region);\n    }\n\n    this._region = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @see - http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\n   *\n   * @param {string} arn\n   * @returns {Resource}\n   */\n  updateFromArn(arn) {\n    let arnParts = arn.split(':');\n\n    if (arnParts.length < 6) {\n      throw new InvalidArnException(arn);\n    }\n\n    this.service = arnParts[2];\n    this.region = arnParts[3];\n    this.accountId = arnParts[4];\n    this.descriptor = arnParts.slice(5).join(':');\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let region = this._region;\n    let accountId = this._accountId;\n    let descriptor = this._descriptor;\n\n    return `arn:aws:${service}:${region}:${accountId}:${descriptor}`;\n  }\n}\n"
   },
   {
-    "__docId__": 53,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1338,7 +1284,6 @@
     ]
   },
   {
-    "__docId__": 54,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1388,7 +1333,6 @@
     "generator": false
   },
   {
-    "__docId__": 55,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1406,7 +1350,6 @@
     }
   },
   {
-    "__docId__": 56,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1424,7 +1367,6 @@
     }
   },
   {
-    "__docId__": 57,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1442,7 +1384,6 @@
     }
   },
   {
-    "__docId__": 58,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1460,7 +1401,6 @@
     }
   },
   {
-    "__docId__": 59,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1478,7 +1418,6 @@
     }
   },
   {
-    "__docId__": 60,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1496,7 +1435,6 @@
     }
   },
   {
-    "__docId__": 61,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -1526,7 +1464,6 @@
     "generator": false
   },
   {
-    "__docId__": 62,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1544,7 +1481,6 @@
     }
   },
   {
-    "__docId__": 63,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1576,7 +1512,6 @@
     "generator": false
   },
   {
-    "__docId__": 64,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -1606,7 +1541,6 @@
     "generator": false
   },
   {
-    "__docId__": 65,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1624,7 +1558,6 @@
     }
   },
   {
-    "__docId__": 66,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1656,7 +1589,6 @@
     "generator": false
   },
   {
-    "__docId__": 67,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -1686,7 +1618,6 @@
     "generator": false
   },
   {
-    "__docId__": 68,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1704,7 +1635,6 @@
     }
   },
   {
-    "__docId__": 69,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1736,7 +1666,6 @@
     "generator": false
   },
   {
-    "__docId__": 70,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -1766,7 +1695,6 @@
     "generator": false
   },
   {
-    "__docId__": 71,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1784,7 +1712,6 @@
     }
   },
   {
-    "__docId__": 72,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1816,7 +1743,6 @@
     "generator": false
   },
   {
-    "__docId__": 73,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1858,7 +1784,6 @@
     "generator": false
   },
   {
-    "__docId__": 74,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1876,7 +1801,6 @@
     }
   },
   {
-    "__docId__": 75,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1894,7 +1818,6 @@
     }
   },
   {
-    "__docId__": 76,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1912,7 +1835,6 @@
     }
   },
   {
-    "__docId__": 77,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1930,7 +1852,6 @@
     }
   },
   {
-    "__docId__": 78,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1958,7 +1879,6 @@
     "generator": false
   },
   {
-    "__docId__": 79,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1971,7 +1891,6 @@
     "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Resource} from './Resource';\nimport {Collection} from './Collection';\nimport {Action} from './Action';\nimport {Policy} from './Policy';\nimport {Extractable} from './Extractable';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\n\n/**\n * IAM policy statement\n */\nexport class Statement extends Extractable {\n  constructor() {\n    super();\n\n    this._effect = Statement.ALLOW;\n    this._action = new Collection(Action);\n    this._notAction = new Collection(Action);\n    this._resource = new Collection(Resource);\n    this._notResource = new Collection(Resource);\n    this._condition = null;\n    this._principal = null;\n  }\n\n  /**\n   * @param {String} effect\n   */\n  set effect(effect) {\n    if ([Statement.ALLOW, Statement.DENY].indexOf(effect) === -1) {\n      throw new InvalidArgumentException(effect, '[Statement.ALLOW, Statement.DENY]');\n    }\n\n    this._effect = effect;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get effect() {\n    return this._effect;\n  }\n\n  /**\n   * @param {Object} condition\n   */\n  set condition(condition) {\n    this._condition = condition;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get condition() {\n    return this._condition;\n  }\n\n  /**\n   * @param {*} principal\n   */\n  set principal(principal) {\n    this._principal = principal;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get principal() {\n    return this._principal;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get notResource() {\n    return this._notResource;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get resource() {\n    return this._resource;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get notAction() {\n    return this._notAction;\n  }\n\n  /**\n   * @returns {Collection}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ALLOW() {\n    return 'Allow';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DENY() {\n    return 'Deny';\n  }\n\n  /**\n   * @returns {Object}\n   */\n  extract() {\n    let actions = this._action.count() > 0 ? this._action.extract() : Policy.ANY;\n    let resources = this._resource.count() > 0 ? this._resource.extract() : null;\n\n    let statement = {\n      Effect: this._effect,\n      Action: actions,\n    };\n\n    if (resources !== null) {\n      statement.Resource = resources;\n    }\n\n    if (this._condition !== null && this._condition instanceof Object) {\n      statement.Condition = this._condition;\n    }\n\n    // @todo - create separate class for Principal\n    if (this._principal != null) {\n      statement.Principal = this._principal;\n    }\n\n    if (this._notAction.count() > 0) {\n      statement.NotAction = this._notAction.extract();\n    }\n\n    if (this._notResource.count() > 0) {\n      statement.NotResource = this._notResource.extract();\n    }\n\n    return statement;\n  }\n}\n"
   },
   {
-    "__docId__": 80,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1990,7 +1909,6 @@
     ]
   },
   {
-    "__docId__": 81,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2005,7 +1923,6 @@
     "generator": false
   },
   {
-    "__docId__": 82,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2023,7 +1940,6 @@
     }
   },
   {
-    "__docId__": 83,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2041,7 +1957,6 @@
     }
   },
   {
-    "__docId__": 84,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2059,7 +1974,6 @@
     }
   },
   {
-    "__docId__": 85,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2077,7 +1991,6 @@
     }
   },
   {
-    "__docId__": 86,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2095,7 +2008,6 @@
     }
   },
   {
-    "__docId__": 87,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2113,7 +2025,6 @@
     }
   },
   {
-    "__docId__": 88,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2131,7 +2042,6 @@
     }
   },
   {
-    "__docId__": 89,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2161,7 +2071,6 @@
     "generator": false
   },
   {
-    "__docId__": 90,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2179,7 +2088,6 @@
     }
   },
   {
-    "__docId__": 91,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2211,7 +2119,6 @@
     "generator": false
   },
   {
-    "__docId__": 92,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2241,7 +2148,6 @@
     "generator": false
   },
   {
-    "__docId__": 93,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2259,7 +2165,6 @@
     }
   },
   {
-    "__docId__": 94,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2291,7 +2196,6 @@
     "generator": false
   },
   {
-    "__docId__": 95,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2321,7 +2225,6 @@
     "generator": false
   },
   {
-    "__docId__": 96,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2339,7 +2242,6 @@
     }
   },
   {
-    "__docId__": 97,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2371,7 +2273,6 @@
     "generator": false
   },
   {
-    "__docId__": 98,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2403,7 +2304,6 @@
     "generator": false
   },
   {
-    "__docId__": 99,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2435,7 +2335,6 @@
     "generator": false
   },
   {
-    "__docId__": 100,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2467,7 +2366,6 @@
     "generator": false
   },
   {
-    "__docId__": 101,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2499,7 +2397,6 @@
     "generator": false
   },
   {
-    "__docId__": 102,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2531,7 +2428,6 @@
     "generator": false
   },
   {
-    "__docId__": 103,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2563,7 +2459,6 @@
     "generator": false
   },
   {
-    "__docId__": 104,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2591,7 +2486,6 @@
     "generator": false
   },
   {
-    "__docId__": 105,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2604,7 +2498,6 @@
     "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nexport class Context {\n  /**\n   * @param {Object} options\n   */\n  constructor(options) {\n    this._options = options;\n\n    this._registerDataAsOptions();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get options() {\n    return this._options;\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsOptions() {\n    for (let key in this._options) {\n      if (!this._options.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._options[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_options', {\n      configurable: false,\n    });\n  }\n\n  /**\n   * @param {String} option\n   * @returns {boolean}\n   */\n  has(option) {\n    return this._options.hasOwnProperty(option);\n  }\n\n  /**\n   * @param {String} option\n   * @param {*} defaultValue\n   * @returns {*}\n   */\n  getOption(option, defaultValue = undefined) {\n    return this._options.hasOwnProperty(option) ? this._options[option] : defaultValue;\n  }\n}\n"
   },
   {
-    "__docId__": 106,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2621,7 +2514,6 @@
     "interface": false
   },
   {
-    "__docId__": 107,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2646,7 +2538,6 @@
     "generator": false
   },
   {
-    "__docId__": 108,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2664,7 +2555,6 @@
     }
   },
   {
-    "__docId__": 109,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2696,7 +2586,6 @@
     "generator": false
   },
   {
-    "__docId__": 110,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2710,7 +2599,6 @@
     "generator": false
   },
   {
-    "__docId__": 111,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2749,7 +2637,6 @@
     "generator": false
   },
   {
-    "__docId__": 112,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2798,7 +2685,6 @@
     "generator": false
   },
   {
-    "__docId__": 113,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2808,10 +2694,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\n/**\n * Error response sent to the lambda context\n */\nexport class ErrorResponse extends Response {\n  /**\n   * @param {Runtime} runtime\n   * @param {Error|String|*} error\n   */\n  constructor(runtime, error) {\n    super(runtime, ErrorResponse.createErrorObject(error));\n  }\n\n  /**\n   * @param {Error|String|*} error\n   * @returns {Object}\n   */\n  static createErrorObject(error) {\n    let errorObj = {};\n\n    if (error instanceof Error) {\n      errorObj = {\n        errorType: error.name,\n        errorMessage: error.message,\n        errorStack: error.stack || (new Error(error.message)).stack,\n      };\n    } else {\n      let plainError = (error || 'Unexpected error occurred.').toString();\n\n      errorObj = {\n        errorType: 'Error',\n        errorMessage: plainError,\n        errorStack: (new Error(plainError)).stack,\n      };\n    }\n\n    return errorObj;\n  }\n\n  /**\n   *\n   * @returns {Object}\n   * @private\n   */\n  get data() {\n    return JSON.stringify(this._data);\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get contextMethod() {\n    return 'fail';\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\n/**\n * Error response sent to the lambda context\n */\nexport class ErrorResponse extends Response {\n  /**\n   * @param {Runtime} runtime\n   * @param {Error|String|*} error\n   */\n  constructor(runtime, error) {\n    super(runtime, ErrorResponse.createErrorObject(error));\n  }\n\n  /**\n   * @param {Error|String|*} error\n   * @returns {Object}\n   */\n  static createErrorObject(error) {\n    let errorObj = {};\n\n    if (error.isJoi) { // we suppose it's a joi validation error\n      errorObj = {\n        errorType: error.name,\n        errorMessage: error.annotate(),\n        errorStack: error.stack || (new Error(error.message)).stack,\n        validationErrors: error.details,\n      };\n    } else if (error instanceof Error) {\n      errorObj = {\n        errorType: error.name,\n        errorMessage: error.message,\n        errorStack: error.stack || (new Error(error.message)).stack,\n      };\n    } else {\n      let plainError = (error || 'Unexpected error occurred.').toString();\n\n      errorObj = {\n        errorType: 'Error',\n        errorMessage: plainError,\n        errorStack: (new Error(plainError)).stack,\n      };\n    }\n\n    return errorObj;\n  }\n\n  /**\n   *\n   * @returns {Object}\n   * @private\n   */\n  get data() {\n    return JSON.stringify(this._data);\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get contextMethod() {\n    return 'fail';\n  }\n}\n"
   },
   {
-    "__docId__": 114,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2830,7 +2715,6 @@
     ]
   },
   {
-    "__docId__": 115,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2867,7 +2751,6 @@
     "generator": false
   },
   {
-    "__docId__": 116,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2908,7 +2791,6 @@
     "generator": false
   },
   {
-    "__docId__": 117,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2917,7 +2799,7 @@
     "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse#data",
     "access": "private",
     "description": "",
-    "lineNumber": 52,
+    "lineNumber": 59,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2940,7 +2822,6 @@
     "generator": false
   },
   {
-    "__docId__": 118,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2949,7 +2830,7 @@
     "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.contextMethod",
     "access": null,
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 66,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2972,7 +2853,6 @@
     "generator": false
   },
   {
-    "__docId__": 119,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2985,7 +2865,6 @@
     "content": "/**\n * Created by AlexanderC on 6/12/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\nexport class ContextAlreadySentException extends Exception {\n  constructor() {\n    super('The Lambda context have been already sent');\n  }\n}\n"
   },
   {
-    "__docId__": 120,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3005,7 +2884,6 @@
     ]
   },
   {
-    "__docId__": 121,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3020,7 +2898,6 @@
     "generator": false
   },
   {
-    "__docId__": 122,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3033,7 +2910,6 @@
     "content": "/**\n * Created by mgoria on 10/31/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when context identity pool id does not much identity pool id from security service\n */\nexport class InvalidCognitoIdentityException extends Exception {\n  /**\n   * @param {String} identityPoolId\n   */\n  constructor(identityPoolId) {\n    super(`Invalid cognito identity pool \"${identityPoolId}\".`);\n  }\n}\n"
   },
   {
-    "__docId__": 123,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3052,7 +2928,6 @@
     ]
   },
   {
-    "__docId__": 124,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3077,7 +2952,6 @@
     "generator": false
   },
   {
-    "__docId__": 125,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3090,7 +2964,6 @@
     "content": "/**\n * Created by AlexanderC on 6/12/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when missing runtime lambda context\n */\nexport class MissingRuntimeContextException extends Exception {\n  constructor() {\n    super('Missing Lambda runtime context');\n  }\n}\n"
   },
   {
-    "__docId__": 126,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3109,7 +2982,6 @@
     ]
   },
   {
-    "__docId__": 127,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3124,7 +2996,6 @@
     "generator": false
   },
   {
-    "__docId__": 128,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3137,7 +3008,6 @@
     "content": "/**\n * Created by mgoria on 10/31/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\nexport class MissingUserContextException extends Exception {\n  constructor() {\n    super('Missing user context in the Lambda runtime');\n  }\n}\n"
   },
   {
-    "__docId__": 129,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3157,7 +3027,6 @@
     ]
   },
   {
-    "__docId__": 130,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3172,7 +3041,6 @@
     "generator": false
   },
   {
-    "__docId__": 131,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3185,7 +3053,6 @@
     "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport qs from 'qs';\n\n/**\n * Request received by the lambda context\n */\nexport class Request {\n  /**\n   * @param {*} data\n   */\n  constructor(data = {}) {\n    this._data = !Array.isArray(data) ? qs.parse(data) : data;\n\n    this._registerDataAsParams();\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsParams() {\n    for (let key in this._data) {\n      if (!this._data.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._data[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_data', {\n      configurable: false,\n    });\n  }\n\n  /**\n   * @returns {*}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @param {String} name\n   * @param {String|Object|null} defaultValue\n   *\n   * @returns {String|Object|null}\n   */\n  getParam(name, defaultValue = undefined) {\n    return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;\n  }\n}\n"
   },
   {
-    "__docId__": 132,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3201,7 +3068,6 @@
     "interface": false
   },
   {
-    "__docId__": 133,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3226,7 +3092,6 @@
     "generator": false
   },
   {
-    "__docId__": 134,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3244,7 +3109,6 @@
     }
   },
   {
-    "__docId__": 135,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3258,7 +3122,6 @@
     "generator": false
   },
   {
-    "__docId__": 136,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3290,7 +3153,6 @@
     "generator": false
   },
   {
-    "__docId__": 137,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3343,7 +3205,6 @@
     "generator": false
   },
   {
-    "__docId__": 138,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3356,7 +3217,6 @@
     "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {MissingRuntimeContextException} from './Exception/MissingRuntimeContextException';\nimport {ContextAlreadySentException} from './Exception/ContextAlreadySentException';\n\n/**\n * Response sent to the lambda context\n */\nexport class Response {\n  /**\n   * @param {Runtime} runtime\n   * @param {Object} data\n   */\n  constructor(runtime, data) {\n    this._data = data;\n    this._runtime = runtime;\n  }\n\n  /**\n   * @returns {Runtime}\n   */\n  get runtime() {\n    return this._runtime;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._runtime.contextSent;\n  }\n\n  /**\n   * @returns {Response}\n   */\n  send() {\n    if (!this._runtime.context) {\n      throw new MissingRuntimeContextException();\n    } else if (this.contextSent) {\n      throw new ContextAlreadySentException();\n    }\n\n    // @todo: via setter?\n    this._runtime._contextSent = true;\n\n    this._runtime.context[this.constructor.contextMethod](this.data);\n\n    return this;\n  }\n\n  /**\n   *\n   * @returns {Object}\n   * @private\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get rawData() {\n    return this._data;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get contextMethod() {\n    return 'succeed';\n  }\n}\n"
   },
   {
-    "__docId__": 139,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3372,7 +3232,6 @@
     "interface": false
   },
   {
-    "__docId__": 140,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3407,7 +3266,6 @@
     "generator": false
   },
   {
-    "__docId__": 141,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3425,7 +3283,6 @@
     }
   },
   {
-    "__docId__": 142,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3443,7 +3300,6 @@
     }
   },
   {
-    "__docId__": 143,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3475,7 +3331,6 @@
     "generator": false
   },
   {
-    "__docId__": 144,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3507,7 +3362,6 @@
     "generator": false
   },
   {
-    "__docId__": 145,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3535,7 +3389,6 @@
     "generator": false
   },
   {
-    "__docId__": 146,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3567,7 +3420,6 @@
     "generator": false
   },
   {
-    "__docId__": 147,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3599,7 +3451,6 @@
     "generator": false
   },
   {
-    "__docId__": 148,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3631,7 +3482,6 @@
     "generator": false
   },
   {
-    "__docId__": 149,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3641,10 +3491,9 @@
     "access": null,
     "description": null,
     "lineNumber": 4,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {ErrorResponse} from './ErrorResponse';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\nimport {Context} from './Context';\nimport domain from 'domain';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n    this._contextSent = false;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {null|Context}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._contextSent;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {Object} event\n   * @param {Object} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = new Context(context);\n    this._request = new Request(event);\n\n    let execDomain = domain.create();\n\n    execDomain.on('error', (error) => {\n      this.createError(error).send();\n    });\n\n    execDomain.run(() => {\n      this._fillUserContext();\n\n      if (!this._loggedUserId && this._forceUserIdentity) {\n        throw new MissingUserContextException();\n      }\n\n      this.handle(this._request);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String|Error|*} error\n   */\n  createError(error) {\n    return new ErrorResponse(this, error);\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    return new Response(this, data);\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.has('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      // inject lambda context into security service\n      // and instantiate security token without loading credentials\n      this.securityService.warmupBackendLogin(this._context);\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {ErrorResponse} from './ErrorResponse';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\nimport {Context} from './Context';\nimport {Sandbox} from '../../Runtime/Sandbox';\nimport path from 'path';\nimport fs from 'fs';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n    this._contextSent = false;\n\n    this._calleeConfig = null;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {null|Context}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._contextSent;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {String} schemaName\n   * @param {Function} cb\n   * @returns {Runtime}\n   */\n  validateInput(schemaName, cb) {\n    let validation = this._kernel.get('validation');\n\n    validation.validateRuntimeInput(this, schemaName, cb);\n\n    return this;\n  }\n\n  /**\n   * @param {Object} event\n   * @param {Object} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = new Context(context);\n    this._request = new Request(event);\n\n    new Sandbox(() => {\n      this._fillUserContext();\n\n      if (!this._loggedUserId && this._forceUserIdentity) {\n        throw new MissingUserContextException();\n      }\n\n      let validationSchema = this.validationSchema;\n\n      if (validationSchema) {\n        this._runValidate(validationSchema);\n      } else {\n        this.handle(this._request);\n      }\n    })\n      .fail((error) => {\n        this.createError(error).send();\n      })\n      .run();\n\n    return this;\n  }\n\n  /**\n   * @param {String} validationSchema\n   * @private\n   */\n  _runValidate(validationSchema) {\n    let validation = this._kernel.get('validation');\n    let validationSchemaName = validationSchema;\n\n    if (typeof validationSchema !== 'string') {\n      validationSchemaName = this._injectValidationSchema(validationSchema);\n    } else if (!validation.hasSchema(validationSchemaName)) {\n\n      // assume process.cwd() === /var/task\n      let schemasPath = path.join(process.cwd(), Runtime.VALIDATION_SCHEMAS_DIR);\n      let schemaFile = path.join(schemasPath, `${validationSchemaName}.js`);\n\n      if (fs.existsSync(schemaFile)) {\n        this._injectValidationSchema(require(schemaFile), validationSchemaName);\n      }\n    }\n\n    this.validateInput(validationSchemaName, this.handle);\n  }\n\n  /**\n   * @param {Object} schema\n   * @param {String|null} name\n   * @returns {String}\n   * @private\n   */\n  _injectValidationSchema(schema, name = null) {\n    let validation = this._kernel.get('validation');\n\n    if (typeof schema === 'function') {\n      schema = validation.schemaFromValidationCb(schema);\n    }\n\n    let setSchemaMethod = schema.isJoi ? 'setSchema' : 'setSchemaRaw';\n\n    name = name || `DeepHandlerValidation_${new Date().getTime()}`;\n\n    validation[setSchemaMethod](name, schema);\n\n    return name;\n  }\n\n  /**\n   * @param {String|Error|*} error\n   */\n  createError(error) {\n    return new ErrorResponse(this, error);\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    return new Response(this, data);\n  }\n\n  /**\n   * @returns {null|Object}\n   */\n  get calleeConfig() {\n    if (!this._calleeConfig &&\n      this._context &&\n      this._kernel &&\n      this._context.has('invokedFunctionArn')) {\n\n      let resource = this._kernel.get('resource');\n      let calleeArn = this._context.getOption('invokedFunctionArn');\n\n      this._calleeConfig = resource.getActionConfig(calleeArn);\n    }\n\n    return this._calleeConfig;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get validationSchema() {\n    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.has('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      // inject lambda context into security service\n      // and instantiate security token without loading credentials\n      this.securityService.warmupBackendLogin(this._context);\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get VALIDATION_SCHEMAS_DIR() {\n    return '__deep_validation_schemas__';\n  }\n}\n"
   },
   {
-    "__docId__": 150,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3656,14 +3505,13 @@
     "importPath": "deep-core/lib/AWS/Lambda/Runtime.js",
     "importStyle": "{Runtime}",
     "description": "Lambda runtime context",
-    "lineNumber": 18,
+    "lineNumber": 20,
     "interface": false,
     "extends": [
       "lib/OOP/Interface~Interface"
     ]
   },
   {
-    "__docId__": 151,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3672,7 +3520,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 24,
     "params": [
       {
         "nullable": null,
@@ -3688,49 +3536,12 @@
     "generator": false
   },
   {
-    "__docId__": 152,
     "kind": "member",
     "static": false,
     "variation": null,
     "name": "_kernel",
     "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_kernel",
-    "access": null,
-    "description": null,
-    "lineNumber": 25,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 153,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_request",
-    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
-    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_request",
-    "access": null,
-    "description": null,
-    "lineNumber": 26,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 154,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_context",
-    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
-    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_context",
     "access": null,
     "description": null,
     "lineNumber": 27,
@@ -3742,13 +3553,29 @@
     }
   },
   {
-    "__docId__": 155,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_loggedUserId",
+    "name": "_request",
     "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
-    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_request",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_context",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_context",
     "access": null,
     "description": null,
     "lineNumber": 29,
@@ -3760,7 +3587,23 @@
     }
   },
   {
-    "__docId__": 156,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_loggedUserId",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3769,7 +3612,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_forceUserIdentity",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
@@ -3778,7 +3621,6 @@
     }
   },
   {
-    "__docId__": 157,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3787,7 +3629,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_contextSent",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -3796,7 +3638,23 @@
     }
   },
   {
-    "__docId__": 158,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_calleeConfig",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_calleeConfig",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3805,7 +3663,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#context",
     "access": null,
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 43,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3829,7 +3687,6 @@
     "generator": false
   },
   {
-    "__docId__": 159,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3838,7 +3695,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#contextSent",
     "access": null,
     "description": null,
-    "lineNumber": 46,
+    "lineNumber": 50,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3861,7 +3718,6 @@
     "generator": false
   },
   {
-    "__docId__": 160,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3870,7 +3726,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#loggedUserId",
     "access": null,
     "description": null,
-    "lineNumber": 53,
+    "lineNumber": 57,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3893,7 +3749,6 @@
     "generator": false
   },
   {
-    "__docId__": 161,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3902,7 +3757,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#forceUserIdentity",
     "access": null,
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 64,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3925,7 +3780,6 @@
     "generator": false
   },
   {
-    "__docId__": 162,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3934,7 +3788,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#kernel",
     "access": null,
     "description": null,
-    "lineNumber": 67,
+    "lineNumber": 71,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3957,7 +3811,6 @@
     "generator": false
   },
   {
-    "__docId__": 163,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3966,7 +3819,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#lambda",
     "access": null,
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 78,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3989,7 +3842,54 @@
     "generator": false
   },
   {
-    "__docId__": 164,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "validateInput",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#validateInput",
+    "access": null,
+    "description": null,
+    "lineNumber": 91,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Runtime}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "schemaName",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Runtime"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3998,7 +3898,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#run",
     "access": null,
     "description": null,
-    "lineNumber": 87,
+    "lineNumber": 104,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4038,7 +3938,6 @@
     "generator": false
   },
   {
-    "__docId__": 165,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4047,7 +3946,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_context",
     "access": null,
     "description": null,
-    "lineNumber": 88,
+    "lineNumber": 105,
     "undocument": true,
     "type": {
       "types": [
@@ -4056,7 +3955,6 @@
     }
   },
   {
-    "__docId__": 166,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4065,7 +3963,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_request",
     "access": null,
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 106,
     "undocument": true,
     "type": {
       "types": [
@@ -4074,7 +3972,79 @@
     }
   },
   {
-    "__docId__": 167,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_runValidate",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_runValidate",
+    "access": "private",
+    "description": null,
+    "lineNumber": 135,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "validationSchema",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_injectValidationSchema",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_injectValidationSchema",
+    "access": "private",
+    "description": null,
+    "lineNumber": 161,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "schema",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String",
+          "null"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "name",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -4083,7 +4053,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createError",
     "access": null,
     "description": null,
-    "lineNumber": 113,
+    "lineNumber": 180,
     "params": [
       {
         "nullable": null,
@@ -4106,7 +4076,6 @@
     "generator": false
   },
   {
-    "__docId__": 168,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -4115,7 +4084,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createResponse",
     "access": null,
     "description": null,
-    "lineNumber": 120,
+    "lineNumber": 187,
     "params": [
       {
         "nullable": null,
@@ -4136,7 +4105,86 @@
     "generator": false
   },
   {
-    "__docId__": 169,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "calleeConfig",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#calleeConfig",
+    "access": null,
+    "description": null,
+    "lineNumber": 194,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{null|Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "null",
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_calleeConfig",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_calleeConfig",
+    "access": null,
+    "description": null,
+    "lineNumber": 203,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "validationSchema",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#validationSchema",
+    "access": null,
+    "description": null,
+    "lineNumber": 212,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4145,7 +4193,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#request",
     "access": null,
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 219,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4168,7 +4216,6 @@
     "generator": false
   },
   {
-    "__docId__": 170,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4177,7 +4224,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#securityService",
     "access": null,
     "description": null,
-    "lineNumber": 134,
+    "lineNumber": 226,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4200,7 +4247,6 @@
     "generator": false
   },
   {
-    "__docId__": 171,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -4209,12 +4255,11 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillDenyMissingUserContextOption",
     "access": "private",
     "description": null,
-    "lineNumber": 141,
+    "lineNumber": 233,
     "params": [],
     "generator": false
   },
   {
-    "__docId__": 172,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4223,7 +4268,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_forceUserIdentity",
     "access": null,
     "description": null,
-    "lineNumber": 143,
+    "lineNumber": 235,
     "undocument": true,
     "type": {
       "types": [
@@ -4232,7 +4277,6 @@
     }
   },
   {
-    "__docId__": 173,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -4241,12 +4285,11 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillUserContext",
     "access": "private",
     "description": "Retrieves logged user id from lambda context",
-    "lineNumber": 152,
+    "lineNumber": 244,
     "params": [],
     "generator": false
   },
   {
-    "__docId__": 174,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4255,7 +4298,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
     "access": null,
     "description": null,
-    "lineNumber": 168,
+    "lineNumber": 260,
     "undocument": true,
     "type": {
       "types": [
@@ -4264,7 +4307,37 @@
     }
   },
   {
-    "__docId__": 175,
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "VALIDATION_SCHEMAS_DIR",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime.VALIDATION_SCHEMAS_DIR",
+    "access": null,
+    "description": null,
+    "lineNumber": 267,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -4274,10 +4347,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS regions\n */\nexport class Region {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_TOKYO() {\n    return 'ap-northeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SINGAPORE() {\n    return 'ap-southeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SYDNEY() {\n    return 'ap-southeast-2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_FRANKFURT() {\n    return 'eu-central-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_IRELAND() {\n    return 'eu-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SOUTH_AMERICA_SAO_PAULO() {\n    return 'sa-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_EAST_N_VIRGINIA() {\n    return 'us-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_N_CALIFORNIA() {\n    return 'us-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_OREGON() {\n    return 'us-west-2';\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return name === '' || -1 !== Region.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Region.ANY,\n      Region.ASIA_PACIFIC_TOKYO,\n      Region.ASIA_PACIFIC_SYDNEY,\n      Region.ASIA_PACIFIC_SINGAPORE,\n      Region.EU_FRANKFURT,\n      Region.EU_IRELAND,\n      Region.SOUTH_AMERICA_SAO_PAULO,\n      Region.US_EAST_N_VIRGINIA,\n      Region.US_WEST_N_CALIFORNIA,\n      Region.US_WEST_OREGON,\n    ];\n  }\n\n  /**\n   * List method alias\n   *\n   * @returns {String[]}\n   */\n  static all() {\n    return Region.list();\n  }\n\n  /**\n   * @param {string} defaultRegion\n   * @param {array} availableRegions\n   * @returns {string}\n   */\n  static getAppropriateAwsRegion(defaultRegion, availableRegions) {\n    if (availableRegions.indexOf(defaultRegion) !== -1) {\n      return defaultRegion;\n    }\n\n    let regionContinent = defaultRegion.split('-')[0];\n\n    for (let regionKey in availableRegions) {\n      if (!availableRegions.hasOwnProperty(regionKey)) {\n        continue;\n      }\n\n      let region = availableRegions[regionKey];\n\n      if (region === Region.ANY) {\n        return defaultRegion;\n      }\n\n      if (region.split('-')[0] === regionContinent) {\n        return region;\n      }\n    }\n\n    return availableRegions[0]; // fallback to first available region\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS regions\n */\nexport class Region {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_TOKYO() {\n    return 'ap-northeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SEOUL() {\n    return 'ap-northeast-2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SINGAPORE() {\n    return 'ap-southeast-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASIA_PACIFIC_SYDNEY() {\n    return 'ap-southeast-2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_FRANKFURT() {\n    return 'eu-central-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EU_IRELAND() {\n    return 'eu-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SOUTH_AMERICA_SAO_PAULO() {\n    return 'sa-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_EAST_N_VIRGINIA() {\n    return 'us-east-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_N_CALIFORNIA() {\n    return 'us-west-1';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get US_WEST_OREGON() {\n    return 'us-west-2';\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return name === '' || -1 !== Region.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Region.ANY,\n      Region.ASIA_PACIFIC_TOKYO,\n      Region.ASIA_PACIFIC_SEOUL,\n      Region.ASIA_PACIFIC_SYDNEY,\n      Region.ASIA_PACIFIC_SINGAPORE,\n      Region.EU_FRANKFURT,\n      Region.EU_IRELAND,\n      Region.SOUTH_AMERICA_SAO_PAULO,\n      Region.US_EAST_N_VIRGINIA,\n      Region.US_WEST_N_CALIFORNIA,\n      Region.US_WEST_OREGON,\n    ];\n  }\n\n  /**\n   * List method alias\n   *\n   * @returns {String[]}\n   */\n  static all() {\n    return Region.list();\n  }\n\n  /**\n   * @param {string} defaultRegion\n   * @param {array} availableRegions\n   * @returns {string}\n   */\n  static getAppropriateAwsRegion(defaultRegion, availableRegions) {\n    if (availableRegions.indexOf(defaultRegion) !== -1) {\n      return defaultRegion;\n    }\n\n    let regionContinent = defaultRegion.split('-')[0];\n\n    for (let regionKey in availableRegions) {\n      if (!availableRegions.hasOwnProperty(regionKey)) {\n        continue;\n      }\n\n      let region = availableRegions[regionKey];\n\n      if (region === Region.ANY) {\n        return defaultRegion;\n      }\n\n      if (region.split('-')[0] === regionContinent) {\n        return region;\n      }\n    }\n\n    return availableRegions[0]; // fallback to first available region\n  }\n}\n"
   },
   {
-    "__docId__": 176,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -4293,7 +4365,6 @@
     "interface": false
   },
   {
-    "__docId__": 177,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4325,7 +4396,6 @@
     "generator": false
   },
   {
-    "__docId__": 178,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4357,13 +4427,12 @@
     "generator": false
   },
   {
-    "__docId__": 179,
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "ASIA_PACIFIC_SINGAPORE",
+    "name": "ASIA_PACIFIC_SEOUL",
     "memberof": "lib/AWS/Region.js~Region",
-    "longname": "lib/AWS/Region.js~Region.ASIA_PACIFIC_SINGAPORE",
+    "longname": "lib/AWS/Region.js~Region.ASIA_PACIFIC_SEOUL",
     "access": null,
     "description": null,
     "lineNumber": 28,
@@ -4389,13 +4458,12 @@
     "generator": false
   },
   {
-    "__docId__": 180,
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "ASIA_PACIFIC_SYDNEY",
+    "name": "ASIA_PACIFIC_SINGAPORE",
     "memberof": "lib/AWS/Region.js~Region",
-    "longname": "lib/AWS/Region.js~Region.ASIA_PACIFIC_SYDNEY",
+    "longname": "lib/AWS/Region.js~Region.ASIA_PACIFIC_SINGAPORE",
     "access": null,
     "description": null,
     "lineNumber": 35,
@@ -4421,13 +4489,12 @@
     "generator": false
   },
   {
-    "__docId__": 181,
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "EU_FRANKFURT",
+    "name": "ASIA_PACIFIC_SYDNEY",
     "memberof": "lib/AWS/Region.js~Region",
-    "longname": "lib/AWS/Region.js~Region.EU_FRANKFURT",
+    "longname": "lib/AWS/Region.js~Region.ASIA_PACIFIC_SYDNEY",
     "access": null,
     "description": null,
     "lineNumber": 42,
@@ -4453,13 +4520,12 @@
     "generator": false
   },
   {
-    "__docId__": 182,
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "EU_IRELAND",
+    "name": "EU_FRANKFURT",
     "memberof": "lib/AWS/Region.js~Region",
-    "longname": "lib/AWS/Region.js~Region.EU_IRELAND",
+    "longname": "lib/AWS/Region.js~Region.EU_FRANKFURT",
     "access": null,
     "description": null,
     "lineNumber": 49,
@@ -4485,13 +4551,12 @@
     "generator": false
   },
   {
-    "__docId__": 183,
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "SOUTH_AMERICA_SAO_PAULO",
+    "name": "EU_IRELAND",
     "memberof": "lib/AWS/Region.js~Region",
-    "longname": "lib/AWS/Region.js~Region.SOUTH_AMERICA_SAO_PAULO",
+    "longname": "lib/AWS/Region.js~Region.EU_IRELAND",
     "access": null,
     "description": null,
     "lineNumber": 56,
@@ -4517,13 +4582,12 @@
     "generator": false
   },
   {
-    "__docId__": 184,
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "US_EAST_N_VIRGINIA",
+    "name": "SOUTH_AMERICA_SAO_PAULO",
     "memberof": "lib/AWS/Region.js~Region",
-    "longname": "lib/AWS/Region.js~Region.US_EAST_N_VIRGINIA",
+    "longname": "lib/AWS/Region.js~Region.SOUTH_AMERICA_SAO_PAULO",
     "access": null,
     "description": null,
     "lineNumber": 63,
@@ -4549,13 +4613,12 @@
     "generator": false
   },
   {
-    "__docId__": 185,
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "US_WEST_N_CALIFORNIA",
+    "name": "US_EAST_N_VIRGINIA",
     "memberof": "lib/AWS/Region.js~Region",
-    "longname": "lib/AWS/Region.js~Region.US_WEST_N_CALIFORNIA",
+    "longname": "lib/AWS/Region.js~Region.US_EAST_N_VIRGINIA",
     "access": null,
     "description": null,
     "lineNumber": 70,
@@ -4581,13 +4644,12 @@
     "generator": false
   },
   {
-    "__docId__": 186,
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "US_WEST_OREGON",
+    "name": "US_WEST_N_CALIFORNIA",
     "memberof": "lib/AWS/Region.js~Region",
-    "longname": "lib/AWS/Region.js~Region.US_WEST_OREGON",
+    "longname": "lib/AWS/Region.js~Region.US_WEST_N_CALIFORNIA",
     "access": null,
     "description": null,
     "lineNumber": 77,
@@ -4613,7 +4675,37 @@
     "generator": false
   },
   {
-    "__docId__": 187,
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "US_WEST_OREGON",
+    "memberof": "lib/AWS/Region.js~Region",
+    "longname": "lib/AWS/Region.js~Region.US_WEST_OREGON",
+    "access": null,
+    "description": null,
+    "lineNumber": 84,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": true,
     "variation": null,
@@ -4622,7 +4714,7 @@
     "longname": "lib/AWS/Region.js~Region.exists",
     "access": null,
     "description": null,
-    "lineNumber": 85,
+    "lineNumber": 92,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4652,7 +4744,6 @@
     "generator": false
   },
   {
-    "__docId__": 188,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -4661,7 +4752,7 @@
     "longname": "lib/AWS/Region.js~Region.list",
     "access": null,
     "description": null,
-    "lineNumber": 92,
+    "lineNumber": 99,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4680,7 +4771,6 @@
     "generator": false
   },
   {
-    "__docId__": 189,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -4689,7 +4779,7 @@
     "longname": "lib/AWS/Region.js~Region.all",
     "access": null,
     "description": "List method alias",
-    "lineNumber": 112,
+    "lineNumber": 120,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4708,7 +4798,6 @@
     "generator": false
   },
   {
-    "__docId__": 190,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -4717,7 +4806,7 @@
     "longname": "lib/AWS/Region.js~Region.getAppropriateAwsRegion",
     "access": null,
     "description": null,
-    "lineNumber": 121,
+    "lineNumber": 129,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4757,7 +4846,6 @@
     "generator": false
   },
   {
-    "__docId__": 191,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -4767,10 +4855,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_SEARCH() {\n    return 'cloudsearch';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY_EXECUTE() {\n    return 'execute-api';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.ANY,\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n      Service.API_GATEWAY_EXECUTE,\n      Service.CLOUD_SEARCH,\n    ];\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_SEARCH() {\n    return 'cloudsearch';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY_EXECUTE() {\n    return 'execute-api';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_QUEUE_SERVICE() {\n    return 'sqs';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.ANY,\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n      Service.API_GATEWAY_EXECUTE,\n      Service.CLOUD_SEARCH,\n      Service.SIMPLE_QUEUE_SERVICE,\n    ];\n  }\n}\n"
   },
   {
-    "__docId__": 192,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -4786,7 +4873,6 @@
     "interface": false
   },
   {
-    "__docId__": 193,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4818,7 +4904,6 @@
     "generator": false
   },
   {
-    "__docId__": 194,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4850,7 +4935,6 @@
     "generator": false
   },
   {
-    "__docId__": 195,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4882,7 +4966,6 @@
     "generator": false
   },
   {
-    "__docId__": 196,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4914,7 +4997,6 @@
     "generator": false
   },
   {
-    "__docId__": 197,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4946,7 +5028,6 @@
     "generator": false
   },
   {
-    "__docId__": 198,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4978,7 +5059,6 @@
     "generator": false
   },
   {
-    "__docId__": 199,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5010,7 +5090,6 @@
     "generator": false
   },
   {
-    "__docId__": 200,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5042,7 +5121,6 @@
     "generator": false
   },
   {
-    "__docId__": 201,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5074,7 +5152,6 @@
     "generator": false
   },
   {
-    "__docId__": 202,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5106,7 +5183,6 @@
     "generator": false
   },
   {
-    "__docId__": 203,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5138,7 +5214,6 @@
     "generator": false
   },
   {
-    "__docId__": 204,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5170,7 +5245,6 @@
     "generator": false
   },
   {
-    "__docId__": 205,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5202,7 +5276,6 @@
     "generator": false
   },
   {
-    "__docId__": 206,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5234,7 +5307,6 @@
     "generator": false
   },
   {
-    "__docId__": 207,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5266,7 +5338,6 @@
     "generator": false
   },
   {
-    "__docId__": 208,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -5298,7 +5369,37 @@
     "generator": false
   },
   {
-    "__docId__": 209,
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "SIMPLE_QUEUE_SERVICE",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.SIMPLE_QUEUE_SERVICE",
+    "access": null,
+    "description": null,
+    "lineNumber": 126,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": true,
     "variation": null,
@@ -5307,7 +5408,7 @@
     "longname": "lib/AWS/Service.js~Service.identifier",
     "access": null,
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 134,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5337,7 +5438,6 @@
     "generator": false
   },
   {
-    "__docId__": 210,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -5346,7 +5446,7 @@
     "longname": "lib/AWS/Service.js~Service.exists",
     "access": null,
     "description": null,
-    "lineNumber": 135,
+    "lineNumber": 142,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5376,7 +5476,6 @@
     "generator": false
   },
   {
-    "__docId__": 211,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -5385,7 +5484,7 @@
     "longname": "lib/AWS/Service.js~Service.list",
     "access": null,
     "description": null,
-    "lineNumber": 142,
+    "lineNumber": 149,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5404,7 +5503,6 @@
     "generator": false
   },
   {
-    "__docId__": 212,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5417,7 +5515,6 @@
     "content": "'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when operation on the database failed\n */\nexport class DatabaseOperationException extends Exception {\n\n  /**\n   * @param {String} error\n   */\n  constructor(error) {\n    super(`Database operation failed. ${error}`);\n  }\n}\n"
   },
   {
-    "__docId__": 213,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -5436,7 +5533,6 @@
     ]
   },
   {
-    "__docId__": 214,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -5461,7 +5557,6 @@
     "generator": false
   },
   {
-    "__docId__": 215,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5474,7 +5569,6 @@
     "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\n/**\n * Base exception\n */\nexport class Exception extends Error {\n  /**\n   * @param {String} message\n   */\n  constructor(message) {\n    super();\n\n    if (Error.hasOwnProperty('captureStackTrace')) {\n      Error.captureStackTrace(this, this.constructor);\n    } else {\n      Object.defineProperty(this, 'stack', {\n        value: (new Error()).stack,\n      });\n    }\n\n    Object.defineProperty(this, 'message', {\n      value: message,\n    });\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this.constructor.name;\n  }\n}\n"
   },
   {
-    "__docId__": 216,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -5493,7 +5587,6 @@
     ]
   },
   {
-    "__docId__": 217,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -5518,7 +5611,6 @@
     "generator": false
   },
   {
-    "__docId__": 218,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -5550,7 +5642,6 @@
     "generator": false
   },
   {
-    "__docId__": 219,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5563,7 +5654,6 @@
     "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when invalid argument provided\n */\nexport class InvalidArgumentException extends Exception {\n  /**\n   * @param {*} argument\n   * @param {String} meantType\n   */\n  constructor(argument, meantType) {\n    let argumentType = typeof argument;\n\n    super(`Invalid argument ${argument} of type ${argumentType} provided (meant ${meantType}).`);\n  }\n}\n"
   },
   {
-    "__docId__": 220,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -5582,7 +5672,6 @@
     ]
   },
   {
-    "__docId__": 221,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -5617,7 +5706,6 @@
     "generator": false
   },
   {
-    "__docId__": 222,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5630,7 +5718,6 @@
     "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\nimport {InvalidArgumentException} from './InvalidArgumentException';\n\n/**\n * Thrown when methods from interface or abstract class are not implemented\n */\nexport class MethodsNotImplementedException extends Exception {\n  /**\n   * @param {Array} methods\n   */\n  constructor(methods) {\n    if (!Array.isArray(methods)) {\n      throw new InvalidArgumentException(methods, 'Array');\n    }\n\n    let methodPlain = methods.join(', ');\n\n    super(`One or more method are not implemented (${methodPlain}).`);\n  }\n}\n"
   },
   {
-    "__docId__": 223,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -5649,7 +5736,6 @@
     ]
   },
   {
-    "__docId__": 224,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -5674,7 +5760,6 @@
     "generator": false
   },
   {
-    "__docId__": 225,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5687,7 +5772,6 @@
     "content": "/**\n * Created by AlexanderC on 11/10/15.\n */\n\n'use strict';\n\n\nexport class MethodsProxy {\n  /**\n   * @param {Object} target\n   */\n  constructor(target) {\n    this._target = target;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get target() {\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   */\n  proxyOverride(handler, ...explMethods) {\n    let methods = Object.keys(handler).concat(explMethods);\n\n    for (let i in methods) {\n      if (!methods.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let prop = methods[i];\n\n      if (!handler.hasOwnProperty(prop) &&\n        explMethods.indexOf(prop) === -1) {\n        continue;\n      }\n\n      if (typeof handler[prop] === 'function') {\n        Object.defineProperty(\n          this._target,\n          prop,\n          {\n            value: (...args) => {\n              return handler[prop](...args);\n            },\n          }\n        );\n      }\n    }\n\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   *\n   * @todo Replace typeof hook with hasOwnProperty() when get rid of babel\n   */\n  proxy(handler, ...explMethods) {\n    return this.proxyOverride(\n      handler,\n      ...(explMethods.filter((prop) => typeof this._target[prop] === 'undefined'))\n    );\n  }\n}\n"
   },
   {
-    "__docId__": 226,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -5704,7 +5788,6 @@
     "interface": false
   },
   {
-    "__docId__": 227,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -5729,7 +5812,6 @@
     "generator": false
   },
   {
-    "__docId__": 228,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5747,7 +5829,6 @@
     }
   },
   {
-    "__docId__": 229,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -5779,7 +5860,6 @@
     "generator": false
   },
   {
-    "__docId__": 230,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5829,7 +5909,6 @@
     "generator": false
   },
   {
-    "__docId__": 231,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5882,7 +5961,6 @@
     "generator": false
   },
   {
-    "__docId__": 232,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5895,7 +5973,6 @@
     "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Simple object storage implementation\n */\nexport class ObjectStorage {\n  /**\n   * @param {Array} objects\n   */\n  constructor(...objects) {\n    if (objects.length === 1 && objects[0] instanceof Array) {\n      objects = objects[0];\n    }\n\n    this._vector = objects;\n  }\n\n  /**\n   * @param {*} object\n   * @returns {ObjectStorage}\n   */\n  add(object) {\n    this._vector.push(object);\n\n    return this;\n  }\n\n  /**\n   * @param {Function|Object} thing\n   * @param {Boolean} strict\n   * @returns {Object|null}\n   */\n  find(thing, strict = false) {\n    for (let objectKey in this._vector) {\n      if (!this._vector.hasOwnProperty(objectKey)) {\n        continue;\n      }\n\n      let object = this._vector[objectKey];\n\n      if ((strict && object === thing) || (!strict && object instanceof thing)) {\n        return object;\n      }\n    }\n\n    return null;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get iterator() {\n    return this._vector;\n  }\n}\n"
   },
   {
-    "__docId__": 233,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -5911,7 +5988,6 @@
     "interface": false
   },
   {
-    "__docId__": 234,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -5936,7 +6012,6 @@
     "generator": false
   },
   {
-    "__docId__": 235,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5954,7 +6029,6 @@
     }
   },
   {
-    "__docId__": 236,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5993,7 +6067,6 @@
     "generator": false
   },
   {
-    "__docId__": 237,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -6044,7 +6117,6 @@
     "generator": false
   },
   {
-    "__docId__": 238,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -6076,7 +6148,6 @@
     "generator": false
   },
   {
-    "__docId__": 239,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -6089,7 +6160,6 @@
     "content": "'use strict';\n\nexport class ObjectVector {\n\n  /**\n   * @param {Function} proto\n   * @param {Object[]|*} instances\n   */\n  constructor(proto, ...instances) {\n    this._proto = proto;\n    this._vector = [];\n\n    this.add(...instances);\n  }\n\n  /**\n   * Add new instances to collection\n   * @param {Object[]|*} instances\n   */\n  add(...instances) {\n    for (let i in instances) {\n      if (!instances.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let instance = instances[i];\n\n      if (!(instance instanceof this._proto)) {\n        throw new Error(\n          `The object ${instance.constructor.name} is not an instance of ${this._proto.name}`\n        );\n      }\n\n      this._vector.push(instance);\n    }\n\n    return this;\n  }\n\n  /**\n   * Get collection of instances\n   * @returns {Object[]}\n   */\n  get collection() {\n    return this._vector;\n  }\n}\n"
   },
   {
-    "__docId__": 240,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -6106,7 +6176,6 @@
     "interface": false
   },
   {
-    "__docId__": 241,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -6142,7 +6211,6 @@
     "generator": false
   },
   {
-    "__docId__": 242,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -6160,7 +6228,6 @@
     }
   },
   {
-    "__docId__": 243,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -6178,7 +6245,6 @@
     }
   },
   {
-    "__docId__": 244,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -6209,7 +6275,6 @@
     "generator": false
   },
   {
-    "__docId__": 245,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -6241,7 +6306,6 @@
     "generator": false
   },
   {
-    "__docId__": 246,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -6254,7 +6318,6 @@
     "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {MethodsNotImplementedException} from '../Exception/MethodsNotImplementedException';\nimport {InvalidArgumentException} from '../Exception/InvalidArgumentException';\n\n/**\n * Interface implementation\n */\nexport class Interface {\n  /**\n   * @param {String[]|String} abstractMethods\n   */\n  constructor(...abstractMethods) {\n    let methods = abstractMethods.length === 1 && abstractMethods[0] instanceof Array\n      ? abstractMethods[0]\n      : abstractMethods;\n\n    let notImplementedMethods = [];\n\n    for (let abstractMethodKey in methods) {\n      if (!methods.hasOwnProperty(abstractMethodKey)) {\n        continue;\n      }\n\n      let abstractMethod = methods[abstractMethodKey];\n      if (!(this[abstractMethod] instanceof Function)) {\n        notImplementedMethods.push(abstractMethod);\n      }\n    }\n\n    if (notImplementedMethods.length > 0) {\n      throw new MethodsNotImplementedException(notImplementedMethods);\n    }\n  }\n}\n"
   },
   {
-    "__docId__": 247,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -6270,7 +6333,6 @@
     "interface": false
   },
   {
-    "__docId__": 248,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -6296,7 +6358,244 @@
     "generator": false
   },
   {
-    "__docId__": 249,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Runtime/Sandbox.js",
+    "memberof": null,
+    "longname": "lib/Runtime/Sandbox.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 1/21/16.\n */\n\n'use strict';\n\nimport domain from 'domain';\n\nexport class Sandbox {\n  /**\n   * @param {Function} func\n   */\n  constructor(func) {\n    this._func = func;\n    this._onFail = Sandbox.ON_FAIL_CB;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get func() {\n    return this._func;\n  }\n\n  /**\n   * @returns {Sandbox}\n   */\n  run(...args) {\n    let execDomain = domain.create();\n    let failCb = (error) => {\n      execDomain.exit();\n\n      process.nextTick(() => {\n        this._onFail(error);\n      });\n    };\n\n    execDomain.on('error', failCb);\n\n    try {\n      execDomain.run(this._func, ...args);\n    } catch (error) {\n      failCb(error);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {Sandbox}\n   */\n  fail(cb) {\n    this._onFail = cb;\n\n    return this;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  static get ON_FAIL_CB() {\n    return (error) => {\n      console.error(error);\n    };\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Sandbox",
+    "memberof": "lib/Runtime/Sandbox.js",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Runtime/Sandbox.js",
+    "importStyle": "{Sandbox}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Runtime/Sandbox.js~Sandbox",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "func",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_func",
+    "memberof": "lib/Runtime/Sandbox.js~Sandbox",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox#_func",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_onFail",
+    "memberof": "lib/Runtime/Sandbox.js~Sandbox",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox#_onFail",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "func",
+    "memberof": "lib/Runtime/Sandbox.js~Sandbox",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox#func",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Function}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "run",
+    "memberof": "lib/Runtime/Sandbox.js~Sandbox",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox#run",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Sandbox}"
+      }
+    ],
+    "params": [
+      {
+        "name": "args",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Sandbox"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "fail",
+    "memberof": "lib/Runtime/Sandbox.js~Sandbox",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox#fail",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Sandbox}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Sandbox"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_onFail",
+    "memberof": "lib/Runtime/Sandbox.js~Sandbox",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox#_onFail",
+    "access": null,
+    "description": null,
+    "lineNumber": 54,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ON_FAIL_CB",
+    "memberof": "lib/Runtime/Sandbox.js~Sandbox",
+    "longname": "lib/Runtime/Sandbox.js~Sandbox.ON_FAIL_CB",
+    "access": null,
+    "description": null,
+    "lineNumber": 62,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Function}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -6309,7 +6608,6 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Interface as OOPInterface} from './OOP/Interface';\nimport {Runtime as AWSLambdaRuntime} from './AWS/Lambda/Runtime';\nimport {Region as AWSRegion} from './AWS/Region';\nimport {Service as AWSService} from './AWS/Service';\nimport {Policy as AWSIAMPolicy} from './AWS/IAM/Policy';\nimport {Factory as AWSIAMFactory} from './AWS/IAM/Factory';\nimport {ObjectStorage as GenericObjectStorage} from './Generic/ObjectStorage';\nimport {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';\nimport {MethodsProxy as GenericMethodsProxy} from './Generic/MethodsProxy';\nimport {Exception as ExceptionException} from './Exception/Exception';\nimport {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';\nimport {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';\nimport {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';\n\nlet exports = module.exports = {\n  IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,\n  Exception: {\n    Exception: ExceptionException,\n    InvalidArgumentException: ExceptionInvalidArgumentException,\n    MethodsNotImplementedException: ExceptionMethodsNotImplementedException,\n    DatabaseOperationException: ExceptionDatabaseOperationException,\n  },\n  OOP: {\n    Interface: OOPInterface,\n  },\n  Generic: {\n    ObjectStorage: GenericObjectStorage,\n    ObjectVector: GenericObjectVector,\n    MethodsProxy: GenericMethodsProxy,\n  },\n  AWS: {\n    Region: AWSRegion,\n    Service: AWSService,\n    IAM: {\n      Factory: AWSIAMFactory,\n      Policy: AWSIAMPolicy,\n    },\n    Lambda: {\n      Runtime: AWSLambdaRuntime,\n    },\n  },\n};\n"
   },
   {
-    "__docId__": 250,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -6330,7 +6628,6 @@
     }
   },
   {
-    "__docId__": 252,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6343,7 +6640,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 253,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6356,7 +6652,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 254,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6369,7 +6664,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 255,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6382,7 +6676,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 256,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6395,7 +6688,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 257,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6408,7 +6700,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 258,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6421,7 +6712,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 259,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6434,7 +6724,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 260,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6447,7 +6736,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 261,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6460,7 +6748,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 262,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6473,7 +6760,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 263,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6486,7 +6772,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 264,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6499,7 +6784,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 265,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6512,7 +6796,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 266,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6525,7 +6808,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 267,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6538,7 +6820,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 268,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6551,7 +6832,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 269,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6564,7 +6844,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 270,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6577,7 +6856,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 271,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6590,7 +6868,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 272,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6603,7 +6880,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 273,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6616,7 +6892,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 274,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6629,7 +6904,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 275,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6642,7 +6916,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 276,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6655,7 +6928,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 277,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6668,7 +6940,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 278,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6681,7 +6952,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 279,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6694,7 +6964,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 280,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6707,7 +6976,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 281,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6720,7 +6988,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 282,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6733,7 +7000,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 283,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6746,7 +7012,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 284,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6759,7 +7024,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 285,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6772,7 +7036,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 286,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6785,7 +7048,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 287,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6798,7 +7060,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 288,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6811,7 +7072,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 289,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6824,7 +7084,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 290,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6837,7 +7096,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 291,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6850,7 +7108,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 292,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6863,7 +7120,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 293,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6876,7 +7132,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 294,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6889,7 +7144,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 295,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6902,7 +7156,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 296,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6915,7 +7168,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 297,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6928,7 +7180,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 298,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6941,7 +7192,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 300,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6954,7 +7204,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 301,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6967,7 +7216,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 302,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6980,7 +7228,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 303,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6993,7 +7240,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 304,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -7006,7 +7252,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 305,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -7019,7 +7264,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 306,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -7027,19 +7271,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 307,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

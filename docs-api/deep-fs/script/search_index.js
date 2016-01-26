@@ -12,6 +12,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-fs/lib/registry.js~registry",
+    "class/lib/Registry.js~Registry.html",
+    "<span>Registry</span> <span class=\"search-result-import-path\">deep-fs/lib/Registry.js</span>",
+    "class"
+  ],
+  [
     "deep-fs/lib/local/s3fsrelativefsextender.js~s3fsrelativefsextender",
     "class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html",
     "<span>S3FSRelativeFSExtender</span> <span class=\"search-result-import-path\">deep-fs/lib/Local/S3FSRelativeFSExtender.js</span>",
@@ -306,12 +312,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -408,6 +408,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/fs.js~fs#registry",
+    "class/lib/FS.js~FS.html#instance-get-registry",
+    "lib/FS.js~FS#registry",
+    "member"
+  ],
+  [
     "lib/fs.js~fs#system",
     "class/lib/FS.js~FS.html#instance-get-system",
     "lib/FS.js~FS#system",
@@ -429,6 +435,12 @@ window.esdocSearchIndex = [
     "lib/fs.js~fs.public",
     "class/lib/FS.js~FS.html#static-get-PUBLIC",
     "lib/FS.js~FS.PUBLIC",
+    "member"
+  ],
+  [
+    "lib/fs.js~fs.registryinstance",
+    "class/lib/FS.js~FS.html#static-get-RegistryInstance",
+    "lib/FS.js~FS.RegistryInstance",
     "member"
   ],
   [
@@ -478,6 +490,102 @@ window.esdocSearchIndex = [
     "class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html#instance-get-relativeFsExtended",
     "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender#relativeFsExtended",
     "member"
+  ],
+  [
+    "lib/registry.js",
+    "file/lib/Registry.js.html",
+    "lib/Registry.js",
+    "file"
+  ],
+  [
+    "lib/registry.js~registry#bucket",
+    "class/lib/Registry.js~Registry.html#instance-get-bucket",
+    "lib/Registry.js~Registry#bucket",
+    "member"
+  ],
+  [
+    "lib/registry.js~registry#constructor",
+    "class/lib/Registry.js~Registry.html#instance-constructor-constructor",
+    "lib/Registry.js~Registry#constructor",
+    "method"
+  ],
+  [
+    "lib/registry.js~registry#ensurefresh",
+    "class/lib/Registry.js~Registry.html#instance-set-ensureFresh",
+    "lib/Registry.js~Registry#ensureFresh",
+    "member"
+  ],
+  [
+    "lib/registry.js~registry#ensurefresh",
+    "class/lib/Registry.js~Registry.html#instance-get-ensureFresh",
+    "lib/Registry.js~Registry#ensureFresh",
+    "member"
+  ],
+  [
+    "lib/registry.js~registry#exists",
+    "class/lib/Registry.js~Registry.html#instance-method-exists",
+    "lib/Registry.js~Registry#exists",
+    "method"
+  ],
+  [
+    "lib/registry.js~registry#keys",
+    "class/lib/Registry.js~Registry.html#instance-method-keys",
+    "lib/Registry.js~Registry#keys",
+    "method"
+  ],
+  [
+    "lib/registry.js~registry#lastmodified",
+    "class/lib/Registry.js~Registry.html#instance-get-lastModified",
+    "lib/Registry.js~Registry#lastModified",
+    "member"
+  ],
+  [
+    "lib/registry.js~registry#read",
+    "class/lib/Registry.js~Registry.html#instance-method-read",
+    "lib/Registry.js~Registry#read",
+    "method"
+  ],
+  [
+    "lib/registry.js~registry#refresh",
+    "class/lib/Registry.js~Registry.html#instance-method-refresh",
+    "lib/Registry.js~Registry#refresh",
+    "method"
+  ],
+  [
+    "lib/registry.js~registry#registryfile",
+    "class/lib/Registry.js~Registry.html#instance-get-registryFile",
+    "lib/Registry.js~Registry#registryFile",
+    "member"
+  ],
+  [
+    "lib/registry.js~registry#s3",
+    "class/lib/Registry.js~Registry.html#instance-get-s3",
+    "lib/Registry.js~Registry#s3",
+    "member"
+  ],
+  [
+    "lib/registry.js~registry#write",
+    "class/lib/Registry.js~Registry.html#instance-method-write",
+    "lib/Registry.js~Registry#write",
+    "method"
+  ],
+  [
+    "lib/registry.js~registry.ensure_fresh",
+    "class/lib/Registry.js~Registry.html#static-get-ENSURE_FRESH",
+    "lib/Registry.js~Registry.ENSURE_FRESH",
+    "member"
+  ],
+  [
+    "lib/registry.js~registry.registry_file",
+    "class/lib/Registry.js~Registry.html#static-get-REGISTRY_FILE",
+    "lib/Registry.js~Registry.REGISTRY_FILE",
+    "member"
+  ],
+  [
+    "lib/registry.js~registry.createfromfs",
+    "class/lib/Registry.js~Registry.html#static-method-createFromFS",
+    "lib/Registry.js~Registry.createFromFS",
+    "method"
   ],
   [
     "lib/bootstrap.js",

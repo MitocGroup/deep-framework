@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../">
+  <title data-ice="title">lib/Registry.js | DEEP File System Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/FS.js~FS.html">FS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Registry.js~Registry.html">Registry</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html">UnknownFolderException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html">S3FSRelativeFSExtender</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Registry.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 1/21/16.
+ */
+
+&apos;use strict&apos;;
+
+import util from &apos;util&apos;;
+
+export class Registry {
+  /**
+   * @param {AWS.S3} s3
+   * @param {String} bucket
+   * @param {String} registryFile
+   */
+  constructor(s3, bucket, registryFile = Registry.REGISTRY_FILE) {
+    this._s3 = s3;
+    this._bucket = bucket;
+    this._registryFile = registryFile;
+
+    this._registry = null;
+    this._lastModified = null;
+    this._ensureFresh = Registry.ENSURE_FRESH;
+  }
+
+  /**
+   * @param {FS|*} fs
+   * @param {String} registryFile
+   */
+  static createFromFS(fs, registryFile = Registry.REGISTRY_FILE) {
+    return new Registry(
+      fs.s3,
+      fs.bucket,
+      fs.getPath(registryFile)
+    );
+  }
+
+  /**
+   * @param {Function} cb
+   * @returns {Registry}
+   */
+  keys(cb) {
+    this._ensureLoaded((error) =&gt; {
+      if (error) {
+        cb(error, null);
+        return;
+      }
+
+      cb(null, Object.keys(this._registry));
+    });
+
+    return this;
+  }
+
+  /**
+   * @param {String} key
+   * @param {Function} cb
+   * @returns {Registry}
+   */
+  read(key, cb) {
+    this._ensureLoaded((error) =&gt; {
+      if (error) {
+        cb(error, null);
+        return;
+      }
+
+      if (this._registry.hasOwnProperty(key)) {
+        cb(null, this._registry[key]);
+        return;
+      }
+
+      cb(new Error(`Missing registry entry &apos;${key}&apos;`), null);
+    });
+
+    return this;
+  }
+
+  /**
+   * @param {String} key
+   * @param {Function} cb
+   * @returns {Registry}
+   */
+  exists(key, cb) {
+    this._ensureLoaded((error) =&gt; {
+      if (error) {
+        cb(error, null);
+        return;
+      }
+
+      cb(null, this._registry.hasOwnProperty(key));
+    });
+
+    return this;
+  }
+
+  /**
+   * @param {String} key
+   * @param {*} data
+   * @param {Function} cb
+   * @returns {Registry}
+   */
+  write(key, data, cb) {
+    this._ensureLoaded((error) =&gt; {
+      if (error) {
+        cb(error);
+        return;
+      }
+
+      let hadKey = this._registry.hasOwnProperty(key);
+      let oldValue = this._registry[key];
+
+      this._registry[key] = data;
+
+      this._persist((error) =&gt; {
+        if (error) {
+          if (hadKey) {
+            this._registry[key] = oldValue;
+          } else {
+            delete this._registry[key];
+          }
+        }
+
+        cb(error);
+      });
+    });
+
+    return this;
+  }
+
+  /**
+   * @returns {Registry}
+   */
+  refresh(cb) {
+    this._readS3Object(
+      this._registryFile,
+      (error, rawRegistry, lastModified) =&gt; {
+        if (error &amp;&amp; error.code !== &apos;NotFound&apos;) {
+          cb(error);
+          return;
+        }
+
+        if (rawRegistry) {
+          try {
+            this._registry = Registry._decodeRegistry(rawRegistry);
+            this._lastModified = lastModified;
+          } catch (error) {
+            cb(error);
+            return;
+          }
+        }
+
+        cb(null);
+      },
+      this._lastModified
+    );
+
+    return this;
+  }
+
+  /**
+   * @param {Function} cb
+   * @private
+   */
+  _persist(cb) {
+    this._writeS3Object(
+      this._registryFile,
+      Registry._encodeRegistry(this._registry),
+      cb
+    );
+  }
+
+  /**
+   * @param {Function} cb
+   * @private
+   */
+  _ensureLoaded(cb) {
+    if (this._registry === null || this._ensureFresh) {
+      this.refresh((error) =&gt; {
+        this._registry = this._registry || {};
+
+        cb(error);
+      });
+    } else {
+      cb(null);
+    }
+  }
+
+  /**
+   * @param {String} rawRegistry
+   * @returns {Object}
+   * @private
+   */
+  static _decodeRegistry(rawRegistry) {
+    let registry = {};
+    let registryObj = JSON.parse(rawRegistry);
+
+    for (let key in registryObj) {
+      if (!registryObj.hasOwnProperty(key)) {
+        continue;
+      }
+
+      registry[key] = Registry._decodeValue(registryObj[key]);
+    }
+
+    return registry;
+  }
+
+  /**
+   * @param {Object} registry
+   * @returns {String}
+   * @private
+   */
+  static _encodeRegistry(registry) {
+    let registryObj = {};
+
+    for (let key in registry) {
+      if (!registry.hasOwnProperty(key)) {
+        continue;
+      }
+
+      registryObj[key] = Registry._encodeValue(registry[key]);
+    }
+
+    return JSON.stringify(registryObj);
+  }
+
+  /**
+   * @param {String} key
+   * @param {Function} cb
+   * @param {Date|null} lastModified
+   * @private
+   */
+  _readS3Object(key, cb, lastModified = null) {
+    let payload = {
+      Bucket: this._bucket,
+      Key: key,
+    };
+
+    if (lastModified) {
+      payload.IfModifiedSince = lastModified;
+    }
+
+    this._s3.getObject(payload, (error, data) =&gt; {
+      if (error) {
+        cb(error, null, null);
+        return;
+      }
+
+      let result = null;
+      let resultLastModified = lastModified;
+
+      if (data &amp;&amp; data.Body) {
+        result = data.Body.toString();
+        resultLastModified = data.LastModified;
+      }
+
+      cb(null, result, resultLastModified);
+    });
+  }
+
+  /**
+   * @param {String} key
+   * @param {*} content
+   * @param {Function} cb
+   * @private
+   */
+  _writeS3Object(key, content, cb) {
+    let payload = {
+      Bucket: this._bucket,
+      Key: key,
+      Body: content.toString(),
+    };
+
+    this._s3.putObject(payload, (error) =&gt; {
+      cb(error);
+    });
+  }
+
+  /**
+   * @param {*} value
+   * @returns {{t: string, v: *}}
+   * @private
+   */
+  static _encodeValue(value) {
+    let type = &apos;plain&apos;;
+    let val = value;
+
+    if (util.isArray(value)) {
+      type = &apos;arr&apos;;
+      val = JSON.stringify(value);
+    } else if(Buffer.isBuffer(value)) {
+      val = value.toString();
+    } else if(util.isObject(value)) {
+      type = &apos;obj&apos;;
+      val = JSON.stringify(value);
+    }
+
+    return {
+      t: type,
+      v: val,
+    };
+  }
+
+  /**
+   * @param {Object} valueObj
+   * @returns {*}
+   * @private
+   */
+  static _decodeValue(valueObj) {
+    let value = null;
+
+    switch (valueObj.t) {
+      case &apos;arr&apos;:
+      case &apos;obj&apos;:
+        value = JSON.parse(valueObj.v);
+        break;
+      default: value = valueObj.v;
+    }
+
+    return value;
+  }
+
+  /**
+   * @param {Boolean} state
+   */
+  set ensureFresh(state) {
+    this._ensureFresh = state;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get ensureFresh() {
+    return this._ensureFresh;
+  }
+
+  /**
+   * @returns {Date}
+   */
+  get lastModified() {
+    return this._lastModified;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get registryFile() {
+    return this._registryFile;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get bucket() {
+    return this._bucket;
+  }
+
+  /**
+   * @returns {AWS.S3}
+   */
+  get s3() {
+    return this._s3;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  static get ENSURE_FRESH() {
+    return true;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get REGISTRY_FILE() {
+    return &apos;__deep_registry__&apos;;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

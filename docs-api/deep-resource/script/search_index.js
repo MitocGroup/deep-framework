@@ -120,6 +120,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-resource/lib/resource/exception/validationerror.js~validationerror",
+    "class/lib/Resource/Exception/ValidationError.js~ValidationError.html",
+    "<span>ValidationError</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/ValidationError.js</span>",
+    "class"
+  ],
+  [
     "builtinexternal/ecmascriptexternal.js~array",
     "external/index.html",
     "BuiltinExternal/ECMAScriptExternal.js~Array",
@@ -402,12 +408,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -480,6 +480,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "lib/resource.js~resource#actionsconfig",
+    "class/lib/Resource.js~Resource.html#instance-get-actionsConfig",
+    "lib/Resource.js~Resource#actionsConfig",
+    "member"
+  ],
+  [
     "lib/resource.js~resource#boot",
     "class/lib/Resource.js~Resource.html#instance-method-boot",
     "lib/Resource.js~Resource#boot",
@@ -495,6 +501,12 @@ window.esdocSearchIndex = [
     "lib/resource.js~resource#get",
     "class/lib/Resource.js~Resource.html#instance-method-get",
     "lib/Resource.js~Resource#get",
+    "method"
+  ],
+  [
+    "lib/resource.js~resource#getactionconfig",
+    "class/lib/Resource.js~Resource.html#instance-method-getActionConfig",
+    "lib/Resource.js~Resource#getActionConfig",
     "method"
   ],
   [
@@ -576,9 +588,27 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/resource/action.js~action#sourceid",
+    "class/lib/Resource/Action.js~Action.html#instance-get-sourceId",
+    "lib/Resource/Action.js~Action#sourceId",
+    "member"
+  ],
+  [
     "lib/resource/action.js~action#type",
     "class/lib/Resource/Action.js~Action.html#instance-get-type",
     "lib/Resource/Action.js~Action#type",
+    "member"
+  ],
+  [
+    "lib/resource/action.js~action#validationschemaname",
+    "class/lib/Resource/Action.js~Action.html#instance-get-validationSchemaName",
+    "lib/Resource/Action.js~Action#validationSchemaName",
+    "member"
+  ],
+  [
+    "lib/resource/action.js~action#validationschemaname",
+    "class/lib/Resource/Action.js~Action.html#instance-set-validationSchemaName",
+    "lib/Resource/Action.js~Action#validationSchemaName",
     "member"
   ],
   [
@@ -726,6 +756,24 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/exception/validationerror.js",
+    "file/lib/Resource/Exception/ValidationError.js.html",
+    "lib/Resource/Exception/ValidationError.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/validationerror.js~validationerror#constructor",
+    "class/lib/Resource/Exception/ValidationError.js~ValidationError.html#instance-constructor-constructor",
+    "lib/Resource/Exception/ValidationError.js~ValidationError#constructor",
+    "method"
+  ],
+  [
+    "lib/resource/exception/validationerror.js~validationerror#validationerrors",
+    "class/lib/Resource/Exception/ValidationError.js~ValidationError.html#instance-get-validationErrors",
+    "lib/Resource/Exception/ValidationError.js~ValidationError#validationErrors",
+    "member"
+  ],
+  [
     "lib/resource/instance.js",
     "file/lib/Resource/Instance.js.html",
     "lib/Resource/Instance.js",
@@ -741,6 +789,12 @@ window.esdocSearchIndex = [
     "lib/resource/instance.js~instance#actions",
     "class/lib/Resource/Instance.js~Instance.html#instance-get-actions",
     "lib/Resource/Instance.js~Instance#actions",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#actionsconfig",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-actionsConfig",
+    "lib/Resource/Instance.js~Instance#actionsConfig",
     "member"
   ],
   [
@@ -769,25 +823,25 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#isbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-isBackend",
-    "lib/Resource/Instance.js~Instance#isBackend",
-    "member"
-  ],
-  [
-    "lib/resource/instance.js~instance#isbackend",
     "class/lib/Resource/Instance.js~Instance.html#instance-set-isBackend",
     "lib/Resource/Instance.js~Instance#isBackend",
     "member"
   ],
   [
-    "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
-    "lib/Resource/Instance.js~Instance#localBackend",
+    "lib/resource/instance.js~instance#isbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-isBackend",
+    "lib/Resource/Instance.js~Instance#isBackend",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#localbackend",
     "class/lib/Resource/Instance.js~Instance.html#instance-get-localBackend",
+    "lib/Resource/Instance.js~Instance#localBackend",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#localbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
     "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
@@ -805,14 +859,26 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#security",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-security",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-security",
     "lib/Resource/Instance.js~Instance#security",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#security",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-security",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-security",
     "lib/Resource/Instance.js~Instance#security",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#validation",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-validation",
+    "lib/Resource/Instance.js~Instance#validation",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#validation",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-validation",
+    "lib/Resource/Instance.js~Instance#validation",
     "member"
   ],
   [
@@ -828,9 +894,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/lambdaresponse.js~lambdaresponse.validation_error_type",
+    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#static-get-VALIDATION_ERROR_TYPE",
+    "lib/Resource/LambdaResponse.js~LambdaResponse.VALIDATION_ERROR_TYPE",
+    "member"
+  ],
+  [
     "lib/resource/lambdaresponse.js~lambdaresponse.getpayloaderror",
     "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#static-method-getPayloadError",
     "lib/Resource/LambdaResponse.js~LambdaResponse.getPayloadError",
+    "method"
+  ],
+  [
+    "lib/resource/lambdaresponse.js~lambdaresponse.isvalidationerror",
+    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#static-method-isValidationError",
+    "lib/Resource/LambdaResponse.js~LambdaResponse.isValidationError",
     "method"
   ],
   [
@@ -901,13 +979,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/request.js~request#cachettl",
-    "class/lib/Resource/Request.js~Request.html#instance-set-cacheTtl",
+    "class/lib/Resource/Request.js~Request.html#instance-get-cacheTtl",
     "lib/Resource/Request.js~Request#cacheTtl",
     "member"
   ],
   [
     "lib/resource/request.js~request#cachettl",
-    "class/lib/Resource/Request.js~Request.html#instance-get-cacheTtl",
+    "class/lib/Resource/Request.js~Request.html#instance-set-cacheTtl",
     "lib/Resource/Request.js~Request#cacheTtl",
     "member"
   ],
@@ -960,6 +1038,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/resource/request.js~request#isprevalidated",
+    "class/lib/Resource/Request.js~Request.html#instance-get-isPreValidated",
+    "lib/Resource/Request.js~Request#isPreValidated",
+    "member"
+  ],
+  [
     "lib/resource/request.js~request#method",
     "class/lib/Resource/Request.js~Request.html#instance-get-method",
     "lib/Resource/Request.js~Request#method",
@@ -984,10 +1068,28 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/request.js~request#skipprevalidation",
+    "class/lib/Resource/Request.js~Request.html#instance-method-skipPreValidation",
+    "lib/Resource/Request.js~Request#skipPreValidation",
+    "method"
+  ],
+  [
     "lib/resource/request.js~request#usedirectcall",
     "class/lib/Resource/Request.js~Request.html#instance-method-useDirectCall",
     "lib/Resource/Request.js~Request#useDirectCall",
     "method"
+  ],
+  [
+    "lib/resource/request.js~request#validationschemaname",
+    "class/lib/Resource/Request.js~Request.html#instance-set-validationSchemaName",
+    "lib/Resource/Request.js~Request#validationSchemaName",
+    "member"
+  ],
+  [
+    "lib/resource/request.js~request#validationschemaname",
+    "class/lib/Resource/Request.js~Request.html#instance-get-validationSchemaName",
+    "lib/Resource/Request.js~Request#validationSchemaName",
+    "member"
   ],
   [
     "lib/resource/request.js~request.ttl_default",
