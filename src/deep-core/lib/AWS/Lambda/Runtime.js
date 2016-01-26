@@ -11,6 +11,8 @@ import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentit
 import {MissingUserContextException} from './Exception/MissingUserContextException';
 import {Context} from './Context';
 import {Sandbox} from '../../Runtime/Sandbox';
+import path from 'path';
+import fs from 'fs';
 
 /**
  * Lambda runtime context
@@ -113,18 +115,7 @@ export class Runtime extends Interface {
       let validationSchema = this.validationSchema;
 
       if (validationSchema) {
-        let validationSchemaName = validationSchema;
-
-        if (typeof validationSchema !== 'string') {
-          let validation = this._kernel.get('validation');
-          let setSchemaMethod = validationSchema.isJoi ? 'setSchema' : 'setSchemaRaw';
-
-          validationSchemaName = `DeepHandlerValidation_${new Date().getTime()}`;
-
-          validation[setSchemaMethod](validationSchemaName, validationSchema);
-        }
-
-        this.validateInput(validationSchemaName, this.handle);
+        this._runValidate(validationSchema);
       } else {
         this.handle(this._request);
       }
@@ -135,6 +126,55 @@ export class Runtime extends Interface {
       .run();
 
     return this;
+  }
+
+  /**
+   * @param {String} validationSchema
+   * @private
+   */
+  _runValidate(validationSchema) {
+    let validation = this._kernel.get('validation');
+    let validationSchemaName = validationSchema;
+
+    if (typeof validationSchema !== 'string') {
+      validationSchemaName = this._injectValidationSchema(validationSchema);
+    } else if (!validation.hasSchema(validationSchemaName)) {
+
+      // assume process.cwd() === /var/task
+      let schemasPath = path.join(process.cwd(), Runtime.VALIDATION_SCHEMAS_DIR);
+      let schemaFileBase = path.join(schemasPath, validationSchemaName);
+      let ext = null;
+
+      if (fs.existsSync(`${schemaFileBase}.js`)) {
+        ext = 'js';
+      } else if(fs.existsSync(`${schemaFileBase}.json`)) {
+        ext = 'json';
+      }
+
+      // inject only when exists
+      if (ext) {
+        this._injectValidationSchema(require(`${schemaFileBase}.${ext}`, validationSchemaName));
+      }
+    }
+
+    this.validateInput(validationSchemaName, this.handle);
+  }
+
+  /**
+   * @param {Object} schema
+   * @param {String|null} name
+   * @returns {String}
+   * @private
+   */
+  _injectValidationSchema(schema, name = null) {
+    let validation = this._kernel.get('validation');
+    let setSchemaMethod = schema.isJoi ? 'setSchema' : 'setSchemaRaw';
+
+    name = name || `DeepHandlerValidation_${new Date().getTime()}`;
+
+    validation[setSchemaMethod](name, schema);
+
+    return name;
   }
 
   /**
@@ -222,5 +262,12 @@ export class Runtime extends Interface {
 
       this._loggedUserId = this._context.identity.cognitoIdentityId;
     }
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get VALIDATION_SCHEMAS_DIR() {
+    return '__deep_validation_schemas__';
   }
 }
