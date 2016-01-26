@@ -72,7 +72,7 @@ suite('Validation', function() {
   });
 
   test('Check getSchema() returns valid object', function() {
-    let actualResult = validation.getSchema('Name')
+    let actualResult = validation.getSchema('Name');
 
     chai.assert.instanceOf(
       actualResult, Object, 'getSchema() returns an instance of Object'
@@ -108,7 +108,7 @@ suite('Validation', function() {
   });
 
   test('Check setSchema() method create new model schema', function() {
-    let joi = ObjectToJoi._transform(rawModelSchema)
+    let joi = ObjectToJoi._transform(rawModelSchema);
     let actualResult = validation.setSchema('NewSchema', joi);
 
     chai.expect(actualResult).to.be.an.instanceOf(Validation);
