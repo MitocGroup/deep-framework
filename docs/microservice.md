@@ -42,17 +42,17 @@ Configuration file (`deepkg.json`)
 
 ```javascript
 {
-  "identifier": "deep.microservices.helloworld", // unique across the DEEP, used to retrieve certain microservices in framework and system wise
-  "name": "HelloWorld", // non unique, human readable microservice name
-  "description": "Say hello to the world...", // optional microservice description
-  "version": "0.0.1", // microservice version compatible with semantical versioning syntax (same as NPM)
-  "propertyRoot": true, // flag that indicates that microservice is treated a a root one (must contain an `Frontend/index.html` file)
-  "author": { // the list of authors
+  "identifier": "deep.microservices.helloworld", // Unique across the DEEP, used to retrieve certain microservices in framework and system wise
+  "name": "HelloWorld", // Non unique, human readable microservice name
+  "description": "Say hello to the world...", // Optional microservice description
+  "version": "0.0.1", // Microservice version compatible with semantical versioning syntax (same as NPM)
+  "propertyRoot": true, // Flag that indicates that microservice is treated a a root one (must contain an `Frontend/index.html` file)
+  "author": { // The list of authors
     "name": "Mitoc Group",
     "email": "hello@mitocgroup.com",
     "website": "www.mitocgroup.com"
   },
-  "contributors": [ // the list of contributors
+  "contributors": [ // The list of contributors
     {
       "name": "DEEP Dev Team",
       "email": "hello@deep.mg",
@@ -63,14 +63,17 @@ Configuration file (`deepkg.json`)
     "DEEP", "sample"
   ],
   "frontendEngine": ["angular"], // The engine used in frontend. Optional, default ["angular"]
-  "dependencies": { // a list of other microservices that the current one depends on
+  "dependencies": { // A list of other microservices that the current one depends on
     "deep.microservices.helloworld": "~1.0.*"
   },
-  "autoload": { // optional override path of the microservice components
+  "autoload": { // Optional override path of the microservice components
     "frontend": "Frontend/",
     "backend": "Backend/",
-    "models": "Models/",
-    "docs": "Docs/"
+    "docs": "Docs/",
+    "models": "Data/Models/", // Database models directory
+    "validation": "Data/Validation/", // Validation schemas
+    "fixtures": "Data/Fixtures/", // Fixtures (`TBD`!)
+    "migration": "Data/Migration/", // Database Migrations (`TBD`!)
   }
 }
 ```
