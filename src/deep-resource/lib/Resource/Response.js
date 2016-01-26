@@ -26,6 +26,7 @@ export class Response {
     this._statusCode = null;
     this._data = null;
     this._error = null;
+    this._headers = null;
     this._requestId = null;
   }
 
@@ -90,6 +91,13 @@ export class Response {
    */
   get requestId() {
     return this._requestId;
+  }
+
+  /**
+   * @returns {Object|null}
+   */
+  get headers() {
+    return this._headers;
   }
 
   /**

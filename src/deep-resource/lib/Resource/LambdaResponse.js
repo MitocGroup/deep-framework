@@ -44,6 +44,30 @@ export class LambdaResponse extends Response {
   }
 
   /**
+   * @returns {Object}
+   */
+  get headers() {
+    if (!this._headers && this.originalResponse) {
+      this._headers = this.originalResponse.httpResponse ? this.originalResponse.httpResponse.headers : {};
+    }
+
+    return this._headers;
+  }
+
+  /**
+   * @returns {String|null}
+   */
+  get requestId() {
+    if (!this._requestId && this.headers) {
+      if (this.headers[Response.REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.REQUEST_ID_HEADER.toLowerCase()];
+      }
+    }
+
+    return this._requestId;
+  }
+
+  /**
    * @param {Object|null} responsePayload
    * @private
    */

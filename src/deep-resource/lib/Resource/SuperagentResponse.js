@@ -25,8 +25,12 @@ export class SuperagentResponse extends Response {
    * @returns {Object}
    */
   get headers() {
-    // rawData in this case is superagent original Response object
-    return this.rawData && this.rawData.headers ? this.rawData.headers : {};
+    if (!this._headers) {
+      // rawData in this case is superagent original Response object
+      this._headers = this.rawData && this.rawData.headers ? this.rawData.headers : {};
+    }
+
+    return this._headers;
   }
 
   /**
