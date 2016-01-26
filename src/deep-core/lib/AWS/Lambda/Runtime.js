@@ -142,18 +142,10 @@ export class Runtime extends Interface {
 
       // assume process.cwd() === /var/task
       let schemasPath = path.join(process.cwd(), Runtime.VALIDATION_SCHEMAS_DIR);
-      let schemaFileBase = path.join(schemasPath, validationSchemaName);
-      let ext = null;
+      let schemaFile = path.join(schemasPath, `${validationSchemaName}.js`);
 
-      if (fs.existsSync(`${schemaFileBase}.js`)) {
-        ext = 'js';
-      } else if(fs.existsSync(`${schemaFileBase}.json`)) {
-        ext = 'json';
-      }
-
-      // inject only when exists
-      if (ext) {
-        this._injectValidationSchema(require(`${schemaFileBase}.${ext}`, validationSchemaName));
+      if (fs.existsSync(schemaFile)) {
+        this._injectValidationSchema(require(schemaFile), validationSchemaName);
       }
     }
 
