@@ -9,6 +9,7 @@ import {MissingActionException} from '../../lib/Resource/Exception/MissingAction
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
+import Validation from 'deep-validation';
 import KernelFactory from '../common/KernelFactory';
 import backendConfig from '../common/backend-cfg-json';
 
@@ -39,6 +40,7 @@ suite('Resource/Instance', function() {
       Cache: Cache,
       Security: Security,
       Resource: Resource,
+      Validation: Validation,
     }, callback);
   });
 
