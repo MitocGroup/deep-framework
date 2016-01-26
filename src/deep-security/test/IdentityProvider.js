@@ -151,12 +151,10 @@ suite('IdentityProvider', function() {
   });
 
   test('Check isTokenValid() returns true', function() {
-    console.log('identityProvider.userToken: ', identityProvider.userToken);
-    console.log('identityProvider.tokenExpirationTime: ', identityProvider.tokenExpirationTime);
     chai.expect(identityProvider.isTokenValid()).to.be.equal(true);
   });
 
-  test('Check isTokenValid() returns false', function() {
+  test('Check isTokenValid() returns false for tokenExpirationTime', function() {
     let date = new Date();
     date.setDate(date.getDate() - 1);
 
@@ -167,6 +165,12 @@ suite('IdentityProvider', function() {
     };
 
     identityProvider = new IdentityProvider(providers, providerName, identityMetadata);
+
+    chai.expect(identityProvider.isTokenValid()).to.be.equal(false);
+  });
+
+  test('Check isTokenValid() returns false when !tokenExpirationTime', function() {
+    identityProvider._tokenExpTime = null;
 
     chai.expect(identityProvider.isTokenValid()).to.be.equal(false);
   });
