@@ -150,6 +150,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-core/lib/runtime/sandbox.js~sandbox",
+    "class/lib/Runtime/Sandbox.js~Sandbox.html",
+    "<span>Sandbox</span> <span class=\"search-result-import-path\">deep-core/lib/Runtime/Sandbox.js</span>",
+    "class"
+  ],
+  [
     "deep-core/lib/aws/service.js~service",
     "class/lib/AWS/Service.js~Service.html",
     "<span>Service</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/Service.js</span>",
@@ -444,12 +450,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -499,13 +499,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
@@ -523,13 +523,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
@@ -679,13 +679,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
@@ -727,13 +727,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
@@ -745,13 +745,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
@@ -805,13 +805,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
@@ -835,13 +835,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
@@ -1038,6 +1038,12 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "lib/aws/lambda/runtime.js~runtime#calleeconfig",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-calleeConfig",
+    "lib/AWS/Lambda/Runtime.js~Runtime#calleeConfig",
+    "member"
+  ],
+  [
     "lib/aws/lambda/runtime.js~runtime#constructor",
     "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-constructor-constructor",
     "lib/AWS/Lambda/Runtime.js~Runtime#constructor",
@@ -1110,6 +1116,24 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/aws/lambda/runtime.js~runtime#validateinput",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-method-validateInput",
+    "lib/AWS/Lambda/Runtime.js~Runtime#validateInput",
+    "method"
+  ],
+  [
+    "lib/aws/lambda/runtime.js~runtime#validationschema",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-validationSchema",
+    "lib/AWS/Lambda/Runtime.js~Runtime#validationSchema",
+    "member"
+  ],
+  [
+    "lib/aws/lambda/runtime.js~runtime.validation_schemas_dir",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#static-get-VALIDATION_SCHEMAS_DIR",
+    "lib/AWS/Lambda/Runtime.js~Runtime.VALIDATION_SCHEMAS_DIR",
+    "member"
+  ],
+  [
     "lib/aws/region.js",
     "file/lib/AWS/Region.js.html",
     "lib/AWS/Region.js",
@@ -1119,6 +1143,12 @@ window.esdocSearchIndex = [
     "lib/aws/region.js~region.any",
     "class/lib/AWS/Region.js~Region.html#static-get-ANY",
     "lib/AWS/Region.js~Region.ANY",
+    "member"
+  ],
+  [
+    "lib/aws/region.js~region.asia_pacific_seoul",
+    "class/lib/AWS/Region.js~Region.html#static-get-ASIA_PACIFIC_SEOUL",
+    "lib/AWS/Region.js~Region.ASIA_PACIFIC_SEOUL",
     "member"
   ],
   [
@@ -1296,6 +1326,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/aws/service.js~service.simple_queue_service",
+    "class/lib/AWS/Service.js~Service.html#static-get-SIMPLE_QUEUE_SERVICE",
+    "lib/AWS/Service.js~Service.SIMPLE_QUEUE_SERVICE",
+    "member"
+  ],
+  [
     "lib/aws/service.js~service.simple_storage_service",
     "class/lib/AWS/Service.js~Service.html#static-get-SIMPLE_STORAGE_SERVICE",
     "lib/AWS/Service.js~Service.SIMPLE_STORAGE_SERVICE",
@@ -1468,6 +1504,42 @@ window.esdocSearchIndex = [
     "class/lib/OOP/Interface.js~Interface.html#instance-constructor-constructor",
     "lib/OOP/Interface.js~Interface#constructor",
     "method"
+  ],
+  [
+    "lib/runtime/sandbox.js",
+    "file/lib/Runtime/Sandbox.js.html",
+    "lib/Runtime/Sandbox.js",
+    "file"
+  ],
+  [
+    "lib/runtime/sandbox.js~sandbox#constructor",
+    "class/lib/Runtime/Sandbox.js~Sandbox.html#instance-constructor-constructor",
+    "lib/Runtime/Sandbox.js~Sandbox#constructor",
+    "method"
+  ],
+  [
+    "lib/runtime/sandbox.js~sandbox#fail",
+    "class/lib/Runtime/Sandbox.js~Sandbox.html#instance-method-fail",
+    "lib/Runtime/Sandbox.js~Sandbox#fail",
+    "method"
+  ],
+  [
+    "lib/runtime/sandbox.js~sandbox#func",
+    "class/lib/Runtime/Sandbox.js~Sandbox.html#instance-get-func",
+    "lib/Runtime/Sandbox.js~Sandbox#func",
+    "member"
+  ],
+  [
+    "lib/runtime/sandbox.js~sandbox#run",
+    "class/lib/Runtime/Sandbox.js~Sandbox.html#instance-method-run",
+    "lib/Runtime/Sandbox.js~Sandbox#run",
+    "method"
+  ],
+  [
+    "lib/runtime/sandbox.js~sandbox.on_fail_cb",
+    "class/lib/Runtime/Sandbox.js~Sandbox.html#static-get-ON_FAIL_CB",
+    "lib/Runtime/Sandbox.js~Sandbox.ON_FAIL_CB",
+    "member"
   ],
   [
     "lib/bootstrap.js",

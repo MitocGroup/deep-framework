@@ -32,6 +32,22 @@ export class Action {
     this._forceUserIdentity = forceUserIdentity;
     this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;
     this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
+
+    this._validationSchemaName = null;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get validationSchemaName() {
+    return this._validationSchemaName;
+  }
+
+  /**
+   * @param {String} validationSchemaName
+   */
+  set validationSchemaName(validationSchemaName) {
+    this._validationSchemaName = validationSchemaName;
   }
 
   /**
@@ -39,7 +55,7 @@ export class Action {
    * @param {String} method
    */
   request(payload = {}, method = null) {
-    method = method || (this._methods.length > 0 ? this._methods[0] : Instance.HTTP_VERBS[0]);
+    method = method || (this._methods.length > 0 ? this._methods[0] : Action.HTTP_VERBS[0]);
 
     if (this._methods.length > 0 && this._methods.indexOf(method) === -1) {
       throw new UnknownMethodException(method, this._methods);
@@ -48,11 +64,22 @@ export class Action {
     let RequestImplementation = this._resource.localBackend ? LocalRequest : Request;
     let requestObject = new RequestImplementation(this, payload, method);
 
+    requestObject.validationSchemaName = this._validationSchemaName;
+
     if (this._resource.cache) {
       requestObject.cacheImpl = this._resource.cache;
     }
 
     return requestObject;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get sourceId() {
+    return this._type === Action.LAMBDA ?
+      this._source.original :
+      this._source.api;
   }
 
   /**

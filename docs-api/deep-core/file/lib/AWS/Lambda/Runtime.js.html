@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -59,6 +57,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Runtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Runtime/Sandbox.js~Sandbox.html">Sandbox</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -76,7 +75,9 @@ import {Request} from &apos;./Request&apos;;
 import {InvalidCognitoIdentityException} from &apos;./Exception/InvalidCognitoIdentityException&apos;;
 import {MissingUserContextException} from &apos;./Exception/MissingUserContextException&apos;;
 import {Context} from &apos;./Context&apos;;
-import domain from &apos;domain&apos;;
+import {Sandbox} from &apos;../../Runtime/Sandbox&apos;;
+import path from &apos;path&apos;;
+import fs from &apos;fs&apos;;
 
 /**
  * Lambda runtime context
@@ -95,6 +96,8 @@ export class Runtime extends Interface {
     this._loggedUserId = null;
     this._forceUserIdentity = false;
     this._contextSent = false;
+
+    this._calleeConfig = null;
 
     this._fillDenyMissingUserContextOption();
   }
@@ -146,6 +149,19 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @param {String} schemaName
+   * @param {Function} cb
+   * @returns {Runtime}
+   */
+  validateInput(schemaName, cb) {
+    let validation = this._kernel.get(&apos;validation&apos;);
+
+    validation.validateRuntimeInput(this, schemaName, cb);
+
+    return this;
+  }
+
+  /**
    * @param {Object} event
    * @param {Object} context
    * @returns {Runtime}
@@ -154,23 +170,73 @@ export class Runtime extends Interface {
     this._context = new Context(context);
     this._request = new Request(event);
 
-    let execDomain = domain.create();
-
-    execDomain.on(&apos;error&apos;, (error) =&gt; {
-      this.createError(error).send();
-    });
-
-    execDomain.run(() =&gt; {
+    new Sandbox(() =&gt; {
       this._fillUserContext();
 
       if (!this._loggedUserId &amp;&amp; this._forceUserIdentity) {
         throw new MissingUserContextException();
       }
 
-      this.handle(this._request);
-    });
+      let validationSchema = this.validationSchema;
+
+      if (validationSchema) {
+        this._runValidate(validationSchema);
+      } else {
+        this.handle(this._request);
+      }
+    })
+      .fail((error) =&gt; {
+        this.createError(error).send();
+      })
+      .run();
 
     return this;
+  }
+
+  /**
+   * @param {String} validationSchema
+   * @private
+   */
+  _runValidate(validationSchema) {
+    let validation = this._kernel.get(&apos;validation&apos;);
+    let validationSchemaName = validationSchema;
+
+    if (typeof validationSchema !== &apos;string&apos;) {
+      validationSchemaName = this._injectValidationSchema(validationSchema);
+    } else if (!validation.hasSchema(validationSchemaName)) {
+
+      // assume process.cwd() === /var/task
+      let schemasPath = path.join(process.cwd(), Runtime.VALIDATION_SCHEMAS_DIR);
+      let schemaFile = path.join(schemasPath, `${validationSchemaName}.js`);
+
+      if (fs.existsSync(schemaFile)) {
+        this._injectValidationSchema(require(schemaFile), validationSchemaName);
+      }
+    }
+
+    this.validateInput(validationSchemaName, this.handle);
+  }
+
+  /**
+   * @param {Object} schema
+   * @param {String|null} name
+   * @returns {String}
+   * @private
+   */
+  _injectValidationSchema(schema, name = null) {
+    let validation = this._kernel.get(&apos;validation&apos;);
+
+    if (typeof schema === &apos;function&apos;) {
+      schema = validation.schemaFromValidationCb(schema);
+    }
+
+    let setSchemaMethod = schema.isJoi ? &apos;setSchema&apos; : &apos;setSchemaRaw&apos;;
+
+    name = name || `DeepHandlerValidation_${new Date().getTime()}`;
+
+    validation[setSchemaMethod](name, schema);
+
+    return name;
   }
 
   /**
@@ -185,6 +251,31 @@ export class Runtime extends Interface {
    */
   createResponse(data) {
     return new Response(this, data);
+  }
+
+  /**
+   * @returns {null|Object}
+   */
+  get calleeConfig() {
+    if (!this._calleeConfig &amp;&amp;
+      this._context &amp;&amp;
+      this._kernel &amp;&amp;
+      this._context.has(&apos;invokedFunctionArn&apos;)) {
+
+      let resource = this._kernel.get(&apos;resource&apos;);
+      let calleeArn = this._context.getOption(&apos;invokedFunctionArn&apos;);
+
+      this._calleeConfig = resource.getActionConfig(calleeArn);
+    }
+
+    return this._calleeConfig;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get validationSchema() {
+    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;
   }
 
   /**
@@ -234,13 +325,20 @@ export class Runtime extends Interface {
       this._loggedUserId = this._context.identity.cognitoIdentityId;
     }
   }
+
+  /**
+   * @returns {String}
+   */
+  static get VALIDATION_SCHEMAS_DIR() {
+    return &apos;__deep_validation_schemas__&apos;;
+  }
 }
 </code></pre>
 
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

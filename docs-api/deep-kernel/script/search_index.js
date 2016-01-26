@@ -330,12 +330,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -415,25 +409,25 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/containeraware.js~containeraware#kernel",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-kernel",
-    "lib/ContainerAware.js~ContainerAware#kernel",
-    "member"
-  ],
-  [
-    "lib/containeraware.js~containeraware#kernel",
     "class/lib/ContainerAware.js~ContainerAware.html#instance-get-kernel",
     "lib/ContainerAware.js~ContainerAware#kernel",
     "member"
   ],
   [
-    "lib/containeraware.js~containeraware#localbackend",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-localBackend",
-    "lib/ContainerAware.js~ContainerAware#localBackend",
+    "lib/containeraware.js~containeraware#kernel",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-kernel",
+    "lib/ContainerAware.js~ContainerAware#kernel",
     "member"
   ],
   [
     "lib/containeraware.js~containeraware#localbackend",
     "class/lib/ContainerAware.js~ContainerAware.html#instance-get-localBackend",
+    "lib/ContainerAware.js~ContainerAware#localBackend",
+    "member"
+  ],
+  [
+    "lib/containeraware.js~containeraware#localbackend",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-localBackend",
     "lib/ContainerAware.js~ContainerAware#localBackend",
     "member"
   ],
@@ -679,13 +673,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/microservice/injectable.js~injectable#microservice",
-    "class/lib/Microservice/Injectable.js~Injectable.html#instance-set-microservice",
+    "class/lib/Microservice/Injectable.js~Injectable.html#instance-get-microservice",
     "lib/Microservice/Injectable.js~Injectable#microservice",
     "member"
   ],
   [
     "lib/microservice/injectable.js~injectable#microservice",
-    "class/lib/Microservice/Injectable.js~Injectable.html#instance-get-microservice",
+    "class/lib/Microservice/Injectable.js~Injectable.html#instance-set-microservice",
     "lib/Microservice/Injectable.js~Injectable#microservice",
     "member"
   ],

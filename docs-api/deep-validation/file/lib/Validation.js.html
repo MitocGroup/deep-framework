@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -35,9 +33,10 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ObjectToJoi.js~ObjectToJoi.html">ObjectToJoi</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Validation.js~Validation.html">Validation</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException.html">InvalidJoiSchemaException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidSchemaException.js~InvalidSchemaException.html">InvalidSchemaException</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html">ModelNotFoundException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException.html">ObjectValidationFailedException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException.html">ValidationSchemaNotFoundException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Helpers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Helpers/Joi.js~Joi.html">Joi</a></span></span></li>
 </ul>
 </div>
@@ -52,7 +51,8 @@
 
 import Kernel from &apos;deep-kernel&apos;;
 import {ObjectToJoi} from &apos;./ObjectToJoi&apos;;
-import {ModelNotFoundException} from &apos;./Exception/ModelNotFoundException&apos;;
+import {ValidationSchemaNotFoundException} from &apos;./Exception/ValidationSchemaNotFoundException&apos;;
+import {InvalidJoiSchemaException} from &apos;./Exception/InvalidJoiSchemaException&apos;;
 import Joi from &apos;joi&apos;;
 import {ObjectValidationFailedException} from &apos;./Exception/ObjectValidationFailedException&apos;;
 import {Exception} from &apos;./Exception/Exception&apos;;
@@ -67,93 +67,131 @@ export class Validation extends Kernel.ContainerAware {
   constructor(models = []) {
     super();
 
-    this._immutable = false;
-    this._models = this._rawModelsToSchemas(models);
+    this._schemas = this._rawModelsToSchemas(models);
   }
 
   /**
-   * @param {Boolean} state
+   * @param {Runtime} lambdaRuntime
+   * @param {String} schemaName
+   * @param {Function} cb
+   * @returns {Validation}
    */
-  set immutable(state) {
-    this._assureImmutable();
+  validateRuntimeInput(lambdaRuntime, schemaName, cb) {
+    if (!this.hasSchema(schemaName)) {
+      lambdaRuntime.createError(new ValidationSchemaNotFoundException(schemaName));
+      return this;
+    }
 
-    this._immutable = state;
+    let validationResult = this.validate(schemaName, lambdaRuntime.request.data, true);
+
+    if (!validationResult.error) {
+      cb(validationResult.value);
+      return this;
+    }
+
+    lambdaRuntime.createError(validationResult.error).send();
+
+    return this;
   }
 
   /**
-   * @returns {Boolean}
-   */
-  get immutable() {
-    return this._immutable;
-  }
-
-  /**
-   * @param {String} modelName
+   * @param {String} schemaName
    * @param {*} valueObject
+   * @param {Boolean} returnRaw
    * @returns {*}
    */
-  validate(modelName, valueObject) {
-    let model = this.get(modelName);
-    let result = Joi.validate(valueObject, Joi.object().keys(model));
+  validate(schemaName, valueObject, returnRaw = false) {
+    let validationSchema = this.getSchema(schemaName);
+
+    let result = Joi.validate(
+      valueObject,
+      validationSchema,
+      {
+        stripUnknown: true,
+        convert: true,
+        abortEarly: false,
+      }
+    );
+
+    if (returnRaw) {
+      return result;
+    }
 
     if (result.error) {
-      throw new ObjectValidationFailedException(modelName, result.error);
+      throw new ObjectValidationFailedException(schemaName, result.error);
     }
 
     return result.value;
   }
 
   /**
-   * @returns {Object[]}
-   */
-  get models() {
-    return this._models;
-  }
-
-  /**
-   * @param {String} modelName
-   * @param {Object} schema
-   * @returns {Validation}
-   */
-  setRaw(modelName, schema) {
-    this._assureImmutable();
-
-    this._models[modelName] = Validation.normalizeSchema(schema);
-
-    return this;
-  }
-
-  /**
-   * @param {String} modelName
-   * @param {Object} schema
-   * @returns {Validation}
-   */
-  set(modelName, schema) {
-    this._assureImmutable();
-
-    this._models[modelName] = schema;
-
-    return this;
-  }
-
-  /**
-   * @param {String} modelName
-   * @returns {Boolean}
-   */
-  has(modelName) {
-    return typeof this._models[modelName] !== &apos;undefined&apos;;
-  }
-
-  /**
-   * @param {String} modelName
+   * @todo: find a better way to inject libraries...
+   *
+   * @param {Function} cb
    * @returns {Object}
    */
-  get(modelName) {
-    if (!this.has(modelName)) {
-      throw new ModelNotFoundException(modelName);
+  schemaFromValidationCb(cb) {
+    return cb(Joi);
+  }
+
+  /**
+   * @returns {Object[]}
+   */
+  get schemas() {
+    return this._schemas;
+  }
+
+  /**
+   * @returns {String[]}
+   */
+  get schemasNames() {
+    return Object.keys(this._schemas);
+  }
+
+  /**
+   * @param {String} schemaName
+   * @param {Object} schema
+   * @returns {Validation}
+   */
+  setSchemaRaw(schemaName, schema) {
+    this._schemas[schemaName] = Validation.normalizeSchema(schema);
+
+    return this;
+  }
+
+  /**
+   * @param {String} schemaName
+   * @param {Object} schema
+   * @returns {Validation}
+   */
+  setSchema(schemaName, schema) {
+    if (!schema.isJoi) {
+      throw new InvalidJoiSchemaException(schemaName);
     }
 
-    return this._models[modelName];
+    this._schemas[schemaName] = schema;
+
+    return this;
+  }
+
+  /**
+   * @param {String} schemaName
+   * @returns {Boolean}
+   */
+  hasSchema(schemaName) {
+    return typeof this._schemas[schemaName] !== &apos;undefined&apos;;
+  }
+
+  /**
+   * @param {String} schemaName
+   * @returns {Object}
+   */
+  getSchema(schemaName) {
+    if (!this.hasSchema(schemaName)) {
+      throw new ValidationSchemaNotFoundException(schemaName);
+    }
+
+    return this._schemas[schemaName];
   }
 
   /**
@@ -163,9 +201,7 @@ export class Validation extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    this._assureImmutable();
-
-    this._models = this._rawModelsToSchemas(kernel.config.models);
+    this._schemas = this._rawModelsToSchemas(kernel.config.models);
 
     callback();
   }
@@ -185,30 +221,21 @@ export class Validation extends Kernel.ContainerAware {
 
       let backendModels = rawModels[modelKey];
 
-      for (let modelName in backendModels) {
-        if (!backendModels.hasOwnProperty(modelName)) {
+      for (let schemaName in backendModels) {
+        if (!backendModels.hasOwnProperty(schemaName)) {
           continue;
         }
 
-        let schema = backendModels[modelName];
+        let schema = backendModels[schemaName];
 
         // @todo: move this sh*t into DB somehow...
         schema.Id = schema.Id || &apos;timeUUID&apos;;
 
-        modelsSchema[modelName] = Validation.normalizeSchema(schema);
+        modelsSchema[schemaName] = Validation.normalizeSchema(schema);
       }
     }
 
     return modelsSchema;
-  }
-
-  /**
-   * @private
-   */
-  _assureImmutable() {
-    if (this._immutable) {
-      throw new Exception(&apos;You are not abble to alter the state after setting it immutable&apos;);
-    }
   }
 
   /**
@@ -224,7 +251,7 @@ export class Validation extends Kernel.ContainerAware {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -53,13 +51,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {SharedCache} from &apos;<span><a href="file/lib/SharedCache.js.html#lineNumber12">deep-cache/lib/SharedCache.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {SharedCache} from &apos;<span><a href="file/lib/SharedCache.js.html#lineNumber14">deep-cache/lib/SharedCache.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/SharedCache.js.html#lineNumber12">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/SharedCache.js.html#lineNumber14">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -147,8 +145,7 @@
       <div>
         
         
-        <div data-ice="description"><p>If key exists do nothing, else create it with specified parameters</p>
-</div>
+        <div data-ice="description">If key exists do nothing, else create it with specified parameters</div>
       </div>
     </td>
     <td>
@@ -168,6 +165,31 @@
       <div>
         <p>
            <span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html#instance-method-buildKeyFromLambdaRuntime">buildKeyFromLambdaRuntime</a></span></span><span data-ice="signature">(runtime: <span>Runtime</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html#instance-method-buildKeyFromRequest">buildKeyFromRequest</a></span></span><span data-ice="signature">(request: <span>Request</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
         </p>
       </div>
       <div>
@@ -227,7 +249,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber16">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber18">source</a></span></span>
     </span>
   </h3>
 
@@ -287,7 +309,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber102">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber144">source</a></span></span>
     </span>
   </h3>
 
@@ -362,7 +384,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber72">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber73">source</a></span></span>
     </span>
   </h3>
 
@@ -418,6 +440,72 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-buildKeyFromRequest">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">buildKeyFromRequest</span><span data-ice="signature">(request: <span>Request</span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber62">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">request</td>
+      <td data-ice="type"><span>Request</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-request">
     <span class="access" data-ice="access">public</span>
     
@@ -428,7 +516,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber34">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/SharedCache.js.html#lineNumber36">source</a></span></span>
     </span>
   </h3>
 
@@ -493,7 +581,7 @@
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -33,6 +31,7 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/FS.js~FS.html">FS</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Registry.js~Registry.html">Registry</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html">UnknownFolderException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html">S3FSRelativeFSExtender</a></span></span></li>
@@ -41,13 +40,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FS} from &apos;<span><a href="file/lib/FS.js.html#lineNumber16">deep-fs/lib/FS.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FS} from &apos;<span><a href="file/lib/FS.js.html#lineNumber17">deep-fs/lib/FS.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/FS.js.html#lineNumber16">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/FS.js.html#lineNumber17">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -144,6 +143,31 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#static-get-RegistryInstance">RegistryInstance</a></span></span><span data-ice="signature">: <span><a href="class/lib/Registry.js~Registry.html">Registry</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      <span data-ice="static">static</span>
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#static-get-SYSTEM">SYSTEM</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
@@ -208,8 +232,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Defines all class private properties</p>
-</div>
+        <div data-ice="description">Defines all class private properties</div>
       </div>
     </td>
     <td>
@@ -241,8 +264,32 @@
       <div>
         
         
-        <div data-ice="description"><p>Returns mounted public folder</p>
-</div>
+        <div data-ice="description">Returns mounted public folder</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-get-registry">registry</a></span></span><span data-ice="signature">: <span><a href="class/lib/Registry.js~Registry.html">Registry</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
       </div>
     </td>
     <td>
@@ -267,8 +314,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Returns mounted sys folder</p>
-</div>
+        <div data-ice="description">Returns mounted sys folder</div>
       </div>
     </td>
     <td>
@@ -293,8 +339,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Returns mounted tmp folder</p>
-</div>
+        <div data-ice="description">Returns mounted tmp folder</div>
       </div>
     </td>
     <td>
@@ -326,8 +371,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Booting a certain service</p>
-</div>
+        <div data-ice="description">Booting a certain service</div>
       </div>
     </td>
     <td>
@@ -352,8 +396,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Returns mounted file system folder (tmp, public or system)</p>
-</div>
+        <div data-ice="description">Returns mounted file system folder (tmp, public or system)</div>
       </div>
     </td>
     <td>
@@ -380,7 +423,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber59">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber77">source</a></span></span>
     </span>
   </h3>
 
@@ -430,7 +473,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber45">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber63">source</a></span></span>
     </span>
   </h3>
 
@@ -470,6 +513,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-get-RegistryInstance">
+    <span class="access" data-ice="access">public</span>
+    <span data-ice="static">static</span>
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">RegistryInstance</span><span data-ice="signature">: <span><a href="class/lib/Registry.js~Registry.html">Registry</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber42">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Registry.js~Registry.html">Registry</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-get-SYSTEM">
     <span class="access" data-ice="access">public</span>
     <span data-ice="static">static</span>
@@ -480,7 +573,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber52">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber70">source</a></span></span>
     </span>
   </h3>
 
@@ -530,7 +623,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber38">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber56">source</a></span></span>
     </span>
   </h3>
 
@@ -584,7 +677,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber24">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber25">source</a></span></span>
     </span>
   </h3>
 
@@ -656,7 +749,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber147">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber167">source</a></span></span>
     </span>
   </h3>
 
@@ -697,6 +790,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-registry">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">registry</span><span data-ice="signature">: <span><a href="class/lib/Registry.js~Registry.html">Registry</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber49">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Registry.js~Registry.html">Registry</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-system">
     <span class="access" data-ice="access">public</span>
     
@@ -707,7 +850,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber156">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber176">source</a></span></span>
     </span>
   </h3>
 
@@ -758,7 +901,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber138">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber158">source</a></span></span>
     </span>
   </h3>
 
@@ -812,7 +955,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber73">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber91">source</a></span></span>
     </span>
   </h3>
 
@@ -875,7 +1018,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber95">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber115">source</a></span></span>
     </span>
   </h3>
 
@@ -935,7 +1078,7 @@
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

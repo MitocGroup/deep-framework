@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -10,10 +9,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Vogels from 'vogels';\nimport {ExtendModel} from './Vogels/ExtendModel';\nimport {ModelNotFoundException} from './Exception/ModelNotFoundException';\nimport Validation from 'deep-validation';\nimport Utils from 'util';\nimport {FailedToCreateTableException} from './Exception/FailedToCreateTableException';\nimport {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';\nimport {AbstractDriver} from './Local/Driver/AbstractDriver';\n\n/**\n * Vogels wrapper\n */\nexport class DB extends Kernel.ContainerAware {\n  /**\n   * @param {Array} models\n   * @param {Object} tablesNames\n   */\n  constructor(models = [], tablesNames = {}) {\n    super();\n\n    // @todo: set retries in a smarter way...\n    Vogels.AWS.config.maxRetries = 3;\n\n    this._tablesNames = tablesNames;\n    this._validation = new Validation(models);\n    this._models = this._rawModelsToVogels(models);\n\n    // @todo: remove?\n    this._localDbProcess = null;\n  }\n\n  /**\n   * @returns {Validation}\n   */\n  get validation() {\n    return this._validation;\n  }\n\n  /**\n   * @returns {Vogels[]}\n   */\n  get models() {\n    return this._models;\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Boolean}\n   */\n  has(modelName) {\n    return typeof this._models[modelName] !== 'undefined';\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Vogels}\n   */\n  get(modelName) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    return this._models[modelName];\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTable(modelName, callback, options = {}) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n    options[modelName] = options;\n\n    Vogels.createTables(options, function(error) {\n      if (error) {\n        throw new FailedToCreateTableException(modelName);\n      }\n\n      callback();\n    }.bind(this));\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTables(callback, options = {}) {\n    let allModelsOptions = {};\n    let allModelNames = [];\n\n    for (let modelName in this._models) {\n      if (!this._models.hasOwnProperty(modelName)) {\n        continue;\n      }\n\n      allModelsOptions[modelName] = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n      allModelNames.push(modelName);\n    }\n\n    Vogels.createTables(allModelsOptions, function(error) {\n      if (error) {\n        throw new FailedToCreateTablesException(allModelNames, error);\n      }\n\n      callback();\n    }.bind(this));\n\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._validation.boot(kernel, function() {\n      this._validation.immutable = true;\n\n      this._tablesNames = kernel.config.tablesNames;\n      this._models = this._rawModelsToVogels(kernel.config.models);\n\n      if (this._localBackend) {\n        this._enableLocalDB(callback);\n      } else {\n        callback();\n      }\n    }.bind(this));\n  }\n\n  /**\n   * @param {Object} driver\n   * @returns {DB}\n   * @private\n   */\n  _setVogelsDriver(driver) {\n    Vogels.dynamoDriver(driver);\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {String} driver\n   * @param {Number} tts\n   * @returns {AbstractDriver}\n   */\n  static startLocalDynamoDBServer(callback, driver = 'LocalDynamo', tts = AbstractDriver.DEFAULT_TTS) {\n    let LocalDBServer = require('./Local/DBServer').DBServer;\n\n    let server = LocalDBServer.create(driver);\n\n    server.start(callback, tts);\n\n    return server;\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _enableLocalDB(callback) {\n    this._setVogelsDriver(\n      new Vogels.AWS.DynamoDB({\n        endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),\n        accessKeyId: 'fake',\n        secretAccessKey: 'fake',\n        region: 'us-east-1',\n      })\n    );\n\n    this.assureTables(callback);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_TABLE_OPTIONS() {\n    return {\n      readCapacity: 5,\n      writeCapacity: 5,\n    };\n  }\n\n  /**\n   * @param {Array} rawModels\n   * @returns {Object}\n   */\n  _rawModelsToVogels(rawModels) {\n    let models = {};\n\n    for (let modelKey in rawModels) {\n      if (!rawModels.hasOwnProperty(modelKey)) {\n        continue;\n      }\n\n      let backendModels = rawModels[modelKey];\n\n      for (let modelName in backendModels) {\n        if (!backendModels.hasOwnProperty(modelName)) {\n          continue;\n        }\n\n        models[modelName] = new ExtendModel(Vogels.define(\n          modelName,\n          this._wrapModelSchema(modelName)\n        )).inject();\n      }\n    }\n\n    return models;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   * @private\n   */\n  _wrapModelSchema(name) {\n    return {\n      hashKey: 'Id',\n      timestamps: true,\n      tableName: this._tablesNames[name],\n      schema: this._validation.get(name),\n    };\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get LOCAL_DB_PORT() {\n    return AbstractDriver.DEFAULT_PORT;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Vogels from 'vogels';\nimport {ExtendModel} from './Vogels/ExtendModel';\nimport {ModelNotFoundException} from './Exception/ModelNotFoundException';\nimport Validation from 'deep-validation';\nimport Utils from 'util';\nimport {FailedToCreateTableException} from './Exception/FailedToCreateTableException';\nimport {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';\nimport {AbstractDriver} from './Local/Driver/AbstractDriver';\n\n/**\n * Vogels wrapper\n */\nexport class DB extends Kernel.ContainerAware {\n  /**\n   * @param {Array} models\n   * @param {Object} tablesNames\n   */\n  constructor(models = [], tablesNames = {}) {\n    super();\n\n    // @todo: set retries in a smarter way...\n    Vogels.AWS.config.maxRetries = 3;\n\n    this._tablesNames = tablesNames;\n    this._validation = new Validation(models);\n    this._models = this._rawModelsToVogels(models);\n\n    // @todo: remove?\n    this._localDbProcess = null;\n  }\n\n  /**\n   * @returns {Validation}\n   */\n  get validation() {\n    return this._validation;\n  }\n\n  /**\n   * @returns {Vogels[]}\n   */\n  get models() {\n    return this._models;\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Boolean}\n   */\n  has(modelName) {\n    return typeof this._models[modelName] !== 'undefined';\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Vogels}\n   */\n  get(modelName) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    return this._models[modelName];\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTable(modelName, callback, options = {}) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n    options[modelName] = options;\n\n    Vogels.createTables(options, (error) => {\n      if (error) {\n        throw new FailedToCreateTableException(modelName);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTables(callback, options = {}) {\n    let allModelsOptions = {};\n    let allModelNames = [];\n\n    for (let modelName in this._models) {\n      if (!this._models.hasOwnProperty(modelName)) {\n        continue;\n      }\n\n      allModelsOptions[modelName] = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n      allModelNames.push(modelName);\n    }\n\n    Vogels.createTables(allModelsOptions, (error) => {\n      if (error) {\n        throw new FailedToCreateTablesException(allModelNames, error);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._validation.boot(kernel, () => {\n      this._tablesNames = kernel.config.tablesNames;\n      this._models = this._rawModelsToVogels(kernel.config.models);\n\n      if (this._localBackend) {\n        this._enableLocalDB(callback);\n      } else {\n        callback();\n      }\n    });\n  }\n\n  /**\n   * @param {Object} driver\n   * @returns {DB}\n   * @private\n   */\n  _setVogelsDriver(driver) {\n    Vogels.dynamoDriver(driver);\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {String} driver\n   * @param {Number} tts\n   * @returns {AbstractDriver}\n   */\n  static startLocalDynamoDBServer(callback, driver = 'LocalDynamo', tts = AbstractDriver.DEFAULT_TTS) {\n    let LocalDBServer = require('./Local/DBServer').DBServer;\n\n    let server = LocalDBServer.create(driver);\n\n    server.start(callback, tts);\n\n    return server;\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _enableLocalDB(callback) {\n    this._setVogelsDriver(\n      new Vogels.AWS.DynamoDB({\n        endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),\n        accessKeyId: 'fake',\n        secretAccessKey: 'fake',\n        region: 'us-east-1',\n      })\n    );\n\n    this.assureTables(callback);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_TABLE_OPTIONS() {\n    return {\n      readCapacity: 5,\n      writeCapacity: 5,\n    };\n  }\n\n  /**\n   * @param {Array} rawModels\n   * @returns {Object}\n   */\n  _rawModelsToVogels(rawModels) {\n    let models = {};\n\n    for (let modelKey in rawModels) {\n      if (!rawModels.hasOwnProperty(modelKey)) {\n        continue;\n      }\n\n      let backendModels = rawModels[modelKey];\n\n      for (let modelName in backendModels) {\n        if (!backendModels.hasOwnProperty(modelName)) {\n          continue;\n        }\n\n        models[modelName] = new ExtendModel(Vogels.define(\n          modelName,\n          this._wrapModelSchema(modelName)\n        )).inject();\n      }\n    }\n\n    return models;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   * @private\n   */\n  _wrapModelSchema(name) {\n    return {\n      hashKey: 'Id',\n      timestamps: true,\n      tableName: this._tablesNames[name],\n      schema: this._validation.getSchema(name),\n    };\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get LOCAL_DB_PORT() {\n    return AbstractDriver.DEFAULT_PORT;\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -32,7 +30,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -67,7 +64,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -85,7 +81,6 @@
     }
   },
   {
-    "__docId__": 4,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -103,7 +98,6 @@
     }
   },
   {
-    "__docId__": 5,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -121,7 +115,6 @@
     }
   },
   {
-    "__docId__": 6,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -139,7 +132,6 @@
     }
   },
   {
-    "__docId__": 7,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -171,7 +163,6 @@
     "generator": false
   },
   {
-    "__docId__": 8,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -203,7 +194,6 @@
     "generator": false
   },
   {
-    "__docId__": 9,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -242,7 +232,6 @@
     "generator": false
   },
   {
-    "__docId__": 10,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -281,7 +270,6 @@
     "generator": false
   },
   {
-    "__docId__": 11,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -340,7 +328,6 @@
     "generator": false
   },
   {
-    "__docId__": 12,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -389,7 +376,6 @@
     "generator": false
   },
   {
-    "__docId__": 13,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -424,7 +410,6 @@
     "generator": false
   },
   {
-    "__docId__": 14,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -433,7 +418,7 @@
     "longname": "lib/DB.js~DB#_tablesNames",
     "access": null,
     "description": null,
-    "lineNumber": 137,
+    "lineNumber": 135,
     "undocument": true,
     "type": {
       "types": [
@@ -442,7 +427,6 @@
     }
   },
   {
-    "__docId__": 15,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -451,7 +435,7 @@
     "longname": "lib/DB.js~DB#_models",
     "access": null,
     "description": null,
-    "lineNumber": 138,
+    "lineNumber": 136,
     "undocument": true,
     "type": {
       "types": [
@@ -460,7 +444,6 @@
     }
   },
   {
-    "__docId__": 16,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -469,7 +452,7 @@
     "longname": "lib/DB.js~DB#_setVogelsDriver",
     "access": "private",
     "description": null,
-    "lineNumber": 153,
+    "lineNumber": 151,
     "unknown": [
       {
         "tagName": "@returns",
@@ -499,7 +482,6 @@
     "generator": false
   },
   {
-    "__docId__": 17,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -508,7 +490,7 @@
     "longname": "lib/DB.js~DB.startLocalDynamoDBServer",
     "access": null,
     "description": null,
-    "lineNumber": 165,
+    "lineNumber": 163,
     "unknown": [
       {
         "tagName": "@returns",
@@ -558,7 +540,6 @@
     "generator": false
   },
   {
-    "__docId__": 18,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -567,7 +548,7 @@
     "longname": "lib/DB.js~DB#_enableLocalDB",
     "access": "private",
     "description": null,
-    "lineNumber": 179,
+    "lineNumber": 177,
     "params": [
       {
         "nullable": null,
@@ -583,7 +564,6 @@
     "generator": false
   },
   {
-    "__docId__": 19,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -592,7 +572,7 @@
     "longname": "lib/DB.js~DB.DEFAULT_TABLE_OPTIONS",
     "access": null,
     "description": null,
-    "lineNumber": 195,
+    "lineNumber": 193,
     "unknown": [
       {
         "tagName": "@returns",
@@ -615,7 +595,6 @@
     "generator": false
   },
   {
-    "__docId__": 20,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -624,7 +603,7 @@
     "longname": "lib/DB.js~DB#_rawModelsToVogels",
     "access": null,
     "description": null,
-    "lineNumber": 206,
+    "lineNumber": 204,
     "unknown": [
       {
         "tagName": "@returns",
@@ -654,7 +633,6 @@
     "generator": false
   },
   {
-    "__docId__": 21,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -663,7 +641,7 @@
     "longname": "lib/DB.js~DB#_wrapModelSchema",
     "access": "private",
     "description": null,
-    "lineNumber": 236,
+    "lineNumber": 234,
     "unknown": [
       {
         "tagName": "@returns",
@@ -693,7 +671,6 @@
     "generator": false
   },
   {
-    "__docId__": 22,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -702,7 +679,7 @@
     "longname": "lib/DB.js~DB.LOCAL_DB_PORT",
     "access": null,
     "description": null,
-    "lineNumber": 248,
+    "lineNumber": 246,
     "unknown": [
       {
         "tagName": "@returns",
@@ -725,7 +702,6 @@
     "generator": false
   },
   {
-    "__docId__": 23,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -738,7 +714,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 24,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -757,7 +732,6 @@
     ]
   },
   {
-    "__docId__": 25,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -782,7 +756,6 @@
     "generator": false
   },
   {
-    "__docId__": 26,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -795,7 +768,6 @@
     "content": "/**\n * Created by AlexanderC on 6/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\nexport class FailedToCreateTableException extends Exception {\n  /**\n   * @param {String} tableName\n   */\n  constructor(tableName) {\n    super(`Failed to create table for model ${tableName}`);\n  }\n}\n"
   },
   {
-    "__docId__": 27,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -815,7 +787,6 @@
     ]
   },
   {
-    "__docId__": 28,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -840,7 +811,6 @@
     "generator": false
   },
   {
-    "__docId__": 29,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -853,7 +823,6 @@
     "content": "/**\n * Created by mgoria on 6/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\nexport class FailedToCreateTablesException extends Exception {\n  /**\n   * @param {Array} tablesNames\n   * @param {String} error\n   */\n  constructor(tablesNames, error) {\n    super(`Failed to create ${tablesNames} tables. ${error}`);\n  }\n}\n"
   },
   {
-    "__docId__": 30,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -873,7 +842,6 @@
     ]
   },
   {
-    "__docId__": 31,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -908,7 +876,6 @@
     "generator": false
   },
   {
-    "__docId__": 32,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -921,7 +888,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when missing requested model\n */\nexport class ModelNotFoundException extends Exception {\n  /**\n   * @param {String} modelName\n   */\n  constructor(modelName) {\n    super(`Model ${modelName} was not found`);\n  }\n}\n"
   },
   {
-    "__docId__": 33,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -940,7 +906,6 @@
     ]
   },
   {
-    "__docId__": 34,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -965,7 +930,6 @@
     "generator": false
   },
   {
-    "__docId__": 35,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -978,7 +942,6 @@
     "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport {LocalDynamo} from './Driver/LocalDynamo';\nimport {Dynalite} from './Driver/Dynalite';\n\nexport class DBServer {\n  /**\n   * @param {Function|String} driver\n   * @param {*} args\n   * @returns {Function}\n   */\n  static create(driver = DBServer.DEFAULT_DRIVER, ...args) {\n    let DriverProto = typeof driver === 'string'\n      ? DBServer._findDriverPrototype(driver)\n      : driver;\n\n    if (!DriverProto) {\n      throw new Error(`Missing DB server driver ${driver}`);\n    }\n\n    return new DriverProto(...args);\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Function}\n   * @private\n   */\n  static _findDriverPrototype(name) {\n    for (let driverProtoKey in DBServer.DRIVERS) {\n      if (!DBServer.DRIVERS.hasOwnProperty(driverProtoKey)) {\n        continue;\n      }\n\n      let driverProto = DBServer.DRIVERS[driverProtoKey];\n\n      if (driverProto.name === name) {\n        return driverProto;\n      }\n    }\n\n    return null;\n  }\n\n  /**\n   * @returns {Function[]}\n   */\n  static get DRIVERS() {\n    return [\n      LocalDynamo,\n      Dynalite,\n    ];\n  }\n\n  /**\n   * @returns {Function}\n   */\n  static get DEFAULT_DRIVER() {\n    return DBServer.DRIVERS[0];\n  }\n}\n"
   },
   {
-    "__docId__": 36,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -995,7 +958,6 @@
     "interface": false
   },
   {
-    "__docId__": 37,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1045,7 +1007,6 @@
     "generator": false
   },
   {
-    "__docId__": 38,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1084,7 +1045,6 @@
     "generator": false
   },
   {
-    "__docId__": 39,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1116,7 +1076,6 @@
     "generator": false
   },
   {
-    "__docId__": 40,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1148,7 +1107,6 @@
     "generator": false
   },
   {
-    "__docId__": 41,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1161,7 +1119,6 @@
     "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {ServerAlreadyRunningException} from './Exception/ServerAlreadyRunningException';\nimport {ServerTtsExceededException} from './Exception/ServerTtsExceededException';\n\nexport class AbstractDriver extends Core.OOP.Interface {\n  /**\n   * @param {Number} port\n   */\n  constructor(port = AbstractDriver.DEFAULT_PORT) {\n    super('_start', '_stop');\n\n    this._running = false;\n    this._port = port;\n    this._teardownHook = false;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get port() {\n    return this._port;\n  }\n\n  /**\n   * @param {Number} port\n   */\n  set port(port) {\n    this._port = port;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get running() {\n    return this._running;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   * @private\n   */\n  _registerTeardownHook() {\n    if (this._teardownHook) {\n      return this;\n    }\n\n    this._teardownHook = true;\n\n    process.once('uncaughtException', (error) => {\n      this.stop(() => '');\n\n      throw error;\n    });\n\n    process.once('exit', () => {\n      this.stop(() => '');\n    });\n\n    return this;\n  }\n\n  /**\n   * @todo: better way to control the timeout of server startup...\n   *\n   * @param {Number} tts\n   * @param {Function} cb\n   * @private\n   */\n  _triggerOnTtsExpired(tts, cb) {\n    setTimeout(() => {\n      if (!this._running) {\n        cb();\n      }\n    }, tts * 1000);\n  }\n\n  /**\n   * @param {Function} cb\n   * @param {Number} tts\n   * @returns {AbstractDriver}\n   */\n  start(cb, tts = AbstractDriver.DEFAULT_TTS) {\n    if (this._running) {\n      cb(new ServerAlreadyRunningException(this));\n\n      return this;\n    }\n\n    let _cbTriggered = false;\n\n    this._start((error, ...args) => {\n      _cbTriggered = true;\n\n      if (!error) {\n        this._running = true;\n        this._registerTeardownHook();\n      }\n\n      cb(error, ...args);\n    });\n\n    this._triggerOnTtsExpired(tts, () => {\n      if (!_cbTriggered) {\n        _cbTriggered = true;\n\n        cb(new ServerTtsExceededException(this, tts));\n      }\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  stop(cb) {\n    if (!this._running) {\n      cb(null);\n\n      return this;\n    }\n\n    this._stop((error, ...args) => {\n      if (!error) {\n        this._running = false;\n      }\n\n      cb(error, ...args);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  restart(cb) {\n    this.stop((error) => {\n      if (error) {\n        cb(error);\n\n        return;\n      }\n\n      this.start(cb);\n    });\n\n    return this;\n  }\n\n  /**\n   * @todo: decrease it when local-dynamo fixed\n   *\n   * @returns {Number}\n   */\n  static get DEFAULT_TTS() {\n    return 60;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get DEFAULT_PORT() {\n    return 8877;\n  }\n}\n"
   },
   {
-    "__docId__": 42,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1181,7 +1138,6 @@
     ]
   },
   {
-    "__docId__": 43,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1206,7 +1162,6 @@
     "generator": false
   },
   {
-    "__docId__": 44,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1224,7 +1179,6 @@
     }
   },
   {
-    "__docId__": 45,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1242,7 +1196,6 @@
     }
   },
   {
-    "__docId__": 46,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1260,7 +1213,6 @@
     }
   },
   {
-    "__docId__": 47,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1292,7 +1244,6 @@
     "generator": false
   },
   {
-    "__docId__": 48,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -1322,7 +1273,6 @@
     "generator": false
   },
   {
-    "__docId__": 49,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1340,7 +1290,6 @@
     }
   },
   {
-    "__docId__": 50,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1372,7 +1321,6 @@
     "generator": false
   },
   {
-    "__docId__": 51,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1400,7 +1348,6 @@
     "generator": false
   },
   {
-    "__docId__": 52,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1418,7 +1365,6 @@
     }
   },
   {
-    "__docId__": 53,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1459,7 +1405,6 @@
     "generator": false
   },
   {
-    "__docId__": 54,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1508,7 +1453,6 @@
     "generator": false
   },
   {
-    "__docId__": 55,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1526,7 +1470,6 @@
     }
   },
   {
-    "__docId__": 56,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1565,7 +1508,6 @@
     "generator": false
   },
   {
-    "__docId__": 57,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1583,7 +1525,6 @@
     }
   },
   {
-    "__docId__": 58,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1622,7 +1563,6 @@
     "generator": false
   },
   {
-    "__docId__": 59,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1658,7 +1598,6 @@
     "generator": false
   },
   {
-    "__docId__": 60,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1690,7 +1629,6 @@
     "generator": false
   },
   {
-    "__docId__": 61,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1703,7 +1641,6 @@
     "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport {PathAwareDriver} from './PathAwareDriver';\nimport DynaliteServer from 'dynalite';\nimport {FailedToStartServerException} from './Exception/FailedToStartServerException';\n\nexport class Dynalite extends PathAwareDriver {\n  /**\n   * @param {Object} options\n   * @param {String} path\n   * @param {Number} port\n   */\n  constructor(options = Dynalite.DEFAULT_OPTIONS, path = Dynalite.DBPath, port = Dynalite.DEFAULT_PORT) {\n    super(path, port);\n\n    this._options = options;\n    this._server = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get options() {\n    return this._options;\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _start(cb) {\n    this._options.path = this.path;\n\n    this._server = DynaliteServer(this._options);\n\n    this._server.listen(this.port, (error) => {\n      if (error) {\n        cb(new FailedToStartServerException(this, error));\n        return;\n      }\n\n      cb(null);\n    });\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _stop(cb) {\n    if (this._server) {\n      this._server.close(cb);\n      this._server = null;\n\n      return;\n    }\n\n    cb(null);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_OPTIONS() {\n    return {\n      createTableMs: 0,\n      deleteTableMs: 0,\n      updateTableMs: 0,\n    };\n  }\n}\n"
   },
   {
-    "__docId__": 62,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1723,7 +1660,6 @@
     ]
   },
   {
-    "__docId__": 63,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1768,7 +1704,6 @@
     "generator": false
   },
   {
-    "__docId__": 64,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1786,7 +1721,6 @@
     }
   },
   {
-    "__docId__": 65,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1804,7 +1738,6 @@
     }
   },
   {
-    "__docId__": 66,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1836,7 +1769,6 @@
     "generator": false
   },
   {
-    "__docId__": 67,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1861,7 +1793,6 @@
     "generator": false
   },
   {
-    "__docId__": 68,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1879,7 +1810,6 @@
     }
   },
   {
-    "__docId__": 69,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1904,7 +1834,6 @@
     "generator": false
   },
   {
-    "__docId__": 70,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1922,7 +1851,6 @@
     }
   },
   {
-    "__docId__": 71,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1954,7 +1882,6 @@
     "generator": false
   },
   {
-    "__docId__": 72,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1967,7 +1894,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 73,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1986,7 +1912,6 @@
     ]
   },
   {
-    "__docId__": 74,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2011,7 +1936,6 @@
     "generator": false
   },
   {
-    "__docId__": 75,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2024,7 +1948,6 @@
     "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\nexport class FailedToStartServerException extends Exception {\n  /**\n   * @param {Object} driver\n   * @param {String} error\n   */\n  constructor(driver, error) {\n    super(`Failed to start DB server ${driver.constructor.name} on port ${driver.port}: ${error}`);\n  }\n}\n"
   },
   {
-    "__docId__": 76,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2044,7 +1967,6 @@
     ]
   },
   {
-    "__docId__": 77,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2079,7 +2001,6 @@
     "generator": false
   },
   {
-    "__docId__": 78,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2092,7 +2013,6 @@
     "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\nexport class ServerAlreadyRunningException extends Exception {\n  /**\n   * @param {Object} driver\n   */\n  constructor(driver) {\n    super(`The DB server ${driver.constructor.name} on port ${driver.port} is already running`);\n  }\n}\n"
   },
   {
-    "__docId__": 79,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2112,7 +2032,6 @@
     ]
   },
   {
-    "__docId__": 80,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2137,7 +2056,6 @@
     "generator": false
   },
   {
-    "__docId__": 81,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2150,7 +2068,6 @@
     "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\nexport class ServerTtsExceededException extends Exception {\n  /**\n   * @param {Object} driver\n   * @param {Number} tts\n   */\n  constructor(driver, tts) {\n    super(`The DB server's ${driver.constructor.name} tts of ${tts} seconds exceeded`);\n  }\n}\n"
   },
   {
-    "__docId__": 82,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2170,7 +2087,6 @@
     ]
   },
   {
-    "__docId__": 83,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2205,7 +2121,6 @@
     "generator": false
   },
   {
-    "__docId__": 84,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2218,7 +2133,6 @@
     "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport {PathAwareDriver} from './PathAwareDriver';\nimport LocalDynamoServer from 'local-dynamo';\nimport {FailedToStartServerException} from './Exception/FailedToStartServerException';\nimport fse from 'fs-extra';\n\nexport class LocalDynamo extends PathAwareDriver {\n  /**\n   * @param {Object} options\n   * @param {String} path\n   * @param {Number} port\n   */\n  constructor(options = LocalDynamo.DEFAULT_OPTIONS, path = LocalDynamo.DBPath, port = LocalDynamo.DEFAULT_PORT) {\n    super(path, port);\n\n    this._options = options;\n    this._process = null;\n\n    this._pickUpOldInstance = true; // @todo: set it false by default?\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get pickUpOldInstance() {\n    return this._pickUpOldInstance;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set pickUpOldInstance(state) {\n    this._pickUpOldInstance = state;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get options() {\n    return this._options;\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _start(cb) {\n    let cbTriggered = false;\n\n    // avoid local-dynamo package issues...\n    fse.ensureDirSync(this.path);\n\n    this._options.dir = this.path;\n\n    try {\n      this._process = LocalDynamoServer.launch(this._options, this.port);\n    } catch (error) {\n      this._pickUpOldInstance\n        ? cb(null)\n        : cb(new FailedToStartServerException(this, error));\n\n      return;\n    }\n\n    // This hook fixes DynamoDB startup delay by waiting an empty stdout dataset\n    // @todo: remove this hook after fixing issue!\n    this._process.stdout.on('data', (data) => {\n      if (data.toString() && !cbTriggered) {\n        cbTriggered = true;\n        cb(null);\n      }\n    });\n\n    let onError = (error) => {\n      this._stop(() => {});\n\n      if (!cbTriggered) {\n        cbTriggered = true;\n        cb(new FailedToStartServerException(this, error));\n      }\n    };\n\n    this._process.on('uncaughtException', onError);\n    this._process.on('error', onError);\n    this._process.on('exit', () => {\n      this.stop(() => '');\n    });\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _stop(cb) {\n    if (this._process) {\n      this._process.kill();\n      this._process = null;\n    }\n\n    cb(null);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_OPTIONS() {\n    return {\n      stdio: 'pipe',\n    };\n  }\n}\n"
   },
   {
-    "__docId__": 85,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2238,7 +2152,6 @@
     ]
   },
   {
-    "__docId__": 86,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2283,7 +2196,6 @@
     "generator": false
   },
   {
-    "__docId__": 87,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2301,7 +2213,6 @@
     }
   },
   {
-    "__docId__": 88,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2319,7 +2230,6 @@
     }
   },
   {
-    "__docId__": 89,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2337,7 +2247,6 @@
     }
   },
   {
-    "__docId__": 90,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2369,7 +2278,6 @@
     "generator": false
   },
   {
-    "__docId__": 91,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2399,7 +2307,6 @@
     "generator": false
   },
   {
-    "__docId__": 92,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2417,7 +2324,6 @@
     }
   },
   {
-    "__docId__": 93,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2449,7 +2355,6 @@
     "generator": false
   },
   {
-    "__docId__": 94,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2474,7 +2379,6 @@
     "generator": false
   },
   {
-    "__docId__": 95,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2492,7 +2396,6 @@
     }
   },
   {
-    "__docId__": 96,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2517,7 +2420,6 @@
     "generator": false
   },
   {
-    "__docId__": 97,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2535,7 +2437,6 @@
     }
   },
   {
-    "__docId__": 98,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2567,7 +2468,6 @@
     "generator": false
   },
   {
-    "__docId__": 99,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2580,7 +2480,6 @@
     "content": "/**\n * Created by AlexanderC on 9/23/15.\n */\n\n'use strict';\n\nimport OS from 'os';\nimport FileSystem from 'fs';\nimport Path from 'path';\nimport {AbstractDriver} from './AbstractDriver';\n\nexport class PathAwareDriver extends AbstractDriver {\n  /**\n   * @param {String} path\n   * @param {Number} port\n   */\n  constructor(path = PathAwareDriver.DBPath, port = PathAwareDriver.DEFAULT_PORT) {\n    super(port);\n\n    this._path = path;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get path() {\n    return this._path;\n  }\n\n  /**\n   * @param {String} path\n   */\n  set path(path) {\n    this._path = path;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DBPath() {\n    let dir = Path.join(OS.tmpdir(), this.name);\n\n    // @todo: do it async!\n    if (!FileSystem.existsSync(dir)) {\n      FileSystem.mkdirSync(dir);\n    }\n\n    return dir;\n  }\n}\n"
   },
   {
-    "__docId__": 100,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2600,7 +2499,6 @@
     ]
   },
   {
-    "__docId__": 101,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2635,7 +2533,6 @@
     "generator": false
   },
   {
-    "__docId__": 102,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2653,7 +2550,6 @@
     }
   },
   {
-    "__docId__": 103,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2685,7 +2581,6 @@
     "generator": false
   },
   {
-    "__docId__": 104,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2715,7 +2610,6 @@
     "generator": false
   },
   {
-    "__docId__": 105,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2733,7 +2627,6 @@
     }
   },
   {
-    "__docId__": 106,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2765,7 +2658,6 @@
     "generator": false
   },
   {
-    "__docId__": 107,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2778,7 +2670,6 @@
     "content": "/**\n * Created by Stefan Hariton on 6/25/15.\n */\n\n'use strict';\n\nimport {Exception as BaseException} from '../../Exception/Exception';\n\n/**\n * Base exception\n */\nexport class Exception extends BaseException {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 108,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2797,7 +2688,6 @@
     ]
   },
   {
-    "__docId__": 109,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2822,7 +2712,6 @@
     "generator": false
   },
   {
-    "__docId__": 110,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2835,7 +2724,6 @@
     "content": "/**\n * Created by Stefan Hariton on 6/26/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when invalid argument provided\n */\nexport class InvalidArgumentException extends Exception {\n  /**\n   * @param {*} argument\n   * @param {String} meantType\n   */\n  constructor(argument, meantType) {\n    let argumentType = typeof argument;\n\n    super(`Invalid argument ${argument} of type ${argumentType} provided (meant ${meantType}).`);\n  }\n}\n"
   },
   {
-    "__docId__": 111,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2854,7 +2742,6 @@
     ]
   },
   {
-    "__docId__": 112,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2889,7 +2776,6 @@
     "generator": false
   },
   {
-    "__docId__": 113,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2902,7 +2788,6 @@
     "content": "/**\n * Created by Stefan Hariton on 6/26/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when undefined method is requested\n */\nexport class UndefinedMethodException extends Exception {\n  /**\n   * @param name\n   * @param availableMethods\n   */\n  constructor(name, availableMethods) {\n    super(`Method: ${name} does not exist. Available methods:${availableMethods}).`);\n  }\n}\n"
   },
   {
-    "__docId__": 114,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2921,7 +2806,6 @@
     ]
   },
   {
-    "__docId__": 115,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2956,7 +2840,6 @@
     "generator": false
   },
   {
-    "__docId__": 116,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2969,7 +2852,6 @@
     "content": "/**\n * Created by Stefan Hariton on 6/26/15.\n */\n\n'use strict';\n\nimport UndefinedMethodException from './Exceptions/UndefinedMethodException';\n\n/**\n * Extends standard Vogels models\n */\nexport class ExtendModel {\n  /**\n   * @param {Object} model\n   */\n  constructor(model) {\n    this._model = model;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get model() {\n    return this._model;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get DEFAULT_LIMIT() {\n    return 10;\n  }\n\n  /**\n   * @returns {number}\n   */\n  static get DEFAULT_SEGMENTS_NUMBER() {\n    return 4;\n  }\n\n  /**\n   * Makes filterExpression, filtersExpressionValues and filterExpressionNames from an object, that are used to make\n   * a DynamoDb scan\n   *\n   * @param {Object} params\n   * @returns {Object}\n   */\n  static buildScanParameters(params) {\n    let filterExpression = '';\n    let filterExpressionValues = {};\n    let filterExpressionNames = {};\n    let first = true;\n\n    for (let key in params) {\n      if (!params.hasOwnProperty(key)) {\n        continue;\n      }\n\n      let fieldValue = params[key];\n\n      let fieldName = `#${key}`;\n      let fieldValueName = `:${key}`;\n\n      if (!first) {\n        filterExpression += ' AND ';\n      }\n\n      filterExpression += `${fieldName} = ${fieldValueName}`;\n      filterExpressionValues[fieldValueName] = fieldValue;\n      filterExpressionNames[fieldName] = key;\n      first = false;\n    }\n\n    return {\n      filterExpression: filterExpression,\n      filterExpressionValues: filterExpressionValues,\n      filterExpressionNames: filterExpressionNames,\n    };\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get methods() {\n    let _this = this;\n\n    return {\n      findAll: function(cb) {\n        return _this.model.scan().loadAll().exec(cb);\n      },\n\n      findAllPaginated: function(startKey, limit, cb) {\n        return _this.model\n          .scan()\n          .startKey(startKey)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      findOneById: function(id, cb) {\n        return _this.model.get(id, cb);\n      },\n\n      findOneBy: function(fieldName, value, cb) {\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .limit(1)\n          .exec(cb);\n      },\n\n      findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      findAllBy: function(fieldName, value, cb) {\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .loadAll()\n          .exec(cb);\n      },\n\n      findAllByPaginated: function(fieldName, value, startKey, limit, cb) {\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .startKey(startKey)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      findMatching: function(params, cb, limit = ExtendModel.DEFAULT_LIMIT) {\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      findOneMatching: function(params, cb) {\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(1)\n          .exec(cb);\n      },\n\n      findAllMatching: function(params, cb) {\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .loadAll()\n          .exec(cb);\n      },\n\n      findAllMatchingPaginated: function(params, startKey, limit, cb) {\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .startKey(startKey)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      deleteById: function(id, cb) {\n        return _this.model.destroy(id, cb);\n      },\n\n      deleteByIdConditional: function(id, condition, cb) {\n        return _this.model.destroy(id, condition, cb);\n      },\n\n      createItem: function(data, cb) {\n        return _this.model.create(data, cb);\n      },\n\n      createUniqueOnFields: function(fields, data, cb) {\n        let scanCb = function(err, data) {\n          if (err) {\n            return cb(err, data);\n          }\n\n          if (data.Count) {\n            return cb(`Item like ${data} already exists`);\n          }\n\n          return _this.model.create(data, cb);\n        };\n\n        let scanParams = {};\n        for (let fieldKey in fields) {\n          if (!fields.hasOwnProperty(fieldKey)) {\n            continue;\n          }\n\n          let field = fields[fieldKey];\n\n          scanParams[field] = data[field];\n        }\n\n        scanParams = ExtendModel.buildScanParameters(scanParams);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(1)\n          .exec(scanCb);\n      },\n\n      updateItem: function(id, data, cb) {\n        data.Id = id;\n\n        return _this.model.update(data, cb);\n      },\n\n      updateItemConditional: function(id, data, condition, cb) {\n        data.Id = id;\n\n        return _this.model.update(data, condition, cb);\n      },\n    };\n  }\n\n  /**\n   * Injects the specified methods or all\n   *\n   * @param {Array} methods\n   */\n  inject(methods = null) {\n    let predefinedMethods = this.methods;\n    let predefinedMethodsNames = Object.keys(predefinedMethods);\n\n    methods = methods || predefinedMethodsNames;\n\n    for (let methodKey in methods) {\n      if (!methods.hasOwnProperty(methodKey)) {\n        continue;\n      }\n\n      let methodName = methods[methodKey];\n\n      if (!predefinedMethods.hasOwnProperty(methodName)) {\n        throw new UndefinedMethodException(methodName, predefinedMethodsNames);\n      }\n\n      this._model[methodName] = predefinedMethods[methodName];\n    }\n\n    return this._model;\n  }\n}\n"
   },
   {
-    "__docId__": 117,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2985,7 +2867,6 @@
     "interface": false
   },
   {
-    "__docId__": 118,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3010,7 +2891,6 @@
     "generator": false
   },
   {
-    "__docId__": 119,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3028,7 +2908,6 @@
     }
   },
   {
-    "__docId__": 120,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3060,7 +2939,6 @@
     "generator": false
   },
   {
-    "__docId__": 121,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3092,7 +2970,6 @@
     "generator": false
   },
   {
-    "__docId__": 122,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3124,7 +3001,6 @@
     "generator": false
   },
   {
-    "__docId__": 123,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3163,7 +3039,6 @@
     "generator": false
   },
   {
-    "__docId__": 124,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3195,7 +3070,6 @@
     "generator": false
   },
   {
-    "__docId__": 125,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3225,7 +3099,6 @@
     "generator": false
   },
   {
-    "__docId__": 126,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3238,7 +3111,6 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {DB} from './DB';\n\nlet exports = module.exports = DB;\n"
   },
   {
-    "__docId__": 127,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -3259,7 +3131,6 @@
     }
   },
   {
-    "__docId__": 129,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3272,7 +3143,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 130,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3285,7 +3155,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 131,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3298,7 +3167,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 132,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3311,7 +3179,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 133,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3324,7 +3191,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 134,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3337,7 +3203,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 135,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3350,7 +3215,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 136,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3363,7 +3227,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 137,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3376,7 +3239,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 138,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3389,7 +3251,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 139,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3402,7 +3263,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 140,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3415,7 +3275,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 141,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3428,7 +3287,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 142,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3441,7 +3299,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 143,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3454,7 +3311,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 144,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3467,7 +3323,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 145,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3480,7 +3335,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 146,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3493,7 +3347,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 147,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3506,7 +3359,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 148,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3519,7 +3371,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 149,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3532,7 +3383,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 150,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3545,7 +3395,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 151,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3558,7 +3407,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 152,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3571,7 +3419,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 153,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3584,7 +3431,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 154,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3597,7 +3443,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 155,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3610,7 +3455,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 156,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3623,7 +3467,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 157,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3636,7 +3479,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 158,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3649,7 +3491,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 159,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3662,7 +3503,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 160,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3675,7 +3515,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 161,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3688,7 +3527,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 162,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3701,7 +3539,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 163,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3714,7 +3551,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 164,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3727,7 +3563,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 165,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3740,7 +3575,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 166,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3753,7 +3587,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 167,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3766,7 +3599,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 168,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3779,7 +3611,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 169,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3792,7 +3623,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 170,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3805,7 +3635,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 171,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3818,7 +3647,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 172,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3831,7 +3659,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 173,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3844,7 +3671,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 174,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3857,7 +3683,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 175,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3870,7 +3695,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 177,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3883,7 +3707,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 178,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3896,7 +3719,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 179,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3909,7 +3731,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 180,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3922,7 +3743,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 181,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3935,7 +3755,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 182,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3948,7 +3767,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 183,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3956,19 +3774,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 184,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

@@ -1,6 +1,6 @@
 {
   "name": "deep-resource",
-  "version": "1.5.9",
+  "version": "1.6.0",
   "description": "DEEP Resource Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -60,16 +60,13 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd --timeout 4s",
-    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
-    "prepublish": "npm run compile",
-    "pretest": "npm link deep-kernel deep-core deep-cache deep-security"
+    "test": "bash node-bin/test.sh",
+    "compile": "bash node-bin/compile.sh",
+    "prepublish": "npm run compile"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
-    "deep-cache": "^1.x.x",
-    "deep-security": "^1.x.x",
     "superagent": "^1.4.x",
     "aws4": "1.1.x",
     "url-parse": "^1.0.x",
@@ -79,6 +76,9 @@
     "aws-sdk": "^2.2.x"
   },
   "devDependencies": {
+    "deep-cache": "^1.x.x",
+    "deep-security": "^1.x.x",
+    "deep-validation": "file:../deep-validation",
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
     "sinon-chai": "^2.8.x",

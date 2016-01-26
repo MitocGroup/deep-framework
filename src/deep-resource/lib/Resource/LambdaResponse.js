@@ -5,6 +5,7 @@
 'use strict';
 
 import {Response} from './Response';
+import {ValidationError} from './Exception/ValidationError';
 
 /**
  * Response object
@@ -89,10 +90,12 @@ export class LambdaResponse extends Response {
 
   /**
    * @param {Object} payload
-   * @returns {Error|null}
+   * @returns {Error|ValidationError|null}
    */
   static getPayloadError(payload) {
-    if (payload.errorMessage) {
+    if (LambdaResponse.isValidationError(payload)) {
+      return new ValidationError(payload.errorMessage, payload.validationErrors);
+    } else if (payload.errorMessage) {
 
       // check for error object (on context.failed called)
       if (!payload.hasOwnProperty('errorType') &&
@@ -140,5 +143,23 @@ export class LambdaResponse extends Response {
     }
 
     return null;
+  }
+
+  /**
+   * @param {Object} payload
+   * @returns {Boolean}
+   */
+  static isValidationError(payload) {
+    return payload.hasOwnProperty('errorType') &&
+      payload.hasOwnProperty('errorMessage') &&
+      payload.hasOwnProperty('validationErrors') &&
+      payload.errorType === LambdaResponse.VALIDATION_ERROR_TYPE;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get VALIDATION_ERROR_TYPE() {
+    return 'ValidationError';
   }
 }

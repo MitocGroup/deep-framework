@@ -8,6 +8,7 @@ import {Action} from '../../lib/Resource/Action';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
+import Validation from 'deep-validation';
 import KernelFactory from '../common/KernelFactory';
 
 suite('Resource/Response', function() {
@@ -44,6 +45,7 @@ suite('Resource/Response', function() {
       Cache: Cache,
       Security: Security,
       Resource: Resource,
+      Validation: Validation,
     }, callback);
   });
 

@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {Kernel} from './Kernel';\nimport {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException';\n\n/**\n * @todo - rename it to AbstractService (ContainerAware doesn't make sense anymore)\n *\n * Container aware instance\n */\nexport class ContainerAware extends MicroserviceInjectable {\n  constructor() {\n    super();\n\n    this._kernel = null;\n    this._localBackend = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this.constructor.name.toLowerCase();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get service() {\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: override in child service\n    callback();\n  }\n\n  /**\n   * @param {Object|String} microservice\n   * @returns {Injectable}\n   */\n  bind(microservice) {\n\n    // @todo: find more smart way of doing this...\n    if (typeof microservice === 'string') {\n      microservice = this.kernel.microservice(microservice);\n    }\n\n    return super.bind(microservice);\n  }\n\n  /**\n   * @param {String} identifier (e.g. @microservice_identifier:resource[:action])\n   * @returns {String}\n   *\n   * @private\n   */\n  _resolveIdentifier(identifier) {\n    let regExp = /^@\\s*([^:]+)\\s*:\\s*([^\\s]+)\\s*$/;\n\n    if (typeof identifier === 'string' && regExp.test(identifier)) {\n      let parts = identifier.match(regExp);\n\n      this.bind(parts[1]); // microservice identifier\n\n      return parts[2]; // resource identifier\n    } else {\n      throw new InvalidDeepIdentifierException(identifier);\n    }\n  }\n\n  /**\n   * @returns {DI|null}\n   */\n  get container() {\n    return this._kernel ? this._kernel.container : null;\n  }\n\n  /**\n   * @param {Kernel} kernel\n   */\n  set kernel(kernel) {\n    this._kernel = kernel;\n  }\n\n  /**\n   * @returns {Kernel}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this.container.get(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -35,7 +33,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -50,7 +47,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -68,7 +64,6 @@
     }
   },
   {
-    "__docId__": 4,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -86,7 +81,6 @@
     }
   },
   {
-    "__docId__": 5,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -118,7 +112,6 @@
     "generator": false
   },
   {
-    "__docId__": 6,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -148,7 +141,6 @@
     "generator": false
   },
   {
-    "__docId__": 7,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -166,7 +158,6 @@
     }
   },
   {
-    "__docId__": 8,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -198,7 +189,6 @@
     "generator": false
   },
   {
-    "__docId__": 9,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -230,7 +220,6 @@
     "generator": false
   },
   {
-    "__docId__": 10,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -265,7 +254,6 @@
     "generator": false
   },
   {
-    "__docId__": 11,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -305,7 +293,6 @@
     "generator": false
   },
   {
-    "__docId__": 12,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -344,7 +331,6 @@
     "generator": false
   },
   {
-    "__docId__": 13,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -377,7 +363,6 @@
     "generator": false
   },
   {
-    "__docId__": 14,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -407,7 +392,6 @@
     "generator": false
   },
   {
-    "__docId__": 15,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -425,7 +409,6 @@
     }
   },
   {
-    "__docId__": 16,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -457,7 +440,6 @@
     "generator": false
   },
   {
-    "__docId__": 17,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -496,7 +478,6 @@
     "generator": false
   },
   {
-    "__docId__": 18,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -509,7 +490,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any kernel exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 19,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -528,7 +508,6 @@
     ]
   },
   {
-    "__docId__": 20,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -553,7 +532,6 @@
     "generator": false
   },
   {
-    "__docId__": 21,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -566,7 +544,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when trying to parse an invalid deep identifier\n */\nexport class InvalidDeepIdentifierException extends Exception {\n  /**\n   * @param {String} identifier\n   */\n  constructor(identifier) {\n    super(`Invalid deep identifier \"${identifier}\". It should conform to the following format: @microservice_identifier:resource_identifier.`);\n  }\n}\n"
   },
   {
-    "__docId__": 22,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -585,7 +562,6 @@
     ]
   },
   {
-    "__docId__": 23,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -610,7 +586,6 @@
     "generator": false
   },
   {
-    "__docId__": 24,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -623,7 +598,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when missing requested microservice\n */\nexport class MissingMicroserviceException extends Exception {\n  /**\n   * @param {String} microserviceIdentifier\n   */\n  constructor(microserviceIdentifier) {\n    super(`Missing microservice ${microserviceIdentifier} in Kernel container`);\n  }\n}\n"
   },
   {
-    "__docId__": 25,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -642,7 +616,6 @@
     ]
   },
   {
-    "__docId__": 26,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -667,7 +640,6 @@
     "generator": false
   },
   {
-    "__docId__": 27,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -680,7 +652,6 @@
     "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport FileSystem from 'fs';\nimport WaitUntil from 'wait-until';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Microservice}\n   */\n  microservice(identifier) {\n    if (typeof identifier === 'undefined') {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {String} jsonFile\n   * @param {Function} callback\n   * @returns {Kernel}\n   */\n  loadFromFile(jsonFile, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    if (this.isBackend) {\n      FileSystem.readFile(jsonFile, 'utf8', function(error, data) {\n        if (error) {\n          throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);\n        }\n\n        this.load(JSON.parse(data), callback);\n      }.bind(this));\n    } else { // @todo: get rid of native code...\n      var client = new XMLHttpRequest();\n\n      client.open('GET', jsonFile);\n      client.onreadystatechange = function(event) {\n        if (client.readyState === 4) {\n          if (client.status !== 200) {\n            throw new Exception(`Failed to load kernel config from ${jsonFile}`);\n          }\n\n          this.load(JSON.parse(client.responseText), callback);\n        }\n      }.bind(this);\n\n      client.send();\n    }\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} globalConfig\n   * @param {Function} callback\n   */\n  load(globalConfig, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = function(kernel) {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    }.bind(this);\n\n    this._config = globalConfig;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend\n      && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      if (!serviceInstance instanceof ContainerAware) {\n        let serviceType = typeof serviceInstance;\n\n        throw new Exception(`Service ${serviceType} must be Kernel.ContainerAware instance`);\n      }\n\n      bootingServices++;\n\n      serviceInstance.kernel = this;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, function() {\n        bootingServices--;\n      }.bind(this));\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(5)\n      .times(999999) // @todo: get rid of magic here...\n      .condition(function(cb) {\n        process.nextTick(function() {\n          cb(bootingServices <= 0);\n        }.bind(this));\n      }).done(function() {\n        callback(this);\n      }.bind(this));\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n}\n"
   },
   {
-    "__docId__": 28,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -696,7 +667,6 @@
     "interface": false
   },
   {
-    "__docId__": 29,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -731,7 +701,6 @@
     "generator": false
   },
   {
-    "__docId__": 30,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -749,7 +718,6 @@
     }
   },
   {
-    "__docId__": 31,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -767,7 +735,6 @@
     }
   },
   {
-    "__docId__": 32,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -785,7 +752,6 @@
     }
   },
   {
-    "__docId__": 33,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -803,7 +769,6 @@
     }
   },
   {
-    "__docId__": 34,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -821,7 +786,6 @@
     }
   },
   {
-    "__docId__": 35,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -839,7 +803,6 @@
     }
   },
   {
-    "__docId__": 36,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -871,7 +834,6 @@
     "generator": false
   },
   {
-    "__docId__": 37,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -910,7 +872,6 @@
     "generator": false
   },
   {
-    "__docId__": 38,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -959,7 +920,6 @@
     "generator": false
   },
   {
-    "__docId__": 39,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -999,7 +959,6 @@
     "generator": false
   },
   {
-    "__docId__": 40,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1017,7 +976,6 @@
     }
   },
   {
-    "__docId__": 41,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1035,7 +993,6 @@
     }
   },
   {
-    "__docId__": 42,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1074,7 +1031,6 @@
     "generator": false
   },
   {
-    "__docId__": 43,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1106,7 +1062,6 @@
     "generator": false
   },
   {
-    "__docId__": 44,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1138,7 +1093,6 @@
     "generator": false
   },
   {
-    "__docId__": 45,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1170,7 +1124,6 @@
     "generator": false
   },
   {
-    "__docId__": 46,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1202,7 +1155,6 @@
     "generator": false
   },
   {
-    "__docId__": 47,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1234,7 +1186,6 @@
     "generator": false
   },
   {
-    "__docId__": 48,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1266,7 +1217,6 @@
     "generator": false
   },
   {
-    "__docId__": 49,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1298,7 +1248,6 @@
     "generator": false
   },
   {
-    "__docId__": 50,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1330,7 +1279,6 @@
     "generator": false
   },
   {
-    "__docId__": 51,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1362,7 +1310,6 @@
     "generator": false
   },
   {
-    "__docId__": 52,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1394,7 +1341,6 @@
     "generator": false
   },
   {
-    "__docId__": 53,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1419,7 +1365,6 @@
     "generator": false
   },
   {
-    "__docId__": 54,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1437,7 +1382,6 @@
     }
   },
   {
-    "__docId__": 55,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1479,7 +1423,6 @@
     "generator": false
   },
   {
-    "__docId__": 56,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1511,7 +1454,6 @@
     "generator": false
   },
   {
-    "__docId__": 57,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1543,7 +1485,6 @@
     "generator": false
   },
   {
-    "__docId__": 58,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1575,7 +1516,6 @@
     "generator": false
   },
   {
-    "__docId__": 59,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1607,7 +1547,6 @@
     "generator": false
   },
   {
-    "__docId__": 60,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1639,7 +1578,6 @@
     "generator": false
   },
   {
-    "__docId__": 61,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1671,7 +1609,6 @@
     "generator": false
   },
   {
-    "__docId__": 62,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1703,7 +1640,6 @@
     "generator": false
   },
   {
-    "__docId__": 63,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1735,7 +1671,6 @@
     "generator": false
   },
   {
-    "__docId__": 64,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1767,7 +1702,6 @@
     "generator": false
   },
   {
-    "__docId__": 65,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1799,7 +1733,6 @@
     "generator": false
   },
   {
-    "__docId__": 66,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1812,7 +1745,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\n/**\n * Thrown when no working microservice set\n */\nexport class MissingWorkingMicroserviceException extends Exception {\n  constructor() {\n    super('Missing working microservice from Kernel.MicroserviceInjectable');\n  }\n}\n"
   },
   {
-    "__docId__": 67,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1831,7 +1763,6 @@
     ]
   },
   {
-    "__docId__": 68,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1846,7 +1777,6 @@
     "generator": false
   },
   {
-    "__docId__": 69,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1859,7 +1789,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Instance} from './Instance';\nimport Core from 'deep-core';\nimport {MissingWorkingMicroserviceException} from './Exception/MissingWorkingMicroserviceException';\n\n/**\n * Microservice injectable object\n */\nexport class Injectable {\n  constructor() {\n    this._microservice = null;\n  }\n\n  /**\n   * @param {Instance} microservice\n   * @returns {Injectable}\n   */\n  bind(microservice) {\n    this.microservice = microservice;\n\n    return this;\n  }\n\n  /**\n   * @returns {Instance}\n   */\n  get microservice() {\n    if (this._microservice === null) {\n      throw new MissingWorkingMicroserviceException();\n    }\n\n    return this._microservice;\n  }\n\n  /**\n   * @param {Instance} instance\n   */\n  set microservice(instance) {\n    if (!(instance instanceof Instance)) {\n      throw new Core.Exception.InvalidArgumentException(microservice, 'Microservice');\n    }\n\n    this._microservice = instance;\n  }\n}\n"
   },
   {
-    "__docId__": 70,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1875,7 +1804,6 @@
     "interface": false
   },
   {
-    "__docId__": 71,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1890,7 +1818,6 @@
     "generator": false
   },
   {
-    "__docId__": 72,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1908,7 +1835,6 @@
     }
   },
   {
-    "__docId__": 73,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1947,7 +1873,6 @@
     "generator": false
   },
   {
-    "__docId__": 74,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1965,7 +1890,6 @@
     }
   },
   {
-    "__docId__": 75,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1997,7 +1921,6 @@
     "generator": false
   },
   {
-    "__docId__": 76,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2027,7 +1950,6 @@
     "generator": false
   },
   {
-    "__docId__": 77,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2045,7 +1967,6 @@
     }
   },
   {
-    "__docId__": 78,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2058,7 +1979,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {Injectable} from './Injectable';\n\n/**\n * Microservice instance class\n */\nexport class Instance {\n  /**\n   * @param {String} identifier\n   * @param {Object} rawResources\n   */\n  constructor(identifier, rawResources) {\n    this._isRoot = false;\n    this._rawResources = rawResources;\n    this._identifier = identifier;\n  }\n\n  /**\n   * @param {Object} globalConfig\n   * @returns {Instance[]}\n   */\n  static createVector(globalConfig) {\n    let vector = [];\n\n    for (let identifier in globalConfig.microservices) {\n      if (!globalConfig.microservices.hasOwnProperty(identifier)) {\n        continue;\n      }\n\n      let microservice = globalConfig.microservices[identifier];\n\n      let microserviceObject = new Instance(identifier, microservice.resources);\n      microserviceObject.isRoot = microservice.isRoot;\n\n      vector.push(microserviceObject);\n    }\n\n    return vector;\n  }\n\n  /**\n   * @param {Object} objectInstance\n   * @return {Object}\n   */\n  inject(objectInstance) {\n    if (!(objectInstance instanceof Injectable)) {\n      throw new Core.Exception.InvalidArgumentException(objectInstance, 'deep-kernel.Injectable');\n    }\n\n    objectInstance.microservice = this;\n\n    return objectInstance;\n  }\n\n  /**\n   * @returns {String}\n   */\n  toString() {\n    return this._identifier;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get rawResources() {\n    return this._rawResources;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identifier() {\n    return this._identifier;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set isRoot(state) {\n    this._isRoot = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isRoot() {\n    return this._isRoot;\n  }\n}\n"
   },
   {
-    "__docId__": 79,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2074,7 +1994,6 @@
     "interface": false
   },
   {
-    "__docId__": 80,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2109,7 +2028,6 @@
     "generator": false
   },
   {
-    "__docId__": 81,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2127,7 +2045,6 @@
     }
   },
   {
-    "__docId__": 82,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2145,7 +2062,6 @@
     }
   },
   {
-    "__docId__": 83,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2163,7 +2079,6 @@
     }
   },
   {
-    "__docId__": 84,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2202,7 +2117,6 @@
     "generator": false
   },
   {
-    "__docId__": 85,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2235,7 +2149,6 @@
     "generator": false
   },
   {
-    "__docId__": 86,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2263,7 +2176,6 @@
     "generator": false
   },
   {
-    "__docId__": 87,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2295,7 +2207,6 @@
     "generator": false
   },
   {
-    "__docId__": 88,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2327,7 +2238,6 @@
     "generator": false
   },
   {
-    "__docId__": 89,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2357,7 +2267,6 @@
     "generator": false
   },
   {
-    "__docId__": 90,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2375,7 +2284,6 @@
     }
   },
   {
-    "__docId__": 91,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2407,7 +2315,6 @@
     "generator": false
   },
   {
-    "__docId__": 92,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2420,7 +2327,6 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Kernel} from './Kernel';\n\nlet exports = module.exports = Kernel;\n"
   },
   {
-    "__docId__": 93,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -2441,7 +2347,6 @@
     }
   },
   {
-    "__docId__": 95,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2454,7 +2359,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 96,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2467,7 +2371,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 97,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2480,7 +2383,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 98,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2493,7 +2395,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 99,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2506,7 +2407,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 100,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2519,7 +2419,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 101,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2532,7 +2431,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 102,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2545,7 +2443,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 103,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2558,7 +2455,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 104,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2571,7 +2467,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 105,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2584,7 +2479,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 106,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2597,7 +2491,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 107,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2610,7 +2503,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 108,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2623,7 +2515,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 109,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2636,7 +2527,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 110,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2649,7 +2539,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 111,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2662,7 +2551,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 112,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2675,7 +2563,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 113,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2688,7 +2575,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 114,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2701,7 +2587,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 115,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2714,7 +2599,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 116,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2727,7 +2611,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 117,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2740,7 +2623,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 118,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2753,7 +2635,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 119,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2766,7 +2647,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 120,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2779,7 +2659,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 121,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2792,7 +2671,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 122,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2805,7 +2683,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 123,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2818,7 +2695,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 124,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2831,7 +2707,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 125,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2844,7 +2719,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 126,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2857,7 +2731,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 127,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2870,7 +2743,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 128,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2883,7 +2755,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 129,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2896,7 +2767,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 130,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2909,7 +2779,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 131,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2922,7 +2791,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 132,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2935,7 +2803,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 133,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2948,7 +2815,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 134,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2961,7 +2827,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 135,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2974,7 +2839,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 136,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2987,7 +2851,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 137,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3000,7 +2863,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 138,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3013,7 +2875,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 139,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3026,7 +2887,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 140,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3039,7 +2899,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 141,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3052,7 +2911,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 143,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3065,7 +2923,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 144,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3078,7 +2935,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 145,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3091,7 +2947,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 146,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3104,7 +2959,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 147,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3117,7 +2971,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 148,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3130,7 +2983,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 149,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3138,19 +2990,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 150,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

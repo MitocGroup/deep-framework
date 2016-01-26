@@ -16,5 +16,14 @@ export class ObjectValidationFailedException extends Exception {
    */
   constructor(schemaName, error) {
     super(`Object validation failed on schema ${schemaName}: ${error}`);
+
+    this._originalError = error;
+  }
+
+  /**
+   * @returns {Error}
+   */
+  get originalError() {
+    return this._originalError;
   }
 }

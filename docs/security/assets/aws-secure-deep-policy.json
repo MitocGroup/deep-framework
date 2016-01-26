@@ -4,7 +4,6 @@
     {
       "Effect": "Allow",
       "Action": [
-        "apigateway:*",
         "cloudfront:createDistribution",
         "cloudfront:deleteDistribution",
         "cloudfront:getDistribution",
@@ -37,7 +36,11 @@
         "lambda:deleteFunction",
         "lambda:listFunctions",
         "lambda:updateFunctionCode",
-        "s3:*"
+        "s3:*",
+        "sqs:*",
+        "logs:*",
+        "cloudsearch:*",
+        "apigateway:*"
       ],
       "Resource": "*"
     }

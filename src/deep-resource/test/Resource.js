@@ -13,6 +13,7 @@ import {InvalidDeepIdentifierException}
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
+import Validation from 'deep-validation';
 import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
@@ -45,6 +46,7 @@ suite('Resource', function() {
       Cache: Cache,
       Security: Security,
       Resource: Resource,
+      Validation: Validation,
     }, callback);
   });
 

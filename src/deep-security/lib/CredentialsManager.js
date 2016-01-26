@@ -80,7 +80,7 @@ export class CredentialsManager {
    * @param {String} identityId
    * @param {Function} callback
    */
-  loadCredentials(identityId, callback) {
+  loadBackendCredentials(identityId, callback) {
     let cognitosync = new AWS.CognitoSync();
 
     let params = {
@@ -105,6 +105,38 @@ export class CredentialsManager {
 
       callback(null, creds);
     });
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  loadFrontendCredentials(callback) {
+    this._createOrGetDataset((error, dataset) => {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+
+      dataset.get(CredentialsManager.RECORD_NAME, (error, data) => {
+        if (error) {
+          callback(error, null);
+          return;
+        }
+
+        callback(null, this._decodeCredentials(data));
+      });
+    });
+  }
+
+  /**
+   * Deletes cached credentials from local storage
+   *
+   * @returns {CredentialsManager}
+   */
+  deleteCredentials() {
+    this.cognitoSyncClient.wipeData();
+
+    return this;
   }
 
   /**
@@ -164,22 +196,56 @@ export class CredentialsManager {
    */
   _encodeCredentials(credentials) {
     // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore
-    credentials = Object.defineProperty(credentials, 'secretAccessKey', {
-      enumerable: true,
-      writable: true,
-      configurable: true
-    });
+    credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');
 
-    return JSON.stringify(credentials);
+    // save only credentials instead of all CognitoIdentityCredentials instance
+    let awsCredentials = {
+      expired: credentials.expired,
+      expireTime: credentials.expireTime,
+      accessKeyId: credentials.accessKeyId,
+      secretAccessKey: credentials.secretAccessKey,
+      sessionToken: credentials.sessionToken,
+    };
+
+    return JSON.stringify(awsCredentials);
   }
 
   /**
-   * @todo: implement an encoding method
+   * @todo: implement a decoding method
    *
    * @param {String} credentials
    * @returns {Object}
    */
   _decodeCredentials(credentials) {
-    return JSON.parse(credentials);
+    if (credentials && typeof credentials === 'string') {
+      credentials = JSON.parse(credentials);
+      let expireTime = credentials.expireTime;
+
+      credentials = new AWS.Credentials(credentials);
+
+      // restore expireTime because AWS.Credentials resets it to null
+      credentials.expireTime = expireTime;
+
+      // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore
+      credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');
+    }
+
+    return credentials;
+  }
+
+  /**
+   * @param {Object} obj
+   * @param {String} key
+   * @returns {Object}
+   * @private
+   */
+  _makeKeyEnumerable(obj, key) {
+    obj = Object.defineProperty(obj, key, {
+      enumerable: true,
+      writable: true,
+      configurable: true
+    });
+
+    return obj;
   }
 }
