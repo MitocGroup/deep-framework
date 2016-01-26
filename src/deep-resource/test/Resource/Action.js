@@ -1,5 +1,4 @@
 'use strict';
-'use strict';
 
 import chai from 'chai';
 import {Action} from '../../lib/Resource/Action';
