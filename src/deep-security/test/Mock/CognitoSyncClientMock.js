@@ -36,12 +36,20 @@ export class CognitoSyncClientMock {
         callback(null, new Dataset(Dataset.FAILURE_MODE, ['synchronize']));
         break;
 
+      case CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_GET_DATASET:
+        callback(null, new Dataset(Dataset.FAILURE_MODE, ['get']));
+        break;
+
       case CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_PUT_DATASET:
         callback(null, new Dataset(Dataset.DATA_MODE, ['put']));
         break;
 
       case CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_SYNCHRONIZE_DATASET:
         callback(null, new Dataset(Dataset.DATA_MODE, ['synchronize']));
+        break;
+
+      case CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_GET_DATASET:
+        callback(null, new Dataset(Dataset.DATA_MODE, ['get']));
         break;
 
       case CognitoSyncClientMock.DATA_MODE:
@@ -125,7 +133,7 @@ export class CognitoSyncClientMock {
    * @returns {number}
    * @constructor
    */
-  static get DATA_MODE_WITH_DATA_IN_PUT_DATASET() {
+  static get DATA_MODE_WITH_ERROR_IN_GET_DATASET() {
     return 4;
   }
 
@@ -133,7 +141,7 @@ export class CognitoSyncClientMock {
    * @returns {number}
    * @constructor
    */
-  static get DATA_MODE_WITH_DATA_IN_SYNCHRONIZE_DATASET() {
+  static get DATA_MODE_WITH_DATA_IN_PUT_DATASET() {
     return 5;
   }
 
@@ -141,8 +149,24 @@ export class CognitoSyncClientMock {
    * @returns {number}
    * @constructor
    */
-  static get DATA_MODE() {
+  static get DATA_MODE_WITH_DATA_IN_SYNCHRONIZE_DATASET() {
     return 6;
+  }
+
+  /**
+   * @returns {number}
+   * @constructor
+   */
+  static get DATA_MODE_WITH_DATA_IN_GET_DATASET() {
+    return 7;
+  }
+
+  /**
+   * @returns {number}
+   * @constructor
+   */
+  static get DATA_MODE() {
+    return 8;
   }
 
   /**
@@ -155,8 +179,10 @@ export class CognitoSyncClientMock {
       CognitoSyncClientMock.FAILURE_MODE,
       CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_PUT_DATASET,
       CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_SYNCHRONIZE_DATASET,
+      CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_GET_DATASET,
       CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_PUT_DATASET,
       CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_SYNCHRONIZE_DATASET,
+      CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_GET_DATASET,
       CognitoSyncClientMock.DATA_MODE,
     ];
   }

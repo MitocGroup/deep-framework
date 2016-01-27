@@ -19,6 +19,8 @@ import {SynchronizeCognitoDatasetException} from '../lib/Exception/SynchronizeCo
 chai.use(sinonChai);
 
 suite('CredentialsManager', function() {
+  AWS.config.region = 'us-east-1';
+  AWS.config.credentials = credentials;
   let identityPoolId = 'us-east-1:7e2e9d57-wswed-asdasdas-22f4-595e1d8128c5';
 
   let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
@@ -59,8 +61,6 @@ suite('CredentialsManager', function() {
   });
 
   test('Check cognitoSyncClient getter returns instance of AWS.CognitoSyncManager', function() {
-    AWS.config.region = 'us-east-1';
-    AWS.config.credentials = credentials;
 
     let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
       'aws-sdk': cognitoSyncClient,
@@ -257,5 +257,72 @@ suite('CredentialsManager', function() {
     }
 
     chai.expect(spyCallback.args[0][1]).to.eql(expectedResult);
+  });
+
+  test('Check loadFrontendCredentials executes with error in _createOrGetDataset()', function() {
+    let spyCallback = sinon.spy();
+
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
+      'aws-sdk': cognitoSyncClient,
+    });
+
+    let CredentialsManager = credentialsManagerExport.CredentialsManager;
+    let credentialsManager = new CredentialsManager(identityPoolId);
+
+    //set failure mode
+    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']);
+
+    credentialsManager.loadFrontendCredentials(spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.assert.instanceOf(
+      callbackArg[0],
+      CreateCognitoDatasetException,
+      'callback error argument is an instance of CreateCognitoDatasetException'
+    );
+    chai.expect(callbackArg[1]).to.equal(null);
+  });
+
+  test('Check loadFrontendCredentials executes with error in dataset.get()', function() {
+    let spyCallback = sinon.spy();
+
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
+      'aws-sdk': cognitoSyncClient,
+    });
+
+    let CredentialsManager = credentialsManagerExport.CredentialsManager;
+    let credentialsManager = new CredentialsManager(identityPoolId);
+
+    //set failure mode
+    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_GET_DATASET, ['openOrCreateDataset']);
+
+    credentialsManager.loadFrontendCredentials(spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.expect(callbackArg[0]).to.eql(Dataset.ERROR);
+    chai.expect(callbackArg[1]).to.equal(null);
+  });
+
+  test('Check loadFrontendCredentials executes with data in dataset.get()', function() {
+    let spyCallback = sinon.spy();
+
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
+      'aws-sdk': cognitoSyncClient,
+    });
+
+    let CredentialsManager = credentialsManagerExport.CredentialsManager;
+    let credentialsManager = new CredentialsManager(identityPoolId);
+
+    //set failure mode
+    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_GET_DATASET, ['openOrCreateDataset']);
+
+    credentialsManager.loadFrontendCredentials(spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.expect(callbackArg[0]).to.equal(null);
+    chai.expect(callbackArg[1]).to.eql(Dataset.DATA);
   });
 });

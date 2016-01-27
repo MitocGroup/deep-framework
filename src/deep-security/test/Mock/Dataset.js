@@ -58,6 +58,17 @@ export class Dataset {
   }
 
   /**
+   * @param {String} recordName
+   * @param {Function} callback
+   * @returns {Dataset}
+   */
+  get(recordName, callback) {
+    this.getCallbackByMode(this._methodsBehavior.get('get'), callback);
+
+    return this;
+  }
+
+  /**
    * @param {Conflict[]} resolved
    * @param {Function} callback
    * @returns {Dataset}
@@ -217,6 +228,7 @@ export class Dataset {
     return [
       'put',
       'synchronize',
+      'get',
     ];
   }
 }

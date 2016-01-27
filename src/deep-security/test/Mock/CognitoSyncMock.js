@@ -21,7 +21,6 @@ export class CognitoSyncMock {
    * @param {Function} callback
    */
   getCallbackByMode(mode, callback) {
-    console.log('mode: ', mode);
     switch (mode) {
       case CognitoSyncMock.NO_RESULT_MODE:
         callback(null, null);
