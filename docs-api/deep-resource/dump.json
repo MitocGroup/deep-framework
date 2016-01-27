@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -32,7 +30,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -57,7 +54,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -70,7 +66,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when requested resource not found\n */\nexport class MissingResourceException extends Exception {\n  /**\n   * @param {String} microserviceIdentifier\n   * @param {String} resourceIdentifier\n   */\n  constructor(microserviceIdentifier, resourceIdentifier) {\n    super(`Missing resource ${resourceIdentifier} in ${microserviceIdentifier}`);\n  }\n}\n"
   },
   {
-    "__docId__": 4,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -89,7 +84,6 @@
     ]
   },
   {
-    "__docId__": 5,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -124,7 +118,6 @@
     "generator": false
   },
   {
-    "__docId__": 6,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -134,10 +127,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 8/4/15.\n */\n\n'use strict';\n\nimport {UnknownMethodException} from './Exception/UnknownMethodException';\nimport {Request} from './Request';\nimport {LocalRequest} from './LocalRequest';\n\n/**\n * Resource action\n */\nexport class Action {\n  /**\n   * @param {Instance} resource\n   * @param {String} name\n   * @param {String} type\n   * @param {Array} methods\n   * @param {Object} source\n   * @param {String} region\n   * @param {Boolean} forceUserIdentity\n   * @param {Object} apiCache\n   */\n  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache) {\n    this._resource = resource;\n    this._name = name;\n    this._type = type;\n    this._methods = methods;\n    this._source = source;\n    this._region = region;\n    this._forceUserIdentity = forceUserIdentity;\n    this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;\n    this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;\n  }\n\n  /**\n   * @param {Object} payload\n   * @param {String} method\n   */\n  request(payload = {}, method = null) {\n    method = method || (this._methods.length > 0 ? this._methods[0] : Instance.HTTP_VERBS[0]);\n\n    if (this._methods.length > 0 && this._methods.indexOf(method) === -1) {\n      throw new UnknownMethodException(method, this._methods);\n    }\n\n    let RequestImplementation = this._resource.localBackend ? LocalRequest : Request;\n    let requestObject = new RequestImplementation(this, payload, method);\n\n    if (this._resource.cache) {\n      requestObject.cacheImpl = this._resource.cache;\n    }\n\n    return requestObject;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Instance}\n   */\n  get resource() {\n    return this._resource;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get type() {\n    return this._type;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get methods() {\n    return this._methods;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get source() {\n    return this._source;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get apiCacheEnabled() {\n    return this._apiCacheEnabled;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get apiCacheTtl() {\n    return this._apiCacheTtl;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get HTTP_VERBS() {\n    return ['GET', 'POST', 'DELETE', 'HEAD', 'PUT', 'OPTIONS', 'PATCH'];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EXTERNAL() {\n    return 'external';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get DEEP_CACHE_QS_PARAM() {\n    return '_deepQsHash';\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 8/4/15.\n */\n\n'use strict';\n\nimport {UnknownMethodException} from './Exception/UnknownMethodException';\nimport {Request} from './Request';\nimport {LocalRequest} from './LocalRequest';\n\n/**\n * Resource action\n */\nexport class Action {\n  /**\n   * @param {Instance} resource\n   * @param {String} name\n   * @param {String} type\n   * @param {Array} methods\n   * @param {Object} source\n   * @param {String} region\n   * @param {Boolean} forceUserIdentity\n   * @param {Object} apiCache\n   */\n  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache) {\n    this._resource = resource;\n    this._name = name;\n    this._type = type;\n    this._methods = methods;\n    this._source = source;\n    this._region = region;\n    this._forceUserIdentity = forceUserIdentity;\n    this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;\n    this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;\n\n    this._validationSchemaName = null;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get validationSchemaName() {\n    return this._validationSchemaName;\n  }\n\n  /**\n   * @param {String} validationSchemaName\n   */\n  set validationSchemaName(validationSchemaName) {\n    this._validationSchemaName = validationSchemaName;\n  }\n\n  /**\n   * @param {Object} payload\n   * @param {String} method\n   */\n  request(payload = {}, method = null) {\n    method = method || (this._methods.length > 0 ? this._methods[0] : Action.HTTP_VERBS[0]);\n\n    if (this._methods.length > 0 && this._methods.indexOf(method) === -1) {\n      throw new UnknownMethodException(method, this._methods);\n    }\n\n    let RequestImplementation = this._resource.localBackend ? LocalRequest : Request;\n    let requestObject = new RequestImplementation(this, payload, method);\n\n    requestObject.validationSchemaName = this._validationSchemaName;\n\n    if (this._resource.cache) {\n      requestObject.cacheImpl = this._resource.cache;\n    }\n\n    return requestObject;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get sourceId() {\n    return this._type === Action.LAMBDA ?\n      this._source.original :\n      this._source.api;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Instance}\n   */\n  get resource() {\n    return this._resource;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get type() {\n    return this._type;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get methods() {\n    return this._methods;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get source() {\n    return this._source;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get apiCacheEnabled() {\n    return this._apiCacheEnabled;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get apiCacheTtl() {\n    return this._apiCacheTtl;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get HTTP_VERBS() {\n    return ['GET', 'POST', 'DELETE', 'HEAD', 'PUT', 'OPTIONS', 'PATCH'];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EXTERNAL() {\n    return 'external';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get DEEP_CACHE_QS_PARAM() {\n    return '_deepQsHash';\n  }\n}\n"
   },
   {
-    "__docId__": 7,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -153,7 +145,6 @@
     "interface": false
   },
   {
-    "__docId__": 8,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -248,7 +239,6 @@
     "generator": false
   },
   {
-    "__docId__": 9,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -266,7 +256,6 @@
     }
   },
   {
-    "__docId__": 10,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -284,7 +273,6 @@
     }
   },
   {
-    "__docId__": 11,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -302,7 +290,6 @@
     }
   },
   {
-    "__docId__": 12,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -320,7 +307,6 @@
     }
   },
   {
-    "__docId__": 13,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -338,7 +324,6 @@
     }
   },
   {
-    "__docId__": 14,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -356,7 +341,6 @@
     }
   },
   {
-    "__docId__": 15,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -374,7 +358,6 @@
     }
   },
   {
-    "__docId__": 16,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -392,7 +375,6 @@
     }
   },
   {
-    "__docId__": 17,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -410,7 +392,100 @@
     }
   },
   {
-    "__docId__": 18,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_validationSchemaName",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#_validationSchemaName",
+    "access": null,
+    "description": null,
+    "lineNumber": 36,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "validationSchemaName",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#validationSchemaName",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "validationSchemaName",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#validationSchemaName",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "validationSchemaName",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_validationSchemaName",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#_validationSchemaName",
+    "access": null,
+    "description": null,
+    "lineNumber": 50,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -419,7 +494,7 @@
     "longname": "lib/Resource/Action.js~Action#request",
     "access": null,
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 57,
     "params": [
       {
         "nullable": null,
@@ -450,7 +525,37 @@
     "generator": false
   },
   {
-    "__docId__": 19,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "sourceId",
+    "memberof": "lib/Resource/Action.js~Action",
+    "longname": "lib/Resource/Action.js~Action#sourceId",
+    "access": null,
+    "description": null,
+    "lineNumber": 79,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -459,7 +564,7 @@
     "longname": "lib/Resource/Action.js~Action#forceUserIdentity",
     "access": null,
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 88,
     "unknown": [
       {
         "tagName": "@returns",
@@ -482,7 +587,6 @@
     "generator": false
   },
   {
-    "__docId__": 20,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -491,7 +595,7 @@
     "longname": "lib/Resource/Action.js~Action#resource",
     "access": null,
     "description": null,
-    "lineNumber": 68,
+    "lineNumber": 95,
     "unknown": [
       {
         "tagName": "@returns",
@@ -514,7 +618,6 @@
     "generator": false
   },
   {
-    "__docId__": 21,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -523,7 +626,7 @@
     "longname": "lib/Resource/Action.js~Action#name",
     "access": null,
     "description": null,
-    "lineNumber": 75,
+    "lineNumber": 102,
     "unknown": [
       {
         "tagName": "@returns",
@@ -546,7 +649,6 @@
     "generator": false
   },
   {
-    "__docId__": 22,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -555,7 +657,7 @@
     "longname": "lib/Resource/Action.js~Action#type",
     "access": null,
     "description": null,
-    "lineNumber": 82,
+    "lineNumber": 109,
     "unknown": [
       {
         "tagName": "@returns",
@@ -578,7 +680,6 @@
     "generator": false
   },
   {
-    "__docId__": 23,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -587,7 +688,7 @@
     "longname": "lib/Resource/Action.js~Action#methods",
     "access": null,
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 116,
     "unknown": [
       {
         "tagName": "@returns",
@@ -610,7 +711,6 @@
     "generator": false
   },
   {
-    "__docId__": 24,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -619,7 +719,7 @@
     "longname": "lib/Resource/Action.js~Action#source",
     "access": null,
     "description": null,
-    "lineNumber": 96,
+    "lineNumber": 123,
     "unknown": [
       {
         "tagName": "@returns",
@@ -642,7 +742,6 @@
     "generator": false
   },
   {
-    "__docId__": 25,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -651,7 +750,7 @@
     "longname": "lib/Resource/Action.js~Action#region",
     "access": null,
     "description": null,
-    "lineNumber": 103,
+    "lineNumber": 130,
     "unknown": [
       {
         "tagName": "@returns",
@@ -674,7 +773,6 @@
     "generator": false
   },
   {
-    "__docId__": 26,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -683,7 +781,7 @@
     "longname": "lib/Resource/Action.js~Action#apiCacheEnabled",
     "access": null,
     "description": null,
-    "lineNumber": 110,
+    "lineNumber": 137,
     "unknown": [
       {
         "tagName": "@returns",
@@ -706,7 +804,6 @@
     "generator": false
   },
   {
-    "__docId__": 27,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -715,7 +812,7 @@
     "longname": "lib/Resource/Action.js~Action#apiCacheTtl",
     "access": null,
     "description": null,
-    "lineNumber": 117,
+    "lineNumber": 144,
     "unknown": [
       {
         "tagName": "@returns",
@@ -738,7 +835,6 @@
     "generator": false
   },
   {
-    "__docId__": 28,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -747,7 +843,7 @@
     "longname": "lib/Resource/Action.js~Action.HTTP_VERBS",
     "access": null,
     "description": null,
-    "lineNumber": 124,
+    "lineNumber": 151,
     "unknown": [
       {
         "tagName": "@returns",
@@ -770,7 +866,6 @@
     "generator": false
   },
   {
-    "__docId__": 29,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -779,7 +874,7 @@
     "longname": "lib/Resource/Action.js~Action.LAMBDA",
     "access": null,
     "description": null,
-    "lineNumber": 131,
+    "lineNumber": 158,
     "unknown": [
       {
         "tagName": "@returns",
@@ -802,7 +897,6 @@
     "generator": false
   },
   {
-    "__docId__": 30,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -811,7 +905,7 @@
     "longname": "lib/Resource/Action.js~Action.EXTERNAL",
     "access": null,
     "description": null,
-    "lineNumber": 138,
+    "lineNumber": 165,
     "unknown": [
       {
         "tagName": "@returns",
@@ -834,7 +928,6 @@
     "generator": false
   },
   {
-    "__docId__": 31,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -843,7 +936,7 @@
     "longname": "lib/Resource/Action.js~Action.DEEP_CACHE_QS_PARAM",
     "access": null,
     "description": null,
-    "lineNumber": 145,
+    "lineNumber": 172,
     "unknown": [
       {
         "tagName": "@returns",
@@ -866,7 +959,6 @@
     "generator": false
   },
   {
-    "__docId__": 32,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -879,7 +971,6 @@
     "content": "/**\n * Created by mgoria on 11/03/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class AsyncCallNotAvailableException extends Exception {\n  /**\n   * @param {String} type\n   */\n  constructor(type) {\n    super(`Async calls are available for lambdas only (${type} type provided)`);\n  }\n}\n"
   },
   {
-    "__docId__": 33,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -899,7 +990,6 @@
     ]
   },
   {
-    "__docId__": 34,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -924,7 +1014,6 @@
     "generator": false
   },
   {
-    "__docId__": 35,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -937,7 +1026,6 @@
     "content": "/**\n * Created by AlexanderC on 8/21/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class CachedRequestException extends Exception {\n  /**\n   * @param {String} exception\n   */\n  constructor(exception) {\n    super(`Error while working with cached response: ${exception}`);\n  }\n}\n"
   },
   {
-    "__docId__": 36,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -957,7 +1045,6 @@
     ]
   },
   {
-    "__docId__": 37,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -982,7 +1069,6 @@
     "generator": false
   },
   {
-    "__docId__": 38,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -995,7 +1081,6 @@
     "content": "/**\n * Created by mgoria on 11/12/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class LoadCredentialsException extends Exception {\n  /**\n   * @param {String} exception\n   */\n  constructor(exception) {\n    super(`Error on loading security credentials in deep-resource -> request. ${exception}`);\n  }\n}\n"
   },
   {
-    "__docId__": 39,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1015,7 +1100,6 @@
     ]
   },
   {
-    "__docId__": 40,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1040,7 +1124,6 @@
     "generator": false
   },
   {
-    "__docId__": 41,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1053,7 +1136,6 @@
     "content": "/**\n * Created by mgoria on 8/04/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\n/**\n * Thrown when requested resource action not found\n */\nexport class MissingActionException extends Exception {\n  /**\n   * @param {String} resourceName\n   * @param {String} actionName\n   */\n  constructor(resourceName, actionName) {\n    super(`Missing action ${actionName} in ${resourceName} resource.`);\n  }\n}\n"
   },
   {
-    "__docId__": 42,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1072,7 +1154,6 @@
     ]
   },
   {
-    "__docId__": 43,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1107,7 +1188,6 @@
     "generator": false
   },
   {
-    "__docId__": 44,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1120,7 +1200,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class MissingCacheImplementationException extends Exception {\n  constructor() {\n    super(`Missing cache implementation in Request object`);\n  }\n}\n"
   },
   {
-    "__docId__": 45,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1140,7 +1219,6 @@
     ]
   },
   {
-    "__docId__": 46,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1155,7 +1233,6 @@
     "generator": false
   },
   {
-    "__docId__": 47,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1168,7 +1245,6 @@
     "content": "/**\n * Created by mgoria on 11/03/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class MissingLambdaLocalPathException extends Exception {\n  /**\n   * @param {String} lambdaArn\n   */\n  constructor(lambdaArn) {\n    super(`Missing local path for Lambda ${lambdaArn}`);\n  }\n}\n"
   },
   {
-    "__docId__": 48,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1188,7 +1264,6 @@
     ]
   },
   {
-    "__docId__": 49,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1213,7 +1288,6 @@
     "generator": false
   },
   {
-    "__docId__": 50,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1226,7 +1300,6 @@
     "content": "/**\n * Created by mgoria on 11/03/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class MissingLocalLambdaExecWrapperException extends Exception {\n  /**\n   * @param {String} execWrapperKey\n   */\n  constructor(execWrapperKey) {\n    super(`Missing local lambda execution wrapper in global.${execWrapperKey}`);\n  }\n}\n"
   },
   {
-    "__docId__": 51,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1246,7 +1319,6 @@
     ]
   },
   {
-    "__docId__": 52,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1271,7 +1343,6 @@
     "generator": false
   },
   {
-    "__docId__": 53,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1284,7 +1355,6 @@
     "content": "/**\n * Created by mgoria on 11/03/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class MissingSecurityServiceException extends Exception {\n  constructor() {\n    super(`Missing security service in Request instance.`);\n  }\n}\n"
   },
   {
-    "__docId__": 54,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1304,7 +1374,6 @@
     ]
   },
   {
-    "__docId__": 55,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1319,7 +1388,6 @@
     "generator": false
   },
   {
-    "__docId__": 56,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1332,7 +1400,6 @@
     "content": "/**\n * Created by mgoria on 11/03/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class NotAuthenticatedException extends Exception {\n  constructor() {\n    super(\n      `Missing authentication token! You may want to authenticate the user first(ex. security.anonymousLogin()).`\n    );\n  }\n}\n"
   },
   {
-    "__docId__": 57,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1352,7 +1419,6 @@
     ]
   },
   {
-    "__docId__": 58,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1367,7 +1433,6 @@
     "generator": false
   },
   {
-    "__docId__": 59,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1380,7 +1445,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\n/**\n * Thrown when requested method is missing from allowed vector\n */\nexport class UnknownMethodException extends Exception {\n  /**\n   * @param {String} requestedMethod\n   * @param {Array} availableMethods\n   */\n  constructor(requestedMethod, availableMethods) {\n    let availableList = availableMethods.join(', ');\n\n    super(`Requested method ${requestedMethod} must be one of ${availableList}`);\n  }\n}\n"
   },
   {
-    "__docId__": 60,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1399,7 +1463,6 @@
     ]
   },
   {
-    "__docId__": 61,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1434,7 +1497,119 @@
     "generator": false
   },
   {
-    "__docId__": 62,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Resource/Exception/ValidationError.js",
+    "memberof": null,
+    "longname": "lib/Resource/Exception/ValidationError.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 1/25/16.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\nexport class ValidationError extends Exception {\n\n  /**\n   * @param {String} annotation\n   * @param {{message:*,path:*,type:*,context:*}[]} validationErrors\n   */\n  constructor(annotation, validationErrors) {\n    super(`Payload validation failed: ${annotation}`);\n\n    this._validationErrors = validationErrors;\n  }\n\n  /**\n   * @returns {{message:*,path:*,type:*,context:*}[]}\n   */\n  get validationErrors() {\n    return this._validationErrors;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ValidationError",
+    "memberof": "lib/Resource/Exception/ValidationError.js",
+    "longname": "lib/Resource/Exception/ValidationError.js~ValidationError",
+    "access": null,
+    "export": true,
+    "importPath": "deep-resource/lib/Resource/Exception/ValidationError.js",
+    "importStyle": "{ValidationError}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Resource/Exception/ValidationError.js~ValidationError",
+    "longname": "lib/Resource/Exception/ValidationError.js~ValidationError#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "annotation",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "{message:*,path:*,type:*,context:*}[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "validationErrors",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_validationErrors",
+    "memberof": "lib/Resource/Exception/ValidationError.js~ValidationError",
+    "longname": "lib/Resource/Exception/ValidationError.js~ValidationError#_validationErrors",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "validationErrors",
+    "memberof": "lib/Resource/Exception/ValidationError.js~ValidationError",
+    "longname": "lib/Resource/Exception/ValidationError.js~ValidationError#validationErrors",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{{message:*,path:*,type:*,context:*}[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "{message:*,path:*,type:*,context:*}[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1444,10 +1619,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {MissingActionException} from './Exception/MissingActionException';\nimport {Action} from './Action';\n\n/**\n * Resource instance\n */\nexport class Instance {\n  /**\n   * @param {String} name\n   * @param {Object} rawActions\n   */\n  constructor(name, rawActions) {\n    this._name = name;\n    this._rawActions = rawActions;\n    this._actions = null;\n    this._localBackend = false;\n    this._isBackend = false;\n    this._cache = null;\n    this._security = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get security() {\n    return this._security;\n  }\n\n  /**\n   * @param {Object} security\n   */\n  set security(security) {\n    this._security = security;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cache() {\n    return this._cache;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cache(cache) {\n    this._cache = cache;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._isBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set isBackend(state) {\n    this._isBackend = state;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get actions() {\n    if (this._actions === null) {\n      this._actions = {};\n\n      for (let actionName in this._rawActions) {\n        if (!this._rawActions.hasOwnProperty(actionName)) {\n          continue;\n        }\n\n        let actionMetadata = this._rawActions[actionName];\n\n        this._actions[actionName] = new Action(\n          this,\n          actionName,\n          actionMetadata.type,\n          actionMetadata.methods,\n          actionMetadata.source,\n          actionMetadata.region,\n          actionMetadata.forceUserIdentity,\n          actionMetadata.apiCache\n        );\n      }\n    }\n\n    return this._actions;\n  }\n\n  /**\n   * @param {String} actionName\n   * @returns {boolean}\n   */\n  has(actionName) {\n    return this.actions.hasOwnProperty(actionName);\n  }\n\n  /**\n   * @param actionName\n   * @returns {Action}\n   */\n  action(actionName) {\n    if (!this.has(actionName)) {\n      throw new MissingActionException(this.name, actionName);\n    }\n\n    return this.actions[actionName];\n  }\n\n  /**\n   * @param {String} actionName\n   * @param {*} args\n   */\n  request(actionName, ...args) {\n    return this.action(actionName).request(...args);\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {MissingActionException} from './Exception/MissingActionException';\nimport {Action} from './Action';\n\n/**\n * Resource instance\n */\nexport class Instance {\n  /**\n   * @param {String} name\n   * @param {Object} rawActions\n   */\n  constructor(name, rawActions) {\n    this._name = name;\n    this._rawActions = rawActions;\n    this._actions = null;\n    this._localBackend = false;\n    this._isBackend = false;\n    this._cache = null;\n    this._security = null;\n    this._validation = null;\n\n    this._fillActions();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get actionsConfig() {\n    let config = {};\n\n    for (let actionName in this.actions) {\n      if (!this.actions.hasOwnProperty(actionName)) {\n        continue;\n      }\n\n      let action = this.actions[actionName];\n\n      config[action.sourceId] = {\n        resource: this._name,\n        name: action.name,\n        type: action.type,\n        methods: action.methods,\n        source: action.source,\n        region: action.region,\n        forceUserIdentity: action.forceUserIdentity,\n        validationSchema: action.validationSchemaName,\n      };\n    }\n\n    return config;\n  }\n\n  /**\n   * @private\n   */\n  _fillActions() {\n    this._actions = {};\n\n    for (let actionName in this._rawActions) {\n      if (!this._rawActions.hasOwnProperty(actionName)) {\n        continue;\n      }\n\n      let actionMetadata = this._rawActions[actionName];\n\n      let actionInstance = new Action(\n        this,\n        actionName,\n        actionMetadata.type,\n        actionMetadata.methods,\n        actionMetadata.source,\n        actionMetadata.region,\n        actionMetadata.forceUserIdentity,\n        actionMetadata.apiCache\n      );\n\n      if (actionMetadata.validationSchema) {\n        actionInstance.validationSchemaName = actionMetadata.validationSchema;\n      }\n\n      this._actions[actionName] = actionInstance;\n    }\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get validation() {\n    return this._validation;\n  }\n\n  /**\n   * @param {Object} validation\n   */\n  set validation(validation) {\n    this._validation = validation;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get security() {\n    return this._security;\n  }\n\n  /**\n   * @param {Object} security\n   */\n  set security(security) {\n    this._security = security;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cache() {\n    return this._cache;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cache(cache) {\n    this._cache = cache;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._isBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set isBackend(state) {\n    this._isBackend = state;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get actions() {\n    return this._actions;\n  }\n\n  /**\n   * @param {String} actionName\n   * @returns {boolean}\n   */\n  has(actionName) {\n    return this.actions.hasOwnProperty(actionName);\n  }\n\n  /**\n   * @param actionName\n   * @returns {Action}\n   */\n  action(actionName) {\n    if (!this.has(actionName)) {\n      throw new MissingActionException(this.name, actionName);\n    }\n\n    return this.actions[actionName];\n  }\n\n  /**\n   * @param {String} actionName\n   * @param {*} args\n   */\n  request(actionName, ...args) {\n    return this.action(actionName).request(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 63,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1463,7 +1637,6 @@
     "interface": false
   },
   {
-    "__docId__": 64,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1498,7 +1671,6 @@
     "generator": false
   },
   {
-    "__docId__": 65,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1516,7 +1688,6 @@
     }
   },
   {
-    "__docId__": 66,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1534,7 +1705,6 @@
     }
   },
   {
-    "__docId__": 67,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1552,7 +1722,6 @@
     }
   },
   {
-    "__docId__": 68,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1570,7 +1739,6 @@
     }
   },
   {
-    "__docId__": 69,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1588,7 +1756,6 @@
     }
   },
   {
-    "__docId__": 70,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1606,7 +1773,6 @@
     }
   },
   {
-    "__docId__": 71,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1624,16 +1790,32 @@
     }
   },
   {
-    "__docId__": 72,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_validation",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_validation",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
-    "name": "security",
+    "name": "actionsConfig",
     "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#security",
+    "longname": "lib/Resource/Instance.js~Instance#actionsConfig",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 34,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1656,46 +1838,28 @@
     "generator": false
   },
   {
-    "__docId__": 73,
-    "kind": "set",
+    "kind": "method",
     "static": false,
     "variation": null,
-    "name": "security",
+    "name": "_fillActions",
     "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#security",
-    "access": null,
+    "longname": "lib/Resource/Instance.js~Instance#_fillActions",
+    "access": "private",
     "description": null,
-    "lineNumber": 38,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "security",
-        "description": ""
-      }
-    ],
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
+    "lineNumber": 62,
+    "params": [],
     "generator": false
   },
   {
-    "__docId__": 74,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_security",
+    "name": "_actions",
     "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#_security",
+    "longname": "lib/Resource/Instance.js~Instance#_actions",
     "access": null,
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 63,
     "undocument": true,
     "type": {
       "types": [
@@ -1704,285 +1868,12 @@
     }
   },
   {
-    "__docId__": 75,
     "kind": "get",
     "static": false,
     "variation": null,
-    "name": "name",
+    "name": "validation",
     "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#name",
-    "access": null,
-    "description": null,
-    "lineNumber": 45,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 76,
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "cache",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#cache",
-    "access": null,
-    "description": null,
-    "lineNumber": 52,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 77,
-    "kind": "set",
-    "static": false,
-    "variation": null,
-    "name": "cache",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#cache",
-    "access": null,
-    "description": null,
-    "lineNumber": 59,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "cache",
-        "description": ""
-      }
-    ],
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 78,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_cache",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#_cache",
-    "access": null,
-    "description": null,
-    "lineNumber": 60,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 79,
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "localBackend",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#localBackend",
-    "access": null,
-    "description": null,
-    "lineNumber": 66,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Boolean}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Boolean"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 80,
-    "kind": "set",
-    "static": false,
-    "variation": null,
-    "name": "localBackend",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#localBackend",
-    "access": null,
-    "description": null,
-    "lineNumber": 73,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "state",
-        "description": ""
-      }
-    ],
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 81,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_localBackend",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#_localBackend",
-    "access": null,
-    "description": null,
-    "lineNumber": 74,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 82,
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "isBackend",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#isBackend",
-    "access": null,
-    "description": null,
-    "lineNumber": 80,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Boolean}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Boolean"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 83,
-    "kind": "set",
-    "static": false,
-    "variation": null,
-    "name": "isBackend",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#isBackend",
-    "access": null,
-    "description": null,
-    "lineNumber": 87,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Boolean"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "state",
-        "description": ""
-      }
-    ],
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 84,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_isBackend",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#_isBackend",
-    "access": null,
-    "description": null,
-    "lineNumber": 88,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 85,
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "actions",
-    "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#actions",
+    "longname": "lib/Resource/Instance.js~Instance#validation",
     "access": null,
     "description": null,
     "lineNumber": 94,
@@ -2008,16 +1899,44 @@
     "generator": false
   },
   {
-    "__docId__": 86,
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "validation",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#validation",
+    "access": null,
+    "description": null,
+    "lineNumber": 101,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "validation",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_actions",
+    "name": "_validation",
     "memberof": "lib/Resource/Instance.js~Instance",
-    "longname": "lib/Resource/Instance.js~Instance#_actions",
+    "longname": "lib/Resource/Instance.js~Instance#_validation",
     "access": null,
     "description": null,
-    "lineNumber": 96,
+    "lineNumber": 102,
     "undocument": true,
     "type": {
       "types": [
@@ -2026,7 +1945,376 @@
     }
   },
   {
-    "__docId__": 87,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "security",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#security",
+    "access": null,
+    "description": null,
+    "lineNumber": 108,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "security",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#security",
+    "access": null,
+    "description": null,
+    "lineNumber": 115,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "security",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_security",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_security",
+    "access": null,
+    "description": null,
+    "lineNumber": 116,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "name",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#name",
+    "access": null,
+    "description": null,
+    "lineNumber": 122,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "cache",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#cache",
+    "access": null,
+    "description": null,
+    "lineNumber": 129,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "cache",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#cache",
+    "access": null,
+    "description": null,
+    "lineNumber": 136,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cache",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_cache",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_cache",
+    "access": null,
+    "description": null,
+    "lineNumber": 137,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "localBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#localBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 143,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "localBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#localBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 150,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "state",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_localBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_localBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 151,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "isBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#isBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 157,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "isBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#isBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 164,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "state",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_isBackend",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#_isBackend",
+    "access": null,
+    "description": null,
+    "lineNumber": 165,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "actions",
+    "memberof": "lib/Resource/Instance.js~Instance",
+    "longname": "lib/Resource/Instance.js~Instance#actions",
+    "access": null,
+    "description": null,
+    "lineNumber": 171,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2035,7 +2323,7 @@
     "longname": "lib/Resource/Instance.js~Instance#has",
     "access": null,
     "description": null,
-    "lineNumber": 125,
+    "lineNumber": 179,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2065,7 +2353,6 @@
     "generator": false
   },
   {
-    "__docId__": 88,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2074,7 +2361,7 @@
     "longname": "lib/Resource/Instance.js~Instance#action",
     "access": null,
     "description": null,
-    "lineNumber": 133,
+    "lineNumber": 187,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2104,7 +2391,6 @@
     "generator": false
   },
   {
-    "__docId__": 89,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2113,7 +2399,7 @@
     "longname": "lib/Resource/Instance.js~Instance#request",
     "access": null,
     "description": null,
-    "lineNumber": 145,
+    "lineNumber": 199,
     "params": [
       {
         "nullable": null,
@@ -2144,7 +2430,6 @@
     "generator": false
   },
   {
-    "__docId__": 90,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2154,10 +2439,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\n/**\n * Response object\n */\nexport class LambdaResponse extends Response {\n  /**\n   * @param {*} args\n   */\n  constructor(...args) {\n    super(...args);\n\n    // assure calling the very first!\n    this._fillStatusCode();\n\n    let responsePayload = this._decodePayload();\n\n    this._fillData(responsePayload);\n    this._fillError(responsePayload);\n  }\n\n  /**\n   * @param {Object|null} responsePayload\n   * @private\n   */\n  _fillData(responsePayload) {\n    if (responsePayload &&\n      !this._request.async &&\n      !responsePayload.hasOwnProperty('errorMessage')) {\n\n      this._data = responsePayload;\n    }\n  }\n\n  /**\n   * @param {Object|null} responsePayload\n   * @private\n   */\n  _fillError(responsePayload) {\n    if (this._rawError) {\n      this._error = this._rawError;\n    } else if (!this._request.async) {\n      if (!responsePayload) {\n        this._error = new Error('There is no error nor payload in Lambda response');\n      } else if (responsePayload.hasOwnProperty('errorMessage')) {\n        this._error = LambdaResponse.getPayloadError(responsePayload);\n      }\n    } else if (this._statusCode !== 202) { // check for failed async invocation\n      this._error = new Error('Unknown async invocation error');\n    }\n  }\n\n  /**\n   * @private\n   */\n  _fillStatusCode() {\n    if (this._rawData) {\n      this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status);\n    } else {\n      this._statusCode = 500;\n    }\n  }\n\n  /**\n   * @returns {Object|null}\n   * @private\n   */\n  _decodePayload() {\n    if (this._rawData && this._rawData.hasOwnProperty('Payload')) {\n      let payload = this._rawData.Payload;\n\n      if (typeof payload === 'string') {\n        try {\n          payload = JSON.parse(payload);\n        } catch(e) {}\n      }\n\n      return payload;\n    }\n\n    return null;\n  }\n\n  /**\n   * @param {Object} payload\n   * @returns {Error|null}\n   */\n  static getPayloadError(payload) {\n    if (payload.errorMessage) {\n\n      // check for error object (on context.failed called)\n      if (!payload.hasOwnProperty('errorType') &&\n        !payload.hasOwnProperty('errorStack')) {\n\n        let rawErrorObj = null;\n\n        try {\n          rawErrorObj = JSON.parse(payload.errorMessage);\n          rawErrorObj = rawErrorObj || {\n              errorMessage: 'Unknown error occurred.',\n              errorStack: null,\n              errorType: 'UnknownError',\n            };\n\n          rawErrorObj.errorMessage = rawErrorObj.errorMessage || 'Unknown error occurred.';\n          rawErrorObj.errorType = rawErrorObj.errorType || 'UnknownError';\n        } catch (e) {\n        }\n\n        payload = rawErrorObj || {\n            errorMessage: payload.errorMessage,\n            errorStack: null,\n            errorType: 'UnknownError',\n          };\n      } else {\n        payload.errorType = payload.errorType || 'UnknownError';\n      }\n\n      let errorObj = new Error(payload.errorMessage);\n\n      // try to define a custom constructor name\n      // fail silently in case of readonly property...\n      try {\n        Object.defineProperty(errorObj, 'name', {\n          value: payload.errorType,\n        });\n      } catch (e) {   }\n\n      Object.defineProperty(errorObj, 'stack', {\n        value: payload.errorStack,\n      });\n\n      return errorObj;\n    }\n\n    return null;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\nimport {ValidationError} from './Exception/ValidationError';\n\n/**\n * Response object\n */\nexport class LambdaResponse extends Response {\n  /**\n   * @param {*} args\n   */\n  constructor(...args) {\n    super(...args);\n\n    // assure calling the very first!\n    this._fillStatusCode();\n\n    let responsePayload = this._decodePayload();\n\n    this._fillData(responsePayload);\n    this._fillError(responsePayload);\n  }\n\n  /**\n   * @param {Object|null} responsePayload\n   * @private\n   */\n  _fillData(responsePayload) {\n    if (responsePayload &&\n      !this._request.async &&\n      !responsePayload.hasOwnProperty('errorMessage')) {\n\n      this._data = responsePayload;\n    }\n  }\n\n  /**\n   * @param {Object|null} responsePayload\n   * @private\n   */\n  _fillError(responsePayload) {\n    if (this._rawError) {\n      this._error = this._rawError;\n    } else if (!this._request.async) {\n      if (!responsePayload) {\n        this._error = new Error('There is no error nor payload in Lambda response');\n      } else if (responsePayload.hasOwnProperty('errorMessage')) {\n        this._error = LambdaResponse.getPayloadError(responsePayload);\n      }\n    } else if (this._statusCode !== 202) { // check for failed async invocation\n      this._error = new Error('Unknown async invocation error');\n    }\n  }\n\n  /**\n   * @private\n   */\n  _fillStatusCode() {\n    if (this._rawData) {\n      this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status);\n    } else {\n      this._statusCode = 500;\n    }\n  }\n\n  /**\n   * @returns {Object|null}\n   * @private\n   */\n  _decodePayload() {\n    if (this._rawData && this._rawData.hasOwnProperty('Payload')) {\n      let payload = this._rawData.Payload;\n\n      if (typeof payload === 'string') {\n        try {\n          payload = JSON.parse(payload);\n        } catch(e) {}\n      }\n\n      return payload;\n    }\n\n    return null;\n  }\n\n  /**\n   * @param {Object} payload\n   * @returns {Error|ValidationError|null}\n   */\n  static getPayloadError(payload) {\n    if (LambdaResponse.isValidationError(payload)) {\n      return new ValidationError(payload.errorMessage, payload.validationErrors);\n    } else if (payload.errorMessage) {\n\n      // check for error object (on context.failed called)\n      if (!payload.hasOwnProperty('errorType') &&\n        !payload.hasOwnProperty('errorStack')) {\n\n        let rawErrorObj = null;\n\n        try {\n          rawErrorObj = JSON.parse(payload.errorMessage);\n          rawErrorObj = rawErrorObj || {\n              errorMessage: 'Unknown error occurred.',\n              errorStack: null,\n              errorType: 'UnknownError',\n            };\n\n          rawErrorObj.errorMessage = rawErrorObj.errorMessage || 'Unknown error occurred.';\n          rawErrorObj.errorType = rawErrorObj.errorType || 'UnknownError';\n        } catch (e) {\n        }\n\n        payload = rawErrorObj || {\n            errorMessage: payload.errorMessage,\n            errorStack: null,\n            errorType: 'UnknownError',\n          };\n      } else {\n        payload.errorType = payload.errorType || 'UnknownError';\n      }\n\n      let errorObj = new Error(payload.errorMessage);\n\n      // try to define a custom constructor name\n      // fail silently in case of readonly property...\n      try {\n        Object.defineProperty(errorObj, 'name', {\n          value: payload.errorType,\n        });\n      } catch (e) {   }\n\n      Object.defineProperty(errorObj, 'stack', {\n        value: payload.errorStack,\n      });\n\n      return errorObj;\n    }\n\n    return null;\n  }\n\n  /**\n   * @param {Object} payload\n   * @returns {Boolean}\n   */\n  static isValidationError(payload) {\n    return payload.hasOwnProperty('errorType') &&\n      payload.hasOwnProperty('errorMessage') &&\n      payload.hasOwnProperty('validationErrors') &&\n      payload.errorType === LambdaResponse.VALIDATION_ERROR_TYPE;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get VALIDATION_ERROR_TYPE() {\n    return 'ValidationError';\n  }\n}\n"
   },
   {
-    "__docId__": 91,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2169,14 +2453,13 @@
     "importPath": "deep-resource/lib/Resource/LambdaResponse.js",
     "importStyle": "{LambdaResponse}",
     "description": "Response object",
-    "lineNumber": 12,
+    "lineNumber": 13,
     "interface": false,
     "extends": [
       "lib/Resource/Response~Response"
     ]
   },
   {
-    "__docId__": 92,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2185,7 +2468,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 16,
+    "lineNumber": 17,
     "params": [
       {
         "nullable": null,
@@ -2201,7 +2484,6 @@
     "generator": false
   },
   {
-    "__docId__": 93,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2210,7 +2492,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_fillData",
     "access": "private",
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 33,
     "params": [
       {
         "nullable": null,
@@ -2227,7 +2509,6 @@
     "generator": false
   },
   {
-    "__docId__": 94,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2236,7 +2517,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_data",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 38,
     "undocument": true,
     "type": {
       "types": [
@@ -2245,7 +2526,6 @@
     }
   },
   {
-    "__docId__": 95,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2254,7 +2534,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_fillError",
     "access": "private",
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 46,
     "params": [
       {
         "nullable": null,
@@ -2271,7 +2551,6 @@
     "generator": false
   },
   {
-    "__docId__": 96,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2280,7 +2559,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
     "access": null,
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 48,
     "undocument": true,
     "type": {
       "types": [
@@ -2289,7 +2568,6 @@
     }
   },
   {
-    "__docId__": 97,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2298,7 +2576,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
     "access": null,
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 51,
     "undocument": true,
     "type": {
       "types": [
@@ -2307,7 +2585,6 @@
     }
   },
   {
-    "__docId__": 98,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2316,7 +2593,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 53,
     "undocument": true,
     "type": {
       "types": [
@@ -2325,7 +2602,6 @@
     }
   },
   {
-    "__docId__": 99,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2334,7 +2610,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_error",
     "access": null,
     "description": null,
-    "lineNumber": 55,
+    "lineNumber": 56,
     "undocument": true,
     "type": {
       "types": [
@@ -2343,7 +2619,6 @@
     }
   },
   {
-    "__docId__": 100,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2352,12 +2627,11 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_fillStatusCode",
     "access": "private",
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 63,
     "params": [],
     "generator": false
   },
   {
-    "__docId__": 101,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2366,7 +2640,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_statusCode",
     "access": null,
     "description": null,
-    "lineNumber": 64,
+    "lineNumber": 65,
     "undocument": true,
     "type": {
       "types": [
@@ -2375,7 +2649,6 @@
     }
   },
   {
-    "__docId__": 102,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2384,7 +2657,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_statusCode",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 67,
     "undocument": true,
     "type": {
       "types": [
@@ -2393,7 +2666,6 @@
     }
   },
   {
-    "__docId__": 103,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2402,7 +2674,7 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse#_decodePayload",
     "access": "private",
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 75,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2422,7 +2694,6 @@
     "generator": false
   },
   {
-    "__docId__": 104,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2431,11 +2702,11 @@
     "longname": "lib/Resource/LambdaResponse.js~LambdaResponse.getPayloadError",
     "access": null,
     "description": null,
-    "lineNumber": 94,
+    "lineNumber": 95,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{Error|null}"
+        "tagValue": "{Error|ValidationError|null}"
       }
     ],
     "params": [
@@ -2454,6 +2725,7 @@
       "nullable": null,
       "types": [
         "Error",
+        "ValidationError",
         "null"
       ],
       "spread": false,
@@ -2462,7 +2734,75 @@
     "generator": false
   },
   {
-    "__docId__": 105,
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "isValidationError",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse.isValidationError",
+    "access": null,
+    "description": null,
+    "lineNumber": 152,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "payload",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "VALIDATION_ERROR_TYPE",
+    "memberof": "lib/Resource/LambdaResponse.js~LambdaResponse",
+    "longname": "lib/Resource/LambdaResponse.js~LambdaResponse.VALIDATION_ERROR_TYPE",
+    "access": null,
+    "description": null,
+    "lineNumber": 162,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2475,7 +2815,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {SuperagentResponse} from './SuperagentResponse';\nimport {LambdaResponse} from './LambdaResponse';\nimport {Request} from './Request';\nimport {Action} from './Action';\nimport Http from 'superagent';\nimport {MissingLocalLambdaExecWrapperException} from './Exception/MissingLocalLambdaExecWrapperException';\nimport {MissingLambdaLocalPathException} from './Exception/MissingLambdaLocalPathException';\n\n/**\n * Resource request instance\n */\nexport class LocalRequest extends Request {\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {LocalRequest|*}\n   */\n  _send(callback = () => {}) {\n    let actionType = this._action.type;\n\n    if (actionType === Action.LAMBDA) {\n      let data = {\n        lambda: this._action.source.original,\n        payload: this.payload,\n        method: this._method,\n      };\n\n      if (typeof window === 'undefined') {\n        if (!global.hasOwnProperty(LocalRequest.LAMBDA_EXEC_WRAPPER_KEY)) {\n          throw new MissingLocalLambdaExecWrapperException(LocalRequest.LAMBDA_EXEC_WRAPPER_KEY);\n        }\n\n        let localPath = this._action.source._localPath;\n\n        if (!localPath) {\n          throw new MissingLambdaLocalPathException(data.lambda);\n        }\n\n        let execWrapper = global[LocalRequest.LAMBDA_EXEC_WRAPPER_KEY];\n\n        execWrapper[this._async ? 'invokeAsync' : 'invoke'](localPath, data, (error, result) => {\n          let resultData = {};\n\n          if (this._async) {\n            resultData.Status = 202;\n          } else {\n            resultData.Payload = result;\n          }\n\n          callback(new LambdaResponse(this, error ? null : resultData, error));\n        });\n      } else {\n        Http.post(this._async ? LocalRequest.LOCAL_LAMBDA_ASYNC_ENDPOINT :  LocalRequest.LOCAL_LAMBDA_ENDPOINT)\n          .send(data)\n          .end((error, response) => {\n            callback(new SuperagentResponse(this, response, error));\n          });\n      }\n    } else {\n      return this.constructor.useNative()._send(...arguments);\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LOCAL_LAMBDA_ENDPOINT() {\n    return '/_/lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LOCAL_LAMBDA_ASYNC_ENDPOINT() {\n    return '/_/lambda-async';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA_EXEC_WRAPPER_KEY() {\n    return '_deep_lambda_exec_';\n  }\n}\n"
   },
   {
-    "__docId__": 106,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2494,7 +2833,6 @@
     ]
   },
   {
-    "__docId__": 107,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2517,7 +2855,6 @@
     "generator": false
   },
   {
-    "__docId__": 108,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2557,7 +2894,6 @@
     "generator": false
   },
   {
-    "__docId__": 109,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2589,7 +2925,6 @@
     "generator": false
   },
   {
-    "__docId__": 110,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2621,7 +2956,6 @@
     "generator": false
   },
   {
-    "__docId__": 111,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2653,7 +2987,6 @@
     "generator": false
   },
   {
-    "__docId__": 112,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2663,10 +2996,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {SuperagentResponse} from './SuperagentResponse';\nimport {LambdaResponse} from './LambdaResponse';\nimport {Response} from './Response';\nimport {Exception} from '../Exception/Exception';\nimport {Action} from './Action';\nimport Http from 'superagent';\nimport AWS from 'aws-sdk';\nimport {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';\nimport {CachedRequestException} from './Exception/CachedRequestException';\nimport {NotAuthenticatedException} from './Exception/NotAuthenticatedException';\nimport aws4 from 'aws4';\nimport urlParse from 'url-parse';\nimport qs from 'qs';\nimport Core from 'deep-core';\nimport {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';\nimport {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';\nimport {LoadCredentialsException} from './Exception/LoadCredentialsException';\nimport Security from 'deep-security';\nimport crypto from 'crypto';\nimport util from 'util';\n\n/**\n * Action request instance\n */\nexport class Request {\n  /**\n   * @param {Action} action\n   * @param {Object} payload\n   * @param {String} method\n   */\n  constructor(action, payload, method) {\n    this._action = action;\n    this._payload = payload;\n    this._method = method;\n    this._lambda = null;\n\n    this._cacheImpl = null;\n    this._cacheTtl = Request.TTL_FOREVER;\n    this._cached = false;\n\n    this._async = false;\n    this._native = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get async() {\n    return this._async;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  invokeAsync() {\n    if (!this.isLambda) {\n      throw new AsyncCallNotAvailableException(this._action.type);\n    }\n\n    this._native = true;\n    this._async = true;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get native() {\n    return this._native;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  useDirectCall() {\n    this._native = true;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isCached() {\n    return this._cacheImpl && this._cached;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  enableCache() {\n    this._cached = true;\n    return this;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  disableCache() {\n    this._cached = false;\n    return this;\n  }\n\n  /**\n   * @param {Number} ttl\n   * @returns {Request}\n   */\n  cache(ttl = Request.TTL_FOREVER) {\n    if (!this._cacheImpl) {\n      throw new MissingCacheImplementationException();\n    }\n\n    this._cacheTtl = ttl;\n    this.enableCache();\n\n    return this;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get cacheTtl() {\n    return this._cacheTtl;\n  }\n\n  /**\n   * @param {Number} ttl\n   */\n  set cacheTtl(ttl) {\n    this._cacheTtl = ttl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cacheImpl() {\n    return this._cacheImpl;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cacheImpl(cache) {\n    this._cacheImpl = cache;\n\n    // @todo: do we really have to force it?\n    this.cache(Request.TTL_DEFAULT);\n  }\n\n  /**\n   * @returns {String}\n   * @private\n   */\n  _buildCacheKey() {\n    let payload = Request._md5(JSON.stringify(this._payload));\n    let endpoint = this.native ? this._action.source.original : this._action.source.api;\n\n    return `${this._method}:${this._action.type}:${endpoint}#${payload}`;\n  }\n\n  /**\n   * @param {String} str\n   * @returns {String}\n   */\n  static _md5(str) {\n    var md5sum = crypto.createHash('md5');\n\n    md5sum.update(str);\n\n    return md5sum.digest('hex');\n  }\n\n  /**\n   * @param {Response} response\n   * @returns {String}\n   * @private\n   */\n  static _stringifyResponse(response) {\n    return JSON.stringify({\n      _class: response.constructor.name,\n      data: response.rawData,\n      error: response.rawError,\n    });\n  }\n\n  /**\n   * @param {String} rawData\n   * @returns {Response}\n   * @private\n   */\n  _rebuildResponse(rawData) {\n    let response = JSON.parse(rawData);\n\n    if (!response) {\n      throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);\n    }\n\n    let ResponseImpl = Request._chooseResponseImpl(response._class);\n\n    if (!ResponseImpl) {\n      throw new Exception(`Unknown Response implementation ${response._class}`);\n    }\n\n    return new ResponseImpl(this, response.data, response.error);\n  }\n\n  /**\n   * @param {String} className\n   * @returns {*}\n   * @private\n   */\n  static _chooseResponseImpl(className) {\n    let implMap = {};\n\n    implMap[Response.name] = Response;\n    implMap[LambdaResponse.name] = LambdaResponse;\n    implMap[SuperagentResponse.name] = SuperagentResponse;\n\n    return implMap[className];\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  invalidateCache(callback = () => {}) {\n    if (!this.isCached) {\n      callback(true);\n\n      return this;\n    }\n\n    let cache = this._cacheImpl;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, (error, result) => {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result) {\n        cache.invalidate(cacheKey, 0, (error, result) => {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback(result);\n        });\n\n        return;\n      }\n\n      callback(true);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  send(callback = () => {}) {\n    if (!this.isCached || this._async) {\n      return this._send(callback);\n    }\n\n    let cache = this._cacheImpl;\n    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, (error, result) => {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result && !invalidateCache) {\n        cache.get(cacheKey, (error, result) => {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback(this._rebuildResponse(result));\n        });\n\n        return;\n      }\n\n      this._send((response) => {\n        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {\n          if (!result) {\n            error = `Unable to persist request cache under key ${cacheKey}`;\n          }\n\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n        });\n\n        // @todo: do it synchronous?\n        callback(response);\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   *\n   * @todo: remove this?\n   */\n  get isLambda() {\n    return this._action.type === Action.LAMBDA;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   */\n  _send(callback = () => {}) {\n    if (!this._native) {\n      return this._sendThroughApi(callback);\n    }\n\n    switch (this._action.type) {\n      case Action.LAMBDA:\n        this._sendLambda(callback);\n        break;\n      case Action.EXTERNAL:\n        this._sendExternal(callback);\n        break;\n      default: throw new Exception(`Request of type ${this._action.type} is not implemented`);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendThroughApi(callback = () => {}) {\n    let endpoint = this._action.source.api;\n\n    this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {\n      signedRequest.end((error, response) => {\n        callback(new SuperagentResponse(this, response, error));\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendLambda(callback = () => {}) {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let options = {\n      region: this._action.region,\n    };\n\n    let invocationParameters = {\n      FunctionName: this._action.source.original,\n      Payload: JSON.stringify(this.payload),\n      InvocationType: this._async ? 'Event' : 'RequestResponse',\n    };\n\n    this._loadSecurityCredentials((error, credentials) => {\n      // use cognito identity credentials if present\n      // if not, fallback to lambda execution role permissions\n      if (!error && credentials) {\n        options.credentials = credentials;\n      }\n\n      this._lambda = new AWS.Lambda(options);\n\n      this._lambda.invoke(invocationParameters, (error, data) => {\n        callback(new LambdaResponse(this, data, error));\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendExternal(callback = () => {}) {\n    Http[Request._httpRealMethod(this._method)](this._action.source.original)\n      .send(this.payload)\n      .end((error, response) => {\n        callback(new SuperagentResponse(this, response, error));\n      });\n\n    return this;\n  }\n\n  /**\n   * @param {String} url\n   * @param {String} httpMethod\n   * @param {Object} payload\n   * @param {Function} callback\n   * @private\n   */\n  _createAws4SignedRequest(url, httpMethod, payload, callback) {\n    let parsedUrl = urlParse(url, qs);\n    let apiHost = parsedUrl.hostname;\n    let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';\n    \n    let opsToSign = {\n      service: Core.AWS.Service.API_GATEWAY_EXECUTE,\n      region: this.getEndpointHostRegion(apiHost),\n      host: apiHost,\n      method: httpMethod,\n      path: apiPath,\n      headers: {\n        'Content-Type': 'application/json; charset=UTF-8',\n      },\n    };\n\n    httpMethod = httpMethod.toLowerCase();\n\n    switch (httpMethod) {\n      case 'get':\n      case 'delete':\n        if (parsedUrl.query || payload) {\n          //assure parsedUrl.query is a valid object\n          if (parsedUrl.query === null || typeof parsedUrl.query !== 'object') {\n            parsedUrl.query = {};\n          }\n\n          let mergedPayload = util._extend(parsedUrl.query, payload);\n\n          if (this.action.apiCacheEnabled) {\n            mergedPayload[Action.DEEP_CACHE_QS_PARAM] = Request._md5(qs.stringify(mergedPayload));\n          }\n\n          opsToSign.path += `?${qs.stringify(mergedPayload)}`;\n\n          // pass payload as query string\n          parsedUrl.set('query', mergedPayload, qs.parse);\n          url = parsedUrl.toString(qs.stringify);\n          payload = null; // reset it coz superagent overrides url query string\n        }\n        break;\n      case 'post':\n      case 'put':\n      case 'patch':\n        opsToSign.body = JSON.stringify(payload);\n        break;\n    }\n\n    this._loadSecurityCredentials((error, credentials) => {\n      if (error) {\n        throw error;\n      }\n\n      let signature = aws4.sign(opsToSign, credentials);\n\n      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)\n        .set('Content-Type', 'application/json; charset=UTF-8')\n        .set('X-Amz-Date', signature.headers['X-Amz-Date'])\n        .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])\n        .set('Authorization', signature.headers.Authorization);\n\n      if (this.action.resource.isBackend && signature.headers.hasOwnProperty('Content-Length')) {\n        request.set('Content-Length', signature.headers['Content-Length']);\n      }\n\n      callback(request);\n    });\n  }\n\n  /**\n   * @param {String} httpMethod\n   * @returns {String}\n   * @private\n   */\n  static _httpRealMethod(httpMethod) {\n    let method = httpMethod.toLowerCase();\n\n    // @see https://visionmedia.github.io/superagent/\n    if (method === 'delete') {\n      method = 'del';\n    }\n\n    return method;\n  }\n\n  /**\n   * @returns {Request}\n   * @private\n   */\n  _loadSecurityCredentials(callback) {\n    let securityService = this._action.resource.security;\n\n    if (!(securityService instanceof Security)) {\n      callback(new MissingSecurityServiceException(), null);\n      return this;\n    }\n\n    if (!securityService.token) {\n      callback(new NotAuthenticatedException(), null);\n      return this;\n    }\n\n    securityService.token.loadCredentials((error, credentials) => {\n      if (error) {\n        callback(new LoadCredentialsException(error), null);\n        return;\n      }\n\n      callback(null, credentials);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} endpointHost\n   * @returns {String}\n   */\n  getEndpointHostRegion(endpointHost) {\n    let regionParts = endpointHost.match(/\\.([^\\.]+)\\.amazonaws\\.com$/i);\n\n    // @todo - expose API region into config provision section\n    return regionParts ? regionParts[1] : this._action.region; // use action region as fallback\n  }\n\n  /**\n   * @returns {Action}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get payload() {\n    return this._payload;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get method() {\n    return this._method;\n  }\n\n  /**\n   * @returns {Number}\n   * @constructor\n   */\n  static get TTL_DEFAULT() {\n    return 10;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_INVALIDATE() {\n    return -1;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_FOREVER() {\n    return 0;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {SuperagentResponse} from './SuperagentResponse';\nimport {LambdaResponse} from './LambdaResponse';\nimport {Response} from './Response';\nimport {Exception} from '../Exception/Exception';\nimport {Action} from './Action';\nimport Http from 'superagent';\nimport AWS from 'aws-sdk';\nimport {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';\nimport {CachedRequestException} from './Exception/CachedRequestException';\nimport {NotAuthenticatedException} from './Exception/NotAuthenticatedException';\nimport aws4 from 'aws4';\nimport urlParse from 'url-parse';\nimport qs from 'qs';\nimport Core from 'deep-core';\nimport {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';\nimport {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';\nimport {LoadCredentialsException} from './Exception/LoadCredentialsException';\nimport crypto from 'crypto';\nimport util from 'util';\n\n/**\n * Action request instance\n */\nexport class Request {\n  /**\n   * @param {Action} action\n   * @param {Object} payload\n   * @param {String} method\n   */\n  constructor(action, payload, method) {\n    this._action = action;\n    this._payload = payload;\n    this._method = method;\n    this._lambda = null;\n\n    this._cacheImpl = null;\n    this._cacheTtl = Request.TTL_FOREVER;\n    this._cached = false;\n\n    this._async = false;\n    this._native = false;\n\n    this._validationSchemaName = null;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  skipPreValidation() {\n    this._validationSchemaName = null;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isPreValidated() {\n    return !!this._validationSchemaName;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get validationSchemaName() {\n    return this._validationSchemaName;\n  }\n\n  /**\n   * @param {String} validationSchemaName\n   */\n  set validationSchemaName(validationSchemaName) {\n    this._validationSchemaName = validationSchemaName;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get async() {\n    return this._async;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  invokeAsync() {\n    if (!this.isLambda) {\n      throw new AsyncCallNotAvailableException(this._action.type);\n    }\n\n    this._native = true;\n    this._async = true;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get native() {\n    return this._native;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  useDirectCall() {\n    this._native = true;\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isCached() {\n    return this._cacheImpl && this._cached;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  enableCache() {\n    this._cached = true;\n    return this;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  disableCache() {\n    this._cached = false;\n    return this;\n  }\n\n  /**\n   * @param {Number} ttl\n   * @returns {Request}\n   */\n  cache(ttl = Request.TTL_FOREVER) {\n    if (!this._cacheImpl) {\n      throw new MissingCacheImplementationException();\n    }\n\n    this._cacheTtl = ttl;\n    this.enableCache();\n\n    return this;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get cacheTtl() {\n    return this._cacheTtl;\n  }\n\n  /**\n   * @param {Number} ttl\n   */\n  set cacheTtl(ttl) {\n    this._cacheTtl = ttl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cacheImpl() {\n    return this._cacheImpl;\n  }\n\n  /**\n   * @param {Object} cache\n   */\n  set cacheImpl(cache) {\n    this._cacheImpl = cache;\n\n    // @todo: do we really have to force it?\n    this.cache(Request.TTL_DEFAULT);\n  }\n\n  /**\n   * @returns {String}\n   * @private\n   */\n  _buildCacheKey() {\n    let payload = Request._md5(JSON.stringify(this.payload));\n    let endpoint = this.native ? this._action.source.original : this._action.source.api;\n\n    return `${this._method}:${this._action.type}:${endpoint}#${payload}`;\n  }\n\n  /**\n   * @param {String} str\n   * @returns {String}\n   */\n  static _md5(str) {\n    var md5sum = crypto.createHash('md5');\n\n    md5sum.update(str);\n\n    return md5sum.digest('hex');\n  }\n\n  /**\n   * @param {Response} response\n   * @returns {String}\n   * @private\n   */\n  static _stringifyResponse(response) {\n    return JSON.stringify({\n      _class: response.constructor.name,\n      data: response.rawData,\n      error: response.rawError,\n    });\n  }\n\n  /**\n   * @param {String} rawData\n   * @returns {Response}\n   * @private\n   */\n  _rebuildResponse(rawData) {\n    let response = JSON.parse(rawData);\n\n    if (!response) {\n      throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);\n    }\n\n    let ResponseImpl = Request._chooseResponseImpl(response._class);\n\n    if (!ResponseImpl) {\n      throw new Exception(`Unknown Response implementation ${response._class}`);\n    }\n\n    return new ResponseImpl(this, response.data, response.error);\n  }\n\n  /**\n   * @param {String} className\n   * @returns {*}\n   * @private\n   */\n  static _chooseResponseImpl(className) {\n    let implMap = {};\n\n    implMap[Response.name] = Response;\n    implMap[LambdaResponse.name] = LambdaResponse;\n    implMap[SuperagentResponse.name] = SuperagentResponse;\n\n    return implMap[className];\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  invalidateCache(callback = () => {}) {\n    if (!this.isCached) {\n      callback(true);\n\n      return this;\n    }\n\n    let cache = this._cacheImpl;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, (error, result) => {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result) {\n        cache.invalidate(cacheKey, 0, (error, result) => {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback(result);\n        });\n\n        return;\n      }\n\n      callback(true);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  send(callback = () => {}) {\n    if (!this.isCached || this._async) {\n      return this._send(callback);\n    }\n\n    let cache = this._cacheImpl;\n    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;\n    let cacheKey = this._buildCacheKey();\n\n    cache.has(cacheKey, (error, result) => {\n      if (error) {\n        throw new CachedRequestException(error);\n      }\n\n      if (result && !invalidateCache) {\n        cache.get(cacheKey, (error, result) => {\n          if (error) {\n            throw new CachedRequestException(error);\n          }\n\n          callback(this._rebuildResponse(result));\n        });\n\n        return;\n      }\n\n      this._send((response) => {\n        if (!response.isError) {\n          cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {\n            if (!error && !result) {\n              error = `Unable to persist request cache under key ${cacheKey}.`;\n            }\n\n            if (error) {\n              throw new CachedRequestException(error);\n            }\n          });\n        }\n\n        // @todo: do it synchronous?\n        callback(response);\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   *\n   * @todo: remove this?\n   */\n  get isLambda() {\n    return this._action.type === Action.LAMBDA;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   */\n  _send(callback = () => {}) {\n     if (this.isPreValidated) {\n      let validation = this._action.resource.validation;\n\n      let validationResult = validation.validate(this._validationSchemaName, this.payload, true);\n\n      if (validationResult.error) {\n        let error = validationResult.error;\n\n        callback(new LambdaResponse(this, {\n          errorType: error.name,\n          errorMessage: error.annotate(),\n          errorStack: error.stack || (new Error(error.message)).stack,\n          validationErrors: error.details,\n        }, null));\n\n        return this;\n      }\n    }\n\n    if (!this._native) {\n      return this._sendThroughApi(callback);\n    }\n\n    switch (this._action.type) {\n      case Action.LAMBDA:\n        this._sendLambda(callback);\n        break;\n      case Action.EXTERNAL:\n        this._sendExternal(callback);\n        break;\n      default: throw new Exception(`Request of type ${this._action.type} is not implemented`);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendThroughApi(callback = () => {}) {\n    let endpoint = this._action.source.api;\n\n    this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {\n      signedRequest.end((error, response) => {\n        callback(new SuperagentResponse(this, response, error));\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendLambda(callback = () => {}) {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let options = {\n      region: this._action.region,\n    };\n\n    let invocationParameters = {\n      FunctionName: this._action.source.original,\n      Payload: JSON.stringify(this.payload),\n      InvocationType: this._async ? 'Event' : 'RequestResponse',\n    };\n\n    this._loadSecurityCredentials((error, credentials) => {\n      // use cognito identity credentials if present\n      // if not, fallback to lambda execution role permissions\n      if (!error && credentials) {\n        options.credentials = credentials;\n      }\n\n      this._lambda = new AWS.Lambda(options);\n\n      this._lambda.invoke(invocationParameters, (error, data) => {\n        callback(new LambdaResponse(this, data, error));\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Request}\n   * @private\n   */\n  _sendExternal(callback = () => {}) {\n    Http[Request._httpRealMethod(this._method)](this._action.source.original)\n      .send(this.payload)\n      .end((error, response) => {\n        callback(new SuperagentResponse(this, response, error));\n      });\n\n    return this;\n  }\n\n  /**\n   * @param {String} url\n   * @param {String} httpMethod\n   * @param {Object} payload\n   * @param {Function} callback\n   * @private\n   */\n  _createAws4SignedRequest(url, httpMethod, payload, callback) {\n    let parsedUrl = urlParse(url, qs);\n    let apiHost = parsedUrl.hostname;\n    let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';\n    \n    let opsToSign = {\n      service: Core.AWS.Service.API_GATEWAY_EXECUTE,\n      region: this.getEndpointHostRegion(apiHost),\n      host: apiHost,\n      method: httpMethod,\n      path: apiPath,\n      headers: {\n        'Content-Type': 'application/json; charset=UTF-8',\n      },\n    };\n\n    httpMethod = httpMethod.toLowerCase();\n\n    switch (httpMethod) {\n      case 'get':\n      case 'delete':\n        if (parsedUrl.query || payload) {\n          //assure parsedUrl.query is a valid object\n          if (parsedUrl.query === null || typeof parsedUrl.query !== 'object') {\n            parsedUrl.query = {};\n          }\n\n          let mergedPayload = util._extend(parsedUrl.query, payload);\n\n          if (this.action.apiCacheEnabled) {\n            mergedPayload[Action.DEEP_CACHE_QS_PARAM] = Request._md5(qs.stringify(mergedPayload));\n          }\n\n          opsToSign.path += `?${qs.stringify(mergedPayload)}`;\n\n          // pass payload as query string\n          parsedUrl.set('query', mergedPayload, qs.parse);\n          url = parsedUrl.toString(qs.stringify);\n          payload = null; // reset it coz superagent overrides url query string\n        }\n        break;\n      case 'post':\n      case 'put':\n      case 'patch':\n        opsToSign.body = JSON.stringify(payload);\n        break;\n    }\n\n    this._loadSecurityCredentials((error, credentials) => {\n      if (error) {\n        throw error;\n      }\n\n      let signature = aws4.sign(opsToSign, credentials);\n\n      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)\n        .set('Content-Type', 'application/json; charset=UTF-8')\n        .set('X-Amz-Date', signature.headers['X-Amz-Date'])\n        .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])\n        .set('Authorization', signature.headers.Authorization);\n\n      if (this.action.resource.isBackend && signature.headers.hasOwnProperty('Content-Length')) {\n        request.set('Content-Length', signature.headers['Content-Length']);\n      }\n\n      callback(request);\n    });\n  }\n\n  /**\n   * @param {String} httpMethod\n   * @returns {String}\n   * @private\n   */\n  static _httpRealMethod(httpMethod) {\n    let method = httpMethod.toLowerCase();\n\n    // @see https://visionmedia.github.io/superagent/\n    if (method === 'delete') {\n      method = 'del';\n    }\n\n    return method;\n  }\n\n  /**\n   * @returns {Request}\n   * @private\n   */\n  _loadSecurityCredentials(callback) {\n    let securityService = this._action.resource.security;\n\n    if (!securityService) {\n      callback(new MissingSecurityServiceException(), null);\n      return this;\n    }\n\n    if (!securityService.token) {\n      callback(new NotAuthenticatedException(), null);\n      return this;\n    }\n\n    securityService.token.loadCredentials((error, credentials) => {\n      if (error) {\n        callback(new LoadCredentialsException(error), null);\n        return;\n      }\n\n      callback(null, credentials);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} endpointHost\n   * @returns {String}\n   */\n  getEndpointHostRegion(endpointHost) {\n    let regionParts = endpointHost.match(/\\.([^\\.]+)\\.amazonaws\\.com$/i);\n\n    // @todo - expose API region into config provision section\n    return regionParts ? regionParts[1] : this._action.region; // use action region as fallback\n  }\n\n  /**\n   * @returns {Action}\n   */\n  get action() {\n    return this._action;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get payload() {\n    return this._payload;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get method() {\n    return this._method;\n  }\n\n  /**\n   * @returns {Number}\n   * @constructor\n   */\n  static get TTL_DEFAULT() {\n    return 10;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_INVALIDATE() {\n    return -1;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get TTL_FOREVER() {\n    return 0;\n  }\n}\n"
   },
   {
-    "__docId__": 113,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2678,11 +3010,10 @@
     "importPath": "deep-resource/lib/Resource/Request.js",
     "importStyle": "{Request}",
     "description": "Action request instance",
-    "lineNumber": 31,
+    "lineNumber": 30,
     "interface": false
   },
   {
-    "__docId__": 114,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2691,7 +3022,7 @@
     "longname": "lib/Resource/Request.js~Request#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 36,
     "params": [
       {
         "nullable": null,
@@ -2727,13 +3058,29 @@
     "generator": false
   },
   {
-    "__docId__": 115,
     "kind": "member",
     "static": false,
     "variation": null,
     "name": "_action",
     "memberof": "lib/Resource/Request.js~Request",
     "longname": "lib/Resource/Request.js~Request#_action",
+    "access": null,
+    "description": null,
+    "lineNumber": 37,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_payload",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_payload",
     "access": null,
     "description": null,
     "lineNumber": 38,
@@ -2745,13 +3092,12 @@
     }
   },
   {
-    "__docId__": 116,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_payload",
+    "name": "_method",
     "memberof": "lib/Resource/Request.js~Request",
-    "longname": "lib/Resource/Request.js~Request#_payload",
+    "longname": "lib/Resource/Request.js~Request#_method",
     "access": null,
     "description": null,
     "lineNumber": 39,
@@ -2763,13 +3109,12 @@
     }
   },
   {
-    "__docId__": 117,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_method",
+    "name": "_lambda",
     "memberof": "lib/Resource/Request.js~Request",
-    "longname": "lib/Resource/Request.js~Request#_method",
+    "longname": "lib/Resource/Request.js~Request#_lambda",
     "access": null,
     "description": null,
     "lineNumber": 40,
@@ -2781,16 +3126,15 @@
     }
   },
   {
-    "__docId__": 118,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_lambda",
+    "name": "_cacheImpl",
     "memberof": "lib/Resource/Request.js~Request",
-    "longname": "lib/Resource/Request.js~Request#_lambda",
+    "longname": "lib/Resource/Request.js~Request#_cacheImpl",
     "access": null,
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 42,
     "undocument": true,
     "type": {
       "types": [
@@ -2799,13 +3143,12 @@
     }
   },
   {
-    "__docId__": 119,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_cacheImpl",
+    "name": "_cacheTtl",
     "memberof": "lib/Resource/Request.js~Request",
-    "longname": "lib/Resource/Request.js~Request#_cacheImpl",
+    "longname": "lib/Resource/Request.js~Request#_cacheTtl",
     "access": null,
     "description": null,
     "lineNumber": 43,
@@ -2817,25 +3160,6 @@
     }
   },
   {
-    "__docId__": 120,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_cacheTtl",
-    "memberof": "lib/Resource/Request.js~Request",
-    "longname": "lib/Resource/Request.js~Request#_cacheTtl",
-    "access": null,
-    "description": null,
-    "lineNumber": 44,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 121,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2844,7 +3168,7 @@
     "longname": "lib/Resource/Request.js~Request#_cached",
     "access": null,
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 44,
     "undocument": true,
     "type": {
       "types": [
@@ -2853,13 +3177,29 @@
     }
   },
   {
-    "__docId__": 122,
     "kind": "member",
     "static": false,
     "variation": null,
     "name": "_async",
     "memberof": "lib/Resource/Request.js~Request",
     "longname": "lib/Resource/Request.js~Request#_async",
+    "access": null,
+    "description": null,
+    "lineNumber": 46,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_native",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_native",
     "access": null,
     "description": null,
     "lineNumber": 47,
@@ -2871,25 +3211,175 @@
     }
   },
   {
-    "__docId__": 123,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_native",
+    "name": "_validationSchemaName",
     "memberof": "lib/Resource/Request.js~Request",
-    "longname": "lib/Resource/Request.js~Request#_native",
+    "longname": "lib/Resource/Request.js~Request#_validationSchemaName",
     "access": null,
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 49,
     "undocument": true,
     "type": {
       "types": [
-        "boolean"
+        "*"
       ]
     }
   },
   {
-    "__docId__": 124,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "skipPreValidation",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#skipPreValidation",
+    "access": null,
+    "description": null,
+    "lineNumber": 55,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Request}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Request"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_validationSchemaName",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_validationSchemaName",
+    "access": null,
+    "description": null,
+    "lineNumber": 56,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "isPreValidated",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#isPreValidated",
+    "access": null,
+    "description": null,
+    "lineNumber": 64,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "validationSchemaName",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#validationSchemaName",
+    "access": null,
+    "description": null,
+    "lineNumber": 71,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "validationSchemaName",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#validationSchemaName",
+    "access": null,
+    "description": null,
+    "lineNumber": 78,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "validationSchemaName",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_validationSchemaName",
+    "memberof": "lib/Resource/Request.js~Request",
+    "longname": "lib/Resource/Request.js~Request#_validationSchemaName",
+    "access": null,
+    "description": null,
+    "lineNumber": 79,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2898,7 +3388,7 @@
     "longname": "lib/Resource/Request.js~Request#async",
     "access": null,
     "description": null,
-    "lineNumber": 54,
+    "lineNumber": 85,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2921,7 +3411,6 @@
     "generator": false
   },
   {
-    "__docId__": 125,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2930,7 +3419,7 @@
     "longname": "lib/Resource/Request.js~Request#invokeAsync",
     "access": null,
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 92,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2949,7 +3438,6 @@
     "generator": false
   },
   {
-    "__docId__": 126,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2958,7 +3446,7 @@
     "longname": "lib/Resource/Request.js~Request#_native",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 97,
     "undocument": true,
     "type": {
       "types": [
@@ -2967,7 +3455,6 @@
     }
   },
   {
-    "__docId__": 127,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2976,7 +3463,7 @@
     "longname": "lib/Resource/Request.js~Request#_async",
     "access": null,
     "description": null,
-    "lineNumber": 67,
+    "lineNumber": 98,
     "undocument": true,
     "type": {
       "types": [
@@ -2985,7 +3472,6 @@
     }
   },
   {
-    "__docId__": 128,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2994,7 +3480,7 @@
     "longname": "lib/Resource/Request.js~Request#native",
     "access": null,
     "description": null,
-    "lineNumber": 75,
+    "lineNumber": 106,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3017,7 +3503,6 @@
     "generator": false
   },
   {
-    "__docId__": 129,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3026,7 +3511,7 @@
     "longname": "lib/Resource/Request.js~Request#useDirectCall",
     "access": null,
     "description": null,
-    "lineNumber": 82,
+    "lineNumber": 113,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3045,7 +3530,6 @@
     "generator": false
   },
   {
-    "__docId__": 130,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3054,7 +3538,7 @@
     "longname": "lib/Resource/Request.js~Request#_native",
     "access": null,
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 114,
     "undocument": true,
     "type": {
       "types": [
@@ -3063,7 +3547,6 @@
     }
   },
   {
-    "__docId__": 131,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3072,7 +3555,7 @@
     "longname": "lib/Resource/Request.js~Request#isCached",
     "access": null,
     "description": null,
-    "lineNumber": 91,
+    "lineNumber": 122,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3095,7 +3578,6 @@
     "generator": false
   },
   {
-    "__docId__": 132,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3104,7 +3586,7 @@
     "longname": "lib/Resource/Request.js~Request#enableCache",
     "access": null,
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 129,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3123,7 +3605,6 @@
     "generator": false
   },
   {
-    "__docId__": 133,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3132,7 +3613,7 @@
     "longname": "lib/Resource/Request.js~Request#_cached",
     "access": null,
     "description": null,
-    "lineNumber": 99,
+    "lineNumber": 130,
     "undocument": true,
     "type": {
       "types": [
@@ -3141,7 +3622,6 @@
     }
   },
   {
-    "__docId__": 134,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3150,7 +3630,7 @@
     "longname": "lib/Resource/Request.js~Request#disableCache",
     "access": null,
     "description": null,
-    "lineNumber": 106,
+    "lineNumber": 137,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3169,7 +3649,6 @@
     "generator": false
   },
   {
-    "__docId__": 135,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3178,7 +3657,7 @@
     "longname": "lib/Resource/Request.js~Request#_cached",
     "access": null,
     "description": null,
-    "lineNumber": 107,
+    "lineNumber": 138,
     "undocument": true,
     "type": {
       "types": [
@@ -3187,7 +3666,6 @@
     }
   },
   {
-    "__docId__": 136,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3196,7 +3674,7 @@
     "longname": "lib/Resource/Request.js~Request#cache",
     "access": null,
     "description": null,
-    "lineNumber": 115,
+    "lineNumber": 146,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3226,7 +3704,6 @@
     "generator": false
   },
   {
-    "__docId__": 137,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3235,7 +3712,7 @@
     "longname": "lib/Resource/Request.js~Request#_cacheTtl",
     "access": null,
     "description": null,
-    "lineNumber": 120,
+    "lineNumber": 151,
     "undocument": true,
     "type": {
       "types": [
@@ -3244,7 +3721,6 @@
     }
   },
   {
-    "__docId__": 138,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3253,7 +3729,7 @@
     "longname": "lib/Resource/Request.js~Request#cacheTtl",
     "access": null,
     "description": null,
-    "lineNumber": 129,
+    "lineNumber": 160,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3276,7 +3752,6 @@
     "generator": false
   },
   {
-    "__docId__": 139,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -3285,7 +3760,7 @@
     "longname": "lib/Resource/Request.js~Request#cacheTtl",
     "access": null,
     "description": null,
-    "lineNumber": 136,
+    "lineNumber": 167,
     "params": [
       {
         "nullable": null,
@@ -3306,7 +3781,6 @@
     "generator": false
   },
   {
-    "__docId__": 140,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3315,7 +3789,7 @@
     "longname": "lib/Resource/Request.js~Request#_cacheTtl",
     "access": null,
     "description": null,
-    "lineNumber": 137,
+    "lineNumber": 168,
     "undocument": true,
     "type": {
       "types": [
@@ -3324,7 +3798,6 @@
     }
   },
   {
-    "__docId__": 141,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3333,7 +3806,7 @@
     "longname": "lib/Resource/Request.js~Request#cacheImpl",
     "access": null,
     "description": null,
-    "lineNumber": 143,
+    "lineNumber": 174,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3356,7 +3829,6 @@
     "generator": false
   },
   {
-    "__docId__": 142,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -3365,7 +3837,7 @@
     "longname": "lib/Resource/Request.js~Request#cacheImpl",
     "access": null,
     "description": null,
-    "lineNumber": 150,
+    "lineNumber": 181,
     "params": [
       {
         "nullable": null,
@@ -3386,7 +3858,6 @@
     "generator": false
   },
   {
-    "__docId__": 143,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3395,7 +3866,7 @@
     "longname": "lib/Resource/Request.js~Request#_cacheImpl",
     "access": null,
     "description": null,
-    "lineNumber": 151,
+    "lineNumber": 182,
     "undocument": true,
     "type": {
       "types": [
@@ -3404,7 +3875,6 @@
     }
   },
   {
-    "__docId__": 144,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3413,7 +3883,7 @@
     "longname": "lib/Resource/Request.js~Request#_buildCacheKey",
     "access": "private",
     "description": null,
-    "lineNumber": 161,
+    "lineNumber": 192,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3432,7 +3902,6 @@
     "generator": false
   },
   {
-    "__docId__": 145,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3441,7 +3910,7 @@
     "longname": "lib/Resource/Request.js~Request._md5",
     "access": null,
     "description": null,
-    "lineNumber": 172,
+    "lineNumber": 203,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3471,7 +3940,6 @@
     "generator": false
   },
   {
-    "__docId__": 146,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3480,7 +3948,7 @@
     "longname": "lib/Resource/Request.js~Request._stringifyResponse",
     "access": "private",
     "description": null,
-    "lineNumber": 185,
+    "lineNumber": 216,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3510,7 +3978,6 @@
     "generator": false
   },
   {
-    "__docId__": 147,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3519,7 +3986,7 @@
     "longname": "lib/Resource/Request.js~Request#_rebuildResponse",
     "access": "private",
     "description": null,
-    "lineNumber": 198,
+    "lineNumber": 229,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3549,7 +4016,6 @@
     "generator": false
   },
   {
-    "__docId__": 148,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3558,7 +4024,7 @@
     "longname": "lib/Resource/Request.js~Request._chooseResponseImpl",
     "access": "private",
     "description": null,
-    "lineNumber": 219,
+    "lineNumber": 250,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3588,7 +4054,6 @@
     "generator": false
   },
   {
-    "__docId__": 149,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3597,7 +4062,7 @@
     "longname": "lib/Resource/Request.js~Request#invalidateCache",
     "access": null,
     "description": null,
-    "lineNumber": 232,
+    "lineNumber": 263,
     "params": [
       {
         "nullable": null,
@@ -3618,7 +4083,6 @@
     "generator": false
   },
   {
-    "__docId__": 150,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3627,7 +4091,7 @@
     "longname": "lib/Resource/Request.js~Request#send",
     "access": null,
     "description": null,
-    "lineNumber": 268,
+    "lineNumber": 299,
     "params": [
       {
         "nullable": null,
@@ -3648,7 +4112,6 @@
     "generator": false
   },
   {
-    "__docId__": 151,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3657,7 +4120,7 @@
     "longname": "lib/Resource/Request.js~Request#isLambda",
     "access": null,
     "description": null,
-    "lineNumber": 318,
+    "lineNumber": 351,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3680,7 +4143,6 @@
     "generator": false
   },
   {
-    "__docId__": 152,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3689,7 +4151,7 @@
     "longname": "lib/Resource/Request.js~Request#_send",
     "access": null,
     "description": null,
-    "lineNumber": 326,
+    "lineNumber": 359,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3719,7 +4181,6 @@
     "generator": false
   },
   {
-    "__docId__": 153,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3728,7 +4189,7 @@
     "longname": "lib/Resource/Request.js~Request#_sendThroughApi",
     "access": "private",
     "description": null,
-    "lineNumber": 349,
+    "lineNumber": 401,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3758,7 +4219,6 @@
     "generator": false
   },
   {
-    "__docId__": 154,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3767,7 +4227,7 @@
     "longname": "lib/Resource/Request.js~Request#_sendLambda",
     "access": "private",
     "description": null,
-    "lineNumber": 366,
+    "lineNumber": 418,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3797,7 +4257,6 @@
     "generator": false
   },
   {
-    "__docId__": 155,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3806,7 +4265,7 @@
     "longname": "lib/Resource/Request.js~Request#_lambda",
     "access": null,
     "description": null,
-    "lineNumber": 387,
+    "lineNumber": 439,
     "undocument": true,
     "type": {
       "types": [
@@ -3815,7 +4274,6 @@
     }
   },
   {
-    "__docId__": 156,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3824,7 +4282,7 @@
     "longname": "lib/Resource/Request.js~Request#_sendExternal",
     "access": "private",
     "description": null,
-    "lineNumber": 402,
+    "lineNumber": 454,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3854,7 +4312,6 @@
     "generator": false
   },
   {
-    "__docId__": 157,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3863,7 +4320,7 @@
     "longname": "lib/Resource/Request.js~Request#_createAws4SignedRequest",
     "access": "private",
     "description": null,
-    "lineNumber": 419,
+    "lineNumber": 471,
     "params": [
       {
         "nullable": null,
@@ -3909,7 +4366,6 @@
     "generator": false
   },
   {
-    "__docId__": 158,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3918,7 +4374,7 @@
     "longname": "lib/Resource/Request.js~Request._httpRealMethod",
     "access": "private",
     "description": null,
-    "lineNumber": 493,
+    "lineNumber": 545,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3948,7 +4404,6 @@
     "generator": false
   },
   {
-    "__docId__": 159,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3957,7 +4412,7 @@
     "longname": "lib/Resource/Request.js~Request#_loadSecurityCredentials",
     "access": "private",
     "description": null,
-    "lineNumber": 508,
+    "lineNumber": 560,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3983,7 +4438,6 @@
     "generator": false
   },
   {
-    "__docId__": 160,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3992,7 +4446,7 @@
     "longname": "lib/Resource/Request.js~Request#getEndpointHostRegion",
     "access": null,
     "description": null,
-    "lineNumber": 537,
+    "lineNumber": 589,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4022,7 +4476,6 @@
     "generator": false
   },
   {
-    "__docId__": 161,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4031,7 +4484,7 @@
     "longname": "lib/Resource/Request.js~Request#action",
     "access": null,
     "description": null,
-    "lineNumber": 547,
+    "lineNumber": 599,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4054,7 +4507,6 @@
     "generator": false
   },
   {
-    "__docId__": 162,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4063,7 +4515,7 @@
     "longname": "lib/Resource/Request.js~Request#payload",
     "access": null,
     "description": null,
-    "lineNumber": 554,
+    "lineNumber": 606,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4086,7 +4538,6 @@
     "generator": false
   },
   {
-    "__docId__": 163,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4095,7 +4546,7 @@
     "longname": "lib/Resource/Request.js~Request#method",
     "access": null,
     "description": null,
-    "lineNumber": 561,
+    "lineNumber": 613,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4118,7 +4569,6 @@
     "generator": false
   },
   {
-    "__docId__": 164,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4127,7 +4577,7 @@
     "longname": "lib/Resource/Request.js~Request.TTL_DEFAULT",
     "access": null,
     "description": null,
-    "lineNumber": 569,
+    "lineNumber": 621,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4154,7 +4604,6 @@
     "generator": false
   },
   {
-    "__docId__": 165,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4163,7 +4612,7 @@
     "longname": "lib/Resource/Request.js~Request.TTL_INVALIDATE",
     "access": null,
     "description": null,
-    "lineNumber": 576,
+    "lineNumber": 628,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4186,7 +4635,6 @@
     "generator": false
   },
   {
-    "__docId__": 166,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4195,7 +4643,7 @@
     "longname": "lib/Resource/Request.js~Request.TTL_FOREVER",
     "access": null,
     "description": null,
-    "lineNumber": 583,
+    "lineNumber": 635,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4218,7 +4666,6 @@
     "generator": false
   },
   {
-    "__docId__": 167,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -4231,7 +4678,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\n/**\n * Response object\n */\nexport class Response {\n  /**\n   * @param {Request|*} request\n   * @param {Object} data\n   * @param {String} error\n   */\n  constructor(request, data, error) {\n    this._request = request;\n\n    this._rawError = error;\n    this._rawData = data;\n\n    if (this._rawError) {\n      this._rawError = Response._toErrorObj(this._rawError);\n    }\n\n    this._statusCode = null;\n    this._data = null;\n    this._error = null;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get rawData() {\n    return this._rawData;\n  }\n\n  /**\n   * @returns {*}\n   */\n  get rawError() {\n    return this._rawError;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get statusCode() {\n    return this._statusCode;\n  }\n\n  /**\n   * @returns {Error}\n   */\n  get error() {\n    return this._error;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isError() {\n    return !!this.error;\n  }\n\n  /**\n   * @param {String|Error|*} rawError\n   * @returns {Error}\n   * @private\n   */\n  static _toErrorObj(rawError) {\n    return rawError instanceof Error\n      ? rawError\n      : new Error(rawError.toString());\n  }\n}\n"
   },
   {
-    "__docId__": 168,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -4247,7 +4693,6 @@
     "interface": false
   },
   {
-    "__docId__": 169,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -4293,7 +4738,6 @@
     "generator": false
   },
   {
-    "__docId__": 170,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4311,7 +4755,6 @@
     }
   },
   {
-    "__docId__": 171,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4329,7 +4772,6 @@
     }
   },
   {
-    "__docId__": 172,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4347,7 +4789,6 @@
     }
   },
   {
-    "__docId__": 173,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4365,7 +4806,6 @@
     }
   },
   {
-    "__docId__": 174,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4383,7 +4823,6 @@
     }
   },
   {
-    "__docId__": 175,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4401,7 +4840,6 @@
     }
   },
   {
-    "__docId__": 176,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4419,7 +4857,6 @@
     }
   },
   {
-    "__docId__": 177,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4451,7 +4888,6 @@
     "generator": false
   },
   {
-    "__docId__": 178,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4483,7 +4919,6 @@
     "generator": false
   },
   {
-    "__docId__": 179,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4515,7 +4950,6 @@
     "generator": false
   },
   {
-    "__docId__": 180,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4547,7 +4981,6 @@
     "generator": false
   },
   {
-    "__docId__": 181,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4579,7 +5012,6 @@
     "generator": false
   },
   {
-    "__docId__": 182,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4611,7 +5043,6 @@
     "generator": false
   },
   {
-    "__docId__": 183,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4643,7 +5074,6 @@
     "generator": false
   },
   {
-    "__docId__": 184,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -4684,7 +5114,6 @@
     "generator": false
   },
   {
-    "__docId__": 185,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -4697,7 +5126,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\nimport {LambdaResponse} from './LambdaResponse';\n\nexport class SuperagentResponse extends Response {\n  /**\n   * @param {*} args\n   */\n  constructor(...args) {\n    super(...args);\n\n    if (this._request.isLambda) {\n      this._parseLambda();\n    } else {\n      this._parseExternal();\n    }\n  }\n\n  /**\n   * @private\n   */\n  _parseLambda() {\n    this._parseExternal();\n\n    // check if any Lambda response available\n    if (this._data && !this._error) {\n      let dataObj = this._data;\n\n      // check whether Lambda execution failed\n      if (dataObj.errorMessage) {\n        this._error = LambdaResponse.getPayloadError(dataObj);\n      } else {\n        this._data = dataObj;\n      }\n    }\n  }\n\n  /**\n   * @private\n   */\n  _parseExternal() {\n    let data = this._rawData;\n    let error = this._rawError;\n\n    if (error) {\n      this._error = error;\n    } else if (data && data.error) { // weird case...\n      this._error = data.error;\n    } else {\n      this._data = data && data.body ? data.body : null;\n    }\n\n    // @todo: treat Response.status lack somehow else?\n    if (data && data.status) {\n      this._statusCode = parseInt(data.status);\n    } else if (this._data && !this._error) {\n      this._statusCode = 200;\n    } else {\n      this._statusCode = 500;\n    }\n  }\n}\n"
   },
   {
-    "__docId__": 186,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -4717,7 +5145,6 @@
     ]
   },
   {
-    "__docId__": 187,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -4742,7 +5169,6 @@
     "generator": false
   },
   {
-    "__docId__": 188,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -4756,7 +5182,6 @@
     "generator": false
   },
   {
-    "__docId__": 189,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4774,7 +5199,6 @@
     }
   },
   {
-    "__docId__": 190,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4792,7 +5216,6 @@
     }
   },
   {
-    "__docId__": 191,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -4806,7 +5229,6 @@
     "generator": false
   },
   {
-    "__docId__": 192,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4824,7 +5246,6 @@
     }
   },
   {
-    "__docId__": 193,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4842,7 +5263,6 @@
     }
   },
   {
-    "__docId__": 194,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4860,7 +5280,6 @@
     }
   },
   {
-    "__docId__": 195,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4878,7 +5297,6 @@
     }
   },
   {
-    "__docId__": 196,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4896,7 +5314,6 @@
     }
   },
   {
-    "__docId__": 197,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4914,7 +5331,6 @@
     }
   },
   {
-    "__docId__": 198,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -4924,10 +5340,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {Instance as ResourceInstance} from './Resource/Instance';\nimport {MissingResourceException} from './Exception/MissingResourceException';\n\n/**\n * Bundle resource\n */\nexport class Resource extends Kernel.ContainerAware {\n  /**\n   * @param {Object} resources\n   */\n  constructor(resources = {}) {\n    super();\n\n    this._resources = resources;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Boolean}\n   */\n  has(identifier) {\n    return this._resources[this.microservice.identifier].hasOwnProperty(identifier);\n  }\n\n  /**\n   * @param {String} identifier (e.g @microservice_identifier:resource_name[:action_name])\n   * @returns {ResourceInstance}\n   */\n  get(identifier) {\n    let parsedIdentifier = this._parseResourceIdentifier(\n      this._resolveIdentifier(identifier) // it also binds 'working' microservice to this instance\n    );\n\n    let resourceIdentifier = parsedIdentifier.resource;\n    let actionIdentifier = parsedIdentifier.action;\n\n    let microserviceIdentifier = this.microservice.identifier;\n\n    if (!this.has(resourceIdentifier)) {\n      throw new MissingResourceException(microserviceIdentifier, resourceIdentifier);\n    }\n\n    let resource = this._resources[microserviceIdentifier][resourceIdentifier];\n\n    // inject dependencies\n    resource.cache = this.container.get('cache');\n    resource.security = this.container.get('security');\n\n    return actionIdentifier ? resource.action(actionIdentifier) : resource;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get list() {\n    let map = {};\n\n    for (let microservice in this._resources) {\n      if (!this._resources.hasOwnProperty(microservice)) {\n        continue;\n      }\n\n      map[microservice] = Object.keys(this._resources[microservice]);\n    }\n\n    return map;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Object}\n   * @private\n   */\n  _parseResourceIdentifier(identifier) {\n    let parts = identifier.split(':').map((part) => {\n      return part.trim();\n    });\n\n    return {\n      resource: parts.shift(),\n      action: parts.length > 0 ? parts.join(':') : null,\n    };\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let resourcesVector = [];\n\n    for (let microserviceKey in kernel.microservices) {\n      if (!kernel.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = kernel.microservices[microserviceKey];\n\n      this._resources[microservice.identifier] = {};\n\n      for (let resourceName in microservice.rawResources) {\n        if (!microservice.rawResources.hasOwnProperty(resourceName)) {\n          continue;\n        }\n\n        let resource = new ResourceInstance(\n          resourceName,\n          microservice.rawResources[resourceName]\n        );\n\n        resource.localBackend = this.localBackend;\n        resource.isBackend = this.kernel.isBackend;\n\n        this._resources[microservice.identifier][resourceName] = resource;\n\n        resourcesVector.push(resource);\n      }\n    }\n\n    callback();\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {Instance as ResourceInstance} from './Resource/Instance';\nimport {MissingResourceException} from './Exception/MissingResourceException';\n\n/**\n * Bundle resource\n */\nexport class Resource extends Kernel.ContainerAware {\n  /**\n   * @param {Object} resources\n   */\n  constructor(resources = {}) {\n    super();\n\n    this._resources = resources;\n    this._actionsConfig = {};\n  }\n\n  /**\n   * @param {String} sourceId\n   * @returns {Object|null}\n   */\n  getActionConfig(sourceId) {\n    return this._actionsConfig.hasOwnProperty(sourceId) ?\n      this._actionsConfig[sourceId] :\n      null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get actionsConfig() {\n    return this._actionsConfig;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Boolean}\n   */\n  has(identifier) {\n    return this._resources[this.microservice.identifier].hasOwnProperty(identifier);\n  }\n\n  /**\n   * @param {String} identifier (e.g @microservice_identifier:resource_name[:action_name])\n   * @returns {ResourceInstance}\n   */\n  get(identifier) {\n    let parsedIdentifier = this._parseResourceIdentifier(\n      this._resolveIdentifier(identifier) // it also binds 'working' microservice to this instance\n    );\n\n    let resourceIdentifier = parsedIdentifier.resource;\n    let actionIdentifier = parsedIdentifier.action;\n\n    let microserviceIdentifier = this.microservice.identifier;\n\n    if (!this.has(resourceIdentifier)) {\n      throw new MissingResourceException(microserviceIdentifier, resourceIdentifier);\n    }\n\n    let resource = this._resources[microserviceIdentifier][resourceIdentifier];\n\n    // inject dependencies\n    resource.cache = this.container.get('cache');\n    resource.security = this.container.get('security');\n    resource.validation = this.container.get('validation');\n\n    return actionIdentifier ? resource.action(actionIdentifier) : resource;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get list() {\n    let map = {};\n\n    for (let microservice in this._resources) {\n      if (!this._resources.hasOwnProperty(microservice)) {\n        continue;\n      }\n\n      map[microservice] = Object.keys(this._resources[microservice]);\n    }\n\n    return map;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Object}\n   * @private\n   */\n  _parseResourceIdentifier(identifier) {\n    let parts = identifier.split(':').map((part) => {\n      return part.trim();\n    });\n\n    return {\n      resource: parts.shift(),\n      action: parts.length > 0 ? parts.join(':') : null,\n    };\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let resourcesVector = [];\n\n    for (let microserviceKey in kernel.microservices) {\n      if (!kernel.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = kernel.microservices[microserviceKey];\n\n      this._resources[microservice.identifier] = {};\n\n      for (let resourceName in microservice.rawResources) {\n        if (!microservice.rawResources.hasOwnProperty(resourceName)) {\n          continue;\n        }\n\n        let resource = new ResourceInstance(\n          resourceName,\n          microservice.rawResources[resourceName]\n        );\n\n        resource.localBackend = this.localBackend;\n        resource.isBackend = this.kernel.isBackend;\n\n        this._resources[microservice.identifier][resourceName] = resource;\n\n        resourcesVector.push(resource);\n\n        let actionsConfig = resource.actionsConfig;\n\n        for (let actionSourceId in actionsConfig) {\n          if (!actionsConfig.hasOwnProperty(actionSourceId)) {\n            continue;\n          }\n\n          this._actionsConfig[actionSourceId] = actionsConfig[actionSourceId];\n        }\n      }\n    }\n\n    callback();\n  }\n}\n"
   },
   {
-    "__docId__": 199,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -4946,7 +5361,6 @@
     ]
   },
   {
-    "__docId__": 200,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -4971,7 +5385,6 @@
     "generator": false
   },
   {
-    "__docId__": 201,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4989,7 +5402,93 @@
     }
   },
   {
-    "__docId__": 202,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_actionsConfig",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#_actionsConfig",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getActionConfig",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#getActionConfig",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object|null}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "sourceId",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object",
+        "null"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "actionsConfig",
+    "memberof": "lib/Resource.js~Resource",
+    "longname": "lib/Resource.js~Resource#actionsConfig",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -4998,7 +5497,7 @@
     "longname": "lib/Resource.js~Resource#has",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 46,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5028,7 +5527,6 @@
     "generator": false
   },
   {
-    "__docId__": 203,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5037,7 +5535,7 @@
     "longname": "lib/Resource.js~Resource#get",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 54,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5067,7 +5565,6 @@
     "generator": false
   },
   {
-    "__docId__": 204,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -5076,7 +5573,7 @@
     "longname": "lib/Resource.js~Resource#list",
     "access": null,
     "description": null,
-    "lineNumber": 62,
+    "lineNumber": 81,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5099,7 +5596,6 @@
     "generator": false
   },
   {
-    "__docId__": 205,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5108,7 +5604,7 @@
     "longname": "lib/Resource.js~Resource#_parseResourceIdentifier",
     "access": "private",
     "description": null,
-    "lineNumber": 81,
+    "lineNumber": 100,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5138,7 +5634,6 @@
     "generator": false
   },
   {
-    "__docId__": 206,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5147,7 +5642,7 @@
     "longname": "lib/Resource.js~Resource#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 98,
+    "lineNumber": 117,
     "params": [
       {
         "nullable": null,
@@ -5173,7 +5668,6 @@
     "generator": false
   },
   {
-    "__docId__": 207,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5186,7 +5680,6 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Resource} from './Resource';\n\nlet exports = module.exports = Resource;\n"
   },
   {
-    "__docId__": 208,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -5207,7 +5700,6 @@
     }
   },
   {
-    "__docId__": 210,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5220,7 +5712,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 211,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5233,7 +5724,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 212,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5246,7 +5736,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 213,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5259,7 +5748,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 214,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5272,7 +5760,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 215,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5285,7 +5772,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 216,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5298,7 +5784,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 217,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5311,7 +5796,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 218,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5324,7 +5808,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 219,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5337,7 +5820,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 220,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5350,7 +5832,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 221,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5363,7 +5844,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 222,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5376,7 +5856,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 223,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5389,7 +5868,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 224,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5402,7 +5880,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 225,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5415,7 +5892,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 226,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5428,7 +5904,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 227,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5441,7 +5916,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 228,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5454,7 +5928,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 229,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5467,7 +5940,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 230,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5480,7 +5952,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 231,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5493,7 +5964,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 232,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5506,7 +5976,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 233,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5519,7 +5988,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 234,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5532,7 +6000,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 235,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5545,7 +6012,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 236,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5558,7 +6024,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 237,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5571,7 +6036,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 238,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5584,7 +6048,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 239,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5597,7 +6060,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 240,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5610,7 +6072,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 241,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5623,7 +6084,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 242,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5636,7 +6096,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 243,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5649,7 +6108,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 244,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5662,7 +6120,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 245,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5675,7 +6132,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 246,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5688,7 +6144,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 247,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5701,7 +6156,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 248,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5714,7 +6168,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 249,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5727,7 +6180,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 250,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5740,7 +6192,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 251,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5753,7 +6204,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 252,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5766,7 +6216,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 253,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5779,7 +6228,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 254,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5792,7 +6240,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 255,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5805,7 +6252,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 256,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5818,7 +6264,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 258,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5831,7 +6276,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 259,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5844,7 +6288,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 260,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5857,7 +6300,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 261,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5870,7 +6312,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 262,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5883,7 +6324,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 263,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5896,7 +6336,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 264,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5904,19 +6343,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 265,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

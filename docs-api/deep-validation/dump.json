@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -32,7 +30,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -57,7 +54,61 @@
     "generator": false
   },
   {
-    "__docId__": 3,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/InvalidJoiSchemaException.js",
+    "memberof": null,
+    "longname": "lib/Exception/InvalidJoiSchemaException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/20/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\nexport class InvalidJoiSchemaException extends Exception {\n  /**\n   * @param {String} schemaName\n   */\n  constructor(schemaName) {\n    super(`Invalid validation schema ${schemaName}. Object must be a Joi instance!`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "InvalidJoiSchemaException",
+    "memberof": "lib/Exception/InvalidJoiSchemaException.js",
+    "longname": "lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-validation/lib/Exception/InvalidJoiSchemaException.js",
+    "importStyle": "{InvalidJoiSchemaException}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException",
+    "longname": "lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "schemaName",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -70,7 +121,6 @@
     "content": "/**\n * Created by AlexanderC on 6/20/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when DB model validation schema is missing or broken\n */\nexport class InvalidSchemaException extends Exception {\n  /**\n   * @param {Object} model\n   * @param {String} errorString\n   */\n  constructor(model, errorString) {\n    super(`deep-db model ${JSON.stringify(model)} validation schema fails: ${errorString}`);\n  }\n}\n"
   },
   {
-    "__docId__": 4,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -89,7 +139,6 @@
     ]
   },
   {
-    "__docId__": 5,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -124,64 +173,6 @@
     "generator": false
   },
   {
-    "__docId__": 6,
-    "kind": "file",
-    "static": true,
-    "variation": null,
-    "name": "lib/Exception/ModelNotFoundException.js",
-    "memberof": null,
-    "longname": "lib/Exception/ModelNotFoundException.js",
-    "access": null,
-    "description": null,
-    "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when missing requested model\n */\nexport class ModelNotFoundException extends Exception {\n  /**\n   * @param {String} modelName\n   */\n  constructor(modelName) {\n    super(`Model ${modelName} was not found`);\n  }\n}\n"
-  },
-  {
-    "__docId__": 7,
-    "kind": "class",
-    "static": true,
-    "variation": null,
-    "name": "ModelNotFoundException",
-    "memberof": "lib/Exception/ModelNotFoundException.js",
-    "longname": "lib/Exception/ModelNotFoundException.js~ModelNotFoundException",
-    "access": null,
-    "export": true,
-    "importPath": "deep-validation/lib/Exception/ModelNotFoundException.js",
-    "importStyle": "{ModelNotFoundException}",
-    "description": "Thrown when missing requested model",
-    "lineNumber": 12,
-    "interface": false,
-    "extends": [
-      "lib/Exception/Exception~Exception"
-    ]
-  },
-  {
-    "__docId__": 8,
-    "kind": "constructor",
-    "static": false,
-    "variation": null,
-    "name": "constructor",
-    "memberof": "lib/Exception/ModelNotFoundException.js~ModelNotFoundException",
-    "longname": "lib/Exception/ModelNotFoundException.js~ModelNotFoundException#constructor",
-    "access": null,
-    "description": null,
-    "lineNumber": 16,
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "modelName",
-        "description": ""
-      }
-    ],
-    "generator": false
-  },
-  {
-    "__docId__": 9,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -191,10 +182,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/22/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when object validation fails on a joi schema/model\n */\nexport class ObjectValidationFailedException extends Exception {\n  /**\n   * @param {String} schemaName\n   * @param {String} error\n   */\n  constructor(schemaName, error) {\n    super(`Object validation failed on schema ${schemaName}: ${error}`);\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/22/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when object validation fails on a joi schema/model\n */\nexport class ObjectValidationFailedException extends Exception {\n  /**\n   * @param {String} schemaName\n   * @param {String} error\n   */\n  constructor(schemaName, error) {\n    super(`Object validation failed on schema ${schemaName}: ${error}`);\n\n    this._originalError = error;\n  }\n\n  /**\n   * @returns {Error}\n   */\n  get originalError() {\n    return this._originalError;\n  }\n}\n"
   },
   {
-    "__docId__": 10,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -213,7 +203,6 @@
     ]
   },
   {
-    "__docId__": 11,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -248,7 +237,109 @@
     "generator": false
   },
   {
-    "__docId__": 12,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_originalError",
+    "memberof": "lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException",
+    "longname": "lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException#_originalError",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "originalError",
+    "memberof": "lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException",
+    "longname": "lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException#originalError",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Error}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Error"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/ValidationSchemaNotFoundException.js",
+    "memberof": null,
+    "longname": "lib/Exception/ValidationSchemaNotFoundException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\nexport class ValidationSchemaNotFoundException extends Exception {\n  /**\n   * @param {String} schemaName\n   */\n  constructor(schemaName) {\n    super(`Missing validation schema '${schemaName}'`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ValidationSchemaNotFoundException",
+    "memberof": "lib/Exception/ValidationSchemaNotFoundException.js",
+    "longname": "lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-validation/lib/Exception/ValidationSchemaNotFoundException.js",
+    "importStyle": "{ValidationSchemaNotFoundException}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException",
+    "longname": "lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "schemaName",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -261,7 +352,6 @@
     "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport BaseJoi from 'joi';\nimport Vogels from './vogelsPolyfill';\nimport uriRegexp from './uriRegexp';\n\n/**\n * Abstraction on Joi validation expressions\n */\nexport class Joi {\n  /**\n   * @returns {Object}\n   */\n  static get uuid() {\n    return Vogels.types.uuid();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get timeUUID() {\n    return Vogels.types.timeUUID();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get stringSet() {\n    return Vogels.types.stringSet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get numberSet() {\n    return Vogels.types.numberSet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get binarySet() {\n    return Vogels.types.binarySet();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get binary() {\n    return BaseJoi.binary();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get number() {\n    return BaseJoi.number();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get string() {\n    return BaseJoi.string();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get boolean() {\n    return BaseJoi.boolean();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get email() {\n    return BaseJoi.string().email();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get website() {\n    let strJoiObj = BaseJoi.string();\n\n    // Fix for Joi v5.x.x\n    return strJoiObj.hasOwnProperty('uri')\n      ? strJoiObj.uri()\n      : strJoiObj.regex(uriRegexp.createUriRegex());\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get map() {\n    return BaseJoi.object();\n  }\n\n  /**\n   * @returns {*}\n   */\n  static get mapSet() {\n    let array = BaseJoi.array();\n    if (array.includes) {\n      return array.includes(BaseJoi.object());\n    }\n\n    return array.items(BaseJoi.object());\n  }\n}\n"
   },
   {
-    "__docId__": 13,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -277,7 +367,6 @@
     "interface": false
   },
   {
-    "__docId__": 14,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -309,7 +398,6 @@
     "generator": false
   },
   {
-    "__docId__": 15,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -341,7 +429,6 @@
     "generator": false
   },
   {
-    "__docId__": 16,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -373,7 +460,6 @@
     "generator": false
   },
   {
-    "__docId__": 17,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -405,7 +491,6 @@
     "generator": false
   },
   {
-    "__docId__": 18,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -437,7 +522,6 @@
     "generator": false
   },
   {
-    "__docId__": 19,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -469,7 +553,6 @@
     "generator": false
   },
   {
-    "__docId__": 20,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -501,7 +584,6 @@
     "generator": false
   },
   {
-    "__docId__": 21,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -533,7 +615,6 @@
     "generator": false
   },
   {
-    "__docId__": 22,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -565,7 +646,6 @@
     "generator": false
   },
   {
-    "__docId__": 23,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -597,7 +677,6 @@
     "generator": false
   },
   {
-    "__docId__": 24,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -629,7 +708,6 @@
     "generator": false
   },
   {
-    "__docId__": 25,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -661,7 +739,6 @@
     "generator": false
   },
   {
-    "__docId__": 26,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -693,7 +770,6 @@
     "generator": false
   },
   {
-    "__docId__": 27,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -706,7 +782,6 @@
     "content": "/**\n * Created by AlexanderC on 12/8/15.\n */\n\n'use strict';\n\nlet internals = {\n  rfc3986: {}\n};\n\ninternals.generate = function () {\n\n  /**\n   * elements separated by forward slash (\"/\") are alternatives.\n   */\n  const or = '|';\n\n  /**\n   * DIGIT = %x30-39 ; 0-9\n   */\n  const digit = '0-9';\n  const digitOnly = '[' + digit + ']';\n\n  /**\n   * ALPHA = %x41-5A / %x61-7A   ; A-Z / a-z\n   */\n  const alpha = 'a-zA-Z';\n  const alphaOnly = '[' + alpha + ']';\n\n  /**\n   * cidr       = DIGIT                ; 0-9\n   *            / %x31-32 DIGIT         ; 10-29\n   *            / \"3\" %x30-32           ; 30-32\n   */\n  internals.rfc3986.cidr = digitOnly + or + '[1-2]' + digitOnly + or + '3' + '[0-2]';\n\n  /**\n   * HEXDIG = DIGIT / \"A\" / \"B\" / \"C\" / \"D\" / \"E\" / \"F\"\n   */\n  const hexDigit = digit + 'A-Fa-f';\n  const hexDigitOnly = '[' + hexDigit + ']';\n\n  /**\n   * unreserved = ALPHA / DIGIT / \"-\" / \".\" / \"_\" / \"~\"\n   */\n  const unreserved = alpha + digit + '-\\\\._~';\n\n  /**\n   * sub-delims = \"!\" / \"$\" / \"&\" / \"'\" / \"(\" / \")\" / \"*\" / \"+\" / \",\" / \";\" / \"=\"\n   */\n  const subDelims = '!\\\\$&\\'\\\\(\\\\)\\\\*\\\\+,;=';\n\n  /**\n   * pct-encoded = \"%\" HEXDIG HEXDIG\n   */\n  const pctEncoded = '%' + hexDigit;\n\n  /**\n   * pchar = unreserved / pct-encoded / sub-delims / \":\" / \"@\"\n   */\n  const pchar = unreserved + pctEncoded + subDelims + ':@';\n  const pcharOnly = '[' + pchar + ']';\n\n  /**\n   * Rule to support zero-padded addresses.\n   */\n  const zeroPad = '0?';\n\n  /**\n   * dec-octet   = DIGIT                 ; 0-9\n   *            / %x31-39 DIGIT         ; 10-99\n   *            / \"1\" 2DIGIT            ; 100-199\n   *            / \"2\" %x30-34 DIGIT     ; 200-249\n   *            / \"25\" %x30-35          ; 250-255\n   */\n  const decOctect = '(?:' + zeroPad + zeroPad + digitOnly + or + zeroPad + '[1-9]' + digitOnly + or + '1' + digitOnly + digitOnly + or + '2' + '[0-4]' + digitOnly + or + '25' + '[0-5])';\n\n  /**\n   * IPv4address = dec-octet \".\" dec-octet \".\" dec-octet \".\" dec-octet\n   */\n  internals.rfc3986.IPv4address = '(?:' + decOctect + '\\\\.){3}' + decOctect;\n\n  /**\n   * h16 = 1*4HEXDIG ; 16 bits of address represented in hexadecimal\n   * ls32 = ( h16 \":\" h16 ) / IPv4address ; least-significant 32 bits of address\n   * IPv6address =                            6( h16 \":\" ) ls32\n   *             /                       \"::\" 5( h16 \":\" ) ls32\n   *             / [               h16 ] \"::\" 4( h16 \":\" ) ls32\n   *             / [ *1( h16 \":\" ) h16 ] \"::\" 3( h16 \":\" ) ls32\n   *             / [ *2( h16 \":\" ) h16 ] \"::\" 2( h16 \":\" ) ls32\n   *             / [ *3( h16 \":\" ) h16 ] \"::\"    h16 \":\"   ls32\n   *             / [ *4( h16 \":\" ) h16 ] \"::\"              ls32\n   *             / [ *5( h16 \":\" ) h16 ] \"::\"              h16\n   *             / [ *6( h16 \":\" ) h16 ] \"::\"\n   */\n  const h16 = hexDigitOnly + '{1,4}';\n  const ls32 = '(?:' + h16 + ':' + h16 + '|' + internals.rfc3986.IPv4address + ')';\n  const IPv6SixHex = '(?:' + h16 + ':){6}' + ls32;\n  const IPv6FiveHex = '::(?:' + h16 + ':){5}' + ls32;\n  const IPv6FourHex = h16 + '::(?:' + h16 + ':){4}' + ls32;\n  const IPv6ThreeHex = '(?:' + h16 + ':){0,1}' + h16 + '::(?:' + h16 + ':){3}' + ls32;\n  const IPv6TwoHex = '(?:' + h16 + ':){0,2}' + h16 + '::(?:' + h16 + ':){2}' + ls32;\n  const IPv6OneHex = '(?:' + h16 + ':){0,3}' + h16 + '::' + h16 + ':' + ls32;\n  const IPv6NoneHex = '(?:' + h16 + ':){0,4}' + h16 + '::' + ls32;\n  const IPv6NoneHex2 = '(?:' + h16 + ':){0,5}' + h16 + '::' + h16;\n  const IPv6NoneHex3 = '(?:' + h16 + ':){0,6}' + h16 + '::';\n  internals.rfc3986.IPv6address = '(?:' + IPv6SixHex + or + IPv6FiveHex + or + IPv6FourHex + or + IPv6ThreeHex + or + IPv6TwoHex + or + IPv6OneHex + or + IPv6NoneHex + or + IPv6NoneHex2 + or + IPv6NoneHex3 + ')';\n\n  /**\n   * IPvFuture = \"v\" 1*HEXDIG \".\" 1*( unreserved / sub-delims / \":\" )\n   */\n  internals.rfc3986.IPvFuture = 'v' + hexDigitOnly + '+\\\\.[' + unreserved + subDelims + ':]+';\n\n  /**\n   * scheme = ALPHA *( ALPHA / DIGIT / \"+\" / \"-\" / \".\" )\n   */\n  internals.rfc3986.scheme = alphaOnly + '[' + alpha + digit + '+-\\\\.]*';\n\n  /**\n   * userinfo = *( unreserved / pct-encoded / sub-delims / \":\" )\n   */\n  const userinfo = '[' + unreserved + pctEncoded + subDelims + ':]*';\n\n  /**\n   * IP-literal = \"[\" ( IPv6address / IPvFuture  ) \"]\"\n   */\n  const IPLiteral = '\\\\[(?:' + internals.rfc3986.IPv6address + or + internals.rfc3986.IPvFuture + ')\\\\]';\n\n  /**\n   * reg-name = *( unreserved / pct-encoded / sub-delims )\n   */\n  const regName = '[' + unreserved + pctEncoded + subDelims + ']{0,255}';\n\n  /**\n   * host = IP-literal / IPv4address / reg-name\n   */\n  const host = '(?:' + IPLiteral + or + internals.rfc3986.IPv4address + or + regName + ')';\n\n  /**\n   * port = *DIGIT\n   */\n  const port = digitOnly + '*';\n\n  /**\n   * authority   = [ userinfo \"@\" ] host [ \":\" port ]\n   */\n  const authority = '(?:' + userinfo + '@)?' + host + '(?::' + port + ')?';\n\n  /**\n   * segment       = *pchar\n   * segment-nz    = 1*pchar\n   * path          = path-abempty    ; begins with \"/\" or is empty\n   *               / path-absolute   ; begins with \"/\" but not \"//\"\n   *               / path-noscheme   ; begins with a non-colon segment\n   *               / path-rootless   ; begins with a segment\n   *               / path-empty      ; zero characters\n   * path-abempty  = *( \"/\" segment )\n   * path-absolute = \"/\" [ segment-nz *( \"/\" segment ) ]\n   * path-rootless = segment-nz *( \"/\" segment )\n   */\n  const segment = pcharOnly + '*';\n  const segmentNz = pcharOnly + '+';\n  const pathAbEmpty = '(?:\\\\/' + segment + ')*';\n  const pathAbsolute = '\\\\/(?:' + segmentNz + pathAbEmpty + ')?';\n  const pathRootless = segmentNz + pathAbEmpty;\n\n  /**\n   * hier-part = \"//\" authority path\n   */\n  internals.rfc3986.hierPart = '(?:\\\\/\\\\/' + authority + pathAbEmpty + or + pathAbsolute + or + pathRootless + ')';\n\n  /**\n   * query = *( pchar / \"/\" / \"?\" )\n   */\n  internals.rfc3986.query = '[' + pchar + '\\\\/\\\\?]*(?=#|$)'; //Finish matching either at the fragment part or end of the line.\n\n  /**\n   * fragment = *( pchar / \"/\" / \"?\" )\n   */\n  internals.rfc3986.fragment = '[' + pchar + '\\\\/\\\\?]*';\n};\n\n\ninternals.generate();\n\nexport default internals.rfc3986;\n"
   },
   {
-    "__docId__": 28,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -727,7 +802,6 @@
     }
   },
   {
-    "__docId__": 29,
     "kind": "function",
     "static": true,
     "variation": null,
@@ -745,7 +819,6 @@
     "generator": false
   },
   {
-    "__docId__": 30,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -758,7 +831,6 @@
     "content": "/**\n * Created by AlexanderC on 12/8/15.\n */\n\n'use strict';\n\nimport RFC3986 from './rfc3986';\n\nexport default {\n  createUriRegex: (optionalScheme) => {\n    let scheme = RFC3986.scheme;\n\n    // If we were passed a scheme, use it instead of the generic one\n    if (optionalScheme) {\n\n      // Have to put this in a non-capturing group to handle the OR statements\n      scheme = '(?:' + optionalScheme + ')';\n    }\n\n    /**\n     * URI = scheme \":\" hier-part [ \"?\" query ] [ \"#\" fragment ]\n     */\n    return new RegExp('^' + scheme + ':' + RFC3986.hierPart + '(?:\\\\?' + RFC3986.query + ')?' + '(?:#' + RFC3986.fragment + ')?$');\n  },\n};\n"
   },
   {
-    "__docId__": 31,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -771,7 +843,6 @@
     "content": "/**\n * Created by AlexanderC on 6/25/15.\n */\n\n'use strict';\n\nimport Joi from 'joi';\n\nlet UUID_REGEXP = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;\n\nexport default (typeof window !== 'undefined' ? {\n  types: {\n    uuid: function() {\n      return Joi.string().regex(UUID_REGEXP);\n    },\n\n    timeUUID: function() {\n      return Joi.string().regex(UUID_REGEXP);\n    },\n\n    stringSet: function() {\n      return _joiVector(Joi.string());\n    },\n\n    numberSet: function() {\n      return _joiVector(Joi.number());\n    },\n\n    binarySet: function() {\n      return _joiVector(Joi.string());\n    },\n  },\n} : require('vogels'));\n\n/**\n * Fixes weird joi exception!\n *\n * @param {Object} proto\n * @returns {Object}\n * @private\n */\nfunction _joiVector(proto) {\n  let arr = Joi.array();\n\n  if (arr.includes) {\n    return arr.includes(proto);\n  }\n\n  return arr.items(proto);\n}\n"
   },
   {
-    "__docId__": 32,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -792,7 +863,6 @@
     }
   },
   {
-    "__docId__": 33,
     "kind": "function",
     "static": true,
     "variation": null,
@@ -834,7 +904,6 @@
     "generator": false
   },
   {
-    "__docId__": 34,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -844,10 +913,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {Joi as JoiHelper} from './Helpers/Joi';\nimport {InvalidSchemaException} from './Exception/InvalidSchemaException';\n\n/**\n * Exporting simple object to joi\n */\nexport class ObjectToJoi {\n  /**\n   * @param {Object} baseObject\n   */\n  constructor(baseObject) {\n    this._baseObject = baseObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get baseObject() {\n    return this._baseObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  transform() {\n    try {\n      return ObjectToJoi._transform(this._baseObject);\n    } catch (e) {\n      throw new InvalidSchemaException(this._baseObject, e);\n    }\n  }\n\n  /**\n   * @param {Object} obj\n   * @returns {Object}\n   * @private\n   */\n  static _transform(obj) {\n    let transObj = {};\n\n    for (let property in obj) {\n      if (!obj.hasOwnProperty(property)) {\n        continue;\n      }\n\n      let value = obj[property];\n\n      if (typeof value === 'object') {\n        transObj[property] = ObjectToJoi._transform(value);\n      } else {\n        let validationSchema = JoiHelper[value];\n\n        if (typeof validationSchema === 'undefined') {\n          throw new InvalidSchemaException(obj, `Unknown field type ${value}`);\n        }\n\n        transObj[property] = validationSchema;\n      }\n    }\n\n    return transObj;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {Joi as JoiHelper} from './Helpers/Joi';\nimport Joi from 'joi';\nimport {InvalidSchemaException} from './Exception/InvalidSchemaException';\n\n/**\n * Exporting simple object to joi\n */\nexport class ObjectToJoi {\n  /**\n   * @param {Object} baseObject\n   */\n  constructor(baseObject) {\n    this._baseObject = baseObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get baseObject() {\n    return this._baseObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  transform() {\n    try {\n      return ObjectToJoi._transform(this._baseObject);\n    } catch (e) {\n      throw new InvalidSchemaException(this._baseObject, e);\n    }\n  }\n\n  /**\n   * @param {Object} obj\n   * @returns {Object}\n   * @private\n   */\n  static _transform(obj) {\n    let transObj = {};\n\n    for (let property in obj) {\n      if (!obj.hasOwnProperty(property)) {\n        continue;\n      }\n\n      let value = obj[property];\n\n      if (typeof value === 'object') {\n        transObj[property] = ObjectToJoi._transform(value);\n      } else {\n        let validationSchema = JoiHelper[value];\n\n        if (typeof validationSchema === 'undefined') {\n          throw new InvalidSchemaException(obj, `Unknown field type ${value}`);\n        }\n\n        transObj[property] = validationSchema;\n      }\n    }\n\n    return Joi.object().keys(transObj);\n  }\n}\n"
   },
   {
-    "__docId__": 35,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -859,11 +927,10 @@
     "importPath": "deep-validation/lib/ObjectToJoi.js",
     "importStyle": "{ObjectToJoi}",
     "description": "Exporting simple object to joi",
-    "lineNumber": 13,
+    "lineNumber": 14,
     "interface": false
   },
   {
-    "__docId__": 36,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -872,7 +939,7 @@
     "longname": "lib/ObjectToJoi.js~ObjectToJoi#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 18,
     "params": [
       {
         "nullable": null,
@@ -888,7 +955,6 @@
     "generator": false
   },
   {
-    "__docId__": 37,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -897,7 +963,7 @@
     "longname": "lib/ObjectToJoi.js~ObjectToJoi#_baseObject",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 19,
     "undocument": true,
     "type": {
       "types": [
@@ -906,7 +972,6 @@
     }
   },
   {
-    "__docId__": 38,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -915,7 +980,7 @@
     "longname": "lib/ObjectToJoi.js~ObjectToJoi#baseObject",
     "access": null,
     "description": null,
-    "lineNumber": 24,
+    "lineNumber": 25,
     "unknown": [
       {
         "tagName": "@returns",
@@ -938,7 +1003,6 @@
     "generator": false
   },
   {
-    "__docId__": 39,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -947,7 +1011,7 @@
     "longname": "lib/ObjectToJoi.js~ObjectToJoi#transform",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 32,
     "unknown": [
       {
         "tagName": "@returns",
@@ -966,7 +1030,6 @@
     "generator": false
   },
   {
-    "__docId__": 40,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -975,7 +1038,7 @@
     "longname": "lib/ObjectToJoi.js~ObjectToJoi._transform",
     "access": "private",
     "description": null,
-    "lineNumber": 44,
+    "lineNumber": 45,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1005,7 +1068,6 @@
     "generator": false
   },
   {
-    "__docId__": 41,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1015,10 +1077,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {ObjectToJoi} from './ObjectToJoi';\nimport {ModelNotFoundException} from './Exception/ModelNotFoundException';\nimport Joi from 'joi';\nimport {ObjectValidationFailedException} from './Exception/ObjectValidationFailedException';\nimport {Exception} from './Exception/Exception';\n\n/**\n * Validation engine\n */\nexport class Validation extends Kernel.ContainerAware {\n  /**\n   * @param {Array} models\n   */\n  constructor(models = []) {\n    super();\n\n    this._immutable = false;\n    this._models = this._rawModelsToSchemas(models);\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set immutable(state) {\n    this._assureImmutable();\n\n    this._immutable = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get immutable() {\n    return this._immutable;\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {*} valueObject\n   * @returns {*}\n   */\n  validate(modelName, valueObject) {\n    let model = this.get(modelName);\n    let result = Joi.validate(valueObject, Joi.object().keys(model));\n\n    if (result.error) {\n      throw new ObjectValidationFailedException(modelName, result.error);\n    }\n\n    return result.value;\n  }\n\n  /**\n   * @returns {Object[]}\n   */\n  get models() {\n    return this._models;\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {Object} schema\n   * @returns {Validation}\n   */\n  setRaw(modelName, schema) {\n    this._assureImmutable();\n\n    this._models[modelName] = Validation.normalizeSchema(schema);\n\n    return this;\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {Object} schema\n   * @returns {Validation}\n   */\n  set(modelName, schema) {\n    this._assureImmutable();\n\n    this._models[modelName] = schema;\n\n    return this;\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Boolean}\n   */\n  has(modelName) {\n    return typeof this._models[modelName] !== 'undefined';\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Object}\n   */\n  get(modelName) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    return this._models[modelName];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._assureImmutable();\n\n    this._models = this._rawModelsToSchemas(kernel.config.models);\n\n    callback();\n  }\n\n  /**\n   * @param {Array} rawModels\n   * @returns {Object}\n   * @private\n   */\n  _rawModelsToSchemas(rawModels) {\n    let modelsSchema = {};\n\n    for (let modelKey in rawModels) {\n      if (!rawModels.hasOwnProperty(modelKey)) {\n        continue;\n      }\n\n      let backendModels = rawModels[modelKey];\n\n      for (let modelName in backendModels) {\n        if (!backendModels.hasOwnProperty(modelName)) {\n          continue;\n        }\n\n        let schema = backendModels[modelName];\n\n        // @todo: move this sh*t into DB somehow...\n        schema.Id = schema.Id || 'timeUUID';\n\n        modelsSchema[modelName] = Validation.normalizeSchema(schema);\n      }\n    }\n\n    return modelsSchema;\n  }\n\n  /**\n   * @private\n   */\n  _assureImmutable() {\n    if (this._immutable) {\n      throw new Exception('You are not abble to alter the state after setting it immutable');\n    }\n  }\n\n  /**\n   * @param {Object} rawSchema\n   * @returns {Object}\n   */\n  static normalizeSchema(rawSchema) {\n    return new ObjectToJoi(rawSchema).transform();\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {ObjectToJoi} from './ObjectToJoi';\nimport {ValidationSchemaNotFoundException} from './Exception/ValidationSchemaNotFoundException';\nimport {InvalidJoiSchemaException} from './Exception/InvalidJoiSchemaException';\nimport Joi from 'joi';\nimport {ObjectValidationFailedException} from './Exception/ObjectValidationFailedException';\nimport {Exception} from './Exception/Exception';\n\n/**\n * Validation engine\n */\nexport class Validation extends Kernel.ContainerAware {\n  /**\n   * @param {Array} models\n   */\n  constructor(models = []) {\n    super();\n\n    this._schemas = this._rawModelsToSchemas(models);\n  }\n\n  /**\n   * @param {Runtime} lambdaRuntime\n   * @param {String} schemaName\n   * @param {Function} cb\n   * @returns {Validation}\n   */\n  validateRuntimeInput(lambdaRuntime, schemaName, cb) {\n    if (!this.hasSchema(schemaName)) {\n      lambdaRuntime.createError(new ValidationSchemaNotFoundException(schemaName));\n      return this;\n    }\n\n    let validationResult = this.validate(schemaName, lambdaRuntime.request.data, true);\n\n    if (!validationResult.error) {\n      cb(validationResult.value);\n      return this;\n    }\n\n    lambdaRuntime.createError(validationResult.error).send();\n\n    return this;\n  }\n\n  /**\n   * @param {String} schemaName\n   * @param {*} valueObject\n   * @param {Boolean} returnRaw\n   * @returns {*}\n   */\n  validate(schemaName, valueObject, returnRaw = false) {\n    let validationSchema = this.getSchema(schemaName);\n\n    let result = Joi.validate(\n      valueObject,\n      validationSchema,\n      {\n        stripUnknown: true,\n        convert: true,\n        abortEarly: false,\n      }\n    );\n\n    if (returnRaw) {\n      return result;\n    }\n\n    if (result.error) {\n      throw new ObjectValidationFailedException(schemaName, result.error);\n    }\n\n    return result.value;\n  }\n\n  /**\n   * @todo: find a better way to inject libraries...\n   *\n   * @param {Function} cb\n   * @returns {Object}\n   */\n  schemaFromValidationCb(cb) {\n    return cb(Joi);\n  }\n\n  /**\n   * @returns {Object[]}\n   */\n  get schemas() {\n    return this._schemas;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  get schemasNames() {\n    return Object.keys(this._schemas);\n  }\n\n  /**\n   * @param {String} schemaName\n   * @param {Object} schema\n   * @returns {Validation}\n   */\n  setSchemaRaw(schemaName, schema) {\n    this._schemas[schemaName] = Validation.normalizeSchema(schema);\n\n    return this;\n  }\n\n  /**\n   * @param {String} schemaName\n   * @param {Object} schema\n   * @returns {Validation}\n   */\n  setSchema(schemaName, schema) {\n    if (!schema.isJoi) {\n      throw new InvalidJoiSchemaException(schemaName);\n    }\n\n    this._schemas[schemaName] = schema;\n\n    return this;\n  }\n\n  /**\n   * @param {String} schemaName\n   * @returns {Boolean}\n   */\n  hasSchema(schemaName) {\n    return typeof this._schemas[schemaName] !== 'undefined';\n  }\n\n  /**\n   * @param {String} schemaName\n   * @returns {Object}\n   */\n  getSchema(schemaName) {\n    if (!this.hasSchema(schemaName)) {\n      throw new ValidationSchemaNotFoundException(schemaName);\n    }\n\n    return this._schemas[schemaName];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._schemas = this._rawModelsToSchemas(kernel.config.models);\n\n    callback();\n  }\n\n  /**\n   * @param {Array} rawModels\n   * @returns {Object}\n   * @private\n   */\n  _rawModelsToSchemas(rawModels) {\n    let modelsSchema = {};\n\n    for (let modelKey in rawModels) {\n      if (!rawModels.hasOwnProperty(modelKey)) {\n        continue;\n      }\n\n      let backendModels = rawModels[modelKey];\n\n      for (let schemaName in backendModels) {\n        if (!backendModels.hasOwnProperty(schemaName)) {\n          continue;\n        }\n\n        let schema = backendModels[schemaName];\n\n        // @todo: move this sh*t into DB somehow...\n        schema.Id = schema.Id || 'timeUUID';\n\n        modelsSchema[schemaName] = Validation.normalizeSchema(schema);\n      }\n    }\n\n    return modelsSchema;\n  }\n\n  /**\n   * @param {Object} rawSchema\n   * @returns {Object}\n   */\n  static normalizeSchema(rawSchema) {\n    return new ObjectToJoi(rawSchema).transform();\n  }\n}\n"
   },
   {
-    "__docId__": 42,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1030,14 +1091,13 @@
     "importPath": "deep-validation/lib/Validation.js",
     "importStyle": "{Validation}",
     "description": "Validation engine",
-    "lineNumber": 17,
+    "lineNumber": 18,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
     ]
   },
   {
-    "__docId__": 43,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1046,7 +1106,7 @@
     "longname": "lib/Validation.js~Validation#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 22,
     "params": [
       {
         "nullable": null,
@@ -1062,31 +1122,12 @@
     "generator": false
   },
   {
-    "__docId__": 44,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_immutable",
+    "name": "_schemas",
     "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#_immutable",
-    "access": null,
-    "description": null,
-    "lineNumber": 24,
-    "undocument": true,
-    "type": {
-      "types": [
-        "boolean"
-      ]
-    }
-  },
-  {
-    "__docId__": 45,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_models",
-    "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#_models",
+    "longname": "lib/Validation.js~Validation#_schemas",
     "access": null,
     "description": null,
     "lineNumber": 25,
@@ -1098,87 +1139,64 @@
     }
   },
   {
-    "__docId__": 46,
-    "kind": "set",
+    "kind": "method",
     "static": false,
     "variation": null,
-    "name": "immutable",
+    "name": "validateRuntimeInput",
     "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#immutable",
+    "longname": "lib/Validation.js~Validation#validateRuntimeInput",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 34,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Validation}"
+      }
+    ],
     "params": [
       {
         "nullable": null,
         "types": [
-          "Boolean"
+          "Runtime"
         ],
         "spread": false,
         "optional": false,
-        "name": "state",
+        "name": "lambdaRuntime",
         "description": ""
-      }
-    ],
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 47,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_immutable",
-    "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#_immutable",
-    "access": null,
-    "description": null,
-    "lineNumber": 34,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 48,
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "immutable",
-    "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#immutable",
-    "access": null,
-    "description": null,
-    "lineNumber": 40,
-    "unknown": [
+      },
       {
-        "tagName": "@returns",
-        "tagValue": "{Boolean}"
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "schemaName",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
       }
     ],
     "return": {
       "nullable": null,
       "types": [
-        "Boolean"
+        "Validation"
       ],
       "spread": false,
       "description": ""
     },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
     "generator": false
   },
   {
-    "__docId__": 49,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1187,7 +1205,7 @@
     "longname": "lib/Validation.js~Validation#validate",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 58,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1202,7 +1220,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "modelName",
+        "name": "schemaName",
         "description": ""
       },
       {
@@ -1213,6 +1231,16 @@
         "spread": false,
         "optional": false,
         "name": "valueObject",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "returnRaw",
         "description": ""
       }
     ],
@@ -1227,16 +1255,57 @@
     "generator": false
   },
   {
-    "__docId__": 50,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "schemaFromValidationCb",
+    "memberof": "lib/Validation.js~Validation",
+    "longname": "lib/Validation.js~Validation#schemaFromValidationCb",
+    "access": null,
+    "description": null,
+    "lineNumber": 88,
+    "unknown": [
+      {
+        "tagName": "@todo: find a better way to inject libraries...\n\n",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
-    "name": "models",
+    "name": "schemas",
     "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#models",
+    "longname": "lib/Validation.js~Validation#schemas",
     "access": null,
     "description": null,
-    "lineNumber": 63,
+    "lineNumber": 95,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1259,16 +1328,46 @@
     "generator": false
   },
   {
-    "__docId__": 51,
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "schemasNames",
+    "memberof": "lib/Validation.js~Validation",
+    "longname": "lib/Validation.js~Validation#schemasNames",
+    "access": null,
+    "description": null,
+    "lineNumber": 102,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "setRaw",
+    "name": "setSchemaRaw",
     "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#setRaw",
+    "longname": "lib/Validation.js~Validation#setSchemaRaw",
     "access": null,
     "description": null,
-    "lineNumber": 72,
+    "lineNumber": 111,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1283,7 +1382,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "modelName",
+        "name": "schemaName",
         "description": ""
       },
       {
@@ -1308,16 +1407,15 @@
     "generator": false
   },
   {
-    "__docId__": 52,
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "set",
+    "name": "setSchema",
     "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#set",
+    "longname": "lib/Validation.js~Validation#setSchema",
     "access": null,
     "description": null,
-    "lineNumber": 85,
+    "lineNumber": 122,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1332,7 +1430,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "modelName",
+        "name": "schemaName",
         "description": ""
       },
       {
@@ -1357,16 +1455,15 @@
     "generator": false
   },
   {
-    "__docId__": 53,
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "has",
+    "name": "hasSchema",
     "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#has",
+    "longname": "lib/Validation.js~Validation#hasSchema",
     "access": null,
     "description": null,
-    "lineNumber": 97,
+    "lineNumber": 136,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1381,7 +1478,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "modelName",
+        "name": "schemaName",
         "description": ""
       }
     ],
@@ -1396,16 +1493,15 @@
     "generator": false
   },
   {
-    "__docId__": 54,
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "get",
+    "name": "getSchema",
     "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#get",
+    "longname": "lib/Validation.js~Validation#getSchema",
     "access": null,
     "description": null,
-    "lineNumber": 105,
+    "lineNumber": 144,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1420,7 +1516,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "modelName",
+        "name": "schemaName",
         "description": ""
       }
     ],
@@ -1435,7 +1531,6 @@
     "generator": false
   },
   {
-    "__docId__": 55,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1444,7 +1539,7 @@
     "longname": "lib/Validation.js~Validation#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 119,
+    "lineNumber": 158,
     "params": [
       {
         "nullable": null,
@@ -1470,16 +1565,15 @@
     "generator": false
   },
   {
-    "__docId__": 56,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_models",
+    "name": "_schemas",
     "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#_models",
+    "longname": "lib/Validation.js~Validation#_schemas",
     "access": null,
     "description": null,
-    "lineNumber": 122,
+    "lineNumber": 159,
     "undocument": true,
     "type": {
       "types": [
@@ -1488,7 +1582,6 @@
     }
   },
   {
-    "__docId__": 57,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1497,7 +1590,7 @@
     "longname": "lib/Validation.js~Validation#_rawModelsToSchemas",
     "access": "private",
     "description": null,
-    "lineNumber": 132,
+    "lineNumber": 169,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1527,21 +1620,6 @@
     "generator": false
   },
   {
-    "__docId__": 58,
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "_assureImmutable",
-    "memberof": "lib/Validation.js~Validation",
-    "longname": "lib/Validation.js~Validation#_assureImmutable",
-    "access": "private",
-    "description": null,
-    "lineNumber": 162,
-    "params": [],
-    "generator": false
-  },
-  {
-    "__docId__": 59,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1550,7 +1628,7 @@
     "longname": "lib/Validation.js~Validation.normalizeSchema",
     "access": null,
     "description": null,
-    "lineNumber": 172,
+    "lineNumber": 200,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1580,7 +1658,6 @@
     "generator": false
   },
   {
-    "__docId__": 60,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1593,7 +1670,6 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Validation} from './Validation';\n\nlet exports = module.exports = Validation;\n"
   },
   {
-    "__docId__": 61,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -1614,7 +1690,6 @@
     }
   },
   {
-    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1627,7 +1702,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1640,7 +1714,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 65,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1653,7 +1726,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1666,7 +1738,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1679,7 +1750,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1692,7 +1762,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1705,7 +1774,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1718,7 +1786,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1731,7 +1798,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1744,7 +1810,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1757,7 +1822,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1770,7 +1834,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 75,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1783,7 +1846,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 76,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1796,7 +1858,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1809,7 +1870,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1822,7 +1882,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 79,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1835,7 +1894,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 80,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1848,7 +1906,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1861,7 +1918,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1874,7 +1930,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1887,7 +1942,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1900,7 +1954,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1913,7 +1966,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1926,7 +1978,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 87,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1939,7 +1990,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 88,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1952,7 +2002,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 89,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1965,7 +2014,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 90,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1978,7 +2026,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 91,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1991,7 +2038,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 92,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2004,7 +2050,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 93,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2017,7 +2062,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 94,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2030,7 +2074,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 95,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2043,7 +2086,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 96,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2056,7 +2098,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 97,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2069,7 +2110,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 98,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2082,7 +2122,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 99,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2095,7 +2134,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 100,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2108,7 +2146,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 101,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2121,7 +2158,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 102,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2134,7 +2170,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 103,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2147,7 +2182,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 104,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2160,7 +2194,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 105,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2173,7 +2206,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 106,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2186,7 +2218,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 107,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2199,7 +2230,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 108,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2212,7 +2242,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 109,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2225,7 +2254,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 111,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2238,7 +2266,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 112,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2251,7 +2278,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 113,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2264,7 +2290,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 114,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2277,7 +2302,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 115,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2290,7 +2314,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 116,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2303,7 +2326,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 117,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2311,19 +2333,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 118,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

@@ -378,12 +378,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -451,13 +445,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/cache.js~cache#driver",
-    "class/lib/Cache.js~Cache.html#instance-get-driver",
+    "class/lib/Cache.js~Cache.html#instance-set-driver",
     "lib/Cache.js~Cache#driver",
     "member"
   ],
   [
     "lib/cache.js~cache#driver",
-    "class/lib/Cache.js~Cache.html#instance-set-driver",
+    "class/lib/Cache.js~Cache.html#instance-get-driver",
     "lib/Cache.js~Cache#driver",
     "member"
   ],
@@ -535,13 +529,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#namespace",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-namespace",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-namespace",
     "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "member"
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#namespace",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-namespace",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-namespace",
     "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "member"
   ],
@@ -777,6 +771,12 @@ window.esdocSearchIndex = [
     "lib/sharedcache.js~sharedcache#buildkeyfromlambdaruntime",
     "class/lib/SharedCache.js~SharedCache.html#instance-method-buildKeyFromLambdaRuntime",
     "lib/SharedCache.js~SharedCache#buildKeyFromLambdaRuntime",
+    "method"
+  ],
+  [
+    "lib/sharedcache.js~sharedcache#buildkeyfromrequest",
+    "class/lib/SharedCache.js~SharedCache.html#instance-method-buildKeyFromRequest",
+    "lib/SharedCache.js~SharedCache#buildKeyFromRequest",
     "method"
   ],
   [

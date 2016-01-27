@@ -6,6 +6,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-validation/lib/exception/invalidjoischemaexception.js~invalidjoischemaexception",
+    "class/lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException.html",
+    "<span>InvalidJoiSchemaException</span> <span class=\"search-result-import-path\">deep-validation/lib/Exception/InvalidJoiSchemaException.js</span>",
+    "class"
+  ],
+  [
     "deep-validation/lib/exception/invalidschemaexception.js~invalidschemaexception",
     "class/lib/Exception/InvalidSchemaException.js~InvalidSchemaException.html",
     "<span>InvalidSchemaException</span> <span class=\"search-result-import-path\">deep-validation/lib/Exception/InvalidSchemaException.js</span>",
@@ -15,12 +21,6 @@ window.esdocSearchIndex = [
     "deep-validation/lib/helpers/joi.js~joi",
     "class/lib/Helpers/Joi.js~Joi.html",
     "<span>Joi</span> <span class=\"search-result-import-path\">deep-validation/lib/Helpers/Joi.js</span>",
-    "class"
-  ],
-  [
-    "deep-validation/lib/exception/modelnotfoundexception.js~modelnotfoundexception",
-    "class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html",
-    "<span>ModelNotFoundException</span> <span class=\"search-result-import-path\">deep-validation/lib/Exception/ModelNotFoundException.js</span>",
     "class"
   ],
   [
@@ -39,6 +39,12 @@ window.esdocSearchIndex = [
     "deep-validation/lib/validation.js~validation",
     "class/lib/Validation.js~Validation.html",
     "<span>Validation</span> <span class=\"search-result-import-path\">deep-validation/lib/Validation.js</span>",
+    "class"
+  ],
+  [
+    "deep-validation/lib/exception/validationschemanotfoundexception.js~validationschemanotfoundexception",
+    "class/lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException.html",
+    "<span>ValidationSchemaNotFoundException</span> <span class=\"search-result-import-path\">deep-validation/lib/Exception/ValidationSchemaNotFoundException.js</span>",
     "class"
   ],
   [
@@ -324,12 +330,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -384,6 +384,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/exception/invalidjoischemaexception.js",
+    "file/lib/Exception/InvalidJoiSchemaException.js.html",
+    "lib/Exception/InvalidJoiSchemaException.js",
+    "file"
+  ],
+  [
+    "lib/exception/invalidjoischemaexception.js~invalidjoischemaexception#constructor",
+    "class/lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException.html#instance-constructor-constructor",
+    "lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException#constructor",
+    "method"
+  ],
+  [
     "lib/exception/invalidschemaexception.js",
     "file/lib/Exception/InvalidSchemaException.js.html",
     "lib/Exception/InvalidSchemaException.js",
@@ -396,18 +408,6 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/exception/modelnotfoundexception.js",
-    "file/lib/Exception/ModelNotFoundException.js.html",
-    "lib/Exception/ModelNotFoundException.js",
-    "file"
-  ],
-  [
-    "lib/exception/modelnotfoundexception.js~modelnotfoundexception#constructor",
-    "class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html#instance-constructor-constructor",
-    "lib/Exception/ModelNotFoundException.js~ModelNotFoundException#constructor",
-    "method"
-  ],
-  [
     "lib/exception/objectvalidationfailedexception.js",
     "file/lib/Exception/ObjectValidationFailedException.js.html",
     "lib/Exception/ObjectValidationFailedException.js",
@@ -417,6 +417,24 @@ window.esdocSearchIndex = [
     "lib/exception/objectvalidationfailedexception.js~objectvalidationfailedexception#constructor",
     "class/lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException.html#instance-constructor-constructor",
     "lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/objectvalidationfailedexception.js~objectvalidationfailedexception#originalerror",
+    "class/lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException.html#instance-get-originalError",
+    "lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException#originalError",
+    "member"
+  ],
+  [
+    "lib/exception/validationschemanotfoundexception.js",
+    "file/lib/Exception/ValidationSchemaNotFoundException.js.html",
+    "lib/Exception/ValidationSchemaNotFoundException.js",
+    "file"
+  ],
+  [
+    "lib/exception/validationschemanotfoundexception.js~validationschemanotfoundexception#constructor",
+    "class/lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException.html#instance-constructor-constructor",
+    "lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException#constructor",
     "method"
   ],
   [
@@ -564,51 +582,57 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/validation.js~validation#get",
-    "class/lib/Validation.js~Validation.html#instance-method-get",
-    "lib/Validation.js~Validation#get",
+    "lib/validation.js~validation#getschema",
+    "class/lib/Validation.js~Validation.html#instance-method-getSchema",
+    "lib/Validation.js~Validation#getSchema",
     "method"
   ],
   [
-    "lib/validation.js~validation#has",
-    "class/lib/Validation.js~Validation.html#instance-method-has",
-    "lib/Validation.js~Validation#has",
+    "lib/validation.js~validation#hasschema",
+    "class/lib/Validation.js~Validation.html#instance-method-hasSchema",
+    "lib/Validation.js~Validation#hasSchema",
     "method"
   ],
   [
-    "lib/validation.js~validation#immutable",
-    "class/lib/Validation.js~Validation.html#instance-set-immutable",
-    "lib/Validation.js~Validation#immutable",
-    "member"
-  ],
-  [
-    "lib/validation.js~validation#immutable",
-    "class/lib/Validation.js~Validation.html#instance-get-immutable",
-    "lib/Validation.js~Validation#immutable",
-    "member"
-  ],
-  [
-    "lib/validation.js~validation#models",
-    "class/lib/Validation.js~Validation.html#instance-get-models",
-    "lib/Validation.js~Validation#models",
-    "member"
-  ],
-  [
-    "lib/validation.js~validation#set",
-    "class/lib/Validation.js~Validation.html#instance-method-set",
-    "lib/Validation.js~Validation#set",
+    "lib/validation.js~validation#schemafromvalidationcb",
+    "class/lib/Validation.js~Validation.html#instance-method-schemaFromValidationCb",
+    "lib/Validation.js~Validation#schemaFromValidationCb",
     "method"
   ],
   [
-    "lib/validation.js~validation#setraw",
-    "class/lib/Validation.js~Validation.html#instance-method-setRaw",
-    "lib/Validation.js~Validation#setRaw",
+    "lib/validation.js~validation#schemas",
+    "class/lib/Validation.js~Validation.html#instance-get-schemas",
+    "lib/Validation.js~Validation#schemas",
+    "member"
+  ],
+  [
+    "lib/validation.js~validation#schemasnames",
+    "class/lib/Validation.js~Validation.html#instance-get-schemasNames",
+    "lib/Validation.js~Validation#schemasNames",
+    "member"
+  ],
+  [
+    "lib/validation.js~validation#setschema",
+    "class/lib/Validation.js~Validation.html#instance-method-setSchema",
+    "lib/Validation.js~Validation#setSchema",
+    "method"
+  ],
+  [
+    "lib/validation.js~validation#setschemaraw",
+    "class/lib/Validation.js~Validation.html#instance-method-setSchemaRaw",
+    "lib/Validation.js~Validation#setSchemaRaw",
     "method"
   ],
   [
     "lib/validation.js~validation#validate",
     "class/lib/Validation.js~Validation.html#instance-method-validate",
     "lib/Validation.js~Validation#validate",
+    "method"
+  ],
+  [
+    "lib/validation.js~validation#validateruntimeinput",
+    "class/lib/Validation.js~Validation.html#instance-method-validateRuntimeInput",
+    "lib/Validation.js~Validation#validateRuntimeInput",
     "method"
   ],
   [

@@ -390,12 +390,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -456,9 +450,21 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/credentialsmanager.js~credentialsmanager#loadcredentials",
-    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-loadCredentials",
-    "lib/CredentialsManager.js~CredentialsManager#loadCredentials",
+    "lib/credentialsmanager.js~credentialsmanager#deletecredentials",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-deleteCredentials",
+    "lib/CredentialsManager.js~CredentialsManager#deleteCredentials",
+    "method"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#loadbackendcredentials",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-loadBackendCredentials",
+    "lib/CredentialsManager.js~CredentialsManager#loadBackendCredentials",
+    "method"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#loadfrontendcredentials",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-loadFrontendCredentials",
+    "lib/CredentialsManager.js~CredentialsManager#loadFrontendCredentials",
     "method"
   ],
   [
@@ -756,6 +762,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/security.js~security#logout",
+    "class/lib/Security.js~Security.html#instance-method-logout",
+    "lib/Security.js~Security#logout",
+    "method"
+  ],
+  [
     "lib/security.js~security#token",
     "class/lib/Security.js~Security.html#instance-get-token",
     "lib/Security.js~Security#token",
@@ -792,10 +804,16 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/token.js~token#expiredatetime",
-    "class/lib/Token.js~Token.html#instance-get-expireDateTime",
-    "lib/Token.js~Token#expireDateTime",
-    "member"
+    "lib/token.js~token#destroy",
+    "class/lib/Token.js~Token.html#instance-method-destroy",
+    "lib/Token.js~Token#destroy",
+    "method"
+  ],
+  [
+    "lib/token.js~token#getcredentialsexpiredatetime",
+    "class/lib/Token.js~Token.html#instance-method-getCredentialsExpireDateTime",
+    "lib/Token.js~Token#getCredentialsExpireDateTime",
+    "method"
   ],
   [
     "lib/token.js~token#getuser",
@@ -811,13 +829,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/token.js~token#identityprovider",
-    "class/lib/Token.js~Token.html#instance-get-identityProvider",
+    "class/lib/Token.js~Token.html#instance-set-identityProvider",
     "lib/Token.js~Token#identityProvider",
     "member"
   ],
   [
     "lib/token.js~token#identityprovider",
-    "class/lib/Token.js~Token.html#instance-set-identityProvider",
+    "class/lib/Token.js~Token.html#instance-get-identityProvider",
     "lib/Token.js~Token#identityProvider",
     "member"
   ],
@@ -829,13 +847,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/token.js~token#lambdacontext",
-    "class/lib/Token.js~Token.html#instance-get-lambdaContext",
+    "class/lib/Token.js~Token.html#instance-set-lambdaContext",
     "lib/Token.js~Token#lambdaContext",
     "member"
   ],
   [
     "lib/token.js~token#lambdacontext",
-    "class/lib/Token.js~Token.html#instance-set-lambdaContext",
+    "class/lib/Token.js~Token.html#instance-get-lambdaContext",
     "lib/Token.js~Token#lambdaContext",
     "member"
   ],
@@ -856,6 +874,12 @@ window.esdocSearchIndex = [
     "class/lib/Token.js~Token.html#instance-set-userProvider",
     "lib/Token.js~Token#userProvider",
     "member"
+  ],
+  [
+    "lib/token.js~token#validcredentials",
+    "class/lib/Token.js~Token.html#instance-method-validCredentials",
+    "lib/Token.js~Token#validCredentials",
+    "method"
   ],
   [
     "lib/token.js~token.create",

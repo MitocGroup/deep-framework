@@ -33,7 +33,7 @@ export class Validation extends Kernel.ContainerAware {
    */
   validateRuntimeInput(lambdaRuntime, schemaName, cb) {
     if (!this.hasSchema(schemaName)) {
-      lambdaRuntime.createError(new ValidationSchemaNotFoundException(schemaName));
+      lambdaRuntime.createError(new ValidationSchemaNotFoundException(schemaName)).send();
       return this;
     }
 
@@ -44,7 +44,7 @@ export class Validation extends Kernel.ContainerAware {
       return this;
     }
 
-    lambdaRuntime.createError(validationResult.error);
+    lambdaRuntime.createError(validationResult.error).send();
 
     return this;
   }
@@ -77,6 +77,16 @@ export class Validation extends Kernel.ContainerAware {
     }
 
     return result.value;
+  }
+
+  /**
+   * @todo: find a better way to inject libraries...
+   *
+   * @param {Function} cb
+   * @returns {Object}
+   */
+  schemaFromValidationCb(cb) {
+    return cb(Joi);
   }
 
   /**

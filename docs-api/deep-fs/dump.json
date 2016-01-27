@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -32,7 +30,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -57,7 +54,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -70,7 +66,6 @@
     "content": "/**\n * Created by mgoria on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when unknown FS folder is requested\n */\nexport class UnknownFolderException extends Exception {\n  /**\n   * @param {String} folderName\n   * @param {Array} folders\n   */\n  constructor(folderName, folders) {\n    super(`Unknown folder \"${folderName}\". Defined folders are \"${folders.join(', ')}\"`);\n  }\n}\n"
   },
   {
-    "__docId__": 4,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -89,7 +84,6 @@
     ]
   },
   {
-    "__docId__": 5,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -124,7 +118,6 @@
     "generator": false
   },
   {
-    "__docId__": 6,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -134,10 +127,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport S3FS from 's3fs';\nimport Kernel from 'deep-kernel';\nimport {UnknownFolderException} from './Exception/UnknownFolderException';\nimport OS from 'os';\nimport Path from 'path';\n\n/**\n * Deep FS implementation\n */\nexport class FS extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} tmpFsBucket\n   * @param {String} publicFsBucket\n   * @param {String} systemFsBucket\n   */\n  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null) {\n    super();\n\n    this._mountedFolders = {};\n    this._buckets = {};\n\n    this._buckets[FS.TMP] = tmpFsBucket;\n    this._buckets[FS.PUBLIC] = publicFsBucket;\n    this._buckets[FS.SYSTEM] = systemFsBucket;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get TMP() {\n    return 'temp';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PUBLIC() {\n    return 'public';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get SYSTEM() {\n    return 'system';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get FOLDERS() {\n    return [\n      FS.TMP,\n      FS.PUBLIC,\n      FS.SYSTEM,\n    ];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let bucketsConfig = kernel.config.buckets;\n\n    for (let folderKey in FS.FOLDERS) {\n      if (!FS.FOLDERS.hasOwnProperty(folderKey)) {\n        continue;\n      }\n\n      let folder = FS.FOLDERS[folderKey];\n\n      this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;\n    }\n\n    callback();\n  }\n\n  /**\n   * Returns mounted file system folder (tmp, public or system)\n   *\n   * @param name\n   * @returns {*}\n   */\n  getFolder(name) {\n    if (FS.FOLDERS.indexOf(name) === -1) {\n      throw new UnknownFolderException(name, FS.FOLDERS);\n    }\n\n    if (typeof this._mountedFolders[name] === 'undefined') {\n      if (this._localBackend) {\n        let rootFolder = FS._getTmpDir(this._buckets[name]);\n        let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;\n\n        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;\n      } else {\n        let options = {\n          params: {\n            Bucket: this._buckets[name],\n          },\n        };\n\n        this._mountedFolders[name] = new S3FS(this._buckets[name], options);\n      }\n    }\n\n    return this._mountedFolders[name];\n  }\n\n  /**\n   * @param {String} subpath\n   * @returns {String}\n   * @private\n   */\n  static _getTmpDir(subpath) {\n    let dir = Path.join(OS.tmpdir(), subpath);\n\n    require('fs-extra').mkdirpSync(dir);\n\n    return dir;\n  }\n\n  /**\n   * Returns mounted tmp folder\n   *\n   * @returns {*}\n   */\n  get tmp() {\n    return this.getFolder(FS.TMP);\n  }\n\n  /**\n   * Returns mounted public folder\n   *\n   * @returns {*}\n   */\n  get public() {\n    return this.getFolder(FS.PUBLIC);\n  }\n\n  /**\n   * Returns mounted sys folder\n   *\n   * @returns {*}\n   */\n  get system() {\n    return this.getFolder(FS.SYSTEM);\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport S3FS from 's3fs';\nimport Kernel from 'deep-kernel';\nimport {UnknownFolderException} from './Exception/UnknownFolderException';\nimport OS from 'os';\nimport Path from 'path';\nimport {Registry} from './Registry';\n\n/**\n * Deep FS implementation\n */\nexport class FS extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} tmpFsBucket\n   * @param {String} publicFsBucket\n   * @param {String} systemFsBucket\n   */\n  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null) {\n    super();\n\n    this._mountedFolders = {};\n    this._buckets = {};\n\n    this._buckets[FS.TMP] = tmpFsBucket;\n    this._buckets[FS.PUBLIC] = publicFsBucket;\n    this._buckets[FS.SYSTEM] = systemFsBucket;\n\n    this._registry = null;\n  }\n\n  /**\n   * @returns {Registry}\n   * @constructor\n   */\n  static get RegistryInstance() {\n    return Registry;\n  }\n\n  /**\n   * @returns {Registry}\n   */\n  get registry() {\n    return this._registry;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get TMP() {\n    return 'temp';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PUBLIC() {\n    return 'public';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get SYSTEM() {\n    return 'system';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get FOLDERS() {\n    return [\n      FS.TMP,\n      FS.PUBLIC,\n      FS.SYSTEM,\n    ];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let bucketsConfig = kernel.config.buckets;\n\n    for (let folderKey in FS.FOLDERS) {\n      if (!FS.FOLDERS.hasOwnProperty(folderKey)) {\n        continue;\n      }\n\n      let folder = FS.FOLDERS[folderKey];\n\n      this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;\n    }\n\n    this._registry = Registry.createFromFS(this.system);\n\n    callback();\n  }\n\n  /**\n   * Returns mounted file system folder (tmp, public or system)\n   *\n   * @param name\n   * @returns {*}\n   */\n  getFolder(name) {\n    if (FS.FOLDERS.indexOf(name) === -1) {\n      throw new UnknownFolderException(name, FS.FOLDERS);\n    }\n\n    if (typeof this._mountedFolders[name] === 'undefined') {\n      if (this._localBackend) {\n        let rootFolder = FS._getTmpDir(this._buckets[name]);\n        let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;\n\n        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;\n      } else {\n        let options = {\n          params: {\n            Bucket: this._buckets[name],\n          },\n        };\n\n        this._mountedFolders[name] = new S3FS(this._buckets[name], options);\n      }\n    }\n\n    return this._mountedFolders[name];\n  }\n\n  /**\n   * @param {String} subpath\n   * @returns {String}\n   * @private\n   */\n  static _getTmpDir(subpath) {\n    let dir = Path.join(OS.tmpdir(), subpath);\n\n    require('fs-extra').mkdirpSync(dir);\n\n    return dir;\n  }\n\n  /**\n   * Returns mounted tmp folder\n   *\n   * @returns {*}\n   */\n  get tmp() {\n    return this.getFolder(FS.TMP);\n  }\n\n  /**\n   * Returns mounted public folder\n   *\n   * @returns {*}\n   */\n  get public() {\n    return this.getFolder(FS.PUBLIC);\n  }\n\n  /**\n   * Returns mounted sys folder\n   *\n   * @returns {*}\n   */\n  get system() {\n    return this.getFolder(FS.SYSTEM);\n  }\n}\n"
   },
   {
-    "__docId__": 7,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -149,14 +141,13 @@
     "importPath": "deep-fs/lib/FS.js",
     "importStyle": "{FS}",
     "description": "Deep FS implementation",
-    "lineNumber": 16,
+    "lineNumber": 17,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
     ]
   },
   {
-    "__docId__": 8,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -165,7 +156,7 @@
     "longname": "lib/FS.js~FS#constructor",
     "access": null,
     "description": "Defines all class private properties",
-    "lineNumber": 24,
+    "lineNumber": 25,
     "params": [
       {
         "nullable": null,
@@ -201,31 +192,12 @@
     "generator": false
   },
   {
-    "__docId__": 9,
     "kind": "member",
     "static": false,
     "variation": null,
     "name": "_mountedFolders",
     "memberof": "lib/FS.js~FS",
     "longname": "lib/FS.js~FS#_mountedFolders",
-    "access": null,
-    "description": null,
-    "lineNumber": 27,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 10,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_buckets",
-    "memberof": "lib/FS.js~FS",
-    "longname": "lib/FS.js~FS#_buckets",
     "access": null,
     "description": null,
     "lineNumber": 28,
@@ -237,7 +209,106 @@
     }
   },
   {
-    "__docId__": 11,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_buckets",
+    "memberof": "lib/FS.js~FS",
+    "longname": "lib/FS.js~FS#_buckets",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_registry",
+    "memberof": "lib/FS.js~FS",
+    "longname": "lib/FS.js~FS#_registry",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "RegistryInstance",
+    "memberof": "lib/FS.js~FS",
+    "longname": "lib/FS.js~FS.RegistryInstance",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Registry}"
+      },
+      {
+        "tagName": "@constructor",
+        "tagValue": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Registry"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "registry",
+    "memberof": "lib/FS.js~FS",
+    "longname": "lib/FS.js~FS#registry",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Registry}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Registry"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": true,
     "variation": null,
@@ -246,7 +317,7 @@
     "longname": "lib/FS.js~FS.TMP",
     "access": null,
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 56,
     "unknown": [
       {
         "tagName": "@returns",
@@ -269,7 +340,6 @@
     "generator": false
   },
   {
-    "__docId__": 12,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -278,7 +348,7 @@
     "longname": "lib/FS.js~FS.PUBLIC",
     "access": null,
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 63,
     "unknown": [
       {
         "tagName": "@returns",
@@ -301,7 +371,6 @@
     "generator": false
   },
   {
-    "__docId__": 13,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -310,7 +379,7 @@
     "longname": "lib/FS.js~FS.SYSTEM",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -333,7 +402,6 @@
     "generator": false
   },
   {
-    "__docId__": 14,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -342,7 +410,7 @@
     "longname": "lib/FS.js~FS.FOLDERS",
     "access": null,
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 77,
     "unknown": [
       {
         "tagName": "@returns",
@@ -365,7 +433,6 @@
     "generator": false
   },
   {
-    "__docId__": 15,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -374,7 +441,7 @@
     "longname": "lib/FS.js~FS#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 73,
+    "lineNumber": 91,
     "params": [
       {
         "nullable": null,
@@ -400,7 +467,23 @@
     "generator": false
   },
   {
-    "__docId__": 16,
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_registry",
+    "memberof": "lib/FS.js~FS",
+    "longname": "lib/FS.js~FS#_registry",
+    "access": null,
+    "description": null,
+    "lineNumber": 104,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -409,7 +492,7 @@
     "longname": "lib/FS.js~FS#getFolder",
     "access": null,
     "description": "Returns mounted file system folder (tmp, public or system)",
-    "lineNumber": 95,
+    "lineNumber": 115,
     "unknown": [
       {
         "tagName": "@returns",
@@ -439,7 +522,6 @@
     "generator": false
   },
   {
-    "__docId__": 17,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -448,7 +530,7 @@
     "longname": "lib/FS.js~FS._getTmpDir",
     "access": "private",
     "description": null,
-    "lineNumber": 125,
+    "lineNumber": 145,
     "unknown": [
       {
         "tagName": "@returns",
@@ -478,7 +560,6 @@
     "generator": false
   },
   {
-    "__docId__": 18,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -487,7 +568,7 @@
     "longname": "lib/FS.js~FS#tmp",
     "access": null,
     "description": "Returns mounted tmp folder",
-    "lineNumber": 138,
+    "lineNumber": 158,
     "unknown": [
       {
         "tagName": "@returns",
@@ -510,7 +591,6 @@
     "generator": false
   },
   {
-    "__docId__": 19,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -519,7 +599,7 @@
     "longname": "lib/FS.js~FS#public",
     "access": null,
     "description": "Returns mounted public folder",
-    "lineNumber": 147,
+    "lineNumber": 167,
     "unknown": [
       {
         "tagName": "@returns",
@@ -542,7 +622,6 @@
     "generator": false
   },
   {
-    "__docId__": 20,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -551,7 +630,7 @@
     "longname": "lib/FS.js~FS#system",
     "access": null,
     "description": "Returns mounted sys folder",
-    "lineNumber": 156,
+    "lineNumber": 176,
     "unknown": [
       {
         "tagName": "@returns",
@@ -574,7 +653,6 @@
     "generator": false
   },
   {
-    "__docId__": 21,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -584,10 +662,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 10/27/15.\n */\n\n'use strict';\n\nimport path from 'path';\nimport relativeFs from 'relative-fs';\nimport fse from 'fs-extra';\nimport fs from 'fs';\nimport {_extend as extend} from 'util';\nimport es6Promise from 'es6-promise';\n\n// Fix missing Promise\nes6Promise.polyfill();\n\nexport class S3FSRelativeFSExtender {\n  /**\n   * @param {Object|String} relativeFsPath\n   */\n  constructor(relativeFsPath) {\n    let relativeFsObject = relativeFsPath;\n\n    if (typeof relativeFsObject !== 'object') {\n      relativeFsObject = relativeFs.relativeTo(relativeFsPath);\n      relativeFsObject._rootFolder = relativeFsPath;\n    } else if(!relativeFsObject.hasOwnProperty('_rootFolder')) {\n      throw new Error('Missing _rootFolder property from RelativeFS object');\n    }\n\n    this._relativeFsObject = relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFs() {\n    return this._relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFsExtended() {\n    return extend(this._relativeFsObject, this.EXTEND_OBJECT);\n  }\n\n  /**\n   * @returns {String}\n   */\n  get cwd() {\n    return path.normalize(this._relativeFsObject._rootFolder || process.cwd());\n  }\n\n  /**\n   * @returns {{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}}\n   * @constructor\n   */\n  get EXTEND_OBJECT() {\n    let extendObject = {\n\n      /**\n       * @param {String} pathStr\n       * @returns {String}\n       *\n       * @todo: return some fake bucket name? or the prefix?\n       */\n      getPath: (pathStr = '') => {\n        return path.join(this.cwd, pathStr);\n      },\n\n      /**\n       * @param {String} pathStr\n       * @returns {Object}\n       */\n      clone: (pathStr) => {\n        let newCwd = path.join(this.cwd, pathStr);\n\n        return new S3FSRelativeFSExtender(newCwd).relativeFsExtended;\n      },\n\n      /**\n       * @param {String} sourcePath\n       * @param {String} destinationPath\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      copyFile: (sourcePath, destinationPath, callback = null) => {\n        let absSourcePath = path.join(this.cwd, sourcePath);\n        let absDestinationPath = path.join(this.cwd, destinationPath);\n\n        if (callback) {\n          fse.copy(absSourcePath, absDestinationPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.copy(absSourcePath, absDestinationPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {Object} options\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      create: (options, callback = null) => {\n        let error = new Error(`You do not have rights for this operation on bucket ${options.Bucket}`);\n\n        if (callback) {\n          callback(error);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          reject(error);\n        });\n      },\n\n      /**\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      destroy: (callback = null) => {\n        let error = new Error(`You do not have rights for this operation`);\n\n        if (callback) {\n          fse.remove(this.cwd, () => {\n            callback(error);\n          });\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(this.cwd, (nativeError) => {\n            if (nativeError) {\n              reject(nativeError);\n              return;\n            }\n\n            reject(error);\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      headObject: (pathStr, callback = null) => {\n        let responseObj = {\n          AcceptRanges: '',\n          Restore: '',\n          LastModified: new Date().getTime(),\n          ContentLength: 0,\n          ETag: '55ad340609f4b302',\n          MissingMeta: 0,\n          VersionId: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n        };\n\n        if (callback) {\n          callback(responseObj);\n          return;\n        }\n\n        return new Promise((resolve) => {\n          resolve(responseObj);\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {String} marker\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      listContents: (pathStr, marker, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        let globResponseObj = {\n          Marker: marker,\n          IsTruncated: false,\n          Contents: [],\n          Name: this.cwd,\n          Prefix: pathStr,\n          Delimiter: '/',\n          MaxKeys: 1000000000,\n          CommonPrefixes: [],\n          EncodingType: 'url',\n        };\n\n        let responseObj = {\n          Key: null,\n          LastModified: new Date().getTime(),\n          Size: 0,\n          ETag: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n          Owner: {\n            DisplayName: 's3fs',\n            ID: '55ad340609f4b302',\n          },\n        };\n\n        if (callback) {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));\n            })\n            .on('end', () => {\n              callback(globResponseObj);\n            });\n\n          return;\n        }\n\n        return new Promise((resolve) => {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));\n            })\n            .on('end', () => {\n              resolve(globResponseObj);\n            });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      readdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          try {\n            callback(null, S3FSRelativeFSExtender._readdirp(absPath, this.cwd));\n          } catch(error) {\n            callback(error, null);\n          }\n\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          try {\n            resolve(S3FSRelativeFSExtender._readdirp(absPath, this.cwd));\n          } catch(error) {\n            reject(error);\n          }\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      mkdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.mkdirp(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.mkdirp(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      rmdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.remove(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      }\n    };\n\n    extendObject.copyDir = extendObject.copyFile;\n    extendObject.delete = extendObject.create;\n    extendObject.putBucketLifecycle = extendObject.create;\n\n    return extendObject;\n  }\n\n  /**\n   * @param {String} dir\n   * @param {String} basePath\n   * @returns {String[]}\n   * @private\n   */\n  static _readdirp(dir, basePath = null) {\n    let _files = [];\n\n    let files = fs.readdirSync(dir);\n\n    for (let i in files) {\n      if (!files.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let file = path.join(dir, files[i]);\n\n      _files.push(file);\n\n      if (fs.statSync(file).isDirectory()) {\n        _files = _files.concat(\n          S3FSRelativeFSExtender._readdirp(file)\n        );\n      }\n    }\n\n    return basePath\n      ? _files.map((file) => file.substr(basePath.length))\n      : _files;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 10/27/15.\n */\n\n'use strict';\n\nimport path from 'path';\nimport relativeFs from 'relative-fs';\nimport fse from 'fs-extra';\nimport fs from 'fs';\nimport {_extend as extend} from 'util';\nimport es6Promise from 'es6-promise';\n\n// Fix missing Promise\nes6Promise.polyfill();\n\nexport class S3FSRelativeFSExtender {\n  /**\n   * @param {Object|String} relativeFsPath\n   */\n  constructor(relativeFsPath) {\n    let relativeFsObject = relativeFsPath;\n\n    if (typeof relativeFsObject !== 'object') {\n      relativeFsObject = relativeFs.relativeTo(relativeFsPath);\n      relativeFsObject._rootFolder = relativeFsPath;\n    } else if(!relativeFsObject.hasOwnProperty('_rootFolder')) {\n      throw new Error('Missing _rootFolder property from RelativeFS object');\n    }\n\n    this._relativeFsObject = relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFs() {\n    return this._relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFsExtended() {\n    return extend(this._relativeFsObject, this.EXTEND_OBJECT);\n  }\n\n  /**\n   * @returns {String}\n   */\n  get cwd() {\n    return path.normalize(this._relativeFsObject._rootFolder || process.cwd());\n  }\n\n  /**\n   * @returns {{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}}\n   * @constructor\n   */\n  get EXTEND_OBJECT() {\n    let extendObject = {\n      bucket: 'relative_fs',\n      s3: {}, // @todo: mock `AWS.S3()`\n\n      /**\n       * @param {String} pathStr\n       * @returns {String}\n       *\n       * @todo: return some fake bucket name? or the prefix?\n       */\n      getPath: (pathStr = '') => {\n        return path.join(this.cwd, pathStr);\n      },\n\n      /**\n       * @param {String} pathStr\n       * @returns {Object}\n       */\n      clone: (pathStr) => {\n        let newCwd = path.join(this.cwd, pathStr);\n\n        return new S3FSRelativeFSExtender(newCwd).relativeFsExtended;\n      },\n\n      /**\n       * @param {String} sourcePath\n       * @param {String} destinationPath\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      copyFile: (sourcePath, destinationPath, callback = null) => {\n        let absSourcePath = path.join(this.cwd, sourcePath);\n        let absDestinationPath = path.join(this.cwd, destinationPath);\n\n        if (callback) {\n          fse.copy(absSourcePath, absDestinationPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.copy(absSourcePath, absDestinationPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {Object} options\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      create: (options, callback = null) => {\n        let error = new Error(`You do not have rights for this operation on bucket ${options.Bucket}`);\n\n        if (callback) {\n          callback(error);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          reject(error);\n        });\n      },\n\n      /**\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      destroy: (callback = null) => {\n        let error = new Error(`You do not have rights for this operation`);\n\n        if (callback) {\n          fse.remove(this.cwd, () => {\n            callback(error);\n          });\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(this.cwd, (nativeError) => {\n            if (nativeError) {\n              reject(nativeError);\n              return;\n            }\n\n            reject(error);\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      headObject: (pathStr, callback = null) => {\n        let responseObj = {\n          AcceptRanges: '',\n          Restore: '',\n          LastModified: new Date().getTime(),\n          ContentLength: 0,\n          ETag: '55ad340609f4b302',\n          MissingMeta: 0,\n          VersionId: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n        };\n\n        if (callback) {\n          callback(responseObj);\n          return;\n        }\n\n        return new Promise((resolve) => {\n          resolve(responseObj);\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {String} marker\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      listContents: (pathStr, marker, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        let globResponseObj = {\n          Marker: marker,\n          IsTruncated: false,\n          Contents: [],\n          Name: this.cwd,\n          Prefix: pathStr,\n          Delimiter: '/',\n          MaxKeys: 1000000000,\n          CommonPrefixes: [],\n          EncodingType: 'url',\n        };\n\n        let responseObj = {\n          Key: null,\n          LastModified: new Date().getTime(),\n          Size: 0,\n          ETag: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n          Owner: {\n            DisplayName: 's3fs',\n            ID: '55ad340609f4b302',\n          },\n        };\n\n        if (callback) {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));\n            })\n            .on('end', () => {\n              callback(globResponseObj);\n            });\n\n          return;\n        }\n\n        return new Promise((resolve) => {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));\n            })\n            .on('end', () => {\n              resolve(globResponseObj);\n            });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      readdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          try {\n            callback(null, S3FSRelativeFSExtender._readdirp(absPath, this.cwd));\n          } catch(error) {\n            callback(error, null);\n          }\n\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          try {\n            resolve(S3FSRelativeFSExtender._readdirp(absPath, this.cwd));\n          } catch(error) {\n            reject(error);\n          }\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      mkdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.mkdirp(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.mkdirp(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      rmdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.remove(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      }\n    };\n\n    extendObject.copyDir = extendObject.copyFile;\n    extendObject.delete = extendObject.create;\n    extendObject.putBucketLifecycle = extendObject.create;\n\n    return extendObject;\n  }\n\n  /**\n   * @param {String} dir\n   * @param {String} basePath\n   * @returns {String[]}\n   * @private\n   */\n  static _readdirp(dir, basePath = null) {\n    let _files = [];\n\n    let files = fs.readdirSync(dir);\n\n    for (let i in files) {\n      if (!files.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let file = path.join(dir, files[i]);\n\n      _files.push(file);\n\n      if (fs.statSync(file).isDirectory()) {\n        _files = _files.concat(\n          S3FSRelativeFSExtender._readdirp(file)\n        );\n      }\n    }\n\n    return basePath\n      ? _files.map((file) => file.substr(basePath.length))\n      : _files;\n  }\n}\n"
   },
   {
-    "__docId__": 22,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -604,7 +681,6 @@
     "interface": false
   },
   {
-    "__docId__": 23,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -630,7 +706,6 @@
     "generator": false
   },
   {
-    "__docId__": 24,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -648,7 +723,6 @@
     }
   },
   {
-    "__docId__": 25,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -680,7 +754,6 @@
     "generator": false
   },
   {
-    "__docId__": 26,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -712,7 +785,6 @@
     "generator": false
   },
   {
-    "__docId__": 27,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -744,7 +816,6 @@
     "generator": false
   },
   {
-    "__docId__": 28,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -780,7 +851,6 @@
     "generator": false
   },
   {
-    "__docId__": 29,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -789,7 +859,7 @@
     "longname": "lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender._readdirp",
     "access": "private",
     "description": null,
-    "lineNumber": 327,
+    "lineNumber": 329,
     "unknown": [
       {
         "tagName": "@returns",
@@ -829,7 +899,1049 @@
     "generator": false
   },
   {
-    "__docId__": 30,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Registry.js",
+    "memberof": null,
+    "longname": "lib/Registry.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 1/21/16.\n */\n\n'use strict';\n\nimport util from 'util';\n\nexport class Registry {\n  /**\n   * @param {AWS.S3} s3\n   * @param {String} bucket\n   * @param {String} registryFile\n   */\n  constructor(s3, bucket, registryFile = Registry.REGISTRY_FILE) {\n    this._s3 = s3;\n    this._bucket = bucket;\n    this._registryFile = registryFile;\n\n    this._registry = null;\n    this._lastModified = null;\n    this._ensureFresh = Registry.ENSURE_FRESH;\n  }\n\n  /**\n   * @param {FS|*} fs\n   * @param {String} registryFile\n   */\n  static createFromFS(fs, registryFile = Registry.REGISTRY_FILE) {\n    return new Registry(\n      fs.s3,\n      fs.bucket,\n      fs.getPath(registryFile)\n    );\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {Registry}\n   */\n  keys(cb) {\n    this._ensureLoaded((error) => {\n      if (error) {\n        cb(error, null);\n        return;\n      }\n\n      cb(null, Object.keys(this._registry));\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} cb\n   * @returns {Registry}\n   */\n  read(key, cb) {\n    this._ensureLoaded((error) => {\n      if (error) {\n        cb(error, null);\n        return;\n      }\n\n      if (this._registry.hasOwnProperty(key)) {\n        cb(null, this._registry[key]);\n        return;\n      }\n\n      cb(new Error(`Missing registry entry '${key}'`), null);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} cb\n   * @returns {Registry}\n   */\n  exists(key, cb) {\n    this._ensureLoaded((error) => {\n      if (error) {\n        cb(error, null);\n        return;\n      }\n\n      cb(null, this._registry.hasOwnProperty(key));\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} data\n   * @param {Function} cb\n   * @returns {Registry}\n   */\n  write(key, data, cb) {\n    this._ensureLoaded((error) => {\n      if (error) {\n        cb(error);\n        return;\n      }\n\n      let hadKey = this._registry.hasOwnProperty(key);\n      let oldValue = this._registry[key];\n\n      this._registry[key] = data;\n\n      this._persist((error) => {\n        if (error) {\n          if (hadKey) {\n            this._registry[key] = oldValue;\n          } else {\n            delete this._registry[key];\n          }\n        }\n\n        cb(error);\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @returns {Registry}\n   */\n  refresh(cb) {\n    this._readS3Object(\n      this._registryFile,\n      (error, rawRegistry, lastModified) => {\n        if (error && error.code !== 'NotFound') {\n          cb(error);\n          return;\n        }\n\n        if (rawRegistry) {\n          try {\n            this._registry = Registry._decodeRegistry(rawRegistry);\n            this._lastModified = lastModified;\n          } catch (error) {\n            cb(error);\n            return;\n          }\n        }\n\n        cb(null);\n      },\n      this._lastModified\n    );\n\n    return this;\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _persist(cb) {\n    this._writeS3Object(\n      this._registryFile,\n      Registry._encodeRegistry(this._registry),\n      cb\n    );\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _ensureLoaded(cb) {\n    if (this._registry === null || this._ensureFresh) {\n      this.refresh((error) => {\n        this._registry = this._registry || {};\n\n        cb(error);\n      });\n    } else {\n      cb(null);\n    }\n  }\n\n  /**\n   * @param {String} rawRegistry\n   * @returns {Object}\n   * @private\n   */\n  static _decodeRegistry(rawRegistry) {\n    let registry = {};\n    let registryObj = JSON.parse(rawRegistry);\n\n    for (let key in registryObj) {\n      if (!registryObj.hasOwnProperty(key)) {\n        continue;\n      }\n\n      registry[key] = Registry._decodeValue(registryObj[key]);\n    }\n\n    return registry;\n  }\n\n  /**\n   * @param {Object} registry\n   * @returns {String}\n   * @private\n   */\n  static _encodeRegistry(registry) {\n    let registryObj = {};\n\n    for (let key in registry) {\n      if (!registry.hasOwnProperty(key)) {\n        continue;\n      }\n\n      registryObj[key] = Registry._encodeValue(registry[key]);\n    }\n\n    return JSON.stringify(registryObj);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} cb\n   * @param {Date|null} lastModified\n   * @private\n   */\n  _readS3Object(key, cb, lastModified = null) {\n    let payload = {\n      Bucket: this._bucket,\n      Key: key,\n    };\n\n    if (lastModified) {\n      payload.IfModifiedSince = lastModified;\n    }\n\n    this._s3.getObject(payload, (error, data) => {\n      if (error) {\n        cb(error, null, null);\n        return;\n      }\n\n      let result = null;\n      let resultLastModified = lastModified;\n\n      if (data && data.Body) {\n        result = data.Body.toString();\n        resultLastModified = data.LastModified;\n      }\n\n      cb(null, result, resultLastModified);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} content\n   * @param {Function} cb\n   * @private\n   */\n  _writeS3Object(key, content, cb) {\n    let payload = {\n      Bucket: this._bucket,\n      Key: key,\n      Body: content.toString(),\n    };\n\n    this._s3.putObject(payload, (error) => {\n      cb(error);\n    });\n  }\n\n  /**\n   * @param {*} value\n   * @returns {{t: string, v: *}}\n   * @private\n   */\n  static _encodeValue(value) {\n    let type = 'plain';\n    let val = value;\n\n    if (util.isArray(value)) {\n      type = 'arr';\n      val = JSON.stringify(value);\n    } else if(Buffer.isBuffer(value)) {\n      val = value.toString();\n    } else if(util.isObject(value)) {\n      type = 'obj';\n      val = JSON.stringify(value);\n    }\n\n    return {\n      t: type,\n      v: val,\n    };\n  }\n\n  /**\n   * @param {Object} valueObj\n   * @returns {*}\n   * @private\n   */\n  static _decodeValue(valueObj) {\n    let value = null;\n\n    switch (valueObj.t) {\n      case 'arr':\n      case 'obj':\n        value = JSON.parse(valueObj.v);\n        break;\n      default: value = valueObj.v;\n    }\n\n    return value;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set ensureFresh(state) {\n    this._ensureFresh = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get ensureFresh() {\n    return this._ensureFresh;\n  }\n\n  /**\n   * @returns {Date}\n   */\n  get lastModified() {\n    return this._lastModified;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get registryFile() {\n    return this._registryFile;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get bucket() {\n    return this._bucket;\n  }\n\n  /**\n   * @returns {AWS.S3}\n   */\n  get s3() {\n    return this._s3;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  static get ENSURE_FRESH() {\n    return true;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get REGISTRY_FILE() {\n    return '__deep_registry__';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Registry",
+    "memberof": "lib/Registry.js",
+    "longname": "lib/Registry.js~Registry",
+    "access": null,
+    "export": true,
+    "importPath": "deep-fs/lib/Registry.js",
+    "importStyle": "{Registry}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AWS.S3"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "s3",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "bucket",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "registryFile",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_s3",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_s3",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_bucket",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_bucket",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_registryFile",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_registryFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_registry",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_registry",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_lastModified",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_lastModified",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_ensureFresh",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_ensureFresh",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "createFromFS",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry.createFromFS",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "FS",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "fs",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "registryFile",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "keys",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#keys",
+    "access": null,
+    "description": null,
+    "lineNumber": 41,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Registry}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Registry"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "read",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#read",
+    "access": null,
+    "description": null,
+    "lineNumber": 59,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Registry}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Registry"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "exists",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#exists",
+    "access": null,
+    "description": null,
+    "lineNumber": 82,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Registry}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Registry"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "write",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#write",
+    "access": null,
+    "description": null,
+    "lineNumber": 101,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Registry}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Registry"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "refresh",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#refresh",
+    "access": null,
+    "description": null,
+    "lineNumber": 132,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Registry}"
+      }
+    ],
+    "params": [
+      {
+        "name": "cb",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Registry"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_registry",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_registry",
+    "access": null,
+    "description": null,
+    "lineNumber": 143,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_lastModified",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_lastModified",
+    "access": null,
+    "description": null,
+    "lineNumber": 144,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_persist",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_persist",
+    "access": "private",
+    "description": null,
+    "lineNumber": 163,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_ensureLoaded",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_ensureLoaded",
+    "access": "private",
+    "description": null,
+    "lineNumber": 175,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_registry",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_registry",
+    "access": null,
+    "description": null,
+    "lineNumber": 178,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_decodeRegistry",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry._decodeRegistry",
+    "access": "private",
+    "description": null,
+    "lineNumber": 192,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "rawRegistry",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_encodeRegistry",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry._encodeRegistry",
+    "access": "private",
+    "description": null,
+    "lineNumber": 212,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "registry",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_readS3Object",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_readS3Object",
+    "access": "private",
+    "description": null,
+    "lineNumber": 232,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Date",
+          "null"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "lastModified",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_writeS3Object",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_writeS3Object",
+    "access": "private",
+    "description": null,
+    "lineNumber": 266,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "content",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_encodeValue",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry._encodeValue",
+    "access": "private",
+    "description": null,
+    "lineNumber": 283,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{{t: string, v: *}}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "value",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "{t: string, v: *}"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_decodeValue",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry._decodeValue",
+    "access": "private",
+    "description": null,
+    "lineNumber": 308,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "valueObj",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "ensureFresh",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#ensureFresh",
+    "access": null,
+    "description": null,
+    "lineNumber": 325,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Boolean"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "state",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_ensureFresh",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#_ensureFresh",
+    "access": null,
+    "description": null,
+    "lineNumber": 326,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "ensureFresh",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#ensureFresh",
+    "access": null,
+    "description": null,
+    "lineNumber": 332,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "lastModified",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#lastModified",
+    "access": null,
+    "description": null,
+    "lineNumber": 339,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Date}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Date"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "registryFile",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#registryFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 346,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "bucket",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#bucket",
+    "access": null,
+    "description": null,
+    "lineNumber": 353,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "s3",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry#s3",
+    "access": null,
+    "description": null,
+    "lineNumber": 360,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AWS.S3}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AWS.S3"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ENSURE_FRESH",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry.ENSURE_FRESH",
+    "access": null,
+    "description": null,
+    "lineNumber": 367,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "REGISTRY_FILE",
+    "memberof": "lib/Registry.js~Registry",
+    "longname": "lib/Registry.js~Registry.REGISTRY_FILE",
+    "access": null,
+    "description": null,
+    "lineNumber": 374,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -842,7 +1954,6 @@
     "content": "/**\n * Created by mgoria on 5/28/2015\n */\n\n'use strict';\n\nimport {FS} from './FS';\n\nlet exports = module.exports = FS;\n"
   },
   {
-    "__docId__": 31,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -863,7 +1974,6 @@
     }
   },
   {
-    "__docId__": 33,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -876,7 +1986,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 34,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -889,7 +1998,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 35,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -902,7 +2010,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 36,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -915,7 +2022,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 37,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -928,7 +2034,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 38,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -941,7 +2046,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 39,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -954,7 +2058,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 40,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -967,7 +2070,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -980,7 +2082,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -993,7 +2094,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1006,7 +2106,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1019,7 +2118,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1032,7 +2130,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1045,7 +2142,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1058,7 +2154,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1071,7 +2166,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1084,7 +2178,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1097,7 +2190,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1110,7 +2202,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1123,7 +2214,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1136,7 +2226,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1149,7 +2238,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1162,7 +2250,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1175,7 +2262,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1188,7 +2274,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1201,7 +2286,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1214,7 +2298,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1227,7 +2310,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1240,7 +2322,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1253,7 +2334,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1266,7 +2346,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1279,7 +2358,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 65,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1292,7 +2370,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1305,7 +2382,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1318,7 +2394,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1331,7 +2406,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1344,7 +2418,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1357,7 +2430,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1370,7 +2442,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1383,7 +2454,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1396,7 +2466,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1409,7 +2478,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 75,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1422,7 +2490,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 76,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1435,7 +2502,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1448,7 +2514,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1461,7 +2526,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 79,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1474,7 +2538,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1487,7 +2550,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1500,7 +2562,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1513,7 +2574,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1526,7 +2586,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1539,7 +2598,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1552,7 +2610,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 87,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1560,19 +2617,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 88,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true
