@@ -62,6 +62,14 @@ export class CognitoSyncClientMock {
   }
 
   /**
+   * Mock for deleting cached credentials from local storage
+   * @returns {CognitoSyncClientMock}
+   */
+  wipeData() {
+    return this;
+  }
+
+  /**
    * Set mode for passed methods
    * @param {Number} mode
    * @param {String[]} methods
@@ -171,6 +179,7 @@ export class CognitoSyncClientMock {
   static get METHODS() {
     return [
       'openOrCreateDataset',
+      'wipeData',
     ];
   }
 }
