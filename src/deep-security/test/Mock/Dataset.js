@@ -21,7 +21,7 @@ export class Dataset {
     this.setMode(mode, methods);
 
     //set cb to be able to check if it will be called
-    this.cb = callback;
+    this._cb = callback;
   }
 
   /**
@@ -98,15 +98,15 @@ export class Dataset {
         break;
 
       case Dataset.SYNCRONIZE_CONFLICT_MODE:
-        datasetModeImpl.onConflict(this, [], this.cb);
+        datasetModeImpl.onConflict(this, [], this._cb);
         break;
 
       case Dataset.SYNCRONIZE_DATASET_DELETED_MODE:
-        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', this.cb);
+        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', this._cb);
         break;
 
       case Dataset.SYNCRONIZE_DATASET_MERGED_MODE:
-        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', this.cb);
+        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', this._cb);
         break;
     }
 

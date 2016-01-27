@@ -325,4 +325,19 @@ suite('CredentialsManager', function() {
     chai.expect(callbackArg[0]).to.equal(null);
     chai.expect(callbackArg[1]).to.eql(Dataset.DATA);
   });
+
+  test('Check deleteCredentials()', function() {
+    let spyCallback = sinon.spy();
+
+    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
+      'aws-sdk': cognitoSyncClient,
+    });
+
+    let CredentialsManager = credentialsManagerExport.CredentialsManager;
+    let credentialsManager = new CredentialsManager(identityPoolId);
+
+    credentialsManager.deleteCredentials();
+
+    chai.expect(credentialsManager.cognitoSyncClient._credentials).to.equal(null);
+  });
 });

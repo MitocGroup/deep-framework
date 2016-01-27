@@ -11,6 +11,16 @@ export class CognitoSyncClientMock {
     this._methodsBehavior = new Map();
 
     this.setMode(CognitoSyncClientMock.NO_RESULT_MODE);
+
+    this._credentials = Dataset.DATA;
+  }
+
+  /**
+   * @returns {number}
+   * @constructor
+   */
+  get credentials() {
+    return this._credentials;
   }
 
   /**
@@ -74,6 +84,8 @@ export class CognitoSyncClientMock {
    * @returns {CognitoSyncClientMock}
    */
   wipeData() {
+    this._credentials = null;
+
     return this;
   }
 
