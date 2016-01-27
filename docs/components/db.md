@@ -94,3 +94,52 @@ Models Anatomy
 --------------
 
 See [deep-validation](validation.md#models-anatomy) `Models Anatomy` section
+
+Migration Example
+----------------
+
+```javascript
+var NAME_DATA = [
+			{Name: 'Eugene'},
+			{Name: 'Alex'},
+			{Name: 'Marcel'},
+			{Name: 'John Cena'},
+		];
+
+module.exports = {
+	up: function(db, cb) {
+		var i = 0;
+		var name = db.get('Name');
+		var wait = new this.waitFor;
+		var remaining = NAME_DATA.length;
+
+		wait.push(function() {
+			return remaining <= 0;
+		});
+
+		NAME_DATA.forEach(function(payload) {
+			name.create(payload, function(error, data) {
+				if (error) {
+					console.error(error);
+				} else {
+					i++;
+					console.log('[' + i + '] New "Name" item created:', payload.Name);
+				}
+
+				remaining--;
+			});
+		});
+
+		wait.ready(cb);
+	},
+};
+```
+
+> Please note that you have an injected context in the `up()` method
+
+```javascript
+{
+    awsAsync: [AwsRequestSyncStack](https://github.com/MitocGroup/deep-package-manager/blob/master/src/lib/Helpers/AwsRequestSyncStack.js),
+    waitFor: [WaitFor](https://github.com/MitocGroup/deep-package-manager/blob/master/src/lib/Helpers/WaitFor.js),
+}
+```
