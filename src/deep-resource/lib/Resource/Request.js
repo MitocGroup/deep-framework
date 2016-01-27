@@ -322,7 +322,20 @@ export class Request {
         return;
       }
 
+      let requestEvent = {
+        serviceType: this.native ? 'Lambda' : 'ApiGateway',
+        serviceName: this.native ? this.action.source.original ? this.action.source.api,
+        context: this.action.resource.isBackend ? 'Backend' : 'Frontend',
+        startTime: new Date().getTime(),
+      };
+
       this._send((response) => {
+        requestEvent.stopTime = new Date().getTime();
+        requestEvent.requestId = response.requestId;
+        requestEvent.statusCode = response.statusCode;
+
+        this.action.resource.log.rumLog(requestEvent);
+
         if (!response.isError) {
           cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
             if (!error && !result) {

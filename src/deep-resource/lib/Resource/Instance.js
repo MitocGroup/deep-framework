@@ -24,6 +24,7 @@ export class Instance {
     this._cache = null;
     this._security = null;
     this._validation = null;
+    this._log = null;
 
     this._fillActions();
   }
@@ -135,6 +136,20 @@ export class Instance {
    */
   set cache(cache) {
     this._cache = cache;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get log() {
+    return this._log;
+  }
+
+  /**
+   * @param {Object} log
+   */
+  set log(log) {
+    this._log = log;
   }
 
   /**
