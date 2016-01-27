@@ -81,7 +81,7 @@ export class Log extends Kernel.ContainerAware {
         let rumQueueUrl = this.kernel.config.rumQueue.url;
         let enabled = (args.length > 0 && args[0] && typeof args[0] === 'object') ? args[0].enabled : false;
 
-        driver = new RumSqsDriver(rumQueueUrl, this.container.get(Kernel.CONTEXT), enabled);
+        driver = new RumSqsDriver(rumQueueUrl, this.kernel, enabled);
         break;
       default:
         throw new Core.Exception.InvalidArgumentException(

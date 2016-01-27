@@ -67,7 +67,11 @@ export class Framework {
       identityId = lambdaContext.identity.cognitoIdentityId;
     }
 
-    return this._kernelCached(identityId);
+    let kernel = this._kernelCached(identityId);
+
+    kernel.runtimeContext = lambdaContext;
+
+    return kernel;
   }
 
   /**

@@ -16,14 +16,14 @@ import {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlExcepti
 export class RumSqsDriver extends AbstractDriver {
   /**
    * @param {String} queueUrl
-   * @param {Object} kernelContext
+   * @param {Object} kernel
    * @param {Boolean} enabled
    */
-  constructor(queueUrl, kernelContext, enabled = false) {
+  constructor(queueUrl, kernel, enabled = false) {
     super();
 
     this._queueUrl = queueUrl;
-    this._kernelContext = kernelContext;
+    this._kernel = kernel;
     this._enabled = enabled;
 
     this._messagesBatch = [];
@@ -47,8 +47,8 @@ export class RumSqsDriver extends AbstractDriver {
   /**
    * @returns {Object}
    */
-  get kernelContext() {
-    return this._kernelContext;
+  get kernel() {
+    return this._kernel;
   }
 
   /**
@@ -84,7 +84,7 @@ export class RumSqsDriver extends AbstractDriver {
     // @todo - validate message object schema and add context related stuff (userId, requestId, sessionId, etc)
     // @todo - check message size, max is 256 KB (262,144 bytes)
 
-    if (this.kernelContext.isBackend) {
+    if (this.kernel.isBackend) {
       if (this._messagesBatch.length < RumSqsDriver.BATCH_SIZE) {
         this._messagesBatch.push(message);
       }

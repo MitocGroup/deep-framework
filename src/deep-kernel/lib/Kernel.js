@@ -30,6 +30,7 @@ export class Kernel {
     this._config = {};
     this._services = deepServices;
     this._context = context;
+    this._runtimeContext = {};
     this._env = null;
     this._container = new DI();
     this._isLoaded = false;
@@ -40,6 +41,20 @@ export class Kernel {
    */
   get isLoaded() {
     return this._isLoaded;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get runtimeContext() {
+    return this._runtimeContext;
+  }
+
+  /**
+   * @param {Object} runtimeContext
+   */
+  set runtimeContext(runtimeContext) {
+    this._runtimeContext = runtimeContext;
   }
 
   /**
