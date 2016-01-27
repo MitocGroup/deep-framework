@@ -36,7 +36,7 @@ suite('Registry', function() {
       }
 
       let error = new Error('Key not found');
-      error.code = 'NotFound';
+      error.code = 'NoSuchKey';
 
       cb(error, null);
     },

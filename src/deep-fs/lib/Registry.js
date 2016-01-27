@@ -133,7 +133,7 @@ export class Registry {
     this._readS3Object(
       this._registryFile,
       (error, rawRegistry, lastModified) => {
-        if (error && error.code !== 'NotFound') {
+        if (error && error.code !== 'NoSuchKey') {
           cb(error);
           return;
         }
