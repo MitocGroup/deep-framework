@@ -29,7 +29,7 @@ before_install:
   - if [ $(which sinopia > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g sinopia@1.4.0; fi # Add local NPM server
   - npm set registry http://localhost:4873/ # Force npm using local registry
   - npm set ca null # Avoid https issues
-  - sinopia --config .sinopia.yaml > /dev/null 2>&1 & # Start npm registry locally
+  - sinopia --config .sinopia.yaml > /dev/null 2>&1 &; sleep 5 # Start npm registry locally
   - if [ $(which babel-node > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g babel@5.8.19; fi
   - if [ $(which browserify > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g browserify@11.2.0; fi
   - if [ $(which mocha > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g mocha@2.3.4; fi
