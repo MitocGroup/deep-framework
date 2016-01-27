@@ -98,6 +98,8 @@ export class Kernel {
     if (this._isLoaded) {
       if (this.isBackend) {
         rumEvent.eventName = 'DeepKernelLoadFromCache';
+        rumEvent.serviceType = 'Lambda';
+        rumEvent.serviceName = this.runtimeContext.invokedFunctionArn;
         rumEvent.stopTime = new Date().getTime();
         this.get('log').rumLog(rumEvent);
       }

@@ -44,6 +44,9 @@ export class Response {
       throw new ContextAlreadySentException();
     }
 
+    this.runtime.rumLambdaRunEvent.stopTime = new Date().getTime();
+    this.runtime.logService.rumLog(this.runtime.rumLambdaRunEvent);
+
     // flush RUM batched messages if any
     this.runtime.logService.rumFlush((error, data) => {
       // @todo: via setter?

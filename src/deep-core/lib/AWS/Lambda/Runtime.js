@@ -34,6 +34,12 @@ export class Runtime extends Interface {
 
     this._calleeConfig = null;
 
+    this._rumLambdaRunEvent = {
+      eventGroup: 'RequestResponseSegment',
+      eventName: 'LambdaCodeRun',
+      serviceType: 'Lambda',
+    };
+
     this._fillDenyMissingUserContextOption();
   }
 
@@ -84,6 +90,13 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @returns {Object}
+   */
+  get rumLambdaRunEvent() {
+    return this._rumLambdaRunEvent;
+  }
+
+  /**
    * @param {String} schemaName
    * @param {Function} cb
    * @returns {Runtime}
@@ -104,6 +117,9 @@ export class Runtime extends Interface {
   run(event, context) {
     this._context = new Context(context);
     this._request = new Request(event);
+
+    this._rumLambdaRunEvent.serviceName = this._context.invokedFunctionArn;
+    this._rumLambdaRunEvent.startTime = new Date().getTime();
 
     new Sandbox(() => {
       this._fillUserContext();
