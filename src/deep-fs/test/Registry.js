@@ -27,7 +27,9 @@ suite('Registry', function() {
         if (payload.IfModifiedSince &&
           val.m.getTime() <= payload.IfModifiedSince.getTime()) {
 
-          cb(null, null);
+          cb({
+            code: 'NotModified',
+          }, null);
           return;
         }
 
