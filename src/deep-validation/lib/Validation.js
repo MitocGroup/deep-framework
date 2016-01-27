@@ -33,7 +33,7 @@ export class Validation extends Kernel.ContainerAware {
    */
   validateRuntimeInput(lambdaRuntime, schemaName, cb) {
     if (!this.hasSchema(schemaName)) {
-      lambdaRuntime.createError(new ValidationSchemaNotFoundException(schemaName));
+      lambdaRuntime.createError(new ValidationSchemaNotFoundException(schemaName)).send();
       return this;
     }
 
