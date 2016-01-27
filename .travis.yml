@@ -26,7 +26,7 @@ env:
     - secure: uL+FsLuZMvKjeyJ0onwII8hFWuiY3eO9TUigvpz/dDaSrrRF82NBZS5aNJp5uemRPJRnAn03yeigY8qio19ZYYpuWS71/pzsF85cAfVo/BuXAQw8hOV4ZoralHur0dxicj7u4dMPp/Q09sVEdDxZKNpCbObhEyeQWuwcZYAqWE14WDJUKK6M1Rgb+OQNvF0q42KMz4a0sHPzCQxNjFJtbbOWvpJenwgGLmOv5MvMnyDqEyQdWTJdHAsNPdpf4q7Xu+IwZHTL8QKnXBxLAay7Zz1c21o2m7Bjvzhfg1jicz8XXmcUPhMapXbwKdgC9phg4VetawIUzG4kaJf1sVyhyTd+yaGf0/lQpKPOQH8oKq6L6hJj2ge7VXfGCICvXoiNQbLZBh5yGqv//lT6HjNTHg8TYSCSjMCYdaV+6Kcs4ayT+ainmEr5PIObN24uihkl6F1GCZUNhvoJY1luZ4rGjwdEvSMCX/6F5vjg6bNQd2REWM9NdJtS9LOfpsOK93Q7WhdwnM9JNUHMBsMXihPrq1nNlZ3hdxuRDEKEehRIy16xXBgp18yXvJn5AoPGHnVH81dX1CbQg7slQ6zuDlH8nUxBWzamZvvupwu3vrjC7Qf406ylUZQn4duR+55GdyQDHk5gskrXN8Hp8brJ3W+i0DfQOiFvOz89imJozhwcg54=
 
 before_install:
-  - if [ $(which sinopia > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g sinopia; fi # Add local NPM server
+  - if [ $(which sinopia > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g sinopia@1.4.0; fi # Add local NPM server
   - npm set registry http://localhost:4873/ # Force npm using local registry
   - npm set ca null # Avoid https issues
   - sinopia --config .sinopia.yaml > /dev/null 2>&1 & # Start npm registry locally
@@ -37,12 +37,12 @@ before_install:
   - if [ $(which install > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g isparta@3.1.0; fi
   - npm install -g istanbul-combine@0.3.0
   - npm install -g codacy-coverage@1.1.3
-  - npm install -g src/deep-kernel --production
-  - npm install -g src/deep-core --production
-  - npm install -g src/deep-validation --production
-  - npm install -g src/deep-di --production
-  - npm install -g src/deep-cache --production
-  - npm install -g src/deep-security --production
+  - npm install -g src/deep-kernel --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-core --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-validation --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-di --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-cache --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-security --production --save --save-dev --save-optional --save-exact --link --no-bin-links
   - cp test/package.json .
 
 after_success:
