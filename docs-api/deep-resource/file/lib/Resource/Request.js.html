@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -52,6 +50,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -80,7 +79,6 @@ import Core from &apos;deep-core&apos;;
 import {MissingSecurityServiceException} from &apos;./Exception/MissingSecurityServiceException&apos;;
 import {AsyncCallNotAvailableException} from &apos;./Exception/AsyncCallNotAvailableException&apos;;
 import {LoadCredentialsException} from &apos;./Exception/LoadCredentialsException&apos;;
-import Security from &apos;deep-security&apos;;
 import crypto from &apos;crypto&apos;;
 import util from &apos;util&apos;;
 
@@ -105,6 +103,38 @@ export class Request {
 
     this._async = false;
     this._native = false;
+
+    this._validationSchemaName = null;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  skipPreValidation() {
+    this._validationSchemaName = null;
+
+    return this;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isPreValidated() {
+    return !!this._validationSchemaName;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get validationSchemaName() {
+    return this._validationSchemaName;
+  }
+
+  /**
+   * @param {String} validationSchemaName
+   */
+  set validationSchemaName(validationSchemaName) {
+    this._validationSchemaName = validationSchemaName;
   }
 
   /**
@@ -218,7 +248,7 @@ export class Request {
    * @private
    */
   _buildCacheKey() {
-    let payload = Request._md5(JSON.stringify(this._payload));
+    let payload = Request._md5(JSON.stringify(this.payload));
     let endpoint = this.native ? this._action.source.original : this._action.source.api;
 
     return `${this._method}:${this._action.type}:${endpoint}#${payload}`;
@@ -351,15 +381,17 @@ export class Request {
       }
 
       this._send((response) =&gt; {
-        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) =&gt; {
-          if (!result) {
-            error = `Unable to persist request cache under key ${cacheKey}`;
-          }
+        if (!response.isError) {
+          cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) =&gt; {
+            if (!error &amp;&amp; !result) {
+              error = `Unable to persist request cache under key ${cacheKey}.`;
+            }
 
-          if (error) {
-            throw new CachedRequestException(error);
-          }
-        });
+            if (error) {
+              throw new CachedRequestException(error);
+            }
+          });
+        }
 
         // @todo: do it synchronous?
         callback(response);
@@ -383,6 +415,25 @@ export class Request {
    * @returns {Request}
    */
   _send(callback = () =&gt; {}) {
+     if (this.isPreValidated) {
+      let validation = this._action.resource.validation;
+
+      let validationResult = validation.validate(this._validationSchemaName, this.payload, true);
+
+      if (validationResult.error) {
+        let error = validationResult.error;
+
+        callback(new LambdaResponse(this, {
+          errorType: error.name,
+          errorMessage: error.annotate(),
+          errorStack: error.stack || (new Error(error.message)).stack,
+          validationErrors: error.details,
+        }, null));
+
+        return this;
+      }
+    }
+
     if (!this._native) {
       return this._sendThroughApi(callback);
     }
@@ -567,7 +618,7 @@ export class Request {
   _loadSecurityCredentials(callback) {
     let securityService = this._action.resource.security;
 
-    if (!(securityService instanceof Security)) {
+    if (!securityService) {
       callback(new MissingSecurityServiceException(), null);
       return this;
     }
@@ -648,7 +699,7 @@ export class Request {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

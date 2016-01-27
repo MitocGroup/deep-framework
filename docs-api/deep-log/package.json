@@ -1,6 +1,6 @@
 {
   "name": "deep-log",
-  "version": "1.5.6",
+  "version": "1.6.0",
   "description": "DEEP Log Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -50,9 +50,9 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which isparta` cover --include 'lib/**/*.js' _mocha -- 'test/**/*.js' --reporter spec --ui tdd --timeout 4s",
+    "test": "bash node-bin/test.sh",
+    "compile": "bash node-bin/compile.sh",
     "prepare-browserify": "npm install raven-js@1.1.*",
-    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core"
   },

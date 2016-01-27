@@ -5,7 +5,13 @@
 'use strict';
 
 export class Dataset {
-  constructor(mode = Dataset.NO_RESULT_MODE, methods = Dataset.METHODS) {
+  /**
+   *
+   * @param {String} mode
+   * @param {String[]}methods
+   * @param {Function} callback
+   */
+  constructor(mode = Dataset.NO_RESULT_MODE, methods = Dataset.METHODS, callback) {
     this._methodsBehavior = new Map();
 
     //set data mode as initial values
@@ -13,6 +19,9 @@ export class Dataset {
 
     //set mode based on args
     this.setMode(mode, methods);
+
+    //set cb to be able to check if it will be called
+    this.cb = callback;
   }
 
   /**
@@ -78,21 +87,15 @@ export class Dataset {
         break;
 
       case Dataset.SYNCRONIZE_CONFLICT_MODE:
-        datasetModeImpl.onConflict(this, [], (result) => {
-          return result;
-        });
+        datasetModeImpl.onConflict(this, [], this.cb);
         break;
 
       case Dataset.SYNCRONIZE_DATASET_DELETED_MODE:
-        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', (result) => {
-          return result;
-        });
+        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', this.cb);
         break;
 
       case Dataset.SYNCRONIZE_DATASET_MERGED_MODE:
-        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', (result) => {
-          return result;
-        });
+        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', this.cb);
         break;
     }
 

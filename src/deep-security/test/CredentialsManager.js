@@ -181,39 +181,39 @@ suite('CredentialsManager', function() {
   });
 
   test('Check _synchronizeDataset() executes onConflict', function() {
-    let spyCallback = sinon.spy();
+    let spyCallbackSynchronize = sinon.spy();
+    let spyCallbackOnConflict = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_CONFLICT_MODE, ['synchronize']);
+    let dataset = new Dataset(Dataset.SYNCRONIZE_CONFLICT_MODE, ['synchronize'], spyCallbackOnConflict);
 
-    credentialsManager._synchronizeDataset(dataset, spyCallback);
+    credentialsManager._synchronizeDataset(dataset, spyCallbackSynchronize);
 
-    //@todo - unable to check cb in passed arg
-    //chai.expect(spyCallback).to.have.been.calledWithExactly(true);
+    chai.expect(spyCallbackOnConflict).to.have.been.calledWithExactly(true);
   });
 
   test('Check _synchronizeDataset() executes onDatasetDeleted', function() {
-    let spyCallback = sinon.spy();
+    let spyCallbackSynchronize = sinon.spy();
+    let spyCallbackOnDatasetDeleted = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_DELETED_MODE, ['synchronize']);
+    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_DELETED_MODE, ['synchronize'], spyCallbackOnDatasetDeleted);
 
-    credentialsManager._synchronizeDataset(dataset, spyCallback);
+    credentialsManager._synchronizeDataset(dataset, spyCallbackSynchronize);
 
-    //@todo - unable to check cb in passed arg
-    //chai.expect(spyCallback).to.have.been.calledWithExactly(true);
+    chai.expect(spyCallbackOnDatasetDeleted).to.have.been.calledWithExactly(true);
   });
 
   test('Check _synchronizeDataset() executes onDatasetMerged', function() {
-    let spyCallback = sinon.spy();
+    let spyCallbackSynchronize = sinon.spy();
+    let spyCallbackOnDatasetMerged = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_MERGED_MODE, ['synchronize']);
+    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_MERGED_MODE, ['synchronize'], spyCallbackOnDatasetMerged);
 
-    credentialsManager._synchronizeDataset(dataset, spyCallback);
+    credentialsManager._synchronizeDataset(dataset, spyCallbackSynchronize);
 
-    //@todo - unable to check cb in passed arg
-    //chai.expect(spyCallback).to.have.been.calledWithExactly(true);
+    chai.expect(spyCallbackOnDatasetMerged).to.have.been.calledWithExactly(true);
   });
 
   test('Check loadBackendCredentials() executes with error in listRecords()', function() {
@@ -237,6 +237,7 @@ suite('CredentialsManager', function() {
 
   test('Check loadBackendCredentials() executes with data in listRecords()', function() {
     let spyCallback = sinon.spy();
+    let expectedResult = null;
 
     //mocking AWS.CognitoSync
     let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
@@ -248,10 +249,13 @@ suite('CredentialsManager', function() {
 
     credentialsManager.loadBackendCredentials('test_identityID', spyCallback);
 
-    let callbackArg = spyCallback.args[0];
+    for (let record of CognitoSyncMock.DATA.Records) {
+      if (record.Key === CredentialsManager.RECORD_NAME) {
+        expectedResult = credentialsManager._decodeCredentials(record.Value);
+        break;
+      }
+    }
 
-    chai.expect(callbackArg[0]).to.eql(null);
-    // @todo - check why it fails
-    //chai.expect(callbackArg[1]).to.eql({token: 'test_session_creds'});
+    chai.expect(spyCallback.args[0][1]).to.eql(expectedResult);
   });
 });

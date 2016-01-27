@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Abstract log driver\n */\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super(['log']);\n  }\n\n  /**\n   * @param {*} context\n   * @returns {String}\n   */\n  static plainifyContext(context) {\n    let type = typeof context;\n    var plainContext;\n\n    if (type === 'object') {\n      plainContext = JSON.stringify(context);\n    } else if (context instanceof Object) {\n      plainContext = `${type}: ${context.toString()}`;\n    } else {\n      plainContext = context.toString();\n    }\n\n    return plainContext;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get datetime() {\n    return new Date().toISOString();\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get timeString() {\n    return new Date().toTimeString();\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -32,7 +30,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -47,7 +44,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -86,7 +82,6 @@
     "generator": false
   },
   {
-    "__docId__": 4,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -118,7 +113,6 @@
     "generator": false
   },
   {
-    "__docId__": 5,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -150,7 +144,6 @@
     "generator": false
   },
   {
-    "__docId__": 6,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -163,7 +156,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\n\n/**\n * Console native logging\n */\nexport class ConsoleDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._console = ConsoleDriver._buildConsole();\n  }\n\n  /**\n   * @returns {Object}\n   * @private\n   */\n  static _buildConsole() {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n    let console = {};\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      // Fixes issue with node env\n      if (method === 'debug' &&\n        typeof nativeConsole[method] === 'undefined') {\n        method = 'log';\n      }\n\n      console[method] = nativeConsole[method];\n    }\n\n    return console;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeMethod = 'log';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.ERROR:\n      case Log.CRITICAL:\n        nativeMethod = 'error';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n        nativeMethod = 'warn';\n        break;\n      case Log.NOTICE:\n        nativeMethod = 'log';\n        break;\n      case Log.INFO:\n        nativeMethod = 'info';\n        break;\n      case Log.DEBUG:\n        nativeMethod = 'debug';\n        break;\n    }\n\n    // Fixes issue with node env\n    (this._console[nativeMethod] || this._console.log)(AbstractDriver.timeString, msg);\n\n    // @todo: figure out a better way of dumping context\n    if (context) {\n      // Fixes issue with node env\n      (this._console.debug || this._console.log)('[DEBUG]', context);\n    }\n  }\n\n  /**\n   * @param {Boolean} logTime\n   * @param {Boolean} coloredOutput\n   * @param {Boolean} turnOff\n   * @returns {ConsoleDriver}\n   */\n  overrideNative(logTime = true, coloredOutput = true, turnOff = false) {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      nativeConsole[method] = (...args) => {\n        if (!turnOff) {\n          let nativeArgs = args;\n\n          if (coloredOutput) {\n            nativeArgs = ConsoleDriver._colorOutput(method, nativeArgs);\n          }\n\n          if (logTime) {\n            nativeArgs.unshift(AbstractDriver.timeString);\n          }\n\n          this._console[method](...nativeArgs);\n        }\n      };\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} type\n   * @param {Array} args\n   * @returns {Array}\n   * @private\n   */\n  static _colorOutput(type, args) {\n    let color = null;\n\n    switch(type.toLowerCase()) {\n      case 'error':\n        color = 31; // red\n        break;\n      case 'warn':\n        color = 33; // yellow\n        break;\n      default: color = 32; // green\n    }\n\n    args.unshift(`\\x1b[${color}m`);\n    args.push('\\x1b[0m');\n\n    return args;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get nativeConsole() {\n    return typeof window === 'undefined' ? console : window.console;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get METHODS_TO_OVERRIDE() {\n    return ['error', 'log', 'warn', 'info', 'debug'];\n  }\n}\n"
   },
   {
-    "__docId__": 7,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -182,7 +174,6 @@
     ]
   },
   {
-    "__docId__": 8,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -197,7 +188,6 @@
     "generator": false
   },
   {
-    "__docId__": 9,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -215,7 +205,6 @@
     }
   },
   {
-    "__docId__": 10,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -243,7 +232,6 @@
     "generator": false
   },
   {
-    "__docId__": 11,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -288,7 +276,6 @@
     "generator": false
   },
   {
-    "__docId__": 12,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -347,7 +334,6 @@
     "generator": false
   },
   {
-    "__docId__": 13,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -396,7 +382,6 @@
     "generator": false
   },
   {
-    "__docId__": 14,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -428,7 +413,6 @@
     "generator": false
   },
   {
-    "__docId__": 15,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -460,7 +444,6 @@
     "generator": false
   },
   {
-    "__docId__": 16,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -473,7 +456,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport url from 'url';\nimport util from 'util';\n\n/**\n * Raven/Sentry logging for browser\n *\n * @todo replace it on compile time rather than runtime!\n */\nexport class RavenBrowserDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   * @param {Object} options\n   */\n  constructor(dsn, options = {}) {\n    super();\n\n    options = util._extend(options, {\n      maxMessageLength: 256\n    });\n\n    Raven.config(RavenBrowserDriver._prepareDsn(dsn), options).install();\n  }\n\n  /**\n   * @todo: tmp hook, remove it before persisting frontend config\n   *\n   * Remove password from url to not expose it into browser\n   *\n   * @param {String} dsn\n   * @returns {String}\n   */\n  static _prepareDsn(dsn) {\n    let parsedDsn = url.parse(dsn);\n    parsedDsn.auth = parsedDsn.auth.split(':')[0];\n\n    return url.format(parsedDsn);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenBrowserDriver._mapLevel(level);\n\n\n    Raven.captureMessage(msg, {\n      level: nativeLevel,\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
   },
   {
-    "__docId__": 17,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -495,7 +477,6 @@
     ]
   },
   {
-    "__docId__": 18,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -530,7 +511,6 @@
     "generator": false
   },
   {
-    "__docId__": 19,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -573,7 +553,6 @@
     "generator": false
   },
   {
-    "__docId__": 20,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -618,7 +597,6 @@
     "generator": false
   },
   {
-    "__docId__": 21,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -657,7 +635,6 @@
     "generator": false
   },
   {
-    "__docId__": 22,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -670,7 +647,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport util from 'util';\n\n/**\n * Raven/Sentry logging\n */\nexport class RavenDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   * @param {Object} options\n   */\n  constructor(dsn, options = {}) {\n    super();\n\n    options = util._extend(options, {\n      maxMessageLength: 256\n    });\n\n    this._clients = {};\n\n    for (let levelKey in Log.LEVELS) {\n      if (!Log.LEVELS.hasOwnProperty(levelKey)) {\n        continue;\n      }\n\n      let nativeLevel = RavenDriver._mapLevel(Log.LEVELS[levelKey]);\n\n      options.level = nativeLevel;\n\n      this._clients[nativeLevel] = new Raven.Client(dsn, options);\n    }\n  }\n\n  /**\n   * @returns {Raven.Client[]}\n   */\n  get clients() {\n    return this._clients;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenDriver._mapLevel(level);\n\n    this._clients[nativeLevel].captureMessage(msg, {\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
   },
   {
-    "__docId__": 23,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -689,7 +665,6 @@
     ]
   },
   {
-    "__docId__": 24,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -724,7 +699,6 @@
     "generator": false
   },
   {
-    "__docId__": 25,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -742,7 +716,6 @@
     }
   },
   {
-    "__docId__": 26,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -774,7 +747,6 @@
     "generator": false
   },
   {
-    "__docId__": 27,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -819,7 +791,6 @@
     "generator": false
   },
   {
-    "__docId__": 28,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -858,7 +829,6 @@
     "generator": false
   },
   {
-    "__docId__": 29,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -871,7 +841,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 30,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -890,7 +859,6 @@
     ]
   },
   {
-    "__docId__": 31,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -915,7 +883,6 @@
     "generator": false
   },
   {
-    "__docId__": 32,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -928,7 +895,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {ConsoleDriver} from './Driver/ConsoleDriver';\nimport {RavenDriver} from './Driver/RavenDriver';\nimport {RavenBrowserDriver} from './Driver/RavenBrowserDriver';\nimport {AbstractDriver} from './Driver/AbstractDriver';\n\n/**\n * Logging manager\n */\nexport class Log extends Kernel.ContainerAware {\n  /**\n   * @param {Object} drivers\n   */\n  constructor(drivers = {}) {\n    super();\n\n    this._drivers = new Core.Generic.ObjectStorage();\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: remove this compatibility hook\n    let globals = kernel.config.globals || kernel.config;\n\n    let drivers = globals.logDrivers;\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n\n    callback();\n  }\n\n  /**\n   *\n   * @param {String} type\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  create(type, ...args) {\n    var driver;\n\n    switch (type.toLowerCase()) {\n      case 'console':\n        driver = new ConsoleDriver(...args);\n        break;\n      case 'raven':\n      case 'sentry':\n        let DriverPrototype = this.container.get(Kernel.CONTEXT).isFrontend ? RavenBrowserDriver : RavenDriver;\n\n        driver = new DriverPrototype(\n          args.length > 0 && typeof args[0] === 'object'\n            ? args[0].dsn\n            : null\n        );\n        break;\n      default:\n        throw new Core.Exception.InvalidArgumentException(\n          type,\n          '[Console, Raven, Sentry]'\n        );\n    }\n\n    return driver;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {Log}\n   *\n   * @todo: do we need this here?\n   */\n  overrideJsConsole(...args) {\n    let consoleDriver = this._drivers.find(ConsoleDriver);\n\n    if (!consoleDriver) {\n      this.register('console');\n    }\n\n    (consoleDriver || this._drivers.find(ConsoleDriver))\n      .overrideNative(...args);\n\n    return this;\n  }\n\n  /**\n   * @param {AbstractDriver|String} driver\n   * @param {Array} args\n   * @returns {Log}\n   */\n  register(driver, ...args) {\n    if (typeof driver === 'string') {\n      driver = this.create(driver, ...args);\n    }\n\n    if (!(driver instanceof AbstractDriver)) {\n      throw new Core.Exception.InvalidArgumentException(driver, 'AbstractDriver');\n    }\n\n    this._drivers.add(driver);\n\n    return this;\n  }\n\n  /**\n   * @returns {Core.Generic.ObjectStorage}\n   */\n  get drivers() {\n    return this._drivers;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   * @returns Log\n   */\n  log(msg, level = Log.INFO, context = {}) {\n    let driversArr = this.drivers.iterator;\n\n    for (let driverKey in driversArr) {\n      if (!driversArr.hasOwnProperty(driverKey)) {\n        continue;\n      }\n\n      let driver = driversArr[driverKey];\n\n      driver.log(msg, level, context);\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  debug(msg, context = {}) {\n    return this.log(msg, Log.DEBUG, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  err(msg, context = {}) {\n    return this.log(msg, Log.ERROR, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  error(...args) {\n    return this.err(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  info(msg, context = {}) {\n    return this.log(msg, Log.INFO, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  warn(msg, context = {}) {\n    return this.log(msg, Log.WARNING, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  warning(...args) {\n    return this.warn(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  emerg(msg, context = {}) {\n    return this.log(msg, Log.EMERGENCY, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  emergency(...args) {\n    return this.emerg(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  crit(msg, context = {}) {\n    return this.log(msg, Log.CRITICAL, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  critical(...args) {\n    return this.crit(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  notice(msg, context = {}) {\n    return this.log(msg, Log.NOTICE, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  alert(msg, context = {}) {\n    return this.log(msg, Log.ALERT, context);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get LEVELS() {\n    return [\n      Log.EMERGENCY,\n      Log.ALERT,\n      Log.CRITICAL,\n      Log.ERROR,\n      Log.WARNING,\n      Log.NOTICE,\n      Log.INFO,\n      Log.DEBUG,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EMERGENCY() {\n    return 'emergency';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ALERT() {\n    return 'alert';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CRITICAL() {\n    return 'critical';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ERROR() {\n    return 'error';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get WARNING() {\n    return 'warning';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get NOTICE() {\n    return 'notice';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get INFO() {\n    return 'info';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEBUG() {\n    return 'debug';\n  }\n}\n"
   },
   {
-    "__docId__": 33,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -947,7 +913,6 @@
     ]
   },
   {
-    "__docId__": 34,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -972,7 +937,6 @@
     "generator": false
   },
   {
-    "__docId__": 35,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -990,7 +954,6 @@
     }
   },
   {
-    "__docId__": 36,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1025,7 +988,6 @@
     "generator": false
   },
   {
-    "__docId__": 37,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1074,7 +1036,6 @@
     "generator": false
   },
   {
-    "__docId__": 38,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1113,7 +1074,6 @@
     "generator": false
   },
   {
-    "__docId__": 39,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1163,7 +1123,6 @@
     "generator": false
   },
   {
-    "__docId__": 40,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1195,7 +1154,6 @@
     "generator": false
   },
   {
-    "__docId__": 41,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1254,7 +1212,6 @@
     "generator": false
   },
   {
-    "__docId__": 42,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1303,7 +1260,6 @@
     "generator": false
   },
   {
-    "__docId__": 43,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1352,7 +1308,6 @@
     "generator": false
   },
   {
-    "__docId__": 44,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1382,7 +1337,6 @@
     "generator": false
   },
   {
-    "__docId__": 45,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1431,7 +1385,6 @@
     "generator": false
   },
   {
-    "__docId__": 46,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1480,7 +1433,6 @@
     "generator": false
   },
   {
-    "__docId__": 47,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1510,7 +1462,6 @@
     "generator": false
   },
   {
-    "__docId__": 48,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1559,7 +1510,6 @@
     "generator": false
   },
   {
-    "__docId__": 49,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1589,7 +1539,6 @@
     "generator": false
   },
   {
-    "__docId__": 50,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1638,7 +1587,6 @@
     "generator": false
   },
   {
-    "__docId__": 51,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1668,7 +1616,6 @@
     "generator": false
   },
   {
-    "__docId__": 52,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1717,7 +1664,6 @@
     "generator": false
   },
   {
-    "__docId__": 53,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1766,7 +1712,6 @@
     "generator": false
   },
   {
-    "__docId__": 54,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1798,7 +1743,6 @@
     "generator": false
   },
   {
-    "__docId__": 55,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1830,7 +1774,6 @@
     "generator": false
   },
   {
-    "__docId__": 56,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1862,7 +1805,6 @@
     "generator": false
   },
   {
-    "__docId__": 57,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1894,7 +1836,6 @@
     "generator": false
   },
   {
-    "__docId__": 58,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1926,7 +1867,6 @@
     "generator": false
   },
   {
-    "__docId__": 59,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1958,7 +1898,6 @@
     "generator": false
   },
   {
-    "__docId__": 60,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1990,7 +1929,6 @@
     "generator": false
   },
   {
-    "__docId__": 61,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2022,7 +1960,6 @@
     "generator": false
   },
   {
-    "__docId__": 62,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2054,7 +1991,6 @@
     "generator": false
   },
   {
-    "__docId__": 63,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2067,7 +2003,6 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Log} from './Log';\n\nlet exports = module.exports = Log;\n"
   },
   {
-    "__docId__": 64,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -2088,7 +2023,6 @@
     }
   },
   {
-    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2101,7 +2035,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2114,7 +2047,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2127,7 +2059,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2140,7 +2071,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2153,7 +2083,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2166,7 +2095,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2179,7 +2107,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2192,7 +2119,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2205,7 +2131,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 75,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2218,7 +2143,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 76,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2231,7 +2155,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2244,7 +2167,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2257,7 +2179,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 79,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2270,7 +2191,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 80,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2283,7 +2203,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2296,7 +2215,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2309,7 +2227,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2322,7 +2239,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2335,7 +2251,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2348,7 +2263,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2361,7 +2275,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 87,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2374,7 +2287,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 88,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2387,7 +2299,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 89,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2400,7 +2311,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 90,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2413,7 +2323,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 91,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2426,7 +2335,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 92,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2439,7 +2347,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 93,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2452,7 +2359,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 94,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2465,7 +2371,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 95,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2478,7 +2383,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 96,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2491,7 +2395,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 97,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2504,7 +2407,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 98,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2517,7 +2419,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 99,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2530,7 +2431,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 100,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2543,7 +2443,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 101,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2556,7 +2455,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 102,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2569,7 +2467,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 103,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2582,7 +2479,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 104,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2595,7 +2491,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 105,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2608,7 +2503,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 106,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2621,7 +2515,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 107,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2634,7 +2527,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 108,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2647,7 +2539,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 109,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2660,7 +2551,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 110,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2673,7 +2563,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 111,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2686,7 +2575,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 112,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2699,7 +2587,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 114,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2712,7 +2599,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 115,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2725,7 +2611,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 116,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2738,7 +2623,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 117,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2751,7 +2635,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 118,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2764,7 +2647,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 119,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2777,7 +2659,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 120,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2785,19 +2666,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 121,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true
