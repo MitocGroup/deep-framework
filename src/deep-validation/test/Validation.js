@@ -6,6 +6,7 @@ import sinonChai from 'sinon-chai';
 import {Validation} from '../lib/Validation';
 import {ObjectToJoi} from '../lib/ObjectToJoi';
 import {RuntimeMock} from './Mock/RuntimeMock';
+import {Context} from '../node_modules/deep-core/lib.compiled/AWS/Lambda/Context';
 import {Exception} from '../lib/Exception/Exception';
 import {ValidationSchemaNotFoundException} from '../lib/Exception/ValidationSchemaNotFoundException';
 import {InvalidJoiSchemaException} from '../lib/Exception/InvalidJoiSchemaException';
@@ -232,8 +233,21 @@ suite('Validation', function() {
 
   test('Check validateRuntimeInput() sends ErrorResponse for none-exisiting schema',
     function() {
+      let inputObject = {
+        Configuration: 'test configuration',
+        Status: 0,
+      };
       let spyCallback = sinon.spy();
+      let context = new Context({
+        contextTest: 'Test',
+        fail: () => {
+          return this;
+        },
+      });
       let lambdaRuntime = new RuntimeMock(backendKernelInstance);
+
+      lambdaRuntime._request = {data: inputObject};
+      lambdaRuntime._context = context;
 
       let actualResult = validation.validateRuntimeInput(
         lambdaRuntime, 'none-exisiting schema name', spyCallback
@@ -241,6 +255,7 @@ suite('Validation', function() {
 
       chai.expect(actualResult).to.be.an.instanceOf(Validation);
       chai.expect(spyCallback).to.not.have.been.calledWith();
+      chai.expect(lambdaRuntime.contextSent).to.equal(true);
     }
   );
 
@@ -270,8 +285,15 @@ suite('Validation', function() {
         Status: '',
       };
       let spyCallback = sinon.spy();
+      let context = new Context({
+        contextTest: 'Test',
+        fail: () => {
+          return this;
+        },
+      });
       let lambdaRuntime = new RuntimeMock(backendKernelInstance);
       lambdaRuntime._request = {data: inputObject};
+      lambdaRuntime._context = context;
 
       let actualResult = validation.validateRuntimeInput(
         lambdaRuntime, modelName, spyCallback
@@ -279,7 +301,8 @@ suite('Validation', function() {
 
       chai.expect(actualResult).to.be.an.instanceOf(Validation);
       chai.expect(spyCallback).to.not.have.been.calledWith();
+      chai.expect(lambdaRuntime.contextSent).to.equal(true);
     }
   );
-  
+
 });
