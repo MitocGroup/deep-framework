@@ -181,11 +181,20 @@ export class RumSqsDriver extends AbstractDriver {
    * @private
    */
   _enrichWithContextData(message) {
-    message.context = this.kernel.isBackend ? 'Backend' : 'Frontend';
-    if (!message.requestId && this.kernel.isBackend) {
-      message.requestId = this.kernel.runtimeContext.awsRequestId;
+    if (this.kernel.isBackend) {
+      let runtimeContext = this.kernel.runtimeContext;
+
+      message.context = 'Backend';
+      message.requestId = runtimeContext.awsRequestId;
+      message.identityId = runtimeContext.identity.cognitoIdentityId;
+    } else {
+      message.context = 'Frontend';
+
+      let securityToken = this.kernel.get('security').token;
+      message.identityId = securityToken && securityToken.identityId ? securityToken.identityId : null;
     }
-    message.identityId = this.kernel.get('security').token.identityId;
+
+    message.durationMs = message.stopTime - message.startTime;
 
     return message;
   }
