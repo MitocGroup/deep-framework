@@ -87,22 +87,38 @@ export class Kernel {
    * @returns {Kernel}
    */
   loadFromFile(jsonFile, callback) {
+    let rumEvent = {
+      eventGroup: 'RequestResponseSegment',
+      eventName: 'DeepKernelBootstrap',
+      startTime: new Date().getTime(),
+    };
+
     // @todo: remove AWS changes the way the things run
-    // This is used because of AWS Lambda
-    // context sharing after a cold start
+    // This is used because of AWS Lambda context sharing after a cold start
     if (this._isLoaded) {
+      if (this.isBackend) {
+        rumEvent.eventName = 'DeepKernelLoadFromCache';
+        rumEvent.stopTime = new Date().getTime();
+        this.get('log').rumLog(rumEvent);
+      }
+
       callback(this);
       return this;
     }
 
     if (this.isBackend) {
-      FileSystem.readFile(jsonFile, 'utf8', function(error, data) {
+      FileSystem.readFile(jsonFile, 'utf8', (error, data) => {
         if (error) {
           throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);
         }
 
-        this.load(JSON.parse(data), callback);
-      }.bind(this));
+        this.load(JSON.parse(data), (kernel) => {
+          rumEvent.stopTime = new Date().getTime();
+          kernel.get('log').rumLog(rumEvent);
+
+          callback(kernel);
+        });
+      });
     } else { // @todo: get rid of native code...
       var client = new XMLHttpRequest();
 

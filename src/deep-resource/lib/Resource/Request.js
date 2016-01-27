@@ -327,7 +327,6 @@ export class Request {
         eventName: 'FullRequestResponse',
         serviceType: this.native ? 'Lambda' : 'ApiGateway',
         serviceName: this.native ? this.action.source.original : this.action.source.api,
-        context: this.action.resource.isBackend ? 'Backend' : 'Frontend',
         startTime: new Date().getTime(),
       };
 

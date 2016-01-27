@@ -81,7 +81,9 @@ export class RumSqsDriver extends AbstractDriver {
       return;
     }
 
-    // @todo - validate message object schema and add context related stuff (userId, requestId, sessionId, etc)
+    message = this._enrichWithContextData(message);
+
+    // @todo - validate message object schema based on eventGroup (RequestResponse, RequestResponseSegment)
     // @todo - check message size, max is 256 KB (262,144 bytes)
 
     if (this.kernel.isBackend) {
@@ -171,6 +173,21 @@ export class RumSqsDriver extends AbstractDriver {
    */
   _stringifyMessage(message) {
     return message && typeof message === 'object' ? JSON.stringify(message) : message;
+  }
+
+  /**
+   * @param {Object} message
+   * @returns {Object}
+   * @private
+   */
+  _enrichWithContextData(message) {
+    message.context = this.kernel.isBackend ? 'Backend' : 'Frontend';
+    if (!message.requestId && this.kernel.isBackend) {
+      message.requestId = this.kernel.runtimeContext.awsRequestId;
+    }
+    message.identityId = this.kernel.get('security').token.identityId;
+
+    return message;
   }
 
   /**
