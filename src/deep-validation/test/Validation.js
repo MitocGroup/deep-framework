@@ -6,7 +6,7 @@ import sinonChai from 'sinon-chai';
 import {Validation} from '../lib/Validation';
 import {ObjectToJoi} from '../lib/ObjectToJoi';
 import {RuntimeMock} from './Mock/RuntimeMock';
-import {Context} from '../node_modules/deep-core/lib.compiled/AWS/Lambda/Context'
+import {Context} from '../node_modules/deep-core/lib.compiled/AWS/Lambda/Context';
 import {Exception} from '../lib/Exception/Exception';
 import {ValidationSchemaNotFoundException} from '../lib/Exception/ValidationSchemaNotFoundException';
 import {InvalidJoiSchemaException} from '../lib/Exception/InvalidJoiSchemaException';
