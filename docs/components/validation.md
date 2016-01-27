@@ -126,7 +126,7 @@ Here's a sample validation schema:
 ```js
 'use strict';
 
-export default (Joi) => {
+module.exports = function(Joi) {
 	return Joi.object().keys({
 		Name: Joi.string().alphanum().min(2).max(255).required()
 	});
