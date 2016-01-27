@@ -1,37 +1,50 @@
 language: node_js
 sudo: false
+
 node_js:
   - '0.12'
   - '4.2'
+
 cache:
   directories:
     - $(npm root -g)
+    - mode_modules
+    - /tmp/.sinopia/storage
+
 branches:
   only:
     - master
     - stage
     - test
     - dev
+
 env:
   global:
     #JSPM_GITHUB_AUTH_TOKEN=[secured]
     - secure: dOXusGiSaTXZsouFbZpv9lSWnUb+iYSJdf7bcjqT5ihUMMHv8X2RDpiFxsL4n/ymEmkTGeMZY3bJhNdViD8S3mN8FMzTGexa/GCqVZvIu+iITI9rYq5XTPRUAP2AOxOa0yccPVr3eJLJ1dx6WA4vsmjpwliLIyJMBwmw4c/Z6CRHX7XNNTsJ60uGrs7LvP1K53avzTO0lRdF0eboOeiAPBM/u9KRRulsOs3v6ktZ3qPqNeMswk71bMafnKrzctl0tcFBk+XowlF6cCs3uRZ0Kj46jQnfXpaNravB2T0snpwFTFnqJqf+3Dux9L7vqhox22wc1vWoaSFqiEvtZ3fKrYwrJaf2Xdsprv9m0SNSCYzRBqrHOWzE9ZDnzY+Om9H6pSnQe1VBDRXkVO7Di1nN/ev4IOnhwizB1iN0dZnMMgvakg/icRhRNKvDIIKRHnjV0l4Mfz4dOi9t3NZhLFl+eUIuti6qbKpedLObUutfVaIK28P627UjCuos1TtZRxRsB0MJEFB6yaMruiIlU1LGksCbbGmQjpi5D8yA5EOWtf1Jtesh8AYn6PNJ6amcCC8KlBo4dKaDAIbjOcYgikoE4cFbcxFj0EZpfMLADcntaOzhvzDwkrNURAEZxja7iNtitLXYIqaKrto4EYAllGH2AhK8kPKnAGyhkgNTStj9Y94=
     #CODACY_PROJECT_TOKEN=[secured]
     - secure: uL+FsLuZMvKjeyJ0onwII8hFWuiY3eO9TUigvpz/dDaSrrRF82NBZS5aNJp5uemRPJRnAn03yeigY8qio19ZYYpuWS71/pzsF85cAfVo/BuXAQw8hOV4ZoralHur0dxicj7u4dMPp/Q09sVEdDxZKNpCbObhEyeQWuwcZYAqWE14WDJUKK6M1Rgb+OQNvF0q42KMz4a0sHPzCQxNjFJtbbOWvpJenwgGLmOv5MvMnyDqEyQdWTJdHAsNPdpf4q7Xu+IwZHTL8QKnXBxLAay7Zz1c21o2m7Bjvzhfg1jicz8XXmcUPhMapXbwKdgC9phg4VetawIUzG4kaJf1sVyhyTd+yaGf0/lQpKPOQH8oKq6L6hJj2ge7VXfGCICvXoiNQbLZBh5yGqv//lT6HjNTHg8TYSCSjMCYdaV+6Kcs4ayT+ainmEr5PIObN24uihkl6F1GCZUNhvoJY1luZ4rGjwdEvSMCX/6F5vjg6bNQd2REWM9NdJtS9LOfpsOK93Q7WhdwnM9JNUHMBsMXihPrq1nNlZ3hdxuRDEKEehRIy16xXBgp18yXvJn5AoPGHnVH81dX1CbQg7slQ6zuDlH8nUxBWzamZvvupwu3vrjC7Qf406ylUZQn4duR+55GdyQDHk5gskrXN8Hp8brJ3W+i0DfQOiFvOz89imJozhwcg54=
+
 before_install:
-  - npm install -g babel@5.8.19
-  - npm install -g browserify@11.2.0
-  - npm install -g mocha@2.3.4
-  - npm install -g istanbul@0.3.21
+  - if [ $(which sinopia > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g sinopia@1.4.0; fi # Add local NPM server
+  - npm set registry http://localhost:4873/ # Force npm using local registry
+  - npm set ca null # Avoid https issues
+  - sinopia --config .sinopia.yaml > /dev/null 2>&1 & # Start npm registry locally
+  - sleep 5 # Wait npm registry started
+  - if [ $(which babel-node > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g babel@5.8.19; fi
+  - if [ $(which browserify > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g browserify@11.2.0; fi
+  - if [ $(which mocha > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g mocha@2.3.4; fi
+  - if [ $(which istanbul > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g istanbul@0.3.21; fi
+  - if [ $(which isparta > /dev/null 2>&1; echo $?) == 1 ]; then npm install -g isparta@3.1.0; fi
   - npm install -g istanbul-combine@0.3.0
-  - npm install -g isparta@3.1.0
   - npm install -g codacy-coverage@1.1.3
-  - npm install -g src/deep-kernel
-  - npm install -g src/deep-core
-  - npm install -g src/deep-validation
-  - npm install -g src/deep-di
-  - npm install -g src/deep-cache
-  - npm install -g src/deep-security
+  - npm install -g src/deep-kernel --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-core --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-validation --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-di --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-cache --production --save --save-dev --save-optional --save-exact --link --no-bin-links
+  - npm install -g src/deep-security --production --save --save-dev --save-optional --save-exact --link --no-bin-links
   - cp test/package.json .
+
 after_success:
   - npm run coverage
