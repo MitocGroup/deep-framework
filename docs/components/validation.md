@@ -9,7 +9,7 @@ let app = DeepFramework.Kernel;
 let validation = app.get('validation');
 
 if (validation.hasSchema('User')) {
-    let model = validation.getSchema('User');
+    let schema = validation.getSchema('User');
 }
 
 validation.setSchema('User1', joiSchemaObject); // Joi object
