@@ -212,7 +212,15 @@ export class Dataset {
    * @constructor
    */
   static get DATA() {
+    let date = new Date();
+
+    // add a day
+    date.setDate(date.getDate() + 1);
+
     return {
+      expired: true,
+      expireTime: date,
+
       code: 200,
       data: {
         Payload: 'Dataset successful response',

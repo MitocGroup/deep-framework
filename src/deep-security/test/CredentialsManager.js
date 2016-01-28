@@ -177,7 +177,7 @@ suite('CredentialsManager', function() {
     let callbackArg = spyCallback.args[0];
 
     chai.expect(callbackArg[0]).to.equal(null);
-    chai.expect(callbackArg[1]).to.eql(Dataset.DATA);
+    chai.expect(callbackArg[1].code).to.eql(Dataset.DATA.code);
   });
 
   test('Check _synchronizeDataset() executes onConflict', function() {
@@ -269,7 +269,7 @@ suite('CredentialsManager', function() {
     let CredentialsManager = credentialsManagerExport.CredentialsManager;
     let credentialsManager = new CredentialsManager(identityPoolId);
 
-    //set failure mode
+    //set failure mode openOrCreateDataset
     credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']);
 
     credentialsManager.loadFrontendCredentials(spyCallback);
@@ -294,7 +294,7 @@ suite('CredentialsManager', function() {
     let CredentialsManager = credentialsManagerExport.CredentialsManager;
     let credentialsManager = new CredentialsManager(identityPoolId);
 
-    //set failure mode
+    //set failure in get mode
     credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_GET_DATASET, ['openOrCreateDataset']);
 
     credentialsManager.loadFrontendCredentials(spyCallback);
@@ -315,7 +315,7 @@ suite('CredentialsManager', function() {
     let CredentialsManager = credentialsManagerExport.CredentialsManager;
     let credentialsManager = new CredentialsManager(identityPoolId);
 
-    //set failure mode
+    //set data mode
     credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_GET_DATASET, ['openOrCreateDataset']);
 
     credentialsManager.loadFrontendCredentials(spyCallback);
@@ -323,7 +323,7 @@ suite('CredentialsManager', function() {
     let callbackArg = spyCallback.args[0];
 
     chai.expect(callbackArg[0]).to.equal(null);
-    chai.expect(callbackArg[1]).to.eql(Dataset.DATA);
+    chai.expect(callbackArg[1].code).to.eql(Dataset.DATA.code);
   });
 
   test('Check deleteCredentials()', function() {
