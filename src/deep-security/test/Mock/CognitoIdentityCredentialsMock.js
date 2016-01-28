@@ -49,6 +49,13 @@ export class CognitoIdentityCredentialsMock {
   }
 
   /**
+   * @returns {CognitoIdentityCredentialsMock}
+   */
+  clearCachedId() {
+    return this;
+  }
+
+  /**
    * Set mode for passed methods
    * @param {Number} mode
    * @param {String[]} methods

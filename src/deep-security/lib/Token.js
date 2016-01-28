@@ -103,10 +103,12 @@ export class Token {
    */
   _backendLoadCredentials(callback) {
     if (!this.lambdaContext) {
+      console.log('no lambdaContext: ')
       throw new Exception('Call to _backendLoadCredentials method is not allowed from frontend context.');
     }
 
     this._credsManager.loadBackendCredentials(this.identityId, (error, credentials) => {
+      console.log('in cb err: ', error)
       if (error) {
         callback(error, null);
         return;
