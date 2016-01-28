@@ -13,6 +13,7 @@ import {Injectable as MicroserviceInjectable} from './Microservice/Injectable';
 import {ContainerAware} from './ContainerAware';
 import FileSystem from 'fs';
 import WaitUntil from 'wait-until';
+import util from 'util';
 
 /**
  * Deep application kernel
@@ -120,8 +121,10 @@ export class Kernel {
           kernel.get('log').rumLog(rumEvent);
 
           // log event 'stop' time
-          rumEvent.time = new Date().getTime();
-          rumEvent.payload = kernel.config;
+          rumEvent = util._extend(rumEvent, {
+            time: new Date().getTime(),
+            payload: kernel.config,
+          });
           kernel.get('log').rumLog(rumEvent);
 
           callback(kernel);

@@ -337,7 +337,15 @@ export class Request {
 
       this._send((response) => {
         // change only the event payload all the rest remains unchanged
-        rumEvent.payload = response;
+        // @todo - implement _toString() method into response class
+        rumEvent = util._extend(rumEvent, {
+          payload: {
+            statusCode: response.statusCode,
+            data: response.data,
+            error: response.error,
+            headers: response.headers,
+          }
+        });
 
         logService.rumLog(rumEvent);
 

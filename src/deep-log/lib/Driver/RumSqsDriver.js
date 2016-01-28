@@ -181,8 +181,11 @@ export class RumSqsDriver extends AbstractDriver {
    * @private
    */
   _enrichWithContextData(message) {
-    message.eventLevel = "Frontend";
-    message.time = message.time || new Date().getTime();
+    message.eventLevel = "Framework"; // 'UI' ?
+
+    if (!message.hasOwnProperty('time')) {
+      message.time = new Date().getTime();
+    }
 
     if (this.kernel.isBackend) {
       let runtimeContext = this.kernel.runtimeContext;
