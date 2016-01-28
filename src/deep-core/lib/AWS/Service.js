@@ -128,6 +128,13 @@ export class Service {
   }
 
   /**
+   * @returns {String}
+   */
+  static get CERTIFICATE_MANAGER() {
+    return 'acm';
+  }
+
+  /**
    * @param {String} service
    * @returns {String}
    */
@@ -165,6 +172,7 @@ export class Service {
       Service.API_GATEWAY_EXECUTE,
       Service.CLOUD_SEARCH,
       Service.SIMPLE_QUEUE_SERVICE,
+      Service.CERTIFICATE_MANAGER,
     ];
   }
 }
