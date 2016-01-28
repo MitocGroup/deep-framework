@@ -44,8 +44,13 @@ export class Response {
       throw new ContextAlreadySentException();
     }
 
-    this.runtime.rumLambdaRunEvent.stopTime = new Date().getTime();
-    this.runtime.logService.rumLog(this.runtime.rumLambdaRunEvent);
+    this.runtime.logService.rumLog({
+      "service": "deep-core",
+      "resourceType": "Lambda",
+      "resourceId": this.runtime.context.invokedFunctionArn,
+      "eventName": 'Run',
+      "payload": this.data,
+    });
 
     // flush RUM batched messages if any
     this.runtime.logService.rumFlush((error, data) => {

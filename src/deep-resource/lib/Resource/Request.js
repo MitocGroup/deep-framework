@@ -322,20 +322,24 @@ export class Request {
         return;
       }
 
-      let requestEvent = {
-        eventGroup: 'RequestResponse',
-        eventName: 'FullRequestResponse',
-        serviceType: this.native ? 'Lambda' : 'ApiGateway',
-        serviceName: this.native ? this.action.source.original : this.action.source.api,
-        startTime: new Date().getTime(),
+      let logService = this.action.resource.log;
+
+      let rumEvent = {
+        "service": "deep-resource",
+        "resourceType": "Browser",
+        "resourceId": this.native ? this.action.source.original : this.action.source.api,
+        "eventName": this.method,
+        "eventId": Request._md5(this._buildCacheKey() + new Date().getTime()),
+        "payload": this.payload,
       };
 
-      this._send((response) => {
-        requestEvent.stopTime = new Date().getTime();
-        requestEvent.requestId = response.requestId;
-        requestEvent.statusCode = response.statusCode;
+      logService.rumLog(rumEvent);
 
-        this.action.resource.log.rumLog(requestEvent);
+      this._send((response) => {
+        // change only the event payload all the rest remains unchanged
+        rumEvent.payload = response;
+
+        logService.rumLog(rumEvent);
 
         if (!response.isError) {
           cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {

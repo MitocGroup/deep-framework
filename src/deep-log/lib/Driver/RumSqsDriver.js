@@ -83,7 +83,7 @@ export class RumSqsDriver extends AbstractDriver {
 
     message = this._enrichWithContextData(message);
 
-    // @todo - validate message object schema based on eventGroup (RequestResponse, RequestResponseSegment)
+    // @todo - create instance of event and validate it based on eventLevel (Frontend / UI)
     // @todo - check message size, max is 256 KB (262,144 bytes)
 
     if (this.kernel.isBackend) {
@@ -181,20 +181,30 @@ export class RumSqsDriver extends AbstractDriver {
    * @private
    */
   _enrichWithContextData(message) {
+    message.eventLevel = "Frontend";
+    message.time = message.time || new Date().getTime();
+
     if (this.kernel.isBackend) {
       let runtimeContext = this.kernel.runtimeContext;
 
       message.context = 'Backend';
+      message.memoryUsage = process.memoryUsage();
+      message.environment = {}; // @todo - find a way to get Lambda container info (id, OS, etc)
+
       message.requestId = runtimeContext.awsRequestId;
       message.identityId = runtimeContext.identity.cognitoIdentityId;
     } else {
       message.context = 'Frontend';
+      message.memoryUsage = window.performance && window.performance.memory ? window.performance.memory : {};
+      message.environment = {
+        userAgent: navigator ? navigator.userAgent : "",
+      };
 
       let securityToken = this.kernel.get('security').token;
       message.identityId = securityToken && securityToken.identityId ? securityToken.identityId : null;
     }
 
-    message.durationMs = message.stopTime - message.startTime;
+    message.metadata = message.metadata || {};
 
     return message;
   }
