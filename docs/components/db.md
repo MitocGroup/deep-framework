@@ -98,7 +98,7 @@ See [deep-validation](validation.md#models-anatomy) `Models Anatomy` section
 Migration Example
 ----------------
 
-> Migration file have to match the regexp: `/^version(\d+)$/i`
+> Migration file have to match {`/^version(\d+)$/i`}.js
 
 ```javascript
 var NAME_DATA = [
@@ -133,6 +133,9 @@ module.exports = {
 		});
 
 		wait.ready(cb);
+	},
+	down: function(db, cb) { // OPTIONAL
+	  // TBD
 	},
 };
 ```
