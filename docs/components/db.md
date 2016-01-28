@@ -98,6 +98,8 @@ See [deep-validation](validation.md#models-anatomy) `Models Anatomy` section
 Migration Example
 ----------------
 
+> Migration file have to match the regexp: `/^version(\d+)$/i`
+
 ```javascript
 var NAME_DATA = [
 			{Name: 'Eugene'},
