@@ -19,6 +19,7 @@ import {Exception as ExceptionException} from './Exception/Exception';
 import {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';
 import {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';
 import {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';
+import {Sandbox as RuntimeSandbox} from './Runtime/Sandbox';
 
 let exports = module.exports = {
   IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,
@@ -27,6 +28,9 @@ let exports = module.exports = {
     InvalidArgumentException: ExceptionInvalidArgumentException,
     MethodsNotImplementedException: ExceptionMethodsNotImplementedException,
     DatabaseOperationException: ExceptionDatabaseOperationException,
+  },
+  Runtime: {
+    Sandbox: RuntimeSandbox,
   },
   OOP: {
     Interface: OOPInterface,
