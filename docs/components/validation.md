@@ -8,53 +8,62 @@ Examples
 let app = DeepFramework.Kernel;
 let validation = app.get('validation');
 
-if (validation.hasSchema('User')) {
-    let model = validation.getSchema('User');
+// Check if we have the 'User' validation schema registered
+if (!validation.hasSchema('User')) {
+
+    // Register a schema object (in fact a Joi validation object)
+    // @see [Validation Schema Anatomy](validation.md#validation-schema-anatomy)
+    validation.setSchema('User', joiSchemaObject);
+    
+    // Register a raw schema object
+    // @see [Models Anatomy](validation.md#models-anatomy)
+    //validation.setSchemaRaw('User', modelAlikeSchemaObject);
 }
 
-validation.setSchema('User1', joiSchemaObject); // Joi object
-validation.setSchemaRaw('User2', modelAlikeSchemaObject);
+// Validating input data
+let validatedUserObject = validation.validate('User', {/* your input data */});
 
-let validatedUserObject = validation.validate('User1', {...});
-
-// how to use it in your backend handler
+// How to use it in your backend handler
 handle(request) {
   
-  // validate Lambda input using model 'Name' validation schema
-  this.validateInput('Name', (modelData) => {
+  // Validate Lambda input using model 'User' validation schema
+  // When the validation fails an error response is sent back automatically
+  this.validateInput('User', (modelData) => {
   
-    // get deep-db model 'Name'
-    let model = this.kernel.get('db').model('Name');
+    // Get deep-db model 'User'
+    let model = this.kernel.get('db').model('User');
     
-    // Persist a new 'Name' item
-    model.create(modelData, function (err, user) {
+    // Persist a new 'User' item
+    model.create(modelData, function (error, user) {
       // ...
     });
   });
 }
 
-// ... or even define a schema name in your handler
+// ... or even define a schema name/object in your handler
 class Handler {
 
  handle(modelData) {
  
-  // get deep-db model 'Name'
-  let model = this.kernel.get('db').model('Name');
+  // get deep-db model 'User'
+  let model = this.kernel.get('db').model('User');
   
-  // Persist a new 'Name' item
-  model.create(modelData, function (err, user) {
+  // Persist a new 'User' item
+  model.create(modelData, function (error, user) {
     // ...
   });
  }
  
+ // This is the method the validation schema is read from
+ // It overwrites the default getter from Runtime
  get validationSchema() {
-  return 'Name';
+  return 'User';
   
   // ... or a Joi object
   // return Joi.object().keys({...});
   
   // ... or a model like object
-  // return {'Name': 'string'};
+  // return {'FirstName': 'string', 'LastName': 'string'};
   
   // ... or even a callback that returns both Joi or a mode like object
   // return (Joi) => {
@@ -126,7 +135,7 @@ Here's a sample validation schema:
 ```js
 'use strict';
 
-export default (Joi) => {
+module.exports = function(Joi) {
 	return Joi.object().keys({
 		Name: Joi.string().alphanum().min(2).max(255).required()
 	});

@@ -27,7 +27,9 @@ suite('Registry', function() {
         if (payload.IfModifiedSince &&
           val.m.getTime() <= payload.IfModifiedSince.getTime()) {
 
-          cb(null, null);
+          cb({
+            code: 'NotModified',
+          }, null);
           return;
         }
 
@@ -36,7 +38,7 @@ suite('Registry', function() {
       }
 
       let error = new Error('Key not found');
-      error.code = 'NotFound';
+      error.code = 'NoSuchKey';
 
       cb(error, null);
     },
