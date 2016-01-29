@@ -13,6 +13,7 @@ import {Service as AWSService} from './AWS/Service';
 import {Policy as AWSIAMPolicy} from './AWS/IAM/Policy';
 import {Factory as AWSIAMFactory} from './AWS/IAM/Factory';
 import {ObjectStorage as GenericObjectStorage} from './Generic/ObjectStorage';
+import {UniversalRequire as GenericUniversalRequire} from './Generic/UniversalRequire';
 import {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';
 import {MethodsProxy as GenericMethodsProxy} from './Generic/MethodsProxy';
 import {Exception as ExceptionException} from './Exception/Exception';
@@ -39,6 +40,7 @@ let exports = module.exports = {
     ObjectStorage: GenericObjectStorage,
     ObjectVector: GenericObjectVector,
     MethodsProxy: GenericMethodsProxy,
+    UniversalRequire: GenericUniversalRequire,
   },
   AWS: {
     Region: AWSRegion,

@@ -138,15 +138,6 @@ export class Runtime extends Interface {
 
     if (typeof validationSchema !== 'string') {
       validationSchemaName = this._injectValidationSchema(validationSchema);
-    } else if (!validation.hasSchema(validationSchemaName)) {
-
-      // assume process.cwd() === /var/task
-      let schemasPath = path.join(process.cwd(), Runtime.VALIDATION_SCHEMAS_DIR);
-      let schemaFile = path.join(schemasPath, `${validationSchemaName}.js`);
-
-      if (fs.existsSync(schemaFile)) {
-        this._injectValidationSchema(require(schemaFile), validationSchemaName);
-      }
     }
 
     this.validateInput(validationSchemaName, this.handle);
@@ -161,15 +152,9 @@ export class Runtime extends Interface {
   _injectValidationSchema(schema, name = null) {
     let validation = this._kernel.get('validation');
 
-    if (typeof schema === 'function') {
-      schema = validation.schemaFromValidationCb(schema);
-    }
-
-    let setSchemaMethod = schema.isJoi ? 'setSchema' : 'setSchemaRaw';
-
     name = name || `DeepHandlerValidation_${new Date().getTime()}`;
 
-    validation[setSchemaMethod](name, schema);
+    validation.setGuessSchema(name, schema);
 
     return name;
   }
