@@ -5,6 +5,7 @@
 'use strict';
 
 import UndefinedMethodException from './Exceptions/UndefinedMethodException';
+import util from 'util';
 
 /**
  * Extends standard Vogels models
@@ -102,19 +103,37 @@ export class ExtendModel {
 
     return {
       findAll: function(cb) {
-        return _this.model.scan().loadAll().exec(cb);
+        _this._logRumEvent({ eventName: 'findAll' });
+
+        return _this.model.scan().loadAll().exec((error, model) => {
+          _this._extendedCallback('findAll', error, model, cb);
+        });
       },
 
       findAllPaginated: function(startKey, limit, cb) {
+        _this._logRumEvent({
+          eventName: 'findAllPaginated',
+          payload: {startKey, limit},
+        });
+
         return _this.model
           .scan()
           .startKey(startKey)
           .limit(limit)
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findAllPaginated', error, model, cb);
+          });
       },
 
       findOneById: function(id, cb) {
-        return _this.model.get(id, cb);
+        _this._logRumEvent({
+          eventName: 'findOneById',
+          payload: {id},
+        });
+
+        return _this.model.get(id, (error, model) => {
+          _this._extendedCallback('findOneById', error, model, cb);
+        });
       },
 
       findOneBy: function(fieldName, value, cb) {
@@ -286,5 +305,45 @@ export class ExtendModel {
     }
 
     return this._model;
+  }
+
+  /**
+   * @param {Object} customData
+   * @returns {ExtendModel}
+   * @private
+   */
+  _logRumEvent(customData) {
+    if (!this.logService) {
+      return false;
+    }
+
+    let event = util._extend(customData, {
+      "service": "deep-db",
+      "resourceType": "DynamoDB",
+      "resourceId": this.model.tableName,
+    });
+
+    this.logService.rumLog(event);
+
+    return this;
+  }
+
+  /**
+   * @param {String} methodName
+   * @param {Object} error
+   * @param {Object} model
+   * @param {Function} cb
+   * @private
+   */
+  _extendedCallback(methodName, error, model, cb) {
+    this._logRumEvent({
+      eventName: methodName,
+      payload: {
+        error: error,
+        data: model ? model.get() : null,
+      }
+    });
+
+    cb(error, model);
   }
 }
