@@ -78,7 +78,9 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set data mode
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE, ['openOrCreateDataset']);
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE, ['openOrCreateDataset']
+    );
 
     credentialsManager._createOrGetDataset(spyCallback);
 
@@ -92,7 +94,9 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set failure mode
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']);
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
+    );
 
     credentialsManager._createOrGetDataset(spyCallback);
 
@@ -110,7 +114,9 @@ suite('CredentialsManager', function() {
     let spyCallback = sinon.spy();
 
     //set failure mode
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']);
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
+    );
 
     credentialsManager.saveCredentials(credentials, spyCallback);
 
@@ -185,7 +191,9 @@ suite('CredentialsManager', function() {
     let spyCallbackOnConflict = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_CONFLICT_MODE, ['synchronize'], spyCallbackOnConflict);
+    let dataset = new Dataset(
+      Dataset.SYNCRONIZE_CONFLICT_MODE, ['synchronize'], spyCallbackOnConflict
+    );
 
     credentialsManager._synchronizeDataset(dataset, spyCallbackSynchronize);
 
@@ -197,7 +205,9 @@ suite('CredentialsManager', function() {
     let spyCallbackOnDatasetDeleted = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_DELETED_MODE, ['synchronize'], spyCallbackOnDatasetDeleted);
+    let dataset = new Dataset(
+      Dataset.SYNCRONIZE_DATASET_DELETED_MODE, ['synchronize'], spyCallbackOnDatasetDeleted
+    );
 
     credentialsManager._synchronizeDataset(dataset, spyCallbackSynchronize);
 
@@ -209,7 +219,9 @@ suite('CredentialsManager', function() {
     let spyCallbackOnDatasetMerged = sinon.spy();
 
     //set modes
-    let dataset = new Dataset(Dataset.SYNCRONIZE_DATASET_MERGED_MODE, ['synchronize'], spyCallbackOnDatasetMerged);
+    let dataset = new Dataset(
+      Dataset.SYNCRONIZE_DATASET_MERGED_MODE, ['synchronize'], spyCallbackOnDatasetMerged
+    );
 
     credentialsManager._synchronizeDataset(dataset, spyCallbackSynchronize);
 
