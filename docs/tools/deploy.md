@@ -35,6 +35,7 @@ Example of `deeploy.json`
       },
   },
   "env": "dev",
+  "domain": "example.com", // Read when running `deepify enable-ssl path/to/web_app`
   "awsAccountId": 999999999999,
   "appIdentifier": "deep_platform_dev",
   "aws": { // native AWS config injected into aws-sdk library

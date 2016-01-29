@@ -82,3 +82,21 @@ or downloaded from specified S3 bucket.
 ```
 
 For more details read [documentation](tools/deps.md)
+
+Enabling/Disabling SSL certificate on a deployed web app
+-------------------------------------------------------
+
+In order to enable SSL certificate on a deployed web app use `deepify enable-ssl` command.
+It uses `CertificateManager` to generate the certificate and assigns 
+the certificate to the existing `CloudFront` distribution.
+
+```bash
+~#: deepify enable-ssl path/to/web_app --domain='example.com'
+```
+
+```bash
+~#: deepify disable-ssl path/to/web_app --domain='example.com'
+```
+
+> Note that you'll have to activate the certificate manually before
+> `deepify` could activate it and assign to the `CloudFront` distribution
