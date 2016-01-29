@@ -140,7 +140,9 @@ export class Runtime extends Interface {
       validationSchemaName = this._injectValidationSchema(validationSchema);
     }
 
-    this.validateInput(validationSchemaName, this.handle);
+    this.validateInput(validationSchemaName, (validatedData) => {
+      this.handle(validatedData);
+    });
   }
 
   /**
