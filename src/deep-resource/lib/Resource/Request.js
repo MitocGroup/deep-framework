@@ -339,7 +339,7 @@ export class Request {
       this._send((response) => {
         // change only the event payload all the rest remains unchanged
         let event = util._extend({}, rumEvent);
-        event.payload = Request._stringifyResponse(response);
+        event.payload = response;
         event.requestId = response.requestId;
         event.time = new Date().getTime();
 

@@ -227,7 +227,14 @@ export class ExtendModel {
       },
 
       createItem: function(data, cb) {
-        return _this.model.create(data, cb);
+        _this._logRumEvent({
+          eventName: 'createItem',
+          payload: data,
+        });
+
+        return _this.model.create(data, (error, model) => {
+          _this._extendedCallback('createItem', error, model, cb);
+        });
       },
 
       createUniqueOnFields: function(fields, data, cb) {
@@ -309,7 +316,7 @@ export class ExtendModel {
 
   /**
    * @param {Object} customData
-   * @returns {ExtendModel}
+   * @returns {Boolean}
    * @private
    */
   _logRumEvent(customData) {
@@ -325,7 +332,7 @@ export class ExtendModel {
 
     this.logService.rumLog(event);
 
-    return this;
+    return true;
   }
 
   /**
@@ -336,11 +343,16 @@ export class ExtendModel {
    * @private
    */
   _extendedCallback(methodName, error, model, cb) {
+    let data = null;
+    if (model) {
+      data = model.Items ? model.Items : model.get();
+    }
+
     this._logRumEvent({
       eventName: methodName,
       payload: {
         error: error,
-        data: model ? model.get() : null,
+        data: data,
       }
     });
 

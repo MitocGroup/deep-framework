@@ -117,4 +117,17 @@ export class Response {
       ? rawError
       : new Error(rawError.toString());
   }
+
+  /**
+   * @returns {{requestId: String, statusCode: Number, headers: (Object|null), data: Object, error: Error}}
+   */
+  toJSON() {
+    return {
+      requestId: this.requestId,
+      statusCode: this.statusCode,
+      headers: this.headers,
+      data: this.data,
+      error: this.error,
+    }
+  }
 }
