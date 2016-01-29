@@ -15,6 +15,22 @@ export class ExtendModel {
    */
   constructor(model) {
     this._model = model;
+
+    this._logService = null;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get logService() {
+    return this._logService;
+  }
+
+  /**
+   * @param {Object} logService
+   */
+  set logService(logService) {
+    this._logService = logService;
   }
 
   /**
