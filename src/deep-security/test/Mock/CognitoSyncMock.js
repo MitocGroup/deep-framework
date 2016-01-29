@@ -123,12 +123,16 @@ export class CognitoSyncMock {
       code: 200,
       Records: [
         {
-          Key: 'session_creds',
+          Key: 'session_creds_unmatch',
           Value: '{"token":"test2_session_creds"}',
         },
         {
           Key: 'session_creds',
           Value: '{"token":"test_session_creds"}',
+        },
+        {
+          Key: 'session_creds_invalid',
+          Value: '{"token":"test2_session_creds"}',
         },
       ],
     };
