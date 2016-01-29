@@ -321,7 +321,9 @@ suite('Token', function() {
     let token = new Token(identityPoolId);
 
     //set failure mode openOrCreateDataset
-    token._credsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']);
+    token._credsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
+    );
 
     token.loadCredentials(spyCallback);
 
@@ -463,7 +465,9 @@ suite('Token', function() {
     let Token = tokenExport.Token;
     let token = new Token(identityPoolId);
     token.identityProvider = identityProvider;
-    token._credsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_GET_DATASET, ['openOrCreateDataset']);
+    token._credsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_GET_DATASET, ['openOrCreateDataset']
+    );
     token._frontendLoadCredentials(spyCallback);
 
     let cbArgs = spyCallback.args[0];

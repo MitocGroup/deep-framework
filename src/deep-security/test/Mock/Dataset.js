@@ -11,7 +11,7 @@ export class Dataset {
    * @param {String[]}methods
    * @param {Function} callback
    */
-  constructor(mode = Dataset.NO_RESULT_MODE, methods = Dataset.METHODS, callback) {
+  constructor(mode = Dataset.NO_RESULT_MODE, methods = Dataset.METHODS, callback = () => {}) {
     this._methodsBehavior = new Map();
 
     //set data mode as initial values

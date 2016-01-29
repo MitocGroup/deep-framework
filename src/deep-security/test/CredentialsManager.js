@@ -259,30 +259,34 @@ suite('CredentialsManager', function() {
     chai.expect(spyCallback.args[0][1]).to.eql(expectedResult);
   });
 
-  test('Check loadFrontendCredentials executes with error in _createOrGetDataset()', function() {
-    let spyCallback = sinon.spy();
+  test('Check loadFrontendCredentials executes with error in _createOrGetDataset()',
+    function() {
+      let spyCallback = sinon.spy();
 
-    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
-      'aws-sdk': cognitoSyncClient,
-    });
+      let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
+        'aws-sdk': cognitoSyncClient,
+      });
 
-    let CredentialsManager = credentialsManagerExport.CredentialsManager;
-    let credentialsManager = new CredentialsManager(identityPoolId);
+      let CredentialsManager = credentialsManagerExport.CredentialsManager;
+      let credentialsManager = new CredentialsManager(identityPoolId);
 
-    //set failure mode openOrCreateDataset
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']);
+      //set failure mode openOrCreateDataset
+      credentialsManager.cognitoSyncClient.setMode(
+        CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
+      );
 
-    credentialsManager.loadFrontendCredentials(spyCallback);
+      credentialsManager.loadFrontendCredentials(spyCallback);
 
-    let callbackArg = spyCallback.args[0];
+      let callbackArg = spyCallback.args[0];
 
-    chai.assert.instanceOf(
-      callbackArg[0],
-      CreateCognitoDatasetException,
-      'callback error argument is an instance of CreateCognitoDatasetException'
-    );
-    chai.expect(callbackArg[1]).to.equal(null);
-  });
+      chai.assert.instanceOf(
+        callbackArg[0],
+        CreateCognitoDatasetException,
+        'callback error argument is an instance of CreateCognitoDatasetException'
+      );
+      chai.expect(callbackArg[1]).to.equal(null);
+    }
+  );
 
   test('Check loadFrontendCredentials executes with error in dataset.get()', function() {
     let spyCallback = sinon.spy();
@@ -295,7 +299,9 @@ suite('CredentialsManager', function() {
     let credentialsManager = new CredentialsManager(identityPoolId);
 
     //set failure in get mode
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_GET_DATASET, ['openOrCreateDataset']);
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_GET_DATASET, ['openOrCreateDataset']
+    );
 
     credentialsManager.loadFrontendCredentials(spyCallback);
 
@@ -316,7 +322,9 @@ suite('CredentialsManager', function() {
     let credentialsManager = new CredentialsManager(identityPoolId);
 
     //set data mode
-    credentialsManager.cognitoSyncClient.setMode(CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_GET_DATASET, ['openOrCreateDataset']);
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE_WITH_DATA_IN_GET_DATASET, ['openOrCreateDataset']
+    );
 
     credentialsManager.loadFrontendCredentials(spyCallback);
 
@@ -327,12 +335,9 @@ suite('CredentialsManager', function() {
   });
 
   test('Check deleteCredentials()', function() {
-    let spyCallback = sinon.spy();
-
     let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
       'aws-sdk': cognitoSyncClient,
     });
-
     let CredentialsManager = credentialsManagerExport.CredentialsManager;
     let credentialsManager = new CredentialsManager(identityPoolId);
 
