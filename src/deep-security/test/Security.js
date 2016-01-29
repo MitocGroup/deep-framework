@@ -115,26 +115,6 @@ suite('Security', function () {
     chai.expect(actualResult._userProvider).to.eql(userProvider);
   });
 
-  // @todo - check why it fails
-  //test('Check login() method returns valid instance of Token for !localBackend', function() {
-  //  let providerName = 'www.amazon.com';
-  //  let identityMetadata = {
-  //    access_token: 'test_userToken',
-  //    tokenExpirationTime: new Date(),
-  //    user_id: 'test_userId',
-  //  };
-  //  let spyCallback = sinon.spy();
-  //
-  //  securityBackend.localBackend = false;
-  //  securityBackend._userProvider = userProvider;
-  //
-  //  let actualResult = securityBackend.login(providerName, identityMetadata, spyCallback);
-  //
-  //  chai.assert.instanceOf(actualResult, Token, 'actualResult is an instance of Token');
-  //  chai.assert.instanceOf(securityBackend.token, Token, 'token is an instance of Token');
-  //  chai.expect(actualResult._userProvider).to.eql(userProvider);
-  //});
-
   test('Check login() method returns valid instance of LocalToken for localBackend', function() {
     let providerName = 'www.amazon.com';
     let identityMetadata = {
@@ -166,19 +146,6 @@ suite('Security', function () {
     chai.expect(actualResult._userProvider).to.eql(userProvider);
   });
 
-  // @todo - adjust this case to new changes
-  //test('Check anonymousLogin() returns valid instance of Token for !localBackend', function() {
-  //  let spyCallback = sinon.spy();
-  //  securityBackend._userProvider = userProvider;
-  //  securityBackend.localBackend = false;
-  //
-  //  let actualResult = securityBackend.anonymousLogin(spyCallback);
-  //
-  //  chai.assert.instanceOf(actualResult, Token, 'actualResult is an instance of Token');
-  //  chai.assert.instanceOf(securityBackend.token, Token, 'token is an instance of Token');
-  //  chai.expect(actualResult._userProvider).to.eql(userProvider);
-  //});
-
   test('Check boot() method for backend boots security data and runs callback', function () {
     let spyBackendCallback = sinon.spy();
 
@@ -199,5 +166,13 @@ suite('Security', function () {
     chai.expect(securityFrontend.identityPoolId).to.be.equal(identityPoolId);
     chai.expect(securityFrontend._identityProviders).to.be.eql(identityProviders);
     chai.expect(securityFrontend._userProviderEndpoint).to.be.equal(userProviderEndpoint);
+  });
+
+  test('Check logout()', function () {
+    let actualResult = securityBackend.logout();
+
+    chai.expect(securityBackend.token).to.equal(null);
+
+    chai.assert.instanceOf(actualResult, Security, 'actualResult is an instance of Security');
   });
 });

@@ -133,7 +133,7 @@ export class Registry {
     this._readS3Object(
       this._registryFile,
       (error, rawRegistry, lastModified) => {
-        if (error && error.code !== 'NotFound') {
+        if (error && error.code !== 'NoSuchKey') {
           cb(error);
           return;
         }
@@ -241,6 +241,13 @@ export class Registry {
 
     this._s3.getObject(payload, (error, data) => {
       if (error) {
+
+        // when the object is not modified
+        if (lastModified && error.code === 'NotModified') {
+          cb(null, null, null);
+          return;
+        }
+
         cb(error, null, null);
         return;
       }
@@ -250,7 +257,10 @@ export class Registry {
 
       if (data && data.Body) {
         result = data.Body.toString();
-        resultLastModified = data.LastModified;
+
+        resultLastModified = typeof data.LastModified === 'string' ?
+          new Date(data.LastModified) :
+          data.LastModified;
       }
 
       cb(null, result, resultLastModified);
