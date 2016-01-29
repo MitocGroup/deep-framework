@@ -121,11 +121,9 @@ export class Kernel {
           kernel.get('log').rumLog(rumEvent);
 
           // log event 'stop' time
-          rumEvent = util._extend(rumEvent, {
-            time: new Date().getTime(),
-            payload: kernel.config,
-          });
-          kernel.get('log').rumLog(rumEvent);
+          let event = util._extend(rumEvent, { payload: kernel.config });
+          event.time = new Date().getTime();
+          kernel.get('log').rumLog(event);
 
           callback(kernel);
         });

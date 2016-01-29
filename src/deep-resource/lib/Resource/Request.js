@@ -218,6 +218,7 @@ export class Request {
       _class: response.constructor.name,
       data: response.rawData,
       error: response.rawError,
+      headers: response.headers,
     });
   }
 
@@ -337,17 +338,11 @@ export class Request {
 
       this._send((response) => {
         // change only the event payload all the rest remains unchanged
-        // @todo - implement _toString() method into response class
-        rumEvent = util._extend(rumEvent, {
-          payload: {
-            statusCode: response.statusCode,
-            data: response.data,
-            error: response.error,
-            headers: response.headers,
-          }
+        let event = util._extend(rumEvent, {
+          payload: Request._stringifyResponse(response)
         });
 
-        logService.rumLog(rumEvent);
+        logService.rumLog(event);
 
         if (!response.isError) {
           cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
