@@ -121,39 +121,72 @@ export class ExtendModel {
       },
 
       findOneBy: function(fieldName, value, cb) {
+        _this._logRumEvent({
+          eventName: 'findOneBy',
+          payload: {fieldName, value},
+        });
+
         return _this.model
           .scan()
           .where(fieldName).equals(value)
           .limit(1)
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findOneBy', error, model, cb);
+          });
       },
 
       findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {
+        _this._logRumEvent({
+          eventName: 'findBy',
+          payload: {fieldName, value, limit},
+        });
+
         return _this.model
           .scan()
           .where(fieldName).equals(value)
           .limit(limit)
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findBy', error, model, cb);
+          });
       },
 
       findAllBy: function(fieldName, value, cb) {
+        _this._logRumEvent({
+          eventName: 'findAllBy',
+          payload: {fieldName, value},
+        });
+
         return _this.model
           .scan()
           .where(fieldName).equals(value)
           .loadAll()
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findAllBy', error, model, cb);
+          });
       },
 
       findAllByPaginated: function(fieldName, value, startKey, limit, cb) {
+        _this._logRumEvent({
+          eventName: 'findAllByPaginated',
+          payload: {fieldName, value, startKey, limit},
+        });
+
         return _this.model
           .scan()
           .where(fieldName).equals(value)
           .startKey(startKey)
           .limit(limit)
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findAllByPaginated', error, model, cb);
+          });
       },
 
       findMatching: function(params, cb, limit = ExtendModel.DEFAULT_LIMIT) {
+        _this._logRumEvent({
+          eventName: 'findMatching',
+          payload: {params, limit},
+        });
+
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
@@ -162,10 +195,17 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .limit(limit)
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findMatching', error, model, cb);
+          });
       },
 
       findOneMatching: function(params, cb) {
+        _this._logRumEvent({
+          eventName: 'findOneMatching',
+          payload: {params},
+        });
+
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
@@ -174,10 +214,17 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .limit(1)
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findMatching', error, model, cb);
+          });
       },
 
       findAllMatching: function(params, cb) {
+        _this._logRumEvent({
+          eventName: 'findAllMatching',
+          payload: {params},
+        });
+
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
@@ -186,10 +233,17 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .loadAll()
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findAllMatching', error, model, cb);
+          });
       },
 
       findAllMatchingPaginated: function(params, startKey, limit, cb) {
+        _this._logRumEvent({
+          eventName: 'findAllMatchingPaginated',
+          payload: {params, startKey, limit},
+        });
+
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
@@ -199,21 +253,37 @@ export class ExtendModel {
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .startKey(startKey)
           .limit(limit)
-          .exec(cb);
+          .exec((error, model) => {
+            _this._extendedCallback('findAllMatchingPaginated', error, model, cb);
+          });
       },
 
       deleteById: function(id, cb) {
-        return _this.model.destroy(id, cb);
+        _this._logRumEvent({
+          eventName: 'deleteById',
+          payload: {id},
+        });
+
+        return _this.model.destroy(id, (error, model) => {
+          _this._extendedCallback('deleteById', error, model, cb);
+        });
       },
 
       deleteByIdConditional: function(id, condition, cb) {
-        return _this.model.destroy(id, condition, cb);
+        _this._logRumEvent({
+          eventName: 'deleteByIdConditional',
+          payload: {id, condition},
+        });
+
+        return _this.model.destroy(id, condition, (error, model) => {
+          _this._extendedCallback('deleteByIdConditional', error, model, cb);
+        });
       },
 
       createItem: function(data, cb) {
         _this._logRumEvent({
           eventName: 'createItem',
-          payload: data,
+          payload: {data},
         });
 
         return _this.model.create(data, (error, model) => {
@@ -222,6 +292,11 @@ export class ExtendModel {
       },
 
       createUniqueOnFields: function(fields, data, cb) {
+        _this._logRumEvent({
+          eventName: 'createUniqueOnFields',
+          payload: {fields, data},
+        });
+
         let scanCb = function(err, data) {
           if (err) {
             return cb(err, data);
@@ -253,19 +328,35 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .limit(1)
-          .exec(scanCb);
+          .exec((error, model) => {
+            _this._extendedCallback('createItem', error, model, scanCb);
+          });
       },
 
       updateItem: function(id, data, cb) {
+        _this._logRumEvent({
+          eventName: 'updateItem',
+          payload: {id, data},
+        });
+
         data.Id = id;
 
-        return _this.model.update(data, cb);
+        return _this.model.update(data, (error, model) => {
+          _this._extendedCallback('updateItem', error, model, cb);
+        });
       },
 
       updateItemConditional: function(id, data, condition, cb) {
+        _this._logRumEvent({
+          eventName: 'updateItemConditional',
+          payload: {id, data, condition},
+        });
+
         data.Id = id;
 
-        return _this.model.update(data, condition, cb);
+        return _this.model.update(data, condition, (error, model) => {
+          _this._extendedCallback('updateItemConditional', error, model, cb);
+        });
       },
     };
   }
