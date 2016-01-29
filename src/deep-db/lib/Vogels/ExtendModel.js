@@ -16,22 +16,6 @@ export class ExtendModel {
    */
   constructor(model) {
     this._model = model;
-
-    this._logService = null;
-  }
-
-  /**
-   * @returns {Object}
-   */
-  get logService() {
-    return this._logService;
-  }
-
-  /**
-   * @param {Object} logService
-   */
-  set logService(logService) {
-    this._logService = logService;
   }
 
   /**
@@ -320,17 +304,17 @@ export class ExtendModel {
    * @private
    */
   _logRumEvent(customData) {
-    if (!this.logService) {
+    if (!this.model.logService) {
       return false;
     }
 
     let event = util._extend(customData, {
-      "service": "deep-db",
-      "resourceType": "DynamoDB",
-      "resourceId": this.model.tableName,
+      service: "deep-db",
+      resourceType: "DynamoDB",
+      resourceId: this.model.tableName(),
     });
 
-    this.logService.rumLog(event);
+    this.model.logService.rumLog(event);
 
     return true;
   }
@@ -345,7 +329,7 @@ export class ExtendModel {
   _extendedCallback(methodName, error, model, cb) {
     let data = null;
     if (model) {
-      data = model.Items ? model.Items : model.get();
+      data = model.Items ? model : model.get();
     }
 
     this._logRumEvent({
