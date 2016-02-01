@@ -29,6 +29,15 @@ export class SuperagentResponse extends Response {
 
     // check if any Lambda response available
     if (this._data && !this._error) {
+
+      // manage this weird case...
+      if (typeof this._data === 'string') {
+        try {
+          this._data = JSON.parse(this._data);
+        } catch (e) {
+        }
+      }
+
       let dataObj = this._data;
 
       // check whether Lambda execution failed
