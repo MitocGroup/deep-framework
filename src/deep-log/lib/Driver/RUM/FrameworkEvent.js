@@ -4,6 +4,7 @@
 
 'use strict';
 
+import Joi from 'joi';
 import {AbstractEvent} from './AbstractEvent';
 
 /**
@@ -42,7 +43,7 @@ export class FrameworkEvent extends AbstractEvent {
       resourceId: Joi.string().alphanum().required(),
       eventName: Joi.string().required(),
       eventId: Joi.string().alphanum().optional(),
-      time: Joi.date().timestamp().required(),
+      time: Joi.number().integer().required(),
       context: Joi.string().required().allow(AbstractEvent.CONTEXTS),
       memoryUsage: Joi.object().unknown().optional().default({}),
       payload: Joi.object().unknown().optional().default({}),
