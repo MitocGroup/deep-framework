@@ -5,6 +5,7 @@
 'use strict';
 
 import {AbstractEvent} from './AbstractEvent';
+import frameworkEventSchema from './frameworkevent.schema';
 
 /**
  * Framework event level
@@ -14,7 +15,24 @@ export class FrameworkEvent extends AbstractEvent {
     super(...args);
   }
 
+  /**
+   * @returns {Object}
+   */
+  get validationSchema() {
+    return frameworkEventSchema;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get eventLevel() {
+    return AbstractEvent.FRAMEWORK_EVENT_LEVEL;
+  }
+
+  /**
+   * @returns {Object}
+   */
   toJSON() {
-    return this.validate();
+    return this._data;
   }
 }

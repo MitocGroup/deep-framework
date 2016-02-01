@@ -9,6 +9,8 @@ import {AbstractDriver} from './AbstractDriver';
 import {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException';
 import {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';
 import {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';
+import {RumEventValidationException} from './Exception/RumEventValidationException';
+import {FrameworkEvent} from './RUM/FrameworkEvent';
 
 /**
  * SQS logging driver
@@ -81,14 +83,18 @@ export class RumSqsDriver extends AbstractDriver {
       return;
     }
 
-    message = this._enrichWithContextData(message);
+    let event = new FrameworkEvent(this._kernel, message);
 
-    // @todo - create instance of event and validate it based on eventLevel (Frontend / UI)
+    if (!event.isValid()) {
+      callback(new RumEventValidationException(event.eventLevel, event.validationError), null);
+      return;
+    }
+
     // @todo - check message size, max is 256 KB (262,144 bytes)
 
     if (this.kernel.isBackend) {
       if (this._messagesBatch.length < RumSqsDriver.BATCH_SIZE) {
-        this._messagesBatch.push(message);
+        this._messagesBatch.push(event);
       }
 
       if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {
@@ -97,7 +103,7 @@ export class RumSqsDriver extends AbstractDriver {
         callback(null, null);
       }
     } else {
-      this._sendMessage(message, callback);
+      this._sendMessage(event, callback);
     }
   }
 
@@ -117,13 +123,13 @@ export class RumSqsDriver extends AbstractDriver {
   }
 
   /**
-   * @param {Object} message
+   * @param {AbstractEvent} event
    * @param callback
    * @private
    */
-  _sendMessage(message, callback) {
+  _sendMessage(event, callback) {
     let params = {
-      MessageBody: this._stringifyMessage(message),
+      MessageBody: this._stringifyMessage(event),
       QueueUrl: this.queueUrl,
     };
 
@@ -143,13 +149,13 @@ export class RumSqsDriver extends AbstractDriver {
    */
   _sendMessageBatch(messages, callback) {
     let entries = [];
-    messages.forEach((message, index) => {
-      message = this._stringifyMessage(message);
-      let id = `${AbstractDriver._md5(message)}-${new Date().getTime()}-${index}`;
+    messages.forEach((event, index) => {
+      event = this._stringifyMessage(event);
+      let id = `${AbstractDriver._md5(event)}-${new Date().getTime()}-${index}`;
 
       entries.push({
         Id: id,
-        MessageBody: message,
+        MessageBody: event,
       });
     });
 
@@ -168,48 +174,11 @@ export class RumSqsDriver extends AbstractDriver {
   }
 
   /**
-   * @param {String} message
+   * @param {String} event
    * @private
    */
-  _stringifyMessage(message) {
-    return message && typeof message === 'object' ? JSON.stringify(message) : message;
-  }
-
-  /**
-   * @param {Object} message
-   * @returns {Object}
-   * @private
-   */
-  _enrichWithContextData(message) {
-    message.eventLevel = "Framework"; // 'UI' ?
-
-    if (!message.hasOwnProperty('time')) {
-      message.time = new Date().getTime();
-    }
-
-    if (this.kernel.isBackend) {
-      let runtimeContext = this.kernel.runtimeContext;
-
-      message.context = 'Backend';
-      message.memoryUsage = process.memoryUsage();
-      message.environment = {}; // @todo - find a way to get Lambda container info (id, OS, etc)
-
-      message.requestId = runtimeContext.awsRequestId;
-      message.identityId = runtimeContext.identity.cognitoIdentityId;
-    } else {
-      message.context = 'Frontend';
-      message.memoryUsage = window.performance && window.performance.memory ? window.performance.memory : {};
-      message.environment = {
-        userAgent: navigator ? navigator.userAgent : "",
-      };
-
-      let securityToken = this.kernel.get('security').token;
-      message.identityId = securityToken && securityToken.identityId ? securityToken.identityId : null;
-    }
-
-    message.metadata = message.metadata || {};
-
-    return message;
+  _stringifyMessage(event) {
+    return event && typeof event === 'object' ? JSON.stringify(event) : event;
   }
 
   /**

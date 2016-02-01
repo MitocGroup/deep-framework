@@ -11,10 +11,10 @@ import {LogDriverException} from './LogDriverException';
  */
 export class RumEventValidationException extends LogDriverException {
   /**
-   * @param {String} schemaName
-   * @param {String} error
+   * @param {String} eventLevel
+   * @param {Object} error
    */
-  constructor(schemaName, error) {
-    super(`Rum event validation failed on schema ${schemaName}: ${error}`);
+  constructor(eventLevel, error) {
+    super(`Failed to validate "${eventLevel}" event: ${error}`);
   }
 }

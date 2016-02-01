@@ -5,7 +5,6 @@
 'use strict';
 
 import Core from 'deep-core';
-import frameworkEventSchema from './frameworkevent.schema';
 import Joi from 'joi';
 import {RumEventValidationException} from '../Exception/RumEventValidationException';
 
@@ -15,13 +14,16 @@ import {RumEventValidationException} from '../Exception/RumEventValidationExcept
 export class AbstractEvent extends Core.OOP.Interface {
   /**
    * @param {Object} kernel
-   * @param {Object} rawEvent
+   * @param {Object} rawData
    */
-  constructor(kernel, rawEvent) {
-    super(['toJSON']);
+  constructor(kernel, rawData) {
+    super(['toJSON', 'validationSchema', 'eventLevel']);
 
     this._kernel = kernel;
-    this._rawEvent = rawEvent;
+    this._rawData = rawData;
+    this._data = this._enrichWithContextData(this._rawData);
+
+    this._validationError = null;
   }
 
   /**
@@ -32,12 +34,26 @@ export class AbstractEvent extends Core.OOP.Interface {
   }
 
   /**
+   * @returns {String}
+   */
+  static get BACKEND_CONTEXT() {
+    return 'Backend';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get FRONTEND_CONTEXT() {
+    return 'Frontend';
+  }
+
+  /**
    * @returns {String[]}
    */
   static get CONTEXTS() {
     return [
-      'Frontend',
-      'Backend',
+      AbstractEvent.BACKEND_CONTEXT,
+      AbstractEvent.FRONTEND_CONTEXT,
     ];
   }
 
@@ -64,19 +80,71 @@ export class AbstractEvent extends Core.OOP.Interface {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  isValid() {
+    let result = this.validate();
+
+    return result.error ? false : true;
+  }
+
+  /**
    * @returns {Object}
    */
   validate() {
-    let result = Joi.validate(this._rawEvent, frameworkEventSchema, {
+    let result = Joi.validate(this._rawData, this.validationSchema, {
       stripUnknown: true,
       convert: true,
       abortEarly: false,
     });
 
     if (result.error) {
-      throw new RumEventValidationException('frameworkEventSchema', result.error);
+      this._validationError = error;
+    } else {
+      this._data = result.value;
     }
 
-    return result.value;
+    return result;
+  }
+
+  /**
+   * @returns {Object|null}
+   */
+  get validationError() {
+    return this._validationError;
+  }
+
+  /**
+   * @param {Object} event
+   * @returns {Object}
+   * @private
+   */
+  _enrichWithContextData(event) {
+    event.eventLevel = this.eventLevel;
+    event.time = event.time || new Date().getTime();
+    event.metadata = event.metadata || {};
+
+    if (this._kernel.isBackend) {
+      let runtimeContext = this._kernel.runtimeContext;
+
+      event.context = AbstractEvent.BACKEND_CONTEXT();
+      event.memoryUsage = process.memoryUsage();
+      event.environment = {}; // @todo - find a way to get Lambda container info (id, OS, etc)
+
+      event.requestId = runtimeContext.awsRequestId;
+      event.identityId = runtimeContext.identity && runtimeContext.identity.cognitoIdentityId ?
+        runtimeContext.identity.cognitoIdentityId : '';
+    } else {
+      event.context = AbstractEvent.FRONTEND_CONTEXT;
+      event.memoryUsage = window.performance && window.performance.memory ? window.performance.memory : {};
+      event.environment = {
+        userAgent: navigator ? navigator.userAgent : "",
+      };
+
+      let securityToken = this._kernel.get('security').token;
+      event.identityId = securityToken && securityToken.identityId ? securityToken.identityId : '';
+    }
+
+    return event;
   }
 }
