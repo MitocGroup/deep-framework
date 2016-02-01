@@ -4,26 +4,23 @@
 
 'use strict';
 
-import Core from 'deep-core';
 import Joi from 'joi';
-import {RumEventValidationException} from '../Exception/RumEventValidationException';
 import {UnknownRumEventException} from '../Exception/UnknownRumEventException';
 import {FrameworkEvent} from './FrameworkEvent';
+import frameworkEventSchema from './frameworkevent.schema';
 
 /**
  * Abstract RUM event
  */
-export class AbstractEvent extends Core.OOP.Interface {
+export class AbstractEvent {
   /**
    * @param {Object} kernel
    * @param {Object} rawData
    */
   constructor(kernel, rawData) {
-    super(['toJSON', 'validationSchema', 'eventLevel']);
-
     this._kernel = kernel;
     this._rawData = rawData;
-    this._data = this._enrichWithContextData(this._rawData);
+    this._data = this._enrichWithContextData(rawData);
 
     this._validationError = null;
   }
@@ -123,7 +120,7 @@ export class AbstractEvent extends Core.OOP.Interface {
    * @returns {Object}
    */
   validate() {
-    let result = Joi.validate(this._rawData, this.validationSchema, {
+    let result = Joi.validate(this._rawData, frameworkEventSchema, {
       stripUnknown: true,
       convert: true,
       abortEarly: false,
@@ -158,7 +155,7 @@ export class AbstractEvent extends Core.OOP.Interface {
     if (this._kernel.isBackend) {
       let runtimeContext = this._kernel.runtimeContext;
 
-      event.context = AbstractEvent.BACKEND_CONTEXT();
+      event.context = AbstractEvent.BACKEND_CONTEXT;
       event.memoryUsage = process.memoryUsage();
       event.environment = {}; // @todo - find a way to get Lambda container info (id, OS, etc)
 
