@@ -110,29 +110,33 @@ export class LambdaResponse extends Response {
    */
   static getPayloadError(payload) {
     if (payload.hasOwnProperty('errorMessage')) {
+      let error = null;
+
       if (LambdaResponse.isValidationError(payload)) {
-        return new ValidationError(payload.errorMessage, payload.validationErrors);
+        error = new ValidationError(payload.errorMessage, payload.validationErrors);
+      } else {
+        payload.errorType = payload.errorType || 'UnknownError';
+        payload.errorMessage = payload.errorMessage || 'Unknown error occurred.';
+        payload.errorStack = payload.errorStack || (new Error(payload.errorMessage)).stack;
+
+        error = new Error(payload.errorMessage);
+
+        // try to define a custom constructor name
+        // fail silently in case of readonly property...
+        try {
+          Object.defineProperty(error, 'name', {
+            value: payload.errorType,
+          });
+        } catch (e) {   }
       }
 
-      payload.errorType = payload.errorType || 'UnknownError';
-      payload.errorMessage = payload.errorMessage || 'Unknown error occurred.';
-      payload.errorStack = payload.errorStack || (new Error(payload.errorMessage)).stack;
-
-      let errorObj = new Error(payload.errorMessage);
-
-      // try to define a custom constructor name
-      // fail silently in case of readonly property...
       try {
-        Object.defineProperty(errorObj, 'name', {
-          value: payload.errorType,
+        Object.defineProperty(error, 'stack', {
+          value: payload.errorStack,
         });
       } catch (e) {   }
 
-      Object.defineProperty(errorObj, 'stack', {
-        value: payload.errorStack,
-      });
-
-      return errorObj;
+      return error;
     }
 
     return null;
