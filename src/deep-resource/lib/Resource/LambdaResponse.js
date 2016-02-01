@@ -73,7 +73,7 @@ export class LambdaResponse extends Response {
    * @private
    */
   _decodePayload() {
-    if (this._rawData && this._rawData.hasOwnProperty('Payload')) {
+    if (this._rawData.hasOwnProperty('Payload')) {
       let payload = this._rawData.Payload;
 
       if (typeof payload === 'string') {
@@ -83,6 +83,22 @@ export class LambdaResponse extends Response {
       }
 
       return payload;
+    } else if(this._rawData.hasOwnProperty('errorMessage')) {
+      let errorObj = this._rawData.errorMessage;
+
+      if (typeof errorObj === 'string') {
+        try {
+          errorObj = JSON.parse(errorObj);
+        } catch(e) {}
+      } else {
+        errorObj = errorObj || {
+            errorMessage: 'Unknown error occurred.',
+            errorStack: (new Error('Unknown error occurred.')).stack,
+            errorType: 'UnknownError',
+          };
+      }
+
+      return errorObj;
     }
 
     return null;
@@ -93,37 +109,14 @@ export class LambdaResponse extends Response {
    * @returns {Error|ValidationError|null}
    */
   static getPayloadError(payload) {
-    if (LambdaResponse.isValidationError(payload)) {
-      return new ValidationError(payload.errorMessage, payload.validationErrors);
-    } else if (payload.errorMessage) {
-
-      // check for error object (on context.failed called)
-      if (!payload.hasOwnProperty('errorType') &&
-        !payload.hasOwnProperty('errorStack')) {
-
-        let rawErrorObj = null;
-
-        try {
-          rawErrorObj = JSON.parse(payload.errorMessage);
-          rawErrorObj = rawErrorObj || {
-              errorMessage: 'Unknown error occurred.',
-              errorStack: null,
-              errorType: 'UnknownError',
-            };
-
-          rawErrorObj.errorMessage = rawErrorObj.errorMessage || 'Unknown error occurred.';
-          rawErrorObj.errorType = rawErrorObj.errorType || 'UnknownError';
-        } catch (e) {
-        }
-
-        payload = rawErrorObj || {
-            errorMessage: payload.errorMessage,
-            errorStack: null,
-            errorType: 'UnknownError',
-          };
-      } else {
-        payload.errorType = payload.errorType || 'UnknownError';
+    if (payload.hasOwnProperty('errorMessage')) {
+      if (LambdaResponse.isValidationError(payload)) {
+        return new ValidationError(payload.errorMessage, payload.validationErrors);
       }
+
+      payload.errorType = payload.errorType || 'UnknownError';
+      payload.errorMessage = payload.errorMessage || 'Unknown error occurred.';
+      payload.errorStack = payload.errorStack || (new Error(payload.errorMessage)).stack;
 
       let errorObj = new Error(payload.errorMessage);
 
