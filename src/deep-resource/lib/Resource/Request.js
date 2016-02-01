@@ -62,7 +62,7 @@ export class Request {
    * @returns {Boolean}
    */
   get isPreValidated() {
-    return !!this._validationSchemaName;
+    return null !== this._validationSchemaName;
   }
 
   /**
@@ -388,10 +388,12 @@ export class Request {
         let error = validationResult.error;
 
         callback(new LambdaResponse(this, {
-          errorType: error.name,
-          errorMessage: error.annotate(),
-          errorStack: error.stack || (new Error(error.message)).stack,
-          validationErrors: error.details,
+          errorMessage: JSON.stringify({
+            errorType: error.name,
+            errorMessage: error.annotate(),
+            errorStack: error.stack || (new Error(error.message)).stack,
+            validationErrors: error.details,
+          }),
         }, null));
 
         return this;
