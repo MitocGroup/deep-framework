@@ -6,6 +6,7 @@
 
 export class CognitoIdentityCredentialsMock {
   constructor(mode = CognitoIdentityCredentialsMock.NO_RESULT_MODE, methods = CognitoIdentityCredentialsMock.METHODS) {
+
     this._methodsBehavior = new Map();
 
     //set data mode as initial values
@@ -44,6 +45,13 @@ export class CognitoIdentityCredentialsMock {
   refresh(callback) {
     this.getCallbackByMode(this._methodsBehavior.get('refresh'), callback);
 
+    return this;
+  }
+
+  /**
+   * @returns {CognitoIdentityCredentialsMock}
+   */
+  clearCachedId() {
     return this;
   }
 

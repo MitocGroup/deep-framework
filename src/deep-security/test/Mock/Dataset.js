@@ -5,7 +5,13 @@
 'use strict';
 
 export class Dataset {
-  constructor(mode = Dataset.NO_RESULT_MODE, methods = Dataset.METHODS) {
+  /**
+   *
+   * @param {String} mode
+   * @param {String[]}methods
+   * @param {Function} callback
+   */
+  constructor(mode = Dataset.NO_RESULT_MODE, methods = Dataset.METHODS, callback = () => {}) {
     this._methodsBehavior = new Map();
 
     //set data mode as initial values
@@ -13,6 +19,9 @@ export class Dataset {
 
     //set mode based on args
     this.setMode(mode, methods);
+
+    //set cb to be able to check if it will be called
+    this._cb = callback;
   }
 
   /**
@@ -49,6 +58,17 @@ export class Dataset {
   }
 
   /**
+   * @param {String} recordName
+   * @param {Function} callback
+   * @returns {Dataset}
+   */
+  get(recordName, callback) {
+    this.getCallbackByMode(this._methodsBehavior.get('get'), callback);
+
+    return this;
+  }
+
+  /**
    * @param {Conflict[]} resolved
    * @param {Function} callback
    * @returns {Dataset}
@@ -78,21 +98,15 @@ export class Dataset {
         break;
 
       case Dataset.SYNCRONIZE_CONFLICT_MODE:
-        datasetModeImpl.onConflict(this, [], (result) => {
-          return result;
-        });
+        datasetModeImpl.onConflict(this, [], this._cb);
         break;
 
       case Dataset.SYNCRONIZE_DATASET_DELETED_MODE:
-        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', (result) => {
-          return result;
-        });
+        datasetModeImpl.onDatasetDeleted(this, 'DeletedDatasetName', this._cb);
         break;
 
       case Dataset.SYNCRONIZE_DATASET_MERGED_MODE:
-        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', (result) => {
-          return result;
-        });
+        datasetModeImpl.onDatasetMerged(this, 'DeletedMergedName', this._cb);
         break;
     }
 
@@ -198,7 +212,15 @@ export class Dataset {
    * @constructor
    */
   static get DATA() {
+    let date = new Date();
+
+    // add a day
+    date.setDate(date.getDate() + 1);
+
     return {
+      expired: true,
+      expireTime: date,
+
       code: 200,
       data: {
         Payload: 'Dataset successful response',
@@ -214,6 +236,7 @@ export class Dataset {
     return [
       'put',
       'synchronize',
+      'get',
     ];
   }
 }
