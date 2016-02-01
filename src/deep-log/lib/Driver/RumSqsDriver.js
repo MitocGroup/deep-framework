@@ -10,7 +10,8 @@ import {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessag
 import {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';
 import {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';
 import {RumEventValidationException} from './Exception/RumEventValidationException';
-import {AbstractEvent} from './RUM/AbstractEvent';
+//import {AbstractEvent} from './RUM/AbstractEvent';
+import {FrameworkEvent} from './RUM/FrameworkEvent';
 
 /**
  * SQS logging driver
@@ -83,7 +84,8 @@ export class RumSqsDriver extends AbstractDriver {
       return;
     }
 
-    let event = AbstractEvent.create(this._kernel, message);
+    //let event = AbstractEvent.create(this._kernel, message); // @todo - why it doesn't work ?
+    let event = new FrameworkEvent(this.kernel, message);
 
     // @todo - check message size, max is 256 KB (262,144 bytes)
     if (!event.isValid()) {

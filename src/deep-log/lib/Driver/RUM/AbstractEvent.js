@@ -4,20 +4,22 @@
 
 'use strict';
 
+import Core from 'deep-core';
 import Joi from 'joi';
 import {UnknownRumEventException} from '../Exception/UnknownRumEventException';
 import {FrameworkEvent} from './FrameworkEvent';
-import frameworkEventSchema from './frameworkevent.schema';
 
 /**
  * Abstract RUM event
  */
-export class AbstractEvent {
+export class AbstractEvent extends Core.OOP.Interface {
   /**
    * @param {Object} kernel
    * @param {Object} rawData
    */
   constructor(kernel, rawData) {
+    super(['toJSON', 'validationSchema', 'eventLevel']);
+
     this._kernel = kernel;
     this._rawData = rawData;
     this._data = this._enrichWithContextData(rawData);
@@ -120,7 +122,7 @@ export class AbstractEvent {
    * @returns {Object}
    */
   validate() {
-    let result = Joi.validate(this._rawData, frameworkEventSchema, {
+    let result = Joi.validate(this._rawData, this.validationSchema, {
       stripUnknown: true,
       convert: true,
       abortEarly: false,
