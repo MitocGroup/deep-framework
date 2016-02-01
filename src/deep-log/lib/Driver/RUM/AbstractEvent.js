@@ -7,6 +7,8 @@
 import Core from 'deep-core';
 import Joi from 'joi';
 import {RumEventValidationException} from '../Exception/RumEventValidationException';
+import {UnknownRumEventException} from '../Exception/UnknownRumEventException';
+import {FrameworkEvent} from './FrameworkEvent';
 
 /**
  * Abstract RUM event
@@ -62,8 +64,18 @@ export class AbstractEvent extends Core.OOP.Interface {
    */
   static get SERVICES() {
     return [
+      'deep-asset',
+      'deep-cache',
       'deep-core',
+      'deep-db',
+      'deep-event',
+      'deep-fs',
       'deep-kernel',
+      'deep-log',
+      'deep-notification',
+      'deep-resource',
+      'deep-security',
+      'deep-validation',
     ];
   }
 
@@ -77,6 +89,25 @@ export class AbstractEvent extends Core.OOP.Interface {
       'S3',
       'DynamoDB',
     ];
+  }
+
+  /**
+   * @param {Object} kernel
+   * @param {Object} rawData
+   * @returns {AbstractEvent}
+   */
+  static create(kernel, rawData) {
+    let event = null;
+
+    // @note - For the time being event type is guessed by event.service
+    // (it'll be changed once we'll have other types of events)
+    if (rawData.service && AbstractEvent.SERVICES.indexOf(rawData.service) !== -1) {
+      event = new FrameworkEvent(kernel, rawData);
+    } else {
+      throw new UnknownRumEventException(rawData);
+    }
+
+    return event;
   }
 
   /**

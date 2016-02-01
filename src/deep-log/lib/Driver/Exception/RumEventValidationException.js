@@ -7,7 +7,7 @@
 import {LogDriverException} from './LogDriverException';
 
 /**
- * Thrown when SQS queue url is invalid
+ * Thrown when RUM event is invalid
  */
 export class RumEventValidationException extends LogDriverException {
   /**

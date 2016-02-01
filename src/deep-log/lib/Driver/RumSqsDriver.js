@@ -10,7 +10,7 @@ import {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessag
 import {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';
 import {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';
 import {RumEventValidationException} from './Exception/RumEventValidationException';
-import {FrameworkEvent} from './RUM/FrameworkEvent';
+import {AbstractEvent} from './RUM/AbstractEvent';
 
 /**
  * SQS logging driver
@@ -83,14 +83,13 @@ export class RumSqsDriver extends AbstractDriver {
       return;
     }
 
-    let event = new FrameworkEvent(this._kernel, message);
+    let event = AbstractEvent.create(this._kernel, message);
 
+    // @todo - check message size, max is 256 KB (262,144 bytes)
     if (!event.isValid()) {
       callback(new RumEventValidationException(event.eventLevel, event.validationError), null);
       return;
     }
-
-    // @todo - check message size, max is 256 KB (262,144 bytes)
 
     if (this.kernel.isBackend) {
       if (this._messagesBatch.length < RumSqsDriver.BATCH_SIZE) {
@@ -129,7 +128,7 @@ export class RumSqsDriver extends AbstractDriver {
    */
   _sendMessage(event, callback) {
     let params = {
-      MessageBody: this._stringifyMessage(event),
+      MessageBody: JSON.stringify(event),
       QueueUrl: this.queueUrl,
     };
 
@@ -150,7 +149,7 @@ export class RumSqsDriver extends AbstractDriver {
   _sendMessageBatch(messages, callback) {
     let entries = [];
     messages.forEach((event, index) => {
-      event = this._stringifyMessage(event);
+      event = JSON.stringify(event);
       let id = `${AbstractDriver._md5(event)}-${new Date().getTime()}-${index}`;
 
       entries.push({
@@ -171,14 +170,6 @@ export class RumSqsDriver extends AbstractDriver {
 
       callback(error, data);
     });
-  }
-
-  /**
-   * @param {String} event
-   * @private
-   */
-  _stringifyMessage(event) {
-    return event && typeof event === 'object' ? JSON.stringify(event) : event;
   }
 
   /**
