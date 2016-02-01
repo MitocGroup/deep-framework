@@ -42,18 +42,24 @@ export class SuperagentResponse extends Response {
 
       // check whether Lambda execution failed
       if (dataObj.errorMessage) {
-        let errorObj = dataObj.errorMessage;
+        let errorObj = null;
 
-        if (typeof errorObj === 'string') {
-          try {
-            errorObj = JSON.parse(errorObj);
-          } catch(e) {}
+        if (dataObj.errorStack && dataObj.errorType) {
+          errorObj = dataObj;
         } else {
-          errorObj = errorObj || {
-              errorMessage: 'Unknown error occurred.',
-              errorStack: (new Error('Unknown error occurred.')).stack,
-              errorType: 'UnknownError',
-            };
+          errorObj = dataObj.errorMessage;
+
+          if (typeof errorObj === 'string') {
+            try {
+              errorObj = JSON.parse(errorObj);
+            } catch(e) {}
+          } else {
+            errorObj = errorObj || {
+                errorMessage: 'Unknown error occurred.',
+                errorStack: (new Error('Unknown error occurred.')).stack,
+                errorType: 'UnknownError',
+              };
+          }
         }
 
         this._error = LambdaResponse.getPayloadError(errorObj);
