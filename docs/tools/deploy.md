@@ -9,7 +9,7 @@ Instead of providing configuration parameter inline (from command line directly)
 configuration file is used. The `deeploy.json` file must be located in bundle root directory.
 
 > After creating application environment `deepify deploy` command saves internal 
-> config in `.cfg.deeploy.json` file from the application root
+> config in `.{hash}.{env}.provisioning.json` file from the application root
 
 Example:
 
