@@ -40,7 +40,7 @@ export class FrameworkEvent extends AbstractEvent {
       eventLevel: Joi.string().required().allow([AbstractEvent.FRAMEWORK_EVENT_LEVEL]),
       service: Joi.string().required().allow(AbstractEvent.SERVICES),
       resourceType: Joi.string().required().allow(AbstractEvent.RESOURCE_TYPES),
-      resourceId: Joi.string().alphanum().required(),
+      resourceId: Joi.string().required(),
       eventName: Joi.string().required(),
       eventId: Joi.string().alphanum().optional(),
       time: Joi.number().integer().required(),
@@ -49,8 +49,8 @@ export class FrameworkEvent extends AbstractEvent {
       payload: Joi.object().unknown().optional().default({}),
       metadata: Joi.object().unknown().optional().default({}),
       environment: Joi.object().unknown().optional().default({}),
-      requestId: Joi.string().alphanum().required(),
-      identityId: Joi.string().alphanum().required()
+      requestId: Joi.string(),
+      identityId: Joi.string().required()
     });
   }
 }
