@@ -89,7 +89,7 @@ export class RumSqsDriver extends AbstractDriver {
 
     // @todo - check message size, max is 256 KB (262,144 bytes)
     if (!event.isValid()) {
-      callback(new RumEventValidationException(event.eventLevel, event.validationError), null);
+      callback(new RumEventValidationException(event.getEventLevel(), event.validationError), null);
       return;
     }
 
