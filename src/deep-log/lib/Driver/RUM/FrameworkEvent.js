@@ -21,7 +21,7 @@ export class FrameworkEvent extends AbstractEvent {
   /**
    * @returns {String}
    */
-  get eventLevel() {
+  getEventLevel() {
     return AbstractEvent.FRAMEWORK_EVENT_LEVEL;
   }
 
@@ -35,7 +35,7 @@ export class FrameworkEvent extends AbstractEvent {
   /**
    * @returns {Object}
    */
-  get validationSchema() {
+  getValidationSchema() {
     return Joi.object().keys({
       eventLevel: Joi.string().required().allow([AbstractEvent.FRAMEWORK_EVENT_LEVEL]),
       service: Joi.string().required().allow(AbstractEvent.SERVICES),

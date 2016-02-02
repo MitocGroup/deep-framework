@@ -18,7 +18,7 @@ export class AbstractEvent extends Core.OOP.Interface {
    * @param {Object} rawData
    */
   constructor(kernel, rawData) {
-    super(['toJSON', 'validationSchema', 'eventLevel']);
+    super(['toJSON', 'getValidationSchema', 'getEventLevel']);
 
     this._kernel = kernel;
     this._rawData = rawData;
@@ -122,14 +122,14 @@ export class AbstractEvent extends Core.OOP.Interface {
    * @returns {Object}
    */
   validate() {
-    let result = Joi.validate(this._rawData, this.validationSchema, {
+    let result = Joi.validate(this._rawData, this.getValidationSchema(), {
       stripUnknown: true,
       convert: true,
       abortEarly: false,
     });
 
     if (result.error) {
-      this._validationError = error;
+      this._validationError = result.error;
     } else {
       this._data = result.value;
     }
@@ -150,7 +150,7 @@ export class AbstractEvent extends Core.OOP.Interface {
    * @private
    */
   _enrichWithContextData(event) {
-    event.eventLevel = this.eventLevel;
+    event.eventLevel = this.getEventLevel();
     event.time = event.time || new Date().getTime();
     event.metadata = event.metadata || {};
 
