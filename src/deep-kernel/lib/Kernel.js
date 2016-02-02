@@ -427,4 +427,44 @@ export class Kernel {
       Kernel.BACKEND_CONTEXT,
     ];
   }
+
+  /**
+   * @returns {String}
+   */
+  static get PROD_ENVIRONMENT() {
+    return 'prod';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get STAGE_ENVIRONMENT() {
+    return 'stage';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get TEST_ENVIRONMENT() {
+    return 'test';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEV_ENVIRONMENT() {
+    return 'dev';
+  }
+
+  /**
+   * @returns {Array}
+   */
+  static get ALL_ENVIRONMENTS() {
+    return [
+      Kernel.PROD_ENVIRONMENT,
+      Kernel.STAGE_ENVIRONMENT,
+      Kernel.TEST_ENVIRONMENT,
+      Kernel.DEV_ENVIRONMENT,
+    ];
+  }
 }
