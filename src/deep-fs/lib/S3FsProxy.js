@@ -20,10 +20,12 @@ export class S3FsProxy {
         let originalFunction = originalInstance[property];
 
         proxy[property] = (...args) => {
+          let originalCallback = null;
+
           // seeking the callback function through the arguments and proxy it
           args.forEach((arg, index) => {
             if (typeof arg === 'function') {
-              let originalCallback = arg;
+              originalCallback = arg;
 
               args[index] = (...cbArgs) => {
                 // @todo - log RUM event
@@ -40,12 +42,15 @@ export class S3FsProxy {
             }
           });
 
-          // @todo - log RUM event
-          S3FsProxy.logRumEvent({
-            startCallFunc: property,
-            args: args,
-            time: new Date().getTime(),
-          });
+          // proxy only async methods (that have a callback through args)
+          if (null !== originalCallback) {
+            // @todo - log RUM event
+            S3FsProxy.logRumEvent({
+              startCallFunc: property,
+              args: args,
+              time: new Date().getTime(),
+            });
+          }
 
           originalFunction.call(originalInstance, ...args);
         };
