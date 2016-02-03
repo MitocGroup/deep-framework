@@ -13,46 +13,44 @@ export class S3FsProxy {
    * @returns {Object}
    */
   static create(originalInstance) {
-    let proxy = originalInstance.constructor();
+    let proxy = {};
 
-    for (var property in originalInstance) {
-      if (originalInstance.hasOwnProperty(property)) {
+    for (let property in originalInstance) {
+      if (typeof originalInstance[property] === 'function') {
+        let originalFunction = originalInstance[property];
+
+        proxy[property] = (...args) => {
+          // seeking the callback function through the arguments and proxy it
+          args.forEach((arg, index) => {
+            if (typeof arg === 'function') {
+              let originalCallback = arg;
+
+              args[index] = (...cbArgs) => {
+                // @todo - log RUM event
+                S3FsProxy.logRumEvent({
+                  endCallFunc: property,
+                  args: cbArgs,
+                  time: new Date().getTime(),
+                });
+
+                originalCallback.call(originalInstance, ...cbArgs);
+              };
+
+              return;
+            }
+          });
+
+          // @todo - log RUM event
+          S3FsProxy.logRumEvent({
+            startCallFunc: property,
+            args: args,
+            time: new Date().getTime(),
+          });
+
+          originalFunction.call(originalInstance, ...args);
+        };
+      } else {
         proxy[property] = originalInstance[property];
-
-        if (typeof property === 'function') {
-          let originalFunction = originalInstance[property];
-
-          proxy[property] = (...args) => {
-            // seeking the callback function through the arguments and proxy it
-            args.forEach((arg, index) => {
-              if (typeof arg === 'function') {
-                let originalCallback = arg;
-
-                args[index] = (...cbArgs) => {
-                  // @todo - log RUM event
-                  S3FsProxy.logRumEvent({
-                    endCallFunc: property,
-                    args: cbArgs,
-                    time: new Date().getTime(),
-                  });
-
-                  originalCallback(...cbArgs); // @todo - check if it requires to bind originalInstance context
-                };
-
-                return;
-              }
-            });
-
-            // @todo - log RUM event
-            S3FsProxy.logRumEvent({
-              startCallFunc: property,
-              args: args,
-              time: new Date().getTime(),
-            });
-
-            originalFunction(...args); // @todo - check if it requires to bind originalInstance context
-          };
-        }
       }
     }
 
