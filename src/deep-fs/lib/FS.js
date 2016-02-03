@@ -10,6 +10,7 @@ import {UnknownFolderException} from './Exception/UnknownFolderException';
 import OS from 'os';
 import Path from 'path';
 import {Registry} from './Registry';
+import {S3FsProxy} from './S3FsProxy';
 
 /**
  * Deep FS implementation
@@ -130,7 +131,9 @@ export class FS extends Kernel.ContainerAware {
           },
         };
 
-        this._mountedFolders[name] = new S3FS(this._buckets[name], options);
+        this._mountedFolders[name] = S3FsProxy.create(
+          new S3FS(this._buckets[name], options)
+        );
       }
     }
 
