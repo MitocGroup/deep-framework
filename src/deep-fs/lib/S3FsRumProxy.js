@@ -40,7 +40,7 @@ export class S3FsRumProxy {
               args[index] = (...cbArgs) => {
                 this._logRumEvent({
                   eventName: property,
-                  payload: cbArgs,
+                  payload: {args: cbArgs},
                 });
 
                 originalCallback.call(this._originalInstance, ...cbArgs);
@@ -52,7 +52,7 @@ export class S3FsRumProxy {
           if (null !== originalCallback) {
             this._logRumEvent({
               eventName: property,
-              payload: args,
+              payload: {args: args},
             });
           }
 
