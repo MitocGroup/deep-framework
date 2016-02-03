@@ -171,6 +171,15 @@ export class Log extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  isRumEnabled() {
+    let driver = this._rumDriver();
+
+    return driver && driver.enabled;
+  }
+
+  /**
    * @param {Object} event
    */
   rumLog(event) {

@@ -10,7 +10,7 @@ import {UnknownFolderException} from './Exception/UnknownFolderException';
 import OS from 'os';
 import Path from 'path';
 import {Registry} from './Registry';
-import {S3FsProxy} from './S3FsProxy';
+import {S3FsRumProxy} from './S3FsRumProxy';
 
 /**
  * Deep FS implementation
@@ -131,9 +131,14 @@ export class FS extends Kernel.ContainerAware {
           },
         };
 
-        this._mountedFolders[name] = S3FsProxy.create(
-          new S3FS(this._buckets[name], options)
-        );
+        let logService = this.kernel.get('log');
+        let s3Fs = new S3FS(this._buckets[name], options);
+
+        if (logService.isRumEnabled()) {
+          s3Fs = new S3FsRumProxy(s3Fs, logService).proxy();
+        }
+
+        this._mountedFolders[name] = s3Fs;
       }
     }
 
