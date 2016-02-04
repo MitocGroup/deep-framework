@@ -90,6 +90,7 @@ export class SuperagentResponse extends Response {
         }
 
         this._error = LambdaResponse.getPayloadError(errorObj);
+        this._data = null;
       } else {
         this._data = dataObj;
       }
