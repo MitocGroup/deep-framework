@@ -8,7 +8,7 @@
  * Raven Mock
  */
 export default  {
-  Client: () => {
+  Client: function() {
     return {
       logs: [],
 
@@ -44,11 +44,11 @@ export default  {
     };
   },
 
-  config: () => {
+  config: function() {
     return this;
   },
 
-  install: () => {
+  install: function() {
     return this;
   },
 };
