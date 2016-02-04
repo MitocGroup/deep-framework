@@ -6,7 +6,7 @@ import chai from 'chai';
 import {SharedCache} from '../lib.compiled/SharedCache';
 
 // @todo: Add more advanced tests
-suite("SharedCache", () => {
+suite('SharedCache', () => {
   test('Class SharedCache exists in SharedCache', () => {
     chai.expect(SharedCache).to.be.an('function');
   });

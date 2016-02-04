@@ -6,7 +6,7 @@ import chai from 'chai';
 import {MethodsProxy} from '../../lib.compiled/Generic/MethodsProxy';
 
 // @todo: Add more advanced tests
-suite("Generic/MethodsProxy", () => {
+suite('Generic/MethodsProxy', () => {
   test('Class MethodsProxy exists in Generic/MethodsProxy', () => {
     chai.expect(MethodsProxy).to.be.an('function');
   });

@@ -6,7 +6,7 @@ import chai from 'chai';
 import {CloudFrontDriver} from '../../lib.compiled/Driver/CloudFrontDriver';
 
 // @todo: Add more advanced tests
-suite("Driver/CloudFrontDriver", () => {
+suite('Driver/CloudFrontDriver', () => {
   test('Class CloudFrontDriver exists in Driver/CloudFrontDriver', () => {
     chai.expect(CloudFrontDriver).to.be.an('function');
   });

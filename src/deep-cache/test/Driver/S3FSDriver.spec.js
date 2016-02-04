@@ -6,7 +6,7 @@ import chai from 'chai';
 import {S3FSDriver} from '../../lib.compiled/Driver/S3FSDriver';
 
 // @todo: Add more advanced tests
-suite("Driver/S3FSDriver", () => {
+suite('Driver/S3FSDriver', () => {
   test('Class S3FSDriver exists in Driver/S3FSDriver', () => {
     chai.expect(S3FSDriver).to.be.an('function');
   });
