@@ -6,12 +6,12 @@ import chai from 'chai';
 import {SharedCache} from '../lib.compiled/SharedCache';
 
 // @todo: Add more advanced tests
-suite("SharedCache", function() {
-  test('Class SharedCache exists in SharedCache', function() {
-    chai.expect(typeof SharedCache).to.equal('function');
+suite("SharedCache", () => {
+  test('Class SharedCache exists in SharedCache', () => {
+    chai.expect(SharedCache).to.be.an('function');
   });
 
-  test('Test SharedCache buildKeyFromRequest() === buildKeyFromLambdaRuntime()', function() {
+  test('Test SharedCache buildKeyFromRequest() === buildKeyFromLambdaRuntime()', () => {
     let arn = 'arn:aws:lambda:us-west-2:9283468276298:function:test_backend';
 
     let sharedCache = new SharedCache({});

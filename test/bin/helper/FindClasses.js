@@ -29,7 +29,8 @@ export class FindClasses {
 
     for (let filepath of classFiles) {
       let relativePath = filepath.substr(this._libPath.length + 1);
-      let testFilePath = path.join(this._testsPath, relativePath);
+
+      let testFilePath = path.join(this._testsPath, relativePath.replace('.js', '.spec.js'));
 
       if (!fs.existsSync(testFilePath)) {
         let testContent = FindClasses._genTestSuite(relativePath);
@@ -195,9 +196,9 @@ export class FindClasses {
     content.push("{import}");
     content.push("");
     content.push("// @todo: Add more advanced tests");
-    content.push("suite(\"{fullClass}\", function() {");
-    content.push("  test('Class {class} exists in {fullClass}', function() {");
-    content.push("    chai.expect(typeof {class}).to.equal('function');");
+    content.push("suite(\'{fullClass}\', function() {");
+    content.push("  test('Class {class} exists in {fullClass}', () => {");
+    content.push("    chai.expect({class}).to.be.an('function');");
     content.push("  });");
     content.push("});");
     content.push("");
@@ -216,7 +217,7 @@ export class FindClasses {
    * @returns {String}
    */
   static get REAL_LIB_DIR() {
-    return 'lib.compiled';
+    return 'lib';
   }
 
   /**
