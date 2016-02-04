@@ -189,19 +189,19 @@ export class FindClasses {
     let content = [];
 
     content.push(`// THIS TEST WAS GENERATED AUTOMATICALLY ON ${new Date().toString()}`);
-    content.push("");
-    content.push("'use strict';");
-    content.push("");
-    content.push("import chai from 'chai';");
-    content.push("{import}");
-    content.push("");
-    content.push("// @todo: Add more advanced tests");
-    content.push("suite(\'{fullClass}\', function() {");
-    content.push("  test('Class {class} exists in {fullClass}', () => {");
-    content.push("    chai.expect({class}).to.be.an('function');");
-    content.push("  });");
-    content.push("});");
-    content.push("");
+    content.push('');
+    content.push('\'use strict\';');
+    content.push('');
+    content.push('import chai from \'chai\';');
+    content.push('{import}');
+    content.push('');
+    content.push('// @todo: Add more advanced tests');
+    content.push('suite(\'{fullClass}\', function() {');
+    content.push('  test(\'Class {class} exists in {fullClass}\', () => {');
+    content.push('    chai.expect({class}).to.be.an(\'function\');');
+    content.push('  });');
+    content.push('});');
+    content.push('');
 
     return content.join(os.EOL);
   }

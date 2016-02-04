@@ -95,23 +95,48 @@ suite('AWS/Region', () => {
     chai.expect(Region.exists('eu-region-1')).to.be.equal(false);
   });
 
-  test('Check getAppropriateAwsRegion() static method returns default AWS region as the already existed in availableRegions array', () => {
-    chai.expect(Region.getAppropriateAwsRegion(Region.US_EAST_N_VIRGINIA, [Region.US_EAST_N_VIRGINIA])).to.be.equal(Region.US_EAST_N_VIRGINIA);
-  });
+  test('Check getAppropriateAwsRegion() static method returns default ' +
+    'AWS region as the already existed in availableRegions array',
+    () => {
+      chai.expect(
+        Region.getAppropriateAwsRegion(Region.US_EAST_N_VIRGINIA, [Region.US_EAST_N_VIRGINIA])
+      ).to.be.equal(Region.US_EAST_N_VIRGINIA);
+    }
+  );
 
-  test('Check getAppropriateAwsRegion() static method returns approriate AWS region', () => {
-    chai.expect(Region.getAppropriateAwsRegion('eu-region-1', [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA, Region.EU_FRANKFURT])).to.be.equal(Region.EU_FRANKFURT);
-  });
+  test('Check getAppropriateAwsRegion() static method returns approriate AWS region',
+    () => {
+      chai.expect(
+        Region.getAppropriateAwsRegion(
+          'eu-region-1', [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA, Region.EU_FRANKFURT])
+      ).to.be.equal(Region.EU_FRANKFURT);
+    }
+  );
 
-  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as US_EAST_N_VIRGINIA for default', () => {
-    chai.expect(Region.getAppropriateAwsRegion(Region.US_EAST_N_VIRGINIA, [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA, Region.EU_FRANKFURT, Region.ANY])).to.be.equal(Region.US_EAST_N_VIRGINIA);
-  });
+  test('Check getAppropriateAwsRegion() returns approriate AWS region as US_EAST_N_VIRGINIA for default',
+    () => {
+      chai.expect(
+        Region.getAppropriateAwsRegion(
+          Region.US_EAST_N_VIRGINIA,
+          [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA, Region.EU_FRANKFURT, Region.ANY]
+        )
+      ).to.be.equal(Region.US_EAST_N_VIRGINIA);
+    }
+  );
 
-  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as "eu-region-1" for default', () => {
-    chai.expect(Region.getAppropriateAwsRegion('eu-region-1', [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA])).to.be.equal(Region.US_WEST_N_CALIFORNIA);
-  });
+  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as "eu-region-1" for default',
+    () => {
+      chai.expect(
+        Region.getAppropriateAwsRegion('eu-region-1', [Region.US_WEST_N_CALIFORNIA, Region.US_EAST_N_VIRGINIA])
+      ).to.be.equal(Region.US_WEST_N_CALIFORNIA);
+    }
+  );
 
-  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as "default" for default', () => {
-    chai.expect(Region.getAppropriateAwsRegion('default', [Region.US_EAST_N_VIRGINIA, Region.ANY])).to.be.equal('default');
-  });
+  test('Check getAppropriateAwsRegion() static method returns approriate AWS region as "default" for default',
+    () => {
+      chai.expect(
+        Region.getAppropriateAwsRegion('default', [Region.US_EAST_N_VIRGINIA, Region.ANY])
+      ).to.be.equal('default');
+    }
+  );
 });

@@ -128,11 +128,11 @@ suite('Local/S3FSRelativeFSExtender', () => {
       let expectedResultPath = path.join(relativeFsPath, destinationPath);
 
       let callback = () => {
-        chai.expect(actualResult).to.equal(undefined);
-        chai.expect(nodeFS.existsSync(expectedResultPath)).to.equal(true);
-
         // complete the async
         done();
+
+        chai.expect(actualResult).to.equal(undefined);
+        chai.expect(nodeFS.existsSync(expectedResultPath)).to.equal(true);
       };
 
       actualResult = s3FSRelativeFSExtender.relativeFsExtended.copyFile(
