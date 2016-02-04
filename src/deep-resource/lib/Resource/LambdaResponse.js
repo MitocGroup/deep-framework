@@ -114,35 +114,66 @@ export class LambdaResponse extends Response {
    * @private
    */
   _decodePayload() {
+    let decodedPayload = null;
+
     if (this._rawData.hasOwnProperty('Payload')) {
-      let payload = this._rawData.Payload;
+      decodedPayload = LambdaResponse._decodePayloadObject(this._rawData.Payload);
 
-      if (typeof payload === 'string') {
-        try {
-          payload = JSON.parse(payload);
-        } catch(e) {}
+      // treat the case when error is stored in payload (nested)
+      if (decodedPayload.hasOwnProperty('errorMessage')) {
+        decodedPayload = LambdaResponse._decodeRawErrorObject(decodedPayload.errorMessage);
       }
-
-      return payload;
     } else if(this._rawData.hasOwnProperty('errorMessage')) {
-      let errorObj = this._rawData.errorMessage;
-
-      if (typeof errorObj === 'string') {
-        try {
-          errorObj = JSON.parse(errorObj);
-        } catch(e) {}
-      } else {
-        errorObj = errorObj || {
-            errorMessage: 'Unknown error occurred.',
-            errorStack: (new Error('Unknown error occurred.')).stack,
-            errorType: 'UnknownError',
-          };
-      }
-
-      return errorObj;
+      decodedPayload = LambdaResponse._decodeRawErrorObject(this._rawData.errorMessage);
     }
 
-    return null;
+    return decodedPayload;
+  }
+
+  /**
+   * @param {String|Object|*} rawError
+   * @returns {Object|String|null}
+   * @private
+   */
+  static _decodeRawErrorObject(rawError) {
+    let errorObj = rawError;
+
+    if (typeof errorObj === 'string') {
+      try {
+        errorObj = JSON.parse(errorObj);
+      } catch(e) {
+        errorObj = {
+          errorMessage: errorObj, // assume errorObj is the error message
+          errorStack: (new Error('Unknown error occurred.')).stack,
+          errorType: 'UnknownError',
+        };
+      }
+    } else {
+      errorObj = errorObj || {
+          errorMessage: 'Unknown error occurred.',
+          errorStack: (new Error('Unknown error occurred.')).stack,
+          errorType: 'UnknownError',
+        };
+    }
+
+    return errorObj;
+  }
+
+  /**
+   * @param {String} rawPayload
+   * @returns {Object|String|null}
+   * @private
+   */
+  static _decodePayloadObject(rawPayload) {
+    let payload = rawPayload;
+
+    if (typeof rawPayload === 'string') {
+      try {
+        payload = JSON.parse(payload);
+      } catch(e) {}
+    }
+
+    return payload;
   }
 
   /**
