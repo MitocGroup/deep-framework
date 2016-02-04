@@ -129,6 +129,13 @@ export class CredentialsManager {
   }
 
   /**
+   * @returns {String}
+   */
+  get identityId() {
+    return this.cognitoSyncClient.getIdentityId();
+  }
+
+  /**
    * Deletes cached credentials from local storage
    *
    * @returns {CredentialsManager}

@@ -220,6 +220,8 @@ export class Token {
       } else if (this.credentials.params && this.credentials.params.IdentityId) {
         // load IdentityId from localStorage cache
         identityId = this.credentials.params.IdentityId;
+      } else if (this._credsManager.identityId) {
+        identityId = this._credsManager.identityId;
       }
     } else if (this.lambdaContext) {
       identityId = this.lambdaContext.identity.cognitoIdentityId;
