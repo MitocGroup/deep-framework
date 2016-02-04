@@ -6,7 +6,7 @@ import chai from 'chai';
 import {Context} from '../../../lib.compiled/AWS/Lambda/Context';
 
 // @todo: Add more advanced tests
-suite("AWS/Lambda/Context", () => {
+suite('AWS/Lambda/Context', () => {
   test('Class Context exists in AWS/Lambda/Context', () => {
     chai.expect(Context).to.be.an('function');
   });

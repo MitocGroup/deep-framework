@@ -6,7 +6,7 @@ import chai from 'chai';
 import {AbstractFsDriver} from '../../lib.compiled/Driver/AbstractFsDriver';
 
 // @todo: Add more advanced tests
-suite("Driver/AbstractFsDriver", () => {
+suite('Driver/AbstractFsDriver', () => {
   test('Class AbstractFsDriver exists in Driver/AbstractFsDriver', () => {
     chai.expect(AbstractFsDriver).to.be.an('function');
   });
