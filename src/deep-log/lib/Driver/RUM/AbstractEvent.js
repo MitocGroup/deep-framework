@@ -87,6 +87,11 @@ export class AbstractEvent extends Core.OOP.Interface {
       'Lambda',
       'S3',
       'DynamoDB',
+      'CloudFront',
+      'InMemory',
+      'LocalStorage',
+      'Redis',
+      'S3FS',
     ];
   }
 
