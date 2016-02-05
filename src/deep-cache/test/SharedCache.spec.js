@@ -7,7 +7,6 @@ import {Request} from '../node_modules/deep-core/lib.compiled/AWS/Lambda/Request
 
 suite('SharedCache', () => {
   let abstractDriver = new AbstractDriverMock();
-  let data = {firstKey: 'firstValue'};
 
   test('Class SharedCache exists in SharedCache', () => {
     chai.expect(SharedCache).to.be.an('function');
