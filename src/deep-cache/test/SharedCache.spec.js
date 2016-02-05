@@ -2,14 +2,12 @@
 
 import chai from 'chai';
 import {SharedCache} from '../lib/SharedCache';
-import {AbstractDriver} from '../lib/Driver/AbstractDriver';
 import {AbstractDriverMock} from './Mocks/AbstractDriverMock';
 import {Request} from '../node_modules/deep-core/lib.compiled/AWS/Lambda/Request';
 
 suite('SharedCache', () => {
   let abstractDriver = new AbstractDriverMock();
   let data = {firstKey: 'firstValue'};
-  let request = new Request(data);
 
   test('Class SharedCache exists in SharedCache', () => {
     chai.expect(SharedCache).to.be.an('function');
