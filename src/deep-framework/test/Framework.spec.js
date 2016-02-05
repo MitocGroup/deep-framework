@@ -10,7 +10,6 @@ import Kernel from 'deep-kernel';
 
 suite('Framework', () => {
   let framework = null;
-  let kernel = null;
   let id = 'firstCachedId';
 
   test('Class Framework exists in Framework', () => {
