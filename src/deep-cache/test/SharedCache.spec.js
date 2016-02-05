@@ -1,12 +1,16 @@
-// THIS TEST WAS GENERATED AUTOMATICALLY ON Thu Jan 14 2016 14:25:30 GMT+0200 (EET)
-
 'use strict';
 
 import chai from 'chai';
-import {SharedCache} from '../lib.compiled/SharedCache';
+import {SharedCache} from '../lib/SharedCache';
+import {AbstractDriver} from '../lib/Driver/AbstractDriver';
+import {AbstractDriverMock} from './Mocks/AbstractDriverMock';
+import {Request} from '../node_modules/deep-core/lib.compiled/AWS/Lambda/Request';
 
-// @todo: Add more advanced tests
 suite('SharedCache', () => {
+  let abstractDriver = new AbstractDriverMock();
+  let data = {firstKey: 'firstValue'};
+  let request = new Request(data);
+
   test('Class SharedCache exists in SharedCache', () => {
     chai.expect(SharedCache).to.be.an('function');
   });
@@ -14,7 +18,7 @@ suite('SharedCache', () => {
   test('Test SharedCache buildKeyFromRequest() === buildKeyFromLambdaRuntime()', () => {
     let arn = 'arn:aws:lambda:us-west-2:9283468276298:function:test_backend';
 
-    let sharedCache = new SharedCache({});
+    let sharedCache = new SharedCache(abstractDriver);
 
     let requestCacheKey = sharedCache.buildKeyFromRequest({
       isLambda: true,

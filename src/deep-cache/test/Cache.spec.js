@@ -4,8 +4,10 @@ import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Cache} from '../lib/Cache';
+import {SharedCache} from '../lib/SharedCache';
 import {InMemoryDriver} from '../lib/Driver/InMemoryDriver';
 import {RedisDriver} from '../lib/Driver/RedisDriver';
+import {CloudFrontDriver} from '../lib/Driver/CloudFrontDriver';
 import {Exception} from '../lib/Exception/Exception';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
@@ -17,6 +19,7 @@ suite('Cache', () => {
   let backendKernelInstance = null;
   let memoryDriverName = 'memory';
   let redisDriverName = 'redis';
+  let cloudFrontDriverName = 'cloud-front';
   let negativeDriverName = 'test';
   let inMemoryDriver = null;
 
@@ -75,6 +78,16 @@ suite('Cache', () => {
     }
   );
 
+  test(`Check createDriver() static method for ${cloudFrontDriverName}`,
+    () => {
+      chai.assert.instanceOf(
+        Cache.createDriver(cloudFrontDriverName),
+        CloudFrontDriver,
+        'createDriver() returns an instance of CloudFrontDriver'
+      );
+    }
+  );
+
   test('Check createDriver() throws exception', () => {
     let error = null;
 
@@ -97,6 +110,7 @@ suite('Cache', () => {
         cache.driver, InMemoryDriver, 'cache.driver ia an instance of InMemoryDriver'
       );
       chai.expect(cache.driver.buildId).to.be.equal(backendKernelInstance.buildId);
+      chai.expect(cache.shared, 'is an instance of SharedCache').to.be.an.instanceOf(SharedCache);
       chai.expect(spyCallback).to.have.been.calledWithExactly();
     }
   );
