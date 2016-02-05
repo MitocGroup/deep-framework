@@ -16,6 +16,14 @@ export class LocalStorageDriver extends AbstractDriver {
   }
 
   /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return 'LocalStorage';
+  }
+
+  /**
    * @param {String} key
    * @param {Function} callback
    */

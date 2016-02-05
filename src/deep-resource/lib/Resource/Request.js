@@ -47,6 +47,8 @@ export class Request {
     this._native = false;
 
     this._validationSchemaName = null;
+
+    this._customId = null;
   }
 
   /**
@@ -84,6 +86,17 @@ export class Request {
    */
   get async() {
     return this._async;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get customId() {
+    if (!this._customId) {
+      this._customId = Request._md5(this._buildCacheKey() + new Date().getTime());
+    }
+
+    return this._customId;
   }
 
   /**
@@ -302,9 +315,22 @@ export class Request {
       return this._send(callback);
     }
 
+    let logService = this.action.resource.log;
     let cache = this._cacheImpl;
     let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
     let cacheKey = this._buildCacheKey();
+
+    let rumEvent = {
+      "service": "deep-resource",
+      "resourceType": "Browser",
+      "resourceId": this.native ? this.action.source.original : this.action.source.api,
+      "eventName": this.method,
+      "eventId": this.customId,
+      "requestId": this.customId,
+      "payload": this.payload,
+    };
+
+    logService.rumLog(rumEvent);
 
     cache.has(cacheKey, (error, result) => {
       if (error) {
@@ -312,7 +338,19 @@ export class Request {
       }
 
       if (result && !invalidateCache) {
+        let event = util._extend({}, rumEvent);
+        event.service = 'deep-cache';
+        event.resourceType = cache.type();
+        event.eventName = 'get';
+
+        logService.rumLog(event);
+
         cache.get(cacheKey, (error, result) => {
+          event = util._extend({}, event);
+          event.payload = {error, result};
+
+          logService.rumLog(event);
+
           if (error) {
             throw new CachedRequestException(error);
           }
@@ -323,25 +361,11 @@ export class Request {
         return;
       }
 
-      let logService = this.action.resource.log;
-
-      let rumEvent = {
-        "service": "deep-resource",
-        "resourceType": "Browser",
-        "resourceId": this.native ? this.action.source.original : this.action.source.api,
-        "eventName": this.method,
-        "eventId": Request._md5(this._buildCacheKey() + new Date().getTime()),
-        "payload": this.payload,
-      };
-
-      logService.rumLog(rumEvent);
-
       this._send((response) => {
         // change only the event payload all the rest remains unchanged
         let event = util._extend({}, rumEvent);
         event.payload = response;
         event.requestId = response.requestId;
-        event.time = new Date().getTime();
 
         logService.rumLog(event);
 
@@ -352,7 +376,7 @@ export class Request {
             }
 
             if (error) {
-              throw new CachedRequestException(error);
+              logService.warn(new CachedRequestException(error));
             }
           });
         }

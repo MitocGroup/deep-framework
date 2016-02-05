@@ -26,6 +26,14 @@ export class CloudFrontDriver extends AbstractFsDriver {
   }
 
   /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return 'CloudFront';
+  }
+
+  /**
    * @param {String} key
    * @param {Function} callback
    * @private
