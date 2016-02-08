@@ -45,6 +45,9 @@ to web services from cloud providers like AWS.
 > deepify provisions the infrastructure and deploys the web app, empowering developers and
 devops engineers to automate the process.
 
+  Note: Amazon CloudFront distribution takes up to 20 minutes to provision, 
+  therefore don’t worry if it returns an HTTP error in the first couple of minutes.
+
 To learn more about helloworld example, or other web apps that run in production, scroll down to 
 [Who is using DEEP Framework?](https://github.com/MitocGroup/deep-framework/blob/master/README.md#who-is-using-deep-framework-)
 
