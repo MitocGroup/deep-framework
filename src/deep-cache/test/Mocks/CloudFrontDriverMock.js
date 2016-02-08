@@ -20,7 +20,6 @@ export class CloudFrontDriverMock extends CloudFrontDriver  {
    * @param {String[]} methods
    */
   setMode(mode = CloudFrontDriverMock.NO_RESULT_MODE, methods = CloudFrontDriverMock.METHODS) {
-    console.log('set mode: ', mode)
 
     if (CloudFrontDriverMock.MODES.indexOf(mode) < 0) {
       mode = CloudFrontDriverMock.NO_RESULT_MODE;
@@ -164,7 +163,6 @@ export class CloudFrontDriverMock extends CloudFrontDriver  {
    * @private
    */
   _request(url, callback) {
-    console.log('_request mock:', url)
     this.getCallbackByMethod(this._methodsBehavior.get('_request'), callback);
 
     return this;

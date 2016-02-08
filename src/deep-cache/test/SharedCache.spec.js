@@ -6,7 +6,6 @@ import sinonChai from 'sinon-chai';
 import {SharedCache} from '../lib/SharedCache';
 import {AbstractDriver} from '../lib/Driver/AbstractDriver';
 import {ContainerAware} from '../node_modules/deep-kernel/lib.compiled/ContainerAware';
-import {AbstractDriverMock} from './Mocks/AbstractDriverMock';
 import {CloudFrontDriverMock} from './Mocks/CloudFrontDriverMock';
 
 chai.use(sinonChai);
