@@ -22,18 +22,6 @@ Example of `deeploy.json`
 
 ```js
 {
-  "dependencies": {
-    "bucket": "deep.deps.repository", // bucket dependencies to be uploaded to
-    "prefix": "", // repository prefix
-    "aws": { // native AWS config injected into aws-sdk library (OPTIONAL! aws config from the top level used)
-        "accessKeyId": "<aws_access_key_id>",
-        "secretAccessKey": "<aws_secret_access_key>",
-        "region": "us-east-1",
-        "httpOptions": {
-          "timeout": 30000
-        }
-      },
-  },
   "env": "dev",
   "domain": "example.com", // Read when running `deepify enable-ssl path/to/web_app`
   "awsAccountId": 999999999999,
