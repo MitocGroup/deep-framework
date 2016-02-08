@@ -122,13 +122,12 @@ suite('Cache', () => {
     let namespace = 'abstractDriverNamespace';
     let testKey = 'test_key';
     let error = null;
-    let actualResult = null;
 
     abstractDriver.buildId = buildId;
     abstractDriver.namespace = namespace;
 
     try {
-      actualResult = cache.apply(abstractDriver._buildKey, testKey);
+      cache.apply(abstractDriver._buildKey, testKey);
     } catch (e) {
       error = e;
     }
