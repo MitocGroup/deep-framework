@@ -9,6 +9,7 @@ import {InMemoryDriver} from '../lib/Driver/InMemoryDriver';
 import {RedisDriver} from '../lib/Driver/RedisDriver';
 import {CloudFrontDriver} from '../lib/Driver/CloudFrontDriver';
 import {Exception} from '../lib/Exception/Exception';
+import {AbstractDriverMock} from './Mocks/AbstractDriverMock';
 import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
 
@@ -114,4 +115,26 @@ suite('Cache', () => {
       chai.expect(spyCallback).to.have.been.calledWithExactly();
     }
   );
+
+  test('Check apply()', () => {
+    let abstractDriver = new AbstractDriverMock();
+    let buildId = 'testId1';
+    let namespace = 'abstractDriverNamespace';
+    let testKey = 'test_key';
+    let error = null;
+    let actualResult = null;
+
+    abstractDriver.buildId = buildId;
+    abstractDriver.namespace = namespace;
+
+    try {
+      actualResult = cache.apply(abstractDriver._buildKey, testKey);
+    } catch (e) {
+      error = e;
+    }
+
+    //chai.expect(actualResult).to.be.equal(`${buildId}:${namespace}#${testKey}`);
+  });
+
+
 });
