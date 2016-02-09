@@ -85,23 +85,7 @@ suite('SharedCache', () => {
     let actualResult = sharedCache.assure(key, value, ttl, spyCallback);
 
     chai.expect(actualResult).to.equal(undefined);
-    //chai.expect(spyCallback).to.have.been.calledWithExactly(null, true);
   });
-
-  //@todo - need to clarify with Alex c
-  //test('Check assure() if key doesn"t exist', () => {
-  //  let spyCallback = sinon.spy();
-  //  let key = 'testKey';
-  //  let value = 'testValue';
-  //  let ttl = 0;
-  //
-  //  cloudFrontDriver.setMode(CloudFrontDriverMock.NO_RESULT_MODE);
-  //
-  //  let actualResult = sharedCache.assure(key, value, ttl, spyCallback);
-  //
-  //  chai.expect(actualResult).to.equal(undefined);
-  //  //chai.expect(spyCallback).to.have.been.calledWithExactly(null, true);
-  //});
 
   test('Check request() if key exists', () => {
     let spyCallback = sinon.spy();
