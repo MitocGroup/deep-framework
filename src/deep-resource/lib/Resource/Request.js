@@ -120,16 +120,8 @@ export class Request {
   /**
    * @returns {Request}
    */
-  enablePublicCache() {
+  usePublicCache() {
     this._publicCached = true;
-    return this;
-  }
-
-  /**
-   * @returns {Request}
-   */
-  disablePublicCache() {
-    this._publicCached = false;
     return this;
   }
 
