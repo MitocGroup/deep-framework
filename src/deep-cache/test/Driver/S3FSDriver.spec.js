@@ -31,7 +31,7 @@ suite('Driver/S3FSDriver', () => {
   test('Check _fs getter', () => {
     let actualResult = s3FsDriver._fs;
 
-    chai.expect(actualResult).to.be.an('object')
+    chai.expect(actualResult).to.be.an('object');
   });
 
   test('Check _get returns error in callback for readFile', () => {
