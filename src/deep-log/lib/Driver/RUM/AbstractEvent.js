@@ -92,6 +92,7 @@ export class AbstractEvent extends Core.OOP.Interface {
       'LocalStorage',
       'Redis',
       'S3FS',
+      'Cognito',
     ];
   }
 
