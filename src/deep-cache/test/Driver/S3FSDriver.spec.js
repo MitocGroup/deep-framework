@@ -45,11 +45,32 @@ suite('Driver/S3FSDriver', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly(fsMock.constructor.ERROR, null);
   });
 
-  test('Check _get executes with exception and returns callback(null, null) an', () => {
+  test('Check _get executes with exception and returns callback(null, null)', () => {
     let spyCallback = sinon.spy();
 
-    //set failure mode
     fsMock.setMode(fsMock.constructor.EXCEPTION_MODE, ['readFile']);
+
+    let actualResult = s3FsDriver._get(key, spyCallback);
+
+    chai.expect(actualResult).to.be.equal(undefined);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
+  });
+
+  test('Check _get returns callback(null, value)', () => {
+    let spyCallback = sinon.spy();
+
+    fsMock.setMode(fsMock.constructor.DATA_MODE, ['readFile']);
+
+    let actualResult = s3FsDriver._get(key, spyCallback);
+
+    chai.expect(actualResult).to.be.equal(undefined);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, 'request successfully sent');
+  });
+
+  test('Check _get returns callback(null, null)', () => {
+    let spyCallback = sinon.spy();
+
+    fsMock.setMode(fsMock.constructor.UPDATE_MODE, ['readFile']);
 
     let actualResult = s3FsDriver._get(key, spyCallback);
 
@@ -101,5 +122,16 @@ suite('Driver/S3FSDriver', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly(fsMock.constructor.ERROR, null);
   });
 
+  test('Check _invalidate executes callback(null, true) for !timeout <= 0', () => {
+    let spyCallback = sinon.spy();
 
+    fsMock.setMode(fsMock.constructor.DATA_MODE, ['readFile']);
+    fsMock.setMode(fsMock.constructor.DATA_MODE, ['unlink']);
+
+    let actualResult = s3FsDriver._invalidate(key, 1, spyCallback);
+
+    chai.expect(actualResult).to.be.equal(undefined);
+
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, true);
+  });
 });

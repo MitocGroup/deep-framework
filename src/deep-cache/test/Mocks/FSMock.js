@@ -198,7 +198,7 @@ class FSMock {
    * @constructor
    */
   static get UPDATED_DATA() {
-    return '{"code":"200","value":"request successfully sent and updated data","buildId":"testBuildId01234"}';
+    return '{"code":"200","expires":"true","value":"request successfully sent and updated data","buildId":"testBuildId01234"}';
   }
 
 
