@@ -205,16 +205,7 @@ export class CredentialsManager {
     // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore
     credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');
 
-    // save only credentials instead of all CognitoIdentityCredentials instance
-    let awsCredentials = {
-      expired: credentials.expired,
-      expireTime: credentials.expireTime,
-      accessKeyId: credentials.accessKeyId,
-      secretAccessKey: credentials.secretAccessKey,
-      sessionToken: credentials.sessionToken,
-    };
-
-    return JSON.stringify(awsCredentials);
+    return JSON.stringify(credentials);
   }
 
   /**

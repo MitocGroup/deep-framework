@@ -229,7 +229,19 @@ export class Token {
       cognitoParams.LoginId = this.identityProvider.userId;
     }
 
-    return new AWS.CognitoIdentityCredentials(cognitoParams);
+    let credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+
+    credentials.toJSON = function() {
+      return {
+        expired: credentials.expired,
+        expireTime: credentials.expireTime,
+        accessKeyId: credentials.accessKeyId,
+        secretAccessKey: credentials.secretAccessKey,
+        sessionToken: credentials.sessionToken,
+      }
+    }.bind(credentials);
+
+    return credentials;
   }
 
   /**

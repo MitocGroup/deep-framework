@@ -117,8 +117,11 @@ export class RumSqsDriver extends AbstractDriver {
       return;
     }
 
-    this._sendMessageBatch(this._messagesBatch, (error, data) => {
-      this._messagesBatch = [];
+    // release messagesBatch without waiting for the callback
+    let batch = this._messagesBatch.slice();
+    this._messagesBatch = [];
+
+    this._sendMessageBatch(batch, (error, data) => {
       callback(error, data);
     });
   }
