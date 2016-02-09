@@ -101,17 +101,19 @@ export class Token {
       resourceId: this._identityPoolId,
       eventName: 'loadCredentials',
       eventId: Security.customEventId(this.identityPoolId),
+      time: new Date().getTime(),
     };
 
-    this._logService.rumLog(event);
+    let proxyCallback = (error, credentials) => {
+      // log event only after credentials are loaded to get identityId
+      this._logService.rumLog(event);
 
-    let proxyCallback = (error, credentails) => {
       event = util._extend({}, event);
       event.payload = {error, credentials};
 
       this._logService.rumLog(event);
 
-      callback(error, credentails);
+      callback(error, credentials);
     };
 
     // avoid refreshing or loading credentials for each request

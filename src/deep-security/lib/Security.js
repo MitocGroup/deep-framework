@@ -35,7 +35,7 @@ export class Security extends Kernel.ContainerAware {
   }
 
   /**
-   * @returns {Object}
+   * @returns {String}
    */
   get identityPoolId() {
     return this._identityPoolId;
@@ -97,11 +97,12 @@ export class Security extends Kernel.ContainerAware {
       eventName: 'login',
       eventId: Security.customEventId(this.identityPoolId),
       payload: {providerName, identityMetadata},
+      time: new Date().getTime(),
     };
 
-    this._logRumEvent(event);
-
     this._token.loadCredentials((error, credentials) => {
+      this._logRumEvent(event);
+
       event = util._extend({}, event);
       event.payload = {credentials};
 
@@ -128,11 +129,12 @@ export class Security extends Kernel.ContainerAware {
     let event = {
       eventName: 'anonymousLogin',
       eventId: Security.customEventId(this.identityPoolId),
+      time: new Date().getTime(),
     };
 
-    this._logRumEvent(event);
-
     this._token.loadCredentials((error, credentials) => {
+      this._logRumEvent(event);
+
       event = util._extend({}, event);
       event.payload = {credentials};
 
