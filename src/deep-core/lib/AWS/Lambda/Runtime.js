@@ -180,7 +180,7 @@ export class Runtime extends Interface {
    * @param {Number} ttl
    * @param {Function} callback
    */
-  createCachedResponse(data, ttl, callback = response => response.send()) {
+  createCachedResponse(data, ttl = 0, callback = response => response.send()) {
     let publicCache = this._kernel.get('cache').shared;
     let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);
     let response = new Response(this, data);

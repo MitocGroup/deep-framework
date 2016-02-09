@@ -238,12 +238,12 @@ export class Request {
   }
 
   /**
-   * @param {String} rawData
+   * @param {String|Object} rawData
    * @returns {Response}
    * @private
    */
   _rebuildResponse(rawData) {
-    let response = JSON.parse(rawData);
+    let response = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
 
     if (!response) {
       throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);
@@ -345,6 +345,7 @@ export class Request {
    */
   send(callback = () => {}) {
     let cache = this._cacheImpl;
+    let cacheKey = this._buildCacheKey();
     let callbackWrapper = this._callbackWrapper(callback);
     let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
 
@@ -352,9 +353,12 @@ export class Request {
       return this._send(callback);
     }
 
-    this.loadResponseFromCache(cache, callback, () => {
+    this.loadResponseFromCache(cache, cacheKey, callback, () => {
       if (this.isPublicCached) {
-        this.loadResponseFromCache(cache.shared, callback, () => {
+        let publicCache = cache.shared;
+        let publicCacheKey = publicCache.buildKeyFromRequest(this);
+
+        this.loadResponseFromCache(publicCache, publicCacheKey, callback, () => {
           this._send(callbackWrapper);
         });
 
@@ -369,12 +373,11 @@ export class Request {
 
   /**
    * @param {Object} driver
+   * @param {String} key
    * @param {Function} onSuccess
    * @param {Function} onError
    */
-  loadResponseFromCache(driver, onSuccess, onError) {
-    let key = this._buildCacheKey();
-
+  loadResponseFromCache(driver, key, onSuccess, onError) {
     driver.has(key, (err, has) => {
       if (has) {
         driver.get(key, (err, data) => {
@@ -384,7 +387,7 @@ export class Request {
             return;
           }
 
-          onSuccess(request._rebuildResponse(data));
+          onSuccess(this._rebuildResponse(data));
         });
 
         return;

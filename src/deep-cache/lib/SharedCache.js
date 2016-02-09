@@ -91,20 +91,6 @@ export class SharedCache {
   }
 
   /**
-   * @param {Object} data
-   * @returns {{isError: boolean, data: *, error: null, statusCode: number}}
-   * @private
-   */
-  _createSuccessfulResponse(data) {
-    return {
-      data: data,
-      statusCode: 200,
-      isError: false,
-      error: null,
-    };
-  }
-
-  /**
    * If key exists do nothing, else create it with specified parameters
    *
    * @param {String} key
