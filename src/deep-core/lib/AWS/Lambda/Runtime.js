@@ -176,6 +176,21 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @param {Object} data
+   * @param {Number} ttl
+   * @param {Function} callback
+   */
+  createCachedResponse(data, ttl, callback = response => response.send()) {
+    let publicCache = this._kernel.get('cache').shared;
+    let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);
+    let response = new Response(this, data);
+
+    publicCache.assure(publicCacheKey, response.stringify, ttl, () => {
+      callback(response);
+    });
+  }
+
+  /**
    * @returns {null|Object}
    */
   get calleeConfig() {

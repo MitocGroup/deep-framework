@@ -42,6 +42,7 @@ export class Request {
     this._cacheImpl = null;
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
+    this._publicCached = false;
 
     this._async = false;
     this._native = false;
@@ -117,10 +118,33 @@ export class Request {
   }
 
   /**
+   * @returns {Request}
+   */
+  enablePublicCache() {
+    this._publicCached = true;
+    return this;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  disablePublicCache() {
+    this._publicCached = false;
+    return this;
+  }
+
+  /**
    * @returns {Boolean}
    */
   get isCached() {
     return this._cacheImpl && this._cached;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isPublicCached() {
+    return this._publicCached && this._cacheImpl && this._cacheImpl.shared;
   }
 
   /**
@@ -304,6 +328,21 @@ export class Request {
     let cache = this._cacheImpl;
     let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
     let cacheKey = this._buildCacheKey();
+    let callbackWrapper = (response) => {
+      if (!response.isError) {
+        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
+          if (!error && !result) {
+            error = `Unable to persist request cache under key ${cacheKey}.`;
+          }
+
+          if (error) {
+            throw new CachedRequestException(error);
+          }
+        });
+      }
+
+      callback(response);
+    };
 
     cache.has(cacheKey, (error, result) => {
       if (error) {
@@ -322,22 +361,32 @@ export class Request {
         return;
       }
 
-      this._send((response) => {
-        if (!response.isError) {
-          cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
-            if (!error && !result) {
-              error = `Unable to persist request cache under key ${cacheKey}.`;
-            }
+      if (this.isPublicCached && !invalidateCache) {
+        let publicCache = this._cacheImpl.shared;
+        let publicCacheKey = publicCache.buildKeyFromRequest(this);
 
+        publicCache.has(publicCacheKey, (error, has) => {
+          if (error || !has) {
+            this._send(callbackWrapper);
+
+            return;
+          }
+
+          publicCache.get(publicCacheKey, (error, cachedResponse) => {
             if (error) {
-              throw new CachedRequestException(error);
-            }
-          });
-        }
+              this._send(callbackWrapper);
 
-        // @todo: do it synchronous?
-        callback(response);
-      });
+              return;
+            }
+
+            callback(this._rebuildResponse(cachedResponse));
+          });
+        });
+
+        return;
+      }
+
+      this._send(callbackWrapper);
     });
 
     return this;
