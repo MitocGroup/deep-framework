@@ -11,6 +11,6 @@ export class S3FSDriverMock extends S3FSDriver {
    * @private
    */
   get _fs() {
-    return FSMock();
+    return new FSMock();
   }
 }
