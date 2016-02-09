@@ -257,13 +257,17 @@ export class Request {
       throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);
     }
 
-    let ResponseImpl = Request._chooseResponseImpl(response._class);
+    if (response._class) {
+      let ResponseImpl = Request._chooseResponseImpl(response._class);
 
-    if (!ResponseImpl) {
-      throw new Exception(`Unknown Response implementation ${response._class}`);
+      if (!ResponseImpl) {
+        throw new Exception(`Unknown Response implementation ${response._class}`);
+      }
+
+      return new ResponseImpl(this, response.data, response.error);
     }
 
-    return new ResponseImpl(this, response.data, response.error);
+    return new Response(this, response, null);
   }
 
   /**
@@ -318,17 +322,16 @@ export class Request {
   }
 
   /**
+   * Hooks users callback to save the response into local storage cache
+   *
    * @param {Function} callback
+   * @private
    */
-  send(callback = () => {}) {
-    if (!this.isCached || this._async) {
-      return this._send(callback);
-    }
-
+  _callbackWrapper(callback) {
     let cache = this._cacheImpl;
-    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
     let cacheKey = this._buildCacheKey();
-    let callbackWrapper = (response) => {
+
+    return (response) => {
       if (!response.isError) {
         cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
           if (!error && !result) {
@@ -342,45 +345,25 @@ export class Request {
       }
 
       callback(response);
-    };
+    }
+  }
 
-    cache.has(cacheKey, (error, result) => {
-      if (error) {
-        throw new CachedRequestException(error);
-      }
+  /**
+   * @param {Function} callback
+   */
+  send(callback = () => {}) {
+    let cache = this._cacheImpl;
+    let callbackWrapper = this._callbackWrapper(callback);
+    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
 
-      if (result && !invalidateCache) {
-        cache.get(cacheKey, (error, result) => {
-          if (error) {
-            throw new CachedRequestException(error);
-          }
+    if (!this.isCached || this._async || invalidateCache) {
+      return this._send(callback);
+    }
 
-          callback(this._rebuildResponse(result));
-        });
-
-        return;
-      }
-
-      if (this.isPublicCached && !invalidateCache) {
-        let publicCache = this._cacheImpl.shared;
-        let publicCacheKey = publicCache.buildKeyFromRequest(this);
-
-        publicCache.has(publicCacheKey, (error, has) => {
-          if (error || !has) {
-            this._send(callbackWrapper);
-
-            return;
-          }
-
-          publicCache.get(publicCacheKey, (error, cachedResponse) => {
-            if (error) {
-              this._send(callbackWrapper);
-
-              return;
-            }
-
-            callback(this._rebuildResponse(cachedResponse));
-          });
+    this.loadResponseFromCache(cache, callback, () => {
+      if (this.isPublicCached) {
+        this.loadResponseFromCache(cache.shared, callback, () => {
+          this._send(callbackWrapper);
         });
 
         return;
@@ -390,6 +373,33 @@ export class Request {
     });
 
     return this;
+  }
+
+  /**
+   * @param {Object} driver
+   * @param {Function} onSuccess
+   * @param {Function} onError
+   */
+  loadResponseFromCache(driver, onSuccess, onError) {
+    let key = this._buildCacheKey();
+
+    driver.has(key, (err, has) => {
+      if (has) {
+        driver.get(key, (err, data) => {
+          if (err) {
+            onError(err);
+
+            return;
+          }
+
+          onSuccess(request._rebuildResponse(data));
+        });
+
+        return;
+      }
+
+      onError(new CachedRequestException(`Missing key ${key}`));
+    });
   }
 
   /**

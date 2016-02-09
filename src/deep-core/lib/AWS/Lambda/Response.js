@@ -69,17 +69,6 @@ export class Response {
   }
 
   /**
-   * @returns {{_class: *, data: *, error: *}}
-   */
-  get stringify() {
-    return JSON.stringify({
-      _class: Response.name, // @todo: find other way to pass `Request.prototype._rebuildResponse`
-      data: this._rawData,
-      error: null
-    });
-  }
-
-  /**
    * @returns {String}
    */
   static get contextMethod() {
