@@ -2,22 +2,11 @@
 
 import chai from 'chai';
 import {Runtime} from '../../../lib/AWS/Lambda/Runtime';
+import {RuntimeMock} from '../../Mocks/AWS/Lambda/RuntimeMock';
 import {Request} from '../../../lib/AWS/Lambda/Request';
 import {Context} from '../../../lib/AWS/Lambda/Context';
 import {Response} from '../../../lib/AWS/Lambda/Response';
 import {ErrorResponse} from '../../../lib/AWS/Lambda/ErrorResponse';
-
-
-class RuntimeTest extends Runtime {
-  constructor(kernel) {
-    super(kernel);
-  }
-
-  handle() {
-    this._kernel = 'handled';
-    return this;
-  }
-}
 
 suite('AWS/Lambda/Runtime', () => {
   let kernel = {
@@ -28,7 +17,7 @@ suite('AWS/Lambda/Runtime', () => {
   let event = {event: 'runLambda'};
   let context = {context: 'simpleContext'};
   let data = {data: 'responseData'};
-  let runtimeTest = new RuntimeTest(kernel);
+  let runtimeTest = new RuntimeMock(kernel);
 
   test('Class Runtime exists in AWS/Lambda/Runtime', () => {
     chai.expect(Runtime).to.be.an('function');
