@@ -11,6 +11,8 @@ import {DescribeIdentityException} from './Exception/DescribeIdentityException';
 import {CredentialsManager} from './CredentialsManager';
 import {Exception} from './Exception/Exception';
 import {Exception as CoreException} from 'deep-core';
+import {Security} from './Security';
+import util from 'util';
 
 /**
  * Security token holds details about logged user
@@ -22,13 +24,15 @@ export class Token {
   constructor(identityPoolId) {
     this._identityPoolId = identityPoolId;
 
-    this._identityProvider = null;
     this._lambdaContext = null;
     this._user = null;
-    this._userProvider = null;
     this._credentials = null;
     this._identityMetadata = null;
     this._tokenExpiredCallback = null;
+
+    this._identityProvider = null;
+    this._userProvider = null;
+    this._logService = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -81,19 +85,45 @@ export class Token {
   }
 
   /**
+   * @param {Object} logService
+   */
+  set logService(logService) {
+    this._logService = logService;
+  }
+
+  /**
    * @param {Function} callback
    */
   loadCredentials(callback = () => {}) {
+    let event = {
+      service: 'deep-security',
+      resourceType: 'Cognito',
+      resourceId: this._identityPoolId,
+      eventName: 'loadCredentials',
+      eventId: Security.customEventId(this.identityPoolId),
+    };
+
+    this._logService.rumLog(event);
+
+    let proxyCallback = (error, credentails) => {
+      event = util._extend({}, event);
+      event.payload = {error, credentials};
+
+      this._logService.rumLog(event);
+
+      callback(error, credentails);
+    };
+
     // avoid refreshing or loading credentials for each request
     if (this.validCredentials(this.credentials)) {
-      callback(null, this.credentials);
+      proxyCallback(null, this.credentials);
       return;
     }
 
     if (this.lambdaContext) {
-      this._backendLoadCredentials(callback);
+      this._backendLoadCredentials(proxyCallback);
     } else {
-      this._frontendLoadCredentials(callback);
+      this._frontendLoadCredentials(proxyCallback);
     }
   }
 

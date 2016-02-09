@@ -91,10 +91,11 @@ export class Security extends Kernel.ContainerAware {
     this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);
 
     this._token.userProvider = this.userProvider;
+    this._token.logService = this.kernel.get('log');
 
     let event = {
       eventName: 'login',
-      eventId: this._customEventId,
+      eventId: Security.customEventId(this.identityPoolId),
       payload: {providerName, identityMetadata},
     };
 
@@ -122,10 +123,11 @@ export class Security extends Kernel.ContainerAware {
     this._token = TokenImplementation.create(this.identityPoolId);
 
     this._token.userProvider = this.userProvider;
+    this._token.logService = this.kernel.get('log');
 
     let event = {
       eventName: 'anonymousLogin',
-      eventId: this._customEventId,
+      eventId: Security.customEventId(this.identityPoolId),
     };
 
     this._logRumEvent(event);
@@ -156,6 +158,7 @@ export class Security extends Kernel.ContainerAware {
     this._token = TokenImplementation.createFromLambdaContext(this._identityPoolId, lambdaContext);
 
     this._token.userProvider = this.userProvider;
+    this._token.logService = this.kernel.get('log');
 
     return this._token;
   }
@@ -200,11 +203,11 @@ export class Security extends Kernel.ContainerAware {
   }
 
   /**
+   * @param {String} identityPoolId
    * @returns {String}
-   * @private
    */
-  get _customEventId() {
-    return Security._md5(this.identityPoolId + new Date().getTime());
+  static customEventId(identityPoolId) {
+    return Security._md5(identityPoolId + new Date().getTime());
   }
 
   /**
