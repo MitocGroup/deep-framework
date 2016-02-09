@@ -14,7 +14,7 @@ suite('Driver/S3FSDriver', () => {
   let containerAware = new ContainerAware();
   let s3FsDriver = new S3FSDriverMock(containerAware);
   let key = 'testKey';
-  let fsMock = FSMock();
+  let fsMock = new FSMock();
 
   test('Class S3FSDriver exists in Driver/S3FSDriver', () => {
     chai.expect(S3FSDriver).to.be.an('function');
