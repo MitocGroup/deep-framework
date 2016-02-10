@@ -650,7 +650,7 @@ suite('Resource/Request', () => {
 
     let actualResult = testRequest._loadSecurityCredentials(spyCallback);
 
-    let spyCallbackArgs = spyCallback.args[0]
+    let spyCallbackArgs = spyCallback.args[0];
 
     chai.assert.instanceOf(actualResult, Request, 'actualResult is an instance of Request');
     chai.assert.instanceOf(
@@ -673,7 +673,7 @@ suite('Resource/Request', () => {
 
     let actualResult = testRequest._loadSecurityCredentials(spyCallback);
 
-    let spyCallbackArgs = spyCallback.args[0]
+    let spyCallbackArgs = spyCallback.args[0];
 
     chai.assert.instanceOf(actualResult, Request, 'actualResult is an instance of Request');
     chai.assert.instanceOf(
@@ -703,7 +703,7 @@ suite('Resource/Request', () => {
 
     testRequest._loadSecurityCredentials(spyCallback);
 
-    let spyCallbackArgs = spyCallback.args[0]
+    let spyCallbackArgs = spyCallback.args[0];
     chai.assert.instanceOf(
       spyCallbackArgs[0],
       LoadCredentialsException,
