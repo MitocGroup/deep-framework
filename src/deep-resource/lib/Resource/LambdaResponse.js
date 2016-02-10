@@ -73,19 +73,66 @@ export class LambdaResponse extends Response {
    * @private
    */
   _decodePayload() {
-    if (this._rawData && this._rawData.hasOwnProperty('Payload')) {
-      let payload = this._rawData.Payload;
+    let decodedPayload = null;
 
-      if (typeof payload === 'string') {
-        try {
-          payload = JSON.parse(payload);
-        } catch(e) {}
+    if (this._rawData.hasOwnProperty('Payload')) {
+      decodedPayload = LambdaResponse._decodePayloadObject(this._rawData.Payload);
+
+      // treat the case when error is stored in payload (nested)
+      if (decodedPayload.hasOwnProperty('errorMessage')) {
+        decodedPayload = LambdaResponse._decodeRawErrorObject(decodedPayload.errorMessage);
       }
-
-      return payload;
+    } else if(this._rawData.hasOwnProperty('errorMessage')) {
+      decodedPayload = LambdaResponse._decodeRawErrorObject(this._rawData.errorMessage);
     }
 
-    return null;
+    return decodedPayload;
+  }
+
+  /**
+   * @param {String|Object|*} rawError
+   * @returns {Object|String|null}
+   * @private
+   */
+  static _decodeRawErrorObject(rawError) {
+    let errorObj = rawError;
+
+    if (typeof errorObj === 'string') {
+      try {
+        errorObj = JSON.parse(errorObj);
+      } catch(e) {
+        errorObj = {
+          errorMessage: errorObj, // assume errorObj is the error message
+          errorStack: (new Error('Unknown error occurred.')).stack,
+          errorType: 'UnknownError',
+        };
+      }
+    } else {
+      errorObj = errorObj || {
+          errorMessage: 'Unknown error occurred.',
+          errorStack: (new Error('Unknown error occurred.')).stack,
+          errorType: 'UnknownError',
+        };
+    }
+
+    return errorObj;
+  }
+
+  /**
+   * @param {String} rawPayload
+   * @returns {Object|String|null}
+   * @private
+   */
+  static _decodePayloadObject(rawPayload) {
+    let payload = rawPayload;
+
+    if (typeof rawPayload === 'string') {
+      try {
+        payload = JSON.parse(payload);
+      } catch(e) {}
+    }
+
+    return payload;
   }
 
   /**
@@ -93,53 +140,34 @@ export class LambdaResponse extends Response {
    * @returns {Error|ValidationError|null}
    */
   static getPayloadError(payload) {
-    if (LambdaResponse.isValidationError(payload)) {
-      return new ValidationError(payload.errorMessage, payload.validationErrors);
-    } else if (payload.errorMessage) {
+    if (payload.hasOwnProperty('errorMessage')) {
+      let error = null;
 
-      // check for error object (on context.failed called)
-      if (!payload.hasOwnProperty('errorType') &&
-        !payload.hasOwnProperty('errorStack')) {
-
-        let rawErrorObj = null;
-
-        try {
-          rawErrorObj = JSON.parse(payload.errorMessage);
-          rawErrorObj = rawErrorObj || {
-              errorMessage: 'Unknown error occurred.',
-              errorStack: null,
-              errorType: 'UnknownError',
-            };
-
-          rawErrorObj.errorMessage = rawErrorObj.errorMessage || 'Unknown error occurred.';
-          rawErrorObj.errorType = rawErrorObj.errorType || 'UnknownError';
-        } catch (e) {
-        }
-
-        payload = rawErrorObj || {
-            errorMessage: payload.errorMessage,
-            errorStack: null,
-            errorType: 'UnknownError',
-          };
+      if (LambdaResponse.isValidationError(payload)) {
+        error = new ValidationError(payload.errorMessage, payload.validationErrors);
       } else {
         payload.errorType = payload.errorType || 'UnknownError';
+        payload.errorMessage = payload.errorMessage || 'Unknown error occurred.';
+        payload.errorStack = payload.errorStack || (new Error(payload.errorMessage)).stack;
+
+        error = new Error(payload.errorMessage);
+
+        // try to define a custom constructor name
+        // fail silently in case of readonly property...
+        try {
+          Object.defineProperty(error, 'name', {
+            value: payload.errorType,
+          });
+        } catch (e) {   }
       }
 
-      let errorObj = new Error(payload.errorMessage);
-
-      // try to define a custom constructor name
-      // fail silently in case of readonly property...
       try {
-        Object.defineProperty(errorObj, 'name', {
-          value: payload.errorType,
+        Object.defineProperty(error, 'stack', {
+          value: payload.errorStack,
         });
       } catch (e) {   }
 
-      Object.defineProperty(errorObj, 'stack', {
-        value: payload.errorStack,
-      });
-
-      return errorObj;
+      return error;
     }
 
     return null;

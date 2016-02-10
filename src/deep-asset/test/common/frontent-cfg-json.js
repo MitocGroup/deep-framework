@@ -72,5 +72,6 @@ export default {
         "www.amazon.com": "amzn1.application.3b5k2jb65432352gfd5b23kj5hb"
       }
     }
-  }
+  },
+  validationSchemas: [],
 }

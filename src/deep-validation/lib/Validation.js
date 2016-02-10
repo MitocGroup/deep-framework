@@ -11,6 +11,8 @@ import {InvalidJoiSchemaException} from './Exception/InvalidJoiSchemaException';
 import Joi from 'joi';
 import {ObjectValidationFailedException} from './Exception/ObjectValidationFailedException';
 import {Exception} from './Exception/Exception';
+import path from 'path';
+import Core from 'deep-core';
 
 /**
  * Validation engine
@@ -131,6 +133,21 @@ export class Validation extends Kernel.ContainerAware {
 
   /**
    * @param {String} schemaName
+   * @param {Object} schema
+   * @returns {Validation}
+   */
+  setGuessSchema(schemaName, schema) {
+    if (typeof schema === 'function') {
+      schema = this.schemaFromValidationCb(schema);
+    }
+
+    let setSchemaMethod = schema.isJoi ? 'setSchema' : 'setSchemaRaw';
+
+    return this[setSchemaMethod](schemaName, schema);
+  }
+
+  /**
+   * @param {String} schemaName
    * @returns {Boolean}
    */
   hasSchema(schemaName) {
@@ -146,7 +163,16 @@ export class Validation extends Kernel.ContainerAware {
       throw new ValidationSchemaNotFoundException(schemaName);
     }
 
-    return this._schemas[schemaName];
+    let schema = this._schemas[schemaName];
+
+    // Let's assume it's an path while lazy loading in backend context
+    if (typeof schema === 'string') {
+      return this
+        .setGuessSchema(schemaName, require(schema))
+        .getSchema(schemaName);
+    }
+
+    return schema;
   }
 
   /**
@@ -158,7 +184,48 @@ export class Validation extends Kernel.ContainerAware {
   boot(kernel, callback) {
     this._schemas = this._rawModelsToSchemas(kernel.config.models);
 
-    callback();
+    let universalRequire = new Core.Generic.UniversalRequire();
+    let remainingSchemas = kernel.config.validationSchemas.length;
+
+    // Load custom schemas
+    kernel.config.validationSchemas.forEach((schemaName) => {
+      let relativeSchemaPath = path.join(
+        Core.AWS.Lambda.Runtime.VALIDATION_SCHEMAS_DIR,
+        `${schemaName}.js`
+      );
+
+      if (kernel.isBackend) {
+        this._schemas[schemaName] = path.join(process.cwd(), relativeSchemaPath);
+
+        remainingSchemas--;
+      } else {
+        let schemaUrl = path.join(path.sep, relativeSchemaPath);
+
+        universalRequire.require(schemaUrl, (error, schemaObj) => {
+
+          // @todo: abstract it somehow?
+          if (error) {
+            console.error(`Error while loading schema ${schemaName}: ${error}`);
+          } else {
+            this.setGuessSchema(schemaName, schemaObj);
+          }
+
+          remainingSchemas--;
+        });
+      }
+    });
+
+    let checkRemainingSchemas = (onFail) => {
+      if (remainingSchemas <= 0) {
+        callback();
+      } else {
+        onFail(onFail);
+      }
+    };
+
+    checkRemainingSchemas(() => {
+      setTimeout(checkRemainingSchemas, 200);
+    });
   }
 
   /**

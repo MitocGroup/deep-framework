@@ -25,7 +25,7 @@ export class ErrorResponse extends Response {
   static createErrorObject(error) {
     let errorObj = {};
 
-    if (error.isJoi) { // we suppose it's a joi validation error
+    if (error.name === 'ValidationError') { // we assume it's a joi validation error
       errorObj = {
         errorType: error.name,
         errorMessage: error.annotate(),
