@@ -319,7 +319,7 @@ export class Request {
    * @param {Function} callback
    * @private
    */
-  _callbackWrapper(callback) {
+  _responseCallbackCacheDecorator(callback) {
     let cache = this._cacheImpl;
     let cacheKey = this._buildCacheKey();
 
@@ -346,26 +346,38 @@ export class Request {
   send(callback = () => {}) {
     let cache = this._cacheImpl;
     let cacheKey = this._buildCacheKey();
-    let callbackWrapper = this._callbackWrapper(callback);
+    let decoratedCallback = this._responseCallbackCacheDecorator(callback);
     let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
 
     if (!this.isCached || this._async || invalidateCache) {
       return this._send(callback);
     }
 
-    this.loadResponseFromCache(cache, cacheKey, callback, () => {
+    this.loadResponseFromCache(cache, cacheKey, (error, response) => {
+      if (!error) {
+        callback(response);
+
+        return;
+      }
+
       if (this.isPublicCached) {
         let publicCache = cache.shared;
         let publicCacheKey = publicCache.buildKeyFromRequest(this);
 
-        this.loadResponseFromCache(publicCache, publicCacheKey, callback, () => {
-          this._send(callbackWrapper);
+        this.loadResponseFromCache(publicCache, publicCacheKey, (error, response) => {
+          if (!error) {
+            callback(response);
+
+            return;
+          }
+
+          this._send(decoratedCallback);
         });
 
         return;
       }
 
-      this._send(callbackWrapper);
+      this._send(decoratedCallback);
     });
 
     return this;
@@ -374,26 +386,25 @@ export class Request {
   /**
    * @param {Object} driver
    * @param {String} key
-   * @param {Function} onSuccess
-   * @param {Function} onError
+   * @param {Function} callback
    */
-  loadResponseFromCache(driver, key, onSuccess, onError) {
+  loadResponseFromCache(driver, key, callback) {
     driver.has(key, (err, has) => {
       if (has) {
         driver.get(key, (err, data) => {
           if (err) {
-            onError(err);
+            callback(err, null);
 
             return;
           }
 
-          onSuccess(this._rebuildResponse(data));
+          callback(null, this._rebuildResponse(data));
         });
 
         return;
       }
 
-      onError(new CachedRequestException(`Missing key ${key}`));
+      callback(new CachedRequestException(`Missing key ${key}`), null);
     });
   }
 
