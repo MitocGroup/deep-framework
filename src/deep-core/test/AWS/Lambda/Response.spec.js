@@ -81,4 +81,7 @@ suite('AWS/Lambda/Response', () => {
     chai.expect(error).to.be.an.instanceOf(ContextAlreadySentException);
   });
 
+  test('Check VALIDATION_SCHEMAS_DIR', () => {
+    chai.expect(Runtime.VALIDATION_SCHEMAS_DIR).to.be.equal('__deep_validation_schemas__');
+  });
 });

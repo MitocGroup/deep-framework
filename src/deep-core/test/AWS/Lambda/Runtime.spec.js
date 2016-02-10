@@ -13,6 +13,9 @@ suite('AWS/Lambda/Runtime', () => {
     config: {
       forceUserIdentity: false,
     },
+    get: () => {
+      return this;
+    },
   };
   let event = {event: 'runLambda'};
   let context = {context: 'simpleContext'};
@@ -33,6 +36,14 @@ suite('AWS/Lambda/Runtime', () => {
 
   test('Check constructor sets context=null', () => {
     chai.expect(runtimeTest.context).to.be.equal(null);
+  });
+
+  test('Check constructor sets forceUserIdentity=false', () => {
+    chai.expect(runtimeTest.forceUserIdentity).to.be.equal(false);
+  });
+
+  test('Check constructor sets loggedUserId=null', () => {
+    chai.expect(runtimeTest.loggedUserId).to.be.equal(null);
   });
 
   test('Check run() method returns valid object', () => {
