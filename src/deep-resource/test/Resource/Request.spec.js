@@ -12,6 +12,9 @@ import {Instance} from '../../lib/Resource/Instance';
 import {MissingCacheImplementationException} from '../../lib/Resource/Exception/MissingCacheImplementationException';
 import {Exception} from '../../lib/Exception/Exception';
 import {CachedRequestException} from '../../lib/Resource/Exception/CachedRequestException';
+import {MissingSecurityServiceException} from '../../lib/Resource/Exception/MissingSecurityServiceException';
+import {NotAuthenticatedException} from '../../lib/Resource/Exception/NotAuthenticatedException';
+import {LoadCredentialsException} from '../../lib/Resource/Exception/LoadCredentialsException';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
@@ -635,5 +638,77 @@ suite('Resource/Request', () => {
       SuperagentResponse,
       'result is an instance of SuperagentResponse'
     );
+  });
+
+  test('Check _loadSecurityCredentials throws "MissingSecurityServiceException"', () => {
+    let spyCallback = sinon.spy();
+    let testAction = {
+      _name: 'testAction',
+      resource: 'resource name',
+    };
+    let testRequest = new Request(testAction, payload, method);
+
+    let actualResult = testRequest._loadSecurityCredentials(spyCallback);
+
+    let spyCallbackArgs = spyCallback.args[0]
+
+    chai.assert.instanceOf(actualResult, Request, 'actualResult is an instance of Request');
+    chai.assert.instanceOf(
+      spyCallbackArgs[0],
+      MissingSecurityServiceException,
+      'error is an instance of MissingSecurityServiceException'
+    );
+    chai.expect(spyCallbackArgs[1]).to.equal(null);
+  });
+
+  test('Check _loadSecurityCredentials throws "NotAuthenticatedException"', () => {
+    let spyCallback = sinon.spy();
+    let testAction = {
+      _name: 'testAction',
+      resource: {
+        security: 'insuffcient value',
+      }
+    };
+    let testRequest = new Request(testAction, payload, method);
+
+    let actualResult = testRequest._loadSecurityCredentials(spyCallback);
+
+    let spyCallbackArgs = spyCallback.args[0]
+
+    chai.assert.instanceOf(actualResult, Request, 'actualResult is an instance of Request');
+    chai.assert.instanceOf(
+      spyCallbackArgs[0],
+      NotAuthenticatedException,
+      'error is an instance of NotAuthenticatedException'
+    );
+    chai.expect(spyCallbackArgs[1]).to.equal(null);
+  });
+
+  test('Check _loadSecurityCredentials throws "LoadCredentialsException"', () => {
+    let spyCallback = sinon.spy();
+    let testAction = {
+      _name: 'testAction',
+      resource: {
+        security: {
+          token: {
+            loadCredentials: (callback) => {
+              callback('mock error on loadCredentials', null);
+              return;
+            },
+          },
+        },
+      },
+    };
+    let testRequest = new Request(testAction, payload, method);
+
+    testRequest._loadSecurityCredentials(spyCallback);
+
+    let spyCallbackArgs = spyCallback.args[0]
+    chai.assert.instanceOf(
+      spyCallbackArgs[0],
+      LoadCredentialsException,
+      'error is an instance of LoadCredentialsException'
+    );
+    chai.expect(spyCallbackArgs[1]).to.equal(null);
   });
 });
