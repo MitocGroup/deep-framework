@@ -30,6 +30,7 @@ export class RumSqsDriver extends AbstractDriver {
     this._enabled = enabled;
 
     this._messagesBatch = [];
+    this._runningBatches = 0;
     this._sqs = null;
   }
 
@@ -99,7 +100,10 @@ export class RumSqsDriver extends AbstractDriver {
       }
 
       if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {
-        this.flush(callback);
+        let batch = this._messagesBatch.slice();
+        this._messagesBatch = [];
+
+        this._sendMessageBatch(batch, callback);
       } else {
         callback(null, null);
       }
@@ -112,17 +116,25 @@ export class RumSqsDriver extends AbstractDriver {
    * @param {Function} callback
    */
   flush(callback) {
-    if (!this.enabled || this._messagesBatch.length === 0) {
+    if (!this.enabled || (this._messagesBatch.length === 0 && this._runningBatches === 0)) {
       callback(null, null);
       return;
     }
 
-    // release messagesBatch without waiting for the callback
-    let batch = this._messagesBatch.slice();
-    this._messagesBatch = [];
+    this._sendMessageBatch(this._messagesBatch, (error, data) => {
+      this._messagesBatch = [];
 
-    this._sendMessageBatch(batch, (error, data) => {
-      callback(error, data);
+      if (this._runningBatches > 0) {
+        // wait for all batches to be pushed into SQS
+        var intervalID = setInterval(() => {
+          if (this._runningBatches === 0) {
+            clearInterval(intervalID);
+            return callback(error, data);
+          }
+        }, 50);
+      } else {
+        callback(error, data);
+      }
     });
   }
 
@@ -152,6 +164,13 @@ export class RumSqsDriver extends AbstractDriver {
    * @private
    */
   _sendMessageBatch(messages, callback) {
+    if (messages.length === 0) {
+      callback(null, null);
+      return;
+    }
+
+    this._runningBatches++;
+
     let entries = [];
     messages.forEach((event, index) => {
       event = JSON.stringify(event);
@@ -169,6 +188,8 @@ export class RumSqsDriver extends AbstractDriver {
     };
 
     this.sqs.sendMessageBatch(params, (error, data) => {
+      this._runningBatches--;
+
       if (error) {
         error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);
       }
