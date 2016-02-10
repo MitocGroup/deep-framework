@@ -337,7 +337,7 @@ export class Request {
       }
 
       callback(response);
-    }
+    };
   }
 
   /**
