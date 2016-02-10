@@ -185,7 +185,7 @@ export class Runtime extends Interface {
     let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);
     let response = new Response(this, data);
 
-    publicCache.assure(publicCacheKey, data, ttl, () => {
+    publicCache.assure(publicCacheKey, {body: data}, ttl, () => {
       callback(response);
     });
   }

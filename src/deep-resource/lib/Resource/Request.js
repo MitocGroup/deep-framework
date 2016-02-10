@@ -259,7 +259,7 @@ export class Request {
       return new ResponseImpl(this, response.data, response.error);
     }
 
-    return new Response(this, response, null);
+    return new SuperagentResponse(this, response, null);
   }
 
   /**
