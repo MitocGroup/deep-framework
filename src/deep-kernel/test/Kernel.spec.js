@@ -16,11 +16,7 @@ import frontendConfig from './common/frontent-cfg-json';
 chai.use(sinonChai);
 
 suite('Kernel', () => {
-  let deepServices = {
-    serviceName: () => {
-      return 'testService';
-    },
-  };
+
   let backendKernelInstance = null;
   let frontendKernelInstance = null;
 
