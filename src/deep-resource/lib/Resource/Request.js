@@ -42,6 +42,7 @@ export class Request {
     this._cacheImpl = null;
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
+    this._publicCached = false;
 
     this._async = false;
     this._native = false;
@@ -130,10 +131,25 @@ export class Request {
   }
 
   /**
+   * @returns {Request}
+   */
+  usePublicCache() {
+    this._publicCached = true;
+    return this;
+  }
+
+  /**
    * @returns {Boolean}
    */
   get isCached() {
     return this._cacheImpl && this._cached;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isPublicCached() {
+    return this._publicCached && this._cacheImpl && this._cacheImpl.shared;
   }
 
   /**
@@ -236,24 +252,28 @@ export class Request {
   }
 
   /**
-   * @param {String} rawData
+   * @param {String|Object} rawData
    * @returns {Response}
    * @private
    */
   _rebuildResponse(rawData) {
-    let response = JSON.parse(rawData);
+    let response = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
 
     if (!response) {
       throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);
     }
 
-    let ResponseImpl = Request._chooseResponseImpl(response._class);
+    if (response._class) {
+      let ResponseImpl = Request._chooseResponseImpl(response._class);
 
-    if (!ResponseImpl) {
-      throw new Exception(`Unknown Response implementation ${response._class}`);
+      if (!ResponseImpl) {
+        throw new Exception(`Unknown Response implementation ${response._class}`);
+      }
+
+      return new ResponseImpl(this, response.data, response.error);
     }
 
-    return new ResponseImpl(this, response.data, response.error);
+    return new SuperagentResponse(this, response, null);
   }
 
   /**
@@ -308,17 +328,45 @@ export class Request {
   }
 
   /**
+   * Hooks users callback to save the response into local storage cache
+   *
+   * @param {Function} callback
+   * @private
+   */
+  _responseCallbackCacheDecorator(callback) {
+    let cache = this._cacheImpl;
+    let cacheKey = this._buildCacheKey();
+
+    return (response) => {
+      if (!response.isError) {
+        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
+          if (!error && !result) {
+            error = `Unable to persist request cache under key ${cacheKey}.`;
+          }
+
+          if (error) {
+            throw new CachedRequestException(error);
+          }
+        });
+      }
+
+      callback(response);
+    };
+  }
+
+  /**
    * @param {Function} callback
    */
   send(callback = () => {}) {
-    if (!this.isCached || this._async) {
+    let cache = this._cacheImpl;
+    let cacheKey = this._buildCacheKey();
+    let decoratedCallback = this._responseCallbackCacheDecorator(callback);
+    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
+    let logService = this.action.resource.log; // @todo - create a getter
+
+    if (!this.isCached || this._async || invalidateCache) {
       return this._send(callback);
     }
-
-    let logService = this.action.resource.log;
-    let cache = this._cacheImpl;
-    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
-    let cacheKey = this._buildCacheKey();
 
     let rumEvent = {
       "service": "deep-resource",
@@ -331,31 +379,33 @@ export class Request {
     };
 
     logService.rumLog(rumEvent);
+    
+    this.loadResponseFromCache(cache, cacheKey, (error, response) => {
+      if (!error) {
+        callback(response);
 
-    cache.has(cacheKey, (error, result) => {
-      if (error) {
-        throw new CachedRequestException(error);
+        return;
       }
 
-      if (result && !invalidateCache) {
-        let event = util._extend({}, rumEvent);
-        event.service = 'deep-cache';
-        event.resourceType = cache.type();
-        event.eventName = 'get';
+      if (this.isPublicCached) {
+        let publicCache = cache.shared;
+        let publicCacheKey = publicCache.buildKeyFromRequest(this);
 
-        logService.rumLog(event);
+        this.loadResponseFromCache(publicCache, publicCacheKey, (error, response) => {
+          if (!error) {
+            callback(response);
 
-        cache.get(cacheKey, (error, result) => {
-          event = util._extend({}, event);
-          event.payload = {error, result};
-
-          logService.rumLog(event);
-
-          if (error) {
-            throw new CachedRequestException(error);
+            return;
           }
 
-          callback(this._rebuildResponse(result));
+          this._send((response) => {
+            let event = util._extend({}, rumEvent);
+            event.payload = response;
+
+            logService.rumLog(event);
+            
+            decoratedCallback(response);
+          });
         });
 
         return;
@@ -369,24 +419,53 @@ export class Request {
 
         logService.rumLog(event);
 
-        if (!response.isError) {
-          cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
-            if (!error && !result) {
-              error = `Unable to persist request cache under key ${cacheKey}.`;
-            }
-
-            if (error) {
-              logService.warn(new CachedRequestException(error));
-            }
-          });
-        }
-
-        // @todo: do it synchronous?
-        callback(response);
+        decoratedCallback(response);
       });
     });
 
     return this;
+  }
+
+  /**
+   * @param {Object} driver
+   * @param {String} key
+   * @param {Function} callback
+   */
+  loadResponseFromCache(driver, key, callback) {
+    driver.has(key, (err, has) => {
+      if (has) {
+        let logService = this.action.resource.log;
+        
+        let event = {
+          service: 'deep-cache',
+          resourceType: driver.type(),
+          resourceId: key,
+          eventName: 'get',
+          requestId: this.customId,
+        };
+        
+        logService.rumLog(event);
+        
+        driver.get(key, (err, data) => {
+          event = util._extend({}, event);
+          event.payload = {err, data};
+
+          logService.rumLog(event);
+          
+          if (err) {
+            callback(err, null);
+
+            return;
+          }
+
+          callback(null, this._rebuildResponse(data));
+        });
+
+        return;
+      }
+
+      callback(new CachedRequestException(`Missing key ${key}`), null);
+    });
   }
 
   /**
