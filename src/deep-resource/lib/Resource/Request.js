@@ -192,7 +192,7 @@ export class Request {
   }
 
   /**
-   * @param {Object} cache
+   * @param {Cache} cache
    */
   set cacheImpl(cache) {
     this._cacheImpl = cache;

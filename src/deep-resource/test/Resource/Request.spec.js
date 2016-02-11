@@ -3,6 +3,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+
 import {Resource} from '../../lib/Resource';
 import {Action} from '../../lib/Resource/Action';
 import {Response} from '../../lib/Resource/Response';
@@ -24,8 +25,9 @@ import KernelFactory from '../common/KernelFactory';
 import requireProxy from 'proxyquire';
 import AWS from 'mock-aws';
 import {HttpMock} from '../Mock/HttpMock';
-import {Request} from '../../lib/Resource/Request';
 import {CacheMock} from '../Mock/CacheMock';
+import {Request} from '../../lib/Resource/Request';
+import {RequestMock} from '../Mock/RequestMock';
 
 chai.use(sinonChai);
 
@@ -826,5 +828,30 @@ suite('Resource/Request', () => {
     chai.assert.instanceOf(
       error, NotAuthenticatedException, 'error is an instance of NotAuthenticatedException'
     );
+  });
+
+  test('Check send()', () => {
+    let spyCallback = sinon.spy();
+    let testRequest = new RequestMock(action, payload, method);
+    let cache = new CacheMock();
+
+    cache._shared = {
+      buildKeyFromRequest: () => {
+        return 'to pass test';
+      }
+    };
+    testRequest.cacheImpl = cache;
+
+    testRequest.setMode(RequestMock.FAILURE_MODE, ['loadResponseFromCache']);
+    testRequest.usePublicCache();
+
+    console.log('request.cacheImpl: ', request.cacheImpl)
+    //act
+    let actualResult = testRequest.send(spyCallback);
+
+    //assert
+    chai.assert.instanceOf(testRequest, RequestMock, 'resource is an instance of RequestMock');
+    chai.expect(spyCallback.args[0][0]).to.eql(RequestMock.DATA);
+
   });
 });
