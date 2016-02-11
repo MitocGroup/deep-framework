@@ -7,7 +7,6 @@ import {Request} from '../../../lib/AWS/Lambda/Request';
 import {Context} from '../../../lib/AWS/Lambda/Context';
 import {Response} from '../../../lib/AWS/Lambda/Response';
 import {ErrorResponse} from '../../../lib/AWS/Lambda/ErrorResponse';
-import {MissingUserContextException} from '../../../lib/AWS/Lambda/Exception/MissingUserContextException';
 import {InvalidCognitoIdentityException} from '../../../lib/AWS/Lambda/Exception/InvalidCognitoIdentityException';
 import Kernel from 'deep-kernel';
 import Validation from 'deep-validation';
