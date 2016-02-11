@@ -62,13 +62,6 @@ export class Request {
   }
 
   /**
-   * @returns {Boolean}
-   */
-  get isPreValidated() {
-    return null !== this._validationSchemaName;
-  }
-
-  /**
    * @returns {String}
    */
   get validationSchemaName() {
@@ -482,24 +475,11 @@ export class Request {
    * @returns {Request}
    */
   _send(callback = () => {}) {
-     if (this.isPreValidated) {
-      let validation = this._action.resource.validation;
+    if (this.validationSchemaName) {
+      let result = this._validate();
 
-      let validationResult = validation.validate(this._validationSchemaName, this.payload, true);
-
-      if (validationResult.error) {
-        let error = validationResult.error;
-
-        callback(new LambdaResponse(this, {
-          errorMessage: JSON.stringify({
-            errorType: error.name,
-            errorMessage: error.annotate(),
-            errorStack: error.stack || (new Error(error.message)).stack,
-            validationErrors: error.details,
-          }),
-        }, null));
-
-        return this;
+      if (result.error) {
+        callback(this._createValidationErrorResponse(result.error));
       }
     }
 
@@ -518,6 +498,37 @@ export class Request {
     }
 
     return this;
+  }
+
+  /**
+   * @returns {Object}
+   * @private
+   */
+  _validate() {
+    if (!this.validationSchemaName) {
+      throw new Exception('Error on validating request. Validation schema is not defined.');
+    }
+
+    return this.action.resource.validation.validate(
+      this.validationSchemaName, this.payload, true
+    );
+  }
+
+  /**
+   * @param validationError
+   *
+   * @returns {LambdaResponse}
+   * @private
+   */
+  _createValidationErrorResponse(validationError) {
+    return new LambdaResponse(this, {
+      errorMessage: JSON.stringify({
+        errorType: validationError.name,
+        errorMessage: validationError.annotate(),
+        errorStack: validationError.stack || (new Error(validationError.message)).stack,
+        validationErrors: validationError.details,
+      })
+    }, null);
   }
 
   /**
