@@ -27,35 +27,6 @@ export class SharedCache {
   }
 
   /**
-   * @todo: use Promise when get rid of transpiler
-   *
-   * @param {Request} requestObject
-   * @param {Function} callback
-   * @returns {Promise}
-   */
-  request(requestObject, callback = () => {}) {
-    let cacheKey = this.buildKeyFromRequest(requestObject);
-
-    this._driver.has(cacheKey, (err, has) => {
-      if (has) {
-        this._driver.get(cacheKey, (err, data) => {
-          if (err) {
-            requestObject.send(callback);
-
-            return;
-          }
-
-          callback(this._createSuccessfulResponse(data));
-        });
-
-        return;
-      }
-
-      requestObject.send(callback);
-    });
-  }
-
-  /**
    * @param {Request} request
    * @returns {String}
    */
@@ -117,20 +88,6 @@ export class SharedCache {
     });
 
     return normalizedData;
-  }
-
-  /**
-   * @param {Object} data
-   * @returns {{isError: boolean, data: *, error: null, statusCode: number}}
-   * @private
-   */
-  _createSuccessfulResponse(data) {
-    return {
-      data: data,
-      statusCode: 200,
-      isError: false,
-      error: null,
-    };
   }
 
   /**
