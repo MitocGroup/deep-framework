@@ -98,6 +98,12 @@ suite('Resource/LocalRequest', () => {
     }
   );
 
+  test('Check LOCAL_LAMBDA_ASYNC_ENDPOINT static getter return "/_/lambda-async"',
+    () => {
+      chai.expect(LocalRequest.LOCAL_LAMBDA_ASYNC_ENDPOINT).to.be.equal('/_/lambda-async');
+    }
+  );
+
   test('Check _send() method for acctionType="lambda" for window = {}', () => {
     let spyCallback = sinon.spy();
 

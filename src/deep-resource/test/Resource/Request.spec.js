@@ -15,6 +15,7 @@ import {CachedRequestException} from '../../lib/Resource/Exception/CachedRequest
 import {MissingSecurityServiceException} from '../../lib/Resource/Exception/MissingSecurityServiceException';
 import {NotAuthenticatedException} from '../../lib/Resource/Exception/NotAuthenticatedException';
 import {LoadCredentialsException} from '../../lib/Resource/Exception/LoadCredentialsException';
+import {AsyncCallNotAvailableException} from '../../lib/Resource/Exception/AsyncCallNotAvailableException';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
@@ -38,7 +39,7 @@ suite('Resource/Request', () => {
   let microserviceIdentifier = 'hello.world.example';
   let resourceName = 'sample';
   let actionName = 'say-hello';
-  let payload = '{"body":"bodyData"}';
+  let payload = '{"body":"bodyData","id":"string_here"}';
   let source = {
     api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',
     original: 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayHello64232f3705a',
@@ -710,5 +711,120 @@ suite('Resource/Request', () => {
       'error is an instance of LoadCredentialsException'
     );
     chai.expect(spyCallbackArgs[1]).to.equal(null);
+  });
+
+  test('Check invokeAsync throws "AsyncCallNotAvailableException"', () => {
+    let testAction = {
+      _name: 'testAction',
+      resource: {
+        security: {
+          token: 'test',
+        },
+      },
+    };
+    let error = null;
+    let testRequest = new Request(testAction, payload, method);
+
+    try {
+      testRequest.invokeAsync();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error,
+      AsyncCallNotAvailableException,
+      'error is an instance of AsyncCallNotAvailableException'
+    );
+  });
+
+  test('Check invokeAsync sets native and async to true', () => {
+    let actualResult = request.invokeAsync();
+
+    chai.assert.instanceOf(actualResult, Request, 'is an instance of Request');
+    chai.expect(actualResult.async).to.equal(true);
+    chai.expect(actualResult.native).to.equal(true);
+  });
+
+  test('Check validationSchemaName setter/getter', () => {
+    let validationSchemaName = request.validationSchemaName;
+    let testValidationSchemaName = 'testValidationSchemaName';
+
+    request.validationSchemaName = testValidationSchemaName;
+    chai.expect(request.validationSchemaName).to.equal(testValidationSchemaName);
+
+    request.skipPreValidation();
+    chai.expect(request.validationSchemaName).to.equal(null);
+
+    request.validationSchemaName = validationSchemaName;
+    chai.expect(request.validationSchemaName).to.equal(validationSchemaName);
+  });
+
+  test('Check _httpRealMethod()', () => {
+    let httpMethod = 'DELETE';
+    let actualResult = Request._httpRealMethod(httpMethod);
+
+    chai.expect(actualResult).to.equal('del');
+  });
+
+  test('Check _send()', () => {
+    let spyCallback = sinon.spy();
+    let modelName = 'ConfigurationModel';
+    let testModelSchema = {
+      Configuration: 'string',
+      Status: 'number',
+    };
+    let inputObject = {
+      Configuration: 'test configuration',
+      Status: 'should be number here',
+    };
+
+    //arrange
+    request._action.resource.validation.setSchemaRaw(modelName, testModelSchema);
+    request._payload =  inputObject;
+    request.validationSchemaName = modelName;
+
+    //act
+    let actualResult = request._send(spyCallback);
+
+    //assert
+    chai.assert.instanceOf(actualResult, Request, 'is an instance of Request');
+
+    let spyCallbackArgs = spyCallback.args[0];
+
+    chai.assert.instanceOf(
+      spyCallbackArgs[0],
+      LambdaResponse,
+      'error is an instance of LambdaResponse'
+    );
+    chai.expect(spyCallbackArgs[1]).to.equal(undefined);
+  });
+
+  test('Check _createAws4SignedRequest() throws NotAuthenticatedException ', () => {
+    let spyCallback = sinon.spy();
+    let error = null;
+    let testAction = {
+      _name: 'testAction',
+      resource: {
+        security: 'insuffcient value',
+      },
+      apiCacheEnabled: true,
+    };
+    let testRequest = new Request(testAction, payload, method);
+    let url = 'https://6jh99kuklk.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-test';
+    let payload = {
+      Configuration: 'test configuration',
+      Status: 'should be number here',
+    };
+
+    try {
+      testRequest._createAws4SignedRequest(url, 'DELETE', payload, spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, NotAuthenticatedException, 'error is an instance of NotAuthenticatedException'
+    );
   });
 });
