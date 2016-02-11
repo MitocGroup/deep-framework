@@ -831,6 +831,7 @@ suite('Resource/Request', () => {
   });
 
   test('Check send()', () => {
+    //arange
     let spyCallback = sinon.spy();
     let testRequest = new RequestMock(action, payload, method);
     let cache = new CacheMock();
@@ -845,13 +846,11 @@ suite('Resource/Request', () => {
     testRequest.setMode(RequestMock.FAILURE_MODE, ['loadResponseFromCache']);
     testRequest.usePublicCache();
 
-    console.log('request.cacheImpl: ', request.cacheImpl)
     //act
-    let actualResult = testRequest.send(spyCallback);
+    testRequest.send(spyCallback);
 
     //assert
     chai.assert.instanceOf(testRequest, RequestMock, 'resource is an instance of RequestMock');
     chai.expect(spyCallback.args[0][0]).to.eql(RequestMock.DATA);
-
   });
 });
