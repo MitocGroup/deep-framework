@@ -62,17 +62,6 @@ suite('SharedCache', () => {
     chai.expect(requestCacheKey).to.equal(runtimeCacheKey);
   });
 
-  test('Class _createSuccessfulResponse returns valid object', () => {
-    let expectedResult = {
-      data: data,
-      statusCode: 200,
-      isError: false,
-      error: null,
-    };
-
-    chai.expect(sharedCache._createSuccessfulResponse(data)).to.eql(expectedResult);
-  });
-
   //@todo - add additional checks
   test('Check assure() if key exists', () => {
     let spyCallback = sinon.spy();
@@ -85,17 +74,6 @@ suite('SharedCache', () => {
     let actualResult = sharedCache.assure(key, value, ttl, spyCallback);
 
     chai.expect(actualResult).to.equal(undefined);
-  });
-
-  test('Check request() if key exists', () => {
-    let spyCallback = sinon.spy();
-
-    sharedCache._driver.setMode(CloudFrontDriverMock.DATA_MODE);
-
-    let actualResult = sharedCache.request(request, spyCallback);
-
-    chai.expect(actualResult).to.equal(undefined);
-    chai.expect(spyCallback).to.have.been.calledWithExactly({code: 200});
   });
 
 
