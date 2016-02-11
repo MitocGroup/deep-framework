@@ -22,7 +22,7 @@ export class SharedCache {
       .proxyOverride(
       this._driver,
       'has', 'get', 'set',
-      'invalidate', 'flush'
+      'invalidate', 'flush', 'type'
     );
   }
 
