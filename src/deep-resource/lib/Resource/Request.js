@@ -42,6 +42,7 @@ export class Request {
     this._cacheImpl = null;
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
+    this._publicCached = false;
 
     this._async = false;
     this._native = false;
@@ -117,10 +118,25 @@ export class Request {
   }
 
   /**
+   * @returns {Request}
+   */
+  usePublicCache() {
+    this._publicCached = true;
+    return this;
+  }
+
+  /**
    * @returns {Boolean}
    */
   get isCached() {
     return this._cacheImpl && this._cached;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isPublicCached() {
+    return this._publicCached && this._cacheImpl && this._cacheImpl.shared;
   }
 
   /**
@@ -222,24 +238,28 @@ export class Request {
   }
 
   /**
-   * @param {String} rawData
+   * @param {String|Object} rawData
    * @returns {Response}
    * @private
    */
   _rebuildResponse(rawData) {
-    let response = JSON.parse(rawData);
+    let response = typeof rawData === 'string' ? JSON.parse(rawData) : rawData;
 
     if (!response) {
       throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);
     }
 
-    let ResponseImpl = Request._chooseResponseImpl(response._class);
+    if (response._class) {
+      let ResponseImpl = Request._chooseResponseImpl(response._class);
 
-    if (!ResponseImpl) {
-      throw new Exception(`Unknown Response implementation ${response._class}`);
+      if (!ResponseImpl) {
+        throw new Exception(`Unknown Response implementation ${response._class}`);
+      }
+
+      return new ResponseImpl(this, response.data, response.error);
     }
 
-    return new ResponseImpl(this, response.data, response.error);
+    return new SuperagentResponse(this, response, null);
   }
 
   /**
@@ -294,53 +314,98 @@ export class Request {
   }
 
   /**
+   * Hooks users callback to save the response into local storage cache
+   *
    * @param {Function} callback
+   * @private
    */
-  send(callback = () => {}) {
-    if (!this.isCached || this._async) {
-      return this._send(callback);
-    }
-
+  _responseCallbackCacheDecorator(callback) {
     let cache = this._cacheImpl;
-    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
     let cacheKey = this._buildCacheKey();
 
-    cache.has(cacheKey, (error, result) => {
-      if (error) {
-        throw new CachedRequestException(error);
-      }
+    return (response) => {
+      if (!response.isError) {
+        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
+          if (!error && !result) {
+            error = `Unable to persist request cache under key ${cacheKey}.`;
+          }
 
-      if (result && !invalidateCache) {
-        cache.get(cacheKey, (error, result) => {
           if (error) {
             throw new CachedRequestException(error);
           }
+        });
+      }
 
-          callback(this._rebuildResponse(result));
+      callback(response);
+    };
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  send(callback = () => {}) {
+    let cache = this._cacheImpl;
+    let cacheKey = this._buildCacheKey();
+    let decoratedCallback = this._responseCallbackCacheDecorator(callback);
+    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
+
+    if (!this.isCached || this._async || invalidateCache) {
+      return this._send(callback);
+    }
+
+    this.loadResponseFromCache(cache, cacheKey, (error, response) => {
+      if (!error) {
+        callback(response);
+
+        return;
+      }
+
+      if (this.isPublicCached) {
+        let publicCache = cache.shared;
+        let publicCacheKey = publicCache.buildKeyFromRequest(this);
+
+        this.loadResponseFromCache(publicCache, publicCacheKey, (error, response) => {
+          if (!error) {
+            callback(response);
+
+            return;
+          }
+
+          this._send(decoratedCallback);
         });
 
         return;
       }
 
-      this._send((response) => {
-        if (!response.isError) {
-          cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
-            if (!error && !result) {
-              error = `Unable to persist request cache under key ${cacheKey}.`;
-            }
-
-            if (error) {
-              throw new CachedRequestException(error);
-            }
-          });
-        }
-
-        // @todo: do it synchronous?
-        callback(response);
-      });
+      this._send(decoratedCallback);
     });
 
     return this;
+  }
+
+  /**
+   * @param {Object} driver
+   * @param {String} key
+   * @param {Function} callback
+   */
+  loadResponseFromCache(driver, key, callback) {
+    driver.has(key, (err, has) => {
+      if (has) {
+        driver.get(key, (err, data) => {
+          if (err) {
+            callback(err, null);
+
+            return;
+          }
+
+          callback(null, this._rebuildResponse(data));
+        });
+
+        return;
+      }
+
+      callback(new CachedRequestException(`Missing key ${key}`), null);
+    });
   }
 
   /**
