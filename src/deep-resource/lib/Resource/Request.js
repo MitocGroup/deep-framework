@@ -83,6 +83,15 @@ export class Request {
   }
 
   /**
+   * @returns {Boolean}
+   *
+   * @todo: remove this?
+   */
+  get isLambda() {
+    return this._action.type === Action.LAMBDA;
+  }
+
+  /**
    * @returns {String}
    */
   get customId() {
@@ -321,59 +330,18 @@ export class Request {
   }
 
   /**
-   * Hooks users callback to save the response into local storage cache
-   *
-   * @param {Function} callback
-   * @private
-   */
-  _responseCallbackCacheDecorator(callback) {
-    let cache = this._cacheImpl;
-    let cacheKey = this._buildCacheKey();
-
-    return (response) => {
-      if (!response.isError) {
-        cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) => {
-          if (!error && !result) {
-            error = `Unable to persist request cache under key ${cacheKey}.`;
-          }
-
-          if (error) {
-            throw new CachedRequestException(error);
-          }
-        });
-      }
-
-      callback(response);
-    };
-  }
-
-  /**
    * @param {Function} callback
    */
   send(callback = () => {}) {
     let cache = this._cacheImpl;
     let cacheKey = this._buildCacheKey();
-    let decoratedCallback = this._responseCallbackCacheDecorator(callback);
     let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
-    let logService = this.action.resource.log; // @todo - create a getter
 
     if (!this.isCached || this._async || invalidateCache) {
       return this._send(callback);
     }
-
-    let rumEvent = {
-      "service": "deep-resource",
-      "resourceType": "Browser",
-      "resourceId": this.native ? this.action.source.original : this.action.source.api,
-      "eventName": this.method,
-      "eventId": this.customId,
-      "requestId": this.customId,
-      "payload": this.payload,
-    };
-
-    logService.rumLog(rumEvent);
     
-    this.loadResponseFromCache(cache, cacheKey, (error, response) => {
+    this._loadResponseFromCache(cache, cacheKey, (error, response) => {
       if (!error) {
         callback(response);
 
@@ -384,39 +352,105 @@ export class Request {
         let publicCache = cache.shared;
         let publicCacheKey = publicCache.buildKeyFromRequest(this);
 
-        this.loadResponseFromCache(publicCache, publicCacheKey, (error, response) => {
+        this._loadResponseFromCache(publicCache, publicCacheKey, (error, response) => {
           if (!error) {
             callback(response);
 
             return;
           }
 
-          this._send((response) => {
-            let event = util._extend({}, rumEvent);
-            event.payload = response;
-
-            logService.rumLog(event);
-            
-            decoratedCallback(response);
-          });
+          this._send(callback);
         });
 
         return;
       }
 
-      this._send((response) => {
-        // change only the event payload all the rest remains unchanged
-        let event = util._extend({}, rumEvent);
-        event.payload = response;
-        event.requestId = response.requestId;
-
-        logService.rumLog(event);
-
-        decoratedCallback(response);
-      });
+      this._send(callback);
     });
 
     return this;
+  }
+
+  /**
+   * @param {Function} callback
+   * @returns {Request}
+   */
+  _send(callback = () => {}) {
+    let logService = this.action.resource.log;
+    let event = {
+      service: "deep-resource",
+      resourceType: "Browser",
+      resourceId: this.native ? this.action.source.original : this.action.source.api,
+      eventName: this.method,
+      eventId: this.customId,
+      requestId: this.customId,
+      payload: this.payload,
+    };
+
+    logService.rumLog(event);
+
+    let decoratedCallback = (response) => {
+      this._saveResponseToCache(response, (error, data) => {
+        if (error) throw error;
+      });
+
+      event = util._extend({}, event);
+      event.payload = response;
+      event.requestId = response.requestId;
+      logService.rumLog(event);
+
+      callback(response);
+    };
+
+    if (this.validationSchemaName) {
+      let result = this._validate();
+
+      if (result.error) {
+        decoratedCallback(this._createValidationErrorResponse(result.error));
+      }
+    }
+
+    if (!this._native) {
+      return this._sendThroughApi(decoratedCallback);
+    }
+
+    switch (this._action.type) {
+      case Action.LAMBDA:
+        this._sendLambda(decoratedCallback);
+        break;
+      case Action.EXTERNAL:
+        this._sendExternal(decoratedCallback);
+        break;
+      default: throw new Exception(`Request of type ${this._action.type} is not implemented`);
+    }
+
+    return this;
+  }
+
+  /**
+   * @param {Object} response
+   * @param {Function} callback
+   * @private
+   */
+  _saveResponseToCache(response, callback) {
+    if (response.isError) {
+      callback(null, null);
+      return;
+    }
+
+    let cacheKey = this._buildCacheKey();
+
+    this.cacheImpl.set(cacheKey, Request._stringifyResponse(response), this.cacheTtl, (error, result) => {
+      if (!error && !result) {
+        error = `Unable to persist request cache under key ${cacheKey}.`;
+      }
+
+      if (error) {
+        error = new CachedRequestException(error);
+      }
+
+      callback(error, result);
+    });
   }
 
   /**
@@ -424,11 +458,11 @@ export class Request {
    * @param {String} key
    * @param {Function} callback
    */
-  loadResponseFromCache(driver, key, callback) {
+  _loadResponseFromCache(driver, key, callback) {
     driver.has(key, (err, has) => {
       if (has) {
         let logService = this.action.resource.log;
-        
+
         let event = {
           service: 'deep-cache',
           resourceType: driver.type(),
@@ -436,15 +470,15 @@ export class Request {
           eventName: 'get',
           requestId: this.customId,
         };
-        
+
         logService.rumLog(event);
-        
+
         driver.get(key, (err, data) => {
           event = util._extend({}, event);
           event.payload = {err, data};
 
           logService.rumLog(event);
-          
+
           if (err) {
             callback(err, null);
 
@@ -461,44 +495,6 @@ export class Request {
     });
   }
 
-  /**
-   * @returns {Boolean}
-   *
-   * @todo: remove this?
-   */
-  get isLambda() {
-    return this._action.type === Action.LAMBDA;
-  }
-
-  /**
-   * @param {Function} callback
-   * @returns {Request}
-   */
-  _send(callback = () => {}) {
-    if (this.validationSchemaName) {
-      let result = this._validate();
-
-      if (result.error) {
-        callback(this._createValidationErrorResponse(result.error));
-      }
-    }
-
-    if (!this._native) {
-      return this._sendThroughApi(callback);
-    }
-
-    switch (this._action.type) {
-      case Action.LAMBDA:
-        this._sendLambda(callback);
-        break;
-      case Action.EXTERNAL:
-        this._sendExternal(callback);
-        break;
-      default: throw new Exception(`Request of type ${this._action.type} is not implemented`);
-    }
-
-    return this;
-  }
 
   /**
    * @returns {Object}
