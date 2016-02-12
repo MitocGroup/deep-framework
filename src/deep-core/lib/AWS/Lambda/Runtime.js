@@ -106,11 +106,11 @@ export class Runtime extends Interface {
     this._request = new Request(event);
 
     this.logService.rumLog({
-      "service": "deep-core",
-      "resourceType": "Lambda",
-      "resourceId": this._context.invokedFunctionArn,
-      "eventName": 'Run',
-      "payload": event,
+      service: 'deep-core',
+      resourceType: 'Lambda',
+      resourceId: this._context.invokedFunctionArn,
+      eventName: 'Run',
+      payload: event,
     });
 
     new Sandbox(() => {

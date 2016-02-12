@@ -89,10 +89,10 @@ export class Kernel {
    */
   loadFromFile(jsonFile, callback) {
     let rumEvent = {
-      "service": "deep-kernel",
-      "resourceType": 'Lambda',
-      "eventName": 'KernelLoad',
-      "time": new Date().getTime(),
+      service: 'deep-kernel',
+      resourceType: 'Lambda',
+      eventName: 'KernelLoad',
+      time: new Date().getTime(),
     };
 
     // @todo: remove AWS changes the way the things run
