@@ -299,7 +299,7 @@ export class Registry {
       val = JSON.stringify(value);
     } else if(Buffer.isBuffer(value)) {
       val = value.toString();
-    } else if(util.isObject(value)) {
+    } else if(Registry.isObject(value)) {
       type = 'obj';
       val = JSON.stringify(value);
     }
@@ -308,6 +308,14 @@ export class Registry {
       t: type,
       v: val,
     };
+  }
+
+  /**
+   * @param {*} obj
+   * @returns {boolean}
+   */
+  static isObject(obj) {
+    return obj != null && typeof obj === 'object' && !isArray(obj);
   }
 
   /**
