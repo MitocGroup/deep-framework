@@ -89,4 +89,91 @@ suite('Resource/SuperagentResponse', () => {
     chai.expect(superagentResponse.isError).to.be.equal(false);
     chai.expect(superagentResponse.statusCode).to.be.equal(rawData.status);
   });
+
+  test('Check constructor calls _parseExternal() for data && !error', () => {
+    let _rawData = {status: 500, body: 'bodyTest', error: 'errorMessage',};
+    let _rawError = null;
+
+    superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
+
+    chai.expect(superagentResponse.error).to.be.equal(_rawData.error);
+    chai.expect(superagentResponse.data).to.be.equal(null);
+    chai.expect(superagentResponse.statusCode).to.be.equal(500);
+  });
+
+  test('Check constructor calls _parseExternal() for !data.status && error', () => {
+    let _rawData = {body: 'bodyTest'};
+    let _rawError = new Error('errorMessage');
+
+    superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
+
+    chai.expect(superagentResponse.error).to.be.eql(_rawError);
+    chai.expect(superagentResponse.data).to.be.equal(null);
+    chai.expect(superagentResponse.statusCode).to.be.equal(500);
+  });
+
+  test('Check constructor calls _parseExternal() for !data.status && error', () => {
+    let _rawData = {body: 'bodyTest'};
+    let _rawError = new Error('errorMessage');
+
+    superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
+
+    chai.expect(superagentResponse.error).to.be.eql(_rawError);
+    chai.expect(superagentResponse.data).to.be.equal(null);
+    chai.expect(superagentResponse.statusCode).to.be.equal(500);
+  });
+
+  test('Check constructor calls _parseLambda() for typeof data==="string" && !error',
+    () => {
+      let _rawData = {body: '{"bodyObj":{"key":"Test body value"}}'};
+      let _rawError = null;
+
+      superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
+
+      chai.expect(superagentResponse.error).to.be.eql(_rawError);
+      chai.expect(superagentResponse.data).to.be.eql(JSON.parse(_rawData.body));
+    }
+  );
+
+  test('Check constructor calls _parseLambda() for typeof data==="string" with errorMessage',
+    () => {
+      let _rawData = {
+        body: '{"bodyObj":"Test body value","errorMessage":{"errorMessage":"Out of memory"}}'
+      };
+      let _rawError = null;
+
+      superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
+
+      chai.expect(superagentResponse.data).to.be.eql(null);
+      chai.expect(superagentResponse.error).to.be.an.instanceOf(Error);
+    }
+  );
+
+  test('Check constructor calls _parseLambda() for typeof data==="string" with errorMessage as string',
+    () => {
+      let _rawData = {
+        body: '{"bodyObj":"Test body value","errorMessage":"Out of memory"}'
+      };
+      let _rawError = null;
+
+      superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
+
+      chai.expect(superagentResponse.data).to.be.eql(null);
+      chai.expect(superagentResponse.error).to.be.equal(null);
+    }
+  );
+
+  test('Check constructor calls _parseLambda() for typeof data==="string" with errorMessage,errorStack,errorType',
+    () => {
+      let _rawData = {
+        body: '{"bodyObj":"Body","errorMessage":"Out of memory","errorStack":"Stack","errorType":"Runtime"}',
+      };
+      let _rawError = null;
+
+      superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
+
+      chai.expect(superagentResponse.data).to.be.eql(null);
+      chai.expect(superagentResponse.error).to.be.an.instanceOf(Error);
+    }
+  );
 });

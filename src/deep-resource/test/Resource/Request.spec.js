@@ -3,6 +3,7 @@
 import chai from 'chai';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
+
 import {Resource} from '../../lib/Resource';
 import {Action} from '../../lib/Resource/Action';
 import {Response} from '../../lib/Resource/Response';
@@ -12,6 +13,10 @@ import {Instance} from '../../lib/Resource/Instance';
 import {MissingCacheImplementationException} from '../../lib/Resource/Exception/MissingCacheImplementationException';
 import {Exception} from '../../lib/Exception/Exception';
 import {CachedRequestException} from '../../lib/Resource/Exception/CachedRequestException';
+import {MissingSecurityServiceException} from '../../lib/Resource/Exception/MissingSecurityServiceException';
+import {NotAuthenticatedException} from '../../lib/Resource/Exception/NotAuthenticatedException';
+import {LoadCredentialsException} from '../../lib/Resource/Exception/LoadCredentialsException';
+import {AsyncCallNotAvailableException} from '../../lib/Resource/Exception/AsyncCallNotAvailableException';
 import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
@@ -20,8 +25,9 @@ import KernelFactory from '../common/KernelFactory';
 import requireProxy from 'proxyquire';
 import AWS from 'mock-aws';
 import {HttpMock} from '../Mock/HttpMock';
-import {Request} from '../../lib/Resource/Request';
 import {CacheMock} from '../Mock/CacheMock';
+import {Request} from '../../lib/Resource/Request';
+import {RequestMock} from '../Mock/RequestMock';
 
 chai.use(sinonChai);
 
@@ -35,7 +41,7 @@ suite('Resource/Request', () => {
   let microserviceIdentifier = 'hello.world.example';
   let resourceName = 'sample';
   let actionName = 'say-hello';
-  let payload = '{"body":"bodyData"}';
+  let payload = '{"body":"bodyData","id":"string_here"}';
   let source = {
     api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',
     original: 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayHello64232f3705a',
@@ -635,5 +641,216 @@ suite('Resource/Request', () => {
       SuperagentResponse,
       'result is an instance of SuperagentResponse'
     );
+  });
+
+  test('Check _loadSecurityCredentials throws "MissingSecurityServiceException"', () => {
+    let spyCallback = sinon.spy();
+    let testAction = {
+      _name: 'testAction',
+      resource: 'resource name',
+    };
+    let testRequest = new Request(testAction, payload, method);
+
+    let actualResult = testRequest._loadSecurityCredentials(spyCallback);
+
+    let spyCallbackArgs = spyCallback.args[0];
+
+    chai.assert.instanceOf(actualResult, Request, 'actualResult is an instance of Request');
+    chai.assert.instanceOf(
+      spyCallbackArgs[0],
+      MissingSecurityServiceException,
+      'error is an instance of MissingSecurityServiceException'
+    );
+    chai.expect(spyCallbackArgs[1]).to.equal(null);
+  });
+
+  test('Check _loadSecurityCredentials throws "NotAuthenticatedException"', () => {
+    let spyCallback = sinon.spy();
+    let testAction = {
+      _name: 'testAction',
+      resource: {
+        security: 'insuffcient value',
+      }
+    };
+    let testRequest = new Request(testAction, payload, method);
+
+    let actualResult = testRequest._loadSecurityCredentials(spyCallback);
+
+    let spyCallbackArgs = spyCallback.args[0];
+
+    chai.assert.instanceOf(actualResult, Request, 'actualResult is an instance of Request');
+    chai.assert.instanceOf(
+      spyCallbackArgs[0],
+      NotAuthenticatedException,
+      'error is an instance of NotAuthenticatedException'
+    );
+    chai.expect(spyCallbackArgs[1]).to.equal(null);
+  });
+
+  test('Check _loadSecurityCredentials throws "LoadCredentialsException"', () => {
+    let spyCallback = sinon.spy();
+    let testAction = {
+      _name: 'testAction',
+      resource: {
+        security: {
+          token: {
+            loadCredentials: (callback) => {
+              callback('mock error on loadCredentials', null);
+              return;
+            },
+          },
+        },
+      },
+    };
+    let testRequest = new Request(testAction, payload, method);
+
+    testRequest._loadSecurityCredentials(spyCallback);
+
+    let spyCallbackArgs = spyCallback.args[0];
+    chai.assert.instanceOf(
+      spyCallbackArgs[0],
+      LoadCredentialsException,
+      'error is an instance of LoadCredentialsException'
+    );
+    chai.expect(spyCallbackArgs[1]).to.equal(null);
+  });
+
+  test('Check invokeAsync throws "AsyncCallNotAvailableException"', () => {
+    let testAction = {
+      _name: 'testAction',
+      resource: {
+        security: {
+          token: 'test',
+        },
+      },
+    };
+    let error = null;
+    let testRequest = new Request(testAction, payload, method);
+
+    try {
+      testRequest.invokeAsync();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error,
+      AsyncCallNotAvailableException,
+      'error is an instance of AsyncCallNotAvailableException'
+    );
+  });
+
+  test('Check invokeAsync sets native and async to true', () => {
+    let actualResult = request.invokeAsync();
+
+    chai.assert.instanceOf(actualResult, Request, 'is an instance of Request');
+    chai.expect(actualResult.async).to.equal(true);
+    chai.expect(actualResult.native).to.equal(true);
+  });
+
+  test('Check validationSchemaName setter/getter', () => {
+    let validationSchemaName = request.validationSchemaName;
+    let testValidationSchemaName = 'testValidationSchemaName';
+
+    request.validationSchemaName = testValidationSchemaName;
+    chai.expect(request.validationSchemaName).to.equal(testValidationSchemaName);
+
+    request.skipPreValidation();
+    chai.expect(request.validationSchemaName).to.equal(null);
+
+    request.validationSchemaName = validationSchemaName;
+    chai.expect(request.validationSchemaName).to.equal(validationSchemaName);
+  });
+
+  test('Check _httpRealMethod()', () => {
+    let httpMethod = 'DELETE';
+    let actualResult = Request._httpRealMethod(httpMethod);
+
+    chai.expect(actualResult).to.equal('del');
+  });
+
+  test('Check _send()', () => {
+    let spyCallback = sinon.spy();
+    let modelName = 'ConfigurationModel';
+    let testModelSchema = {
+      Configuration: 'string',
+      Status: 'number',
+    };
+    let inputObject = {
+      Configuration: 'test configuration',
+      Status: 'should be number here',
+    };
+
+    //arrange
+    request._action.resource.validation.setSchemaRaw(modelName, testModelSchema);
+    request._payload =  inputObject;
+    request.validationSchemaName = modelName;
+
+    //act
+    let actualResult = request._send(spyCallback);
+
+    //assert
+    chai.assert.instanceOf(actualResult, Request, 'is an instance of Request');
+
+    let spyCallbackArgs = spyCallback.args[0];
+
+    chai.assert.instanceOf(
+      spyCallbackArgs[0],
+      LambdaResponse,
+      'error is an instance of LambdaResponse'
+    );
+    chai.expect(spyCallbackArgs[1]).to.equal(undefined);
+  });
+
+  test('Check _createAws4SignedRequest() throws NotAuthenticatedException ', () => {
+    let spyCallback = sinon.spy();
+    let error = null;
+    let testAction = {
+      _name: 'testAction',
+      resource: {
+        security: 'insuffcient value',
+      },
+      apiCacheEnabled: true,
+    };
+    let testRequest = new Request(testAction, payload, method);
+    let url = 'https://6jh99kuklk.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-test';
+    let payload = {
+      Configuration: 'test configuration',
+      Status: 'should be number here',
+    };
+
+    try {
+      testRequest._createAws4SignedRequest(url, 'DELETE', payload, spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, NotAuthenticatedException, 'error is an instance of NotAuthenticatedException'
+    );
+  });
+
+  test('Check send()', () => {
+    //arange
+    let spyCallback = sinon.spy();
+    let testRequest = new RequestMock(action, payload, method);
+    let cache = new CacheMock();
+
+    cache._shared = {
+      buildKeyFromRequest: () => {
+        return 'to pass test';
+      }
+    };
+    testRequest.cacheImpl = cache;
+
+    testRequest.setMode(RequestMock.FAILURE_MODE, ['loadResponseFromCache']);
+    testRequest.usePublicCache();
+
+    //act
+    testRequest.send(spyCallback);
+
+    //assert
+    chai.assert.instanceOf(testRequest, RequestMock, 'resource is an instance of RequestMock');
+    chai.expect(spyCallback.args[0][0]).to.eql(RequestMock.DATA);
   });
 });
