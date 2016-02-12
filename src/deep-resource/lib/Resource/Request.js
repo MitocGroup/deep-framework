@@ -375,8 +375,8 @@ export class Request {
   _send(callback = () => {}) {
     let logService = this.action.resource.log;
     let event = {
-      service: "deep-resource",
-      resourceType: "Browser",
+      service: 'deep-resource',
+      resourceType: 'Browser',
       resourceId: this.native ? this.action.source.original : this.action.source.api,
       eventName: this.method,
       eventId: this.customId,
@@ -388,7 +388,9 @@ export class Request {
 
     let decoratedCallback = (response) => {
       this._saveResponseToCache(response, (error, data) => {
-        if (error) throw error;
+        if (error) {
+          throw error;
+        }
       });
 
       event = util._extend({}, event);
@@ -586,7 +588,8 @@ export class Request {
 
       this._lambda = new AWS.Lambda(options);
 
-      // @note - don't replace this callback function with an arrow one (we need injected context to access AWS.Response)
+      // @note - don't replace this callback function with an arrow one
+      // (we need injected context to access AWS.Response)
       this._lambda.invoke(invocationParameters, function(error, data) {
         let lambdaResponse = new LambdaResponse(that, data, error);
         lambdaResponse.originalResponse = this; // this is an instance of AWS.Response

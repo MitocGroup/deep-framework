@@ -174,7 +174,7 @@ export class AbstractEvent extends Core.OOP.Interface {
       event.context = AbstractEvent.FRONTEND_CONTEXT;
       event.memoryUsage = window.performance && window.performance.memory ? window.performance.memory : {};
       event.environment = {
-        userAgent: navigator ? navigator.userAgent : "",
+        userAgent: navigator ? navigator.userAgent : '',
       };
 
       let securityToken = this._kernel.get('security').token;

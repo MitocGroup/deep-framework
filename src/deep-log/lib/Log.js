@@ -45,7 +45,7 @@ export class Log extends Kernel.ContainerAware {
 
     // add console driver by default to all environments except for PROD
     if (!drivers.hasOwnProperty('console') && kernel.env !== Kernel.PROD_ENVIRONMENT) {
-      drivers['console'] = {};
+      drivers.console = {};
     }
 
     for (let driverName in drivers) {

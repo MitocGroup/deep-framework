@@ -45,11 +45,11 @@ export class Response {
     }
 
     this.runtime.logService.rumLog({
-      "service": "deep-core",
-      "resourceType": "Lambda",
-      "resourceId": this.runtime.context.invokedFunctionArn,
-      "eventName": 'Run',
-      "payload": this.data,
+      service: 'deep-core',
+      resourceType: 'Lambda',
+      resourceId: this.runtime.context.invokedFunctionArn,
+      eventName: 'Run',
+      payload: this.data,
     });
 
     // flush RUM batched messages if any

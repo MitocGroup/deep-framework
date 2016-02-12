@@ -71,8 +71,8 @@ export class S3FsRumProxy {
    */
   _logRumEvent(customData) {
     let event = util._extend(customData, {
-      service: "deep-fs",
-      resourceType: "S3",
+      service: 'deep-fs',
+      resourceType: 'S3',
       resourceId: this._originalInstance.bucket,
     });
 

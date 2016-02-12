@@ -128,6 +128,6 @@ export class Response {
       headers: this.headers,
       data: this.data,
       error: this.error,
-    }
+    };
   }
 }

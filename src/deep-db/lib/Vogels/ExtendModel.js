@@ -400,8 +400,8 @@ export class ExtendModel {
     }
 
     let event = util._extend(customData, {
-      service: "deep-db",
-      resourceType: "DynamoDB",
+      service: 'deep-db',
+      resourceType: 'DynamoDB',
       resourceId: this.model.tableName(),
     });
 

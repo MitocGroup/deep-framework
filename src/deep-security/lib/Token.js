@@ -238,7 +238,7 @@ export class Token {
         accessKeyId: credentials.accessKeyId,
         secretAccessKey: credentials.secretAccessKey,
         sessionToken: credentials.sessionToken,
-      }
+      };
     }.bind(credentials);
 
     return credentials;
