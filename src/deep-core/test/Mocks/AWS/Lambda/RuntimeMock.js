@@ -1,10 +1,6 @@
-/**
- * Created by vcernomschi on 1/26/16.
- */
-
 'use strict';
 
-import {Runtime} from '../../node_modules/deep-core/lib.compiled/AWS/Lambda/Runtime';
+import {Runtime} from '../../../../lib/AWS/Lambda/Runtime';
 
 /**
  * Lambda runtime mock to test validateRuntimeInput

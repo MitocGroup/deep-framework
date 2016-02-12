@@ -83,6 +83,51 @@ export class Kernel {
   }
 
   /**
+   * @param {Function} callback
+   * @returns {Kernel}
+   *
+   * @todo: put config file name into a constant?
+   */
+  bootstrap(callback) {
+    // @todo: remove AWS changes the way the things run
+    // This is used because of AWS Lambda
+    // context sharing after a cold start
+    if (this._isLoaded) {
+      callback(this);
+      return this;
+    }
+
+    return this.loadFromScopeOrFile(Kernel.DEFAULT_CONFIG_FILE_NAME, callback);
+  }
+
+  /**
+   * @param {String} jsonFile
+   * @param {Function} callback
+   * @returns {Kernel}
+   */
+  loadFromScopeOrFile(jsonFile, callback) {
+    // @todo: remove AWS changes the way the things run
+    // This is used because of AWS Lambda
+    // context sharing after a cold start
+    if (this._isLoaded) {
+      callback(this);
+      return this;
+    }
+
+    let scope = null;
+
+    if (this.isBackend) {
+      scope = global;
+    } else {
+      scope = window || {};
+    }
+
+    let globalConfig = scope.hasOwnProperty('__DEEP_CFG__') ? scope['__DEEP_CFG__'] : null;
+
+    return globalConfig ? this.load(globalConfig, callback) : this.loadFromFile(jsonFile, callback);
+  }
+
+  /**
    * @param {String} jsonFile
    * @param {Function} callback
    * @returns {Kernel}
@@ -154,6 +199,8 @@ export class Kernel {
    *
    * @param {Object} globalConfig
    * @param {Function} callback
+   *
+   * @returns {Kernel}
    */
   load(globalConfig, callback) {
     // @todo: remove AWS changes the way the things run
@@ -367,6 +414,13 @@ export class Kernel {
    */
   static get ContainerAware() {
     return ContainerAware;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEFAULT_CONFIG_FILE_NAME() {
+    return '_config.json';
   }
 
   /**

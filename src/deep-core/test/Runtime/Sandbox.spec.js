@@ -15,6 +15,7 @@ suite('OOP/Sandbox', () => {
 
     sandbox
       .fail((error) => {
+        chai.expect(sandbox.func).to.be.an('function');
         chai.expect(error).to.be.an.instanceof(Error);
 
         done();
