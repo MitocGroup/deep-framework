@@ -333,9 +333,9 @@ export class Request {
    * @param {Function} callback
    */
   send(callback = () => {}) {
-    let cache = this._cacheImpl;
+    let cache = this.cacheImpl;
     let cacheKey = this._buildCacheKey();
-    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
+    let invalidateCache = this.cacheTtl === Request.TTL_INVALIDATE;
 
     if (!this.isCached || this._async || invalidateCache) {
       return this._send(callback);
@@ -344,7 +344,6 @@ export class Request {
     this._loadResponseFromCache(cache, cacheKey, (error, response) => {
       if (!error) {
         callback(response);
-
         return;
       }
 
@@ -355,17 +354,15 @@ export class Request {
         this._loadResponseFromCache(publicCache, publicCacheKey, (error, response) => {
           if (!error) {
             callback(response);
-
             return;
           }
 
           this._send(callback);
         });
 
-        return;
+      } else {
+        this._send(callback);
       }
-
-      this._send(callback);
     });
 
     return this;
@@ -439,8 +436,24 @@ export class Request {
     }
 
     let cacheKey = this._buildCacheKey();
+    let logService = this.action.resource.log;
+
+    let event = {
+      service: 'deep-cache',
+      resourceType: this.cacheImpl.type(),
+      resourceId: cacheKey,
+      eventName: 'set',
+      requestId: response.requestId,
+      payload: {response},
+    };
+
+    logService.rumLog(event);
 
     this.cacheImpl.set(cacheKey, Request._stringifyResponse(response), this.cacheTtl, (error, result) => {
+      event = util._extend({}, event);
+      event.payload = {error, result};
+      logService.rumLog(event);
+
       if (!error && !result) {
         error = `Unable to persist request cache under key ${cacheKey}.`;
       }
