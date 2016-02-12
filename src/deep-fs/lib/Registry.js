@@ -315,7 +315,7 @@ export class Registry {
    * @returns {boolean}
    */
   static isObject(obj) {
-    return obj != null && typeof obj === 'object' && !isArray(obj);
+    return obj != null && typeof obj === 'object' && !Array.isArray(obj);
   }
 
   /**
