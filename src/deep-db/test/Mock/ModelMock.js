@@ -206,6 +206,7 @@ export class ModelMock {
     return {
       status: 200,
       message: 'Operation successfully proccessed',
+      Items: [],
     };
   }
 
@@ -218,6 +219,7 @@ export class ModelMock {
       status: 200,
       message: 'Operation successfully proccessed',
       Count: true,
+      Items: [],
     };
   }
 
