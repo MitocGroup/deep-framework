@@ -44,6 +44,14 @@ export class AbstractFsDriverMock extends AbstractFsDriver {
   }
 
   /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return 'S3FS';
+  }
+
+  /**
    * @param {String} key
    * @param {Function} callback
    * @returns {AbstractFsDriverMock}
