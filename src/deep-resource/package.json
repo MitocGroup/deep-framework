@@ -62,7 +62,8 @@
   "scripts": {
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "pretest": "npm link deep-kernel deep-validation deep-security deep-cache deep-log"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
@@ -76,10 +77,6 @@
     "aws-sdk": "^2.2.x"
   },
   "devDependencies": {
-    "deep-log": "^1.x.x",
-    "deep-cache": "^1.x.x",
-    "deep-security": "^1.x.x",
-    "deep-validation": "^1.x.x",
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
     "sinon-chai": "^2.8.x",
