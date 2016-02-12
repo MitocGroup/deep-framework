@@ -335,9 +335,8 @@ export class Request {
   send(callback = () => {}) {
     let cache = this.cacheImpl;
     let cacheKey = this._buildCacheKey();
-    let invalidateCache = this.cacheTtl === Request.TTL_INVALIDATE;
 
-    if (!this.isCached || this._async || invalidateCache) {
+    if (!this.isCached || this._async || (this.cacheTtl === Request.TTL_INVALIDATE)) {
       return this._send(callback);
     }
     
@@ -432,8 +431,8 @@ export class Request {
    * @private
    */
   _saveResponseToCache(response, callback) {
-    if (response.isError) {
-      callback(null, null);
+    if (!this.isCached || this.async || (this.cacheTtl === Request.TTL_INVALIDATE) || response.isError) {
+      callback(null, response);
       return;
     }
 

@@ -12,6 +12,7 @@ import {ValidationSchemaNotFoundException} from '../lib/Exception/ValidationSche
 import {InvalidJoiSchemaException} from '../lib/Exception/InvalidJoiSchemaException';
 import {ObjectValidationFailedException} from '../lib/Exception/ObjectValidationFailedException';
 import Kernel from 'deep-kernel';
+import Log from 'deep-log';
 import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
@@ -53,7 +54,10 @@ suite('Validation', () => {
       done();
     };
 
-    KernelFactory.create({Validation: Validation}, callback);
+    KernelFactory.create({
+      Validation: Validation,
+      Log: Log,
+    }, callback);
   });
 
   test('Check constructor sets schemas', () => {

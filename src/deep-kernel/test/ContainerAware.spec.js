@@ -8,6 +8,7 @@ import {Instance} from '../lib/Microservice/Instance';
 import {InvalidDeepIdentifierException} from '../lib/Exception/InvalidDeepIdentifierException';
 import KernelFactory from './common/KernelFactory';
 import {Kernel} from '../lib/Kernel';
+import Log from 'deep-log';
 
 chai.use(sinonChai);
 
@@ -29,7 +30,9 @@ suite('ContainerAware', () => {
       // complete the async
       done();
     };
-    KernelFactory.create({}, callback);
+    KernelFactory.create({
+      Log: Log,
+    }, callback);
   });
 
   test('Check localBackend getter returns valid default value [false]', () => {

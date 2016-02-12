@@ -13,6 +13,7 @@ import Validation from 'deep-validation';
 import Resource from 'deep-resource';
 import Security from 'deep-security';
 import Cache from 'deep-cache';
+import Log from 'deep-log';
 import KernelFactory from './../../common/KernelFactory';
 
 suite('AWS/Lambda/Runtime', () => {
@@ -44,6 +45,7 @@ suite('AWS/Lambda/Runtime', () => {
       Security: Security,
       Resource: Resource,
       Cache: Cache,
+      Log: Log,
     }, callback);
   });
 

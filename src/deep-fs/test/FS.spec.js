@@ -7,6 +7,7 @@ import S3FS from 's3fs';
 import {FS} from '../lib/FS';
 import {UnknownFolderException} from '../lib/Exception/UnknownFolderException';
 import Kernel from 'deep-kernel';
+import Log from 'deep-log';
 import KernelFactory from './common/KernelFactory';
 import OS from 'os';
 import Path from 'path';
@@ -39,7 +40,10 @@ suite('FS', () => {
       done();
     };
 
-    KernelFactory.create({FS: FS}, callback);
+    KernelFactory.create({
+      FS: FS,
+      Log: Log,
+    }, callback);
   });
 
   test('Check TMP static getter returns "temp"', () => {

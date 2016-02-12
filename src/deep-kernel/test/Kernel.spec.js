@@ -12,6 +12,7 @@ import {Asset} from '../node_modules/deep-asset/lib.compiled/Asset';
 import KernelFactory from './common/KernelFactory';
 import backendConfig from './common/backend-cfg-json';
 import frontendConfig from './common/frontent-cfg-json';
+import Log from 'deep-log';
 
 chai.use(sinonChai);
 
@@ -34,7 +35,9 @@ suite('Kernel', () => {
       // complete the async
       done();
     };
-    KernelFactory.create({}, callback);
+    KernelFactory.create({
+      Log: Log,
+    }, callback);
   });
 
   test('Check constructor of Kernel throws "Exception" exception for invalid context', () => {
