@@ -1,11 +1,10 @@
 'use strict';
+import Cache from 'deep-cache';
 
-export class CacheMock {
-  constructor() {
-    this._container = null;
-    this._driver = null;
-    this._localBackend = false;
-    this._microservice = null;
+export class CacheMock extends Cache {
+  constructor(...args) {
+    super(...args);
+
     this._methodsBehavior = new Map();
     this.setMode(CacheMock.NO_RESULT_MODE);
   }

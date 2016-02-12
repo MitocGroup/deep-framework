@@ -88,12 +88,24 @@ suite('Resource/Action', () => {
     chai.expect(action.region).to.be.equal(actionRegion);
   });
 
+  test('Check apiCacheEnabled getter returns false' , () => {
+    chai.expect(action.apiCacheEnabled).to.be.equal(false);
+  });
+
+  test('Check apiCacheTtl getter returns number' , () => {
+    chai.expect(Number.isInteger(action.apiCacheTtl)).to.be.equal(true);
+  });
+
   test('Check LAMBDA static getter return "lambda"', () => {
     chai.expect(Action.LAMBDA).to.be.equal('lambda');
   });
 
   test('Check EXTERNAL static getter return "external"', () => {
     chai.expect(Action.EXTERNAL).to.be.equal('external');
+  });
+
+  test('Check DEEP_CACHE_QS_PARAM static getter return "_deepQsHash"', () => {
+    chai.expect(Action.DEEP_CACHE_QS_PARAM).to.be.equal('_deepQsHash');
   });
 
   test('Check HTTP_VERBS static getter', () => {

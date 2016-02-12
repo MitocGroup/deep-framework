@@ -57,6 +57,8 @@ suite('Resource', () => {
     chai.assert.instanceOf(
       resource, Resource, 'resource is an instance of Resource'
     );
+
+    chai.expect(resource.actionsConfig).to.be.an('object');
   });
 
   test('Check constructor sets _resources', () => {
@@ -176,5 +178,16 @@ suite('Resource', () => {
       ResourceInstance,
       'item is an instance of ResourceInstance'
     );
+  });
+
+  test('Check getActionConfig returns null', () => {
+    chai.expect(resource.getActionConfig('invalid sourceId')).to.be.equal(null);
+  });
+
+  test('Check getActionConfig returns an object', () => {
+    //sourceId from config
+    let sourceId = 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayBye64232f3705a';
+
+    chai.expect(resource.getActionConfig(sourceId)).to.be.an('object');
   });
 });
