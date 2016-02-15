@@ -65,8 +65,12 @@ suite('Kernel', () => {
   });
 
   test('Check constructor sets _services', () => {
-    chai.expect(backendKernelInstance.services).to.be.eql({});
-    chai.expect(frontendKernelInstance.services).to.be.eql({});
+    chai.expect(backendKernelInstance.services).to.be.eql({
+      Log: Log,
+    });
+    chai.expect(frontendKernelInstance.services).to.be.eql({
+      Log: Log,
+    });
   });
 
   test('Check constructor sets _context', () => {
