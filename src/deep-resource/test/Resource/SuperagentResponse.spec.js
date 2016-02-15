@@ -9,6 +9,7 @@ import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import Validation from 'deep-validation';
+import Log from 'deep-log';
 import KernelFactory from '../common/KernelFactory';
 
 suite('Resource/SuperagentResponse', () => {
@@ -48,6 +49,7 @@ suite('Resource/SuperagentResponse', () => {
       Security: Security,
       Resource: Resource,
       Validation: Validation,
+      Log: Log,
     }, callback);
   });
 
