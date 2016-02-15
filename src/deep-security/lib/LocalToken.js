@@ -29,4 +29,12 @@ export class LocalToken extends Token {
 
     callback(null, this);
   }
+
+  /**
+   * 'Reset' credentials
+   */
+  destroy() {
+    this._credentials = null;
+    this._credsManager = null;
+  }
 }
