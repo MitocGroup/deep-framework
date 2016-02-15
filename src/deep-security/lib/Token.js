@@ -100,7 +100,7 @@ export class Token {
       resourceType: 'Cognito',
       resourceId: this._identityPoolId,
       eventName: 'loadCredentials',
-      eventId: Security.customEventId(this.identityPoolId),
+      eventId: Security.customEventId(this._identityPoolId),
       time: new Date().getTime(),
     };
 
