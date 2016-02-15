@@ -38,7 +38,7 @@ export class RequestMock extends Request {
    * @param {Function} callback
    * @returns {RequestMock}
    */
-  loadResponseFromCache(driver, key, callback) {
+  _loadResponseFromCache(driver, key, callback) {
 
     //hack to test shared cache
     if(key === 'to pass test'){

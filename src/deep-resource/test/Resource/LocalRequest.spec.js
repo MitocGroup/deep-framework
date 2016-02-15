@@ -10,6 +10,7 @@ import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import Validation from 'deep-validation';
+import Log from 'deep-log';
 import KernelFactory from '../common/KernelFactory';
 import requireProxy from 'proxyquire';
 import {HttpMock} from '../Mock/HttpMock';
@@ -51,6 +52,7 @@ suite('Resource/LocalRequest', () => {
       Security: Security,
       Resource: Resource,
       Validation: Validation,
+      Log: Log,
     }, callback);
   });
 

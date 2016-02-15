@@ -31,6 +31,17 @@ export class CacheMock extends Cache {
   }
 
   /**
+   * @returns {CacheMock}
+   */
+  get shared() {
+    this.buildKeyFromRequest = () => {
+      return 'to pass test';
+    };
+
+    return this;
+  }
+
+  /**
    * @param {String} cacheKey
    * @param {Function} callback
    * @returns {CacheMock}
@@ -74,6 +85,15 @@ export class CacheMock extends Cache {
   set(cacheKey, response, ttl, callback) {
     this.getCallbackByMetod(this._methodsBehavior.get('set'), callback);
 
+    return this;
+  }
+
+  /**
+   * Mock for type
+   * @param {Function} callback
+   * @returns {CacheMock}
+   */
+  type() {
     return this;
   }
 
@@ -159,6 +179,7 @@ export class CacheMock extends Cache {
       'invalidate',
       'get',
       'set',
+      'type',
     ];
   }
 }
