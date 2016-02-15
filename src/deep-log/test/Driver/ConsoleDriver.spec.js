@@ -87,21 +87,14 @@ suite('Driver/ConsoleDriver', () => {
 
   //@todo - TBD with Alex to rework class name for static to this.contstructor.name
   // Example, ConsoleDriver.nativeConsole to this.contstructor.name.nativeConsole
-  //was not able to use overriden method
+  //was not able to use overridden method
   test('Check overrideNative()', () => {
-    let error = null;
-    let actualResult = null;
+    let actualResult = consoleDriver.overrideNative(false, true, false);
 
-    try {
-      actualResult = consoleDriver.overrideNative();
-    } catch (e) {
-      error = e;
-    }
-
-    //chai.expect(Object.keys(actualResult._console).length).to.be.equal(4);
-    //chai.expect(Object.keys(actualResult._console)).to.be.include('error');
-    //chai.expect(Object.keys(actualResult._console)).to.be.include('log');
-    //chai.expect(Object.keys(actualResult._console)).to.be.include('warn');
-    //chai.expect(Object.keys(actualResult._console)).to.be.include('info');
+    chai.expect(Object.keys(actualResult._console).length).to.be.above(1);
+    chai.expect(Object.keys(actualResult._console)).to.be.include('error');
+    chai.expect(Object.keys(actualResult._console)).to.be.include('log');
+    chai.expect(Object.keys(actualResult._console)).to.be.include('warn');
+    chai.expect(Object.keys(actualResult._console)).to.be.include('info');
   });
 });

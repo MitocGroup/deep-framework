@@ -61,7 +61,6 @@ suite('AWS/Lambda/Response', () => {
   });
 
   test('Check contextSent returns false', () => {
-    console.log('response.runtime: ', response.runtime);
     chai.expect(response.contextSent).to.be.equal(false);
   });
 
