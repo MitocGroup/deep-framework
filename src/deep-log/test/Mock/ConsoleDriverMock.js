@@ -77,11 +77,9 @@ export class ConsoleDriverMock extends ConsoleDriver {
   }
 
   /**
-   * @param {String} msg
-   * @param {String} level
-   * @param {*} context
+   * @returns {ConsoleDriverMock}
    */
-  overrideNative(logTime = true, coloredOutput = true, turnOff = false) {
+  overrideNative() {
     return this;
   }
 }
