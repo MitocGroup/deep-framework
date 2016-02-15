@@ -14,11 +14,13 @@ export class Instance {
   /**
    * @param {String} identifier
    * @param {Object} rawResources
+   * @param {Object} parameters
    */
-  constructor(identifier, rawResources) {
+  constructor(identifier, rawResources, parameters = {}) {
     this._isRoot = false;
     this._rawResources = rawResources;
     this._identifier = identifier;
+    this._parameters = parameters;
   }
 
   /**
@@ -35,7 +37,12 @@ export class Instance {
 
       let microservice = globalConfig.microservices[identifier];
 
-      let microserviceObject = new Instance(identifier, microservice.resources);
+      let microserviceObject = new Instance(
+        identifier,
+        microservice.resources,
+        microservice.parameters || {}
+      );
+
       microserviceObject.isRoot = microservice.isRoot;
 
       vector.push(microserviceObject);
@@ -63,6 +70,13 @@ export class Instance {
    */
   toString() {
     return this._identifier;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get parameters() {
+    return this._parameters;
   }
 
   /**

@@ -43,11 +43,11 @@ export class Kernel {
   }
 
   /**
-   * @param {String} identifier
-   * @returns {Microservice}
+   * @param {String|null} identifier
+   * @returns {Microservice|*}
    */
-  microservice(identifier) {
-    if (typeof identifier === 'undefined') {
+  microservice(identifier = null) {
+    if (!identifier) {
       identifier = this._config.microserviceIdentifier;
     }
 
