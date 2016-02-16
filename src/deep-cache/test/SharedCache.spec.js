@@ -23,6 +23,9 @@ suite('SharedCache', () => {
       source: {
         original: arn,
       },
+      resource: {
+        microservice: 'deep.test'
+      },
     },
     send: (callback = () => { }) => {
       callback({code: 200});
