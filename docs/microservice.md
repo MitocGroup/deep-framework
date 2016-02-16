@@ -100,7 +100,7 @@ Resources file (`resources.json`)
             "methods": ["GET"], // supported HTTP methods
             "cacheTtl": -1, // cache TTL in seconds applied to "GET" method only (default -1 means no cache, 0 cache permanently, 1...*). On the lowest level caching is managed by AWS ApiGateway.
             "source": "src/User/Retrieve", // the source of the resource (ex. for external type: http://example.com/api/v1/users)
-            "force-user-identity": true, // assure the user info is available in lambda
+            "forceUserIdentity": true, // ansure the user info is available in lambda
             "validationSchema": "Sample", // specify validation schema name (@see `deep-validation`) used to both validate payload and backend input data
             "engine": { // only available for `"type": "lambda"`
                 "memory": 512, // max. amount of RAM allocated to a lambda (default 128, max. 1536) 
