@@ -59,7 +59,7 @@ suite('SharedCache', () => {
       },
     });
 
-    chai.expect(requestCacheKey).to.equal(runtimeCacheKey);
+    chai.expect(requestCacheKey.toString()).to.equal(runtimeCacheKey.toString());
   });
 
   //@todo - add additional checks

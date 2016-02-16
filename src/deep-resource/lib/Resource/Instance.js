@@ -13,11 +13,11 @@ import {Action} from './Action';
 export class Instance {
   /**
    * @param {String} name
-   * @param {Object} rawActions
+   * @param {Object} microservice
    */
-  constructor(name, rawActions) {
+  constructor(name, microservice) {
     this._name = name;
-    this._rawActions = rawActions;
+    this._microservice = microservice;
     this._actions = null;
     this._localBackend = false;
     this._isBackend = false;
@@ -86,6 +86,21 @@ export class Instance {
 
       this._actions[actionName] = actionInstance;
     }
+  }
+
+  /**
+   * @returns {Object}
+   * @private
+   */
+  get _rawActions() {
+    return this._microservice.rawResources[this._name];
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get microservice() {
+    return this._microservice;
   }
 
   /**
