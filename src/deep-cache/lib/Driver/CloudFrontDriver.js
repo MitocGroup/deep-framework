@@ -104,9 +104,9 @@ export class CloudFrontDriver extends AbstractFsDriver {
    * @private
    */
   _buildKey(key) {
-    return key instanceof Key
-      ? this._asset.locate(`@${key.microservice}:${super._buildKey(key.toString())}`)
-      : this._asset.locate(`@${this._microservice}:${super._buildKey(key)}`);
+    return key instanceof Key ?
+      this._asset.locate(`@${key.microservice}:${super._buildKey(key.toString())}`) :
+      this._asset.locate(`@${this._microservice}:${super._buildKey(key)}`);
   }
 
   /**
