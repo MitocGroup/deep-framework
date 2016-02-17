@@ -18,6 +18,7 @@ export class Instance {
   constructor(name, microservice) {
     this._name = name;
     this._microservice = microservice;
+    this._rawActions = microservice.rawResources[name];
     this._actions = null;
     this._localBackend = false;
     this._isBackend = false;
@@ -86,14 +87,6 @@ export class Instance {
 
       this._actions[actionName] = actionInstance;
     }
-  }
-
-  /**
-   * @returns {Object}
-   * @private
-   */
-  get _rawActions() {
-    return this._microservice.rawResources[this._name];
   }
 
   /**
