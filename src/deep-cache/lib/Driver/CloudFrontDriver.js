@@ -5,7 +5,8 @@
 'use strict';
 
 import {AbstractFsDriver} from './AbstractFsDriver';
-import {MethodNotAvailableException} from '../Exception/MethodNotAvailableException';
+import {MethodNotAvailableException} from './Exception/MethodNotAvailableException';
+import {SharedKey as Key} from '../SharedKey';
 
 /**
  * CloudFront Cache Driver
@@ -98,12 +99,14 @@ export class CloudFrontDriver extends AbstractFsDriver {
   }
 
   /**
-   * @param {String} key
+   * @param {String|Key} key
    * @returns {String}
    * @private
    */
   _buildKey(key) {
-    return this._asset.locate(`@${this._microservice}:${super._buildKey(key)}`);
+    return key instanceof Key ?
+      this._asset.locate(`@${key.microservice}:${super._buildKey(key.toString())}`) :
+      this._asset.locate(`@${this._microservice}:${super._buildKey(key)}`);
   }
 
   /**

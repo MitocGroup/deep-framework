@@ -9,7 +9,7 @@ import {AbstractDriver} from '../../lib/Driver/AbstractDriver';
 import {CloudFrontDriver} from '../../lib/Driver/CloudFrontDriver';
 import {ContainerAware} from '../../node_modules/deep-kernel/lib.compiled/ContainerAware';
 import {DriverException} from '../../lib/Driver/Exception/DriverException';
-import {MethodNotAvailableException} from '../../lib/Exception/MethodNotAvailableException';
+import {MethodNotAvailableException} from '../../lib/Driver/Exception/MethodNotAvailableException';
 
 chai.use(sinonChai);
 

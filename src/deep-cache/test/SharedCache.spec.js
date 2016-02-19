@@ -23,6 +23,9 @@ suite('SharedCache', () => {
       source: {
         original: arn,
       },
+      resource: {
+        microservice: 'deep.test'
+      },
     },
     send: (callback = () => { }) => {
       callback({code: 200});
@@ -59,7 +62,7 @@ suite('SharedCache', () => {
       },
     });
 
-    chai.expect(requestCacheKey).to.equal(runtimeCacheKey);
+    chai.expect(requestCacheKey.toString()).to.equal(runtimeCacheKey.toString());
   });
 
   //@todo - add additional checks
