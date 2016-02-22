@@ -139,7 +139,10 @@ export class Security extends Kernel.ContainerAware {
    * @returns {Security}
    */
   logout() {
-    this.token.destroy();
+    if (this._token) {
+      this._token.destroy();
+    }
+
     this._token = null;
 
     return this;
