@@ -174,8 +174,11 @@ export class Security extends Kernel.ContainerAware {
     this._logRumEvent({
       eventName: 'logout',
     });
-
-    this.token.destroy();
+    
+    if (this._token) {
+      this._token.destroy();
+    }
+    
     this._token = null;
 
     return this;

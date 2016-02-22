@@ -17,7 +17,9 @@ export default {
   "microservices": {
     "hello.world.example": {
       "isRoot": false,
-      "parameters": {},
+      "parameters": {
+        "customParam": "some value..."
+      },
       "resources": {
         "sample": {
           "say-hello": {

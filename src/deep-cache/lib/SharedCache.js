@@ -7,6 +7,7 @@
 import Core from 'deep-core';
 import util from 'util';
 import crypto from 'crypto';
+import {SharedKey as Key} from './SharedKey';
 
 /**
  * Shared Cache
@@ -28,13 +29,15 @@ export class SharedCache {
 
   /**
    * @param {Request} request
-   * @returns {String}
+   * @returns {Key}
    */
   buildKeyFromRequest(request) {
     let action = request.action;
+    let microservice = action.resource.microservice;
     let requestIdentifier = action.source[request.isLambda ? 'original' : 'api'];
+    let keyString = `${requestIdentifier}#${SharedCache._stringifyPayload(request.payload)}`;
 
-    return `${requestIdentifier}#${SharedCache._stringifyPayload(request.payload)}`;
+    return new Key(keyString, microservice);
   }
 
   /**

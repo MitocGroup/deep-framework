@@ -134,7 +134,7 @@ export class Resource extends Kernel.ContainerAware {
 
         let resource = new ResourceInstance(
           resourceName,
-          microservice.rawResources[resourceName]
+          microservice
         );
 
         resource.localBackend = this.localBackend;

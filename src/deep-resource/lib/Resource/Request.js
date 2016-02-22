@@ -200,7 +200,7 @@ export class Request {
   }
 
   /**
-   * @returns {Object}
+   * @returns {Cache}
    */
   get cacheImpl() {
     return this._cacheImpl;
