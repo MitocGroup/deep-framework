@@ -28,8 +28,13 @@ find "${path}"/.. -type f -not -iname "*.js" -a -not -iname "*.json" -a -not -in
 echo "Removing README files"
 find "${path}"/.. -type f -iname README | xargs -0 rm -rf
 
-echo "Removing tests recursively"
+echo "Removing tests, docs, examples, etc recursively"
 find "${path}"/.. -type d -iname "test*" -print0 | xargs -0 rm -rf
+find "${path}"/.. -type d -iname "browser" -print0 | xargs -0 rm -rf
+find "${path}"/.. -type d -iname "doc*" -print0 | xargs -0 rm -rf
+find "${path}"/.. -type d -iname "example*" -print0 | xargs -0 rm -rf
+find "${path}"/.. -type d -iname "benchmark*" -print0 | xargs -0 rm -rf
+
 find "${path}"/.. -type f -iname "test*.js" -print0 | xargs -0 rm -rf
 
 echo "Removing *.min.js browser files recursively"
