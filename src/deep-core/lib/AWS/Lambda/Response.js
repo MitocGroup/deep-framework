@@ -44,10 +44,21 @@ export class Response {
       throw new ContextAlreadySentException();
     }
 
-    // @todo: via setter?
-    this._runtime._contextSent = true;
+    this.runtime.logService.rumLog({
+      service: 'deep-core',
+      resourceType: 'Lambda',
+      resourceId: this.runtime.context.invokedFunctionArn,
+      eventName: 'Run',
+      payload: this.data,
+    });
 
-    this._runtime.context[this.constructor.contextMethod](this.data);
+    // flush RUM batched messages if any
+    this.runtime.logService.rumFlush((error, data) => {
+      // @todo: via setter?
+      this._runtime._contextSent = true;
+
+      this._runtime.context[this.constructor.contextMethod](this.data);
+    });
 
     return this;
   }

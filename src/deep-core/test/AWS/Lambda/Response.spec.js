@@ -6,24 +6,46 @@ import {Runtime} from '../../../lib/AWS/Lambda/Runtime';
 import {RuntimeMock} from '../../Mocks/AWS/Lambda/RuntimeMock';
 import {MissingRuntimeContextException} from '../../../lib/AWS/Lambda/Exception/MissingRuntimeContextException';
 import {ContextAlreadySentException} from '../../../lib/AWS/Lambda/Exception/ContextAlreadySentException';
-
+import Kernel from 'deep-kernel';
+import Validation from 'deep-validation';
+import Resource from 'deep-resource';
+import Security from 'deep-security';
+import Cache from 'deep-cache';
+import Log from 'deep-log';
+import KernelFactory from './../../common/KernelFactory';
 
 suite('AWS/Lambda/Response', () => {
-  let kernel = {
-    config: {
-      forceUserIdentity: false,
-    },
-  };
+  let backendKernelInstance = null;
   let data = {
     dataKey: {
       value: false,
     },
   };
-  let runtime = new RuntimeMock(kernel);
   let response = null;
 
   test('Class Response exists in AWS/Lambda/Response', () => {
     chai.expect(Response).to.be.an('function');
+  });
+
+  test('Load Kernel by using Kernel.load()', (done) => {
+    let callback = (backendKernel) => {
+      chai.assert.instanceOf(
+        backendKernel, Kernel, 'backendKernel is an instance of Kernel'
+      );
+
+      backendKernelInstance = backendKernel;
+
+      // complete the async
+      done();
+    };
+
+    KernelFactory.create({
+      Validation: Validation,
+      Security: Security,
+      Resource: Resource,
+      Cache: Cache,
+      Log: Log,
+    }, callback);
   });
 
   test('Check contextMethod getter returns "succeed"', () => {
@@ -31,6 +53,7 @@ suite('AWS/Lambda/Response', () => {
   });
 
   test('Check constructor', () => {
+    let runtime = new RuntimeMock(backendKernelInstance);
     response = new Response(runtime, data);
     chai.expect(response, 'is an instance of Response').to.be.an.instanceOf(Response);
     chai.expect(response.data).to.be.an('object');
@@ -38,7 +61,6 @@ suite('AWS/Lambda/Response', () => {
   });
 
   test('Check contextSent returns false', () => {
-    console.log('response.runtime: ', response.runtime);
     chai.expect(response.contextSent).to.be.equal(false);
   });
 

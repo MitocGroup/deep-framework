@@ -24,6 +24,14 @@ export class RedisDriver extends AbstractDriver {
   }
 
   /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return 'Redis';
+  }
+
+  /**
    * @returns {Redis}
    */
   get client() {

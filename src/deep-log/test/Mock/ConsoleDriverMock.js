@@ -75,4 +75,11 @@ export class ConsoleDriverMock extends ConsoleDriver {
     super.log(msg, level, context);
     this.logs.push(arguments);
   }
+
+  /**
+   * @returns {ConsoleDriverMock}
+   */
+  overrideNative() {
+    return this;
+  }
 }

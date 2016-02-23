@@ -87,51 +87,6 @@ suite('Log', () => {
     chai.expect(Log.LEVELS).to.be.include(Log.DEBUG);
   });
 
-  test('Check register() method register driver for console', () => {
-      let actualResult = log.register(consoleDriverMock);
-      chai.assert.instanceOf(
-        actualResult,
-        Log,
-        'register() method registers and returns an instance of ConsoleDriver'
-      );
-      chai.expect(log.drivers.iterator[0].constructor.name).to.be.equal(
-        'ConsoleDriverMock'
-      );
-    }
-  );
-
-  test('Check register() method throws exception for invalid driver', () => {
-      let error = null;
-      try {
-        log.register({});
-      } catch (e) {
-        error = e;
-      }
-
-      chai.expect(error).to.be.an.instanceof(
-        Core.Exception.InvalidArgumentException
-      );
-    }
-  );
-
-  test('Check log() method runs without exception', () => {
-    let level = 'debug';
-    let msg = 'test debug log() from Log';
-    let context = {context: 'Test context'};
-
-    let actualResult = log.log(msg, level, context);
-    let actualMsg = log.drivers.iterator[0].logs.pop();
-
-    chai.assert.instanceOf(
-      actualResult,
-      Log,
-      'register() method registers and returns an instance of ConsoleDriver'
-    );
-    chai.expect(actualMsg[0]).to.eql(msg);
-    chai.expect(actualMsg[1]).to.eql(level);
-    chai.expect(actualMsg[2]).to.eql(context);
-  });
-
   test(
     'Check create() method throws "Core.Exception.InvalidArgumentException" for invalid driver type',
     () => {
@@ -156,21 +111,54 @@ suite('Log', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly();
   });
 
-  test(
-    'Check overrideJsConsole() method returns object and executes debug',
-    () => {
-      let msg = 'test debug log() from Log';
-      let context = {context: 'Test context'};
+  test('Check register() method throws exception for invalid driver', () => {
+      let error = null;
+      try {
+        log.register({});
+      } catch (e) {
+        error = e;
+      }
 
-      log.overrideJsConsole();
-      log.debug(msg, context);
-
-      let actualResult = log.drivers.iterator[0].logs.pop();
-      chai.expect(actualResult[0]).to.eql(msg);
-      chai.expect(actualResult[1]).to.eql('debug');
-      chai.expect(actualResult[2]).to.eql(context);
+      chai.expect(error).to.be.an.instanceof(
+        Core.Exception.InvalidArgumentException
+      );
     }
   );
+
+  test('Check register() method register driver for console', () => {
+      log = new Log();
+
+      let actualResult = log.register(consoleDriverMock);
+      chai.assert.instanceOf(
+        actualResult,
+        Log,
+        'register() method registers and returns an instance of ConsoleDriver'
+      );
+
+      //check the added driver
+      chai.expect(log.drivers.iterator[log.drivers.iterator.length - 1].constructor.name).to.be.equal(
+        consoleDriverMock.constructor.name
+      );
+    }
+  );
+
+  test('Check log() method runs without exception', () => {
+    let level = 'debug';
+    let msg = 'test debug log() from Log';
+    let context = {context: 'Test context'};
+
+    let actualResult = log.log(msg, level, context);
+    let actualMsg = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
+
+    chai.assert.instanceOf(
+      actualResult,
+      Log,
+      'register() method registers and returns an instance of ConsoleDriver'
+    );
+    chai.expect(actualMsg[0]).to.eql(msg);
+    chai.expect(actualMsg[1]).to.eql(level);
+    chai.expect(actualMsg[2]).to.eql(context);
+  });
 
   test('Check error()', () => {
     let msg = 'test error log() from Log';
@@ -178,7 +166,7 @@ suite('Log', () => {
 
     log.error(msg, context);
 
-    let actualResult = log.drivers.iterator[0].logs.pop();
+    let actualResult = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
     chai.expect(actualResult[0]).to.eql(msg);
     chai.expect(actualResult[1]).to.eql('error');
     chai.expect(actualResult[2]).to.eql(context);
@@ -190,7 +178,7 @@ suite('Log', () => {
 
     log.info(msg, context);
 
-    let actualResult = log.drivers.iterator[0].logs.pop();
+    let actualResult = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
     chai.expect(actualResult[0]).to.eql(msg);
     chai.expect(actualResult[1]).to.eql('info');
     chai.expect(actualResult[2]).to.eql(context);
@@ -202,7 +190,7 @@ suite('Log', () => {
 
     log.warning(msg, context);
 
-    let actualResult = log.drivers.iterator[0].logs.pop();
+    let actualResult = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
     chai.expect(actualResult[0]).to.eql(msg);
     chai.expect(actualResult[1]).to.eql('warning');
     chai.expect(actualResult[2]).to.eql(context);
@@ -214,7 +202,7 @@ suite('Log', () => {
 
     log.emergency(msg, context);
 
-    let actualResult = log.drivers.iterator[0].logs.pop();
+    let actualResult = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
     chai.expect(actualResult[0]).to.eql(msg);
     chai.expect(actualResult[1]).to.eql('emergency');
     chai.expect(actualResult[2]).to.eql(context);
@@ -226,7 +214,7 @@ suite('Log', () => {
 
     log.critical(msg, context);
 
-    let actualResult = log.drivers.iterator[0].logs.pop();
+    let actualResult = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
     chai.expect(actualResult[0]).to.eql(msg);
     chai.expect(actualResult[1]).to.eql('critical');
     chai.expect(actualResult[2]).to.eql(context);
@@ -238,7 +226,7 @@ suite('Log', () => {
 
     log.notice(msg, context);
 
-    let actualResult = log.drivers.iterator[0].logs.pop();
+    let actualResult = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
     chai.expect(actualResult[0]).to.eql(msg);
     chai.expect(actualResult[1]).to.eql('notice');
     chai.expect(actualResult[2]).to.eql(context);
@@ -250,11 +238,28 @@ suite('Log', () => {
 
     log.alert(msg, context);
 
-    let actualResult = log.drivers.iterator[0].logs.pop();
+    let actualResult = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
     chai.expect(actualResult[0]).to.eql(msg);
     chai.expect(actualResult[1]).to.eql('alert');
     chai.expect(actualResult[2]).to.eql(context);
   });
+
+  test(
+    'Check overrideJsConsole() method returns object and executes debug',
+    () => {
+
+      let msg = 'test debug log() from Log';
+      let context = {context: 'Test context'};
+
+      log.overrideJsConsole();
+      log.debug(msg, context);
+
+      let actualResult = log.drivers.iterator[log.drivers.iterator.length - 1].logs.pop();
+      chai.expect(actualResult[0]).to.eql(msg);
+      chai.expect(actualResult[1]).to.eql('debug');
+      chai.expect(actualResult[2]).to.eql(context);
+    }
+  );
 
   test('Check register().create() method returns log driver for "console"', () => {
     log.register('console');

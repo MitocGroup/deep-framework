@@ -13,6 +13,7 @@ import {Injectable as MicroserviceInjectable} from './Microservice/Injectable';
 import {ContainerAware} from './ContainerAware';
 import FileSystem from 'fs';
 import WaitUntil from 'wait-until';
+import util from 'util';
 
 /**
  * Deep application kernel
@@ -30,6 +31,7 @@ export class Kernel {
     this._config = {};
     this._services = deepServices;
     this._context = context;
+    this._runtimeContext = {};
     this._env = null;
     this._container = new DI();
     this._isLoaded = false;
@@ -40,6 +42,20 @@ export class Kernel {
    */
   get isLoaded() {
     return this._isLoaded;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get runtimeContext() {
+    return this._runtimeContext;
+  }
+
+  /**
+   * @param {Object} runtimeContext
+   */
+  set runtimeContext(runtimeContext) {
+    this._runtimeContext = runtimeContext;
   }
 
   /**
@@ -117,22 +133,47 @@ export class Kernel {
    * @returns {Kernel}
    */
   loadFromFile(jsonFile, callback) {
+    let rumEvent = {
+      service: 'deep-kernel',
+      resourceType: 'Lambda',
+      eventName: 'KernelLoad',
+      time: new Date().getTime(),
+    };
+
     // @todo: remove AWS changes the way the things run
-    // This is used because of AWS Lambda
-    // context sharing after a cold start
+    // This is used because of AWS Lambda context sharing after a cold start
     if (this._isLoaded) {
+      if (this.isBackend) {
+        rumEvent.eventName = 'KernelLoadFromCache';
+        rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;
+        rumEvent.payload = this.config;
+        this.get('log').rumLog(rumEvent);
+      }
+
       callback(this);
       return this;
     }
 
     if (this.isBackend) {
-      FileSystem.readFile(jsonFile, 'utf8', function(error, data) {
+      FileSystem.readFile(jsonFile, 'utf8', (error, data) => {
         if (error) {
           throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);
         }
 
-        this.load(JSON.parse(data), callback);
-      }.bind(this));
+        this.load(JSON.parse(data), (kernel) => {
+          // Log event 'start' time
+          rumEvent.resourceId = kernel.runtimeContext.invokedFunctionArn;
+          kernel.get('log').rumLog(rumEvent);
+
+          // log event 'stop' time
+          let event = util._extend({}, rumEvent);
+          event.payload = kernel.config;
+          event.time = new Date().getTime();
+          kernel.get('log').rumLog(event);
+
+          callback(kernel);
+        });
+      });
     } else { // @todo: get rid of native code...
       var client = new XMLHttpRequest();
 
@@ -438,6 +479,46 @@ export class Kernel {
     return [
       Kernel.FRONTEND_CONTEXT,
       Kernel.BACKEND_CONTEXT,
+    ];
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get PROD_ENVIRONMENT() {
+    return 'prod';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get STAGE_ENVIRONMENT() {
+    return 'stage';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get TEST_ENVIRONMENT() {
+    return 'test';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEV_ENVIRONMENT() {
+    return 'dev';
+  }
+
+  /**
+   * @returns {Array}
+   */
+  static get ALL_ENVIRONMENTS() {
+    return [
+      Kernel.PROD_ENVIRONMENT,
+      Kernel.STAGE_ENVIRONMENT,
+      Kernel.TEST_ENVIRONMENT,
+      Kernel.DEV_ENVIRONMENT,
     ];
   }
 }

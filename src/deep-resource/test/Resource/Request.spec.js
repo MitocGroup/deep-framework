@@ -21,6 +21,7 @@ import Kernel from 'deep-kernel';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import Validation from 'deep-validation';
+import Log from 'deep-log';
 import KernelFactory from '../common/KernelFactory';
 import requireProxy from 'proxyquire';
 import AWS from 'mock-aws';
@@ -72,6 +73,7 @@ suite('Resource/Request', () => {
       Security: Security,
       Resource: Resource,
       Validation: Validation,
+      Log: Log,
     }, callback);
   });
 
@@ -447,8 +449,7 @@ suite('Resource/Request', () => {
 
     //set cache mock mode
     let cache = new CacheMock();
-    cache.setMode(CacheMock.NO_RESULT_MODE, ['has']);
-    cache.setMode(CacheMock.DATA_MODE, ['set']);
+    cache.setMode(CacheMock.DATA_MODE, ['has', 'get']);
 
     externalRequest.cacheImpl = cache;
     externalRequest.enableCache();
@@ -461,7 +462,7 @@ suite('Resource/Request', () => {
 
     let actualResult = spyCallback.args[0][0];
     chai.expect(typeof actualResult).to.equal('object');
-    chai.expect(actualResult.constructor.name).to.equal('SuperagentResponse');
+    chai.expect(actualResult.constructor.name).to.equal('Response');
   });
 
   test('Check send() throws "CachedRequestException" in has() for isCashed',
@@ -836,11 +837,6 @@ suite('Resource/Request', () => {
     let testRequest = new RequestMock(action, payload, method);
     let cache = new CacheMock();
 
-    cache._shared = {
-      buildKeyFromRequest: () => {
-        return 'to pass test';
-      }
-    };
     testRequest.cacheImpl = cache;
 
     testRequest.setMode(RequestMock.FAILURE_MODE, ['loadResponseFromCache']);

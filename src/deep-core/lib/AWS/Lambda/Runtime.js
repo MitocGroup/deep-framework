@@ -105,6 +105,14 @@ export class Runtime extends Interface {
     this._context = new Context(context);
     this._request = new Request(event);
 
+    this.logService.rumLog({
+      service: 'deep-core',
+      resourceType: 'Lambda',
+      resourceId: this._context.invokedFunctionArn,
+      eventName: 'Run',
+      payload: event,
+    });
+
     new Sandbox(() => {
       this._fillUserContext();
 
@@ -227,6 +235,13 @@ export class Runtime extends Interface {
    */
   get securityService() {
     return this.kernel.get('security');
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get logService() {
+    return this.kernel.get('log');
   }
 
   /**

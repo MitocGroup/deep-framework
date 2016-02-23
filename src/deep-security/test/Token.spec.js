@@ -25,6 +25,9 @@ import cognitoSyncClient from './Mock/cognitoSyncClient';
 import {Dataset} from './Mock/Dataset';
 import credentials from './common/credentials';
 import requireProxy from 'proxyquire';
+import Kernel from 'deep-kernel';
+import Log from 'deep-log';
+import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
 
@@ -58,9 +61,21 @@ suite('Token', () => {
   };
   let identityProvider = new IdentityProvider(providers, providerName, identityMetadata);
   let token = new Token(identityPoolId);
+  let logService = null;
 
   test('Class Token exists in Token', () => {
     chai.expect(Token).to.be.an('function');
+  });
+
+  test('Load Kernels by using Kernel.load()', (done) => {
+    let callback = (frontendKernel, backendKernel) => {
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+      logService = backendKernel.get('log');
+
+      // complete the async
+      done();
+    };
+    KernelFactory.create({Log: Log}, callback);
   });
 
   test('Check constructor sets _identityPoolId', () => {
@@ -273,6 +288,7 @@ suite('Token', () => {
     token._credsManager = credentialsManager;
 
     token.lambdaContext = lambdaContext;
+    token.logService = logService;
 
     token.loadCredentials(spyCallback);
 
@@ -319,6 +335,8 @@ suite('Token', () => {
     });
     let Token = tokenExport.Token;
     let token = new Token(identityPoolId);
+
+    token.logService = logService;
 
     //set failure mode openOrCreateDataset
     token._credsManager.cognitoSyncClient.setMode(

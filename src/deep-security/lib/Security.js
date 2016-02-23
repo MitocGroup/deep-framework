@@ -10,6 +10,8 @@ import {Token} from './Token';
 import {LocalToken} from './LocalToken';
 import {UserProvider} from './UserProvider';
 import {IdentityProvider} from './IdentityProvider';
+import util from 'util';
+import crypto from 'crypto';
 
 /**
  * Deep Security implementation
@@ -33,7 +35,7 @@ export class Security extends Kernel.ContainerAware {
   }
 
   /**
-   * @returns {Object}
+   * @returns {String}
    */
   get identityPoolId() {
     return this._identityPoolId;
@@ -89,8 +91,23 @@ export class Security extends Kernel.ContainerAware {
     this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);
 
     this._token.userProvider = this.userProvider;
+    this._token.logService = this.kernel.get('log');
+
+    let event = {
+      eventName: 'login',
+      eventId: Security.customEventId(this.identityPoolId),
+      payload: {providerName, identityMetadata},
+      time: new Date().getTime(),
+    };
 
     this._token.loadCredentials((error, credentials) => {
+      this._logRumEvent(event);
+
+      event = util._extend({}, event);
+      event.payload = {credentials};
+
+      this._logRumEvent(event);
+
       callback(error, this._token);
     });
 
@@ -104,11 +121,25 @@ export class Security extends Kernel.ContainerAware {
   anonymousLogin(callback) {
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 
-    this._token = TokenImplementation.create(this._identityPoolId);
+    this._token = TokenImplementation.create(this.identityPoolId);
 
     this._token.userProvider = this.userProvider;
+    this._token.logService = this.kernel.get('log');
+
+    let event = {
+      eventName: 'anonymousLogin',
+      eventId: Security.customEventId(this.identityPoolId),
+      time: new Date().getTime(),
+    };
 
     this._token.loadCredentials((error, credentials) => {
+      this._logRumEvent(event);
+
+      event = util._extend({}, event);
+      event.payload = {credentials};
+
+      this._logRumEvent(event);
+
       callback(error, this._token);
     });
 
@@ -129,6 +160,7 @@ export class Security extends Kernel.ContainerAware {
     this._token = TokenImplementation.createFromLambdaContext(this._identityPoolId, lambdaContext);
 
     this._token.userProvider = this.userProvider;
+    this._token.logService = this.kernel.get('log');
 
     return this._token;
   }
@@ -139,12 +171,61 @@ export class Security extends Kernel.ContainerAware {
    * @returns {Security}
    */
   logout() {
+    this._logRumEvent({
+      eventName: 'logout',
+    });
+    
     if (this._token) {
       this._token.destroy();
     }
-
+    
     this._token = null;
 
     return this;
+  }
+
+  /**
+   * @param {Object} customData
+   * @returns {Boolean}
+   * @private
+   */
+  _logRumEvent(customData) {
+    let logService = this.kernel.get('log');
+
+    if (!logService.isRumEnabled()) {
+      return false;
+    }
+
+    let event = util._extend(customData, {
+      service: 'deep-security',
+      resourceType: 'Cognito',
+      resourceId: this.identityPoolId,
+    });
+
+    logService.rumLog(event);
+
+    return true;
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @returns {String}
+   */
+  static customEventId(identityPoolId) {
+    return Security._md5(identityPoolId + new Date().getTime());
+  }
+
+  /**
+   * @todo - move all this utils methods into separate class somewhere in deep-core or deep-kernel
+   *
+   * @param {String} str
+   * @returns {String}
+   */
+  static _md5(str) {
+    var md5sum = crypto.createHash('md5');
+
+    md5sum.update(str);
+
+    return md5sum.digest('hex');
   }
 }

@@ -17,6 +17,14 @@ export class InMemoryDriver extends AbstractDriver {
   }
 
   /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return 'InMemory';
+  }
+
+  /**
    * @returns {Object}
    */
   get storage() {

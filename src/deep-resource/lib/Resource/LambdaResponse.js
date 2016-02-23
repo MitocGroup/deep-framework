@@ -17,6 +17,8 @@ export class LambdaResponse extends Response {
   constructor(...args) {
     super(...args);
 
+    this._originalResponse = null;
+
     // assure calling the very first!
     this._fillStatusCode();
 
@@ -24,6 +26,45 @@ export class LambdaResponse extends Response {
 
     this._fillData(responsePayload);
     this._fillError(responsePayload);
+  }
+
+  /**
+   * @param {AWS.Response|null} response
+   */
+  set originalResponse(response) {
+    this._originalResponse = response;
+  }
+
+  /**
+   *
+   * @returns {AWS.Response|null}
+   */
+  get originalResponse() {
+    return this._originalResponse;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get headers() {
+    if (!this._headers && this.originalResponse) {
+      this._headers = this.originalResponse.httpResponse ? this.originalResponse.httpResponse.headers : {};
+    }
+
+    return this._headers;
+  }
+
+  /**
+   * @returns {String|null}
+   */
+  get requestId() {
+    if (!this._requestId && this.headers) {
+      if (this.headers[Response.REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.REQUEST_ID_HEADER.toLowerCase()];
+      }
+    }
+
+    return this._requestId;
   }
 
   /**

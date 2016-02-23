@@ -9,6 +9,7 @@ import {LocalToken} from '../lib/LocalToken';
 import {Token} from '../lib/Token';
 import {Exception} from '../lib/Exception/Exception';
 import Kernel from 'deep-kernel';
+import Log from 'deep-log';
 import KernelFactory from './common/KernelFactory';
 import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 
@@ -55,6 +56,7 @@ suite('Security', function () {
 
     KernelFactory.create({
       Security: Security,
+      Log: Log,
     }, callback);
   });
 

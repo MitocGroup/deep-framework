@@ -21,6 +21,14 @@ export class S3FSDriver extends AbstractFsDriver {
   }
 
   /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return 'S3FS';
+  }
+
+  /**
    * @param {String} key
    * @param {Function} callback
    * @private

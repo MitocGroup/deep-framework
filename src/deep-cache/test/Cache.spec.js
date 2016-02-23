@@ -11,6 +11,7 @@ import {CloudFrontDriver} from '../lib/Driver/CloudFrontDriver';
 import {Exception} from '../lib/Exception/Exception';
 import {AbstractDriverMock} from './Mocks/AbstractDriverMock';
 import Kernel from 'deep-kernel';
+import Log from 'deep-log';
 import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
@@ -44,7 +45,10 @@ suite('Cache', () => {
       done();
     };
 
-    KernelFactory.create({Cache: Cache}, callback);
+    KernelFactory.create({
+      Cache: Cache,
+      Log: Log,
+    }, callback);
   });
 
   test('Check driver setter sets driver value', () => {

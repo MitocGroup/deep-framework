@@ -39,6 +39,8 @@ export class ConsoleDriver extends AbstractDriver {
       }
 
       console[method] = nativeConsole[method];
+
+      console[method].bind(nativeConsole);
     }
 
     return console;
@@ -74,12 +76,14 @@ export class ConsoleDriver extends AbstractDriver {
     }
 
     // Fixes issue with node env
-    (this._console[nativeMethod] || this._console.log)(AbstractDriver.timeString, msg);
+    let logMethod = this._console[nativeMethod] || this._console.log;
+    logMethod.call(ConsoleDriver.nativeConsole, AbstractDriver.timeString, msg);
 
     // @todo: figure out a better way of dumping context
     if (context) {
       // Fixes issue with node env
-      (this._console.debug || this._console.log)('[DEBUG]', context);
+      let debugMethod = this._console.debug || this._console.log;
+      debugMethod.call(ConsoleDriver.nativeConsole, '[DEBUG]', context);
     }
   }
 

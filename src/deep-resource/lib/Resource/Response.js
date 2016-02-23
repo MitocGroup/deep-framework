@@ -26,6 +26,22 @@ export class Response {
     this._statusCode = null;
     this._data = null;
     this._error = null;
+    this._headers = null;
+    this._requestId = null;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ORIGINAL_REQUEST_ID_HEADER() {
+    return 'x-amzn-original-RequestId';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get REQUEST_ID_HEADER() {
+    return 'x-amzn-RequestId';
   }
 
   /**
@@ -71,6 +87,20 @@ export class Response {
   }
 
   /**
+   * @returns {String}
+   */
+  get requestId() {
+    return this._requestId;
+  }
+
+  /**
+   * @returns {Object|null}
+   */
+  get headers() {
+    return this._headers;
+  }
+
+  /**
    * @returns {Boolean}
    */
   get isError() {
@@ -86,5 +116,18 @@ export class Response {
     return rawError instanceof Error
       ? rawError
       : new Error(rawError.toString());
+  }
+
+  /**
+   * @returns {{requestId: String, statusCode: Number, headers: (Object|null), data: Object, error: Error}}
+   */
+  toJSON() {
+    return {
+      requestId: this.requestId,
+      statusCode: this.statusCode,
+      headers: this.headers,
+      data: this.data,
+      error: this.error,
+    };
   }
 }

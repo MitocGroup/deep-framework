@@ -114,7 +114,7 @@ export class Cache extends Kernel.ContainerAware {
       .proxyOverride(
       this._driver,
       'has', 'get', 'set',
-      'invalidate', 'flush'
+      'invalidate', 'flush', 'type'
     );
   }
 

@@ -15,8 +15,8 @@ import {DriverException} from './Exception/DriverException';
 export class AbstractDriver extends Core.OOP.Interface {
   constructor() {
     super([
-      '_get', '_has',
-      '_set', '_invalidate',
+      '_get', '_has', '_set',
+      '_invalidate', '_type'
     ]);
 
     this._buildId = '';
@@ -141,6 +141,13 @@ export class AbstractDriver extends Core.OOP.Interface {
     }
 
     return this;
+  }
+
+  /**
+   * @returns {String}
+   */
+  type() {
+    return this._type();
   }
 
   /**

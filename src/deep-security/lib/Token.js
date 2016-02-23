@@ -11,6 +11,8 @@ import {DescribeIdentityException} from './Exception/DescribeIdentityException';
 import {CredentialsManager} from './CredentialsManager';
 import {Exception} from './Exception/Exception';
 import {Exception as CoreException} from 'deep-core';
+import {Security} from './Security';
+import util from 'util';
 
 /**
  * Security token holds details about logged user
@@ -22,13 +24,15 @@ export class Token {
   constructor(identityPoolId) {
     this._identityPoolId = identityPoolId;
 
-    this._identityProvider = null;
     this._lambdaContext = null;
     this._user = null;
-    this._userProvider = null;
     this._credentials = null;
     this._identityMetadata = null;
     this._tokenExpiredCallback = null;
+
+    this._identityProvider = null;
+    this._userProvider = null;
+    this._logService = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -81,19 +85,47 @@ export class Token {
   }
 
   /**
+   * @param {Object} logService
+   */
+  set logService(logService) {
+    this._logService = logService;
+  }
+
+  /**
    * @param {Function} callback
    */
   loadCredentials(callback = () => {}) {
+    let event = {
+      service: 'deep-security',
+      resourceType: 'Cognito',
+      resourceId: this._identityPoolId,
+      eventName: 'loadCredentials',
+      eventId: Security.customEventId(this._identityPoolId),
+      time: new Date().getTime(),
+    };
+
+    let proxyCallback = (error, credentials) => {
+      // log event only after credentials are loaded to get identityId
+      this._logService.rumLog(event);
+
+      event = util._extend({}, event);
+      event.payload = {error, credentials};
+
+      this._logService.rumLog(event);
+
+      callback(error, credentials);
+    };
+
     // avoid refreshing or loading credentials for each request
     if (this.validCredentials(this.credentials)) {
-      callback(null, this.credentials);
+      proxyCallback(null, this.credentials);
       return;
     }
 
     if (this.lambdaContext) {
-      this._backendLoadCredentials(callback);
+      this._backendLoadCredentials(proxyCallback);
     } else {
-      this._frontendLoadCredentials(callback);
+      this._frontendLoadCredentials(proxyCallback);
     }
   }
 
@@ -197,7 +229,19 @@ export class Token {
       cognitoParams.LoginId = this.identityProvider.userId;
     }
 
-    return new AWS.CognitoIdentityCredentials(cognitoParams);
+    let credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+
+    credentials.toJSON = function() {
+      return {
+        expired: credentials.expired,
+        expireTime: credentials.expireTime,
+        accessKeyId: credentials.accessKeyId,
+        secretAccessKey: credentials.secretAccessKey,
+        sessionToken: credentials.sessionToken,
+      };
+    }.bind(credentials);
+
+    return credentials;
   }
 
   /**

@@ -7,11 +7,12 @@ import {Kernel} from '../lib/Kernel';
 import {Instance} from '../lib/Microservice/Instance';
 import {Exception} from '../lib/Exception/Exception';
 import {MissingMicroserviceException} from '../lib/Exception/MissingMicroserviceException';
-import {DI} from '../node_modules/deep-di/lib.compiled/DI';
-import {Asset} from '../node_modules/deep-asset/lib.compiled/Asset';
 import KernelFactory from './common/KernelFactory';
 import backendConfig from './common/backend-cfg-json';
 import frontendConfig from './common/frontent-cfg-json';
+import Log from 'deep-log';
+import Asset from 'deep-asset';
+import DI from 'deep-di';
 
 chai.use(sinonChai);
 
@@ -19,6 +20,9 @@ suite('Kernel', () => {
 
   let backendKernelInstance = null;
   let frontendKernelInstance = null;
+  let services = {
+    Log: Log,
+  };
 
   test('Class Kernel exists in Kernel', () => {
     chai.expect(Kernel).to.be.an('function');
@@ -34,7 +38,7 @@ suite('Kernel', () => {
       // complete the async
       done();
     };
-    KernelFactory.create({}, callback);
+    KernelFactory.create(services, callback);
   });
 
   test('Check constructor of Kernel throws "Exception" exception for invalid context', () => {
@@ -62,8 +66,8 @@ suite('Kernel', () => {
   });
 
   test('Check constructor sets _services', () => {
-    chai.expect(backendKernelInstance.services).to.be.eql({});
-    chai.expect(frontendKernelInstance.services).to.be.eql({});
+    chai.expect(Object.keys(backendKernelInstance.services)).to.be.eql(Object.keys(services));
+    chai.expect(Object.keys(frontendKernelInstance.services)).to.be.eql(Object.keys(services));
   });
 
   test('Check constructor sets _context', () => {
@@ -166,13 +170,14 @@ suite('Kernel', () => {
 
   test('Check loadFromFile() for backend with !_isLoaded', function (done) {
     let callback = (backendKernel) => {
-      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel')
+      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
 
       // complete the async
       done();
     };
     let backendKernelFromFile = new Kernel({
       Asset: Asset,
+      Log: Log,
     }, Kernel.BACKEND_CONTEXT);
     backendKernelFromFile.loadFromFile('./test/common/backend-cfg.json', callback);
   });

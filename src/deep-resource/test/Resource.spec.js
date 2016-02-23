@@ -11,6 +11,7 @@ import {MissingActionException} from '../lib/Resource/Exception/MissingActionExc
 import {InvalidDeepIdentifierException}
   from '../node_modules/deep-kernel/lib.compiled/Exception/InvalidDeepIdentifierException';
 import Kernel from 'deep-kernel';
+import Log from 'deep-log';
 import Cache from 'deep-cache';
 import Security from 'deep-security';
 import Validation from 'deep-validation';
@@ -47,6 +48,7 @@ suite('Resource', () => {
       Security: Security,
       Resource: Resource,
       Validation: Validation,
+      Log: Log,
     }, callback);
   });
 

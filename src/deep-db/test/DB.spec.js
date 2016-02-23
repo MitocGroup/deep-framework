@@ -11,6 +11,7 @@ import {FailedToCreateTablesException} from '../lib/Exception/FailedToCreateTabl
 import Joi from 'joi';
 import Vogels from 'vogels';
 import Kernel from 'deep-kernel';
+import Log from 'deep-log';
 import requireProxy from 'proxyquire';
 import KernelFactory from './common/KernelFactory';
 import {LocalDynamoMock} from './Mock/Driver/LocalDynamoMock';
@@ -65,6 +66,7 @@ suite('DB', () => {
       {
         DB: DBProxy,
         Validation: Validation,
+        Log: Log,
       },
       callback
     );

@@ -67,10 +67,11 @@ export class Resource extends Kernel.ContainerAware {
 
     let resource = this._resources[microserviceIdentifier][resourceIdentifier];
 
-    // inject dependencies
+    // inject dependencies (@todo - inject kernel instance instead)
     resource.cache = this.container.get('cache');
     resource.security = this.container.get('security');
     resource.validation = this.container.get('validation');
+    resource.log = this.container.get('log');
 
     return actionIdentifier ? resource.action(actionIdentifier) : resource;
   }
