@@ -19,13 +19,22 @@ export class ErrorResponse extends Response {
   }
 
   /**
+   * @returns {String}
+   */
+  static get STATUS_CODE_KEY() {
+    return '_deep_http_status_code_';
+  }
+
+  /**
    * @param {Error|String|*} error
    * @returns {Object}
    */
   static createErrorObject(error) {
     let errorObj = {};
+    let errorCode = 500; // default error code
 
     if (error.name === 'ValidationError') { // we assume it's a joi validation error
+      errorCode = 400;
       errorObj = {
         errorType: error.name,
         errorMessage: error.annotate(),
@@ -47,6 +56,10 @@ export class ErrorResponse extends Response {
         errorStack: (new Error(plainError)).stack,
       };
     }
+
+    // @todo - check if error.code is defined into status codes mapping, if not fallback to a defined one
+    // e.g. 223 -> 200, 306 -> 300, etc
+    errorObj[ErrorResponse.STATUS_CODE_KEY] = error.code || errorCode;
 
     return errorObj;
   }
