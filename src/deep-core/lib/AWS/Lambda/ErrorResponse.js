@@ -5,6 +5,7 @@
 'use strict';
 
 import {Response} from './Response';
+import {Exception} from '../../Exception/Exception';
 
 /**
  * Error response sent to the lambda context
@@ -19,19 +20,12 @@ export class ErrorResponse extends Response {
   }
 
   /**
-   * @returns {String}
-   */
-  static get STATUS_CODE_KEY() {
-    return '_deep_http_status_code_';
-  }
-
-  /**
    * @param {Error|String|*} error
    * @returns {Object}
    */
   static createErrorObject(error) {
     let errorObj = {};
-    let errorCode = 500; // default error code
+    let errorCode = Exception.DEFAULT_CODE;
 
     if (error.name === 'ValidationError') { // we assume it's a joi validation error
       errorCode = 400;
@@ -57,9 +51,7 @@ export class ErrorResponse extends Response {
       };
     }
 
-    // @todo - check if error.code is defined into status codes mapping, if not fallback to a defined one
-    // e.g. 223 -> 200, 306 -> 300, etc
-    errorObj[ErrorResponse.STATUS_CODE_KEY] = error.code || errorCode;
+    errorObj[Exception.STATUS_CODE_KEY] = Exception.assureDefinedCode(error.code || errorCode);
 
     return errorObj;
   }
