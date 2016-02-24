@@ -13,14 +13,12 @@ import Redis from 'ioredis';
  */
 export class RedisDriver extends AbstractDriver {
   /**
-   * @param {String} dsn
+   * @param {*} args
    */
-  constructor(dsn) {
+  constructor(...args) {
     super();
 
-    let nativeDriver = this.NATIVE_DRIVER;
-
-    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();
+    this._client = this.NATIVE_DRIVER(...args);
   }
 
   /**

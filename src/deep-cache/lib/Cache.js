@@ -24,7 +24,7 @@ export class Cache extends Kernel.ContainerAware {
 
   /**
    * @param {String} name
-   * @param {Array} args
+   * @param {*} args
    * @returns {AbstractDriver}
    */
   static createDriver(name, ...args) {
@@ -65,23 +65,22 @@ export class Cache extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    let sharedCacheDriver;
-    let driver;
 
-    if (kernel.isFrontend) {
-      driver = Cache.createDriver('local-storage');
-      sharedCacheDriver = Cache.createDriver('cloud-front', this);
-    } else {
-      // @todo: switch to redis when issue with Elasticache is fixed
-      driver = Cache.createDriver('memory');
-      sharedCacheDriver = Cache.createDriver('s3fs', this);
-    }
+    // @todo: remove in memory fallback for backend?
+    this._driver = kernel.isFrontend ?
+      Cache.createDriver('local-storage') :
+      (kernel.config.cacheDsn ?
+        Cache.createDriver('redis', kernel.config.cacheDsn) :
+        Cache.createDriver('memory'));
 
-    [driver, sharedCacheDriver].map(function(driver) {
+    let sharedCacheDriver = kernel.isFrontend ?
+      Cache.createDriver('cloud-front', this) :
+      Cache.createDriver('s3fs', this);
+
+    [this._driver, sharedCacheDriver].map((driver) => {
       driver.buildId = kernel.buildId;
     });
 
-    this._driver = driver;
     this._shared = new SharedCache(sharedCacheDriver);
 
     callback();
