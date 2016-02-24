@@ -180,6 +180,7 @@ export class Service {
       Service.CLOUD_SEARCH,
       Service.SIMPLE_QUEUE_SERVICE,
       Service.CERTIFICATE_MANAGER,
+      Service.EC2,
     ];
   }
 }
