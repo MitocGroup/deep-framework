@@ -28,6 +28,11 @@ To see the power of `DEEP Framework`, execute the following 4 simple steps in co
 > deepify is a collection of tools that empower developers and devops engineers to automate
 the management of web apps built on top of DEEP ecosystem.
 
+  Note: If you want to use `deepify` on Windows, please follow the steps from
+  [Windows Configuration](https://github.com/MitocGroup/deep-framework/blob/master/docs/windows.md)
+  before running `npm install deepify -g` and make sure all `npm` and `deepify` commands are executed
+  inside Git Bash.
+
 2. Using deepify, dump locally the helloworld example:
 
   `deepify helloworld ~/deep-hello-world`
