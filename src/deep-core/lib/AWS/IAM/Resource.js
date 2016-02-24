@@ -24,6 +24,16 @@ export class Resource extends Extractable {
 
     this.service = service;
     this.region = region;
+
+    this._any = false;
+  }
+
+  /**
+   * @returns {Resource}
+   */
+  any() {
+    this._any = true;
+    return this;
   }
 
   /**
@@ -115,6 +125,10 @@ export class Resource extends Extractable {
    * @returns {String}
    */
   extract() {
+    if (this._any) {
+      return '*';
+    }
+
     let service = this._service;
     let region = this._region;
     let accountId = this._accountId;
