@@ -24,6 +24,10 @@ suite('AWS/Service', () => {
     chai.expect(Service.SIMPLE_STORAGE_SERVICE).to.be.equal('s3');
   });
 
+  test('Check EC2 static getter returns "ec2"', () => {
+    chai.expect(Service.EC2).to.be.equal('ec2');
+  });
+
   test('Check DYNAMO_DB static getter returns "dynamodb"', () => {
     chai.expect(Service.DYNAMO_DB).to.be.equal('dynamodb');
   });
@@ -112,6 +116,7 @@ suite('AWS/Service', () => {
     chai.expect(Service.list()).to.be.include(Service.API_GATEWAY_EXECUTE);
     chai.expect(Service.list()).to.be.include(Service.CLOUD_SEARCH);
     chai.expect(Service.list()).to.be.include(Service.SIMPLE_QUEUE_SERVICE);
+    chai.expect(Service.list()).to.be.include(Service.EC2);
   });
 
   test('Check exists() static method returns true if Service exists', () => {
