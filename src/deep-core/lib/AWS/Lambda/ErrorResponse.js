@@ -5,6 +5,8 @@
 'use strict';
 
 import {Response} from './Response';
+import {Exception} from '../../Exception/Exception';
+import {Helper as HttpHelper} from '../../HTTP/Helper';
 
 /**
  * Error response sent to the lambda context
@@ -24,8 +26,10 @@ export class ErrorResponse extends Response {
    */
   static createErrorObject(error) {
     let errorObj = {};
+    let errorCode = Exception.DEFAULT_CODE;
 
     if (error.name === 'ValidationError') { // we assume it's a joi validation error
+      errorCode = 400;
       errorObj = {
         errorType: error.name,
         errorMessage: error.annotate(),
@@ -47,6 +51,8 @@ export class ErrorResponse extends Response {
         errorStack: (new Error(plainError)).stack,
       };
     }
+
+    errorObj[Exception.CODE_KEY] = HttpHelper.assureDefinedCode(error.code || errorCode);
 
     return errorObj;
   }

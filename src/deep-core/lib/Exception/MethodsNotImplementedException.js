@@ -21,6 +21,6 @@ export class MethodsNotImplementedException extends Exception {
 
     let methodPlain = methods.join(', ');
 
-    super(`One or more method are not implemented (${methodPlain}).`);
+    super(`One or more method are not implemented (${methodPlain}).`, 500);
   }
 }

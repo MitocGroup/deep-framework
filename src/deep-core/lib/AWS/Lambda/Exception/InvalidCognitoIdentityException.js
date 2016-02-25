@@ -14,6 +14,6 @@ export class InvalidCognitoIdentityException extends Exception {
    * @param {String} identityPoolId
    */
   constructor(identityPoolId) {
-    super(`Invalid cognito identity pool "${identityPoolId}".`);
+    super(`Invalid cognito identity pool "${identityPoolId}".`, 403);
   }
 }

@@ -8,6 +8,6 @@ import {Exception} from '../../../Exception/Exception';
 
 export class MissingUserContextException extends Exception {
   constructor() {
-    super('Missing user context in the Lambda runtime');
+    super('Missing user context in the Lambda runtime', 403);
   }
 }

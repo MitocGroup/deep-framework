@@ -17,6 +17,6 @@ export class InvalidArgumentException extends Exception {
   constructor(argument, meantType) {
     let argumentType = typeof argument;
 
-    super(`Invalid argument ${argument} of type ${argumentType} provided (meant ${meantType}).`);
+    super(`Invalid argument ${argument} of type ${argumentType} provided (meant ${meantType}).`, 400);
   }
 }
