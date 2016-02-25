@@ -53,6 +53,7 @@ suite('AWS/Lambda/ErrorResponse', () => {
   test('Check createErrorObject()', () => {
     let error = {
       name: 'ValidationError',
+      code: 400,
       annotate: () => {
         return 'error message here';
       },
@@ -64,6 +65,7 @@ suite('AWS/Lambda/ErrorResponse', () => {
       errorMessage: error.annotate(),
       errorStack: error.stack,
       validationErrors: error.details,
+      _deep_error_code_: error.code
     };
 
     let actualResult = ErrorResponse.createErrorObject(error);
