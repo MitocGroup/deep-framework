@@ -12,7 +12,7 @@ export class Helper {
    * @returns {Number[]}
    */
   static get CODES() {
-    return [200, 201, 204, 300, 301, 304, 400, 401, 403, 404, 409, 500];
+    return [200, 400, 401, 403, 404, 406, 409, 500];
   }
 
   /**
