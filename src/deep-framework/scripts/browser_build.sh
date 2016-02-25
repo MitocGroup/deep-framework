@@ -52,6 +52,10 @@ echo "- Execute prepare hooks"
 cd "${path}"/../node_modules/deep-log && \
     "${npm}" run prepare-browserify
 
+echo "- Installing shared aws-sdk@^2.2.x instance"
+cd "${path}"/../
+"${npm}" install "aws-sdk@^2.2.x" --production --no-bin-links --no-optional
+
 echo "- Lookup for node modules to require"
 
 # used to require/exclude modules

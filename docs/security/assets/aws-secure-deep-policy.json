@@ -32,6 +32,7 @@
         "iam:passRole",
         "iam:putRolePolicy",
         "iam:simulatePrincipalPolicy",
+        "lambda:invokeFunction",
         "lambda:createFunction",
         "lambda:deleteFunction",
         "lambda:listFunctions",
@@ -41,7 +42,12 @@
         "logs:*",
         "cloudsearch:*",
         "apigateway:*",
-        "acm:*"
+        "acm:*",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeSubnets",
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface"
       ],
       "Resource": "*"
     }
