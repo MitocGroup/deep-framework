@@ -14,6 +14,14 @@ export class RedisDriverMock extends RedisDriver {
   }
 
   /**
+   * @param {String} dsn
+   * @private
+   */
+  _autoDiscover(dsn) {
+    this._client = new this.NATIVE_DRIVER(dsn);
+  }
+
+  /**
    * Enables failure mode
    */
   enableFailureMode() {

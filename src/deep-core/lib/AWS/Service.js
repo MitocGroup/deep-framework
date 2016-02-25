@@ -18,6 +18,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get EC2() {
+    return 'ec2';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get LAMBDA() {
     return 'lambda';
   }
@@ -173,6 +180,7 @@ export class Service {
       Service.CLOUD_SEARCH,
       Service.SIMPLE_QUEUE_SERVICE,
       Service.CERTIFICATE_MANAGER,
+      Service.EC2,
     ];
   }
 }
