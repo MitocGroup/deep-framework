@@ -50,7 +50,7 @@ export class RedisDriver extends AbstractDriver {
           options.sentinels.push(`redis://${host}/`);
         });
 
-        this._client = this.NATIVE_DRIVER(options);
+        this._client = new this.NATIVE_DRIVER(options);
       }
     });
   }
