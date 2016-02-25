@@ -21,6 +21,7 @@ import {MethodsNotImplementedException as ExceptionMethodsNotImplementedExceptio
 import {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';
 import {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';
 import {Sandbox as RuntimeSandbox} from './Runtime/Sandbox';
+import {Helper as HttpHelper} from './HTTP/Helper';
 
 let exports = module.exports = {
   IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,
@@ -29,6 +30,9 @@ let exports = module.exports = {
     InvalidArgumentException: ExceptionInvalidArgumentException,
     MethodsNotImplementedException: ExceptionMethodsNotImplementedException,
     DatabaseOperationException: ExceptionDatabaseOperationException,
+  },
+  HTTP: {
+    Helper: HttpHelper,
   },
   Runtime: {
     Sandbox: RuntimeSandbox,

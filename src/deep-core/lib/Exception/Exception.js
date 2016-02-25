@@ -11,8 +11,8 @@ export class Exception extends Error {
   /**
    * @returns {String}
    */
-  static get STATUS_CODE_KEY() {
-    return '_deep_http_status_code_';
+  static get CODE_KEY() {
+    return '_deep_error_code_';
   }
 
   /**
@@ -20,30 +20,6 @@ export class Exception extends Error {
    */
   static get DEFAULT_CODE() {
     return 500;
-  }
-
-  /**
-   * @returns {Number[]}
-   */
-  static get CODES() {
-    return [200, 201, 204, 300, 301, 304, 400, 401, 403, 404, 409, 500];
-  }
-
-  /**
-   * @param {String|Number}code
-   * @returns {Number}
-   */
-  static assureDefinedCode(code) {
-    code = parseInt(code);
-
-    if (Exception.CODES.indexOf(code) !== -1) {
-      return code;
-    }
-
-    // fallback to a defined error code
-    code = parseInt(String(code).charAt(0) + '00');
-
-    return Exception.CODES.indexOf(code) !== -1 ? code : Exception.DEFAULT_CODE;
   }
 
   /**

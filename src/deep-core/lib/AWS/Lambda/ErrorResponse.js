@@ -6,6 +6,7 @@
 
 import {Response} from './Response';
 import {Exception} from '../../Exception/Exception';
+import {Helper as HttpHelper} from '../../HTTP/Helper';
 
 /**
  * Error response sent to the lambda context
@@ -51,7 +52,7 @@ export class ErrorResponse extends Response {
       };
     }
 
-    errorObj[Exception.STATUS_CODE_KEY] = Exception.assureDefinedCode(error.code || errorCode);
+    errorObj[Exception.CODE_KEY] = HttpHelper.assureDefinedCode(error.code || errorCode);
 
     return errorObj;
   }
