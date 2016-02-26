@@ -6,12 +6,14 @@ node_js:
 cache:
   directories:
     - $(npm root -g)
+    - node_modules
 branches:
   only:
     - master
     - stage
     - test
     - dev
+    - node_modules
 env:
   global:
     #JSPM_GITHUB_AUTH_TOKEN=[secured]
