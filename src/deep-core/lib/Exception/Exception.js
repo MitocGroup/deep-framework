@@ -19,7 +19,7 @@ export class Exception extends Error {
    * @returns {Number}
    */
   static get DEFAULT_CODE() {
-    return 500;
+    return 400;
   }
 
   /**
