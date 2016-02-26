@@ -133,11 +133,14 @@ export class FS extends Kernel.ContainerAware {
           },
         };
 
-        let logService = this.kernel.get('log');
         let s3Fs = new S3FS(this._buckets[name], options);
 
-        if (logService.isRumEnabled()) {
-          s3Fs = new S3FsRumProxy(s3Fs, logService).proxy();
+        if (this.kernel instanceof Kernel) {
+          let logService = this.kernel.get('log');
+
+          if (logService.isRumEnabled()) {
+            s3Fs = new S3FsRumProxy(s3Fs, logService).proxy();
+          }
         }
 
         this._mountedFolders[name] = s3Fs;
