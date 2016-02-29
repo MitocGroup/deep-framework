@@ -34,6 +34,7 @@ before_install:
   - npm install -g src/deep-cache
   - npm install -g src/deep-security
   - npm install -g src/deep-log
+  - test/bin/prepare_to_test.sh
   - cp test/package.json .
 after_success:
   - npm run coverage
