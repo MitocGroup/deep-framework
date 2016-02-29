@@ -32,6 +32,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedKey.js~SharedKey.html">SharedKey</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
@@ -41,11 +42,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -60,6 +61,7 @@
 import Core from &apos;deep-core&apos;;
 import util from &apos;util&apos;;
 import crypto from &apos;crypto&apos;;
+import {SharedKey as Key} from &apos;./SharedKey&apos;;
 
 /**
  * Shared Cache
@@ -75,48 +77,21 @@ export class SharedCache {
       .proxyOverride(
       this._driver,
       &apos;has&apos;, &apos;get&apos;, &apos;set&apos;,
-      &apos;invalidate&apos;, &apos;flush&apos;
+      &apos;invalidate&apos;, &apos;flush&apos;, &apos;type&apos;
     );
   }
 
   /**
-   * @todo: use Promise when get rid of transpiler
-   *
-   * @param {Request} requestObject
-   * @param {Function} callback
-   * @returns {Promise}
-   */
-  request(requestObject, callback = () =&gt; {}) {
-    let cacheKey = this.buildKeyFromRequest(requestObject);
-
-    this._driver.has(cacheKey, (err, has) =&gt; {
-      if (has) {
-        this._driver.get(cacheKey, (err, data) =&gt; {
-          if (err) {
-            requestObject.send(callback);
-
-            return;
-          }
-
-          callback(this._createSuccessfulResponse(data));
-        });
-
-        return;
-      }
-
-      requestObject.send(callback);
-    });
-  }
-
-  /**
    * @param {Request} request
-   * @returns {String}
+   * @returns {Key}
    */
   buildKeyFromRequest(request) {
     let action = request.action;
+    let microservice = action.resource.microservice;
     let requestIdentifier = action.source[request.isLambda ? &apos;original&apos; : &apos;api&apos;];
+    let keyString = `${requestIdentifier}#${SharedCache._stringifyPayload(request.payload)}`;
 
-    return `${requestIdentifier}#${SharedCache._stringifyPayload(request.payload)}`;
+    return new Key(keyString, microservice);
   }
 
   /**
@@ -170,20 +145,6 @@ export class SharedCache {
     });
 
     return normalizedData;
-  }
-
-  /**
-   * @param {Object} data
-   * @returns {{isError: boolean, data: *, error: null, statusCode: number}}
-   * @private
-   */
-  _createSuccessfulResponse(data) {
-    return {
-      data: data,
-      statusCode: 200,
-      isError: false,
-      error: null,
-    };
   }
 
   /**

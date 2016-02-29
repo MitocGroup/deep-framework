@@ -32,6 +32,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/FS.js~FS.html">FS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Registry.js~Registry.html">Registry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html">UnknownFolderException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html">S3FSRelativeFSExtender</a></span></span></li>
@@ -175,7 +176,7 @@ export class Registry {
     this._readS3Object(
       this._registryFile,
       (error, rawRegistry, lastModified) =&gt; {
-        if (error &amp;&amp; error.code !== &apos;NotFound&apos;) {
+        if (error &amp;&amp; error.code !== &apos;NoSuchKey&apos;) {
           cb(error);
           return;
         }
@@ -283,6 +284,13 @@ export class Registry {
 
     this._s3.getObject(payload, (error, data) =&gt; {
       if (error) {
+
+        // when the object is not modified
+        if (lastModified &amp;&amp; error.code === &apos;NotModified&apos;) {
+          cb(null, null, null);
+          return;
+        }
+
         cb(error, null, null);
         return;
       }
@@ -292,7 +300,10 @@ export class Registry {
 
       if (data &amp;&amp; data.Body) {
         result = data.Body.toString();
-        resultLastModified = data.LastModified;
+
+        resultLastModified = typeof data.LastModified === &apos;string&apos; ?
+          new Date(data.LastModified) :
+          data.LastModified;
       }
 
       cb(null, result, resultLastModified);
@@ -331,7 +342,7 @@ export class Registry {
       val = JSON.stringify(value);
     } else if(Buffer.isBuffer(value)) {
       val = value.toString();
-    } else if(util.isObject(value)) {
+    } else if(Registry.isObject(value)) {
       type = &apos;obj&apos;;
       val = JSON.stringify(value);
     }
@@ -340,6 +351,14 @@ export class Registry {
       t: type,
       v: val,
     };
+  }
+
+  /**
+   * @param {*} obj
+   * @returns {boolean}
+   */
+  static isObject(obj) {
+    return obj != null &amp;&amp; typeof obj === &apos;object&apos; &amp;&amp; !Array.isArray(obj);
   }
 
   /**

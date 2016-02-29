@@ -649,7 +649,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport FileSystem from 'fs';\nimport WaitUntil from 'wait-until';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @param {String} identifier\n   * @returns {Microservice}\n   */\n  microservice(identifier) {\n    if (typeof identifier === 'undefined') {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {String} jsonFile\n   * @param {Function} callback\n   * @returns {Kernel}\n   */\n  loadFromFile(jsonFile, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    if (this.isBackend) {\n      FileSystem.readFile(jsonFile, 'utf8', function(error, data) {\n        if (error) {\n          throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);\n        }\n\n        this.load(JSON.parse(data), callback);\n      }.bind(this));\n    } else { // @todo: get rid of native code...\n      var client = new XMLHttpRequest();\n\n      client.open('GET', jsonFile);\n      client.onreadystatechange = function(event) {\n        if (client.readyState === 4) {\n          if (client.status !== 200) {\n            throw new Exception(`Failed to load kernel config from ${jsonFile}`);\n          }\n\n          this.load(JSON.parse(client.responseText), callback);\n        }\n      }.bind(this);\n\n      client.send();\n    }\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} globalConfig\n   * @param {Function} callback\n   */\n  load(globalConfig, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = function(kernel) {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    }.bind(this);\n\n    this._config = globalConfig;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend\n      && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      if (!serviceInstance instanceof ContainerAware) {\n        let serviceType = typeof serviceInstance;\n\n        throw new Exception(`Service ${serviceType} must be Kernel.ContainerAware instance`);\n      }\n\n      bootingServices++;\n\n      serviceInstance.kernel = this;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, function() {\n        bootingServices--;\n      }.bind(this));\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(5)\n      .times(999999) // @todo: get rid of magic here...\n      .condition(function(cb) {\n        process.nextTick(function() {\n          cb(bootingServices <= 0);\n        }.bind(this));\n      }).done(function() {\n        callback(this);\n      }.bind(this));\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport FileSystem from 'fs';\nimport WaitUntil from 'wait-until';\nimport util from 'util';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._runtimeContext = {};\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get runtimeContext() {\n    return this._runtimeContext;\n  }\n\n  /**\n   * @param {Object} runtimeContext\n   */\n  set runtimeContext(runtimeContext) {\n    this._runtimeContext = runtimeContext;\n  }\n\n  /**\n   * @param {String|null} identifier\n   * @returns {Microservice|*}\n   */\n  microservice(identifier = null) {\n    if (!identifier) {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Kernel}\n   *\n   * @todo: put config file name into a constant?\n   */\n  bootstrap(callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    return this.loadFromScopeOrFile(Kernel.DEFAULT_CONFIG_FILE_NAME, callback);\n  }\n\n  /**\n   * @param {String} jsonFile\n   * @param {Function} callback\n   * @returns {Kernel}\n   */\n  loadFromScopeOrFile(jsonFile, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let scope = null;\n\n    if (this.isBackend) {\n      scope = global;\n    } else {\n      scope = window || {};\n    }\n\n    let globalConfig = scope.hasOwnProperty('__DEEP_CFG__') ? scope['__DEEP_CFG__'] : null;\n\n    return globalConfig ? this.load(globalConfig, callback) : this.loadFromFile(jsonFile, callback);\n  }\n\n  /**\n   * @param {String} jsonFile\n   * @param {Function} callback\n   * @returns {Kernel}\n   */\n  loadFromFile(jsonFile, callback) {\n    let rumEvent = {\n      service: 'deep-kernel',\n      resourceType: 'Lambda',\n      eventName: 'KernelLoad',\n      time: new Date().getTime(),\n    };\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda context sharing after a cold start\n    if (this._isLoaded) {\n      if (this.isBackend) {\n        rumEvent.eventName = 'KernelLoadFromCache';\n        rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n        rumEvent.payload = this.config;\n        this.get('log').rumLog(rumEvent);\n      }\n\n      callback(this);\n      return this;\n    }\n\n    if (this.isBackend) {\n      FileSystem.readFile(jsonFile, 'utf8', (error, data) => {\n        if (error) {\n          throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);\n        }\n\n        this.load(JSON.parse(data), (kernel) => {\n          // Log event 'start' time\n          rumEvent.resourceId = kernel.runtimeContext.invokedFunctionArn;\n          kernel.get('log').rumLog(rumEvent);\n\n          // log event 'stop' time\n          let event = util._extend({}, rumEvent);\n          event.payload = kernel.config;\n          event.time = new Date().getTime();\n          kernel.get('log').rumLog(event);\n\n          callback(kernel);\n        });\n      });\n    } else { // @todo: get rid of native code...\n      var client = new XMLHttpRequest();\n\n      client.open('GET', jsonFile);\n      client.onreadystatechange = function(event) {\n        if (client.readyState === 4) {\n          if (client.status !== 200) {\n            throw new Exception(`Failed to load kernel config from ${jsonFile}`);\n          }\n\n          this.load(JSON.parse(client.responseText), callback);\n        }\n      }.bind(this);\n\n      client.send();\n    }\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} globalConfig\n   * @param {Function} callback\n   *\n   * @returns {Kernel}\n   */\n  load(globalConfig, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = function(kernel) {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    }.bind(this);\n\n    this._config = globalConfig;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend\n      && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      if (!serviceInstance instanceof ContainerAware) {\n        let serviceType = typeof serviceInstance;\n\n        throw new Exception(`Service ${serviceType} must be Kernel.ContainerAware instance`);\n      }\n\n      bootingServices++;\n\n      serviceInstance.kernel = this;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, function() {\n        bootingServices--;\n      }.bind(this));\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(5)\n      .times(999999) // @todo: get rid of magic here...\n      .condition(function(cb) {\n        process.nextTick(function() {\n          cb(bootingServices <= 0);\n        }.bind(this));\n      }).done(function() {\n        callback(this);\n      }.bind(this));\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_CONFIG_FILE_NAME() {\n    return '_config.json';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get PROD_ENVIRONMENT() {\n    return 'prod';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get STAGE_ENVIRONMENT() {\n    return 'stage';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get TEST_ENVIRONMENT() {\n    return 'test';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEV_ENVIRONMENT() {\n    return 'dev';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_ENVIRONMENTS() {\n    return [\n      Kernel.PROD_ENVIRONMENT,\n      Kernel.STAGE_ENVIRONMENT,\n      Kernel.TEST_ENVIRONMENT,\n      Kernel.DEV_ENVIRONMENT,\n    ];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -663,7 +663,7 @@
     "importPath": "deep-kernel/lib/Kernel.js",
     "importStyle": "{Kernel}",
     "description": "Deep application kernel",
-    "lineNumber": 20,
+    "lineNumber": 21,
     "interface": false
   },
   {
@@ -675,7 +675,7 @@
     "longname": "lib/Kernel.js~Kernel#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 26,
     "params": [
       {
         "nullable": null,
@@ -709,7 +709,7 @@
     "longname": "lib/Kernel.js~Kernel#_config",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -726,7 +726,7 @@
     "longname": "lib/Kernel.js~Kernel#_services",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
@@ -743,7 +743,24 @@
     "longname": "lib/Kernel.js~Kernel#_context",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 33,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_runtimeContext",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#_runtimeContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
     "undocument": true,
     "type": {
       "types": [
@@ -760,7 +777,7 @@
     "longname": "lib/Kernel.js~Kernel#_env",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -777,7 +794,7 @@
     "longname": "lib/Kernel.js~Kernel#_container",
     "access": null,
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -794,7 +811,7 @@
     "longname": "lib/Kernel.js~Kernel#_isLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 37,
     "undocument": true,
     "type": {
       "types": [
@@ -811,7 +828,7 @@
     "longname": "lib/Kernel.js~Kernel#isLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 43,
     "unknown": [
       {
         "tagName": "@returns",
@@ -834,6 +851,83 @@
     "generator": false
   },
   {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "runtimeContext",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#runtimeContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 50,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "runtimeContext",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#runtimeContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 57,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "runtimeContext",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_runtimeContext",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#_runtimeContext",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -842,18 +936,19 @@
     "longname": "lib/Kernel.js~Kernel#microservice",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 65,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{Microservice}"
+        "tagValue": "{Microservice|*}"
       }
     ],
     "params": [
       {
         "nullable": null,
         "types": [
-          "String"
+          "String",
+          "null"
         ],
         "spread": false,
         "optional": false,
@@ -864,7 +959,94 @@
     "return": {
       "nullable": null,
       "types": [
-        "Microservice"
+        "Microservice",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "bootstrap",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#bootstrap",
+    "access": null,
+    "description": null,
+    "lineNumber": 91,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Kernel}\n\n@todo: put config file name into a constant?"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Kernel"
+      ],
+      "spread": false,
+      "description": "@todo: put config file name into a constant?"
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loadFromScopeOrFile",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#loadFromScopeOrFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 108,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Kernel}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "jsonFile",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Kernel"
       ],
       "spread": false,
       "description": ""
@@ -880,7 +1062,7 @@
     "longname": "lib/Kernel.js~Kernel#loadFromFile",
     "access": null,
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 135,
     "unknown": [
       {
         "tagName": "@returns",
@@ -928,7 +1110,13 @@
     "longname": "lib/Kernel.js~Kernel#load",
     "access": null,
     "description": "Loads all Kernel dependencies",
-    "lineNumber": 117,
+    "lineNumber": 205,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Kernel}"
+      }
+    ],
     "params": [
       {
         "nullable": null,
@@ -952,9 +1140,12 @@
       }
     ],
     "return": {
+      "nullable": null,
       "types": [
-        "*"
-      ]
+        "Kernel"
+      ],
+      "spread": false,
+      "description": ""
     },
     "generator": false
   },
@@ -967,7 +1158,7 @@
     "longname": "lib/Kernel.js~Kernel#_isLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 129,
+    "lineNumber": 217,
     "undocument": true,
     "type": {
       "types": [
@@ -984,7 +1175,7 @@
     "longname": "lib/Kernel.js~Kernel#_config",
     "access": null,
     "description": null,
-    "lineNumber": 134,
+    "lineNumber": 222,
     "undocument": true,
     "type": {
       "types": [
@@ -1001,7 +1192,7 @@
     "longname": "lib/Kernel.js~Kernel#get",
     "access": null,
     "description": null,
-    "lineNumber": 145,
+    "lineNumber": 233,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1039,7 +1230,7 @@
     "longname": "lib/Kernel.js~Kernel#services",
     "access": null,
     "description": null,
-    "lineNumber": 152,
+    "lineNumber": 240,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1070,7 +1261,7 @@
     "longname": "lib/Kernel.js~Kernel#container",
     "access": null,
     "description": null,
-    "lineNumber": 159,
+    "lineNumber": 247,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1101,7 +1292,7 @@
     "longname": "lib/Kernel.js~Kernel#isFrontend",
     "access": null,
     "description": null,
-    "lineNumber": 166,
+    "lineNumber": 254,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1132,7 +1323,7 @@
     "longname": "lib/Kernel.js~Kernel#isLocalhost",
     "access": null,
     "description": null,
-    "lineNumber": 173,
+    "lineNumber": 261,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1163,7 +1354,7 @@
     "longname": "lib/Kernel.js~Kernel#isBackend",
     "access": null,
     "description": null,
-    "lineNumber": 184,
+    "lineNumber": 272,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1194,7 +1385,7 @@
     "longname": "lib/Kernel.js~Kernel#buildId",
     "access": null,
     "description": null,
-    "lineNumber": 191,
+    "lineNumber": 279,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1225,7 +1416,7 @@
     "longname": "lib/Kernel.js~Kernel#context",
     "access": null,
     "description": null,
-    "lineNumber": 198,
+    "lineNumber": 286,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1256,7 +1447,7 @@
     "longname": "lib/Kernel.js~Kernel#env",
     "access": null,
     "description": null,
-    "lineNumber": 205,
+    "lineNumber": 293,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1287,7 +1478,7 @@
     "longname": "lib/Kernel.js~Kernel#config",
     "access": null,
     "description": null,
-    "lineNumber": 212,
+    "lineNumber": 300,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1318,7 +1509,7 @@
     "longname": "lib/Kernel.js~Kernel#microservices",
     "access": null,
     "description": null,
-    "lineNumber": 220,
+    "lineNumber": 308,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1349,7 +1540,7 @@
     "longname": "lib/Kernel.js~Kernel#_buildContainer",
     "access": null,
     "description": "Loads all parameters and services into DI container",
-    "lineNumber": 229,
+    "lineNumber": 317,
     "params": [
       {
         "nullable": null,
@@ -1373,7 +1564,7 @@
     "longname": "lib/Kernel.js~Kernel#_env",
     "access": null,
     "description": null,
-    "lineNumber": 230,
+    "lineNumber": 318,
     "undocument": true,
     "type": {
       "types": [
@@ -1390,7 +1581,7 @@
     "longname": "lib/Kernel.js~Kernel._createProxyIfNeeded",
     "access": "private",
     "description": null,
-    "lineNumber": 302,
+    "lineNumber": 390,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1431,7 +1622,7 @@
     "longname": "lib/Kernel.js~Kernel.MicroserviceInjectable",
     "access": null,
     "description": null,
-    "lineNumber": 320,
+    "lineNumber": 408,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1462,7 +1653,7 @@
     "longname": "lib/Kernel.js~Kernel.ContainerAware",
     "access": null,
     "description": null,
-    "lineNumber": 327,
+    "lineNumber": 415,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1488,12 +1679,43 @@
     "kind": "get",
     "static": true,
     "variation": null,
+    "name": "DEFAULT_CONFIG_FILE_NAME",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel.DEFAULT_CONFIG_FILE_NAME",
+    "access": null,
+    "description": null,
+    "lineNumber": 422,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
     "name": "FRONTEND_BOOTSTRAP_VECTOR",
     "memberof": "lib/Kernel.js~Kernel",
     "longname": "lib/Kernel.js~Kernel.FRONTEND_BOOTSTRAP_VECTOR",
     "access": null,
     "description": null,
-    "lineNumber": 334,
+    "lineNumber": 429,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1524,7 +1746,7 @@
     "longname": "lib/Kernel.js~Kernel.CONFIG",
     "access": null,
     "description": null,
-    "lineNumber": 341,
+    "lineNumber": 436,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1555,7 +1777,7 @@
     "longname": "lib/Kernel.js~Kernel.KERNEL",
     "access": null,
     "description": null,
-    "lineNumber": 348,
+    "lineNumber": 443,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1586,7 +1808,7 @@
     "longname": "lib/Kernel.js~Kernel.CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 355,
+    "lineNumber": 450,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1617,7 +1839,7 @@
     "longname": "lib/Kernel.js~Kernel.MICROSERVICES",
     "access": null,
     "description": null,
-    "lineNumber": 362,
+    "lineNumber": 457,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1648,7 +1870,7 @@
     "longname": "lib/Kernel.js~Kernel.FRONTEND_CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 369,
+    "lineNumber": 464,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1679,7 +1901,7 @@
     "longname": "lib/Kernel.js~Kernel.BACKEND_CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 376,
+    "lineNumber": 471,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1710,7 +1932,162 @@
     "longname": "lib/Kernel.js~Kernel.ALL_CONTEXTS",
     "access": null,
     "description": null,
-    "lineNumber": 383,
+    "lineNumber": 478,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Array}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Array"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "PROD_ENVIRONMENT",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel.PROD_ENVIRONMENT",
+    "access": null,
+    "description": null,
+    "lineNumber": 488,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "STAGE_ENVIRONMENT",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel.STAGE_ENVIRONMENT",
+    "access": null,
+    "description": null,
+    "lineNumber": 495,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "TEST_ENVIRONMENT",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel.TEST_ENVIRONMENT",
+    "access": null,
+    "description": null,
+    "lineNumber": 502,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DEV_ENVIRONMENT",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel.DEV_ENVIRONMENT",
+    "access": null,
+    "description": null,
+    "lineNumber": 509,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ALL_ENVIRONMENTS",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel.ALL_ENVIRONMENTS",
+    "access": null,
+    "description": null,
+    "lineNumber": 516,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1976,7 +2353,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {Injectable} from './Injectable';\n\n/**\n * Microservice instance class\n */\nexport class Instance {\n  /**\n   * @param {String} identifier\n   * @param {Object} rawResources\n   */\n  constructor(identifier, rawResources) {\n    this._isRoot = false;\n    this._rawResources = rawResources;\n    this._identifier = identifier;\n  }\n\n  /**\n   * @param {Object} globalConfig\n   * @returns {Instance[]}\n   */\n  static createVector(globalConfig) {\n    let vector = [];\n\n    for (let identifier in globalConfig.microservices) {\n      if (!globalConfig.microservices.hasOwnProperty(identifier)) {\n        continue;\n      }\n\n      let microservice = globalConfig.microservices[identifier];\n\n      let microserviceObject = new Instance(identifier, microservice.resources);\n      microserviceObject.isRoot = microservice.isRoot;\n\n      vector.push(microserviceObject);\n    }\n\n    return vector;\n  }\n\n  /**\n   * @param {Object} objectInstance\n   * @return {Object}\n   */\n  inject(objectInstance) {\n    if (!(objectInstance instanceof Injectable)) {\n      throw new Core.Exception.InvalidArgumentException(objectInstance, 'deep-kernel.Injectable');\n    }\n\n    objectInstance.microservice = this;\n\n    return objectInstance;\n  }\n\n  /**\n   * @returns {String}\n   */\n  toString() {\n    return this._identifier;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get rawResources() {\n    return this._rawResources;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identifier() {\n    return this._identifier;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set isRoot(state) {\n    this._isRoot = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isRoot() {\n    return this._isRoot;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {Injectable} from './Injectable';\n\n/**\n * Microservice instance class\n */\nexport class Instance {\n  /**\n   * @param {String} identifier\n   * @param {Object} rawResources\n   * @param {Object} parameters\n   */\n  constructor(identifier, rawResources, parameters = {}) {\n    this._isRoot = false;\n    this._rawResources = rawResources;\n    this._identifier = identifier;\n    this._parameters = parameters;\n  }\n\n  /**\n   * @param {Object} globalConfig\n   * @returns {Instance[]}\n   */\n  static createVector(globalConfig) {\n    let vector = [];\n\n    for (let identifier in globalConfig.microservices) {\n      if (!globalConfig.microservices.hasOwnProperty(identifier)) {\n        continue;\n      }\n\n      let microservice = globalConfig.microservices[identifier];\n\n      let microserviceObject = new Instance(\n        identifier,\n        microservice.resources,\n        microservice.parameters || {}\n      );\n\n      microserviceObject.isRoot = microservice.isRoot;\n\n      vector.push(microserviceObject);\n    }\n\n    return vector;\n  }\n\n  /**\n   * @param {Object} objectInstance\n   * @return {Object}\n   */\n  inject(objectInstance) {\n    if (!(objectInstance instanceof Injectable)) {\n      throw new Core.Exception.InvalidArgumentException(objectInstance, 'deep-kernel.Injectable');\n    }\n\n    objectInstance.microservice = this;\n\n    return objectInstance;\n  }\n\n  /**\n   * @returns {String}\n   */\n  toString() {\n    return this._identifier;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get parameters() {\n    return this._parameters;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get rawResources() {\n    return this._rawResources;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identifier() {\n    return this._identifier;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set isRoot(state) {\n    this._isRoot = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isRoot() {\n    return this._isRoot;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2002,7 +2379,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 19,
     "params": [
       {
         "nullable": null,
@@ -2023,6 +2400,16 @@
         "optional": false,
         "name": "rawResources",
         "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "parameters",
+        "description": ""
       }
     ],
     "generator": false
@@ -2036,7 +2423,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#_isRoot",
     "access": null,
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 20,
     "undocument": true,
     "type": {
       "types": [
@@ -2053,7 +2440,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#_rawResources",
     "access": null,
     "description": null,
-    "lineNumber": 20,
+    "lineNumber": 21,
     "undocument": true,
     "type": {
       "types": [
@@ -2070,7 +2457,24 @@
     "longname": "lib/Microservice/Instance.js~Instance#_identifier",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_parameters",
+    "memberof": "lib/Microservice/Instance.js~Instance",
+    "longname": "lib/Microservice/Instance.js~Instance#_parameters",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
     "undocument": true,
     "type": {
       "types": [
@@ -2087,7 +2491,7 @@
     "longname": "lib/Microservice/Instance.js~Instance.createVector",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 30,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2125,7 +2529,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#inject",
     "access": null,
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 58,
     "params": [
       {
         "nullable": null,
@@ -2157,7 +2561,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#toString",
     "access": null,
     "description": null,
-    "lineNumber": 64,
+    "lineNumber": 71,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2179,12 +2583,43 @@
     "kind": "get",
     "static": false,
     "variation": null,
+    "name": "parameters",
+    "memberof": "lib/Microservice/Instance.js~Instance",
+    "longname": "lib/Microservice/Instance.js~Instance#parameters",
+    "access": null,
+    "description": null,
+    "lineNumber": 78,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
     "name": "rawResources",
     "memberof": "lib/Microservice/Instance.js~Instance",
     "longname": "lib/Microservice/Instance.js~Instance#rawResources",
     "access": null,
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 85,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2215,7 +2650,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#identifier",
     "access": null,
     "description": null,
-    "lineNumber": 78,
+    "lineNumber": 92,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2246,7 +2681,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#isRoot",
     "access": null,
     "description": null,
-    "lineNumber": 85,
+    "lineNumber": 99,
     "params": [
       {
         "nullable": null,
@@ -2275,7 +2710,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#_isRoot",
     "access": null,
     "description": null,
-    "lineNumber": 86,
+    "lineNumber": 100,
     "undocument": true,
     "type": {
       "types": [
@@ -2292,7 +2727,7 @@
     "longname": "lib/Microservice/Instance.js~Instance#isRoot",
     "access": null,
     "description": null,
-    "lineNumber": 92,
+    "lineNumber": 106,
     "unknown": [
       {
         "tagName": "@returns",

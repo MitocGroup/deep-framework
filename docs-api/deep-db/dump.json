@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Vogels from 'vogels';\nimport {ExtendModel} from './Vogels/ExtendModel';\nimport {ModelNotFoundException} from './Exception/ModelNotFoundException';\nimport Validation from 'deep-validation';\nimport Utils from 'util';\nimport {FailedToCreateTableException} from './Exception/FailedToCreateTableException';\nimport {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';\nimport {AbstractDriver} from './Local/Driver/AbstractDriver';\n\n/**\n * Vogels wrapper\n */\nexport class DB extends Kernel.ContainerAware {\n  /**\n   * @param {Array} models\n   * @param {Object} tablesNames\n   */\n  constructor(models = [], tablesNames = {}) {\n    super();\n\n    // @todo: set retries in a smarter way...\n    Vogels.AWS.config.maxRetries = 3;\n\n    this._tablesNames = tablesNames;\n    this._validation = new Validation(models);\n    this._models = this._rawModelsToVogels(models);\n\n    // @todo: remove?\n    this._localDbProcess = null;\n  }\n\n  /**\n   * @returns {Validation}\n   */\n  get validation() {\n    return this._validation;\n  }\n\n  /**\n   * @returns {Vogels[]}\n   */\n  get models() {\n    return this._models;\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Boolean}\n   */\n  has(modelName) {\n    return typeof this._models[modelName] !== 'undefined';\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Vogels}\n   */\n  get(modelName) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    return this._models[modelName];\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTable(modelName, callback, options = {}) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n    options[modelName] = options;\n\n    Vogels.createTables(options, (error) => {\n      if (error) {\n        throw new FailedToCreateTableException(modelName);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTables(callback, options = {}) {\n    let allModelsOptions = {};\n    let allModelNames = [];\n\n    for (let modelName in this._models) {\n      if (!this._models.hasOwnProperty(modelName)) {\n        continue;\n      }\n\n      allModelsOptions[modelName] = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n      allModelNames.push(modelName);\n    }\n\n    Vogels.createTables(allModelsOptions, (error) => {\n      if (error) {\n        throw new FailedToCreateTablesException(allModelNames, error);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._validation.boot(kernel, () => {\n      this._tablesNames = kernel.config.tablesNames;\n      this._models = this._rawModelsToVogels(kernel.config.models);\n\n      if (this._localBackend) {\n        this._enableLocalDB(callback);\n      } else {\n        callback();\n      }\n    });\n  }\n\n  /**\n   * @param {Object} driver\n   * @returns {DB}\n   * @private\n   */\n  _setVogelsDriver(driver) {\n    Vogels.dynamoDriver(driver);\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {String} driver\n   * @param {Number} tts\n   * @returns {AbstractDriver}\n   */\n  static startLocalDynamoDBServer(callback, driver = 'LocalDynamo', tts = AbstractDriver.DEFAULT_TTS) {\n    let LocalDBServer = require('./Local/DBServer').DBServer;\n\n    let server = LocalDBServer.create(driver);\n\n    server.start(callback, tts);\n\n    return server;\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _enableLocalDB(callback) {\n    this._setVogelsDriver(\n      new Vogels.AWS.DynamoDB({\n        endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),\n        accessKeyId: 'fake',\n        secretAccessKey: 'fake',\n        region: 'us-east-1',\n      })\n    );\n\n    this.assureTables(callback);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_TABLE_OPTIONS() {\n    return {\n      readCapacity: 5,\n      writeCapacity: 5,\n    };\n  }\n\n  /**\n   * @param {Array} rawModels\n   * @returns {Object}\n   */\n  _rawModelsToVogels(rawModels) {\n    let models = {};\n\n    for (let modelKey in rawModels) {\n      if (!rawModels.hasOwnProperty(modelKey)) {\n        continue;\n      }\n\n      let backendModels = rawModels[modelKey];\n\n      for (let modelName in backendModels) {\n        if (!backendModels.hasOwnProperty(modelName)) {\n          continue;\n        }\n\n        models[modelName] = new ExtendModel(Vogels.define(\n          modelName,\n          this._wrapModelSchema(modelName)\n        )).inject();\n      }\n    }\n\n    return models;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   * @private\n   */\n  _wrapModelSchema(name) {\n    return {\n      hashKey: 'Id',\n      timestamps: true,\n      tableName: this._tablesNames[name],\n      schema: this._validation.getSchema(name),\n    };\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get LOCAL_DB_PORT() {\n    return AbstractDriver.DEFAULT_PORT;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Vogels from 'vogels';\nimport {ExtendModel} from './Vogels/ExtendModel';\nimport {ModelNotFoundException} from './Exception/ModelNotFoundException';\nimport Validation from 'deep-validation';\nimport Utils from 'util';\nimport {FailedToCreateTableException} from './Exception/FailedToCreateTableException';\nimport {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';\nimport {AbstractDriver} from './Local/Driver/AbstractDriver';\n\n/**\n * Vogels wrapper\n */\nexport class DB extends Kernel.ContainerAware {\n  /**\n   * @param {Array} models\n   * @param {Object} tablesNames\n   */\n  constructor(models = [], tablesNames = {}) {\n    super();\n\n    // @todo: set retries in a smarter way...\n    Vogels.AWS.config.maxRetries = 3;\n\n    this._tablesNames = tablesNames;\n    this._validation = new Validation(models);\n    this._models = this._rawModelsToVogels(models);\n\n    // @todo: remove?\n    this._localDbProcess = null;\n  }\n\n  /**\n   * @returns {Validation}\n   */\n  get validation() {\n    return this._validation;\n  }\n\n  /**\n   * @returns {Vogels[]}\n   */\n  get models() {\n    return this._models;\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Boolean}\n   */\n  has(modelName) {\n    return typeof this._models[modelName] !== 'undefined';\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Vogels}\n   */\n  get(modelName) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    let model = this._models[modelName];\n\n    if (this.kernel instanceof Kernel) {\n      // inject logService into extended model to log RUM events\n      model.logService = this.kernel.get('log');\n    }\n\n    return model;\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTable(modelName, callback, options = {}) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n    options[modelName] = options;\n\n    Vogels.createTables(options, (error) => {\n      if (error) {\n        throw new FailedToCreateTableException(modelName);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTables(callback, options = {}) {\n    let allModelsOptions = {};\n    let allModelNames = [];\n\n    for (let modelName in this._models) {\n      if (!this._models.hasOwnProperty(modelName)) {\n        continue;\n      }\n\n      allModelsOptions[modelName] = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n      allModelNames.push(modelName);\n    }\n\n    Vogels.createTables(allModelsOptions, (error) => {\n      if (error) {\n        throw new FailedToCreateTablesException(allModelNames, error);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._validation.boot(kernel, () => {\n      this._tablesNames = kernel.config.tablesNames;\n      this._models = this._rawModelsToVogels(kernel.config.models);\n\n      if (this._localBackend) {\n        this._enableLocalDB(callback);\n      } else {\n        callback();\n      }\n    });\n  }\n\n  /**\n   * @param {Object} driver\n   * @returns {DB}\n   * @private\n   */\n  _setVogelsDriver(driver) {\n    Vogels.dynamoDriver(driver);\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {String} driver\n   * @param {Number} tts\n   * @returns {AbstractDriver}\n   */\n  static startLocalDynamoDBServer(callback, driver = 'LocalDynamo', tts = AbstractDriver.DEFAULT_TTS) {\n    let LocalDBServer = require('./Local/DBServer').DBServer;\n\n    let server = LocalDBServer.create(driver);\n\n    server.start(callback, tts);\n\n    return server;\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _enableLocalDB(callback) {\n    this._setVogelsDriver(\n      new Vogels.AWS.DynamoDB({\n        endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),\n        accessKeyId: 'fake',\n        secretAccessKey: 'fake',\n        region: 'us-east-1',\n      })\n    );\n\n    this.assureTables(callback);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_TABLE_OPTIONS() {\n    return {\n      readCapacity: 5,\n      writeCapacity: 5,\n    };\n  }\n\n  /**\n   * @param {Array} rawModels\n   * @returns {Object}\n   */\n  _rawModelsToVogels(rawModels) {\n    let models = {};\n\n    for (let modelKey in rawModels) {\n      if (!rawModels.hasOwnProperty(modelKey)) {\n        continue;\n      }\n\n      let backendModels = rawModels[modelKey];\n\n      for (let modelName in backendModels) {\n        if (!backendModels.hasOwnProperty(modelName)) {\n          continue;\n        }\n\n        models[modelName] = new ExtendModel(Vogels.define(\n          modelName,\n          this._wrapModelSchema(modelName)\n        )).inject();\n      }\n    }\n\n    return models;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   * @private\n   */\n  _wrapModelSchema(name) {\n    return {\n      hashKey: 'Id',\n      timestamps: true,\n      tableName: this._tablesNames[name],\n      schema: this._validation.getSchema(name),\n    };\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get LOCAL_DB_PORT() {\n    return AbstractDriver.DEFAULT_PORT;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -278,7 +278,7 @@
     "longname": "lib/DB.js~DB#assureTable",
     "access": null,
     "description": null,
-    "lineNumber": 79,
+    "lineNumber": 86,
     "unknown": [
       {
         "tagName": "@returns",
@@ -336,7 +336,7 @@
     "longname": "lib/DB.js~DB#assureTables",
     "access": null,
     "description": null,
-    "lineNumber": 103,
+    "lineNumber": 110,
     "unknown": [
       {
         "tagName": "@returns",
@@ -384,7 +384,7 @@
     "longname": "lib/DB.js~DB#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 133,
+    "lineNumber": 140,
     "params": [
       {
         "nullable": null,
@@ -418,7 +418,7 @@
     "longname": "lib/DB.js~DB#_tablesNames",
     "access": null,
     "description": null,
-    "lineNumber": 135,
+    "lineNumber": 142,
     "undocument": true,
     "type": {
       "types": [
@@ -435,7 +435,7 @@
     "longname": "lib/DB.js~DB#_models",
     "access": null,
     "description": null,
-    "lineNumber": 136,
+    "lineNumber": 143,
     "undocument": true,
     "type": {
       "types": [
@@ -452,7 +452,7 @@
     "longname": "lib/DB.js~DB#_setVogelsDriver",
     "access": "private",
     "description": null,
-    "lineNumber": 151,
+    "lineNumber": 158,
     "unknown": [
       {
         "tagName": "@returns",
@@ -490,7 +490,7 @@
     "longname": "lib/DB.js~DB.startLocalDynamoDBServer",
     "access": null,
     "description": null,
-    "lineNumber": 163,
+    "lineNumber": 170,
     "unknown": [
       {
         "tagName": "@returns",
@@ -548,7 +548,7 @@
     "longname": "lib/DB.js~DB#_enableLocalDB",
     "access": "private",
     "description": null,
-    "lineNumber": 177,
+    "lineNumber": 184,
     "params": [
       {
         "nullable": null,
@@ -572,7 +572,7 @@
     "longname": "lib/DB.js~DB.DEFAULT_TABLE_OPTIONS",
     "access": null,
     "description": null,
-    "lineNumber": 193,
+    "lineNumber": 200,
     "unknown": [
       {
         "tagName": "@returns",
@@ -603,7 +603,7 @@
     "longname": "lib/DB.js~DB#_rawModelsToVogels",
     "access": null,
     "description": null,
-    "lineNumber": 204,
+    "lineNumber": 211,
     "unknown": [
       {
         "tagName": "@returns",
@@ -641,7 +641,7 @@
     "longname": "lib/DB.js~DB#_wrapModelSchema",
     "access": "private",
     "description": null,
-    "lineNumber": 234,
+    "lineNumber": 241,
     "unknown": [
       {
         "tagName": "@returns",
@@ -679,7 +679,7 @@
     "longname": "lib/DB.js~DB.LOCAL_DB_PORT",
     "access": null,
     "description": null,
-    "lineNumber": 246,
+    "lineNumber": 253,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2849,7 +2849,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by Stefan Hariton on 6/26/15.\n */\n\n'use strict';\n\nimport UndefinedMethodException from './Exceptions/UndefinedMethodException';\n\n/**\n * Extends standard Vogels models\n */\nexport class ExtendModel {\n  /**\n   * @param {Object} model\n   */\n  constructor(model) {\n    this._model = model;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get model() {\n    return this._model;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get DEFAULT_LIMIT() {\n    return 10;\n  }\n\n  /**\n   * @returns {number}\n   */\n  static get DEFAULT_SEGMENTS_NUMBER() {\n    return 4;\n  }\n\n  /**\n   * Makes filterExpression, filtersExpressionValues and filterExpressionNames from an object, that are used to make\n   * a DynamoDb scan\n   *\n   * @param {Object} params\n   * @returns {Object}\n   */\n  static buildScanParameters(params) {\n    let filterExpression = '';\n    let filterExpressionValues = {};\n    let filterExpressionNames = {};\n    let first = true;\n\n    for (let key in params) {\n      if (!params.hasOwnProperty(key)) {\n        continue;\n      }\n\n      let fieldValue = params[key];\n\n      let fieldName = `#${key}`;\n      let fieldValueName = `:${key}`;\n\n      if (!first) {\n        filterExpression += ' AND ';\n      }\n\n      filterExpression += `${fieldName} = ${fieldValueName}`;\n      filterExpressionValues[fieldValueName] = fieldValue;\n      filterExpressionNames[fieldName] = key;\n      first = false;\n    }\n\n    return {\n      filterExpression: filterExpression,\n      filterExpressionValues: filterExpressionValues,\n      filterExpressionNames: filterExpressionNames,\n    };\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get methods() {\n    let _this = this;\n\n    return {\n      findAll: function(cb) {\n        return _this.model.scan().loadAll().exec(cb);\n      },\n\n      findAllPaginated: function(startKey, limit, cb) {\n        return _this.model\n          .scan()\n          .startKey(startKey)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      findOneById: function(id, cb) {\n        return _this.model.get(id, cb);\n      },\n\n      findOneBy: function(fieldName, value, cb) {\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .limit(1)\n          .exec(cb);\n      },\n\n      findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      findAllBy: function(fieldName, value, cb) {\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .loadAll()\n          .exec(cb);\n      },\n\n      findAllByPaginated: function(fieldName, value, startKey, limit, cb) {\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .startKey(startKey)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      findMatching: function(params, cb, limit = ExtendModel.DEFAULT_LIMIT) {\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      findOneMatching: function(params, cb) {\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(1)\n          .exec(cb);\n      },\n\n      findAllMatching: function(params, cb) {\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .loadAll()\n          .exec(cb);\n      },\n\n      findAllMatchingPaginated: function(params, startKey, limit, cb) {\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .startKey(startKey)\n          .limit(limit)\n          .exec(cb);\n      },\n\n      deleteById: function(id, cb) {\n        return _this.model.destroy(id, cb);\n      },\n\n      deleteByIdConditional: function(id, condition, cb) {\n        return _this.model.destroy(id, condition, cb);\n      },\n\n      createItem: function(data, cb) {\n        return _this.model.create(data, cb);\n      },\n\n      createUniqueOnFields: function(fields, data, cb) {\n        let scanCb = function(err, data) {\n          if (err) {\n            return cb(err, data);\n          }\n\n          if (data.Count) {\n            return cb(`Item like ${data} already exists`);\n          }\n\n          return _this.model.create(data, cb);\n        };\n\n        let scanParams = {};\n        for (let fieldKey in fields) {\n          if (!fields.hasOwnProperty(fieldKey)) {\n            continue;\n          }\n\n          let field = fields[fieldKey];\n\n          scanParams[field] = data[field];\n        }\n\n        scanParams = ExtendModel.buildScanParameters(scanParams);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(1)\n          .exec(scanCb);\n      },\n\n      updateItem: function(id, data, cb) {\n        data.Id = id;\n\n        return _this.model.update(data, cb);\n      },\n\n      updateItemConditional: function(id, data, condition, cb) {\n        data.Id = id;\n\n        return _this.model.update(data, condition, cb);\n      },\n    };\n  }\n\n  /**\n   * Injects the specified methods or all\n   *\n   * @param {Array} methods\n   */\n  inject(methods = null) {\n    let predefinedMethods = this.methods;\n    let predefinedMethodsNames = Object.keys(predefinedMethods);\n\n    methods = methods || predefinedMethodsNames;\n\n    for (let methodKey in methods) {\n      if (!methods.hasOwnProperty(methodKey)) {\n        continue;\n      }\n\n      let methodName = methods[methodKey];\n\n      if (!predefinedMethods.hasOwnProperty(methodName)) {\n        throw new UndefinedMethodException(methodName, predefinedMethodsNames);\n      }\n\n      this._model[methodName] = predefinedMethods[methodName];\n    }\n\n    return this._model;\n  }\n}\n"
+    "content": "/**\n * Created by Stefan Hariton on 6/26/15.\n */\n\n'use strict';\n\nimport UndefinedMethodException from './Exceptions/UndefinedMethodException';\nimport util from 'util';\n\n/**\n * Extends standard Vogels models\n */\nexport class ExtendModel {\n  /**\n   * @param {Object} model\n   */\n  constructor(model) {\n    this._model = model;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get model() {\n    return this._model;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get DEFAULT_LIMIT() {\n    return 10;\n  }\n\n  /**\n   * @returns {number}\n   */\n  static get DEFAULT_SEGMENTS_NUMBER() {\n    return 4;\n  }\n\n  /**\n   * Makes filterExpression, filtersExpressionValues and filterExpressionNames from an object, that are used to make\n   * a DynamoDb scan\n   *\n   * @param {Object} params\n   * @returns {Object}\n   */\n  static buildScanParameters(params) {\n    let filterExpression = '';\n    let filterExpressionValues = {};\n    let filterExpressionNames = {};\n    let first = true;\n\n    for (let key in params) {\n      if (!params.hasOwnProperty(key)) {\n        continue;\n      }\n\n      let fieldValue = params[key];\n\n      let fieldName = `#${key}`;\n      let fieldValueName = `:${key}`;\n\n      if (!first) {\n        filterExpression += ' AND ';\n      }\n\n      filterExpression += `${fieldName} = ${fieldValueName}`;\n      filterExpressionValues[fieldValueName] = fieldValue;\n      filterExpressionNames[fieldName] = key;\n      first = false;\n    }\n\n    return {\n      filterExpression: filterExpression,\n      filterExpressionValues: filterExpressionValues,\n      filterExpressionNames: filterExpressionNames,\n    };\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get methods() {\n    let _this = this;\n\n    return {\n      findAll: function(cb) {\n        _this._logRumEvent({ eventName: 'findAll' });\n\n        return _this.model.scan().loadAll().exec((error, model) => {\n          _this._extendedCallback('findAll', error, model, cb);\n        });\n      },\n\n      findAllPaginated: function(startKey, limit, cb) {\n        _this._logRumEvent({\n          eventName: 'findAllPaginated',\n          payload: {startKey, limit},\n        });\n\n        return _this.model\n          .scan()\n          .startKey(startKey)\n          .limit(limit)\n          .exec((error, model) => {\n            _this._extendedCallback('findAllPaginated', error, model, cb);\n          });\n      },\n\n      findOneById: function(id, cb) {\n        _this._logRumEvent({\n          eventName: 'findOneById',\n          payload: {id},\n        });\n\n        return _this.model.get(id, (error, model) => {\n          _this._extendedCallback('findOneById', error, model, cb);\n        });\n      },\n\n      findOneBy: function(fieldName, value, cb) {\n        _this._logRumEvent({\n          eventName: 'findOneBy',\n          payload: {fieldName, value},\n        });\n\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .limit(1)\n          .exec((error, model) => {\n            _this._extendedCallback('findOneBy', error, model, cb);\n          });\n      },\n\n      findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {\n        _this._logRumEvent({\n          eventName: 'findBy',\n          payload: {fieldName, value, limit},\n        });\n\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .limit(limit)\n          .exec((error, model) => {\n            _this._extendedCallback('findBy', error, model, cb);\n          });\n      },\n\n      findAllBy: function(fieldName, value, cb) {\n        _this._logRumEvent({\n          eventName: 'findAllBy',\n          payload: {fieldName, value},\n        });\n\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .loadAll()\n          .exec((error, model) => {\n            _this._extendedCallback('findAllBy', error, model, cb);\n          });\n      },\n\n      findAllByPaginated: function(fieldName, value, startKey, limit, cb) {\n        _this._logRumEvent({\n          eventName: 'findAllByPaginated',\n          payload: {fieldName, value, startKey, limit},\n        });\n\n        return _this.model\n          .scan()\n          .where(fieldName).equals(value)\n          .startKey(startKey)\n          .limit(limit)\n          .exec((error, model) => {\n            _this._extendedCallback('findAllByPaginated', error, model, cb);\n          });\n      },\n\n      findMatching: function(params, cb, limit = ExtendModel.DEFAULT_LIMIT) {\n        _this._logRumEvent({\n          eventName: 'findMatching',\n          payload: {params, limit},\n        });\n\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(limit)\n          .exec((error, model) => {\n            _this._extendedCallback('findMatching', error, model, cb);\n          });\n      },\n\n      findOneMatching: function(params, cb) {\n        _this._logRumEvent({\n          eventName: 'findOneMatching',\n          payload: {params},\n        });\n\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(1)\n          .exec((error, model) => {\n            _this._extendedCallback('findMatching', error, model, cb);\n          });\n      },\n\n      findAllMatching: function(params, cb) {\n        _this._logRumEvent({\n          eventName: 'findAllMatching',\n          payload: {params},\n        });\n\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .loadAll()\n          .exec((error, model) => {\n            _this._extendedCallback('findAllMatching', error, model, cb);\n          });\n      },\n\n      findAllMatchingPaginated: function(params, startKey, limit, cb) {\n        _this._logRumEvent({\n          eventName: 'findAllMatchingPaginated',\n          payload: {params, startKey, limit},\n        });\n\n        let scanParams = ExtendModel.buildScanParameters(params);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .startKey(startKey)\n          .limit(limit)\n          .exec((error, model) => {\n            _this._extendedCallback('findAllMatchingPaginated', error, model, cb);\n          });\n      },\n\n      deleteById: function(id, cb) {\n        _this._logRumEvent({\n          eventName: 'deleteById',\n          payload: {id},\n        });\n\n        return _this.model.destroy(id, (error, model) => {\n          _this._extendedCallback('deleteById', error, model, cb);\n        });\n      },\n\n      deleteByIdConditional: function(id, condition, cb) {\n        _this._logRumEvent({\n          eventName: 'deleteByIdConditional',\n          payload: {id, condition},\n        });\n\n        return _this.model.destroy(id, condition, (error, model) => {\n          _this._extendedCallback('deleteByIdConditional', error, model, cb);\n        });\n      },\n\n      createItem: function(data, cb) {\n        _this._logRumEvent({\n          eventName: 'createItem',\n          payload: {data},\n        });\n\n        return _this.model.create(data, (error, model) => {\n          _this._extendedCallback('createItem', error, model, cb);\n        });\n      },\n\n      createUniqueOnFields: function(fields, data, cb) {\n        _this._logRumEvent({\n          eventName: 'createUniqueOnFields',\n          payload: {fields, data},\n        });\n\n        let scanCb = function(err, data) {\n          if (err) {\n            return cb(err, data);\n          }\n\n          if (data.Count) {\n            return cb(`Item like ${data} already exists`);\n          }\n\n          return _this.model.create(data, cb);\n        };\n\n        let scanParams = {};\n        for (let fieldKey in fields) {\n          if (!fields.hasOwnProperty(fieldKey)) {\n            continue;\n          }\n\n          let field = fields[fieldKey];\n\n          scanParams[field] = data[field];\n        }\n\n        scanParams = ExtendModel.buildScanParameters(scanParams);\n\n        return _this.model\n          .scan()\n          .filterExpression(scanParams.filterExpression)\n          .expressionAttributeValues(scanParams.filterExpressionValues)\n          .expressionAttributeNames(scanParams.filterExpressionNames)\n          .limit(1)\n          .exec((error, model) => {\n            _this._extendedCallback('createItem', error, model, scanCb);\n          });\n      },\n\n      updateItem: function(id, data, cb) {\n        _this._logRumEvent({\n          eventName: 'updateItem',\n          payload: {id, data},\n        });\n\n        data.Id = id;\n\n        return _this.model.update(data, (error, model) => {\n          _this._extendedCallback('updateItem', error, model, cb);\n        });\n      },\n\n      updateItemConditional: function(id, data, condition, cb) {\n        _this._logRumEvent({\n          eventName: 'updateItemConditional',\n          payload: {id, data, condition},\n        });\n\n        data.Id = id;\n\n        return _this.model.update(data, condition, (error, model) => {\n          _this._extendedCallback('updateItemConditional', error, model, cb);\n        });\n      },\n    };\n  }\n\n  /**\n   * Injects the specified methods or all\n   *\n   * @param {Array} methods\n   */\n  inject(methods = null) {\n    let predefinedMethods = this.methods;\n    let predefinedMethodsNames = Object.keys(predefinedMethods);\n\n    methods = methods || predefinedMethodsNames;\n\n    for (let methodKey in methods) {\n      if (!methods.hasOwnProperty(methodKey)) {\n        continue;\n      }\n\n      let methodName = methods[methodKey];\n\n      if (!predefinedMethods.hasOwnProperty(methodName)) {\n        throw new UndefinedMethodException(methodName, predefinedMethodsNames);\n      }\n\n      this._model[methodName] = predefinedMethods[methodName];\n    }\n\n    return this._model;\n  }\n\n  /**\n   * @param {Object} customData\n   * @returns {Boolean}\n   * @private\n   */\n  _logRumEvent(customData) {\n    if (!this.model.logService) {\n      return false;\n    }\n\n    let event = util._extend(customData, {\n      service: 'deep-db',\n      resourceType: 'DynamoDB',\n      resourceId: this.model.tableName(),\n    });\n\n    this.model.logService.rumLog(event);\n\n    return true;\n  }\n\n  /**\n   * @param {String} methodName\n   * @param {Object} error\n   * @param {Object} model\n   * @param {Function} cb\n   * @private\n   */\n  _extendedCallback(methodName, error, model, cb) {\n    let data = null;\n    if (model) {\n      data = model.Items ? model : model.get();\n    }\n\n    this._logRumEvent({\n      eventName: methodName,\n      payload: {\n        error: error,\n        data: data,\n      }\n    });\n\n    cb(error, model);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2863,7 +2863,7 @@
     "importPath": "deep-db/lib/Vogels/ExtendModel.js",
     "importStyle": "{ExtendModel}",
     "description": "Extends standard Vogels models",
-    "lineNumber": 12,
+    "lineNumber": 13,
     "interface": false
   },
   {
@@ -2875,7 +2875,7 @@
     "longname": "lib/Vogels/ExtendModel.js~ExtendModel#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 16,
+    "lineNumber": 17,
     "params": [
       {
         "nullable": null,
@@ -2899,7 +2899,7 @@
     "longname": "lib/Vogels/ExtendModel.js~ExtendModel#_model",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 18,
     "undocument": true,
     "type": {
       "types": [
@@ -2916,7 +2916,7 @@
     "longname": "lib/Vogels/ExtendModel.js~ExtendModel#model",
     "access": null,
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 24,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2947,7 +2947,7 @@
     "longname": "lib/Vogels/ExtendModel.js~ExtendModel.DEFAULT_LIMIT",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 31,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2978,7 +2978,7 @@
     "longname": "lib/Vogels/ExtendModel.js~ExtendModel.DEFAULT_SEGMENTS_NUMBER",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 38,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3009,7 +3009,7 @@
     "longname": "lib/Vogels/ExtendModel.js~ExtendModel.buildScanParameters",
     "access": null,
     "description": "Makes filterExpression, filtersExpressionValues and filterExpressionNames from an object, that are used to make\na DynamoDb scan",
-    "lineNumber": 48,
+    "lineNumber": 49,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3047,7 +3047,7 @@
     "longname": "lib/Vogels/ExtendModel.js~ExtendModel#methods",
     "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 85,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3078,7 +3078,7 @@
     "longname": "lib/Vogels/ExtendModel.js~ExtendModel#inject",
     "access": null,
     "description": "Injects the specified methods or all",
-    "lineNumber": 252,
+    "lineNumber": 369,
     "params": [
       {
         "nullable": null,
@@ -3096,6 +3096,98 @@
         "*"
       ]
     },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_logRumEvent",
+    "memberof": "lib/Vogels/ExtendModel.js~ExtendModel",
+    "longname": "lib/Vogels/ExtendModel.js~ExtendModel#_logRumEvent",
+    "access": "private",
+    "description": null,
+    "lineNumber": 397,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "customData",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_extendedCallback",
+    "memberof": "lib/Vogels/ExtendModel.js~ExtendModel",
+    "longname": "lib/Vogels/ExtendModel.js~ExtendModel#_extendedCallback",
+    "access": "private",
+    "description": null,
+    "lineNumber": 420,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "methodName",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "model",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
     "generator": false
   },
   {

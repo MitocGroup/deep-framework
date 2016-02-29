@@ -456,6 +456,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/credentialsmanager.js~credentialsmanager#identityid",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-get-identityId",
+    "lib/CredentialsManager.js~CredentialsManager#identityId",
+    "member"
+  ],
+  [
     "lib/credentialsmanager.js~credentialsmanager#loadbackendcredentials",
     "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-loadBackendCredentials",
     "lib/CredentialsManager.js~CredentialsManager#loadBackendCredentials",
@@ -720,6 +726,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/localtoken.js~localtoken#destroy",
+    "class/lib/LocalToken.js~LocalToken.html#instance-method-destroy",
+    "lib/LocalToken.js~LocalToken#destroy",
+    "method"
+  ],
+  [
     "lib/localtoken.js~localtoken#loadcredentials",
     "class/lib/LocalToken.js~LocalToken.html#instance-method-loadCredentials",
     "lib/LocalToken.js~LocalToken#loadCredentials",
@@ -786,6 +798,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/security.js~security.customeventid",
+    "class/lib/Security.js~Security.html#static-method-customEventId",
+    "lib/Security.js~Security.customEventId",
+    "method"
+  ],
+  [
     "lib/token.js",
     "file/lib/Token.js.html",
     "lib/Token.js",
@@ -847,13 +865,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/token.js~token#lambdacontext",
-    "class/lib/Token.js~Token.html#instance-set-lambdaContext",
+    "class/lib/Token.js~Token.html#instance-get-lambdaContext",
     "lib/Token.js~Token#lambdaContext",
     "member"
   ],
   [
     "lib/token.js~token#lambdacontext",
-    "class/lib/Token.js~Token.html#instance-get-lambdaContext",
+    "class/lib/Token.js~Token.html#instance-set-lambdaContext",
     "lib/Token.js~Token#lambdaContext",
     "member"
   ],
@@ -862,6 +880,12 @@ window.esdocSearchIndex = [
     "class/lib/Token.js~Token.html#instance-method-loadCredentials",
     "lib/Token.js~Token#loadCredentials",
     "method"
+  ],
+  [
+    "lib/token.js~token#logservice",
+    "class/lib/Token.js~Token.html#instance-set-logService",
+    "lib/Token.js~Token#logService",
+    "member"
   ],
   [
     "lib/token.js~token#registertokenexpiredcallback",

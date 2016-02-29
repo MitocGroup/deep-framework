@@ -24,6 +24,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-fs/lib/s3fsrumproxy.js~s3fsrumproxy",
+    "class/lib/S3FsRumProxy.js~S3FsRumProxy.html",
+    "<span>S3FsRumProxy</span> <span class=\"search-result-import-path\">deep-fs/lib/S3FsRumProxy.js</span>",
+    "class"
+  ],
+  [
     "deep-fs/lib/exception/unknownfolderexception.js~unknownfolderexception",
     "class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html",
     "<span>UnknownFolderException</span> <span class=\"search-result-import-path\">deep-fs/lib/Exception/UnknownFolderException.js</span>",
@@ -511,13 +517,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/registry.js~registry#ensurefresh",
-    "class/lib/Registry.js~Registry.html#instance-set-ensureFresh",
+    "class/lib/Registry.js~Registry.html#instance-get-ensureFresh",
     "lib/Registry.js~Registry#ensureFresh",
     "member"
   ],
   [
     "lib/registry.js~registry#ensurefresh",
-    "class/lib/Registry.js~Registry.html#instance-get-ensureFresh",
+    "class/lib/Registry.js~Registry.html#instance-set-ensureFresh",
     "lib/Registry.js~Registry#ensureFresh",
     "member"
   ],
@@ -585,6 +591,30 @@ window.esdocSearchIndex = [
     "lib/registry.js~registry.createfromfs",
     "class/lib/Registry.js~Registry.html#static-method-createFromFS",
     "lib/Registry.js~Registry.createFromFS",
+    "method"
+  ],
+  [
+    "lib/registry.js~registry.isobject",
+    "class/lib/Registry.js~Registry.html#static-method-isObject",
+    "lib/Registry.js~Registry.isObject",
+    "method"
+  ],
+  [
+    "lib/s3fsrumproxy.js",
+    "file/lib/S3FsRumProxy.js.html",
+    "lib/S3FsRumProxy.js",
+    "file"
+  ],
+  [
+    "lib/s3fsrumproxy.js~s3fsrumproxy#constructor",
+    "class/lib/S3FsRumProxy.js~S3FsRumProxy.html#instance-constructor-constructor",
+    "lib/S3FsRumProxy.js~S3FsRumProxy#constructor",
+    "method"
+  ],
+  [
+    "lib/s3fsrumproxy.js~s3fsrumproxy#proxy",
+    "class/lib/S3FsRumProxy.js~S3FsRumProxy.html#instance-method-proxy",
+    "lib/S3FsRumProxy.js~S3FsRumProxy#proxy",
     "method"
   ],
   [

@@ -32,6 +32,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/FS.js~FS.html">FS</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Registry.js~Registry.html">Registry</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/UnknownFolderException.js~UnknownFolderException.html">UnknownFolderException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/S3FSRelativeFSExtender.js~S3FSRelativeFSExtender.html">S3FSRelativeFSExtender</a></span></span></li>
@@ -52,6 +53,7 @@ import {UnknownFolderException} from &apos;./Exception/UnknownFolderException&ap
 import OS from &apos;os&apos;;
 import Path from &apos;path&apos;;
 import {Registry} from &apos;./Registry&apos;;
+import {S3FsRumProxy} from &apos;./S3FsRumProxy&apos;;
 
 /**
  * Deep FS implementation
@@ -89,6 +91,10 @@ export class FS extends Kernel.ContainerAware {
    * @returns {Registry}
    */
   get registry() {
+    if (!this._registry) {
+      this._registry = Registry.createFromFS(this.system);
+    }
+
     return this._registry;
   }
 
@@ -143,8 +149,6 @@ export class FS extends Kernel.ContainerAware {
       this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
     }
 
-    this._registry = Registry.createFromFS(this.system);
-
     callback();
   }
 
@@ -172,7 +176,17 @@ export class FS extends Kernel.ContainerAware {
           },
         };
 
-        this._mountedFolders[name] = new S3FS(this._buckets[name], options);
+        let s3Fs = new S3FS(this._buckets[name], options);
+
+        if (this.kernel instanceof Kernel) {
+          let logService = this.kernel.get(&apos;log&apos;);
+
+          if (logService.isRumEnabled()) {
+            s3Fs = new S3FsRumProxy(s3Fs, logService).proxy();
+          }
+        }
+
+        this._mountedFolders[name] = s3Fs;
       }
     }
 

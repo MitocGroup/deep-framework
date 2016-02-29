@@ -54,9 +54,9 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
-    "deep-cache/lib/exception/methodnotavailableexception.js~methodnotavailableexception",
-    "class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html",
-    "<span>MethodNotAvailableException</span> <span class=\"search-result-import-path\">deep-cache/lib/Exception/MethodNotAvailableException.js</span>",
+    "deep-cache/lib/driver/exception/methodnotavailableexception.js~methodnotavailableexception",
+    "class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html",
+    "<span>MethodNotAvailableException</span> <span class=\"search-result-import-path\">deep-cache/lib/Driver/Exception/MethodNotAvailableException.js</span>",
     "class"
   ],
   [
@@ -93,6 +93,12 @@ window.esdocSearchIndex = [
     "deep-cache/lib/sharedcache.js~sharedcache",
     "class/lib/SharedCache.js~SharedCache.html",
     "<span>SharedCache</span> <span class=\"search-result-import-path\">deep-cache/lib/SharedCache.js</span>",
+    "class"
+  ],
+  [
+    "deep-cache/lib/sharedkey.js~sharedkey",
+    "class/lib/SharedKey.js~SharedKey.html",
+    "<span>SharedKey</span> <span class=\"search-result-import-path\">deep-cache/lib/SharedKey.js</span>",
     "class"
   ],
   [
@@ -445,13 +451,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/cache.js~cache#driver",
-    "class/lib/Cache.js~Cache.html#instance-set-driver",
+    "class/lib/Cache.js~Cache.html#instance-get-driver",
     "lib/Cache.js~Cache#driver",
     "member"
   ],
   [
     "lib/cache.js~cache#driver",
-    "class/lib/Cache.js~Cache.html#instance-get-driver",
+    "class/lib/Cache.js~Cache.html#instance-set-driver",
     "lib/Cache.js~Cache#driver",
     "member"
   ],
@@ -481,13 +487,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#buildid",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-buildId",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-buildId",
     "lib/Driver/AbstractDriver.js~AbstractDriver#buildId",
     "member"
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#buildid",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-buildId",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-buildId",
     "lib/Driver/AbstractDriver.js~AbstractDriver#buildId",
     "member"
   ],
@@ -558,6 +564,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/driver/abstractdriver.js~abstractdriver#type",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-type",
+    "lib/Driver/AbstractDriver.js~AbstractDriver#type",
+    "method"
+  ],
+  [
     "lib/driver/abstractfsdriver.js",
     "file/lib/Driver/AbstractFsDriver.js.html",
     "lib/Driver/AbstractFsDriver.js",
@@ -615,6 +627,18 @@ window.esdocSearchIndex = [
     "lib/driver/exception/exception.js~exception#constructor",
     "class/lib/Driver/Exception/Exception.js~Exception.html#instance-constructor-constructor",
     "lib/Driver/Exception/Exception.js~Exception#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/methodnotavailableexception.js",
+    "file/lib/Driver/Exception/MethodNotAvailableException.js.html",
+    "lib/Driver/Exception/MethodNotAvailableException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/methodnotavailableexception.js~methodnotavailableexception#constructor",
+    "class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException#constructor",
     "method"
   ],
   [
@@ -708,6 +732,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/driver/redisdriver.js~redisdriver#autodiscoveryerror",
+    "class/lib/Driver/RedisDriver.js~RedisDriver.html#instance-get-autoDiscoveryError",
+    "lib/Driver/RedisDriver.js~RedisDriver#autoDiscoveryError",
+    "member"
+  ],
+  [
     "lib/driver/redisdriver.js~redisdriver#client",
     "class/lib/Driver/RedisDriver.js~RedisDriver.html#instance-get-client",
     "lib/Driver/RedisDriver.js~RedisDriver#client",
@@ -718,6 +748,18 @@ window.esdocSearchIndex = [
     "class/lib/Driver/RedisDriver.js~RedisDriver.html#instance-constructor-constructor",
     "lib/Driver/RedisDriver.js~RedisDriver#constructor",
     "method"
+  ],
+  [
+    "lib/driver/redisdriver.js~redisdriver.client_wait_ms_interval",
+    "class/lib/Driver/RedisDriver.js~RedisDriver.html#static-get-CLIENT_WAIT_MS_INTERVAL",
+    "lib/Driver/RedisDriver.js~RedisDriver.CLIENT_WAIT_MS_INTERVAL",
+    "member"
+  ],
+  [
+    "lib/driver/redisdriver.js~redisdriver.default_auto_discovery_timeout",
+    "class/lib/Driver/RedisDriver.js~RedisDriver.html#static-get-DEFAULT_AUTO_DISCOVERY_TIMEOUT",
+    "lib/Driver/RedisDriver.js~RedisDriver.DEFAULT_AUTO_DISCOVERY_TIMEOUT",
+    "member"
   ],
   [
     "lib/driver/s3fsdriver.js",
@@ -741,18 +783,6 @@ window.esdocSearchIndex = [
     "lib/exception/exception.js~exception#constructor",
     "class/lib/Exception/Exception.js~Exception.html#instance-constructor-constructor",
     "lib/Exception/Exception.js~Exception#constructor",
-    "method"
-  ],
-  [
-    "lib/exception/methodnotavailableexception.js",
-    "file/lib/Exception/MethodNotAvailableException.js.html",
-    "lib/Exception/MethodNotAvailableException.js",
-    "file"
-  ],
-  [
-    "lib/exception/methodnotavailableexception.js~methodnotavailableexception#constructor",
-    "class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html#instance-constructor-constructor",
-    "lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException#constructor",
     "method"
   ],
   [
@@ -786,9 +816,27 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/sharedcache.js~sharedcache#request",
-    "class/lib/SharedCache.js~SharedCache.html#instance-method-request",
-    "lib/SharedCache.js~SharedCache#request",
+    "lib/sharedkey.js",
+    "file/lib/SharedKey.js.html",
+    "lib/SharedKey.js",
+    "file"
+  ],
+  [
+    "lib/sharedkey.js~sharedkey#constructor",
+    "class/lib/SharedKey.js~SharedKey.html#instance-constructor-constructor",
+    "lib/SharedKey.js~SharedKey#constructor",
+    "method"
+  ],
+  [
+    "lib/sharedkey.js~sharedkey#microservice",
+    "class/lib/SharedKey.js~SharedKey.html#instance-get-microservice",
+    "lib/SharedKey.js~SharedKey#microservice",
+    "member"
+  ],
+  [
+    "lib/sharedkey.js~sharedkey#tostring",
+    "class/lib/SharedKey.js~SharedKey.html#instance-method-toString",
+    "lib/SharedKey.js~SharedKey#toString",
     "method"
   ],
   [

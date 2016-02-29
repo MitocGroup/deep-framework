@@ -32,6 +32,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedKey.js~SharedKey.html">SharedKey</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
@@ -41,11 +42,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -77,7 +78,7 @@ export class Cache extends Kernel.ContainerAware {
 
   /**
    * @param {String} name
-   * @param {Array} args
+   * @param {*} args
    * @returns {AbstractDriver}
    */
   static createDriver(name, ...args) {
@@ -118,23 +119,22 @@ export class Cache extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    let sharedCacheDriver;
-    let driver;
 
-    if (kernel.isFrontend) {
-      driver = Cache.createDriver(&apos;local-storage&apos;);
-      sharedCacheDriver = Cache.createDriver(&apos;cloud-front&apos;, this);
-    } else {
-      // @todo: switch to redis when issue with Elasticache is fixed
-      driver = Cache.createDriver(&apos;memory&apos;);
-      sharedCacheDriver = Cache.createDriver(&apos;s3fs&apos;, this);
-    }
+    // @todo: remove in memory fallback for backend?
+    this._driver = kernel.isFrontend ?
+      Cache.createDriver(&apos;local-storage&apos;) :
+      (kernel.config.cacheDsn ?
+        Cache.createDriver(&apos;redis&apos;, kernel.config.cacheDsn) :
+        Cache.createDriver(&apos;memory&apos;));
 
-    [driver, sharedCacheDriver].map(function(driver) {
+    let sharedCacheDriver = kernel.isFrontend ?
+      Cache.createDriver(&apos;cloud-front&apos;, this) :
+      Cache.createDriver(&apos;s3fs&apos;, this);
+
+    [this._driver, sharedCacheDriver].map((driver) =&gt; {
       driver.buildId = kernel.buildId;
     });
 
-    this._driver = driver;
     this._shared = new SharedCache(sharedCacheDriver);
 
     callback();
@@ -167,7 +167,7 @@ export class Cache extends Kernel.ContainerAware {
       .proxyOverride(
       this._driver,
       &apos;has&apos;, &apos;get&apos;, &apos;set&apos;,
-      &apos;invalidate&apos;, &apos;flush&apos;
+      &apos;invalidate&apos;, &apos;flush&apos;, &apos;type&apos;
     );
   }
 

@@ -58,6 +58,7 @@ import {Injectable as MicroserviceInjectable} from &apos;./Microservice/Injectab
 import {ContainerAware} from &apos;./ContainerAware&apos;;
 import FileSystem from &apos;fs&apos;;
 import WaitUntil from &apos;wait-until&apos;;
+import util from &apos;util&apos;;
 
 /**
  * Deep application kernel
@@ -75,6 +76,7 @@ export class Kernel {
     this._config = {};
     this._services = deepServices;
     this._context = context;
+    this._runtimeContext = {};
     this._env = null;
     this._container = new DI();
     this._isLoaded = false;
@@ -88,11 +90,25 @@ export class Kernel {
   }
 
   /**
-   * @param {String} identifier
-   * @returns {Microservice}
+   * @returns {Object}
    */
-  microservice(identifier) {
-    if (typeof identifier === &apos;undefined&apos;) {
+  get runtimeContext() {
+    return this._runtimeContext;
+  }
+
+  /**
+   * @param {Object} runtimeContext
+   */
+  set runtimeContext(runtimeContext) {
+    this._runtimeContext = runtimeContext;
+  }
+
+  /**
+   * @param {String|null} identifier
+   * @returns {Microservice|*}
+   */
+  microservice(identifier = null) {
+    if (!identifier) {
       identifier = this._config.microserviceIdentifier;
     }
 
@@ -112,11 +128,12 @@ export class Kernel {
   }
 
   /**
-   * @param {String} jsonFile
    * @param {Function} callback
    * @returns {Kernel}
+   *
+   * @todo: put config file name into a constant?
    */
-  loadFromFile(jsonFile, callback) {
+  bootstrap(callback) {
     // @todo: remove AWS changes the way the things run
     // This is used because of AWS Lambda
     // context sharing after a cold start
@@ -125,14 +142,83 @@ export class Kernel {
       return this;
     }
 
+    return this.loadFromScopeOrFile(Kernel.DEFAULT_CONFIG_FILE_NAME, callback);
+  }
+
+  /**
+   * @param {String} jsonFile
+   * @param {Function} callback
+   * @returns {Kernel}
+   */
+  loadFromScopeOrFile(jsonFile, callback) {
+    // @todo: remove AWS changes the way the things run
+    // This is used because of AWS Lambda
+    // context sharing after a cold start
+    if (this._isLoaded) {
+      callback(this);
+      return this;
+    }
+
+    let scope = null;
+
     if (this.isBackend) {
-      FileSystem.readFile(jsonFile, &apos;utf8&apos;, function(error, data) {
+      scope = global;
+    } else {
+      scope = window || {};
+    }
+
+    let globalConfig = scope.hasOwnProperty(&apos;__DEEP_CFG__&apos;) ? scope[&apos;__DEEP_CFG__&apos;] : null;
+
+    return globalConfig ? this.load(globalConfig, callback) : this.loadFromFile(jsonFile, callback);
+  }
+
+  /**
+   * @param {String} jsonFile
+   * @param {Function} callback
+   * @returns {Kernel}
+   */
+  loadFromFile(jsonFile, callback) {
+    let rumEvent = {
+      service: &apos;deep-kernel&apos;,
+      resourceType: &apos;Lambda&apos;,
+      eventName: &apos;KernelLoad&apos;,
+      time: new Date().getTime(),
+    };
+
+    // @todo: remove AWS changes the way the things run
+    // This is used because of AWS Lambda context sharing after a cold start
+    if (this._isLoaded) {
+      if (this.isBackend) {
+        rumEvent.eventName = &apos;KernelLoadFromCache&apos;;
+        rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;
+        rumEvent.payload = this.config;
+        this.get(&apos;log&apos;).rumLog(rumEvent);
+      }
+
+      callback(this);
+      return this;
+    }
+
+    if (this.isBackend) {
+      FileSystem.readFile(jsonFile, &apos;utf8&apos;, (error, data) =&gt; {
         if (error) {
           throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);
         }
 
-        this.load(JSON.parse(data), callback);
-      }.bind(this));
+        this.load(JSON.parse(data), (kernel) =&gt; {
+          // Log event &apos;start&apos; time
+          rumEvent.resourceId = kernel.runtimeContext.invokedFunctionArn;
+          kernel.get(&apos;log&apos;).rumLog(rumEvent);
+
+          // log event &apos;stop&apos; time
+          let event = util._extend({}, rumEvent);
+          event.payload = kernel.config;
+          event.time = new Date().getTime();
+          kernel.get(&apos;log&apos;).rumLog(event);
+
+          callback(kernel);
+        });
+      });
     } else { // @todo: get rid of native code...
       var client = new XMLHttpRequest();
 
@@ -158,6 +244,8 @@ export class Kernel {
    *
    * @param {Object} globalConfig
    * @param {Function} callback
+   *
+   * @returns {Kernel}
    */
   load(globalConfig, callback) {
     // @todo: remove AWS changes the way the things run
@@ -376,6 +464,13 @@ export class Kernel {
   /**
    * @returns {String}
    */
+  static get DEFAULT_CONFIG_FILE_NAME() {
+    return &apos;_config.json&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
   static get FRONTEND_BOOTSTRAP_VECTOR() {
     return &apos;deep_frontend_bootstrap_vector&apos;;
   }
@@ -429,6 +524,46 @@ export class Kernel {
     return [
       Kernel.FRONTEND_CONTEXT,
       Kernel.BACKEND_CONTEXT,
+    ];
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get PROD_ENVIRONMENT() {
+    return &apos;prod&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get STAGE_ENVIRONMENT() {
+    return &apos;stage&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get TEST_ENVIRONMENT() {
+    return &apos;test&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEV_ENVIRONMENT() {
+    return &apos;dev&apos;;
+  }
+
+  /**
+   * @returns {Array}
+   */
+  static get ALL_ENVIRONMENTS() {
+    return [
+      Kernel.PROD_ENVIRONMENT,
+      Kernel.STAGE_ENVIRONMENT,
+      Kernel.TEST_ENVIRONMENT,
+      Kernel.DEV_ENVIRONMENT,
     ];
   }
 }

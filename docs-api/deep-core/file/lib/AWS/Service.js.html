@@ -56,6 +56,8 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/MethodsProxy.js~MethodsProxy.html">MethodsProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/UniversalRequire.js~UniversalRequire.html">UniversalRequire</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">HTTP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/HTTP/Helper.js~Helper.html">Helper</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Runtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Runtime/Sandbox.js~Sandbox.html">Sandbox</a></span></span></li>
 </ul>
@@ -78,6 +80,13 @@ export class Service {
    */
   static get ANY() {
     return &apos;*&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get EC2() {
+    return &apos;ec2&apos;;
   }
 
   /**
@@ -193,6 +202,13 @@ export class Service {
   }
 
   /**
+   * @returns {String}
+   */
+  static get CERTIFICATE_MANAGER() {
+    return &apos;acm&apos;;
+  }
+
+  /**
    * @param {String} service
    * @returns {String}
    */
@@ -230,6 +246,8 @@ export class Service {
       Service.API_GATEWAY_EXECUTE,
       Service.CLOUD_SEARCH,
       Service.SIMPLE_QUEUE_SERVICE,
+      Service.CERTIFICATE_MANAGER,
+      Service.EC2,
     ];
   }
 }

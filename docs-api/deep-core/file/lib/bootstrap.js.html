@@ -56,6 +56,8 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/MethodsProxy.js~MethodsProxy.html">MethodsProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/UniversalRequire.js~UniversalRequire.html">UniversalRequire</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">HTTP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/HTTP/Helper.js~Helper.html">Helper</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Runtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Runtime/Sandbox.js~Sandbox.html">Sandbox</a></span></span></li>
 </ul>
@@ -78,12 +80,15 @@ import {Service as AWSService} from &apos;./AWS/Service&apos;;
 import {Policy as AWSIAMPolicy} from &apos;./AWS/IAM/Policy&apos;;
 import {Factory as AWSIAMFactory} from &apos;./AWS/IAM/Factory&apos;;
 import {ObjectStorage as GenericObjectStorage} from &apos;./Generic/ObjectStorage&apos;;
+import {UniversalRequire as GenericUniversalRequire} from &apos;./Generic/UniversalRequire&apos;;
 import {ObjectVector as GenericObjectVector} from &apos;./Generic/ObjectVector&apos;;
 import {MethodsProxy as GenericMethodsProxy} from &apos;./Generic/MethodsProxy&apos;;
 import {Exception as ExceptionException} from &apos;./Exception/Exception&apos;;
 import {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from &apos;./Exception/MethodsNotImplementedException&apos;;
 import {InvalidArgumentException as ExceptionInvalidArgumentException} from &apos;./Exception/InvalidArgumentException&apos;;
 import {DatabaseOperationException as ExceptionDatabaseOperationException} from &apos;./Exception/DatabaseOperationException&apos;;
+import {Sandbox as RuntimeSandbox} from &apos;./Runtime/Sandbox&apos;;
+import {Helper as HttpHelper} from &apos;./HTTP/Helper&apos;;
 
 let exports = module.exports = {
   IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,
@@ -93,6 +98,12 @@ let exports = module.exports = {
     MethodsNotImplementedException: ExceptionMethodsNotImplementedException,
     DatabaseOperationException: ExceptionDatabaseOperationException,
   },
+  HTTP: {
+    Helper: HttpHelper,
+  },
+  Runtime: {
+    Sandbox: RuntimeSandbox,
+  },
   OOP: {
     Interface: OOPInterface,
   },
@@ -100,6 +111,7 @@ let exports = module.exports = {
     ObjectStorage: GenericObjectStorage,
     ObjectVector: GenericObjectVector,
     MethodsProxy: GenericMethodsProxy,
+    UniversalRequire: GenericUniversalRequire,
   },
   AWS: {
     Region: AWSRegion,

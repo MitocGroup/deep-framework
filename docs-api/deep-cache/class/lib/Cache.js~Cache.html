@@ -32,6 +32,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedKey.js~SharedKey.html">SharedKey</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
@@ -41,11 +42,11 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -105,7 +106,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#static-method-createDriver">createDriver</a></span></span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, args: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>): <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#static-method-createDriver">createDriver</a></span></span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, args: <span>*</span>): <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span>
         </p>
       </div>
       <div>
@@ -332,7 +333,7 @@ It&apos;s used while kernel boot</div>
     
     
     
-    <span data-ice="name">createDriver</span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, args: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>): <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span>
+    <span data-ice="name">createDriver</span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, args: <span>*</span>): <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span>
     <span class="right-info">
       
       
@@ -363,7 +364,7 @@ It&apos;s used while kernel boot</div>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">args</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span></td>
+      <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -470,7 +471,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber124">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber123">source</a></span></span>
     </span>
   </h3>
 
@@ -510,7 +511,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber131">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber130">source</a></span></span>
     </span>
   </h3>
 
@@ -560,7 +561,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber112">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber111">source</a></span></span>
     </span>
   </h3>
 
@@ -612,7 +613,7 @@ It&apos;s used while kernel boot</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber93">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber92">source</a></span></span>
     </span>
   </h3>
 
@@ -665,7 +666,7 @@ It&apos;s used while kernel boot</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber102">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber101">source</a></span></span>
     </span>
   </h3>
 

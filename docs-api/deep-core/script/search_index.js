@@ -54,6 +54,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-core/lib/http/helper.js~helper",
+    "class/lib/HTTP/Helper.js~Helper.html",
+    "<span>Helper</span> <span class=\"search-result-import-path\">deep-core/lib/HTTP/Helper.js</span>",
+    "class"
+  ],
+  [
     "deep-core/lib/oop/interface.js~interface",
     "class/lib/OOP/Interface.js~Interface.html",
     "<span>Interface</span> <span class=\"search-result-import-path\">deep-core/lib/OOP/Interface.js</span>",
@@ -165,6 +171,12 @@ window.esdocSearchIndex = [
     "deep-core/lib/aws/iam/statement.js~statement",
     "class/lib/AWS/IAM/Statement.js~Statement.html",
     "<span>Statement</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/IAM/Statement.js</span>",
+    "class"
+  ],
+  [
+    "deep-core/lib/generic/universalrequire.js~universalrequire",
+    "class/lib/Generic/UniversalRequire.js~UniversalRequire.html",
+    "<span>UniversalRequire</span> <span class=\"search-result-import-path\">deep-core/lib/Generic/UniversalRequire.js</span>",
     "class"
   ],
   [
@@ -499,13 +511,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
@@ -523,13 +535,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
@@ -679,13 +691,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
@@ -709,15 +721,21 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
+  ],
+  [
+    "lib/aws/iam/resource.js~resource#any",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-method-any",
+    "lib/AWS/IAM/Resource.js~Resource#any",
+    "method"
   ],
   [
     "lib/aws/iam/resource.js~resource#constructor",
@@ -745,13 +763,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
@@ -805,13 +823,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
@@ -835,13 +853,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
@@ -1062,6 +1080,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/aws/lambda/runtime.js~runtime#createcachedresponse",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-method-createCachedResponse",
+    "lib/AWS/Lambda/Runtime.js~Runtime#createCachedResponse",
+    "method"
+  ],
+  [
     "lib/aws/lambda/runtime.js~runtime#createerror",
     "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-method-createError",
     "lib/AWS/Lambda/Runtime.js~Runtime#createError",
@@ -1089,6 +1113,12 @@ window.esdocSearchIndex = [
     "lib/aws/lambda/runtime.js~runtime#lambda",
     "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-lambda",
     "lib/AWS/Lambda/Runtime.js~Runtime#lambda",
+    "member"
+  ],
+  [
+    "lib/aws/lambda/runtime.js~runtime#logservice",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-logService",
+    "lib/AWS/Lambda/Runtime.js~Runtime#logService",
     "member"
   ],
   [
@@ -1254,6 +1284,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/aws/service.js~service.certificate_manager",
+    "class/lib/AWS/Service.js~Service.html#static-get-CERTIFICATE_MANAGER",
+    "lib/AWS/Service.js~Service.CERTIFICATE_MANAGER",
+    "member"
+  ],
+  [
     "lib/aws/service.js~service.cloud_front",
     "class/lib/AWS/Service.js~Service.html#static-get-CLOUD_FRONT",
     "lib/AWS/Service.js~Service.CLOUD_FRONT",
@@ -1287,6 +1323,12 @@ window.esdocSearchIndex = [
     "lib/aws/service.js~service.dynamo_db",
     "class/lib/AWS/Service.js~Service.html#static-get-DYNAMO_DB",
     "lib/AWS/Service.js~Service.DYNAMO_DB",
+    "member"
+  ],
+  [
+    "lib/aws/service.js~service.ec2",
+    "class/lib/AWS/Service.js~Service.html#static-get-EC2",
+    "lib/AWS/Service.js~Service.EC2",
     "member"
   ],
   [
@@ -1374,6 +1416,18 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
+    "lib/exception/exception.js~exception#code",
+    "class/lib/Exception/Exception.js~Exception.html#instance-set-code",
+    "lib/Exception/Exception.js~Exception#code",
+    "member"
+  ],
+  [
+    "lib/exception/exception.js~exception#code",
+    "class/lib/Exception/Exception.js~Exception.html#instance-get-code",
+    "lib/Exception/Exception.js~Exception#code",
+    "member"
+  ],
+  [
     "lib/exception/exception.js~exception#constructor",
     "class/lib/Exception/Exception.js~Exception.html#instance-constructor-constructor",
     "lib/Exception/Exception.js~Exception#constructor",
@@ -1383,6 +1437,18 @@ window.esdocSearchIndex = [
     "lib/exception/exception.js~exception#name",
     "class/lib/Exception/Exception.js~Exception.html#instance-get-name",
     "lib/Exception/Exception.js~Exception#name",
+    "member"
+  ],
+  [
+    "lib/exception/exception.js~exception.code_key",
+    "class/lib/Exception/Exception.js~Exception.html#static-get-CODE_KEY",
+    "lib/Exception/Exception.js~Exception.CODE_KEY",
+    "member"
+  ],
+  [
+    "lib/exception/exception.js~exception.default_code",
+    "class/lib/Exception/Exception.js~Exception.html#static-get-DEFAULT_CODE",
+    "lib/Exception/Exception.js~Exception.DEFAULT_CODE",
     "member"
   ],
   [
@@ -1491,6 +1557,48 @@ window.esdocSearchIndex = [
     "lib/generic/objectvector.js~objectvector#constructor",
     "class/lib/Generic/ObjectVector.js~ObjectVector.html#instance-constructor-constructor",
     "lib/Generic/ObjectVector.js~ObjectVector#constructor",
+    "method"
+  ],
+  [
+    "lib/generic/universalrequire.js",
+    "file/lib/Generic/UniversalRequire.js.html",
+    "lib/Generic/UniversalRequire.js",
+    "file"
+  ],
+  [
+    "lib/generic/universalrequire.js~universalrequire#constructor",
+    "class/lib/Generic/UniversalRequire.js~UniversalRequire.html#instance-constructor-constructor",
+    "lib/Generic/UniversalRequire.js~UniversalRequire#constructor",
+    "method"
+  ],
+  [
+    "lib/generic/universalrequire.js~universalrequire#require",
+    "class/lib/Generic/UniversalRequire.js~UniversalRequire.html#instance-method-require",
+    "lib/Generic/UniversalRequire.js~UniversalRequire#require",
+    "method"
+  ],
+  [
+    "lib/generic/require1k.js",
+    "file/lib/Generic/require1k.js.html",
+    "lib/Generic/require1k.js",
+    "file"
+  ],
+  [
+    "lib/http/helper.js",
+    "file/lib/HTTP/Helper.js.html",
+    "lib/HTTP/Helper.js",
+    "file"
+  ],
+  [
+    "lib/http/helper.js~helper.codes",
+    "class/lib/HTTP/Helper.js~Helper.html#static-get-CODES",
+    "lib/HTTP/Helper.js~Helper.CODES",
+    "member"
+  ],
+  [
+    "lib/http/helper.js~helper.assuredefinedcode",
+    "class/lib/HTTP/Helper.js~Helper.html#static-method-assureDefinedCode",
+    "lib/HTTP/Helper.js~Helper.assureDefinedCode",
     "method"
   ],
   [

@@ -56,6 +56,8 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/MethodsProxy.js~MethodsProxy.html">MethodsProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/UniversalRequire.js~UniversalRequire.html">UniversalRequire</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">HTTP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/HTTP/Helper.js~Helper.html">Helper</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Runtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Runtime/Sandbox.js~Sandbox.html">Sandbox</a></span></span></li>
 </ul>
@@ -70,6 +72,8 @@
 &apos;use strict&apos;;
 
 import {Response} from &apos;./Response&apos;;
+import {Exception} from &apos;../../Exception/Exception&apos;;
+import {Helper as HttpHelper} from &apos;../../HTTP/Helper&apos;;
 
 /**
  * Error response sent to the lambda context
@@ -89,8 +93,10 @@ export class ErrorResponse extends Response {
    */
   static createErrorObject(error) {
     let errorObj = {};
+    let errorCode = Exception.DEFAULT_CODE;
 
-    if (error.isJoi) { // we suppose it&apos;s a joi validation error
+    if (error.name === &apos;ValidationError&apos;) { // we assume it&apos;s a joi validation error
+      errorCode = 400;
       errorObj = {
         errorType: error.name,
         errorMessage: error.annotate(),
@@ -112,6 +118,8 @@ export class ErrorResponse extends Response {
         errorStack: (new Error(plainError)).stack,
       };
     }
+
+    errorObj[Exception.CODE_KEY] = HttpHelper.assureDefinedCode(error.code || errorCode);
 
     return errorObj;
   }

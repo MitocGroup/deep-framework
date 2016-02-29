@@ -1,6 +1,6 @@
 {
   "name": "deep-core",
-  "version": "1.6.0",
+  "version": "1.6.13",
   "description": "DEEP Core Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -54,7 +54,8 @@
   "scripts": {
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "pretest": "npm link deep-kernel deep-validation deep-security deep-resource deep-cache deep-log"
   },
   "dependencies": {
     "qs": "^5.2.x"

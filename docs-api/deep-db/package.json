@@ -1,6 +1,6 @@
 {
   "name": "deep-db",
-  "version": "1.6.0",
+  "version": "1.6.4",
   "description": "DEEP Database Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -60,14 +60,14 @@
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile",
-    "pretest": "npm link deep-kernel deep-core deep-validation"
+    "pretest": "npm link deep-kernel deep-core deep-validation deep-log"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
     "deep-validation": "^1.x.x",
     "joi": "^5.x.x",
-    "vogels": "^2.1.x"
+    "vogels": "MitocGroup/vogels#v2.2.0"
   },
   "optionalDependencies": {
     "local-dynamo": "MitocGroup/local-dynamo",

@@ -409,25 +409,25 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/containeraware.js~containeraware#kernel",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-kernel",
-    "lib/ContainerAware.js~ContainerAware#kernel",
-    "member"
-  ],
-  [
-    "lib/containeraware.js~containeraware#kernel",
     "class/lib/ContainerAware.js~ContainerAware.html#instance-set-kernel",
     "lib/ContainerAware.js~ContainerAware#kernel",
     "member"
   ],
   [
-    "lib/containeraware.js~containeraware#localbackend",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-localBackend",
-    "lib/ContainerAware.js~ContainerAware#localBackend",
+    "lib/containeraware.js~containeraware#kernel",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-kernel",
+    "lib/ContainerAware.js~ContainerAware#kernel",
     "member"
   ],
   [
     "lib/containeraware.js~containeraware#localbackend",
     "class/lib/ContainerAware.js~ContainerAware.html#instance-set-localBackend",
+    "lib/ContainerAware.js~ContainerAware#localBackend",
+    "member"
+  ],
+  [
+    "lib/containeraware.js~containeraware#localbackend",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-localBackend",
     "lib/ContainerAware.js~ContainerAware#localBackend",
     "member"
   ],
@@ -484,6 +484,12 @@ window.esdocSearchIndex = [
     "file/lib/Kernel.js.html",
     "lib/Kernel.js",
     "file"
+  ],
+  [
+    "lib/kernel.js~kernel#bootstrap",
+    "class/lib/Kernel.js~Kernel.html#instance-method-bootstrap",
+    "lib/Kernel.js~Kernel#bootstrap",
+    "method"
   ],
   [
     "lib/kernel.js~kernel#buildid",
@@ -564,6 +570,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/kernel.js~kernel#loadfromscopeorfile",
+    "class/lib/Kernel.js~Kernel.html#instance-method-loadFromScopeOrFile",
+    "lib/Kernel.js~Kernel#loadFromScopeOrFile",
+    "method"
+  ],
+  [
     "lib/kernel.js~kernel#microservice",
     "class/lib/Kernel.js~Kernel.html#instance-method-microservice",
     "lib/Kernel.js~Kernel#microservice",
@@ -576,6 +588,18 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/kernel.js~kernel#runtimecontext",
+    "class/lib/Kernel.js~Kernel.html#instance-get-runtimeContext",
+    "lib/Kernel.js~Kernel#runtimeContext",
+    "member"
+  ],
+  [
+    "lib/kernel.js~kernel#runtimecontext",
+    "class/lib/Kernel.js~Kernel.html#instance-set-runtimeContext",
+    "lib/Kernel.js~Kernel#runtimeContext",
+    "member"
+  ],
+  [
     "lib/kernel.js~kernel#services",
     "class/lib/Kernel.js~Kernel.html#instance-get-services",
     "lib/Kernel.js~Kernel#services",
@@ -585,6 +609,12 @@ window.esdocSearchIndex = [
     "lib/kernel.js~kernel.all_contexts",
     "class/lib/Kernel.js~Kernel.html#static-get-ALL_CONTEXTS",
     "lib/Kernel.js~Kernel.ALL_CONTEXTS",
+    "member"
+  ],
+  [
+    "lib/kernel.js~kernel.all_environments",
+    "class/lib/Kernel.js~Kernel.html#static-get-ALL_ENVIRONMENTS",
+    "lib/Kernel.js~Kernel.ALL_ENVIRONMENTS",
     "member"
   ],
   [
@@ -609,6 +639,18 @@ window.esdocSearchIndex = [
     "lib/kernel.js~kernel.containeraware",
     "class/lib/Kernel.js~Kernel.html#static-get-ContainerAware",
     "lib/Kernel.js~Kernel.ContainerAware",
+    "member"
+  ],
+  [
+    "lib/kernel.js~kernel.default_config_file_name",
+    "class/lib/Kernel.js~Kernel.html#static-get-DEFAULT_CONFIG_FILE_NAME",
+    "lib/Kernel.js~Kernel.DEFAULT_CONFIG_FILE_NAME",
+    "member"
+  ],
+  [
+    "lib/kernel.js~kernel.dev_environment",
+    "class/lib/Kernel.js~Kernel.html#static-get-DEV_ENVIRONMENT",
+    "lib/Kernel.js~Kernel.DEV_ENVIRONMENT",
     "member"
   ],
   [
@@ -639,6 +681,24 @@ window.esdocSearchIndex = [
     "lib/kernel.js~kernel.microserviceinjectable",
     "class/lib/Kernel.js~Kernel.html#static-get-MicroserviceInjectable",
     "lib/Kernel.js~Kernel.MicroserviceInjectable",
+    "member"
+  ],
+  [
+    "lib/kernel.js~kernel.prod_environment",
+    "class/lib/Kernel.js~Kernel.html#static-get-PROD_ENVIRONMENT",
+    "lib/Kernel.js~Kernel.PROD_ENVIRONMENT",
+    "member"
+  ],
+  [
+    "lib/kernel.js~kernel.stage_environment",
+    "class/lib/Kernel.js~Kernel.html#static-get-STAGE_ENVIRONMENT",
+    "lib/Kernel.js~Kernel.STAGE_ENVIRONMENT",
+    "member"
+  ],
+  [
+    "lib/kernel.js~kernel.test_environment",
+    "class/lib/Kernel.js~Kernel.html#static-get-TEST_ENVIRONMENT",
+    "lib/Kernel.js~Kernel.TEST_ENVIRONMENT",
     "member"
   ],
   [
@@ -709,14 +769,20 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/microservice/instance.js~instance#isroot",
-    "class/lib/Microservice/Instance.js~Instance.html#instance-get-isRoot",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-set-isRoot",
     "lib/Microservice/Instance.js~Instance#isRoot",
     "member"
   ],
   [
     "lib/microservice/instance.js~instance#isroot",
-    "class/lib/Microservice/Instance.js~Instance.html#instance-set-isRoot",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-get-isRoot",
     "lib/Microservice/Instance.js~Instance#isRoot",
+    "member"
+  ],
+  [
+    "lib/microservice/instance.js~instance#parameters",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-get-parameters",
+    "lib/Microservice/Instance.js~Instance#parameters",
     "member"
   ],
   [

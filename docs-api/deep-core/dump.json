@@ -1263,7 +1263,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Region} from '../Region';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {InvalidArnException} from './Exception/InvalidArnException';\n\n/**\n * IAM statement resource\n */\nexport class Resource extends Extractable {\n  constructor(service = Service.ANY, region = '', accountId = '', descriptor = '') {\n    super();\n\n    this._service = null;\n    this._region = null;\n    this._accountId = accountId;\n    this._descriptor = descriptor;\n\n    this.service = service;\n    this.region = region;\n  }\n\n  /**\n   * @param {String} identifier\n   */\n  set accountId(identifier) {\n    this._accountId = identifier;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get accountId() {\n    return this._accountId;\n  }\n\n  /**\n   * @param {String} descriptor\n   */\n  set descriptor(descriptor) {\n    this._descriptor = descriptor;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get descriptor() {\n    return this._descriptor;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set region(name) {\n    if (!Region.exists(name)) {\n      throw new InvalidArgumentException(name, Region);\n    }\n\n    this._region = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @see - http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\n   *\n   * @param {string} arn\n   * @returns {Resource}\n   */\n  updateFromArn(arn) {\n    let arnParts = arn.split(':');\n\n    if (arnParts.length < 6) {\n      throw new InvalidArnException(arn);\n    }\n\n    this.service = arnParts[2];\n    this.region = arnParts[3];\n    this.accountId = arnParts[4];\n    this.descriptor = arnParts.slice(5).join(':');\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    let service = this._service;\n    let region = this._region;\n    let accountId = this._accountId;\n    let descriptor = this._descriptor;\n\n    return `arn:aws:${service}:${region}:${accountId}:${descriptor}`;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport {Extractable} from './Extractable';\nimport {Region} from '../Region';\nimport {Service} from '../Service';\nimport {InvalidArgumentException} from '../../Exception/InvalidArgumentException';\nimport {InvalidArnException} from './Exception/InvalidArnException';\n\n/**\n * IAM statement resource\n */\nexport class Resource extends Extractable {\n  constructor(service = Service.ANY, region = '', accountId = '', descriptor = '') {\n    super();\n\n    this._service = null;\n    this._region = null;\n    this._accountId = accountId;\n    this._descriptor = descriptor;\n\n    this.service = service;\n    this.region = region;\n\n    this._any = false;\n  }\n\n  /**\n   * @returns {Resource}\n   */\n  any() {\n    this._any = true;\n    return this;\n  }\n\n  /**\n   * @param {String} identifier\n   */\n  set accountId(identifier) {\n    this._accountId = identifier;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get accountId() {\n    return this._accountId;\n  }\n\n  /**\n   * @param {String} descriptor\n   */\n  set descriptor(descriptor) {\n    this._descriptor = descriptor;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get descriptor() {\n    return this._descriptor;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set region(name) {\n    if (!Region.exists(name)) {\n      throw new InvalidArgumentException(name, Region);\n    }\n\n    this._region = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get region() {\n    return this._region;\n  }\n\n  /**\n   * @param {String} name\n   */\n  set service(name) {\n    if (!Service.exists(name)) {\n      throw new InvalidArgumentException(name, Service);\n    }\n\n    this._service = name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get service() {\n    return this._service;\n  }\n\n  /**\n   * @see - http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\n   *\n   * @param {string} arn\n   * @returns {Resource}\n   */\n  updateFromArn(arn) {\n    let arnParts = arn.split(':');\n\n    if (arnParts.length < 6) {\n      throw new InvalidArnException(arn);\n    }\n\n    this.service = arnParts[2];\n    this.region = arnParts[3];\n    this.accountId = arnParts[4];\n    this.descriptor = arnParts.slice(5).join(':');\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  extract() {\n    if (this._any) {\n      return '*';\n    }\n\n    let service = this._service;\n    let region = this._region;\n    let accountId = this._accountId;\n    let descriptor = this._descriptor;\n\n    return `arn:aws:${service}:${region}:${accountId}:${descriptor}`;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1435,6 +1435,67 @@
     }
   },
   {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_any",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_any",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "any",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#any",
+    "access": null,
+    "description": null,
+    "lineNumber": 34,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Resource}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Resource"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_any",
+    "memberof": "lib/AWS/IAM/Resource.js~Resource",
+    "longname": "lib/AWS/IAM/Resource.js~Resource#_any",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "undocument": true,
+    "type": {
+      "types": [
+        "boolean"
+      ]
+    }
+  },
+  {
     "kind": "set",
     "static": false,
     "variation": null,
@@ -1443,7 +1504,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 42,
     "params": [
       {
         "nullable": null,
@@ -1472,7 +1533,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#_accountId",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 43,
     "undocument": true,
     "type": {
       "types": [
@@ -1489,7 +1550,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
     "access": null,
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 49,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1520,7 +1581,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "access": null,
     "description": null,
-    "lineNumber": 46,
+    "lineNumber": 56,
     "params": [
       {
         "nullable": null,
@@ -1549,7 +1610,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#_descriptor",
     "access": null,
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 57,
     "undocument": true,
     "type": {
       "types": [
@@ -1566,7 +1627,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "access": null,
     "description": null,
-    "lineNumber": 53,
+    "lineNumber": 63,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1597,7 +1658,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#region",
     "access": null,
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 70,
     "params": [
       {
         "nullable": null,
@@ -1626,7 +1687,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#_region",
     "access": null,
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 75,
     "undocument": true,
     "type": {
       "types": [
@@ -1643,7 +1704,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#region",
     "access": null,
     "description": null,
-    "lineNumber": 71,
+    "lineNumber": 81,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1674,7 +1735,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#service",
     "access": null,
     "description": null,
-    "lineNumber": 78,
+    "lineNumber": 88,
     "params": [
       {
         "nullable": null,
@@ -1703,7 +1764,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#_service",
     "access": null,
     "description": null,
-    "lineNumber": 83,
+    "lineNumber": 93,
     "undocument": true,
     "type": {
       "types": [
@@ -1720,7 +1781,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#service",
     "access": null,
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 99,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1754,7 +1815,7 @@
     "see": [
       "- http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html"
     ],
-    "lineNumber": 99,
+    "lineNumber": 109,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1792,7 +1853,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#service",
     "access": null,
     "description": null,
-    "lineNumber": 106,
+    "lineNumber": 116,
     "undocument": true,
     "type": {
       "types": [
@@ -1809,7 +1870,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#region",
     "access": null,
     "description": null,
-    "lineNumber": 107,
+    "lineNumber": 117,
     "undocument": true,
     "type": {
       "types": [
@@ -1826,7 +1887,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#accountId",
     "access": null,
     "description": null,
-    "lineNumber": 108,
+    "lineNumber": 118,
     "undocument": true,
     "type": {
       "types": [
@@ -1843,7 +1904,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "access": null,
     "description": null,
-    "lineNumber": 109,
+    "lineNumber": 119,
     "undocument": true,
     "type": {
       "types": [
@@ -1860,7 +1921,7 @@
     "longname": "lib/AWS/IAM/Resource.js~Resource#extract",
     "access": null,
     "description": null,
-    "lineNumber": 117,
+    "lineNumber": 127,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2495,7 +2556,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nexport class Context {\n  /**\n   * @param {Object} options\n   */\n  constructor(options) {\n    this._options = options;\n\n    this._registerDataAsOptions();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get options() {\n    return this._options;\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsOptions() {\n    for (let key in this._options) {\n      if (!this._options.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._options[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_options', {\n      configurable: false,\n    });\n  }\n\n  /**\n   * @param {String} option\n   * @returns {boolean}\n   */\n  has(option) {\n    return this._options.hasOwnProperty(option);\n  }\n\n  /**\n   * @param {String} option\n   * @param {*} defaultValue\n   * @returns {*}\n   */\n  getOption(option, defaultValue = undefined) {\n    return this._options.hasOwnProperty(option) ? this._options[option] : defaultValue;\n  }\n}\n"
+    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.\n */\n\n'use strict';\n\nexport class Context {\n  /**\n   * @param {Object} options\n   */\n  constructor(options) {\n    this._options = options;\n\n    this._registerDataAsOptions();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get options() {\n    return this._options;\n  }\n\n  /**\n   * @private\n   */\n  _registerDataAsOptions() {\n    for (let key in this._options) {\n      if (!this._options.hasOwnProperty(key)) {\n        continue;\n      }\n\n      Object.defineProperty(this, key, {\n        value: this._options[key],\n        writable: false,\n        configurable: false,\n        enumerable: true,\n      });\n    }\n\n    // Avoid _data key listing on Object.keys(request)\n    Object.defineProperty(this, '_options', {\n      configurable: false,\n      enumerable: false,\n    });\n  }\n\n  /**\n   * @param {String} option\n   * @returns {boolean}\n   */\n  has(option) {\n    return this._options.hasOwnProperty(option);\n  }\n\n  /**\n   * @param {String} option\n   * @param {*} defaultValue\n   * @returns {*}\n   */\n  getOption(option, defaultValue = undefined) {\n    return this._options.hasOwnProperty(option) ? this._options[option] : defaultValue;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2607,7 +2668,7 @@
     "longname": "lib/AWS/Lambda/Context.js~Context#has",
     "access": null,
     "description": null,
-    "lineNumber": 51,
+    "lineNumber": 52,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2645,7 +2706,7 @@
     "longname": "lib/AWS/Lambda/Context.js~Context#getOption",
     "access": null,
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 61,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2694,7 +2755,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\n\n/**\n * Error response sent to the lambda context\n */\nexport class ErrorResponse extends Response {\n  /**\n   * @param {Runtime} runtime\n   * @param {Error|String|*} error\n   */\n  constructor(runtime, error) {\n    super(runtime, ErrorResponse.createErrorObject(error));\n  }\n\n  /**\n   * @param {Error|String|*} error\n   * @returns {Object}\n   */\n  static createErrorObject(error) {\n    let errorObj = {};\n\n    if (error.isJoi) { // we suppose it's a joi validation error\n      errorObj = {\n        errorType: error.name,\n        errorMessage: error.annotate(),\n        errorStack: error.stack || (new Error(error.message)).stack,\n        validationErrors: error.details,\n      };\n    } else if (error instanceof Error) {\n      errorObj = {\n        errorType: error.name,\n        errorMessage: error.message,\n        errorStack: error.stack || (new Error(error.message)).stack,\n      };\n    } else {\n      let plainError = (error || 'Unexpected error occurred.').toString();\n\n      errorObj = {\n        errorType: 'Error',\n        errorMessage: plainError,\n        errorStack: (new Error(plainError)).stack,\n      };\n    }\n\n    return errorObj;\n  }\n\n  /**\n   *\n   * @returns {Object}\n   * @private\n   */\n  get data() {\n    return JSON.stringify(this._data);\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get contextMethod() {\n    return 'fail';\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Response} from './Response';\nimport {Exception} from '../../Exception/Exception';\nimport {Helper as HttpHelper} from '../../HTTP/Helper';\n\n/**\n * Error response sent to the lambda context\n */\nexport class ErrorResponse extends Response {\n  /**\n   * @param {Runtime} runtime\n   * @param {Error|String|*} error\n   */\n  constructor(runtime, error) {\n    super(runtime, ErrorResponse.createErrorObject(error));\n  }\n\n  /**\n   * @param {Error|String|*} error\n   * @returns {Object}\n   */\n  static createErrorObject(error) {\n    let errorObj = {};\n    let errorCode = Exception.DEFAULT_CODE;\n\n    if (error.name === 'ValidationError') { // we assume it's a joi validation error\n      errorCode = 400;\n      errorObj = {\n        errorType: error.name,\n        errorMessage: error.annotate(),\n        errorStack: error.stack || (new Error(error.message)).stack,\n        validationErrors: error.details,\n      };\n    } else if (error instanceof Error) {\n      errorObj = {\n        errorType: error.name,\n        errorMessage: error.message,\n        errorStack: error.stack || (new Error(error.message)).stack,\n      };\n    } else {\n      let plainError = (error || 'Unexpected error occurred.').toString();\n\n      errorObj = {\n        errorType: 'Error',\n        errorMessage: plainError,\n        errorStack: (new Error(plainError)).stack,\n      };\n    }\n\n    errorObj[Exception.CODE_KEY] = HttpHelper.assureDefinedCode(error.code || errorCode);\n\n    return errorObj;\n  }\n\n  /**\n   *\n   * @returns {Object}\n   * @private\n   */\n  get data() {\n    return JSON.stringify(this._data);\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get contextMethod() {\n    return 'fail';\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2708,7 +2769,7 @@
     "importPath": "deep-core/lib/AWS/Lambda/ErrorResponse.js",
     "importStyle": "{ErrorResponse}",
     "description": "Error response sent to the lambda context",
-    "lineNumber": 12,
+    "lineNumber": 14,
     "interface": false,
     "extends": [
       "lib/AWS/Lambda/Response~Response"
@@ -2723,7 +2784,7 @@
     "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 17,
+    "lineNumber": 19,
     "params": [
       {
         "nullable": null,
@@ -2759,7 +2820,7 @@
     "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.createErrorObject",
     "access": null,
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 27,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2799,7 +2860,7 @@
     "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse#data",
     "access": "private",
     "description": "",
-    "lineNumber": 59,
+    "lineNumber": 65,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2830,7 +2891,7 @@
     "longname": "lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.contextMethod",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 72,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2907,7 +2968,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 10/31/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when context identity pool id does not much identity pool id from security service\n */\nexport class InvalidCognitoIdentityException extends Exception {\n  /**\n   * @param {String} identityPoolId\n   */\n  constructor(identityPoolId) {\n    super(`Invalid cognito identity pool \"${identityPoolId}\".`);\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 10/31/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when context identity pool id does not much identity pool id from security service\n */\nexport class InvalidCognitoIdentityException extends Exception {\n  /**\n   * @param {String} identityPoolId\n   */\n  constructor(identityPoolId) {\n    super(`Invalid cognito identity pool \"${identityPoolId}\".`, 403);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2961,7 +3022,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/12/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when missing runtime lambda context\n */\nexport class MissingRuntimeContextException extends Exception {\n  constructor() {\n    super('Missing Lambda runtime context');\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/12/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\n/**\n * Thrown when missing runtime lambda context\n */\nexport class MissingRuntimeContextException extends Exception {\n  constructor() {\n    super('Missing Lambda runtime context', 400);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -3005,7 +3066,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 10/31/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\nexport class MissingUserContextException extends Exception {\n  constructor() {\n    super('Missing user context in the Lambda runtime');\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 10/31/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../../Exception/Exception';\n\nexport class MissingUserContextException extends Exception {\n  constructor() {\n    super('Missing user context in the Lambda runtime', 403);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -3214,7 +3275,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {MissingRuntimeContextException} from './Exception/MissingRuntimeContextException';\nimport {ContextAlreadySentException} from './Exception/ContextAlreadySentException';\n\n/**\n * Response sent to the lambda context\n */\nexport class Response {\n  /**\n   * @param {Runtime} runtime\n   * @param {Object} data\n   */\n  constructor(runtime, data) {\n    this._data = data;\n    this._runtime = runtime;\n  }\n\n  /**\n   * @returns {Runtime}\n   */\n  get runtime() {\n    return this._runtime;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._runtime.contextSent;\n  }\n\n  /**\n   * @returns {Response}\n   */\n  send() {\n    if (!this._runtime.context) {\n      throw new MissingRuntimeContextException();\n    } else if (this.contextSent) {\n      throw new ContextAlreadySentException();\n    }\n\n    // @todo: via setter?\n    this._runtime._contextSent = true;\n\n    this._runtime.context[this.constructor.contextMethod](this.data);\n\n    return this;\n  }\n\n  /**\n   *\n   * @returns {Object}\n   * @private\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get rawData() {\n    return this._data;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get contextMethod() {\n    return 'succeed';\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {MissingRuntimeContextException} from './Exception/MissingRuntimeContextException';\nimport {ContextAlreadySentException} from './Exception/ContextAlreadySentException';\n\n/**\n * Response sent to the lambda context\n */\nexport class Response {\n  /**\n   * @param {Runtime} runtime\n   * @param {Object} data\n   */\n  constructor(runtime, data) {\n    this._data = data;\n    this._runtime = runtime;\n  }\n\n  /**\n   * @returns {Runtime}\n   */\n  get runtime() {\n    return this._runtime;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._runtime.contextSent;\n  }\n\n  /**\n   * @returns {Response}\n   */\n  send() {\n    if (!this._runtime.context) {\n      throw new MissingRuntimeContextException();\n    } else if (this.contextSent) {\n      throw new ContextAlreadySentException();\n    }\n\n    this.runtime.logService.rumLog({\n      service: 'deep-core',\n      resourceType: 'Lambda',\n      resourceId: this.runtime.context.invokedFunctionArn,\n      eventName: 'Run',\n      payload: this.data,\n    });\n\n    // flush RUM batched messages if any\n    this.runtime.logService.rumFlush((error, data) => {\n      // @todo: via setter?\n      this._runtime._contextSent = true;\n\n      this._runtime.context[this.constructor.contextMethod](this.data);\n    });\n\n    return this;\n  }\n\n  /**\n   *\n   * @returns {Object}\n   * @private\n   */\n  get data() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get rawData() {\n    return this._data;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get contextMethod() {\n    return 'succeed';\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -3397,7 +3458,7 @@
     "longname": "lib/AWS/Lambda/Response.js~Response#data",
     "access": "private",
     "description": "",
-    "lineNumber": 60,
+    "lineNumber": 71,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3428,7 +3489,7 @@
     "longname": "lib/AWS/Lambda/Response.js~Response#rawData",
     "access": null,
     "description": null,
-    "lineNumber": 67,
+    "lineNumber": 78,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3459,7 +3520,7 @@
     "longname": "lib/AWS/Lambda/Response.js~Response.contextMethod",
     "access": null,
     "description": null,
-    "lineNumber": 74,
+    "lineNumber": 85,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3491,7 +3552,7 @@
     "access": null,
     "description": null,
     "lineNumber": 4,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {ErrorResponse} from './ErrorResponse';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\nimport {Context} from './Context';\nimport {Sandbox} from '../../Runtime/Sandbox';\nimport path from 'path';\nimport fs from 'fs';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n    this._contextSent = false;\n\n    this._calleeConfig = null;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {null|Context}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._contextSent;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {String} schemaName\n   * @param {Function} cb\n   * @returns {Runtime}\n   */\n  validateInput(schemaName, cb) {\n    let validation = this._kernel.get('validation');\n\n    validation.validateRuntimeInput(this, schemaName, cb);\n\n    return this;\n  }\n\n  /**\n   * @param {Object} event\n   * @param {Object} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = new Context(context);\n    this._request = new Request(event);\n\n    new Sandbox(() => {\n      this._fillUserContext();\n\n      if (!this._loggedUserId && this._forceUserIdentity) {\n        throw new MissingUserContextException();\n      }\n\n      let validationSchema = this.validationSchema;\n\n      if (validationSchema) {\n        this._runValidate(validationSchema);\n      } else {\n        this.handle(this._request);\n      }\n    })\n      .fail((error) => {\n        this.createError(error).send();\n      })\n      .run();\n\n    return this;\n  }\n\n  /**\n   * @param {String} validationSchema\n   * @private\n   */\n  _runValidate(validationSchema) {\n    let validation = this._kernel.get('validation');\n    let validationSchemaName = validationSchema;\n\n    if (typeof validationSchema !== 'string') {\n      validationSchemaName = this._injectValidationSchema(validationSchema);\n    } else if (!validation.hasSchema(validationSchemaName)) {\n\n      // assume process.cwd() === /var/task\n      let schemasPath = path.join(process.cwd(), Runtime.VALIDATION_SCHEMAS_DIR);\n      let schemaFile = path.join(schemasPath, `${validationSchemaName}.js`);\n\n      if (fs.existsSync(schemaFile)) {\n        this._injectValidationSchema(require(schemaFile), validationSchemaName);\n      }\n    }\n\n    this.validateInput(validationSchemaName, this.handle);\n  }\n\n  /**\n   * @param {Object} schema\n   * @param {String|null} name\n   * @returns {String}\n   * @private\n   */\n  _injectValidationSchema(schema, name = null) {\n    let validation = this._kernel.get('validation');\n\n    if (typeof schema === 'function') {\n      schema = validation.schemaFromValidationCb(schema);\n    }\n\n    let setSchemaMethod = schema.isJoi ? 'setSchema' : 'setSchemaRaw';\n\n    name = name || `DeepHandlerValidation_${new Date().getTime()}`;\n\n    validation[setSchemaMethod](name, schema);\n\n    return name;\n  }\n\n  /**\n   * @param {String|Error|*} error\n   */\n  createError(error) {\n    return new ErrorResponse(this, error);\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    return new Response(this, data);\n  }\n\n  /**\n   * @returns {null|Object}\n   */\n  get calleeConfig() {\n    if (!this._calleeConfig &&\n      this._context &&\n      this._kernel &&\n      this._context.has('invokedFunctionArn')) {\n\n      let resource = this._kernel.get('resource');\n      let calleeArn = this._context.getOption('invokedFunctionArn');\n\n      this._calleeConfig = resource.getActionConfig(calleeArn);\n    }\n\n    return this._calleeConfig;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get validationSchema() {\n    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.has('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      // inject lambda context into security service\n      // and instantiate security token without loading credentials\n      this.securityService.warmupBackendLogin(this._context);\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get VALIDATION_SCHEMAS_DIR() {\n    return '__deep_validation_schemas__';\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {ErrorResponse} from './ErrorResponse';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\nimport {Context} from './Context';\nimport {Sandbox} from '../../Runtime/Sandbox';\nimport path from 'path';\nimport fs from 'fs';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n    this._contextSent = false;\n\n    this._calleeConfig = null;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {null|Context}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._contextSent;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {String} schemaName\n   * @param {Function} cb\n   * @returns {Runtime}\n   */\n  validateInput(schemaName, cb) {\n    let validation = this._kernel.get('validation');\n\n    validation.validateRuntimeInput(this, schemaName, cb);\n\n    return this;\n  }\n\n  /**\n   * @param {Object} event\n   * @param {Object} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = new Context(context);\n    this._request = new Request(event);\n\n    this.logService.rumLog({\n      service: 'deep-core',\n      resourceType: 'Lambda',\n      resourceId: this._context.invokedFunctionArn,\n      eventName: 'Run',\n      payload: event,\n    });\n\n    new Sandbox(() => {\n      this._fillUserContext();\n\n      if (!this._loggedUserId && this._forceUserIdentity) {\n        throw new MissingUserContextException();\n      }\n\n      let validationSchema = this.validationSchema;\n\n      if (validationSchema) {\n        this._runValidate(validationSchema);\n      } else {\n        this.handle(this._request);\n      }\n    })\n      .fail((error) => {\n        this.createError(error).send();\n      })\n      .run();\n\n    return this;\n  }\n\n  /**\n   * @param {String} validationSchema\n   * @private\n   */\n  _runValidate(validationSchema) {\n    let validation = this._kernel.get('validation');\n    let validationSchemaName = validationSchema;\n\n    if (typeof validationSchema !== 'string') {\n      validationSchemaName = this._injectValidationSchema(validationSchema);\n    }\n\n    this.validateInput(validationSchemaName, (validatedData) => {\n      this.handle(validatedData);\n    });\n  }\n\n  /**\n   * @param {Object} schema\n   * @param {String|null} name\n   * @returns {String}\n   * @private\n   */\n  _injectValidationSchema(schema, name = null) {\n    let validation = this._kernel.get('validation');\n\n    name = name || `DeepHandlerValidation_${new Date().getTime()}`;\n\n    validation.setGuessSchema(name, schema);\n\n    return name;\n  }\n\n  /**\n   * @param {String|Error|*} error\n   */\n  createError(error) {\n    return new ErrorResponse(this, error);\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    return new Response(this, data);\n  }\n\n  /**\n   * @param {Object} data\n   * @param {Number} ttl\n   * @param {Function} callback\n   */\n  createCachedResponse(data, ttl = 0, callback = response => response.send()) {\n    let publicCache = this._kernel.get('cache').shared;\n    let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);\n    let response = new Response(this, data);\n\n    publicCache.assure(publicCacheKey, {body: data}, ttl, () => {\n      callback(response);\n    });\n  }\n\n  /**\n   * @returns {null|Object}\n   */\n  get calleeConfig() {\n    if (!this._calleeConfig &&\n      this._context &&\n      this._kernel &&\n      this._context.has('invokedFunctionArn')) {\n\n      let resource = this._kernel.get('resource');\n      let calleeArn = this._context.getOption('invokedFunctionArn');\n\n      this._calleeConfig = resource.getActionConfig(calleeArn);\n    }\n\n    return this._calleeConfig;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get validationSchema() {\n    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get logService() {\n    return this.kernel.get('log');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.has('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      // inject lambda context into security service\n      // and instantiate security token without loading credentials\n      this.securityService.warmupBackendLogin(this._context);\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get VALIDATION_SCHEMAS_DIR() {\n    return '__deep_validation_schemas__';\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -3980,7 +4041,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_runValidate",
     "access": "private",
     "description": null,
-    "lineNumber": 135,
+    "lineNumber": 143,
     "params": [
       {
         "nullable": null,
@@ -4004,7 +4065,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_injectValidationSchema",
     "access": "private",
     "description": null,
-    "lineNumber": 161,
+    "lineNumber": 162,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4053,7 +4114,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createError",
     "access": null,
     "description": null,
-    "lineNumber": 180,
+    "lineNumber": 175,
     "params": [
       {
         "nullable": null,
@@ -4084,7 +4145,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createResponse",
     "access": null,
     "description": null,
-    "lineNumber": 187,
+    "lineNumber": 182,
     "params": [
       {
         "nullable": null,
@@ -4105,6 +4166,50 @@
     "generator": false
   },
   {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "createCachedResponse",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#createCachedResponse",
+    "access": null,
+    "description": null,
+    "lineNumber": 191,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "data",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "ttl",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4113,7 +4218,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#calleeConfig",
     "access": null,
     "description": null,
-    "lineNumber": 194,
+    "lineNumber": 204,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4145,7 +4250,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_calleeConfig",
     "access": null,
     "description": null,
-    "lineNumber": 203,
+    "lineNumber": 213,
     "undocument": true,
     "type": {
       "types": [
@@ -4162,7 +4267,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#validationSchema",
     "access": null,
     "description": null,
-    "lineNumber": 212,
+    "lineNumber": 222,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4193,7 +4298,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#request",
     "access": null,
     "description": null,
-    "lineNumber": 219,
+    "lineNumber": 229,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4224,7 +4329,38 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#securityService",
     "access": null,
     "description": null,
-    "lineNumber": 226,
+    "lineNumber": 236,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "logService",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#logService",
+    "access": null,
+    "description": null,
+    "lineNumber": 243,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4255,7 +4391,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillDenyMissingUserContextOption",
     "access": "private",
     "description": null,
-    "lineNumber": 233,
+    "lineNumber": 250,
     "params": [],
     "generator": false
   },
@@ -4268,7 +4404,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_forceUserIdentity",
     "access": null,
     "description": null,
-    "lineNumber": 235,
+    "lineNumber": 252,
     "undocument": true,
     "type": {
       "types": [
@@ -4285,7 +4421,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillUserContext",
     "access": "private",
     "description": "Retrieves logged user id from lambda context",
-    "lineNumber": 244,
+    "lineNumber": 261,
     "params": [],
     "generator": false
   },
@@ -4298,7 +4434,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
     "access": null,
     "description": null,
-    "lineNumber": 260,
+    "lineNumber": 277,
     "undocument": true,
     "type": {
       "types": [
@@ -4315,7 +4451,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime.VALIDATION_SCHEMAS_DIR",
     "access": null,
     "description": null,
-    "lineNumber": 267,
+    "lineNumber": 284,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4855,7 +4991,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_SEARCH() {\n    return 'cloudsearch';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY_EXECUTE() {\n    return 'execute-api';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_QUEUE_SERVICE() {\n    return 'sqs';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.ANY,\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n      Service.API_GATEWAY_EXECUTE,\n      Service.CLOUD_SEARCH,\n      Service.SIMPLE_QUEUE_SERVICE,\n    ];\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EC2() {\n    return 'ec2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_SEARCH() {\n    return 'cloudsearch';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY_EXECUTE() {\n    return 'execute-api';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_QUEUE_SERVICE() {\n    return 'sqs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CERTIFICATE_MANAGER() {\n    return 'acm';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.ANY,\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n      Service.API_GATEWAY_EXECUTE,\n      Service.CLOUD_SEARCH,\n      Service.SIMPLE_QUEUE_SERVICE,\n      Service.CERTIFICATE_MANAGER,\n      Service.EC2,\n    ];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -4907,12 +5043,43 @@
     "kind": "get",
     "static": true,
     "variation": null,
+    "name": "EC2",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.EC2",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
     "name": "LAMBDA",
     "memberof": "lib/AWS/Service.js~Service",
     "longname": "lib/AWS/Service.js~Service.LAMBDA",
     "access": null,
     "description": null,
-    "lineNumber": 21,
+    "lineNumber": 28,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4943,7 +5110,7 @@
     "longname": "lib/AWS/Service.js~Service.SIMPLE_STORAGE_SERVICE",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 35,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4974,7 +5141,7 @@
     "longname": "lib/AWS/Service.js~Service.DYNAMO_DB",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 42,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5005,7 +5172,7 @@
     "longname": "lib/AWS/Service.js~Service.SIMPLE_NOTIFICATION_SERVICE",
     "access": null,
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 49,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5036,7 +5203,7 @@
     "longname": "lib/AWS/Service.js~Service.COGNITO_IDENTITY",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 56,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5067,7 +5234,7 @@
     "longname": "lib/AWS/Service.js~Service.COGNITO_SYNC",
     "access": null,
     "description": null,
-    "lineNumber": 56,
+    "lineNumber": 63,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5098,7 +5265,7 @@
     "longname": "lib/AWS/Service.js~Service.ELASTIC_CACHE",
     "access": null,
     "description": null,
-    "lineNumber": 63,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5129,7 +5296,7 @@
     "longname": "lib/AWS/Service.js~Service.IDENTITY_AND_ACCESS_MANAGEMENT",
     "access": null,
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 77,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5160,7 +5327,7 @@
     "longname": "lib/AWS/Service.js~Service.KINESIS",
     "access": null,
     "description": null,
-    "lineNumber": 77,
+    "lineNumber": 84,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5191,7 +5358,7 @@
     "longname": "lib/AWS/Service.js~Service.CLOUD_FRONT",
     "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 91,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5222,7 +5389,7 @@
     "longname": "lib/AWS/Service.js~Service.CLOUD_SEARCH",
     "access": null,
     "description": null,
-    "lineNumber": 91,
+    "lineNumber": 98,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5253,7 +5420,7 @@
     "longname": "lib/AWS/Service.js~Service.SECURITY_TOKEN_SERVICE",
     "access": null,
     "description": null,
-    "lineNumber": 98,
+    "lineNumber": 105,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5284,7 +5451,7 @@
     "longname": "lib/AWS/Service.js~Service.CLOUD_WATCH_LOGS",
     "access": null,
     "description": null,
-    "lineNumber": 105,
+    "lineNumber": 112,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5315,7 +5482,7 @@
     "longname": "lib/AWS/Service.js~Service.API_GATEWAY",
     "access": null,
     "description": null,
-    "lineNumber": 112,
+    "lineNumber": 119,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5346,7 +5513,7 @@
     "longname": "lib/AWS/Service.js~Service.API_GATEWAY_EXECUTE",
     "access": null,
     "description": null,
-    "lineNumber": 119,
+    "lineNumber": 126,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5377,7 +5544,38 @@
     "longname": "lib/AWS/Service.js~Service.SIMPLE_QUEUE_SERVICE",
     "access": null,
     "description": null,
-    "lineNumber": 126,
+    "lineNumber": 133,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "CERTIFICATE_MANAGER",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.CERTIFICATE_MANAGER",
+    "access": null,
+    "description": null,
+    "lineNumber": 140,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5408,7 +5606,7 @@
     "longname": "lib/AWS/Service.js~Service.identifier",
     "access": null,
     "description": null,
-    "lineNumber": 134,
+    "lineNumber": 148,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5446,7 +5644,7 @@
     "longname": "lib/AWS/Service.js~Service.exists",
     "access": null,
     "description": null,
-    "lineNumber": 142,
+    "lineNumber": 156,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5484,7 +5682,7 @@
     "longname": "lib/AWS/Service.js~Service.list",
     "access": null,
     "description": null,
-    "lineNumber": 149,
+    "lineNumber": 163,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5512,7 +5710,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when operation on the database failed\n */\nexport class DatabaseOperationException extends Exception {\n\n  /**\n   * @param {String} error\n   */\n  constructor(error) {\n    super(`Database operation failed. ${error}`);\n  }\n}\n"
+    "content": "'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when operation on the database failed\n */\nexport class DatabaseOperationException extends Exception {\n\n  /**\n   * @param {String} error\n   */\n  constructor(error) {\n    super(`Database operation failed. ${error}`, 500);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -5566,7 +5764,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\n/**\n * Base exception\n */\nexport class Exception extends Error {\n  /**\n   * @param {String} message\n   */\n  constructor(message) {\n    super();\n\n    if (Error.hasOwnProperty('captureStackTrace')) {\n      Error.captureStackTrace(this, this.constructor);\n    } else {\n      Object.defineProperty(this, 'stack', {\n        value: (new Error()).stack,\n      });\n    }\n\n    Object.defineProperty(this, 'message', {\n      value: message,\n    });\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this.constructor.name;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\n/**\n * Base exception\n */\nexport class Exception extends Error {\n  /**\n   * @returns {String}\n   */\n  static get CODE_KEY() {\n    return '_deep_error_code_';\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get DEFAULT_CODE() {\n    return 400;\n  }\n\n  /**\n   * @param {String} message\n   * @param {Number} code\n   */\n  constructor(message, code = null) {\n    super();\n\n    if (Error.hasOwnProperty('captureStackTrace')) {\n      Error.captureStackTrace(this, this.constructor);\n    } else {\n      Object.defineProperty(this, 'stack', {\n        value: (new Error()).stack,\n      });\n    }\n\n    Object.defineProperty(this, 'message', {\n      value: message,\n    });\n\n    // It's used to map error codes to API Gateway http status codes\n    this._code = code;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this.constructor.name;\n  }\n\n  /**\n   * @param {Number} code\n   */\n  set code(code) {\n    this._code = code;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  get code() {\n    return this._code;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -5587,6 +5785,68 @@
     ]
   },
   {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "CODE_KEY",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception.CODE_KEY",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DEFAULT_CODE",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception.DEFAULT_CODE",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "number"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -5595,7 +5855,7 @@
     "longname": "lib/Exception/Exception.js~Exception#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 14,
+    "lineNumber": 29,
     "params": [
       {
         "nullable": null,
@@ -5606,9 +5866,36 @@
         "optional": false,
         "name": "message",
         "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "code",
+        "description": ""
       }
     ],
     "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_code",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception#_code",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
   },
   {
     "kind": "get",
@@ -5619,7 +5906,7 @@
     "longname": "lib/Exception/Exception.js~Exception#name",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 51,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5642,6 +5929,83 @@
     "generator": false
   },
   {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "code",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception#code",
+    "access": null,
+    "description": null,
+    "lineNumber": 58,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Number"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "code",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_code",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception#_code",
+    "access": null,
+    "description": null,
+    "lineNumber": 59,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "code",
+    "memberof": "lib/Exception/Exception.js~Exception",
+    "longname": "lib/Exception/Exception.js~Exception#code",
+    "access": null,
+    "description": null,
+    "lineNumber": 65,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5651,7 +6015,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when invalid argument provided\n */\nexport class InvalidArgumentException extends Exception {\n  /**\n   * @param {*} argument\n   * @param {String} meantType\n   */\n  constructor(argument, meantType) {\n    let argumentType = typeof argument;\n\n    super(`Invalid argument ${argument} of type ${argumentType} provided (meant ${meantType}).`);\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when invalid argument provided\n */\nexport class InvalidArgumentException extends Exception {\n  /**\n   * @param {*} argument\n   * @param {String} meantType\n   */\n  constructor(argument, meantType) {\n    let argumentType = typeof argument;\n\n    super(`Invalid argument ${argument} of type ${argumentType} provided (meant ${meantType}).`, 400);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -5715,7 +6079,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\nimport {InvalidArgumentException} from './InvalidArgumentException';\n\n/**\n * Thrown when methods from interface or abstract class are not implemented\n */\nexport class MethodsNotImplementedException extends Exception {\n  /**\n   * @param {Array} methods\n   */\n  constructor(methods) {\n    if (!Array.isArray(methods)) {\n      throw new InvalidArgumentException(methods, 'Array');\n    }\n\n    let methodPlain = methods.join(', ');\n\n    super(`One or more method are not implemented (${methodPlain}).`);\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\nimport {InvalidArgumentException} from './InvalidArgumentException';\n\n/**\n * Thrown when methods from interface or abstract class are not implemented\n */\nexport class MethodsNotImplementedException extends Exception {\n  /**\n   * @param {Array} methods\n   */\n  constructor(methods) {\n    if (!Array.isArray(methods)) {\n      throw new InvalidArgumentException(methods, 'Array');\n    }\n\n    let methodPlain = methods.join(', ');\n\n    super(`One or more method are not implemented (${methodPlain}).`, 500);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -6309,6 +6673,279 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/Generic/UniversalRequire.js",
+    "memberof": null,
+    "longname": "lib/Generic/UniversalRequire.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\nimport path from 'path';\n\nexport class UniversalRequire {\n  constructor() {\n    this._require = this._guessRequireFunc();\n  }\n\n  /**\n   * @param {String} module\n   * @param {Function} cb\n   * @returns {*}\n   */\n  require(module, cb) {\n    if (UniversalRequire._isFrontend) {\n      module = path.normalize(module); // avoid './' or '../'\n    }\n\n    return this._require(module, cb);\n  }\n\n  /**\n   * @returns {Boolean}\n   * @private\n   */\n  static get _isFrontend() {\n    return typeof window !== 'undefined' &&\n      typeof document !== 'undefined';\n  }\n\n  /**\n   * @returns {Function}\n   * @private\n   */\n  _guessRequireFunc() {\n    if (!UniversalRequire._isFrontend) {\n      return (module, cb) => {\n        try {\n          cb(null, require(module));\n        } catch (e) {\n          cb(e, null);\n        }\n      };\n    }\n\n    require('./require1k.js');\n\n    return window.__deepRequireBrowser__;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "UniversalRequire",
+    "memberof": "lib/Generic/UniversalRequire.js",
+    "longname": "lib/Generic/UniversalRequire.js~UniversalRequire",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/Generic/UniversalRequire.js",
+    "importStyle": "{UniversalRequire}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Generic/UniversalRequire.js~UniversalRequire",
+    "longname": "lib/Generic/UniversalRequire.js~UniversalRequire#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_require",
+    "memberof": "lib/Generic/UniversalRequire.js~UniversalRequire",
+    "longname": "lib/Generic/UniversalRequire.js~UniversalRequire#_require",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "require",
+    "memberof": "lib/Generic/UniversalRequire.js~UniversalRequire",
+    "longname": "lib/Generic/UniversalRequire.js~UniversalRequire#require",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "module",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "_isFrontend",
+    "memberof": "lib/Generic/UniversalRequire.js~UniversalRequire",
+    "longname": "lib/Generic/UniversalRequire.js~UniversalRequire._isFrontend",
+    "access": "private",
+    "description": null,
+    "lineNumber": 31,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_guessRequireFunc",
+    "memberof": "lib/Generic/UniversalRequire.js~UniversalRequire",
+    "longname": "lib/Generic/UniversalRequire.js~UniversalRequire#_guessRequireFunc",
+    "access": "private",
+    "description": null,
+    "lineNumber": 40,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Function}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Generic/require1k.js",
+    "memberof": null,
+    "longname": "lib/Generic/require1k.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 12,
+    "content": "/**\n * Created by AlexanderC on 1/29/16.\n *\n * @ref https://github.com/Stuk/require1k/blob/master/require1k.js\n *\n * This is a tweaked version of the require1k library\n * in order to work with deep\n *\n * Thanks to the author!\n */\n\nwindow.__deepRequireBrowser__ = window.__deepRequireBrowser__ || (function (document, undefined) {\n  // Each module has the following properties (shorted to one letter to aid compression)\n  // - g: booleany, loadinG, truthy if this module has been requested for loading\n  //      before. Used to prevent the same module being loaded twice\n  // - l: string, Location, the url location of this module\n  // - t: string, Text, the text content of the module\n  // - e: booleany, Error, truthy if there was an error (probably a 404) loading the module\n  // - n: module object, Next, instead of using this module, use the object\n  //      pointed to by this property. Used for dependencies in other packages\n  // - f: function, Factory, a function to use instead of eval'ing module.t\n  // - exports, object, the exports of the module!\n  var MODULES = {};\n\n  // By using a named \"eval\" most browsers will execute in the global scope.\n  // http://www.davidflanagan.com/2010/12/global-eval-in.html\n  var globalEval = eval;\n\n  // this variable is reused for a number of things to reduce the repetition\n  // of strings. In the end is becomes \"exports\"\n  var tmp = \"createElement\",\n    baseElement = document[tmp](\"base\"),\n    relativeElement = document[tmp](\"a\");\n  document.head.appendChild(baseElement);\n\n\n  // Loads the given module and all of it dependencies, recursively\n  // - module         The module object\n  // - callback       Called when everything has been loaded\n  // - parentLocation Location of the parent directory to look in. Only given\n  // for non-relative dependencies\n  // - id             The name of the dependency. Only used for non-relative\n  // dependencies\n  function deepLoad(module, callback, parentLocation, id) {\n    // If this module is already loading then don't proceed.\n    // This is a bug.\n    // If a module is requested but not loaded then the module isn't ready,\n    // but we callback as if it is. Oh well, 1k!\n    if (module.g) {\n      return callback(module.e, module);\n    }\n\n    var location = module.g = module.l;\n\n    var request = new XMLHttpRequest();\n    request.onload = function (deps, count) {\n      if (request.status == 200 || module.t) {\n        // Should really use an object and then Object.keys to avoid\n        // duplicate dependencies. But that costs bytes.\n        deps = [];\n        (module.t = module.t || request.response).replace(/(?:^|[^\\w\\$_.])require\\s*\\(\\s*[\"']([^\"']*)[\"']\\s*\\)/g, function (_, id) {\n          deps.push(id);\n        });\n        count = deps.length;\n        function loaded() {\n          // We call loaded straight away below in case there\n          // are no dependencies. Putting this check first\n          // and the decrement after saves us an `if` for that\n          // special case\n          if (!count--) {\n            callback(undefined, module);\n          }\n        }\n        deps.map(function (dep) {\n          deepLoad(\n            resolveModuleOrGetExports(module.l, dep),\n            loaded,\n            // If it doesn't begin with a \".\", then we're searching\n            // node_modules, so pass in the info to make this\n            // possible\n            dep[0] != \".\" ? location + \"/../\" : undefined,\n            dep\n          );\n        });\n        loaded();\n      } else {\n        // parentLocation is only given if we're searching in node_modules\n        if (parentLocation) {\n          // Recurse up the tree trying to find the dependency\n          // (generating 404s on the way)\n          deepLoad(\n            module.n = resolveModuleOrGetExports(parentLocation += \"../\", id),\n            callback,\n            parentLocation,\n            id\n          );\n        } else {\n          module.e = request;\n          callback(request, module);\n        }\n      }\n    };\n\n    // If the module already has text because we're using a factory\n    // function, then there's no need to load the file!\n    if (module.t) {\n      request.onload();\n    } else {\n      request.open(\"GET\", location, true);\n      request.send();\n    }\n  }\n\n  // Save bytes by combining two functions\n  // - resolveModule which resolves a given relative path against the given\n  //   base, and returns an existing or new module object\n  // - getExports which returns the existing exports or runs the factory to\n  //   create the exports for a module\n  function resolveModuleOrGetExports(baseOrModule, relative, resolved) {\n    // This should really be after the relative check, but because we are\n    // `throw`ing, it messes up the optimizations. If we are being called\n    // as resolveModule then the string `base` won't have the `e` property,\n    // so we're fine.\n    if (baseOrModule.e) {\n      throw baseOrModule.e;\n    }\n\n    // If 2 arguments are given, then we are resolving modules...\n    if (relative) {\n      baseElement.href = baseOrModule;\n      // If the relative url doesn't begin with a \".\" or a \"/\", then it's\n      // in node_modules\n      relativeElement.href = (relative[0] != \".\" && relative[0] != \"/\") ? \"./node_modules/\" + relative : relative;\n\n      resolved = relativeElement.href.substr(-3).toLowerCase() == \".js\" ?\n        relativeElement.href :\n        relativeElement.href + \".js\";\n\n      baseElement.href = \"\";\n      return (MODULES[resolved] = MODULES[resolved] || {l: resolved});\n    }\n\n    // ...otherwise we are getting the exports\n\n    // Is this module a redirect to another one?\n    if (baseOrModule.n) {\n      return resolveModuleOrGetExports(baseOrModule.n);\n    }\n\n    if (!baseOrModule[tmp]) {\n      (baseOrModule.f || globalEval(\"(function(require,\"+tmp+\",module){\" + baseOrModule.t + \"\\n})//# sourceURL=\" + baseOrModule.l))(\n        function require (id) {\n          return resolveModuleOrGetExports(resolveModuleOrGetExports(baseOrModule.l, id));\n        }, // require\n        baseOrModule[tmp] = {}, // exports\n        baseOrModule // module\n      );\n    }\n\n    return baseOrModule[tmp];\n  }\n\n  function R(id, callback) {\n    // If id has a `call` property it is a function, so make a module with\n    // a factory\n    deepLoad(id.call ? {l: \"\", t: \"\" + id, f: id} : resolveModuleOrGetExports(\"\", id), function (err, module) {\n      try {\n        id = resolveModuleOrGetExports(module);\n      } catch (_err) {\n        err = _err\n      }\n      if (callback) {\n        callback(err, id);\n      }\n    });\n  }\n\n  tmp = document.querySelector(\"script[data-main]\");\n  if (tmp) {\n    R(tmp.dataset.main);\n  }\n  tmp = \"exports\";\n\n  return R;\n\n}(document));\n"
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/HTTP/Helper.js",
+    "memberof": null,
+    "longname": "lib/HTTP/Helper.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 2/25/16.\n */\n\n'use strict';\n\n/**\n * Base exception\n */\nexport class Helper {\n  /**\n   * @returns {Number[]}\n   */\n  static get CODES() {\n    return [200, 400, 401, 403, 404, 406, 409, 500];\n  }\n\n  /**\n   * @param {String|Number}code\n   * @returns {Number}\n   */\n  static assureDefinedCode(code) {\n    code = parseInt(code);\n\n    if (Helper.CODES.indexOf(code) !== -1) {\n      return code;\n    }\n\n    // fallback to a defined error code\n    code = parseInt(String(code).charAt(0) + '00');\n\n    return Helper.CODES.indexOf(code) !== -1 ? code : 500;\n  }\n}"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Helper",
+    "memberof": "lib/HTTP/Helper.js",
+    "longname": "lib/HTTP/Helper.js~Helper",
+    "access": null,
+    "export": true,
+    "importPath": "deep-core/lib/HTTP/Helper.js",
+    "importStyle": "{Helper}",
+    "description": "Base exception",
+    "lineNumber": 10,
+    "interface": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "CODES",
+    "memberof": "lib/HTTP/Helper.js~Helper",
+    "longname": "lib/HTTP/Helper.js~Helper.CODES",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "assureDefinedCode",
+    "memberof": "lib/HTTP/Helper.js~Helper",
+    "longname": "lib/HTTP/Helper.js~Helper.assureDefinedCode",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "{String|Number}code",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/OOP/Interface.js",
     "memberof": null,
     "longname": "lib/OOP/Interface.js",
@@ -6605,7 +7242,7 @@
     "access": null,
     "description": null,
     "lineNumber": 7,
-    "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Interface as OOPInterface} from './OOP/Interface';\nimport {Runtime as AWSLambdaRuntime} from './AWS/Lambda/Runtime';\nimport {Region as AWSRegion} from './AWS/Region';\nimport {Service as AWSService} from './AWS/Service';\nimport {Policy as AWSIAMPolicy} from './AWS/IAM/Policy';\nimport {Factory as AWSIAMFactory} from './AWS/IAM/Factory';\nimport {ObjectStorage as GenericObjectStorage} from './Generic/ObjectStorage';\nimport {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';\nimport {MethodsProxy as GenericMethodsProxy} from './Generic/MethodsProxy';\nimport {Exception as ExceptionException} from './Exception/Exception';\nimport {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';\nimport {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';\nimport {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';\n\nlet exports = module.exports = {\n  IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,\n  Exception: {\n    Exception: ExceptionException,\n    InvalidArgumentException: ExceptionInvalidArgumentException,\n    MethodsNotImplementedException: ExceptionMethodsNotImplementedException,\n    DatabaseOperationException: ExceptionDatabaseOperationException,\n  },\n  OOP: {\n    Interface: OOPInterface,\n  },\n  Generic: {\n    ObjectStorage: GenericObjectStorage,\n    ObjectVector: GenericObjectVector,\n    MethodsProxy: GenericMethodsProxy,\n  },\n  AWS: {\n    Region: AWSRegion,\n    Service: AWSService,\n    IAM: {\n      Factory: AWSIAMFactory,\n      Policy: AWSIAMPolicy,\n    },\n    Lambda: {\n      Runtime: AWSLambdaRuntime,\n    },\n  },\n};\n"
+    "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Interface as OOPInterface} from './OOP/Interface';\nimport {Runtime as AWSLambdaRuntime} from './AWS/Lambda/Runtime';\nimport {Region as AWSRegion} from './AWS/Region';\nimport {Service as AWSService} from './AWS/Service';\nimport {Policy as AWSIAMPolicy} from './AWS/IAM/Policy';\nimport {Factory as AWSIAMFactory} from './AWS/IAM/Factory';\nimport {ObjectStorage as GenericObjectStorage} from './Generic/ObjectStorage';\nimport {UniversalRequire as GenericUniversalRequire} from './Generic/UniversalRequire';\nimport {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';\nimport {MethodsProxy as GenericMethodsProxy} from './Generic/MethodsProxy';\nimport {Exception as ExceptionException} from './Exception/Exception';\nimport {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';\nimport {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';\nimport {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';\nimport {Sandbox as RuntimeSandbox} from './Runtime/Sandbox';\nimport {Helper as HttpHelper} from './HTTP/Helper';\n\nlet exports = module.exports = {\n  IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,\n  Exception: {\n    Exception: ExceptionException,\n    InvalidArgumentException: ExceptionInvalidArgumentException,\n    MethodsNotImplementedException: ExceptionMethodsNotImplementedException,\n    DatabaseOperationException: ExceptionDatabaseOperationException,\n  },\n  HTTP: {\n    Helper: HttpHelper,\n  },\n  Runtime: {\n    Sandbox: RuntimeSandbox,\n  },\n  OOP: {\n    Interface: OOPInterface,\n  },\n  Generic: {\n    ObjectStorage: GenericObjectStorage,\n    ObjectVector: GenericObjectVector,\n    MethodsProxy: GenericMethodsProxy,\n    UniversalRequire: GenericUniversalRequire,\n  },\n  AWS: {\n    Region: AWSRegion,\n    Service: AWSService,\n    IAM: {\n      Factory: AWSIAMFactory,\n      Policy: AWSIAMPolicy,\n    },\n    Lambda: {\n      Runtime: AWSLambdaRuntime,\n    },\n  },\n};\n"
   },
   {
     "kind": "variable",
@@ -6619,7 +7256,7 @@
     "importPath": "deep-core/lib/bootstrap.js",
     "importStyle": null,
     "description": null,
-    "lineNumber": 23,
+    "lineNumber": 26,
     "undocument": true,
     "type": {
       "types": [

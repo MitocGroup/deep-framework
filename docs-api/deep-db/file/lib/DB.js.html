@@ -122,7 +122,14 @@ export class DB extends Kernel.ContainerAware {
       throw new ModelNotFoundException(modelName);
     }
 
-    return this._models[modelName];
+    let model = this._models[modelName];
+
+    if (this.kernel instanceof Kernel) {
+      // inject logService into extended model to log RUM events
+      model.logService = this.kernel.get(&apos;log&apos;);
+    }
+
+    return model;
   }
 
   /**

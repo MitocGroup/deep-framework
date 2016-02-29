@@ -612,6 +612,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/validation.js~validation#setguessschema",
+    "class/lib/Validation.js~Validation.html#instance-method-setGuessSchema",
+    "lib/Validation.js~Validation#setGuessSchema",
+    "method"
+  ],
+  [
     "lib/validation.js~validation#setschema",
     "class/lib/Validation.js~Validation.html#instance-method-setSchema",
     "lib/Validation.js~Validation#setSchema",

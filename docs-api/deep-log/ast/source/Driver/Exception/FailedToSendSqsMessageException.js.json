@@ -1,0 +1,744 @@
+{
+  "type": "Program",
+  "body": [
+    {
+      "type": "ExpressionStatement",
+      "expression": {
+        "type": "Literal",
+        "value": "use strict",
+        "raw": "'use strict'",
+        "range": [
+          42,
+          54
+        ],
+        "loc": {
+          "start": {
+            "line": 5,
+            "column": 0
+          },
+          "end": {
+            "line": 5,
+            "column": 12
+          }
+        }
+      },
+      "range": [
+        42,
+        55
+      ],
+      "loc": {
+        "start": {
+          "line": 5,
+          "column": 0
+        },
+        "end": {
+          "line": 5,
+          "column": 13
+        }
+      },
+      "leadingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * Created by mgoria on 1/20/16.\n ",
+          "range": [
+            0,
+            40
+          ],
+          "loc": {
+            "start": {
+              "line": 1,
+              "column": 0
+            },
+            "end": {
+              "line": 3,
+              "column": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "ImportDeclaration",
+      "specifiers": [
+        {
+          "type": "ImportSpecifier",
+          "local": {
+            "type": "Identifier",
+            "name": "LogDriverException",
+            "range": [
+              65,
+              83
+            ],
+            "loc": {
+              "start": {
+                "line": 7,
+                "column": 8
+              },
+              "end": {
+                "line": 7,
+                "column": 26
+              }
+            }
+          },
+          "imported": {
+            "type": "Identifier",
+            "name": "LogDriverException",
+            "range": [
+              65,
+              83
+            ],
+            "loc": {
+              "start": {
+                "line": 7,
+                "column": 8
+              },
+              "end": {
+                "line": 7,
+                "column": 26
+              }
+            }
+          },
+          "range": [
+            65,
+            83
+          ],
+          "loc": {
+            "start": {
+              "line": 7,
+              "column": 8
+            },
+            "end": {
+              "line": 7,
+              "column": 26
+            }
+          }
+        }
+      ],
+      "source": {
+        "type": "Literal",
+        "value": "./LogDriverException",
+        "raw": "'./LogDriverException'",
+        "range": [
+          90,
+          112
+        ],
+        "loc": {
+          "start": {
+            "line": 7,
+            "column": 33
+          },
+          "end": {
+            "line": 7,
+            "column": 55
+          }
+        }
+      },
+      "range": [
+        57,
+        113
+      ],
+      "loc": {
+        "start": {
+          "line": 7,
+          "column": 0
+        },
+        "end": {
+          "line": 7,
+          "column": 56
+        }
+      },
+      "trailingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * Thrown when failed to send sqs message\n ",
+          "range": [
+            115,
+            164
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 0
+            },
+            "end": {
+              "line": 11,
+              "column": 3
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "ExportNamedDeclaration",
+      "declaration": {
+        "type": "ClassDeclaration",
+        "id": {
+          "type": "Identifier",
+          "name": "FailedToSendSqsMessageException",
+          "range": [
+            178,
+            209
+          ],
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 13
+            },
+            "end": {
+              "line": 12,
+              "column": 44
+            }
+          }
+        },
+        "superClass": {
+          "type": "Identifier",
+          "name": "LogDriverException",
+          "range": [
+            218,
+            236
+          ],
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 53
+            },
+            "end": {
+              "line": 12,
+              "column": 71
+            }
+          }
+        },
+        "body": {
+          "type": "ClassBody",
+          "body": [
+            {
+              "type": "MethodDefinition",
+              "key": {
+                "type": "Identifier",
+                "name": "constructor",
+                "range": [
+                  342,
+                  353
+                ],
+                "loc": {
+                  "start": {
+                    "line": 18,
+                    "column": 2
+                  },
+                  "end": {
+                    "line": 18,
+                    "column": 13
+                  }
+                }
+              },
+              "value": {
+                "type": "FunctionExpression",
+                "id": null,
+                "params": [
+                  {
+                    "type": "Identifier",
+                    "name": "sqsQueueUrl",
+                    "range": [
+                      354,
+                      365
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 18,
+                        "column": 14
+                      },
+                      "end": {
+                        "line": 18,
+                        "column": 25
+                      }
+                    }
+                  },
+                  {
+                    "type": "Identifier",
+                    "name": "message",
+                    "range": [
+                      367,
+                      374
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 18,
+                        "column": 27
+                      },
+                      "end": {
+                        "line": 18,
+                        "column": 34
+                      }
+                    }
+                  },
+                  {
+                    "type": "Identifier",
+                    "name": "error",
+                    "range": [
+                      376,
+                      381
+                    ],
+                    "loc": {
+                      "start": {
+                        "line": 18,
+                        "column": 36
+                      },
+                      "end": {
+                        "line": 18,
+                        "column": 41
+                      }
+                    }
+                  }
+                ],
+                "body": {
+                  "type": "BlockStatement",
+                  "body": [
+                    {
+                      "type": "ExpressionStatement",
+                      "expression": {
+                        "type": "CallExpression",
+                        "callee": {
+                          "type": "Super",
+                          "range": [
+                            389,
+                            394
+                          ],
+                          "loc": {
+                            "start": {
+                              "line": 19,
+                              "column": 4
+                            },
+                            "end": {
+                              "line": 19,
+                              "column": 9
+                            }
+                          }
+                        },
+                        "arguments": [
+                          {
+                            "type": "TemplateLiteral",
+                            "quasis": [
+                              {
+                                "type": "TemplateElement",
+                                "value": {
+                                  "raw": "Failed to send \"",
+                                  "cooked": "Failed to send \""
+                                },
+                                "tail": false,
+                                "range": [
+                                  395,
+                                  414
+                                ],
+                                "loc": {
+                                  "start": {
+                                    "line": 19,
+                                    "column": 10
+                                  },
+                                  "end": {
+                                    "line": 19,
+                                    "column": 29
+                                  }
+                                }
+                              },
+                              {
+                                "type": "TemplateElement",
+                                "value": {
+                                  "raw": "\" message to ",
+                                  "cooked": "\" message to "
+                                },
+                                "tail": false,
+                                "range": [
+                                  421,
+                                  437
+                                ],
+                                "loc": {
+                                  "start": {
+                                    "line": 19,
+                                    "column": 36
+                                  },
+                                  "end": {
+                                    "line": 19,
+                                    "column": 52
+                                  }
+                                }
+                              },
+                              {
+                                "type": "TemplateElement",
+                                "value": {
+                                  "raw": " SQS queue. ",
+                                  "cooked": " SQS queue. "
+                                },
+                                "tail": false,
+                                "range": [
+                                  448,
+                                  463
+                                ],
+                                "loc": {
+                                  "start": {
+                                    "line": 19,
+                                    "column": 63
+                                  },
+                                  "end": {
+                                    "line": 19,
+                                    "column": 78
+                                  }
+                                }
+                              },
+                              {
+                                "type": "TemplateElement",
+                                "value": {
+                                  "raw": "",
+                                  "cooked": ""
+                                },
+                                "tail": true,
+                                "range": [
+                                  468,
+                                  470
+                                ],
+                                "loc": {
+                                  "start": {
+                                    "line": 19,
+                                    "column": 83
+                                  },
+                                  "end": {
+                                    "line": 19,
+                                    "column": 85
+                                  }
+                                }
+                              }
+                            ],
+                            "expressions": [
+                              {
+                                "type": "Identifier",
+                                "name": "message",
+                                "range": [
+                                  414,
+                                  421
+                                ],
+                                "loc": {
+                                  "start": {
+                                    "line": 19,
+                                    "column": 29
+                                  },
+                                  "end": {
+                                    "line": 19,
+                                    "column": 36
+                                  }
+                                }
+                              },
+                              {
+                                "type": "Identifier",
+                                "name": "sqsQueueUrl",
+                                "range": [
+                                  437,
+                                  448
+                                ],
+                                "loc": {
+                                  "start": {
+                                    "line": 19,
+                                    "column": 52
+                                  },
+                                  "end": {
+                                    "line": 19,
+                                    "column": 63
+                                  }
+                                }
+                              },
+                              {
+                                "type": "Identifier",
+                                "name": "error",
+                                "range": [
+                                  463,
+                                  468
+                                ],
+                                "loc": {
+                                  "start": {
+                                    "line": 19,
+                                    "column": 78
+                                  },
+                                  "end": {
+                                    "line": 19,
+                                    "column": 83
+                                  }
+                                }
+                              }
+                            ],
+                            "range": [
+                              395,
+                              470
+                            ],
+                            "loc": {
+                              "start": {
+                                "line": 19,
+                                "column": 10
+                              },
+                              "end": {
+                                "line": 19,
+                                "column": 85
+                              }
+                            }
+                          }
+                        ],
+                        "range": [
+                          389,
+                          471
+                        ],
+                        "loc": {
+                          "start": {
+                            "line": 19,
+                            "column": 4
+                          },
+                          "end": {
+                            "line": 19,
+                            "column": 86
+                          }
+                        }
+                      },
+                      "range": [
+                        389,
+                        472
+                      ],
+                      "loc": {
+                        "start": {
+                          "line": 19,
+                          "column": 4
+                        },
+                        "end": {
+                          "line": 19,
+                          "column": 87
+                        }
+                      }
+                    }
+                  ],
+                  "range": [
+                    383,
+                    476
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 18,
+                      "column": 43
+                    },
+                    "end": {
+                      "line": 20,
+                      "column": 3
+                    }
+                  }
+                },
+                "generator": false,
+                "expression": false,
+                "range": [
+                  353,
+                  476
+                ],
+                "loc": {
+                  "start": {
+                    "line": 18,
+                    "column": 13
+                  },
+                  "end": {
+                    "line": 20,
+                    "column": 3
+                  }
+                }
+              },
+              "kind": "constructor",
+              "computed": false,
+              "range": [
+                342,
+                476
+              ],
+              "loc": {
+                "start": {
+                  "line": 18,
+                  "column": 2
+                },
+                "end": {
+                  "line": 20,
+                  "column": 3
+                }
+              },
+              "leadingComments": [
+                {
+                  "type": "Block",
+                  "value": "*\n   * @param {String} sqsQueueUrl\n   * @param {String} message\n   * @param {Object} error\n   ",
+                  "range": [
+                    241,
+                    339
+                  ],
+                  "loc": {
+                    "start": {
+                      "line": 13,
+                      "column": 2
+                    },
+                    "end": {
+                      "line": 17,
+                      "column": 5
+                    }
+                  }
+                }
+              ],
+              "static": false
+            }
+          ],
+          "range": [
+            237,
+            478
+          ],
+          "loc": {
+            "start": {
+              "line": 12,
+              "column": 72
+            },
+            "end": {
+              "line": 21,
+              "column": 1
+            }
+          }
+        },
+        "range": [
+          172,
+          478
+        ],
+        "loc": {
+          "start": {
+            "line": 12,
+            "column": 7
+          },
+          "end": {
+            "line": 21,
+            "column": 1
+          }
+        },
+        "leadingComments": [
+          {
+            "type": "Block",
+            "value": "*\n * Thrown when failed to send sqs message\n ",
+            "range": [
+              115,
+              164
+            ],
+            "loc": {
+              "start": {
+                "line": 9,
+                "column": 0
+              },
+              "end": {
+                "line": 11,
+                "column": 3
+              }
+            }
+          }
+        ],
+        "trailingComments": []
+      },
+      "specifiers": [],
+      "source": null,
+      "range": [
+        165,
+        478
+      ],
+      "loc": {
+        "start": {
+          "line": 12,
+          "column": 0
+        },
+        "end": {
+          "line": 21,
+          "column": 1
+        }
+      },
+      "leadingComments": [
+        {
+          "type": "Block",
+          "value": "*\n * Thrown when failed to send sqs message\n ",
+          "range": [
+            115,
+            164
+          ],
+          "loc": {
+            "start": {
+              "line": 9,
+              "column": 0
+            },
+            "end": {
+              "line": 11,
+              "column": 3
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "sourceType": "module",
+  "range": [
+    42,
+    478
+  ],
+  "loc": {
+    "start": {
+      "line": 5,
+      "column": 0
+    },
+    "end": {
+      "line": 21,
+      "column": 1
+    }
+  },
+  "comments": [
+    {
+      "type": "Block",
+      "value": "*\n * Created by mgoria on 1/20/16.\n ",
+      "range": [
+        0,
+        40
+      ],
+      "loc": {
+        "start": {
+          "line": 1,
+          "column": 0
+        },
+        "end": {
+          "line": 3,
+          "column": 3
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n * Thrown when failed to send sqs message\n ",
+      "range": [
+        115,
+        164
+      ],
+      "loc": {
+        "start": {
+          "line": 9,
+          "column": 0
+        },
+        "end": {
+          "line": 11,
+          "column": 3
+        }
+      }
+    },
+    {
+      "type": "Block",
+      "value": "*\n   * @param {String} sqsQueueUrl\n   * @param {String} message\n   * @param {Object} error\n   ",
+      "range": [
+        241,
+        339
+      ],
+      "loc": {
+        "start": {
+          "line": 13,
+          "column": 2
+        },
+        "end": {
+          "line": 17,
+          "column": 5
+        }
+      }
+    }
+  ]
+}

@@ -35,19 +35,28 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html">ConsoleDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver.html">RavenBrowserDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenDriver.js~RavenDriver.html">RavenDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html">RumSqsDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html">FailedToSendBatchSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException.html">FailedToSendSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException.html">InvalidSqsQueueUrlException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/LogDriverException.js~LogDriverException.html">LogDriverException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html">RumEventValidationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html">UnknownRumEventException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/RUM</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html">FrameworkEvent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Log} from &apos;<span><a href="file/lib/Log.js.html#lineNumber17">deep-log/lib/Log.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Log} from &apos;<span><a href="file/lib/Log.js.html#lineNumber18">deep-log/lib/Log.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/Log.js.html#lineNumber17">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/Log.js.html#lineNumber18">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -666,6 +675,31 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Log.js~Log.html#instance-method-isRumEnabled">isRumEnabled</a></span></span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Log.js~Log.html#instance-method-log">log</a></span></span><span data-ice="signature">(msg: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, level: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, context: <span>*</span>): <span>*</span></span>
         </p>
       </div>
@@ -766,6 +800,56 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Log.js~Log.html#instance-method-rumFlush">rumFlush</a></span></span><span data-ice="signature">(callback: <span>*</span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description">Flushes RUM batch messages</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Log.js~Log.html#instance-method-rumLog">rumLog</a></span></span><span data-ice="signature">(event: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Log.js~Log.html#instance-method-warn">warn</a></span></span><span data-ice="signature">(msg: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, context: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="class/lib/Log.js~Log.html">Log</a></span></span>
         </p>
       </div>
@@ -824,7 +908,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber284">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber351">source</a></span></span>
     </span>
   </h3>
 
@@ -874,7 +958,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber291">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber358">source</a></span></span>
     </span>
   </h3>
 
@@ -924,7 +1008,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber326">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber393">source</a></span></span>
     </span>
   </h3>
 
@@ -974,7 +1058,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber277">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber344">source</a></span></span>
     </span>
   </h3>
 
@@ -1024,7 +1108,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber298">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber365">source</a></span></span>
     </span>
   </h3>
 
@@ -1074,7 +1158,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber319">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber386">source</a></span></span>
     </span>
   </h3>
 
@@ -1124,7 +1208,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber261">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber328">source</a></span></span>
     </span>
   </h3>
 
@@ -1174,7 +1258,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber312">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber379">source</a></span></span>
     </span>
   </h3>
 
@@ -1224,7 +1308,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber305">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber372">source</a></span></span>
     </span>
   </h3>
 
@@ -1278,7 +1362,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber21">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber22">source</a></span></span>
     </span>
   </h3>
 
@@ -1337,7 +1421,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber132">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber142">source</a></span></span>
     </span>
   </h3>
 
@@ -1390,7 +1474,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber254">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber321">source</a></span></span>
     </span>
   </h3>
 
@@ -1462,7 +1546,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber41">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber42">source</a></span></span>
     </span>
   </h3>
 
@@ -1525,7 +1609,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber64">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber68">source</a></span></span>
     </span>
   </h3>
 
@@ -1597,7 +1681,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber229">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber296">source</a></span></span>
     </span>
   </h3>
 
@@ -1669,7 +1753,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber236">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber303">source</a></span></span>
     </span>
   </h3>
 
@@ -1735,7 +1819,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber163">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber230">source</a></span></span>
     </span>
   </h3>
 
@@ -1807,7 +1891,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber213">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber280">source</a></span></span>
     </span>
   </h3>
 
@@ -1879,7 +1963,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber220">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber287">source</a></span></span>
     </span>
   </h3>
 
@@ -1945,7 +2029,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber172">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber239">source</a></span></span>
     </span>
   </h3>
 
@@ -2017,7 +2101,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber179">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber246">source</a></span></span>
     </span>
   </h3>
 
@@ -2083,7 +2167,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber188">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber255">source</a></span></span>
     </span>
   </h3>
 
@@ -2145,6 +2229,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-isRumEnabled">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">isRumEnabled</span><span data-ice="signature">(): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber176">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-log">
     <span class="access" data-ice="access">public</span>
     
@@ -2155,7 +2289,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber142">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber152">source</a></span></span>
     </span>
   </h3>
 
@@ -2234,7 +2368,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber245">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber312">source</a></span></span>
     </span>
   </h3>
 
@@ -2306,7 +2440,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber107">source</a></span></span>
     </span>
   </h3>
 
@@ -2373,7 +2507,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber115">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber125">source</a></span></span>
     </span>
   </h3>
 
@@ -2435,6 +2569,119 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-rumFlush">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">rumFlush</span><span data-ice="signature">(callback: <span>*</span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber200">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Flushes RUM batch messages</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">callback</td>
+      <td data-ice="type"><span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-rumLog">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">rumLog</span><span data-ice="signature">(event: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber185">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">event</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-warn">
     <span class="access" data-ice="access">public</span>
     
@@ -2445,7 +2692,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber197">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber264">source</a></span></span>
     </span>
   </h3>
 
@@ -2517,7 +2764,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber204">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Log.js.html#lineNumber271">source</a></span></span>
     </span>
   </h3>
 

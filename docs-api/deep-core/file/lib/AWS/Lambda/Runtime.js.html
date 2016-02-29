@@ -56,6 +56,8 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/MethodsProxy.js~MethodsProxy.html">MethodsProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/UniversalRequire.js~UniversalRequire.html">UniversalRequire</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">HTTP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/HTTP/Helper.js~Helper.html">Helper</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Runtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Runtime/Sandbox.js~Sandbox.html">Sandbox</a></span></span></li>
 </ul>
@@ -170,6 +172,14 @@ export class Runtime extends Interface {
     this._context = new Context(context);
     this._request = new Request(event);
 
+    this.logService.rumLog({
+      service: &apos;deep-core&apos;,
+      resourceType: &apos;Lambda&apos;,
+      resourceId: this._context.invokedFunctionArn,
+      eventName: &apos;Run&apos;,
+      payload: event,
+    });
+
     new Sandbox(() =&gt; {
       this._fillUserContext();
 
@@ -203,18 +213,11 @@ export class Runtime extends Interface {
 
     if (typeof validationSchema !== &apos;string&apos;) {
       validationSchemaName = this._injectValidationSchema(validationSchema);
-    } else if (!validation.hasSchema(validationSchemaName)) {
-
-      // assume process.cwd() === /var/task
-      let schemasPath = path.join(process.cwd(), Runtime.VALIDATION_SCHEMAS_DIR);
-      let schemaFile = path.join(schemasPath, `${validationSchemaName}.js`);
-
-      if (fs.existsSync(schemaFile)) {
-        this._injectValidationSchema(require(schemaFile), validationSchemaName);
-      }
     }
 
-    this.validateInput(validationSchemaName, this.handle);
+    this.validateInput(validationSchemaName, (validatedData) =&gt; {
+      this.handle(validatedData);
+    });
   }
 
   /**
@@ -226,15 +229,9 @@ export class Runtime extends Interface {
   _injectValidationSchema(schema, name = null) {
     let validation = this._kernel.get(&apos;validation&apos;);
 
-    if (typeof schema === &apos;function&apos;) {
-      schema = validation.schemaFromValidationCb(schema);
-    }
-
-    let setSchemaMethod = schema.isJoi ? &apos;setSchema&apos; : &apos;setSchemaRaw&apos;;
-
     name = name || `DeepHandlerValidation_${new Date().getTime()}`;
 
-    validation[setSchemaMethod](name, schema);
+    validation.setGuessSchema(name, schema);
 
     return name;
   }
@@ -251,6 +248,21 @@ export class Runtime extends Interface {
    */
   createResponse(data) {
     return new Response(this, data);
+  }
+
+  /**
+   * @param {Object} data
+   * @param {Number} ttl
+   * @param {Function} callback
+   */
+  createCachedResponse(data, ttl = 0, callback = response =&gt; response.send()) {
+    let publicCache = this._kernel.get(&apos;cache&apos;).shared;
+    let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);
+    let response = new Response(this, data);
+
+    publicCache.assure(publicCacheKey, {body: data}, ttl, () =&gt; {
+      callback(response);
+    });
   }
 
   /**
@@ -290,6 +302,13 @@ export class Runtime extends Interface {
    */
   get securityService() {
     return this.kernel.get(&apos;security&apos;);
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get logService() {
+    return this.kernel.get(&apos;log&apos;);
   }
 
   /**
