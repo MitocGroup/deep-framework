@@ -142,6 +142,13 @@ export class Service {
   }
 
   /**
+   * @returns {String}
+   */
+  static get ELASTIC_SEARCH() {
+    return 'es';
+  }
+
+  /**
    * @param {String} service
    * @returns {String}
    */
@@ -181,6 +188,7 @@ export class Service {
       Service.SIMPLE_QUEUE_SERVICE,
       Service.CERTIFICATE_MANAGER,
       Service.EC2,
+      Service.ELASTIC_SEARCH,
     ];
   }
 }
