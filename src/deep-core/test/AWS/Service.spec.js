@@ -97,6 +97,10 @@ suite('AWS/Service', () => {
     chai.expect(Service.identifier(serviceName)).to.be.equal(`${serviceName}.amazonaws.com`);
   });
 
+  test('Check ELASTIC_SEARCH static getter returns "es"', () => {
+    chai.expect(Service.ELASTIC_SEARCH).to.be.equal('es');
+  });
+
   test('Check all() static method returns array of Service alias', () => {
     chai.expect(Service.list().length).to.be.above(0);
     chai.expect(Service.list()).to.be.include(Service.ANY);
@@ -117,6 +121,7 @@ suite('AWS/Service', () => {
     chai.expect(Service.list()).to.be.include(Service.CLOUD_SEARCH);
     chai.expect(Service.list()).to.be.include(Service.SIMPLE_QUEUE_SERVICE);
     chai.expect(Service.list()).to.be.include(Service.EC2);
+    chai.expect(Service.list()).to.be.include(Service.ELASTIC_SEARCH);
   });
 
   test('Check exists() static method returns true if Service exists', () => {
