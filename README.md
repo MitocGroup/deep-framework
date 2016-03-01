@@ -28,10 +28,10 @@ To see the power of `DEEP Framework`, execute the following 4 simple steps in co
 > deepify is a collection of tools that empower developers and devops engineers to automate
 the management of web apps built on top of DEEP ecosystem.
 
-  Note: If you want to use `deepify` on Windows, please follow the steps from
+  *Note: If you want to use `deepify` on Windows, please follow the steps from
   [Windows Configuration](https://github.com/MitocGroup/deep-framework/blob/master/docs/windows.md)
   before running `npm install deepify -g` and make sure all `npm` and `deepify` commands are executed
-  inside Git Bash.
+  inside Git Bash.*
 
 2. Using deepify, dump locally the helloworld example:
 
@@ -50,8 +50,8 @@ to web services from cloud providers like AWS.
 > deepify provisions the infrastructure and deploys the web app, empowering developers and
 devops engineers to automate the process.
 
-  Note: Amazon CloudFront distribution takes up to 20 minutes to provision, 
-  therefore don’t worry if it returns an HTTP error in the first couple of minutes.
+  *Note: Amazon CloudFront distribution takes up to 20 minutes to provision, 
+  therefore don’t worry if it returns an HTTP error in the first couple of minutes.*
 
 To learn more about helloworld example, or other web apps that run in production, scroll down to 
 [Who is using DEEP Framework?](https://github.com/MitocGroup/deep-framework/blob/master/README.md#who-is-using-deep-framework-)
