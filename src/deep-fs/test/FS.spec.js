@@ -75,13 +75,12 @@ suite('FS', () => {
   });
 
   test('Check tmp() getter returns valid mounted tmp folder', () => {
-    let bucketName = 'deep.dev.temp.32f3705a';
-
+    let bucketName = 'deep.dev.system.32f3705a';
     let actualResult = fs.tmp;
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
     chai.expect(actualResult.bucket).to.equal(bucketName);
-    chai.expect(actualResult.path).to.equal(path);
+    chai.expect(actualResult.path).to.equal(`${path}temp/`);
   });
 
   test('Check public() getter returns valid mounted public folder', () => {
@@ -96,12 +95,11 @@ suite('FS', () => {
 
   test('Check system() getter returns valid mounted system folder', () => {
     let bucketName = 'deep.dev.system.32f3705a';
-
     let actualResult = fs.system;
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
     chai.expect(actualResult.bucket).to.equal(bucketName);
-    chai.expect(actualResult.path).to.equal(path);
+    chai.expect(actualResult.path).to.equal(`${path}system/`);
   });
 
   test('Check getFolder() throws "UnknownFolderException" for invalid path',
@@ -119,11 +117,12 @@ suite('FS', () => {
   );
 
   test('Check getFolder() method returns valid value', () => {
+    let bucketName = 'deep.dev.system.32f3705a';
     let actualResult = fs.getFolder(FS.TMP);
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
-    chai.expect(actualResult.bucket).to.equal('deep.dev.temp.32f3705a');
-    chai.expect(actualResult.path).to.equal('hello.world.example/');
+    chai.expect(actualResult.bucket).to.equal(bucketName);
+    chai.expect(actualResult.path).to.equal(`${path}temp/`);
   });
 
   test('Check _getTmpDir() static method returns valid value', () => {
