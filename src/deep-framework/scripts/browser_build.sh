@@ -85,6 +85,10 @@ echo '/** Built on '$(date) > ${__FW}
 echo '*/' >> ${__FW}
 AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -d ${browserify_require} lib.compiled/browser-framework.js | uglifyjs >> ${__FW}
 
+echo "- Uninstall shared aws-sdk@^2.2.x instance"
+cd "${path}"/../
+"${npm}" uninstall aws-sdk
+
 echo ""
 echo "- Completed!"
 echo ""

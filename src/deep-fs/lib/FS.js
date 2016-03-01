@@ -96,14 +96,21 @@ export class FS extends Kernel.ContainerAware {
   boot(kernel, callback) {
     let bucketsConfig = kernel.config.buckets;
 
-    for (let folderKey in FS.FOLDERS) {
-      if (!FS.FOLDERS.hasOwnProperty(folderKey)) {
+    for (let i in FS.FOLDERS) {
+      if (!FS.FOLDERS.hasOwnProperty(i)) {
         continue;
       }
 
-      let folder = FS.FOLDERS[folderKey];
+      let folder = FS.FOLDERS[i];
 
-      this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
+      switch (folder) {
+        case FS.TMP:
+        case FS.SYSTEM:
+          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${kernel.microservice().identifier}/${folder}`;
+          break;
+        default:
+          this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
+      }
     }
 
     callback();
@@ -112,8 +119,8 @@ export class FS extends Kernel.ContainerAware {
   /**
    * Returns mounted file system folder (tmp, public or system)
    *
-   * @param name
-   * @returns {*}
+   * @param {String} name
+   * @returns {S3FS|SimulatedS3FS|*}
    */
   getFolder(name) {
     if (FS.FOLDERS.indexOf(name) === -1) {
@@ -127,13 +134,7 @@ export class FS extends Kernel.ContainerAware {
 
         this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;
       } else {
-        let options = {
-          params: {
-            Bucket: this._buckets[name],
-          },
-        };
-
-        let s3Fs = new S3FS(this._buckets[name], options);
+        let s3Fs = new S3FS(this._buckets[name], {});
 
         if (this.kernel instanceof Kernel) {
           let logService = this.kernel.get('log');
