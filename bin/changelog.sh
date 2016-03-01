@@ -39,16 +39,15 @@ fi
 LAST_MODIFIED_TS=$(node -e "console.log(new Date('$LAST_MODIFIED').getTime())")
 HEADER="Changes since "$(node -e "console.log(new Date('$LAST_MODIFIED').toLocaleString())")
 
-if [ -z ${npm} ]; then
-    brew install nodejs
 
-    npm=$(which npm)
+if [ -z "${npm}" ]; then
+    echo "You may install NPM first!"
 fi
 
 if [ -z ${ghchangelog} ]; then
     assure_npm
 
-    ${npm} -g install github-changelog
+    "${npm}" -g install github-changelog
 fi
 
 mkdir -p ${CHANGELOG_PATH}
