@@ -499,7 +499,7 @@ export class Request {
 
         driver.get(key, (err, data) => {
           event = util._extend({}, event);
-          event.payload = {err, data};
+          event.payload = {err, data,};
 
           logService.rumLog(event);
 
@@ -574,6 +574,7 @@ export class Request {
    * @private
    */
   _sendLambda(callback = () => {}) {
+
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
