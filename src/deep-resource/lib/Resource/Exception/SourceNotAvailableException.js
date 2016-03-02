@@ -12,6 +12,6 @@ export class SourceNotAvailableException extends Exception {
    * @param {Action|*} action
    */
   constructor(type, action) {
-    super(`The ${type} source is not available for ${action.fullName}`);
+    super(`The ${type} source is not available for the resource '${action.fullName}'`);
   }
 }
