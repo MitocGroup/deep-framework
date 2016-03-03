@@ -100,8 +100,10 @@ Resources file (`resources.json`)
             "methods": ["GET"], // supported HTTP methods
             "cacheTtl": -1, // cache TTL in seconds applied to "GET" method only (default -1 means no cache, 0 cache permanently, 1...*). On the lowest level caching is managed by AWS ApiGateway.
             "source": "src/User/Retrieve", // the source of the resource (ex. for external type: http://example.com/api/v1/users)
-            "forceUserIdentity": true, // ansure the user info is available in lambda
+            "forceUserIdentity": true, // ensure the user info is available in lambda
             "validationSchema": "Sample", // specify validation schema name (@see `deep-validation`) used to both validate payload and backend input data
+            "scope": "public", // backend visibility scope (default public. Possible values: public, protected, private)
+            "cron": "15 10 ? * 6L 2002-2005", // scheduled backend invocation (cron like syntax)
             "engine": { // only available for `"type": "lambda"`
                 "memory": 512, // max. amount of RAM allocated to a lambda (default 128, max. 1536) 
                 "timeout": 30, // timeout Lambda runs within, (max. 5 minutes)
@@ -119,6 +121,14 @@ Resources file (`resources.json`)
     }
 }
 ```
+
+Visibility scopes:
+
+- `public` - backend available both direct and through the Api endpoint
+- `protected` - backend is only available through the api endpoint
+- `private` - lambda is not accessible for the client (useful with event sources attached)
+
+> To read more about the backend scheduling visit http://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/ScheduledEvents.html
 
 > Note that only `nodejs` Lambda runtime is currently supported by the dev server
 
