@@ -8,9 +8,9 @@ publish_npm_package() {
     name=$(basename $1)
 
     if [ -z $2 ] || ! $2; then
-        cd $1 && rm -rf node_modules/ && npm install --production --no-bin-links --no-optional && ${npm} version $3 && ${npm} publish
+        cd $1 && rm -rf node_modules/ && npm install --production --no-bin-links --no-optional && "${npm}" version $3 && "${npm}" publish
     else
-        cd $1 && ${npm} version $3
+        cd $1 && "${npm}" version $3
     fi
 }
 
@@ -21,17 +21,14 @@ escape_sed() {
 assure_esdoc() {
     if [ -z ${esdoc} ]; then
         echo "Installing esdoc..."
-        ${npm} install -g esdoc
+        "${npm}" install -g esdoc
 
         esdoc=$(which esdoc)
     fi
 }
 
 assure_npm() {
-    if [ -z ${npm} ]; then
-        echo "Installing nodejs..."
-        brew install nodejs
-
-        npm=$(which npm)
+    if [ -z "${npm}" ]; then
+        echo "You may install NPM first!"
     fi
 }

@@ -13,6 +13,8 @@ The AWS Services we are giving access to:
  - [APIGateway](https://aws.amazon.com/api-gateway/)
  - [Cognito](https://aws.amazon.com/cognito/)
  - [IAM](https://aws.amazon.com/iam/)
+ - [SQS](https://aws.amazon.com/sqs/)
+ - [ES](https://aws.amazon.com/elasticsearch-service/)
  
 The steps
 =========

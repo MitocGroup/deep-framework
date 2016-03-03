@@ -116,6 +116,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get CLOUD_WATCH_EVENTS() {
+    return 'events';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get API_GATEWAY() {
     return 'apigateway';
   }
@@ -189,6 +196,7 @@ export class Service {
       Service.CERTIFICATE_MANAGER,
       Service.EC2,
       Service.ELASTIC_SEARCH,
+      Service.CLOUD_WATCH_EVENTS,
     ];
   }
 }

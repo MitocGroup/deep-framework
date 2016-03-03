@@ -68,6 +68,10 @@ suite('AWS/Service', () => {
     chai.expect(Service.CLOUD_WATCH_LOGS).to.be.equal('logs');
   });
 
+  test('Check CLOUD_WATCH_EVENTS static getter returns "events"', () => {
+    chai.expect(Service.CLOUD_WATCH_EVENTS).to.be.equal('events');
+  });
+
   test('Check API_GATEWAY static getter returns "apigateway"', () => {
     chai.expect(Service.API_GATEWAY).to.be.equal('apigateway');
   });
@@ -116,6 +120,7 @@ suite('AWS/Service', () => {
     chai.expect(Service.list()).to.be.include(Service.CLOUD_FRONT);
     chai.expect(Service.list()).to.be.include(Service.SECURITY_TOKEN_SERVICE);
     chai.expect(Service.list()).to.be.include(Service.CLOUD_WATCH_LOGS);
+    chai.expect(Service.list()).to.be.include(Service.CLOUD_WATCH_EVENTS);
     chai.expect(Service.list()).to.be.include(Service.API_GATEWAY);
     chai.expect(Service.list()).to.be.include(Service.API_GATEWAY_EXECUTE);
     chai.expect(Service.list()).to.be.include(Service.CLOUD_SEARCH);
