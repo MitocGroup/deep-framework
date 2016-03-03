@@ -174,7 +174,7 @@ export class Log extends Kernel.ContainerAware {
    * @returns {Boolean}
    */
   isRumEnabled() {
-    let driver = this._rumDriver();
+    let driver = this.rumDriver();
 
     return driver && driver.enabled;
   }
@@ -183,7 +183,7 @@ export class Log extends Kernel.ContainerAware {
    * @param {Object} event
    */
   rumLog(event) {
-    let driver = this._rumDriver();
+    let driver = this.rumDriver();
 
     if (driver) {
       driver.log(event, (error, data) => {
@@ -198,7 +198,7 @@ export class Log extends Kernel.ContainerAware {
    * Flushes RUM batch messages
    */
   rumFlush(callback) {
-    let driver = this._rumDriver();
+    let driver = this.rumDriver();
 
     if (!driver) {
       callback(null, null);
@@ -216,9 +216,8 @@ export class Log extends Kernel.ContainerAware {
 
   /**
    * @returns {RumSqsDriver}
-   * @private
    */
-  _rumDriver() {
+  rumDriver() {
     return this.drivers.find(RumSqsDriver);
   }
 
