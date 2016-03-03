@@ -125,6 +125,20 @@ export class Action {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  get isOriginalSourceInvokable() {
+    return !!this._source.original;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isApiSourceInvokable() {
+    return !!this._source.api;
+  }
+
+  /**
    * @returns {String}
    */
   get region() {
@@ -143,6 +157,13 @@ export class Action {
    */
   get apiCacheTtl() {
     return this._apiCacheTtl;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get fullName() {
+    return `@${this._resource.microservice.identifier}:${this._resource.name}:${this._name}`;
   }
 
   /**

@@ -21,6 +21,7 @@ import Core from 'deep-core';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
 import {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';
 import {LoadCredentialsException} from './Exception/LoadCredentialsException';
+import {SourceNotAvailableException} from './Exception/SourceNotAvailableException';
 import crypto from 'crypto';
 import util from 'util';
 
@@ -386,7 +387,7 @@ export class Request {
     logService.rumLog(event);
 
     let decoratedCallback = (response) => {
-      this._saveResponseToCache(response, (error, data) => {
+      this._saveResponseToCache(response, (error) => {
         if (error) {
           throw error;
         }
@@ -395,6 +396,7 @@ export class Request {
       event = util._extend({}, event);
       event.payload = response;
       event.requestId = response.requestId;
+
       logService.rumLog(event);
 
       callback(response);
@@ -414,9 +416,17 @@ export class Request {
 
     switch (this._action.type) {
       case Action.LAMBDA:
+        if (!this._action.isOriginalSourceInvokable) {
+          throw new SourceNotAvailableException(Action.LAMBDA, this._action);
+        }
+
         this._sendLambda(decoratedCallback);
         break;
       case Action.EXTERNAL:
+        if (!this._action.isApiSourceInvokable) {
+          throw new SourceNotAvailableException(Action.EXTERNAL, this._action);
+        }
+
         this._sendExternal(decoratedCallback);
         break;
       default: throw new Exception(`Request of type ${this._action.type} is not implemented`);
@@ -445,14 +455,14 @@ export class Request {
       resourceId: cacheKey,
       eventName: 'set',
       requestId: response.requestId,
-      payload: {response},
+      payload: {response,},
     };
 
     logService.rumLog(event);
 
     this.cacheImpl.set(cacheKey, Request._stringifyResponse(response), this.cacheTtl, (error, result) => {
       event = util._extend({}, event);
-      event.payload = {error, result};
+      event.payload = {error, result,};
       logService.rumLog(event);
 
       if (!error && !result) {
@@ -469,7 +479,7 @@ export class Request {
 
   /**
    * @param {Object} driver
-   * @param {String} key
+   * @param {String|Key} key
    * @param {Function} callback
    */
   _loadResponseFromCache(driver, key, callback) {
@@ -489,7 +499,7 @@ export class Request {
 
         driver.get(key, (err, data) => {
           event = util._extend({}, event);
-          event.payload = {err, data};
+          event.payload = {err, data,};
 
           logService.rumLog(event);
 
@@ -564,6 +574,7 @@ export class Request {
    * @private
    */
   _sendLambda(callback = () => {}) {
+
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
