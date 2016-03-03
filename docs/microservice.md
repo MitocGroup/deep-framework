@@ -103,7 +103,7 @@ Resources file (`resources.json`)
             "forceUserIdentity": true, // ensure the user info is available in lambda
             "validationSchema": "Sample", // specify validation schema name (@see `deep-validation`) used to both validate payload and backend input data
             "scope": "public", // backend visibility scope (default public. Possible values: public, protected, private)
-            "cron": "15 10 ? * 6L 2002-2005", // scheduled backend invocation (cron like syntax)
+            "cron": "15 10 ? * 6L 2002-2005", // scheduled backend invocation (cron like syntax. Available for lambdas only)
             "engine": { // only available for `"type": "lambda"`
                 "memory": 512, // max. amount of RAM allocated to a lambda (default 128, max. 1536) 
                 "timeout": 30, // timeout Lambda runs within, (max. 5 minutes)
