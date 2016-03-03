@@ -205,7 +205,10 @@ export class CredentialsManager {
     // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore
     credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');
 
-    return JSON.stringify(credentials);
+    return JSON.stringify(
+      credentials,
+      ['expired', 'expireTime', 'accessKeyId', 'secretAccessKey', 'sessionToken']
+    );
   }
 
   /**
