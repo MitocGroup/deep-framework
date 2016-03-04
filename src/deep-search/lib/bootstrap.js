@@ -6,4 +6,6 @@
 
 'use strict';
 
-let exports = module.exports = {};
+import {Search} from './Search';
+
+let exports = module.exports = Search;
