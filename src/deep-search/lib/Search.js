@@ -13,7 +13,15 @@ import {UnknownSearchDomainException} from 'Exception/UnknownSearchDomainExcepti
  */
 export class Search extends Kernel.ContainerAware {
   /**
-   * @param {Array} domains
+   * @param {Object} domains
+   *
+   * @example domains = {
+   *  rum: {
+   *    name: '<DomainName>',
+   *    url: '<DomainUrl>'
+   *  },
+   *  ...
+   * }
    */
   constructor(domains) {
     super();
@@ -55,6 +63,6 @@ export class Search extends Kernel.ContainerAware {
     }
 
     // @todo create ES or CloudSearch client based on domainUrl
-    return new ElasticSearchClient(this._domains[domainName]);
+    return new ElasticSearchClient(this._domains[domainName].url);
   }
 }
