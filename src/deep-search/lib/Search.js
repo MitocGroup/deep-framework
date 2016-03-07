@@ -75,7 +75,7 @@ export class Search extends Kernel.ContainerAware {
     let func = null;
 
     // @todo - check if RUM is enabled
-    if (this.kernel) {
+    if (this.kernel && this.kernel.isRumEnabled) {
       func = function(originalFunc, ...args) {
         // RUM log ...
         originalFunc(...args); // @todo - decorate also callback func from args
