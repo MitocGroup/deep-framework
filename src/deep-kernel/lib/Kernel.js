@@ -235,6 +235,14 @@ export class Kernel {
   }
 
   /**
+   * @param {Array} args
+   * @returns {Boolean}
+   */
+  has(...args) {
+    return this._container.has(...args);
+  }
+
+  /**
    * @returns {Array}
    */
   get services() {
@@ -246,6 +254,13 @@ export class Kernel {
    */
   get container() {
     return this._container;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isRumEnabled() {
+    return this.has('log') && this.get('log').isRumEnabled();
   }
 
   /**
