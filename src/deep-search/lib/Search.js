@@ -63,6 +63,25 @@ export class Search extends Kernel.ContainerAware {
     }
 
     // @todo create ES or CloudSearch client based on domainUrl
-    return new ElasticSearchClient(this._domains[domainName].url);
+    let client = new ElasticSearchClient(this._domains[domainName].url, this.clientDecorator);
+
+    return client;
+  }
+
+  /**
+   * @returns {Function}
+   */
+  get clientDecorator() {
+    let func = null;
+
+    // @todo - check if RUM is enabled
+    if (this.kernel) {
+      func = function(originalFunc, ...args) {
+        // RUM log ...
+        originalFunc(...args); // @todo - decorate also callback func from args
+      };
+    }
+
+    return func;
   }
 }

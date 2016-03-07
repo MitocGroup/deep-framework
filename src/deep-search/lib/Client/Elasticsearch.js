@@ -4,6 +4,7 @@
 
 'use strict';
 
+import Core from 'deep-core';
 import elasticsearch from 'elasticsearch';
 
 /**
@@ -13,25 +14,31 @@ import elasticsearch from 'elasticsearch';
 export class Elasticsearch {
   /**
    * @param {String} host
+   * @param {Function|null} decorator
    */
-  constructor(host) {
+  constructor(host, decorator = null) {
+    this._host = host;
+    this._decorator = decorator;
+
     this._esClient = new elasticsearch.Client({
-      host: host,
+      host: this._host,
     });
+
+    this._proxy(this, this._esClient, this._decorator);
   }
 
   /**
-   * @param {String} methodName
-   * @param {Object} params
-   * @param {Function} callback
+   * @param {Elasticsearch} target
+   * @param {elasticsearch} handler
+   * @param {Function} decorator
+   * @param {Array} methods
+   *
+   * @returns {Object}
+   * @private
    */
-  exec(methodName, params, callback) {
-    // RUM log ...
-
-    this._esClient[methodName](params, (error, response) => {
-      // RUM log ...
-
-      callback(error, response);
-    });
+  _proxy(target, handler, decorator, methods = []) {
+    return new Core.Generic.MethodsProxy(target)
+      .decorate(decorator)
+      .proxyOverride(handler, methods);
   }
 }
