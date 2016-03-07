@@ -32,7 +32,7 @@ Starting with Git version 2, `Git Bash` will by default launch in `MinTTY`, a te
     2.7. Select Checkout Windows-style, commit Unix-style line ending. 
 
       ![Line enging conversions](https://github.com/MitocGroup/deep-framework/blob/master/docs/git-setup/7.jpg)
-
+ 
     2.8. Select Use Windows' default console window (this option is required). 
 
       ![Terminal emulator](https://github.com/MitocGroup/deep-framework/blob/master/docs/git-setup/8.jpg)
@@ -41,5 +41,16 @@ Starting with Git version 2, `Git Bash` will by default launch in `MinTTY`, a te
 
       ![Performance](https://github.com/MitocGroup/deep-framework/blob/master/docs/git-setup/9.jpg)
       
-  3. All commands should be run from `MinTTY`.
+  3. All commands should be run from `MinTTY` as root/Administrator.
+      ![Run git-bash.exe as Administrator](https://github.com/MitocGroup/deep-framework/blob/master/docs/git-setup/administrator.jpg)
+
+> For using `symlink` functionality on Windows you should have admin privileges, because *in Windows The default security policy allows only administrators to create symbolic links*. 
+Here you can find a little bit more details for know [node issue] (https://github.com/nodejs/node-v0.x-archive/issues/6342).
+We suggest always to run `git-bash.exe` as Administrator due to different behavior for users: 
+*In case when you are not in `Administrators` group you can just update [Local Group Policy] (http://superuser.com/questions/104845/permission-to-make-symbolic-links-in-windows-7), but in many Windows version gpedit.msc is not installed by default. 
+*In case when you belong to the `Administrators` group you always have to run in an elevated environment (as Administrator).
+
+> Need to take into account that not only core `fs.symlink(target, path[, type], callback)` will require symlink permissions. In some case it can be `fse.ensureSymlinkSync()` from fse-extra module and so on, which ensures that the symlink exists. If the directory structure does not exist, it is created.
+
   4. Optionally: you need to have the `AWS CLI` installed and configured to your [AWS account](http://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) otherwise you will need to enter your credentials manually.
+ 
