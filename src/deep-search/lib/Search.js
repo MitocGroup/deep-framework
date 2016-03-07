@@ -7,6 +7,7 @@
 import Kernel from 'deep-kernel';
 import {Elasticsearch as ElasticSearchClient} from 'Client/Elasticsearch';
 import {UnknownSearchDomainException} from 'Exception/UnknownSearchDomainException';
+import {MissingSearchClientException} from 'Exception/MissingSearchClientException';
 
 /**
  * Deep Search implementation
@@ -62,8 +63,16 @@ export class Search extends Kernel.ContainerAware {
       throw new UnknownSearchDomainException(domainName, Object.keys(this._domains));
     }
 
-    // @todo create ES or CloudSearch client based on domainUrl
-    let client = new ElasticSearchClient(this._domains[domainName].url, this.clientDecorator);
+    let client = null;
+    let domainUrl = this._domains[domainName].url;
+
+    if (domainUrl.indexOf('es.amazonaws.com') !== -1) {
+      client = new ElasticSearchClient(domainUrl, this.clientDecorator);
+    }
+
+    if (!client) {
+      throw new MissingSearchClientException(domainUrl);
+    }
 
     return client;
   }
