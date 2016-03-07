@@ -41,7 +41,7 @@ export class AbstractDriver extends Core.OOP.Interface {
     try {
       config = JSON.parse(rawConfig);
     } catch (error) {
-      this.fail(`Failed to parse config from ${this._endpoint}: ${error}`);
+      return this.fail(`Failed to parse config from ${this._endpoint}: ${error}`);
     }
 
     return this.loaded(config);

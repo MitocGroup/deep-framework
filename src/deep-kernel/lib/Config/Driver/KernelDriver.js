@@ -16,7 +16,7 @@ export class KernelDriver extends AbstractDriver {
    * @param {String} scopeKey
    * @param {String} configFile
    */
-  constructor(kernel, scopeKey = KernelDriver.SCOPE_KEY, configFile = KernelDriver.DEFAULT_CONFIG_FILE_NAME) {
+  constructor(kernel, scopeKey = KernelDriver.SCOPE_KEY, configFile = KernelDriver.DEFAULT_CONFIG_FILE) {
     super();
 
     this._kernel = kernel;
@@ -53,12 +53,20 @@ export class KernelDriver extends AbstractDriver {
   _load(scopeKey = null, configFile = null) {
     this._scopeKey = scopeKey || this._scopeKey;
     this._configFile = configFile || this._configFile;
-console.log(`Load Kernel cfg from Scope=${this._scopeKey} FS/Http=${this._configFile}`);//@todo:remove
+
     new ComplexDriver()
       .inherit(this)
-      .add(new ScopeDriver(this._scopeKey))
+      .add((new ScopeDriver(this._scopeKey)).setScope(this._globalScope))
       .add(this._kernel.isBackend ? new FsDriver(this._configFile) : new HttpDriver(this._configFile))
       .load();
+  }
+
+  /**
+   * @returns {Object}
+   * @private
+   */
+  get _globalScope() {
+    return this._kernel.isBackend ? global : window || {};
   }
 
   /**

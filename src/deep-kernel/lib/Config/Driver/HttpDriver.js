@@ -39,7 +39,7 @@ export class HttpDriver extends AbstractDriver {
    */
   _load(endpoint = null) {
     this._endpoint = endpoint || this._endpoint;
-console.log(`Load cfg from Http ${this._endpoint}`);//@todo:remove
+
     let client = new XMLHttpRequest();
 
     client.open('GET', this._endpoint);

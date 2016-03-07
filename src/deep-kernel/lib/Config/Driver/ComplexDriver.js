@@ -17,7 +17,7 @@ export class ComplexDriver extends AbstractDriver {
   }
 
   /**
-   * @returns {AbstractDriver[]|*[]}
+   * @returns {AbstractDriver[]|*[]|*}
    */
   get drivers() {
     return this._drivers;
@@ -48,7 +48,6 @@ export class ComplexDriver extends AbstractDriver {
    * @private
    */
   _load(...drivers) {
-console.log(`Load cfg from x${drivers.length} drivers`);//@todo:remove
     this._drivers = this._drivers.concat(drivers);
 
     this._loadDriversQueue([].concat(this._drivers));

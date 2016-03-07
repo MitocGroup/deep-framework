@@ -114,18 +114,17 @@ export class Kernel {
       return this;
     }
 
-    if (this.isBackend) {
-
-      // Log event 'start' time
-      rumEvent.resourceId = kernel.runtimeContext.invokedFunctionArn;
-    }
-
-    this.get('log').rumLog(rumEvent);
-
     ConfigLoader
       .kernelLoader(this)
       .load((config) => {
         this.load(config, (kernel) => {
+          if (this.isBackend) {
+
+            // Log event 'start' time
+            rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;
+          }
+
+          this.get('log').rumLog(rumEvent);
 
           // log event 'stop' time
           let event = util._extend({}, rumEvent);

@@ -58,7 +58,7 @@ export class FsDriver extends AbstractDriver {
    */
   _load(file = null) {
     this._file = file || this._file;
-console.log(`Load cfg from FS ${this._file}`);//@todo:remove
+
     this._fs.exists(this._file, (exists) => {
       if (!exists) {
         this.fail(`Configuration file '${this._file}' does not exist`);

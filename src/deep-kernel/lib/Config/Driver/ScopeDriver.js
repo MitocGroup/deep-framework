@@ -13,7 +13,7 @@ export class ScopeDriver extends AbstractDriver {
   constructor(key) {
     super();
 
-    this._scope = this._globalScope;
+    this._scope = global || {};
     this._key = key;
   }
 
@@ -52,20 +52,12 @@ export class ScopeDriver extends AbstractDriver {
   }
 
   /**
-   * @returns {Object}
-   * @private
-   */
-  get _globalScope() {
-    return this._kernel.isBackend ? global : window || {};
-  }
-
-  /**
    * @param {String} key
    * @private
    */
   _load(key = null) {
     this._key = key || this._key;
-console.log(`Load cfg from Scope ${this._key}`);//@todo:remove
+
     this._scope.hasOwnProperty(this._key) ?
       this.loaded(this._scope[this._key]) :
       this.fail(`Unable to load configuration from scope: No such key '${this._key}' exists`);
