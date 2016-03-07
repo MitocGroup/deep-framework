@@ -49,6 +49,7 @@ Starting with Git version 2, `Git Bash` will by default launch in `MinTTY`, a te
      > Here you can find a little bit more details for know [node issue] (https://github.com/nodejs/node-v0.x-archive/issues/6342).
      
      > We suggest always to run `git-bash.exe` as Administrator due to different behavior for users: 
+     
      *  In case when you are not in `Administrators` group you can just update [Local Group Policy] (http://superuser.com/questions/104845/permission-to-make-symbolic-links-in-windows-7), but in many Windows version gpedit.msc is not installed by default. 
      *  In case when you belong to the `Administrators` group you always have to run in an elevated environment (as Administrator).
      
