@@ -74,11 +74,26 @@ export class Search extends Kernel.ContainerAware {
   get clientDecorator() {
     let func = null;
 
-    // @todo - check if RUM is enabled
     if (this.kernel && this.kernel.isRumEnabled) {
-      func = function(originalFunc, ...args) {
+      func = function(instance, originalFunctionName, ...args) {
         // RUM log ...
-        originalFunc(...args); // @todo - decorate also callback func from args
+
+        let originalCallback = null;
+
+        // seeking the callback function through the arguments and proxy it
+        args.forEach((arg, index) => {
+          if (typeof arg === 'function') {
+            originalCallback = arg;
+
+            args[index] = (...cbArgs) => {
+              // RUM log ...
+
+              originalCallback.call(instance, ...cbArgs);
+            };
+          }
+        });
+
+        originalFunctionName.call(instance, ...args);
       };
     }
 
