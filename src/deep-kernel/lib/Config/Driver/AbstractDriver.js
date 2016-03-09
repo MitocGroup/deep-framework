@@ -18,6 +18,17 @@ export class AbstractDriver extends Core.OOP.Interface {
   }
 
   /**
+   * @param {AbstractDriver|*} mainDriver
+   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}
+   */
+  inherit(mainDriver) {
+    this.onLoadedCb(mainDriver.onLoaded);
+    this.onFailCb(mainDriver.onFail);
+
+    return this;
+  }
+
+  /**
    * @param {*} args
    * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}
    */

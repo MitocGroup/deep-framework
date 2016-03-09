@@ -15,11 +15,13 @@ import {SharedCache} from './SharedCache';
 export class Cache extends Kernel.ContainerAware {
   /**
    * @param {AbstractDriver} driver
+   * @param {AbstractDriver} systemDriver
    */
-  constructor(driver = null) {
+  constructor(driver = null, systemDriver = null) {
     super();
 
     this._driver = driver;
+    this._systemDriver = systemDriver;
   }
 
   /**
@@ -65,36 +67,55 @@ export class Cache extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-
-    // @todo: remove in memory fallback for backend?
-    this._driver = kernel.isFrontend ?
-      Cache.createDriver('local-storage') :
-      (kernel.config.cacheDsn ?
-        Cache.createDriver('redis', kernel.config.cacheDsn) :
-        Cache.createDriver('memory'));
+    this._driver = this._createCacheDriver(kernel);
+    this._systemDriver = this._createCacheDriver(kernel);
 
     let sharedCacheDriver = kernel.isFrontend ?
       Cache.createDriver('cloud-front', this) :
       Cache.createDriver('s3fs', this);
 
-    [this._driver, sharedCacheDriver].map((driver) => {
+    this._shared = new SharedCache(sharedCacheDriver);
+
+    [this._driver, this._systemDriver, sharedCacheDriver].forEach((driver) => {
       driver.buildId = kernel.buildId;
     });
 
-    this._shared = new SharedCache(sharedCacheDriver);
+    this._systemDriver.namespace = Cache.SYSTEM_NAMESPACE;
 
     callback();
   }
 
   /**
-   * @returns {SharedCache}
+   * @returns {SharedCache|*}
    */
   get shared() {
     return this._shared;
   }
 
   /**
-   * @param {AbstractDriver} target
+   * @returns {AbstractDriver|*}
+   */
+  get system() {
+    return this._systemDriver || this._driver;
+  }
+
+  /**
+   * @todo: remove in memory fallback for backend?
+   *
+   * @param {Kernel} kernel
+   * @returns {AbstractDriver}
+   * @private
+   */
+  _createCacheDriver(kernel) {
+    return kernel.isFrontend ?
+      Cache.createDriver('local-storage') :
+      (kernel.config.cacheDsn ?
+        Cache.createDriver('redis', kernel.config.cacheDsn) :
+        Cache.createDriver('memory'));
+  }
+
+  /**
+   * @param {AbstractDriver|*} target
    * @param {*} args
    * @returns {*}
    */
@@ -129,5 +150,26 @@ export class Cache extends Kernel.ContainerAware {
    */
   get driver() {
     return this._driver;
+  }
+
+  /**
+   * @param {AbstractDriver} driver
+   */
+  set systemDriver(driver) {
+    this._systemDriver = driver;
+  }
+
+  /**
+   * @returns {AbstractDriver}
+   */
+  get systemDriver() {
+    return this._systemDriver;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SYSTEM_NAMESPACE() {
+    return 'system';
   }
 }

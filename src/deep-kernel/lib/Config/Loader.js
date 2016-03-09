@@ -5,6 +5,7 @@
 'use strict';
 
 import {KernelDriver} from './Driver/KernelDriver';
+import {AsyncConfig} from './Driver/AsyncConfig';
 
 export class Loader {
   /**
@@ -12,6 +13,13 @@ export class Loader {
    */
   constructor(driver = null) {
     this._driver = driver;
+  }
+
+  /**
+   * @param {Kernel|*} kernel
+   */
+  static asyncConfigLoader(kernel) {
+    return new Loader(AsyncConfig.createFromKernel(kernel));
   }
 
   /**
@@ -42,7 +50,7 @@ export class Loader {
    * @param {Function} onLoaded
    * @param {Function} onFail
    */
-  load(onLoaded = null, onFail = null) {
+  load(onLoaded = () => {}, onFail = () => {}) {
     onLoaded && this._driver.onLoadedCb(onLoaded);
     onFail && this._driver.onFailCb(onFail);
 

@@ -34,17 +34,6 @@ export class ComplexDriver extends AbstractDriver {
   }
 
   /**
-   * @param {AbstractDriver|*} mainDriver
-   * @returns {ComplexDriver}
-   */
-  inherit(mainDriver) {
-    this.onLoadedCb(mainDriver.onLoaded);
-    this.onFailCb(mainDriver.onFail);
-
-    return this;
-  }
-
-  /**
    * @private
    */
   _load(...drivers) {

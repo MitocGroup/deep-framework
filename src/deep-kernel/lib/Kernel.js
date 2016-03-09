@@ -36,6 +36,8 @@ export class Kernel {
     this._env = null;
     this._container = new DI();
     this._isLoaded = false;
+
+    this._asyncConfigCache = null;
   }
 
   /**
@@ -81,6 +83,86 @@ export class Kernel {
     }
 
     throw new MissingMicroserviceException(identifier);
+  }
+
+  /**
+   * @param {Function} cb
+   */
+  loadAsyncConfig(cb) {
+    if (this._asyncConfigCache) {
+      cb(this._asyncConfigCache);
+
+      return this;
+    }
+
+    let cache = this.get('cache').system;
+    let cacheKey = 'asyncConfig';
+
+    cache.has(cacheKey, (error, exists) => {
+      this._logErrorIfExistsAndNotProd(error);
+
+      if (exists) {
+        cache.get(cacheKey, (error, rawConfig) => {
+          this._logErrorIfExistsAndNotProd(error);
+
+          if (rawConfig) {
+            try {
+              this._asyncConfigCache = JSON.parse(rawConfig);
+
+              cb(this._asyncConfigCache);
+
+              return;
+            } catch (error) {
+              this._logErrorIfExistsAndNotProd(error);
+            }
+          }
+
+          this._loadAsyncConfig(cache, cacheKey, cb);
+        });
+
+        return;
+      }
+
+      this._loadAsyncConfig(cache, cacheKey, cb);
+    });
+
+    return this;
+  }
+
+  /**
+   * @param {Cache|*} cache
+   * @param {String} cacheKey
+   * @param {Function} cb
+   * @private
+   */
+  _loadAsyncConfig(cache, cacheKey, cb) {
+    ConfigLoader
+      .createFromKernel(this)
+      .load((config) => {
+        cache.set(cacheKey, JSON.stringify(config), 0, (error) => {
+          this._logErrorIfExistsAndNotProd(error);
+
+          this._asyncConfigCache = config;
+
+          cb(config);
+        });
+      }, (error) => {
+        this._logErrorIfExistsAndNotProd(error);
+
+        cb(null);
+      });
+  }
+
+  /**
+   * @todo: get rid of this?
+   *
+   * @param {Error|String|*} error
+   * @private
+   */
+  _logErrorIfExistsAndNotProd(error) {
+    if (error && this.env !== Kernel.PROD_ENVIRONMENT) {
+      console.error(error);
+    }
   }
 
   /**
