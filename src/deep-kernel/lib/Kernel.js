@@ -137,7 +137,7 @@ export class Kernel {
    */
   _loadAsyncConfig(cache, cacheKey, cb) {
     ConfigLoader
-      .createFromKernel(this)
+      .asyncConfigLoader(this)
       .load((config) => {
         cache.set(cacheKey, JSON.stringify(config), 0, (error) => {
           this._logErrorIfExistsAndNotProd(error);
