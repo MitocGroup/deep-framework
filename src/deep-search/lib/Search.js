@@ -36,7 +36,7 @@ export class Search extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    this._domains = kernel.searchDomains || {};
+    this._domains = kernel.config.searchDomains || {};
 
     callback();
   }
@@ -59,16 +59,17 @@ export class Search extends Kernel.ContainerAware {
    * @private
    */
   _createClient(domainName) {
-    if (this._domains.indexOf(domainName) === -1) {
+    if (!this._domains.hasOwnProperty(domainName)) {
       throw new UnknownSearchDomainException(domainName, Object.keys(this._domains));
     }
 
     let client = null;
     let domainUrl = this._domains[domainName].url;
 
-    if (domainUrl.indexOf('es.amazonaws.com') !== -1) {
+    // @todo - use below check when domain url will be available
+    //if (domainUrl.indexOf('es.amazonaws.com') !== -1) {
       client = new ElasticSearchClient(domainUrl, this.clientDecorator);
-    }
+    //}
 
     if (!client) {
       throw new MissingSearchClientException(domainUrl);
