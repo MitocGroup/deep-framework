@@ -11,7 +11,6 @@ import {Instance as Microservice} from './Microservice/Instance';
 import {MissingMicroserviceException} from './Exception/MissingMicroserviceException';
 import {Injectable as MicroserviceInjectable} from './Microservice/Injectable';
 import {ContainerAware} from './ContainerAware';
-import FileSystem from 'fs';
 import WaitUntil from 'wait-until';
 import util from 'util';
 import {Loader as ConfigLoader} from './Config/Loader';
@@ -290,8 +289,7 @@ export class Kernel {
    * @returns {Boolean}
    */
   get isLocalhost() {
-    return this.isFrontend
-      && [
+    return this.isFrontend && [
         'localhost', '127.0.0.1',
         '0.0.0.0', '::1',
       ].indexOf(window.location.hostname) !== -1;
