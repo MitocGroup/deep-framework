@@ -380,7 +380,7 @@ export class Kernel {
 
       let serviceInstance = new this._services[serviceKey]();
 
-      if (!serviceInstance instanceof ContainerAware) {
+      if (!(serviceInstance instanceof ContainerAware)) {
         let serviceType = typeof serviceInstance;
 
         throw new Exception(`Service ${serviceType} must be Kernel.ContainerAware instance`);
