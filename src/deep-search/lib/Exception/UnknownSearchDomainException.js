@@ -4,7 +4,7 @@
 
 'use strict';
 
-import {Exception} from 'Exception';
+import {Exception} from './Exception';
 
 /**
  * Thrown when any exception occurs

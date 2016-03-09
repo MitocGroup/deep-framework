@@ -5,9 +5,9 @@
 'use strict';
 
 import Kernel from 'deep-kernel';
-import {Elasticsearch as ElasticSearchClient} from 'Client/Elasticsearch';
-import {UnknownSearchDomainException} from 'Exception/UnknownSearchDomainException';
-import {MissingSearchClientException} from 'Exception/MissingSearchClientException';
+import {Elasticsearch as ElasticSearchClient} from './Client/Elasticsearch';
+import {UnknownSearchDomainException} from './Exception/UnknownSearchDomainException';
+import {MissingSearchClientException} from './Exception/MissingSearchClientException';
 
 /**
  * Deep Search implementation
