@@ -160,27 +160,27 @@ suite('Kernel', () => {
     chai.expect(frontendKernelInstance.get('deep_kernel')).to.be.eql(frontendKernelInstance);
   });
 
-  test('Check loadFromFile() _isLoaded=true', () => {
-    let spyCallback = sinon.spy();
-    frontendKernelInstance._isLoaded = true;
-    chai.expect(frontendKernelInstance._isLoaded).to.be.equal(true);
-    frontendKernelInstance.loadFromFile('no file', spyCallback);
-    chai.expect(spyCallback).to.have.been.calledWith(frontendKernelInstance);
-  });
+  //test('Check loadFromFile() _isLoaded=true', () => {
+  //  let spyCallback = sinon.spy();
+  //  frontendKernelInstance._isLoaded = true;
+  //  chai.expect(frontendKernelInstance._isLoaded).to.be.equal(true);
+  //  frontendKernelInstance.loadFromFile('no file', spyCallback);
+  //  chai.expect(spyCallback).to.have.been.calledWith(frontendKernelInstance);
+  //});
 
-  test('Check loadFromFile() for backend with !_isLoaded', function (done) {
-    let callback = (backendKernel) => {
-      chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
-
-      // complete the async
-      done();
-    };
-    let backendKernelFromFile = new Kernel({
-      Asset: Asset,
-      Log: Log,
-    }, Kernel.BACKEND_CONTEXT);
-    backendKernelFromFile.loadFromFile('./test/common/backend-cfg.json', callback);
-  });
+  //test('Check loadFromFile() for backend with !_isLoaded', function (done) {
+  //  let callback = (backendKernel) => {
+  //    chai.assert.instanceOf(backendKernel, Kernel, 'backendKernel is an instance of Kernel');
+  //
+  //    // complete the async
+  //    done();
+  //  };
+  //  let backendKernelFromFile = new Kernel({
+  //    Asset: Asset,
+  //    Log: Log,
+  //  }, Kernel.BACKEND_CONTEXT);
+  //  backendKernelFromFile.loadFromFile('./test/common/backend-cfg.json', callback);
+  //});
 
   test('Check microservice() method return microservice for "hello.world.example"', () => {
     let actualResult = backendKernelInstance.microservice('hello.world.example');

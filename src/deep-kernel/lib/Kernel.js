@@ -11,9 +11,9 @@ import {Instance as Microservice} from './Microservice/Instance';
 import {MissingMicroserviceException} from './Exception/MissingMicroserviceException';
 import {Injectable as MicroserviceInjectable} from './Microservice/Injectable';
 import {ContainerAware} from './ContainerAware';
-import FileSystem from 'fs';
 import WaitUntil from 'wait-until';
 import util from 'util';
+import {Loader as ConfigLoader} from './Config/Loader';
 
 /**
  * Deep application kernel
@@ -35,6 +35,8 @@ export class Kernel {
     this._env = null;
     this._container = new DI();
     this._isLoaded = false;
+
+    this._asyncConfigCache = null;
   }
 
   /**
@@ -56,6 +58,26 @@ export class Kernel {
    */
   set runtimeContext(runtimeContext) {
     this._runtimeContext = runtimeContext;
+  }
+
+  /**
+   * @returns {Microservice|*}
+   */
+  get rootMicroservice() {
+    for (let microserviceKey in this.microservices) {
+      if (!this.microservices.hasOwnProperty(microserviceKey)) {
+        continue;
+      }
+
+      let microservice = this.microservices[microserviceKey];
+
+      if (microservice.isRoot) {
+        return microservice;
+      }
+    }
+
+    // this should never happen...
+    throw new MissingMicroserviceException('ROOT');
   }
 
   /**
@@ -83,56 +105,92 @@ export class Kernel {
   }
 
   /**
+   * @param {Function} cb
+   */
+  loadAsyncConfig(cb) {
+    if (this._asyncConfigCache) {
+      cb(this._asyncConfigCache);
+
+      return this;
+    }
+
+    let cache = this.get('cache').system;
+    let cacheKey = 'asyncConfig';
+
+    cache.has(cacheKey, (error, exists) => {
+      this._logErrorIfExistsAndNotProd(error);
+
+      if (exists) {
+        cache.get(cacheKey, (error, rawConfig) => {
+          this._logErrorIfExistsAndNotProd(error);
+
+          if (rawConfig) {
+            try {
+              this._asyncConfigCache = JSON.parse(rawConfig);
+
+              cb(this._asyncConfigCache);
+
+              return;
+            } catch (error) {
+              this._logErrorIfExistsAndNotProd(error);
+            }
+          }
+
+          this._loadAsyncConfig(cache, cacheKey, cb);
+        });
+
+        return;
+      }
+
+      this._loadAsyncConfig(cache, cacheKey, cb);
+    });
+
+    return this;
+  }
+
+  /**
+   * @param {Cache|*} cache
+   * @param {String} cacheKey
+   * @param {Function} cb
+   * @private
+   */
+  _loadAsyncConfig(cache, cacheKey, cb) {
+    ConfigLoader
+      .asyncConfigLoader(this)
+      .load((config) => {
+        cache.set(cacheKey, JSON.stringify(config), 0, (error) => {
+          this._logErrorIfExistsAndNotProd(error);
+
+          this._asyncConfigCache = config;
+
+          cb(config);
+        });
+      }, (error) => {
+        this._logErrorIfExistsAndNotProd(error);
+
+        cb(null);
+      });
+  }
+
+  /**
+   * @todo: get rid of this?
+   *
+   * @param {Error|String|*} error
+   * @private
+   */
+  _logErrorIfExistsAndNotProd(error) {
+    if (error && this.env !== Kernel.PROD_ENVIRONMENT) {
+      console.error(error);
+    }
+  }
+
+  /**
    * @param {Function} callback
    * @returns {Kernel}
    *
    * @todo: put config file name into a constant?
    */
   bootstrap(callback) {
-    // @todo: remove AWS changes the way the things run
-    // This is used because of AWS Lambda
-    // context sharing after a cold start
-    if (this._isLoaded) {
-      callback(this);
-      return this;
-    }
-
-    return this.loadFromScopeOrFile(Kernel.DEFAULT_CONFIG_FILE_NAME, callback);
-  }
-
-  /**
-   * @param {String} jsonFile
-   * @param {Function} callback
-   * @returns {Kernel}
-   */
-  loadFromScopeOrFile(jsonFile, callback) {
-    // @todo: remove AWS changes the way the things run
-    // This is used because of AWS Lambda
-    // context sharing after a cold start
-    if (this._isLoaded) {
-      callback(this);
-      return this;
-    }
-
-    let scope = null;
-
-    if (this.isBackend) {
-      scope = global;
-    } else {
-      scope = window || {};
-    }
-
-    let globalConfig = scope.hasOwnProperty('__DEEP_CFG__') ? scope['__DEEP_CFG__'] : null;
-
-    return globalConfig ? this.load(globalConfig, callback) : this.loadFromFile(jsonFile, callback);
-  }
-
-  /**
-   * @param {String} jsonFile
-   * @param {Function} callback
-   * @returns {Kernel}
-   */
-  loadFromFile(jsonFile, callback) {
     let rumEvent = {
       service: 'deep-kernel',
       resourceType: 'Lambda',
@@ -141,55 +199,46 @@ export class Kernel {
     };
 
     // @todo: remove AWS changes the way the things run
-    // This is used because of AWS Lambda context sharing after a cold start
+    // This is used because of AWS Lambda
+    // context sharing after a cold start
     if (this._isLoaded) {
       if (this.isBackend) {
         rumEvent.eventName = 'KernelLoadFromCache';
         rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;
         rumEvent.payload = this.config;
+
         this.get('log').rumLog(rumEvent);
       }
 
       callback(this);
+
       return this;
     }
 
-    if (this.isBackend) {
-      FileSystem.readFile(jsonFile, 'utf8', (error, data) => {
-        if (error) {
-          throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);
-        }
+    ConfigLoader
+      .kernelLoader(this)
+      .load((config) => {
+        this.load(config, (kernel) => {
+          if (this.isBackend) {
 
-        this.load(JSON.parse(data), (kernel) => {
-          // Log event 'start' time
-          rumEvent.resourceId = kernel.runtimeContext.invokedFunctionArn;
-          kernel.get('log').rumLog(rumEvent);
+            // Log event 'start' time
+            rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;
+          }
+
+          this.get('log').rumLog(rumEvent);
 
           // log event 'stop' time
           let event = util._extend({}, rumEvent);
           event.payload = kernel.config;
           event.time = new Date().getTime();
-          kernel.get('log').rumLog(event);
+
+          this.get('log').rumLog(event);
 
           callback(kernel);
         });
+      }, (error) => {
+        throw new Exception(`Error loading kernel: ${error}`);
       });
-    } else { // @todo: get rid of native code...
-      var client = new XMLHttpRequest();
-
-      client.open('GET', jsonFile);
-      client.onreadystatechange = function(event) {
-        if (client.readyState === 4) {
-          if (client.status !== 200) {
-            throw new Exception(`Failed to load kernel config from ${jsonFile}`);
-          }
-
-          this.load(JSON.parse(client.responseText), callback);
-        }
-      }.bind(this);
-
-      client.send();
-    }
 
     return this;
   }
@@ -197,12 +246,13 @@ export class Kernel {
   /**
    * Loads all Kernel dependencies
    *
-   * @param {Object} globalConfig
+   * @param {Object} config
    * @param {Function} callback
    *
    * @returns {Kernel}
    */
-  load(globalConfig, callback) {
+  load(config, callback) {
+
     // @todo: remove AWS changes the way the things run
     // This is used because of AWS Lambda
     // context sharing after a cold start
@@ -213,13 +263,13 @@ export class Kernel {
 
     let originalCallback = callback;
 
-    callback = function(kernel) {
+    callback = (kernel) => {
       this._isLoaded = true;
 
       originalCallback(kernel);
-    }.bind(this);
+    };
 
-    this._config = globalConfig;
+    this._config = config;
 
     this._buildContainer(callback);
 
@@ -227,11 +277,19 @@ export class Kernel {
   }
 
   /**
-   * @param {Array} args
+   * @param {*} args
    * @returns {*}
    */
   get(...args) {
     return this._container.get(...args);
+  }
+
+  /**
+   * @param {Array} args
+   * @returns {Boolean}
+   */
+  has(...args) {
+    return this._container.has(...args);
   }
 
   /**
@@ -251,6 +309,13 @@ export class Kernel {
   /**
    * @returns {Boolean}
    */
+  get isRumEnabled() {
+    return this.has('log') && this.get('log').isRumEnabled();
+  }
+
+  /**
+   * @returns {Boolean}
+   */
   get isFrontend() {
     return this._context === Kernel.FRONTEND_CONTEXT;
   }
@@ -259,8 +324,7 @@ export class Kernel {
    * @returns {Boolean}
    */
   get isLocalhost() {
-    return this.isFrontend
-      && [
+    return this.isFrontend && [
         'localhost', '127.0.0.1',
         '0.0.0.0', '::1',
       ].indexOf(window.location.hostname) !== -1;
@@ -298,6 +362,7 @@ export class Kernel {
    * @returns {Object}
    */
   get config() {
+
     // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options
     return this._config;
   }
@@ -350,19 +415,13 @@ export class Kernel {
 
       let serviceInstance = new this._services[serviceKey]();
 
-      if (!serviceInstance instanceof ContainerAware) {
-        let serviceType = typeof serviceInstance;
-
-        throw new Exception(`Service ${serviceType} must be Kernel.ContainerAware instance`);
-      }
-
       bootingServices++;
 
       serviceInstance.kernel = this;
       serviceInstance.localBackend = Core.IS_DEV_SERVER;
-      serviceInstance.boot(this, function() {
+      serviceInstance.boot(this, () => {
         bootingServices--;
-      }.bind(this));
+      });
 
       this._container.addService(
         serviceInstance.name,
@@ -371,15 +430,15 @@ export class Kernel {
     }
 
     WaitUntil()
-      .interval(5)
+      .interval(10)
       .times(999999) // @todo: get rid of magic here...
-      .condition(function(cb) {
-        process.nextTick(function() {
+      .condition((cb) => {
+        process.nextTick(() => {
           cb(bootingServices <= 0);
-        }.bind(this));
-      }).done(function() {
+        });
+      }).done(() => {
         callback(this);
-      }.bind(this));
+      });
   }
 
   /**
@@ -414,13 +473,6 @@ export class Kernel {
    */
   static get ContainerAware() {
     return ContainerAware;
-  }
-
-  /**
-   * @returns {String}
-   */
-  static get DEFAULT_CONFIG_FILE_NAME() {
-    return '_config.json';
   }
 
   /**

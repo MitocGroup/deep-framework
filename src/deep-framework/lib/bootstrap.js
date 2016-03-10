@@ -15,6 +15,7 @@ let exports = module.exports = new Framework({
   Resource: 'deep-resource',
   Log: 'deep-log',
   Validation: 'deep-validation',
+  Search: 'deep-search',
 
   //Notification: 'deep-notification',
   //Event: 'deep-event',

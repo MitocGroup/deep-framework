@@ -79,4 +79,13 @@ export class DI {
 
     return this._bottle.container[key];
   }
+
+  /**
+   * Checks if service / parameter exists in container
+   *
+   * @returns {Boolean}
+   */
+  has(key) {
+    return this._bottle.container.hasOwnProperty(key);
+  }
 }

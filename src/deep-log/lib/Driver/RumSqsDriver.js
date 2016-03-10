@@ -8,6 +8,8 @@ import AWS from 'aws-sdk';
 import {AbstractDriver} from './AbstractDriver';
 import {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException';
 import {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';
+import {FailedToReceiveSqsMessageException} from './Exception/FailedToReceiveSqsMessageException';
+import {FailedToDeleteSqsMessagesException} from './Exception/FailedToDeleteSqsMessagesException';
 import {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';
 import {RumEventValidationException} from './Exception/RumEventValidationException';
 //import {AbstractEvent} from './RUM/AbstractEvent';
@@ -192,6 +194,57 @@ export class RumSqsDriver extends AbstractDriver {
 
       if (error) {
         error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  receiveMessages(callback) {
+    let params = {
+      QueueUrl: this.queueUrl,
+      MaxNumberOfMessages: 10,
+      VisibilityTimeout: 0,
+      WaitTimeSeconds: 0
+    };
+
+    this.sqs.receiveMessage(params, (error, data) => {
+      if (error) {
+        error = new FailedToReceiveSqsMessageException(params.QueueUrl, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {Array} messages
+   * @param {Function} callback
+   */
+  deleteMessages(messages, callback) {
+    if (messages.length === 0) {
+      callback(null, null);
+      return;
+    }
+
+    let params = {
+      QueueUrl: this.queueUrl,
+      Entries: []
+    };
+
+    messages.forEach((message) => {
+      params.Entries.push({
+        Id: message.MessageId,
+        ReceiptHandle: message.ReceiptHandle
+      });
+    });
+
+    this.sqs.deleteMessageBatch(params, (error, data) => {
+      if (error) {
+        error = new FailedToDeleteSqsMessagesException(params.QueueUrl, error);
       }
 
       callback(error, data);

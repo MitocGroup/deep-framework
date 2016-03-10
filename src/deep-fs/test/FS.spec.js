@@ -58,11 +58,16 @@ suite('FS', () => {
     chai.expect(FS.SYSTEM).to.be.equal('system');
   });
 
+  test('Check SHARED static getter returns "shared"', () => {
+    chai.expect(FS.SHARED).to.be.equal('shared');
+  });
+
   test('Check FOLDERS static getter returns array of levels', () => {
-    chai.expect(FS.FOLDERS.length).to.be.equal(3);
+    chai.expect(FS.FOLDERS.length).to.be.equal(4);
     chai.expect(FS.FOLDERS).to.be.include(FS.TMP);
     chai.expect(FS.FOLDERS).to.be.include(FS.PUBLIC);
     chai.expect(FS.FOLDERS).to.be.include(FS.SYSTEM);
+    chai.expect(FS.FOLDERS).to.be.include(FS.SHARED);
   });
 
   test('Check boot() method boots a certain service', () => {
@@ -70,7 +75,7 @@ suite('FS', () => {
 
     fs.boot(backendKernelInstance, spyCallback);
 
-    chai.expect(Object.keys(fs._buckets)).to.eql(['temp', 'public', 'system']);
+    chai.expect(Object.keys(fs._buckets)).to.eql(['temp', 'public', 'system', 'shared']);
     chai.expect(spyCallback).to.have.been.calledWithExactly();
   });
 
@@ -80,7 +85,7 @@ suite('FS', () => {
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
     chai.expect(actualResult.bucket).to.equal(bucketName);
-    chai.expect(actualResult.path).to.equal(`${path}temp/`);
+    chai.expect(actualResult.path).to.equal(`temp/${path}`);
   });
 
   test('Check public() getter returns valid mounted public folder', () => {
@@ -99,7 +104,7 @@ suite('FS', () => {
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
     chai.expect(actualResult.bucket).to.equal(bucketName);
-    chai.expect(actualResult.path).to.equal(`${path}system/`);
+    chai.expect(actualResult.path).to.equal(`system/${path}`);
   });
 
   test('Check getFolder() throws "UnknownFolderException" for invalid path',
@@ -122,7 +127,7 @@ suite('FS', () => {
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
     chai.expect(actualResult.bucket).to.equal(bucketName);
-    chai.expect(actualResult.path).to.equal(`${path}temp/`);
+    chai.expect(actualResult.path).to.equal(`temp/${path}`);
   });
 
   test('Check _getTmpDir() static method returns valid value', () => {

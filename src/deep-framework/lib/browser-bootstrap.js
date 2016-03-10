@@ -12,6 +12,9 @@ import DeepResource from 'deep-resource';
 import DeepLog from 'deep-log';
 import DeepValidation from 'deep-validation';
 
+// @todo - fix lodash error "Uncaught TypeError: Cannot read property 'prototype' of undefined" in runInContext method
+//import DeepSearch  from 'deep-search';
+
 //import DeepNotification from 'deep-notification';
 
 let exports = module.exports = new Framework({
@@ -22,5 +25,6 @@ let exports = module.exports = new Framework({
   Log: DeepLog,
   Validation: DeepValidation,
 
+  //Search: DeepSearch,
   //Notification: DeepNotification,
 }, Framework.FRONTEND_CONTEXT);
