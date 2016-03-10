@@ -58,7 +58,7 @@ export class MethodsProxy {
           {
             value: (...args) => {
               return (typeof this._decorator === 'function') ?
-                this._decorator(handler[prop], ...args) :
+                this._decorator(handler, prop, ...args) :
                 handler[prop](...args);
             },
           }
