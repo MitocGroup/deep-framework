@@ -59,7 +59,7 @@ cd "${path}"/../
 echo "- Lookup for node modules to require"
 
 # used to require/exclude modules
-NPM_REGEX='(src/deep-framework|.*((deep\-(fs|db|event)).*|lsmod|ioredis|vogels|raven(?!-js)).*)$'
+NPM_REGEX='(src/deep-framework|.*((deep\-(fs|db|event|notification|search)).*|lsmod|ioredis|vogels|raven(?!-js)).*)$'
 
 # require
 browserify_require=""
