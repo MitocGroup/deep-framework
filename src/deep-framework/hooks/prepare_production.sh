@@ -35,5 +35,8 @@ find "${path}"/.. -type f -iname "test*.js" -print0 | xargs -0 rm -rf
 echo "Removing *.min.js browser files recursively"
 find "${path}"/.. -type f -iname "*.min.js" -print0 | xargs -0 rm -rf
 
+echo "Removing browser libs (e.g. lodash-compat)"
+find "${path}"/.. -type d -iname "lodash-compat@*" -print0 | xargs -0 rm -rf
+
 echo "Removing empty files and directories"
 find "${path}"/.. -empty -print0 | xargs -0 rm -rf
