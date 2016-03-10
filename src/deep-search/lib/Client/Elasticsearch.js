@@ -22,6 +22,7 @@ export class Elasticsearch {
 
     this._esClient = new elasticsearch.Client({
       host: this._host,
+      apiVersion: '2.1', // @note - If you want to change this version do update deep-search/node-bin/cleanup.sh also
     });
 
     this._proxy(this, this._esClient, this._decorator);
