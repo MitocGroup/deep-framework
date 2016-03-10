@@ -69,7 +69,7 @@ export class DB extends Kernel.ContainerAware {
 
     let model = this._models[modelName];
 
-    if (this.kernel instanceof Kernel) {
+    if (this.kernel && this.kernel.isRumEnabled) {
       // inject logService into extended model to log RUM events
       model.logService = this.kernel.get('log');
     }
