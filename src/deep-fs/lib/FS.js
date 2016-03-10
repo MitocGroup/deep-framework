@@ -22,16 +22,19 @@ export class FS extends Kernel.ContainerAware {
    * @param {String} tmpFsBucket
    * @param {String} publicFsBucket
    * @param {String} systemFsBucket
+   * @param {String} sharedFsBucket
    */
-  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null) {
+  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null, sharedFsBucket = null) {
     super();
 
+    this._microservices = [];
     this._mountedFolders = {};
     this._buckets = {};
 
     this._buckets[FS.TMP] = tmpFsBucket;
     this._buckets[FS.PUBLIC] = publicFsBucket;
     this._buckets[FS.SYSTEM] = systemFsBucket;
+    this._buckets[FS.SHARED] = sharedFsBucket;
 
     this._registry = null;
   }
@@ -77,13 +80,21 @@ export class FS extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {String}
+   */
+  static get SHARED() {
+    return 'shared';
+  }
+
+  /**
    * @returns {Array}
    */
   static get FOLDERS() {
     return [
       FS.TMP,
-      FS.PUBLIC,
       FS.SYSTEM,
+      FS.SHARED,
+      FS.PUBLIC,
     ];
   }
 
@@ -96,6 +107,8 @@ export class FS extends Kernel.ContainerAware {
   boot(kernel, callback) {
     let bucketsConfig = kernel.config.buckets;
 
+    this._microservices = kernel.microservices.map((ms) => ms.identifier);
+
     for (let i in FS.FOLDERS) {
       if (!FS.FOLDERS.hasOwnProperty(i)) {
         continue;
@@ -106,7 +119,8 @@ export class FS extends Kernel.ContainerAware {
       switch (folder) {
         case FS.TMP:
         case FS.SYSTEM:
-          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${kernel.microservice().identifier}/${folder}`;
+        case FS.SHARED:
+          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}/${kernel.microservice().identifier}`;
           break;
         default:
           this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
@@ -162,6 +176,15 @@ export class FS extends Kernel.ContainerAware {
     require('fs-extra').mkdirpSync(dir);
 
     return dir;
+  }
+
+  /**
+   * Returns mounted tmp folder
+   *
+   * @returns {*}
+   */
+  get shared() {
+    return this.getFolder(FS.SHARED);
   }
 
   /**
