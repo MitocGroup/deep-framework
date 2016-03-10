@@ -7,6 +7,7 @@
 import S3FS from 's3fs';
 import Kernel from 'deep-kernel';
 import {UnknownFolderException} from './Exception/UnknownFolderException';
+import {Exception} from './Exception/Exception';
 import OS from 'os';
 import Path from 'path';
 import {Registry} from './Registry';
@@ -27,7 +28,6 @@ export class FS extends Kernel.ContainerAware {
   constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null, sharedFsBucket = null) {
     super();
 
-    this._microservices = [];
     this._mountedFolders = {};
     this._buckets = {};
 
@@ -107,8 +107,6 @@ export class FS extends Kernel.ContainerAware {
   boot(kernel, callback) {
     let bucketsConfig = kernel.config.buckets;
 
-    this._microservices = kernel.microservices.map((ms) => ms.identifier);
-
     for (let i in FS.FOLDERS) {
       if (!FS.FOLDERS.hasOwnProperty(i)) {
         continue;
@@ -119,8 +117,10 @@ export class FS extends Kernel.ContainerAware {
       switch (folder) {
         case FS.TMP:
         case FS.SYSTEM:
-        case FS.SHARED:
           this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}/${kernel.microservice().identifier}`;
+          break;
+        case FS.SHARED:
+          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}`;
           break;
         default:
           this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
@@ -134,14 +134,28 @@ export class FS extends Kernel.ContainerAware {
    * Returns mounted file system folder (tmp, public or system)
    *
    * @param {String} name
-   * @returns {S3FS|SimulatedS3FS|*}
+   * @param {String} msIdentifier
+   * @returns {S3FS|s3fs|SimulatedS3FS|*}
    */
-  getFolder(name) {
+  getFolder(name, msIdentifier = null) {
     if (FS.FOLDERS.indexOf(name) === -1) {
       throw new UnknownFolderException(name, FS.FOLDERS);
     }
 
-    if (typeof this._mountedFolders[name] === 'undefined') {
+    let realName = null;
+
+    if (name === FS.SHARED) {
+      if (!msIdentifier) {
+        throw new Exception(`You must provide a microservice identifier for the shared fs`);
+      }
+
+      // validate msIdentifier
+      msIdentifier = this.kernel.microservice(msIdentifier).identifier;
+
+      realName = `${name}.${msIdentifier}`;
+    }
+
+    if (typeof this._mountedFolders[realName || name] === 'undefined') {
       if (this._localBackend) {
         let rootFolder = FS._getTmpDir(this._buckets[name]);
         let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;
@@ -158,11 +172,15 @@ export class FS extends Kernel.ContainerAware {
           }
         }
 
-        this._mountedFolders[name] = s3Fs;
+        if (name === FS.SHARED) {
+          s3Fs = s3Fs.clone(msIdentifier);
+        }
+
+        this._mountedFolders[realName || name] = s3Fs;
       }
     }
 
-    return this._mountedFolders[name];
+    return this._mountedFolders[realName || name];
   }
 
   /**
@@ -179,12 +197,20 @@ export class FS extends Kernel.ContainerAware {
   }
 
   /**
-   * Returns mounted tmp folder
+   * Returns mounted shared folder
    *
-   * @returns {*}
+   * @returns {s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
-  get shared() {
-    return this.getFolder(FS.SHARED);
+  shared(msIdentifier = null) {
+    return this.getFolder(FS.SHARED, msIdentifier || this._mainMsIdentifier);
+  }
+
+  /**
+   * @returns {Service.identifier|String}
+   * @private
+   */
+  get _mainMsIdentifier() {
+    return this.kernel.microservice().identifier;
   }
 
   /**
