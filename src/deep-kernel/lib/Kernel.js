@@ -61,6 +61,26 @@ export class Kernel {
   }
 
   /**
+   * @returns {Microservice|*}
+   */
+  get rootMicroservice() {
+    for (let microserviceKey in this.microservices) {
+      if (!this.microservices.hasOwnProperty(microserviceKey)) {
+        continue;
+      }
+
+      let microservice = this.microservices[microserviceKey];
+
+      if (microservice.isRoot) {
+        return microservice;
+      }
+    }
+
+    // this should never happen...
+    throw new MissingMicroserviceException('ROOT');
+  }
+
+  /**
    * @param {String|null} identifier
    * @returns {Microservice|*}
    */

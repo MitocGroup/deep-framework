@@ -19,7 +19,7 @@ export class Loader {
    * @param {Kernel|*} kernel
    */
   static asyncConfigLoader(kernel) {
-    return new Loader(AsyncConfig.createFromKernel(kernel));
+    return new Loader(new AsyncConfig(kernel));
   }
 
   /**

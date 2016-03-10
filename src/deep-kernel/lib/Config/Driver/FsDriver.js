@@ -59,22 +59,14 @@ export class FsDriver extends AbstractDriver {
   _load(file = null) {
     this._file = file || this._file;
 
-    this._fs.exists(this._file, (exists) => {
-      if (!exists) {
-        this.fail(`Configuration file '${this._file}' does not exist`);
+    this._fs.readFile(this._file, (error, data) => {
+      if (error) {
+        this.fail(`Error reading configuration file '${this._file}': ${error}`);
 
         return;
       }
 
-      this._fs.readFile(this._file, (error, data) => {
-        if (error) {
-          this.fail(`Error reading configuration file '${this._file}': ${error}`);
-
-          return;
-        }
-
-        this.loadedJson(data.toString());
-      });
+      this.loadedJson(data.toString());
     });
   }
 }

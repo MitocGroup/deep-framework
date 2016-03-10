@@ -6,32 +6,25 @@
 
 import {AbstractDriver} from './AbstractDriver';
 import {HttpDriver} from './HttpDriver';
-import AWS from 'aws-sdk';
+import {FsDriver} from './FsDriver';
 
 export class AsyncConfig extends AbstractDriver {
   /**
-   * @param {String} bucket
+   * @param {Kernel|*} kernel
    * @param {String} configFile
    */
-  constructor(bucket = null, configFile = AsyncConfig.DEFAULT_CONFIG_FILE) {
+  constructor(kernel, configFile = AsyncConfig.DEFAULT_CONFIG_FILE) {
     super();
 
-    this._bucket = bucket;
+    this._kernel = kernel;
     this._configFile = configFile;
   }
 
   /**
-   * @param {Kernel|*} kernel
+   * @returns {Kernel|*}
    */
-  static createFromKernel(kernel) {
-    return new AsyncConfig(kernel.isBackend ? kernel.get('fs').public.bucket : null);
-  }
-
-  /**
-   * @returns {String|*}
-   */
-  get bucket() {
-    return this._bucket;
+  get kernel() {
+    return this._kernel;
   }
 
   /**
@@ -42,35 +35,26 @@ export class AsyncConfig extends AbstractDriver {
   }
 
   /**
-   * @param {String} bucket
    * @param {String} configFile
    * @private
    */
-  _load(bucket = null, configFile = null) {
-    this._bucket = bucket || this._bucket;
+  _load(configFile = null) {
     this._configFile = configFile || this._configFile;
 
-    this._bucket ? this._loadFromS3() : this._loadFromEndpoint();
+    this._kernel.isBackend ? this._loadFromFS() : this._loadFromEndpoint();
   }
 
   /**
    * @private
    */
-  _loadFromS3() {
-    let payload = {
-      Bucket: this._bucket,
-      Key: this._configFile,
-    };
+  _loadFromFS() {
+    let sharedFs = this._kernel.get('fs')
+      .shared(this._kernel.rootMicroservice.identifier);
 
-    AsyncConfig._s3.getObject(payload, (error, data) => {
-      if (error) {
-        this.fail(`Failed to load s3://${payload.Bucket}/${payload.Key}: ${error}`);
-
-        return;
-      }
-
-      this.loadedJson(data.Body.toString());
-    });
+    new FsDriver(this._configFile)
+      .setFs(sharedFs)
+      .inherit(this)
+      .load();
   }
 
   /**
@@ -80,14 +64,6 @@ export class AsyncConfig extends AbstractDriver {
     new HttpDriver(this._configFile)
       .inherit(this)
       .load();
-  }
-
-  /**
-   * @returns {AWS.S3|*}
-   * @private
-   */
-  static get _s3() {
-    return new AWS.S3();
   }
 
   /**

@@ -135,7 +135,7 @@ export class FS extends Kernel.ContainerAware {
    *
    * @param {String} name
    * @param {String} msIdentifier
-   * @returns {S3FS|s3fs|SimulatedS3FS|*}
+   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
   getFolder(name, msIdentifier = null) {
     if (FS.FOLDERS.indexOf(name) === -1) {
@@ -195,24 +195,21 @@ export class FS extends Kernel.ContainerAware {
   /**
    * Returns mounted shared folder
    *
-   * @returns {s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
+   * @param {Microservice|String|*} microservice
+   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
-  shared(msIdentifier = null) {
-    return this.getFolder(FS.SHARED, msIdentifier || this._mainMsIdentifier);
-  }
+  shared(microservice = null) {
+    microservice = microservice || this.kernel.microservice();
 
-  /**
-   * @returns {Service.identifier|String}
-   * @private
-   */
-  get _mainMsIdentifier() {
-    return this.kernel.microservice().identifier;
+    let msIdentifier = typeof microservice === 'string' ? microservice : microservice.identifier;
+
+    return this.getFolder(FS.SHARED, msIdentifier);
   }
 
   /**
    * Returns mounted tmp folder
    *
-   * @returns {*}
+   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
   get tmp() {
     return this.getFolder(FS.TMP);
@@ -221,7 +218,7 @@ export class FS extends Kernel.ContainerAware {
   /**
    * Returns mounted public folder
    *
-   * @returns {*}
+   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
   get public() {
     return this.getFolder(FS.PUBLIC);
@@ -230,7 +227,7 @@ export class FS extends Kernel.ContainerAware {
   /**
    * Returns mounted sys folder
    *
-   * @returns {*}
+   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
   get system() {
     return this.getFolder(FS.SYSTEM);
