@@ -49,6 +49,7 @@
   "scripts": {
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
+    "postinstall": "bash node-bin/cleanup.sh",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core"
   },
