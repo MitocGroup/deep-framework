@@ -199,8 +199,8 @@ export class DB extends Kernel.ContainerAware {
    */
   static get DEFAULT_TABLE_OPTIONS() {
     return {
-      readCapacity: 5,
-      writeCapacity: 5,
+      readCapacity: 1,
+      writeCapacity: 1,
     };
   }
 
