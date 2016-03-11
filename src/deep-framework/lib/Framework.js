@@ -41,6 +41,20 @@ export class Framework {
   }
 
   /**
+   * @param {DeepFramework.Core.AWS.Lambda.Runtime|Handler|*} Handler
+   * @returns {{handler: Function}}
+   */
+  LambdaHandler(Handler) {
+    return {
+      handler: (event, context) => {
+        this.KernelFromLambdaContext(context).bootstrap((deepKernel) => {
+          new Handler(deepKernel).run(event, context);
+        });
+      },
+    };
+  }
+
+  /**
    *
    * @todo: improve it
    *
