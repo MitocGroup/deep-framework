@@ -485,6 +485,134 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js",
+    "memberof": null,
+    "longname": "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 03/03/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when failed to delete sqs messages\n */\nexport class FailedToDeleteSqsMessagesException extends LogDriverException {\n  /**\n   * @param {String} sqsQueueUrl\n   * @param {Object} error\n   */\n  constructor(sqsQueueUrl, error) {\n    super(`Failed to delete batch messages from \"${sqsQueueUrl}\" SQS queue. ${error}`);\n  }\n}"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "FailedToDeleteSqsMessagesException",
+    "memberof": "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js",
+    "longname": "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-log/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js",
+    "importStyle": "{FailedToDeleteSqsMessagesException}",
+    "description": "Thrown when failed to delete sqs messages",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Driver/Exception/LogDriverException~LogDriverException"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException",
+    "longname": "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "sqsQueueUrl",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Driver/Exception/FailedToReceiveSqsMessageException.js",
+    "memberof": null,
+    "longname": "lib/Driver/Exception/FailedToReceiveSqsMessageException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 03/03/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when failed to receive sqs messages\n */\nexport class FailedToReceiveSqsMessageException extends LogDriverException {\n  /**\n   * @param {String} sqsQueueUrl\n   * @param {Object} error\n   */\n  constructor(sqsQueueUrl, error) {\n    super(`Failed to receive messages from \"${sqsQueueUrl}\" SQS queue. ${error}`);\n  }\n}"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "FailedToReceiveSqsMessageException",
+    "memberof": "lib/Driver/Exception/FailedToReceiveSqsMessageException.js",
+    "longname": "lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-log/lib/Driver/Exception/FailedToReceiveSqsMessageException.js",
+    "importStyle": "{FailedToReceiveSqsMessageException}",
+    "description": "Thrown when failed to receive sqs messages",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Driver/Exception/LogDriverException~LogDriverException"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException",
+    "longname": "lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "sqsQueueUrl",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/Driver/Exception/FailedToSendBatchSqsMessageException.js",
     "memberof": null,
     "longname": "lib/Driver/Exception/FailedToSendBatchSqsMessageException.js",
@@ -1910,7 +2038,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 1/19/16.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AbstractDriver} from './AbstractDriver';\nimport {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException';\nimport {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';\nimport {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';\nimport {RumEventValidationException} from './Exception/RumEventValidationException';\n//import {AbstractEvent} from './RUM/AbstractEvent';\nimport {FrameworkEvent} from './RUM/FrameworkEvent';\n\n/**\n * SQS logging driver\n */\nexport class RumSqsDriver extends AbstractDriver {\n  /**\n   * @param {String} queueUrl\n   * @param {Object} kernel\n   * @param {Boolean} enabled\n   */\n  constructor(queueUrl, kernel, enabled = false) {\n    super();\n\n    this._queueUrl = queueUrl;\n    this._kernel = kernel;\n    this._enabled = enabled;\n\n    this._messagesBatch = [];\n    this._runningBatches = 0;\n    this._sqs = null;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get BATCH_SIZE() {\n    return 10;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get queueUrl() {\n    return this._queueUrl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get enabled() {\n    return this._enabled;\n  }\n\n  /**\n   * @returns {AWS.SQS}\n   */\n  get sqs() {\n    if (!this._sqs) {\n      this._sqs = new AWS.SQS({\n        region: RumSqsDriver.getRegionFromSqsQueueUrl(this.queueUrl)\n      });\n    }\n\n    return this._sqs;\n  }\n\n  /**\n   * @param {Object} message\n   * @param {Function} callback\n   */\n  log(message, callback) {\n    if (!this.enabled) {\n      callback(null, null);\n      return;\n    }\n\n    //let event = AbstractEvent.create(this._kernel, message); // @todo - why it doesn't work ?\n    let event = new FrameworkEvent(this.kernel, message);\n\n    // @todo - check message size, max is 256 KB (262,144 bytes)\n    if (!event.isValid()) {\n      callback(new RumEventValidationException(event.getEventLevel(), event.validationError), null);\n      return;\n    }\n\n    if (this.kernel.isBackend) {\n      if (this._messagesBatch.length < RumSqsDriver.BATCH_SIZE) {\n        this._messagesBatch.push(event);\n      }\n\n      if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {\n        let batch = this._messagesBatch.slice();\n        this._messagesBatch = [];\n\n        this._sendMessageBatch(batch, callback);\n      } else {\n        callback(null, null);\n      }\n    } else {\n      this._sendMessage(event, callback);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  flush(callback) {\n    if (!this.enabled || (this._messagesBatch.length === 0 && this._runningBatches === 0)) {\n      callback(null, null);\n      return;\n    }\n\n    this._sendMessageBatch(this._messagesBatch, (error, data) => {\n      this._messagesBatch = [];\n\n      if (this._runningBatches > 0) {\n        // wait for all batches to be pushed into SQS\n        var intervalID = setInterval(() => {\n          if (this._runningBatches === 0) {\n            clearInterval(intervalID);\n            return callback(error, data);\n          }\n        }, 50);\n      } else {\n        callback(error, data);\n      }\n    });\n  }\n\n  /**\n   * @param {AbstractEvent} event\n   * @param callback\n   * @private\n   */\n  _sendMessage(event, callback) {\n    let params = {\n      MessageBody: JSON.stringify(event),\n      QueueUrl: this.queueUrl,\n    };\n\n    this.sqs.sendMessage(params, (error, data) => {\n      if (error) {\n        error = new FailedToSendSqsMessageException(params.QueueUrl, params.MessageBody, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Array} messages\n   * @param callback\n   * @private\n   */\n  _sendMessageBatch(messages, callback) {\n    if (messages.length === 0) {\n      callback(null, null);\n      return;\n    }\n\n    this._runningBatches++;\n\n    let entries = [];\n    messages.forEach((event, index) => {\n      event = JSON.stringify(event);\n      let id = `${AbstractDriver._md5(event)}-${new Date().getTime()}-${index}`;\n\n      entries.push({\n        Id: id,\n        MessageBody: event,\n      });\n    });\n\n    var params = {\n      QueueUrl: this.queueUrl,\n      Entries: entries\n    };\n\n    this.sqs.sendMessageBatch(params, (error, data) => {\n      this._runningBatches--;\n\n      if (error) {\n        error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {String} queueUrl\n   * @returns {String}\n   */\n  static getRegionFromSqsQueueUrl(queueUrl) {\n    let regionParts = queueUrl.match(/\\.([^\\.]+)\\.amazonaws\\.com\\/.*/i);\n\n    if (!regionParts || regionParts.length === 0) {\n      throw new InvalidSqsQueueUrlException(queueUrl, 'Unable to extract AWS region.');\n    }\n\n    return regionParts[1];\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 1/19/16.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AbstractDriver} from './AbstractDriver';\nimport {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException';\nimport {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';\nimport {FailedToReceiveSqsMessageException} from './Exception/FailedToReceiveSqsMessageException';\nimport {FailedToDeleteSqsMessagesException} from './Exception/FailedToDeleteSqsMessagesException';\nimport {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';\nimport {RumEventValidationException} from './Exception/RumEventValidationException';\n//import {AbstractEvent} from './RUM/AbstractEvent';\nimport {FrameworkEvent} from './RUM/FrameworkEvent';\n\n/**\n * SQS logging driver\n */\nexport class RumSqsDriver extends AbstractDriver {\n  /**\n   * @param {String} queueUrl\n   * @param {Object} kernel\n   * @param {Boolean} enabled\n   */\n  constructor(queueUrl, kernel, enabled = false) {\n    super();\n\n    this._queueUrl = queueUrl;\n    this._kernel = kernel;\n    this._enabled = enabled;\n\n    this._messagesBatch = [];\n    this._runningBatches = 0;\n    this._sqs = null;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get BATCH_SIZE() {\n    return 10;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get queueUrl() {\n    return this._queueUrl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get enabled() {\n    return this._enabled;\n  }\n\n  /**\n   * @returns {AWS.SQS}\n   */\n  get sqs() {\n    if (!this._sqs) {\n      this._sqs = new AWS.SQS({\n        region: RumSqsDriver.getRegionFromSqsQueueUrl(this.queueUrl)\n      });\n    }\n\n    return this._sqs;\n  }\n\n  /**\n   * @param {Object} message\n   * @param {Function} callback\n   */\n  log(message, callback) {\n    if (!this.enabled) {\n      callback(null, null);\n      return;\n    }\n\n    //let event = AbstractEvent.create(this._kernel, message); // @todo - why it doesn't work ?\n    let event = new FrameworkEvent(this.kernel, message);\n\n    // @todo - check message size, max is 256 KB (262,144 bytes)\n    if (!event.isValid()) {\n      callback(new RumEventValidationException(event.getEventLevel(), event.validationError), null);\n      return;\n    }\n\n    if (this.kernel.isBackend) {\n      if (this._messagesBatch.length < RumSqsDriver.BATCH_SIZE) {\n        this._messagesBatch.push(event);\n      }\n\n      if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {\n        let batch = this._messagesBatch.slice();\n        this._messagesBatch = [];\n\n        this._sendMessageBatch(batch, callback);\n      } else {\n        callback(null, null);\n      }\n    } else {\n      this._sendMessage(event, callback);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  flush(callback) {\n    if (!this.enabled || (this._messagesBatch.length === 0 && this._runningBatches === 0)) {\n      callback(null, null);\n      return;\n    }\n\n    this._sendMessageBatch(this._messagesBatch, (error, data) => {\n      this._messagesBatch = [];\n\n      if (this._runningBatches > 0) {\n        // wait for all batches to be pushed into SQS\n        var intervalID = setInterval(() => {\n          if (this._runningBatches === 0) {\n            clearInterval(intervalID);\n            return callback(error, data);\n          }\n        }, 50);\n      } else {\n        callback(error, data);\n      }\n    });\n  }\n\n  /**\n   * @param {AbstractEvent} event\n   * @param callback\n   * @private\n   */\n  _sendMessage(event, callback) {\n    let params = {\n      MessageBody: JSON.stringify(event),\n      QueueUrl: this.queueUrl,\n    };\n\n    this.sqs.sendMessage(params, (error, data) => {\n      if (error) {\n        error = new FailedToSendSqsMessageException(params.QueueUrl, params.MessageBody, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Array} messages\n   * @param callback\n   * @private\n   */\n  _sendMessageBatch(messages, callback) {\n    if (messages.length === 0) {\n      callback(null, null);\n      return;\n    }\n\n    this._runningBatches++;\n\n    let entries = [];\n    messages.forEach((event, index) => {\n      event = JSON.stringify(event);\n      let id = `${AbstractDriver._md5(event)}-${new Date().getTime()}-${index}`;\n\n      entries.push({\n        Id: id,\n        MessageBody: event,\n      });\n    });\n\n    var params = {\n      QueueUrl: this.queueUrl,\n      Entries: entries\n    };\n\n    this.sqs.sendMessageBatch(params, (error, data) => {\n      this._runningBatches--;\n\n      if (error) {\n        error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  receiveMessages(callback) {\n    let params = {\n      QueueUrl: this.queueUrl,\n      MaxNumberOfMessages: 10,\n      VisibilityTimeout: 0,\n      WaitTimeSeconds: 0\n    };\n\n    this.sqs.receiveMessage(params, (error, data) => {\n      if (error) {\n        error = new FailedToReceiveSqsMessageException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Array} messages\n   * @param {Function} callback\n   */\n  deleteMessages(messages, callback) {\n    if (messages.length === 0) {\n      callback(null, null);\n      return;\n    }\n\n    let params = {\n      QueueUrl: this.queueUrl,\n      Entries: []\n    };\n\n    messages.forEach((message) => {\n      params.Entries.push({\n        Id: message.MessageId,\n        ReceiptHandle: message.ReceiptHandle\n      });\n    });\n\n    this.sqs.deleteMessageBatch(params, (error, data) => {\n      if (error) {\n        error = new FailedToDeleteSqsMessagesException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {String} queueUrl\n   * @returns {String}\n   */\n  static getRegionFromSqsQueueUrl(queueUrl) {\n    let regionParts = queueUrl.match(/\\.([^\\.]+)\\.amazonaws\\.com\\/.*/i);\n\n    if (!regionParts || regionParts.length === 0) {\n      throw new InvalidSqsQueueUrlException(queueUrl, 'Unable to extract AWS region.');\n    }\n\n    return regionParts[1];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -1924,7 +2052,7 @@
     "importPath": "deep-log/lib/Driver/RumSqsDriver.js",
     "importStyle": "{RumSqsDriver}",
     "description": "SQS logging driver",
-    "lineNumber": 19,
+    "lineNumber": 21,
     "interface": false,
     "extends": [
       "lib/Driver/AbstractDriver~AbstractDriver"
@@ -1939,7 +2067,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 27,
     "params": [
       {
         "nullable": null,
@@ -1983,7 +2111,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_queueUrl",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 30,
     "undocument": true,
     "type": {
       "types": [
@@ -2000,7 +2128,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_kernel",
     "access": null,
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -2017,7 +2145,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_enabled",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
@@ -2034,7 +2162,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_messagesBatch",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 34,
     "undocument": true,
     "type": {
       "types": [
@@ -2051,7 +2179,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_runningBatches",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -2068,7 +2196,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_sqs",
     "access": null,
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -2085,7 +2213,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver.BATCH_SIZE",
     "access": null,
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 42,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2116,7 +2244,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#queueUrl",
     "access": null,
     "description": null,
-    "lineNumber": 47,
+    "lineNumber": 49,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2147,7 +2275,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#kernel",
     "access": null,
     "description": null,
-    "lineNumber": 54,
+    "lineNumber": 56,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2178,7 +2306,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#enabled",
     "access": null,
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 63,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2209,7 +2337,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#sqs",
     "access": null,
     "description": null,
-    "lineNumber": 68,
+    "lineNumber": 70,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2240,7 +2368,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_sqs",
     "access": null,
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 72,
     "undocument": true,
     "type": {
       "types": [
@@ -2257,7 +2385,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#log",
     "access": null,
     "description": null,
-    "lineNumber": 82,
+    "lineNumber": 84,
     "params": [
       {
         "nullable": null,
@@ -2291,7 +2419,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_messagesBatch",
     "access": null,
     "description": null,
-    "lineNumber": 104,
+    "lineNumber": 106,
     "undocument": true,
     "type": {
       "types": [
@@ -2308,7 +2436,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#flush",
     "access": null,
     "description": null,
-    "lineNumber": 118,
+    "lineNumber": 120,
     "params": [
       {
         "nullable": null,
@@ -2332,7 +2460,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_messagesBatch",
     "access": null,
     "description": null,
-    "lineNumber": 125,
+    "lineNumber": 127,
     "undocument": true,
     "type": {
       "types": [
@@ -2349,7 +2477,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_sendMessage",
     "access": "private",
     "description": null,
-    "lineNumber": 146,
+    "lineNumber": 148,
     "params": [
       {
         "nullable": null,
@@ -2383,7 +2511,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_sendMessageBatch",
     "access": "private",
     "description": null,
-    "lineNumber": 166,
+    "lineNumber": 168,
     "params": [
       {
         "nullable": null,
@@ -2410,6 +2538,64 @@
   },
   {
     "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "receiveMessages",
+    "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
+    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#receiveMessages",
+    "access": null,
+    "description": null,
+    "lineNumber": 206,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "deleteMessages",
+    "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
+    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#deleteMessages",
+    "access": null,
+    "description": null,
+    "lineNumber": 227,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "messages",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
     "static": true,
     "variation": null,
     "name": "getRegionFromSqsQueueUrl",
@@ -2417,7 +2603,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver.getRegionFromSqsQueueUrl",
     "access": null,
     "description": null,
-    "lineNumber": 205,
+    "lineNumber": 258,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2510,7 +2696,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {ConsoleDriver} from './Driver/ConsoleDriver';\nimport {RavenDriver} from './Driver/RavenDriver';\nimport {RavenBrowserDriver} from './Driver/RavenBrowserDriver';\nimport {RumSqsDriver} from './Driver/RumSqsDriver';\nimport {AbstractDriver} from './Driver/AbstractDriver';\n\n/**\n * Logging manager\n */\nexport class Log extends Kernel.ContainerAware {\n  /**\n   * @param {Object} drivers\n   */\n  constructor(drivers = {}) {\n    super();\n\n    this._drivers = new Core.Generic.ObjectStorage();\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let globals = kernel.config.globals;\n    let drivers = globals.logDrivers || {};\n\n    // add console driver by default to all environments except for PROD\n    if (!drivers.hasOwnProperty('console') && kernel.env !== Kernel.PROD_ENVIRONMENT) {\n      drivers.console = {};\n    }\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n\n    callback();\n  }\n\n  /**\n   *\n   * @param {String} type\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  create(type, ...args) {\n    var driver;\n\n    switch (type.toLowerCase()) {\n      case 'console':\n        driver = new ConsoleDriver(...args);\n        break;\n      case 'raven':\n      case 'sentry':\n        let DriverPrototype = this.container.get(Kernel.CONTEXT).isFrontend ? RavenBrowserDriver : RavenDriver;\n\n        driver = new DriverPrototype(\n          args.length > 0 && typeof args[0] === 'object'\n            ? args[0].dsn\n            : null\n        );\n        break;\n      case 'rum':\n        let rumQueueUrl = this.kernel.config.rumQueue.url;\n        let enabled = (args.length > 0 && args[0] && typeof args[0] === 'object') ? args[0].enabled : false;\n\n        driver = new RumSqsDriver(rumQueueUrl, this.kernel, enabled);\n        break;\n      default:\n        throw new Core.Exception.InvalidArgumentException(\n          type,\n          '[Console, Raven, Sentry, RUM]'\n        );\n    }\n\n    return driver;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {Log}\n   *\n   * @todo: do we need this here?\n   */\n  overrideJsConsole(...args) {\n    let consoleDriver = this._drivers.find(ConsoleDriver);\n\n    if (!consoleDriver) {\n      this.register('console');\n    }\n\n    (consoleDriver || this._drivers.find(ConsoleDriver))\n      .overrideNative(...args);\n\n    return this;\n  }\n\n  /**\n   * @param {AbstractDriver|String} driver\n   * @param {Array} args\n   * @returns {Log}\n   */\n  register(driver, ...args) {\n    if (typeof driver === 'string') {\n      driver = this.create(driver, ...args);\n    }\n\n    if (!(driver instanceof AbstractDriver)) {\n      throw new Core.Exception.InvalidArgumentException(driver, 'AbstractDriver');\n    }\n\n    this._drivers.add(driver);\n\n    return this;\n  }\n\n  /**\n   * @returns {Core.Generic.ObjectStorage}\n   */\n  get drivers() {\n    return this._drivers;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   * @returns Log\n   */\n  log(msg, level = Log.INFO, context = {}) {\n    let driversArr = this.drivers.iterator;\n\n    for (let driverKey in driversArr) {\n      if (!driversArr.hasOwnProperty(driverKey)) {\n        continue;\n      }\n\n      let driver = driversArr[driverKey];\n\n      // do not log common messages into RUM\n      if (driver instanceof RumSqsDriver) {\n        continue;\n      }\n\n      driver.log(msg, level, context);\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  isRumEnabled() {\n    let driver = this._rumDriver();\n\n    return driver && driver.enabled;\n  }\n\n  /**\n   * @param {Object} event\n   */\n  rumLog(event) {\n    let driver = this._rumDriver();\n\n    if (driver) {\n      driver.log(event, (error, data) => {\n        if (error) {\n          this.log(error, Log.ERROR, event);\n        }\n      });\n    }\n  }\n\n  /**\n   * Flushes RUM batch messages\n   */\n  rumFlush(callback) {\n    let driver = this._rumDriver();\n\n    if (!driver) {\n      callback(null, null);\n      return;\n    }\n\n    driver.flush((error, data) => {\n      if (error) {\n        this.log(error, Log.ERROR);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @returns {RumSqsDriver}\n   * @private\n   */\n  _rumDriver() {\n    return this.drivers.find(RumSqsDriver);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  debug(msg, context = {}) {\n    return this.log(msg, Log.DEBUG, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  err(msg, context = {}) {\n    return this.log(msg, Log.ERROR, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  error(...args) {\n    return this.err(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  info(msg, context = {}) {\n    return this.log(msg, Log.INFO, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  warn(msg, context = {}) {\n    return this.log(msg, Log.WARNING, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  warning(...args) {\n    return this.warn(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  emerg(msg, context = {}) {\n    return this.log(msg, Log.EMERGENCY, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  emergency(...args) {\n    return this.emerg(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  crit(msg, context = {}) {\n    return this.log(msg, Log.CRITICAL, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  critical(...args) {\n    return this.crit(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  notice(msg, context = {}) {\n    return this.log(msg, Log.NOTICE, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  alert(msg, context = {}) {\n    return this.log(msg, Log.ALERT, context);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get LEVELS() {\n    return [\n      Log.EMERGENCY,\n      Log.ALERT,\n      Log.CRITICAL,\n      Log.ERROR,\n      Log.WARNING,\n      Log.NOTICE,\n      Log.INFO,\n      Log.DEBUG,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EMERGENCY() {\n    return 'emergency';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ALERT() {\n    return 'alert';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CRITICAL() {\n    return 'critical';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ERROR() {\n    return 'error';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get WARNING() {\n    return 'warning';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get NOTICE() {\n    return 'notice';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get INFO() {\n    return 'info';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEBUG() {\n    return 'debug';\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {ConsoleDriver} from './Driver/ConsoleDriver';\nimport {RavenDriver} from './Driver/RavenDriver';\nimport {RavenBrowserDriver} from './Driver/RavenBrowserDriver';\nimport {RumSqsDriver} from './Driver/RumSqsDriver';\nimport {AbstractDriver} from './Driver/AbstractDriver';\n\n/**\n * Logging manager\n */\nexport class Log extends Kernel.ContainerAware {\n  /**\n   * @param {Object} drivers\n   */\n  constructor(drivers = {}) {\n    super();\n\n    this._drivers = new Core.Generic.ObjectStorage();\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let globals = kernel.config.globals;\n    let drivers = globals.logDrivers || {};\n\n    // add console driver by default to all environments except for PROD\n    if (!drivers.hasOwnProperty('console') && kernel.env !== Kernel.PROD_ENVIRONMENT) {\n      drivers.console = {};\n    }\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n\n    callback();\n  }\n\n  /**\n   *\n   * @param {String} type\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  create(type, ...args) {\n    var driver;\n\n    switch (type.toLowerCase()) {\n      case 'console':\n        driver = new ConsoleDriver(...args);\n        break;\n      case 'raven':\n      case 'sentry':\n        let DriverPrototype = this.container.get(Kernel.CONTEXT).isFrontend ? RavenBrowserDriver : RavenDriver;\n\n        driver = new DriverPrototype(\n          args.length > 0 && typeof args[0] === 'object'\n            ? args[0].dsn\n            : null\n        );\n        break;\n      case 'rum':\n        let rumQueueUrl = this.kernel.config.rumQueue.url;\n        let enabled = (args.length > 0 && args[0] && typeof args[0] === 'object') ? args[0].enabled : false;\n\n        driver = new RumSqsDriver(rumQueueUrl, this.kernel, enabled);\n        break;\n      default:\n        throw new Core.Exception.InvalidArgumentException(\n          type,\n          '[Console, Raven, Sentry, RUM]'\n        );\n    }\n\n    return driver;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {Log}\n   *\n   * @todo: do we need this here?\n   */\n  overrideJsConsole(...args) {\n    let consoleDriver = this._drivers.find(ConsoleDriver);\n\n    if (!consoleDriver) {\n      this.register('console');\n    }\n\n    (consoleDriver || this._drivers.find(ConsoleDriver))\n      .overrideNative(...args);\n\n    return this;\n  }\n\n  /**\n   * @param {AbstractDriver|String} driver\n   * @param {Array} args\n   * @returns {Log}\n   */\n  register(driver, ...args) {\n    if (typeof driver === 'string') {\n      driver = this.create(driver, ...args);\n    }\n\n    if (!(driver instanceof AbstractDriver)) {\n      throw new Core.Exception.InvalidArgumentException(driver, 'AbstractDriver');\n    }\n\n    this._drivers.add(driver);\n\n    return this;\n  }\n\n  /**\n   * @returns {Core.Generic.ObjectStorage}\n   */\n  get drivers() {\n    return this._drivers;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   * @returns Log\n   */\n  log(msg, level = Log.INFO, context = {}) {\n    let driversArr = this.drivers.iterator;\n\n    for (let driverKey in driversArr) {\n      if (!driversArr.hasOwnProperty(driverKey)) {\n        continue;\n      }\n\n      let driver = driversArr[driverKey];\n\n      // do not log common messages into RUM\n      if (driver instanceof RumSqsDriver) {\n        continue;\n      }\n\n      driver.log(msg, level, context);\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  isRumEnabled() {\n    let driver = this.rumDriver();\n\n    return driver && driver.enabled;\n  }\n\n  /**\n   * @param {Object} event\n   */\n  rumLog(event) {\n    let driver = this.rumDriver();\n\n    if (driver) {\n      driver.log(event, (error, data) => {\n        if (error) {\n          this.log(error, Log.ERROR, event);\n        }\n      });\n    }\n  }\n\n  /**\n   * Flushes RUM batch messages\n   */\n  rumFlush(callback) {\n    let driver = this.rumDriver();\n\n    if (!driver) {\n      callback(null, null);\n      return;\n    }\n\n    driver.flush((error, data) => {\n      if (error) {\n        this.log(error, Log.ERROR);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @returns {RumSqsDriver}\n   */\n  rumDriver() {\n    return this.drivers.find(RumSqsDriver);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  debug(msg, context = {}) {\n    return this.log(msg, Log.DEBUG, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  err(msg, context = {}) {\n    return this.log(msg, Log.ERROR, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  error(...args) {\n    return this.err(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  info(msg, context = {}) {\n    return this.log(msg, Log.INFO, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  warn(msg, context = {}) {\n    return this.log(msg, Log.WARNING, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  warning(...args) {\n    return this.warn(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  emerg(msg, context = {}) {\n    return this.log(msg, Log.EMERGENCY, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  emergency(...args) {\n    return this.emerg(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  crit(msg, context = {}) {\n    return this.log(msg, Log.CRITICAL, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  critical(...args) {\n    return this.crit(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  notice(msg, context = {}) {\n    return this.log(msg, Log.NOTICE, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  alert(msg, context = {}) {\n    return this.log(msg, Log.ALERT, context);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get LEVELS() {\n    return [\n      Log.EMERGENCY,\n      Log.ALERT,\n      Log.CRITICAL,\n      Log.ERROR,\n      Log.WARNING,\n      Log.NOTICE,\n      Log.INFO,\n      Log.DEBUG,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EMERGENCY() {\n    return 'emergency';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ALERT() {\n    return 'alert';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CRITICAL() {\n    return 'critical';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ERROR() {\n    return 'error';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get WARNING() {\n    return 'warning';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get NOTICE() {\n    return 'notice';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get INFO() {\n    return 'info';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEBUG() {\n    return 'debug';\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -2904,12 +3090,12 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "_rumDriver",
+    "name": "rumDriver",
     "memberof": "lib/Log.js~Log",
-    "longname": "lib/Log.js~Log#_rumDriver",
-    "access": "private",
+    "longname": "lib/Log.js~Log#rumDriver",
+    "access": null,
     "description": null,
-    "lineNumber": 221,
+    "lineNumber": 220,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2936,7 +3122,7 @@
     "longname": "lib/Log.js~Log#debug",
     "access": null,
     "description": null,
-    "lineNumber": 230,
+    "lineNumber": 229,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2984,7 +3170,7 @@
     "longname": "lib/Log.js~Log#err",
     "access": null,
     "description": null,
-    "lineNumber": 239,
+    "lineNumber": 238,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3032,7 +3218,7 @@
     "longname": "lib/Log.js~Log#error",
     "access": null,
     "description": null,
-    "lineNumber": 246,
+    "lineNumber": 245,
     "params": [
       {
         "nullable": null,
@@ -3061,7 +3247,7 @@
     "longname": "lib/Log.js~Log#info",
     "access": null,
     "description": null,
-    "lineNumber": 255,
+    "lineNumber": 254,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3109,7 +3295,7 @@
     "longname": "lib/Log.js~Log#warn",
     "access": null,
     "description": null,
-    "lineNumber": 264,
+    "lineNumber": 263,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3157,7 +3343,7 @@
     "longname": "lib/Log.js~Log#warning",
     "access": null,
     "description": null,
-    "lineNumber": 271,
+    "lineNumber": 270,
     "params": [
       {
         "nullable": null,
@@ -3186,7 +3372,7 @@
     "longname": "lib/Log.js~Log#emerg",
     "access": null,
     "description": null,
-    "lineNumber": 280,
+    "lineNumber": 279,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3234,7 +3420,7 @@
     "longname": "lib/Log.js~Log#emergency",
     "access": null,
     "description": null,
-    "lineNumber": 287,
+    "lineNumber": 286,
     "params": [
       {
         "nullable": null,
@@ -3263,7 +3449,7 @@
     "longname": "lib/Log.js~Log#crit",
     "access": null,
     "description": null,
-    "lineNumber": 296,
+    "lineNumber": 295,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3311,7 +3497,7 @@
     "longname": "lib/Log.js~Log#critical",
     "access": null,
     "description": null,
-    "lineNumber": 303,
+    "lineNumber": 302,
     "params": [
       {
         "nullable": null,
@@ -3340,7 +3526,7 @@
     "longname": "lib/Log.js~Log#notice",
     "access": null,
     "description": null,
-    "lineNumber": 312,
+    "lineNumber": 311,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3388,7 +3574,7 @@
     "longname": "lib/Log.js~Log#alert",
     "access": null,
     "description": null,
-    "lineNumber": 321,
+    "lineNumber": 320,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3436,7 +3622,7 @@
     "longname": "lib/Log.js~Log.LEVELS",
     "access": null,
     "description": null,
-    "lineNumber": 328,
+    "lineNumber": 327,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3467,7 +3653,7 @@
     "longname": "lib/Log.js~Log.EMERGENCY",
     "access": null,
     "description": null,
-    "lineNumber": 344,
+    "lineNumber": 343,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3498,7 +3684,7 @@
     "longname": "lib/Log.js~Log.ALERT",
     "access": null,
     "description": null,
-    "lineNumber": 351,
+    "lineNumber": 350,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3529,7 +3715,7 @@
     "longname": "lib/Log.js~Log.CRITICAL",
     "access": null,
     "description": null,
-    "lineNumber": 358,
+    "lineNumber": 357,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3560,7 +3746,7 @@
     "longname": "lib/Log.js~Log.ERROR",
     "access": null,
     "description": null,
-    "lineNumber": 365,
+    "lineNumber": 364,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3591,7 +3777,7 @@
     "longname": "lib/Log.js~Log.WARNING",
     "access": null,
     "description": null,
-    "lineNumber": 372,
+    "lineNumber": 371,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3622,7 +3808,7 @@
     "longname": "lib/Log.js~Log.NOTICE",
     "access": null,
     "description": null,
-    "lineNumber": 379,
+    "lineNumber": 378,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3653,7 +3839,7 @@
     "longname": "lib/Log.js~Log.INFO",
     "access": null,
     "description": null,
-    "lineNumber": 386,
+    "lineNumber": 385,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3684,7 +3870,7 @@
     "longname": "lib/Log.js~Log.DEBUG",
     "access": null,
     "description": null,
-    "lineNumber": 393,
+    "lineNumber": 392,
     "unknown": [
       {
         "tagName": "@returns",

@@ -511,13 +511,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
@@ -535,13 +535,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
@@ -691,13 +691,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
@@ -721,13 +721,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
@@ -745,13 +745,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
@@ -805,13 +805,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
@@ -823,13 +823,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
@@ -1302,6 +1302,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/aws/service.js~service.cloud_watch_events",
+    "class/lib/AWS/Service.js~Service.html#static-get-CLOUD_WATCH_EVENTS",
+    "lib/AWS/Service.js~Service.CLOUD_WATCH_EVENTS",
+    "member"
+  ],
+  [
     "lib/aws/service.js~service.cloud_watch_logs",
     "class/lib/AWS/Service.js~Service.html#static-get-CLOUD_WATCH_LOGS",
     "lib/AWS/Service.js~Service.CLOUD_WATCH_LOGS",
@@ -1335,6 +1341,12 @@ window.esdocSearchIndex = [
     "lib/aws/service.js~service.elastic_cache",
     "class/lib/AWS/Service.js~Service.html#static-get-ELASTIC_CACHE",
     "lib/AWS/Service.js~Service.ELASTIC_CACHE",
+    "member"
+  ],
+  [
+    "lib/aws/service.js~service.elastic_search",
+    "class/lib/AWS/Service.js~Service.html#static-get-ELASTIC_SEARCH",
+    "lib/AWS/Service.js~Service.ELASTIC_SEARCH",
     "member"
   ],
   [
@@ -1485,6 +1497,12 @@ window.esdocSearchIndex = [
     "lib/generic/methodsproxy.js~methodsproxy#constructor",
     "class/lib/Generic/MethodsProxy.js~MethodsProxy.html#instance-constructor-constructor",
     "lib/Generic/MethodsProxy.js~MethodsProxy#constructor",
+    "method"
+  ],
+  [
+    "lib/generic/methodsproxy.js~methodsproxy#decorate",
+    "class/lib/Generic/MethodsProxy.js~MethodsProxy.html#instance-method-decorate",
+    "lib/Generic/MethodsProxy.js~MethodsProxy#decorate",
     "method"
   ],
   [

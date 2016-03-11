@@ -378,6 +378,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/di.js~di#has",
+    "class/lib/DI.js~DI.html#instance-method-has",
+    "lib/DI.js~DI#has",
+    "method"
+  ],
+  [
     "lib/di.js~di#register",
     "class/lib/DI.js~DI.html#instance-method-register",
     "lib/DI.js~DI#register",

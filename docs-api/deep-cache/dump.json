@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Exception} from './Exception/Exception';\nimport {SharedCache} from './SharedCache';\n\n/**\n * Cache manager\n */\nexport class Cache extends Kernel.ContainerAware {\n  /**\n   * @param {AbstractDriver} driver\n   */\n  constructor(driver = null) {\n    super();\n\n    this._driver = driver;\n  }\n\n  /**\n   * @param {String} name\n   * @param {*} args\n   * @returns {AbstractDriver}\n   */\n  static createDriver(name, ...args) {\n    let DriverPrototype = null;\n\n    switch (name) {\n      case 'memory':\n        DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        break;\n      case 'redis':\n        DriverPrototype = require('./Driver/RedisDriver').RedisDriver;\n        break;\n      case 'local-storage':\n        DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;\n\n        // fallback to in-memory driver if localStorage is not available\n        if (!DriverPrototype.isAvailable()) {\n          DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        }\n        break;\n      case 's3fs':\n        DriverPrototype = require('./Driver/S3FSDriver').S3FSDriver;\n        break;\n      case 'cloud-front':\n        DriverPrototype = require('./Driver/CloudFrontDriver').CloudFrontDriver;\n        break;\n      default:\n        throw new Exception(`Missing driver ${name}`);\n    }\n\n    return new DriverPrototype(...args);\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n\n    // @todo: remove in memory fallback for backend?\n    this._driver = kernel.isFrontend ?\n      Cache.createDriver('local-storage') :\n      (kernel.config.cacheDsn ?\n        Cache.createDriver('redis', kernel.config.cacheDsn) :\n        Cache.createDriver('memory'));\n\n    let sharedCacheDriver = kernel.isFrontend ?\n      Cache.createDriver('cloud-front', this) :\n      Cache.createDriver('s3fs', this);\n\n    [this._driver, sharedCacheDriver].map((driver) => {\n      driver.buildId = kernel.buildId;\n    });\n\n    this._shared = new SharedCache(sharedCacheDriver);\n\n    callback();\n  }\n\n  /**\n   * @returns {SharedCache}\n   */\n  get shared() {\n    return this._shared;\n  }\n\n  /**\n   * @param {AbstractDriver} target\n   * @param {*} args\n   * @returns {*}\n   */\n  apply(target, ...args) {\n    return target(...args);\n  }\n\n  /**\n   * DO NOT REMOVE THIS!\n   * It's used while kernel boot\n   *\n   * @returns {Object}\n   */\n  get service() {\n    return new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush', 'type'\n    );\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set driver(driver) {\n    this._driver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get driver() {\n    return this._driver;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/16/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Exception} from './Exception/Exception';\nimport {SharedCache} from './SharedCache';\n\n/**\n * Cache manager\n */\nexport class Cache extends Kernel.ContainerAware {\n  /**\n   * @param {AbstractDriver} driver\n   * @param {AbstractDriver} systemDriver\n   */\n  constructor(driver = null, systemDriver = null) {\n    super();\n\n    this._driver = driver;\n    this._systemDriver = systemDriver;\n  }\n\n  /**\n   * @param {String} name\n   * @param {*} args\n   * @returns {AbstractDriver}\n   */\n  static createDriver(name, ...args) {\n    let DriverPrototype = null;\n\n    switch (name) {\n      case 'memory':\n        DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        break;\n      case 'redis':\n        DriverPrototype = require('./Driver/RedisDriver').RedisDriver;\n        break;\n      case 'local-storage':\n        DriverPrototype = require('./Driver/LocalStorageDriver').LocalStorageDriver;\n\n        // fallback to in-memory driver if localStorage is not available\n        if (!DriverPrototype.isAvailable()) {\n          DriverPrototype = require('./Driver/InMemoryDriver').InMemoryDriver;\n        }\n        break;\n      case 's3fs':\n        DriverPrototype = require('./Driver/S3FSDriver').S3FSDriver;\n        break;\n      case 'cloud-front':\n        DriverPrototype = require('./Driver/CloudFrontDriver').CloudFrontDriver;\n        break;\n      default:\n        throw new Exception(`Missing driver ${name}`);\n    }\n\n    return new DriverPrototype(...args);\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._driver = this._createCacheDriver(kernel);\n    this._systemDriver = this._createCacheDriver(kernel);\n\n    let sharedCacheDriver = kernel.isFrontend ?\n      Cache.createDriver('cloud-front', this) :\n      Cache.createDriver('s3fs', this);\n\n    this._shared = new SharedCache(sharedCacheDriver);\n\n    [this._driver, this._systemDriver, sharedCacheDriver].forEach((driver) => {\n      driver.buildId = kernel.buildId;\n    });\n\n    this._systemDriver.namespace = Cache.SYSTEM_NAMESPACE;\n\n    callback();\n  }\n\n  /**\n   * @returns {SharedCache|*}\n   */\n  get shared() {\n    return this._shared;\n  }\n\n  /**\n   * @returns {AbstractDriver|*}\n   */\n  get system() {\n    return this._systemDriver || this._driver;\n  }\n\n  /**\n   * @todo: remove in memory fallback for backend?\n   *\n   * @param {Kernel} kernel\n   * @returns {AbstractDriver}\n   * @private\n   */\n  _createCacheDriver(kernel) {\n    return kernel.isFrontend ?\n      Cache.createDriver('local-storage') :\n      (kernel.config.cacheDsn ?\n        Cache.createDriver('redis', kernel.config.cacheDsn) :\n        Cache.createDriver('memory'));\n  }\n\n  /**\n   * @param {AbstractDriver|*} target\n   * @param {*} args\n   * @returns {*}\n   */\n  apply(target, ...args) {\n    return target(...args);\n  }\n\n  /**\n   * DO NOT REMOVE THIS!\n   * It's used while kernel boot\n   *\n   * @returns {Object}\n   */\n  get service() {\n    return new Core.Generic.MethodsProxy(this)\n      .proxyOverride(\n      this._driver,\n      'has', 'get', 'set',\n      'invalidate', 'flush', 'type'\n    );\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set driver(driver) {\n    this._driver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get driver() {\n    return this._driver;\n  }\n\n  /**\n   * @param {AbstractDriver} driver\n   */\n  set systemDriver(driver) {\n    this._systemDriver = driver;\n  }\n\n  /**\n   * @returns {AbstractDriver}\n   */\n  get systemDriver() {\n    return this._systemDriver;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SYSTEM_NAMESPACE() {\n    return 'system';\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -38,7 +38,7 @@
     "longname": "lib/Cache.js~Cache#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 20,
     "params": [
       {
         "nullable": null,
@@ -48,6 +48,16 @@
         "spread": false,
         "optional": false,
         "name": "driver",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "systemDriver",
         "description": ""
       }
     ],
@@ -62,7 +72,24 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 22,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_systemDriver",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#_systemDriver",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
     "undocument": true,
     "type": {
       "types": [
@@ -79,7 +106,7 @@
     "longname": "lib/Cache.js~Cache.createDriver",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 32,
     "unknown": [
       {
         "tagName": "@returns",
@@ -127,7 +154,7 @@
     "longname": "lib/Cache.js~Cache#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 67,
+    "lineNumber": 69,
     "params": [
       {
         "nullable": null,
@@ -173,12 +200,29 @@
     "kind": "member",
     "static": false,
     "variation": null,
+    "name": "_systemDriver",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#_systemDriver",
+    "access": null,
+    "description": null,
+    "lineNumber": 71,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
     "name": "_shared",
     "memberof": "lib/Cache.js~Cache",
     "longname": "lib/Cache.js~Cache#_shared",
     "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 77,
     "undocument": true,
     "type": {
       "types": [
@@ -195,17 +239,50 @@
     "longname": "lib/Cache.js~Cache#shared",
     "access": null,
     "description": null,
-    "lineNumber": 92,
+    "lineNumber": 91,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{SharedCache}"
+        "tagValue": "{SharedCache|*}"
       }
     ],
     "return": {
       "nullable": null,
       "types": [
-        "SharedCache"
+        "SharedCache",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "system",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#system",
+    "access": null,
+    "description": null,
+    "lineNumber": 98,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver",
+        "*"
       ],
       "spread": false,
       "description": ""
@@ -221,12 +298,54 @@
     "kind": "method",
     "static": false,
     "variation": null,
+    "name": "_createCacheDriver",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#_createCacheDriver",
+    "access": "private",
+    "description": null,
+    "lineNumber": 109,
+    "unknown": [
+      {
+        "tagName": "@todo: remove in memory fallback for backend?\n\n",
+        "tagValue": ""
+      },
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Kernel"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "kernel",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
     "name": "apply",
     "memberof": "lib/Cache.js~Cache",
     "longname": "lib/Cache.js~Cache#apply",
     "access": null,
     "description": null,
-    "lineNumber": 101,
+    "lineNumber": 122,
     "unknown": [
       {
         "tagName": "@returns",
@@ -237,7 +356,8 @@
       {
         "nullable": null,
         "types": [
-          "AbstractDriver"
+          "AbstractDriver",
+          "*"
         ],
         "spread": false,
         "optional": false,
@@ -274,7 +394,7 @@
     "longname": "lib/Cache.js~Cache#service",
     "access": null,
     "description": "DO NOT REMOVE THIS!\nIt's used while kernel boot",
-    "lineNumber": 111,
+    "lineNumber": 132,
     "unknown": [
       {
         "tagName": "@returns",
@@ -305,7 +425,7 @@
     "longname": "lib/Cache.js~Cache#driver",
     "access": null,
     "description": null,
-    "lineNumber": 123,
+    "lineNumber": 144,
     "params": [
       {
         "nullable": null,
@@ -334,7 +454,7 @@
     "longname": "lib/Cache.js~Cache#_driver",
     "access": null,
     "description": null,
-    "lineNumber": 124,
+    "lineNumber": 145,
     "undocument": true,
     "type": {
       "types": [
@@ -351,7 +471,7 @@
     "longname": "lib/Cache.js~Cache#driver",
     "access": null,
     "description": null,
-    "lineNumber": 130,
+    "lineNumber": 151,
     "unknown": [
       {
         "tagName": "@returns",
@@ -369,6 +489,114 @@
     "type": {
       "types": [
         "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "set",
+    "static": false,
+    "variation": null,
+    "name": "systemDriver",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#systemDriver",
+    "access": null,
+    "description": null,
+    "lineNumber": 158,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "driver",
+        "description": ""
+      }
+    ],
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_systemDriver",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#_systemDriver",
+    "access": null,
+    "description": null,
+    "lineNumber": 159,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "systemDriver",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache#systemDriver",
+    "access": null,
+    "description": null,
+    "lineNumber": 165,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "SYSTEM_NAMESPACE",
+    "memberof": "lib/Cache.js~Cache",
+    "longname": "lib/Cache.js~Cache.SYSTEM_NAMESPACE",
+    "access": null,
+    "description": null,
+    "lineNumber": 172,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
       ]
     },
     "generator": false

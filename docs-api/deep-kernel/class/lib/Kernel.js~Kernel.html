@@ -32,6 +32,14 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ContainerAware.js~ContainerAware.html">ContainerAware</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Config</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Config/Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/AsyncConfig.js~AsyncConfig.html">AsyncConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/ComplexDriver.js~ComplexDriver.html">ComplexDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/FsDriver.js~FsDriver.html">FsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/HttpDriver.js~HttpDriver.html">HttpDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/KernelDriver.js~KernelDriver.html">KernelDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html">ScopeDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException.html">InvalidDeepIdentifierException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingMicroserviceException.js~MissingMicroserviceException.html">MissingMicroserviceException</a></span></span></li>
@@ -222,31 +230,6 @@
       <div>
         <p>
            <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#static-get-ContainerAware">ContainerAware</a></span></span><span data-ice="signature">: <span><a href="class/lib/ContainerAware.js~ContainerAware.html">ContainerAware</a></span>: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      <span data-ice="static">static</span>
-      <span class="kind" data-ice="kind">get</span>
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#static-get-DEFAULT_CONFIG_FILE_NAME">DEFAULT_CONFIG_FILE_NAME</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
       <div>
@@ -761,7 +744,57 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-get-isRumEnabled">isRumEnabled</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-get-microservices">microservices</a></span></span><span data-ice="signature">: <span><span>Microservice</span><span>[]</span></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-get-rootMicroservice">rootMicroservice</a></span></span><span data-ice="signature">: <span>Microservice</span> | <span>*</span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -893,7 +926,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-method-get">get</a></span></span><span data-ice="signature">(args: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>): <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-method-get">get</a></span></span><span data-ice="signature">(args: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -918,7 +951,32 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-method-load">load</a></span></span><span data-ice="signature">(globalConfig: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span>
+           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-method-has">has</a></span></span><span data-ice="signature">(args: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-method-load">load</a></span></span><span data-ice="signature">(config: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span>
         </p>
       </div>
       <div>
@@ -943,32 +1001,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-method-loadFromFile">loadFromFile</a></span></span><span data-ice="signature">(jsonFile: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-method-loadFromScopeOrFile">loadFromScopeOrFile</a></span></span><span data-ice="signature">(jsonFile: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span>
+           <span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html#instance-method-loadAsyncConfig">loadAsyncConfig</a></span></span><span data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -1026,7 +1059,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber478">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber530">source</a></span></span>
     </span>
   </h3>
 
@@ -1076,7 +1109,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber516">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber568">source</a></span></span>
     </span>
   </h3>
 
@@ -1126,7 +1159,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber471">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber523">source</a></span></span>
     </span>
   </h3>
 
@@ -1176,7 +1209,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber436">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber488">source</a></span></span>
     </span>
   </h3>
 
@@ -1226,7 +1259,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber450">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber502">source</a></span></span>
     </span>
   </h3>
 
@@ -1276,7 +1309,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber415">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber474">source</a></span></span>
     </span>
   </h3>
 
@@ -1316,56 +1349,6 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="static-get-DEFAULT_CONFIG_FILE_NAME">
-    <span class="access" data-ice="access">public</span>
-    <span data-ice="static">static</span>
-    <span class="kind" data-ice="kind">get</span>
-    
-    
-    <span data-ice="name">DEFAULT_CONFIG_FILE_NAME</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber422">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tr>
-        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
-        
-      </tr>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-get-DEV_ENVIRONMENT">
     <span class="access" data-ice="access">public</span>
     <span data-ice="static">static</span>
@@ -1376,7 +1359,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber509">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber561">source</a></span></span>
     </span>
   </h3>
 
@@ -1426,7 +1409,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber429">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber481">source</a></span></span>
     </span>
   </h3>
 
@@ -1476,7 +1459,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber464">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber516">source</a></span></span>
     </span>
   </h3>
 
@@ -1526,7 +1509,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber443">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber495">source</a></span></span>
     </span>
   </h3>
 
@@ -1576,7 +1559,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber457">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber509">source</a></span></span>
     </span>
   </h3>
 
@@ -1626,7 +1609,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber408">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber467">source</a></span></span>
     </span>
   </h3>
 
@@ -1676,7 +1659,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber488">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber540">source</a></span></span>
     </span>
   </h3>
 
@@ -1726,7 +1709,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber495">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber547">source</a></span></span>
     </span>
   </h3>
 
@@ -1776,7 +1759,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber502">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber554">source</a></span></span>
     </span>
   </h3>
 
@@ -1895,7 +1878,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber279">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber343">source</a></span></span>
     </span>
   </h3>
 
@@ -1945,7 +1928,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber300">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber364">source</a></span></span>
     </span>
   </h3>
 
@@ -1995,7 +1978,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber247">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber305">source</a></span></span>
     </span>
   </h3>
 
@@ -2045,7 +2028,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber286">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber350">source</a></span></span>
     </span>
   </h3>
 
@@ -2095,7 +2078,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber293">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber357">source</a></span></span>
     </span>
   </h3>
 
@@ -2145,7 +2128,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber272">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber336">source</a></span></span>
     </span>
   </h3>
 
@@ -2195,7 +2178,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber254">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber319">source</a></span></span>
     </span>
   </h3>
 
@@ -2245,7 +2228,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber43">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber45">source</a></span></span>
     </span>
   </h3>
 
@@ -2295,7 +2278,57 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber261">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber326">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-isRumEnabled">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">isRumEnabled</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber312">source</a></span></span>
     </span>
   </h3>
 
@@ -2345,7 +2378,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber308">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber373">source</a></span></span>
     </span>
   </h3>
 
@@ -2385,6 +2418,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-rootMicroservice">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">rootMicroservice</span><span data-ice="signature">: <span>Microservice</span> | <span>*</span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber66">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span>Microservice</span> | <span>*</span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-runtimeContext">
     <span class="access" data-ice="access">public</span>
     
@@ -2395,7 +2478,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber50">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber52">source</a></span></span>
     </span>
   </h3>
 
@@ -2445,7 +2528,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber57">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber59">source</a></span></span>
     </span>
   </h3>
 
@@ -2485,7 +2568,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber240">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber298">source</a></span></span>
     </span>
   </h3>
 
@@ -2538,7 +2621,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber91">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber193">source</a></span></span>
     </span>
   </h3>
 
@@ -2601,11 +2684,11 @@
     
     
     
-    <span data-ice="name">get</span><span data-ice="signature">(args: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>): <span>*</span></span>
+    <span data-ice="name">get</span><span data-ice="signature">(args: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber233">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber283">source</a></span></span>
     </span>
   </h3>
 
@@ -2626,7 +2709,7 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">args</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span></td>
+      <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -2661,17 +2744,83 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-has">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">has</span><span data-ice="signature">(args: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber291">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">args</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-load">
     <span class="access" data-ice="access">public</span>
     
     
     
     
-    <span data-ice="name">load</span><span data-ice="signature">(globalConfig: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span>
+    <span data-ice="name">load</span><span data-ice="signature">(config: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber205">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber254">source</a></span></span>
     </span>
   </h3>
 
@@ -2692,7 +2841,7 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">globalConfig</td>
+      <td data-ice="name" data-depth="0">config</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -2734,17 +2883,17 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-loadFromFile">
+  <h3 data-ice="anchor" id="instance-method-loadAsyncConfig">
     <span class="access" data-ice="access">public</span>
     
     
     
     
-    <span data-ice="name">loadFromFile</span><span data-ice="signature">(jsonFile: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span>
+    <span data-ice="name">loadAsyncConfig</span><span data-ice="signature">(cb: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber135">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber110">source</a></span></span>
     </span>
   </h3>
 
@@ -2764,13 +2913,7 @@
     <tbody>
     
     <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">jsonFile</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">callback</td>
+      <td data-ice="name" data-depth="0">cb</td>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -2784,79 +2927,7 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></td>
-        
-      </tr>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-method-loadFromScopeOrFile">
-    <span class="access" data-ice="access">public</span>
-    
-    
-    
-    
-    <span data-ice="name">loadFromScopeOrFile</span><span data-ice="signature">(jsonFile: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber108">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">jsonFile</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">callback</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tr>
-        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></td>
+        <td class="return-type" data-ice="returnType"><span>*</span></td>
         
       </tr>
     </table>
@@ -2888,7 +2959,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber65">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Kernel.js.html#lineNumber87">source</a></span></span>
     </span>
   </h3>
 

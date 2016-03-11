@@ -183,6 +183,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get CLOUD_WATCH_EVENTS() {
+    return &apos;events&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
   static get API_GATEWAY() {
     return &apos;apigateway&apos;;
   }
@@ -206,6 +213,13 @@ export class Service {
    */
   static get CERTIFICATE_MANAGER() {
     return &apos;acm&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ELASTIC_SEARCH() {
+    return &apos;es&apos;;
   }
 
   /**
@@ -248,6 +262,8 @@ export class Service {
       Service.SIMPLE_QUEUE_SERVICE,
       Service.CERTIFICATE_MANAGER,
       Service.EC2,
+      Service.ELASTIC_SEARCH,
+      Service.CLOUD_WATCH_EVENTS,
     ];
   }
 }
