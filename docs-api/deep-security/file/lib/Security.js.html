@@ -245,12 +245,11 @@ export class Security extends Kernel.ContainerAware {
    * @private
    */
   _logRumEvent(customData) {
-    let logService = this.kernel.get(&apos;log&apos;);
-
-    if (!logService.isRumEnabled()) {
+    if (this.kernel &amp;&amp; !this.kernel.isRumEnabled) {
       return false;
     }
 
+    let logService = this.kernel.get(&apos;log&apos;);
     let event = util._extend(customData, {
       service: &apos;deep-security&apos;,
       resourceType: &apos;Cognito&apos;,

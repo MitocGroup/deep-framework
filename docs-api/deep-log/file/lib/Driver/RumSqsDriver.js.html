@@ -36,7 +36,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver.html">RavenBrowserDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenDriver.js~RavenDriver.html">RavenDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html">RumSqsDriver</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html">FailedToSendBatchSqsMessageException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html">FailedToDeleteSqsMessagesException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html">FailedToReceiveSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html">FailedToSendBatchSqsMessageException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException.html">FailedToSendSqsMessageException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException.html">InvalidSqsQueueUrlException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/LogDriverException.js~LogDriverException.html">LogDriverException</a></span></span></li>
@@ -60,6 +62,8 @@ import AWS from &apos;aws-sdk&apos;;
 import {AbstractDriver} from &apos;./AbstractDriver&apos;;
 import {FailedToSendSqsMessageException} from &apos;./Exception/FailedToSendSqsMessageException&apos;;
 import {FailedToSendBatchSqsMessageException} from &apos;./Exception/FailedToSendBatchSqsMessageException&apos;;
+import {FailedToReceiveSqsMessageException} from &apos;./Exception/FailedToReceiveSqsMessageException&apos;;
+import {FailedToDeleteSqsMessagesException} from &apos;./Exception/FailedToDeleteSqsMessagesException&apos;;
 import {InvalidSqsQueueUrlException} from &apos;./Exception/InvalidSqsQueueUrlException&apos;;
 import {RumEventValidationException} from &apos;./Exception/RumEventValidationException&apos;;
 //import {AbstractEvent} from &apos;./RUM/AbstractEvent&apos;;
@@ -244,6 +248,57 @@ export class RumSqsDriver extends AbstractDriver {
 
       if (error) {
         error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  receiveMessages(callback) {
+    let params = {
+      QueueUrl: this.queueUrl,
+      MaxNumberOfMessages: 10,
+      VisibilityTimeout: 0,
+      WaitTimeSeconds: 0
+    };
+
+    this.sqs.receiveMessage(params, (error, data) =&gt; {
+      if (error) {
+        error = new FailedToReceiveSqsMessageException(params.QueueUrl, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {Array} messages
+   * @param {Function} callback
+   */
+  deleteMessages(messages, callback) {
+    if (messages.length === 0) {
+      callback(null, null);
+      return;
+    }
+
+    let params = {
+      QueueUrl: this.queueUrl,
+      Entries: []
+    };
+
+    messages.forEach((message) =&gt; {
+      params.Entries.push({
+        Id: message.MessageId,
+        ReceiptHandle: message.ReceiptHandle
+      });
+    });
+
+    this.sqs.deleteMessageBatch(params, (error, data) =&gt; {
+      if (error) {
+        error = new FailedToDeleteSqsMessagesException(params.QueueUrl, error);
       }
 
       callback(error, data);

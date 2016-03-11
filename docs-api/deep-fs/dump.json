@@ -127,7 +127,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport S3FS from 's3fs';\nimport Kernel from 'deep-kernel';\nimport {UnknownFolderException} from './Exception/UnknownFolderException';\nimport OS from 'os';\nimport Path from 'path';\nimport {Registry} from './Registry';\nimport {S3FsRumProxy} from './S3FsRumProxy';\n\n/**\n * Deep FS implementation\n */\nexport class FS extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} tmpFsBucket\n   * @param {String} publicFsBucket\n   * @param {String} systemFsBucket\n   */\n  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null) {\n    super();\n\n    this._mountedFolders = {};\n    this._buckets = {};\n\n    this._buckets[FS.TMP] = tmpFsBucket;\n    this._buckets[FS.PUBLIC] = publicFsBucket;\n    this._buckets[FS.SYSTEM] = systemFsBucket;\n\n    this._registry = null;\n  }\n\n  /**\n   * @returns {Registry}\n   * @constructor\n   */\n  static get RegistryInstance() {\n    return Registry;\n  }\n\n  /**\n   * @returns {Registry}\n   */\n  get registry() {\n    if (!this._registry) {\n      this._registry = Registry.createFromFS(this.system);\n    }\n\n    return this._registry;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get TMP() {\n    return 'temp';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PUBLIC() {\n    return 'public';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get SYSTEM() {\n    return 'system';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get FOLDERS() {\n    return [\n      FS.TMP,\n      FS.PUBLIC,\n      FS.SYSTEM,\n    ];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let bucketsConfig = kernel.config.buckets;\n\n    for (let folderKey in FS.FOLDERS) {\n      if (!FS.FOLDERS.hasOwnProperty(folderKey)) {\n        continue;\n      }\n\n      let folder = FS.FOLDERS[folderKey];\n\n      this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;\n    }\n\n    callback();\n  }\n\n  /**\n   * Returns mounted file system folder (tmp, public or system)\n   *\n   * @param name\n   * @returns {*}\n   */\n  getFolder(name) {\n    if (FS.FOLDERS.indexOf(name) === -1) {\n      throw new UnknownFolderException(name, FS.FOLDERS);\n    }\n\n    if (typeof this._mountedFolders[name] === 'undefined') {\n      if (this._localBackend) {\n        let rootFolder = FS._getTmpDir(this._buckets[name]);\n        let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;\n\n        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;\n      } else {\n        let options = {\n          params: {\n            Bucket: this._buckets[name],\n          },\n        };\n\n        let s3Fs = new S3FS(this._buckets[name], options);\n\n        if (this.kernel instanceof Kernel) {\n          let logService = this.kernel.get('log');\n\n          if (logService.isRumEnabled()) {\n            s3Fs = new S3FsRumProxy(s3Fs, logService).proxy();\n          }\n        }\n\n        this._mountedFolders[name] = s3Fs;\n      }\n    }\n\n    return this._mountedFolders[name];\n  }\n\n  /**\n   * @param {String} subpath\n   * @returns {String}\n   * @private\n   */\n  static _getTmpDir(subpath) {\n    let dir = Path.join(OS.tmpdir(), subpath);\n\n    require('fs-extra').mkdirpSync(dir);\n\n    return dir;\n  }\n\n  /**\n   * Returns mounted tmp folder\n   *\n   * @returns {*}\n   */\n  get tmp() {\n    return this.getFolder(FS.TMP);\n  }\n\n  /**\n   * Returns mounted public folder\n   *\n   * @returns {*}\n   */\n  get public() {\n    return this.getFolder(FS.PUBLIC);\n  }\n\n  /**\n   * Returns mounted sys folder\n   *\n   * @returns {*}\n   */\n  get system() {\n    return this.getFolder(FS.SYSTEM);\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport S3FS from 's3fs';\nimport Kernel from 'deep-kernel';\nimport {UnknownFolderException} from './Exception/UnknownFolderException';\nimport {Exception} from './Exception/Exception';\nimport OS from 'os';\nimport Path from 'path';\nimport {Registry} from './Registry';\nimport {S3FsRumProxy} from './S3FsRumProxy';\n\n/**\n * Deep FS implementation\n */\nexport class FS extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} tmpFsBucket\n   * @param {String} publicFsBucket\n   * @param {String} systemFsBucket\n   * @param {String} sharedFsBucket\n   */\n  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null, sharedFsBucket = null) {\n    super();\n\n    this._mountedFolders = {};\n    this._buckets = {};\n\n    this._buckets[FS.TMP] = tmpFsBucket;\n    this._buckets[FS.PUBLIC] = publicFsBucket;\n    this._buckets[FS.SYSTEM] = systemFsBucket;\n    this._buckets[FS.SHARED] = sharedFsBucket;\n\n    this._registry = null;\n  }\n\n  /**\n   * @returns {Registry}\n   * @constructor\n   */\n  static get RegistryInstance() {\n    return Registry;\n  }\n\n  /**\n   * @returns {Registry}\n   */\n  get registry() {\n    if (!this._registry) {\n      this._registry = Registry.createFromFS(this.system);\n    }\n\n    return this._registry;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get TMP() {\n    return 'temp';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PUBLIC() {\n    return 'public';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get SYSTEM() {\n    return 'system';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SHARED() {\n    return 'shared';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get FOLDERS() {\n    return [\n      FS.TMP,\n      FS.SYSTEM,\n      FS.SHARED,\n      FS.PUBLIC,\n    ];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let bucketsConfig = kernel.config.buckets;\n\n    for (let i in FS.FOLDERS) {\n      if (!FS.FOLDERS.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let folder = FS.FOLDERS[i];\n\n      switch (folder) {\n        case FS.TMP:\n        case FS.SYSTEM:\n          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}/${kernel.microservice().identifier}`;\n          break;\n        case FS.SHARED:\n          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}`;\n          break;\n        default:\n          this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;\n      }\n    }\n\n    callback();\n  }\n\n  /**\n   * Returns mounted file system folder (tmp, public or system)\n   *\n   * @param {String} name\n   * @param {String} msIdentifier\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  getFolder(name, msIdentifier = null) {\n    if (FS.FOLDERS.indexOf(name) === -1) {\n      throw new UnknownFolderException(name, FS.FOLDERS);\n    }\n\n    let realName = null;\n\n    if (name === FS.SHARED) {\n      if (!msIdentifier) {\n        throw new Exception(`You must provide a microservice identifier for the shared fs`);\n      }\n\n      // validate msIdentifier\n      msIdentifier = this.kernel.microservice(msIdentifier).identifier;\n\n      realName = `${name}.${msIdentifier}`;\n    }\n\n    if (typeof this._mountedFolders[realName || name] === 'undefined') {\n      if (this._localBackend) {\n        let rootFolder = FS._getTmpDir(this._buckets[name]);\n        let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;\n\n        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;\n      } else {\n        let s3Fs = new S3FS(this._buckets[name], {});\n\n        if (this.kernel && this.kernel.isRumEnabled) {\n          s3Fs = new S3FsRumProxy(s3Fs, this.kernel.get('log')).proxy();\n        }\n\n        if (name === FS.SHARED) {\n          s3Fs = s3Fs.clone(msIdentifier);\n        }\n\n        this._mountedFolders[realName || name] = s3Fs;\n      }\n    }\n\n    return this._mountedFolders[realName || name];\n  }\n\n  /**\n   * @param {String} subpath\n   * @returns {String}\n   * @private\n   */\n  static _getTmpDir(subpath) {\n    let dir = Path.join(OS.tmpdir(), subpath);\n\n    require('fs-extra').mkdirpSync(dir);\n\n    return dir;\n  }\n\n  /**\n   * Returns mounted shared folder\n   *\n   * @param {Microservice|String|*} microservice\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  shared(microservice = null) {\n    microservice = microservice || this.kernel.microservice();\n\n    let msIdentifier = typeof microservice === 'string' ? microservice : microservice.identifier;\n\n    return this.getFolder(FS.SHARED, msIdentifier);\n  }\n\n  /**\n   * Returns mounted tmp folder\n   *\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  get tmp() {\n    return this.getFolder(FS.TMP);\n  }\n\n  /**\n   * Returns mounted public folder\n   *\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  get public() {\n    return this.getFolder(FS.PUBLIC);\n  }\n\n  /**\n   * Returns mounted sys folder\n   *\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  get system() {\n    return this.getFolder(FS.SYSTEM);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -141,7 +141,7 @@
     "importPath": "deep-fs/lib/FS.js",
     "importStyle": "{FS}",
     "description": "Deep FS implementation",
-    "lineNumber": 18,
+    "lineNumber": 19,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
@@ -156,7 +156,7 @@
     "longname": "lib/FS.js~FS#constructor",
     "access": null,
     "description": "Defines all class private properties",
-    "lineNumber": 26,
+    "lineNumber": 28,
     "params": [
       {
         "nullable": null,
@@ -187,6 +187,16 @@
         "optional": false,
         "name": "systemFsBucket",
         "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "sharedFsBucket",
+        "description": ""
       }
     ],
     "generator": false
@@ -200,7 +210,7 @@
     "longname": "lib/FS.js~FS#_mountedFolders",
     "access": null,
     "description": null,
-    "lineNumber": 29,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -217,7 +227,7 @@
     "longname": "lib/FS.js~FS#_buckets",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
@@ -234,7 +244,7 @@
     "longname": "lib/FS.js~FS#_registry",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 39,
     "undocument": true,
     "type": {
       "types": [
@@ -251,7 +261,7 @@
     "longname": "lib/FS.js~FS.RegistryInstance",
     "access": null,
     "description": null,
-    "lineNumber": 43,
+    "lineNumber": 46,
     "unknown": [
       {
         "tagName": "@returns",
@@ -286,7 +296,7 @@
     "longname": "lib/FS.js~FS#registry",
     "access": null,
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 53,
     "unknown": [
       {
         "tagName": "@returns",
@@ -317,7 +327,7 @@
     "longname": "lib/FS.js~FS#_registry",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 55,
     "undocument": true,
     "type": {
       "types": [
@@ -334,7 +344,7 @@
     "longname": "lib/FS.js~FS.TMP",
     "access": null,
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 64,
     "unknown": [
       {
         "tagName": "@returns",
@@ -365,7 +375,7 @@
     "longname": "lib/FS.js~FS.PUBLIC",
     "access": null,
     "description": null,
-    "lineNumber": 68,
+    "lineNumber": 71,
     "unknown": [
       {
         "tagName": "@returns",
@@ -396,7 +406,7 @@
     "longname": "lib/FS.js~FS.SYSTEM",
     "access": null,
     "description": null,
-    "lineNumber": 75,
+    "lineNumber": 78,
     "unknown": [
       {
         "tagName": "@returns",
@@ -422,12 +432,43 @@
     "kind": "get",
     "static": true,
     "variation": null,
+    "name": "SHARED",
+    "memberof": "lib/FS.js~FS",
+    "longname": "lib/FS.js~FS.SHARED",
+    "access": null,
+    "description": null,
+    "lineNumber": 85,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
     "name": "FOLDERS",
     "memberof": "lib/FS.js~FS",
     "longname": "lib/FS.js~FS.FOLDERS",
     "access": null,
     "description": null,
-    "lineNumber": 82,
+    "lineNumber": 92,
     "unknown": [
       {
         "tagName": "@returns",
@@ -458,7 +499,7 @@
     "longname": "lib/FS.js~FS#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 96,
+    "lineNumber": 107,
     "params": [
       {
         "nullable": null,
@@ -492,28 +533,43 @@
     "longname": "lib/FS.js~FS#getFolder",
     "access": null,
     "description": "Returns mounted file system folder (tmp, public or system)",
-    "lineNumber": 118,
+    "lineNumber": 140,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{*}"
+        "tagValue": "{fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}"
       }
     ],
     "params": [
       {
         "nullable": null,
         "types": [
-          "*"
+          "String"
         ],
         "spread": false,
         "optional": false,
         "name": "name",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "msIdentifier",
         "description": ""
       }
     ],
     "return": {
       "nullable": null,
       "types": [
+        "fs",
+        "s3fs",
+        "S3FS",
+        "S3FsRumProxy",
+        "SimulatedS3FS",
         "*"
       ],
       "spread": false,
@@ -530,7 +586,7 @@
     "longname": "lib/FS.js~FS._getTmpDir",
     "access": "private",
     "description": null,
-    "lineNumber": 158,
+    "lineNumber": 187,
     "unknown": [
       {
         "tagName": "@returns",
@@ -560,6 +616,51 @@
     "generator": false
   },
   {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "shared",
+    "memberof": "lib/FS.js~FS",
+    "longname": "lib/FS.js~FS#shared",
+    "access": null,
+    "description": "Returns mounted shared folder",
+    "lineNumber": 201,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Microservice",
+          "String",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "microservice",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "fs",
+        "s3fs",
+        "S3FS",
+        "S3FsRumProxy",
+        "SimulatedS3FS",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -568,16 +669,21 @@
     "longname": "lib/FS.js~FS#tmp",
     "access": null,
     "description": "Returns mounted tmp folder",
-    "lineNumber": 171,
+    "lineNumber": 214,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{*}"
+        "tagValue": "{fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}"
       }
     ],
     "return": {
       "nullable": null,
       "types": [
+        "fs",
+        "s3fs",
+        "S3FS",
+        "S3FsRumProxy",
+        "SimulatedS3FS",
         "*"
       ],
       "spread": false,
@@ -599,16 +705,21 @@
     "longname": "lib/FS.js~FS#public",
     "access": null,
     "description": "Returns mounted public folder",
-    "lineNumber": 180,
+    "lineNumber": 223,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{*}"
+        "tagValue": "{fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}"
       }
     ],
     "return": {
       "nullable": null,
       "types": [
+        "fs",
+        "s3fs",
+        "S3FS",
+        "S3FsRumProxy",
+        "SimulatedS3FS",
         "*"
       ],
       "spread": false,
@@ -630,16 +741,21 @@
     "longname": "lib/FS.js~FS#system",
     "access": null,
     "description": "Returns mounted sys folder",
-    "lineNumber": 189,
+    "lineNumber": 232,
     "unknown": [
       {
         "tagName": "@returns",
-        "tagValue": "{*}"
+        "tagValue": "{fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}"
       }
     ],
     "return": {
       "nullable": null,
       "types": [
+        "fs",
+        "s3fs",
+        "S3FS",
+        "S3FsRumProxy",
+        "SimulatedS3FS",
         "*"
       ],
       "spread": false,

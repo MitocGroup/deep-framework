@@ -6,14 +6,16 @@ DEEP Framework
 [![Codacy Badge](https://api.codacy.com/project/badge/coverage/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-`DEEP Framework` is a serverless web framework, core component of the 
-[Platform-as-a-Service](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem) 
-that abstracts web apps and web services from specific cloud providers. This framework enables developers build
-cloud-native applications or platforms using [microservices architecture](https://en.wikipedia.org/wiki/Microservices) 
-in a completely [serverless approach](https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture). 
+`DEEP Framework` is a full-stack web framework that abstracts web apps and web services from specific cloud providers. 
+This framework enables developers build cloud-native applications or platforms using 
+[microservices architecture](https://en.wikipedia.org/wiki/Microservices) in a completely 
+[serverless approach](https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture).
 
 > At this moment only [Amazon Web Services](https://aws.amazon.com) is supported. Developers are encouraged to add support 
 for [Microsoft Azure](https://azure.microsoft.com), [Google Cloud Platform](https://cloud.google.com/), and so on.
+
+DEEP Framework is a core component of a larger ecosystem, called
+[Digital Enterprise End-to-end Platform](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem).
 
 ## Getting Started [![Join char on gitter.im](https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg)](https://gitter.im/MitocGroup/deep-framework)
 
@@ -197,9 +199,9 @@ using abstracted services from cloud providers like [Amazon Web Services](https:
 ![Digital Enterprise End-to-end Platform aka DEEP](https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png)
 
 `DEEP` aims to remove the heavy lifting from enterprise software through microservices architecture, where developers
-(let’s label them `lego producers`) focus only to build microservices (let’s label them `lego pieces`), while the platform 
-does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, very secure and very fast. Customers 
-(let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
+(let’s label them `lego producers`) focus only to build microservices or microapplications (let’s label them `lego pieces`),
+while the platform does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, very secure and very fast. 
+Customers (let’s label them `lego consumers`) will go to the marketplace, choose the microservices they need and deploy them 
 as web apps into their own accounts on AWS (or other cloud providers).
 
 > In summary: We empower lego consumers to license curated lego pieces from a marketplace of lego producers.

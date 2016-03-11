@@ -264,13 +264,13 @@ export class Validation extends Kernel.ContainerAware {
       if (remainingSchemas &lt;= 0) {
         callback();
       } else {
-        onFail(onFail);
+        setTimeout(() =&gt; {
+          onFail(onFail);
+        }, 50);
       }
     };
 
-    checkRemainingSchemas(() =&gt; {
-      setTimeout(checkRemainingSchemas, 200);
-    });
+    checkRemainingSchemas(checkRemainingSchemas);
   }
 
   /**

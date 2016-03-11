@@ -57,15 +57,16 @@
 <a href="https://travis-ci.org/MitocGroup/deep-framework"><img src="https://travis-ci.org/MitocGroup/deep-framework.svg?branch=master" alt="Build Status"></a>
 <a href="https://www.codacy.com/app/MitocGroup/deep-framework"><img src="https://api.codacy.com/project/badge/coverage/823d04a90c4a4fc888e62817e3e820be" alt="Codacy Badge"></a>
 <a href="http://docs.deep.mg"><img src="http://docs.deep.mg/badge.svg" alt="API Docs"></a></p>
-<p><code>DEEP Framework</code> is a serverless web framework, core component of the 
-<a href="https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem">Platform-as-a-Service</a> 
-that abstracts web apps and web services from specific cloud providers. This framework enables developers build
-cloud-native applications or platforms using <a href="https://en.wikipedia.org/wiki/Microservices">microservices architecture</a> 
-in a completely <a href="https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture">serverless approach</a>. </p>
+<p><code>DEEP Framework</code> is a full-stack web framework that abstracts web apps and web services from specific cloud providers. 
+This framework enables developers build cloud-native applications or platforms using 
+<a href="https://en.wikipedia.org/wiki/Microservices">microservices architecture</a> in a completely 
+<a href="https://github.com/MitocGroup/deep-framework#appendix-a-serverless-architecture">serverless approach</a>.</p>
 <blockquote>
 <p>At this moment only <a href="https://aws.amazon.com">Amazon Web Services</a> is supported. Developers are encouraged to add support 
 for <a href="https://azure.microsoft.com">Microsoft Azure</a>, <a href="https://cloud.google.com/">Google Cloud Platform</a>, and so on.</p>
 </blockquote>
+<p>DEEP Framework is a core component of a larger ecosystem, called
+<a href="https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem">Digital Enterprise End-to-end Platform</a>.</p>
 <h2 id="getting-started-join-char-on-gitter-im-https-img-shields-io-badge-e2-8a-aa-20gitter-20-join-20chat-20-e2-86-92-brightgreen-svg-https-gitter-im-mitocgroup-deep-framework-">Getting Started <a href="https://gitter.im/MitocGroup/deep-framework"><img src="https://img.shields.io/badge/%E2%8A%AA%20gitter%20-join%20chat%20%E2%86%92-brightgreen.svg" alt="Join char on gitter.im"></a></h2>
 <p><code>DEEP Framework</code> can be used as a module in front-end or back-end. To learn more, scroll down to 
 <a href="https://github.com/MitocGroup/deep-framework/blob/master/README.md#what-is-deep-framework-">What is DEEP Framework?</a></p>
@@ -77,10 +78,10 @@ for <a href="https://azure.microsoft.com">Microsoft Azure</a>, <a href="https://
 <p>deepify is a collection of tools that empower developers and devops engineers to automate
 the management of web apps built on top of DEEP ecosystem.</p>
 </blockquote>
-<p>Note: If you want to use <code>deepify</code> on Windows, please follow the steps from
+<p><em>Note: If you want to use <code>deepify</code> on Windows, please follow the steps from
 <a href="https://github.com/MitocGroup/deep-framework/blob/master/docs/windows.md">Windows Configuration</a>
 before running <code>npm install deepify -g</code> and make sure all <code>npm</code> and <code>deepify</code> commands are executed
-inside Git Bash.</p>
+inside Git Bash.</em></p>
 </li>
 <li><p>Using deepify, dump locally the helloworld example:</p>
 <p><code>deepify helloworld ~/deep-hello-world</code></p>
@@ -101,8 +102,8 @@ to web services from cloud providers like AWS.</p>
 <p>deepify provisions the infrastructure and deploys the web app, empowering developers and
 devops engineers to automate the process.</p>
 </blockquote>
-<p>Note: Amazon CloudFront distribution takes up to 20 minutes to provision, 
-therefore don&#x2019;t worry if it returns an HTTP error in the first couple of minutes.</p>
+<p><em>Note: Amazon CloudFront distribution takes up to 20 minutes to provision, 
+therefore don&#x2019;t worry if it returns an HTTP error in the first couple of minutes.</em></p>
 </li>
 </ol>
 <p>To learn more about helloworld example, or other web apps that run in production, scroll down to 
@@ -116,7 +117,7 @@ therefore don&#x2019;t worry if it returns an HTTP error in the first couple of 
   &quot;version&quot;: &quot;0.0.1&quot;,
   &quot;description&quot;: &quot;AWS Lambda that says hello to the world&quot;,
   &quot;dependencies&quot;: {
-    &quot;deep-framework&quot;: &quot;1.0.*&quot;,
+    &quot;deep-framework&quot;: &quot;^1.x.x&quot;,
     ...
   },
   ...
@@ -255,29 +256,24 @@ and monetize them in similar approach to Apple&apos;s App Store.</p>
 </thead>
 <tbody>
 <tr>
-<td>Implement <a href="https://en.wikipedia.org/wiki/Real_user_monitoring">RUM</a> as part of deep-logs</td>
-<td>Achieve real user monitoring by logging all user actions and visualize them with an <a href="https://www.elastic.co/webinars/introduction-elk-stack">ELK stack</a></td>
-<td><a href="https://github.com/mgoria">@mgoria</a></td>
+<td>Implement deep-search</td>
+<td>Full text search service on top of <a href="https://aws.amazon.com/cloudsearch/">Amazon CloudSearch</a> and/or <a href="https://aws.amazon.com/elasticsearch-service/">Amazon Elasticsearch Service</a></td>
+<td><a href="https://github.com/alexanderc">@alexanderc</a></td>
 </tr>
 <tr>
-<td>Implement deep-search</td>
-<td>Full text search service on top of <a href="https://aws.amazon.com/cloudsearch/">Amazon CloudSearch</a></td>
-<td><a href="https://github.com/alexanderc">@alexanderc</a></td>
+<td>Implement <a href="https://en.wikipedia.org/wiki/Real_user_monitoring">RUM</a> with deep-search and deep-logs natively</td>
+<td>Add Real User Monitoring by logging all user actions and visualize them with an <a href="https://www.elastic.co/webinars/introduction-elk-stack">ELK stack</a></td>
+<td><a href="https://github.com/mgoria">@mgoria</a></td>
 </tr>
 <tr>
 <td>Implement deep-security</td>
-<td>Security service on top of <a href="https://aws.amazon.com/iam/">IAM</a></td>
+<td>Security service on top of <a href="https://aws.amazon.com/iam/">Amazon IAM</a> and/or <a href="https://aws.amazon.com/cognito/">Amazon Cognito</a></td>
 <td><a href="https://github.com/mgoria">@mgoria</a></td>
 </tr>
 <tr>
-<td>Implement deep-notification</td>
-<td>Push notification service on top of <a href="https://aws.amazon.com/sns/">SNS</a> that supports push to mobile devices, web browsers, email and sms.</td>
+<td>Implement blue-green deployment</td>
+<td>Deploy applications using <code>deepify</code> with zero downtime; Scalable to support multiple environments and multiple regions</td>
 <td><a href="https://github.com/alexanderc">@alexanderc</a></td>
-</tr>
-<tr>
-<td>Implement deep-event</td>
-<td>Event manager service using Lambda scheduling, Kinesis stream, Dynamo streaming, SQS, etc.</td>
-<td>...</td>
 </tr>
 <tr>
 <td>Implement deep-db &quot;eventual consistency&quot;</td>
@@ -287,17 +283,32 @@ and monetize them in similar approach to Apple&apos;s App Store.</p>
 <tr>
 <td>Improve deep-db &quot;strong consistency&quot;</td>
 <td>Achieve &quot;strong consistency&quot; by increasing Reads/Writes per second in runtime (as other option for special DB operations)</td>
-<td>...</td>
+<td><a href="https://github.com/mgoria">@mgoria</a></td>
 </tr>
 <tr>
-<td>Integrate deep-db with deep-cache natively (blocked by VPC support in Lambda)</td>
+<td>Integrate deep-db with deep-cache natively</td>
 <td>Cache fetched data by default using deep-cache library</td>
-<td>...</td>
+<td><a href="https://github.com/alexanderc">@alexanderc</a></td>
+</tr>
+<tr>
+<td>Implement deep-notification</td>
+<td>Push notification service on top of <a href="https://aws.amazon.com/sns/">SNS</a> that supports push to mobile devices, web browsers, email and sms.</td>
+<td><a href="https://github.com/alexanderc">@alexanderc</a></td>
+</tr>
+<tr>
+<td>Implement deep-queue</td>
+<td>Queue data into <a href="https://aws.amazon.com/sqs/">SQS</a> and/or <a href="https://aws.amazon.com/kinesis/">Kinesis</a></td>
+<td><a href="https://github.com/mgoria">@mgoria</a></td>
+</tr>
+<tr>
+<td>Implement deep-event</td>
+<td>Event manager service using Lambda scheduling, Kinesis stream, Dynamo streaming, SQS, etc.</td>
+<td><a href="https://github.com/mgoria">@mgoria</a></td>
 </tr>
 <tr>
 <td>Implement deep-cache</td>
-<td>Cache service on top of <a href="https://aws.amazon.com/elasticache/">Elasticache</a> (<a href="http://redis.io">Redis</a>) inside Lambdas (blocked by VPC support in Lambda)</td>
-<td>...</td>
+<td>Cache service on top of <a href="https://aws.amazon.com/elasticache/">Elasticache</a> (<a href="http://redis.io">Redis</a> engine) inside deep-resource (e.g. AWS Lambda)</td>
+<td><a href="https://github.com/alexanderc">@alexanderc</a></td>
 </tr>
 <tr>
 <td>Improve documentation for each deep-* library</td>
@@ -335,9 +346,9 @@ using abstracted services from cloud providers like <a href="https://aws.amazon.
 <h3 id="appendix-b-deep-ecosystem">Appendix B: DEEP Ecosystem</h3>
 <p><img src="https://raw.githubusercontent.com/MitocGroup/deep-framework/master/docs/deep-ecosystem.png" alt="Digital Enterprise End-to-end Platform aka DEEP"></p>
 <p><code>DEEP</code> aims to remove the heavy lifting from enterprise software through microservices architecture, where developers
-(let&#x2019;s label them <code>lego producers</code>) focus only to build microservices (let&#x2019;s label them <code>lego pieces</code>), while the platform 
-does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, very secure and very fast. Customers 
-(let&#x2019;s label them <code>lego consumers</code>) will go to the marketplace, choose the microservices they need and deploy them 
+(let&#x2019;s label them <code>lego producers</code>) focus only to build microservices or microapplications (let&#x2019;s label them <code>lego pieces</code>),
+while the platform does the rest: comes pre-built and pre-scaled, low-cost and low-maintenance, very secure and very fast. 
+Customers (let&#x2019;s label them <code>lego consumers</code>) will go to the marketplace, choose the microservices they need and deploy them 
 as web apps into their own accounts on AWS (or other cloud providers).</p>
 <blockquote>
 <p>In summary: We empower lego consumers to license curated lego pieces from a marketplace of lego producers.</p>
