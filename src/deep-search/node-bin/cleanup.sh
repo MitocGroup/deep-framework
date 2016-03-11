@@ -13,5 +13,6 @@ if [ -d 'node_modules/elasticsearch/' ]; then
     mv node_modules/elasticsearch/src/lib/apis/default.version node_modules/elasticsearch/src/lib/apis/2_1.js
 
     # Adding custom bootstrapers
-    cp node-bin/es-mocks/*.js node_modules/elasticsearch/src/lib/apis/
+    cp node-bin/es-mocks/index.js node_modules/elasticsearch/src/lib/apis/
+    cp node-bin/es-mocks/browser_index.js node_modules/elasticsearch/src/lib/apis/
 fi
