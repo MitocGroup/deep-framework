@@ -5,6 +5,7 @@
 'use strict';
 
 import Kernel from 'deep-kernel';
+import Core from 'deep-core';
 import {Elasticsearch as ElasticSearchClient} from './Client/Elasticsearch';
 import {UnknownSearchDomainException} from './Exception/UnknownSearchDomainException';
 import {MissingSearchClientException} from './Exception/MissingSearchClientException';
@@ -18,6 +19,7 @@ export class Search extends Kernel.ContainerAware {
    *
    * @example domains = {
    *  rum: {
+   *    type: 'es|cloudsearch',
    *    name: '<DomainName>',
    *    url: '<DomainUrl>'
    *  },
@@ -64,15 +66,14 @@ export class Search extends Kernel.ContainerAware {
     }
 
     let client = null;
-    let domainUrl = this._domains[domainName].url;
+    let domain = this._domains[domainName];
 
-    // @todo - use below check when domain url will be available
-    //if (domainUrl.indexOf('es.amazonaws.com') !== -1) {
-      client = new ElasticSearchClient(domainUrl, this.clientDecorator);
-    //}
+    if (domain.type === Core.AWS.Service.ELASTIC_SEARCH) {
+      client = new ElasticSearchClient(domain.url, this.clientDecorator);
+    }
 
     if (!client) {
-      throw new MissingSearchClientException(domainUrl);
+      throw new MissingSearchClientException(domain.name);
     }
 
     return client;
