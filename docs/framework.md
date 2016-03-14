@@ -38,16 +38,14 @@ Initializing and using the app
 ```javascript
 import deep-framework from 'deep-framework';
 
-let app = DeepFramework.Kernel;
-
-app.loadFromFile("_config.json", function() {
+DeepFramework.Kernel.bootstrap((kernel) => {
     // your application was initialized
     
-    let fs = app.container.get('fs'); // deep-fs service
-    let asset = app.get('asset'); // deep-asset service
+    let fs = kernel.get('fs'); // deep-fs service
+    let asset = kernel.get('asset'); // deep-asset service
     
-    let helloWorldMicroservice = app.microservice('deep.microservices.helloworld'); // microservice instance
-    let currentMicroservice = app.microservice(); // current microservice instance
+    let helloWorldMicroservice = kernel.microservice('deep.microservices.helloworld'); // microservice instance
+    let currentMicroservice = kernel.microservice(); // current microservice instance
     
     let iconPath = asset.locate('@deep.microservices.helloworld:images/icon.png');
 });
