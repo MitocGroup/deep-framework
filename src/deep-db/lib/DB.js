@@ -140,7 +140,9 @@ export class DB extends Kernel.ContainerAware {
       if (this._localBackend) {
         this._enableLocalDB(callback);
       } else {
-        this._initVogelsAutoscale();
+
+        // @todo: uncomment when scale down functionality ready
+        //this._initVogelsAutoscale();
 
         callback();
       }
