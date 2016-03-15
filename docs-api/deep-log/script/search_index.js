@@ -6,6 +6,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-log/lib/driver/rum/abstractevent.js~abstractevent",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html",
+    "<span>AbstractEvent</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/RUM/AbstractEvent.js</span>",
+    "class"
+  ],
+  [
     "deep-log/lib/driver/consoledriver.js~consoledriver",
     "class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html",
     "<span>ConsoleDriver</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/ConsoleDriver.js</span>",
@@ -18,9 +24,51 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-log/lib/driver/exception/failedtodeletesqsmessagesexception.js~failedtodeletesqsmessagesexception",
+    "class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html",
+    "<span>FailedToDeleteSqsMessagesException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/exception/failedtoreceivesqsmessageexception.js~failedtoreceivesqsmessageexception",
+    "class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html",
+    "<span>FailedToReceiveSqsMessageException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/FailedToReceiveSqsMessageException.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/exception/failedtosendbatchsqsmessageexception.js~failedtosendbatchsqsmessageexception",
+    "class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html",
+    "<span>FailedToSendBatchSqsMessageException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/exception/failedtosendsqsmessageexception.js~failedtosendsqsmessageexception",
+    "class/lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException.html",
+    "<span>FailedToSendSqsMessageException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/FailedToSendSqsMessageException.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/rum/frameworkevent.js~frameworkevent",
+    "class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html",
+    "<span>FrameworkEvent</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/RUM/FrameworkEvent.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/exception/invalidsqsqueueurlexception.js~invalidsqsqueueurlexception",
+    "class/lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException.html",
+    "<span>InvalidSqsQueueUrlException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/InvalidSqsQueueUrlException.js</span>",
+    "class"
+  ],
+  [
     "deep-log/lib/log.js~log",
     "class/lib/Log.js~Log.html",
     "<span>Log</span> <span class=\"search-result-import-path\">deep-log/lib/Log.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/exception/logdriverexception.js~logdriverexception",
+    "class/lib/Driver/Exception/LogDriverException.js~LogDriverException.html",
+    "<span>LogDriverException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/LogDriverException.js</span>",
     "class"
   ],
   [
@@ -33,6 +81,24 @@ window.esdocSearchIndex = [
     "deep-log/lib/driver/ravendriver.js~ravendriver",
     "class/lib/Driver/RavenDriver.js~RavenDriver.html",
     "<span>RavenDriver</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/RavenDriver.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/exception/rumeventvalidationexception.js~rumeventvalidationexception",
+    "class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html",
+    "<span>RumEventValidationException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/RumEventValidationException.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/rumsqsdriver.js~rumsqsdriver",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html",
+    "<span>RumSqsDriver</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/RumSqsDriver.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/exception/unknownrumeventexception.js~unknownrumeventexception",
+    "class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html",
+    "<span>UnknownRumEventException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/UnknownRumEventException.js</span>",
     "class"
   ],
   [
@@ -426,6 +492,204 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/driver/exception/failedtodeletesqsmessagesexception.js",
+    "file/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js.html",
+    "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/failedtodeletesqsmessagesexception.js~failedtodeletesqsmessagesexception#constructor",
+    "class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/failedtoreceivesqsmessageexception.js",
+    "file/lib/Driver/Exception/FailedToReceiveSqsMessageException.js.html",
+    "lib/Driver/Exception/FailedToReceiveSqsMessageException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/failedtoreceivesqsmessageexception.js~failedtoreceivesqsmessageexception#constructor",
+    "class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/failedtosendbatchsqsmessageexception.js",
+    "file/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js.html",
+    "lib/Driver/Exception/FailedToSendBatchSqsMessageException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/failedtosendbatchsqsmessageexception.js~failedtosendbatchsqsmessageexception#constructor",
+    "class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/failedtosendsqsmessageexception.js",
+    "file/lib/Driver/Exception/FailedToSendSqsMessageException.js.html",
+    "lib/Driver/Exception/FailedToSendSqsMessageException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/failedtosendsqsmessageexception.js~failedtosendsqsmessageexception#constructor",
+    "class/lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/invalidsqsqueueurlexception.js",
+    "file/lib/Driver/Exception/InvalidSqsQueueUrlException.js.html",
+    "lib/Driver/Exception/InvalidSqsQueueUrlException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/invalidsqsqueueurlexception.js~invalidsqsqueueurlexception#constructor",
+    "class/lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/logdriverexception.js",
+    "file/lib/Driver/Exception/LogDriverException.js.html",
+    "lib/Driver/Exception/LogDriverException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/logdriverexception.js~logdriverexception#constructor",
+    "class/lib/Driver/Exception/LogDriverException.js~LogDriverException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/LogDriverException.js~LogDriverException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/rumeventvalidationexception.js",
+    "file/lib/Driver/Exception/RumEventValidationException.js.html",
+    "lib/Driver/Exception/RumEventValidationException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/rumeventvalidationexception.js~rumeventvalidationexception#constructor",
+    "class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/unknownrumeventexception.js",
+    "file/lib/Driver/Exception/UnknownRumEventException.js.html",
+    "lib/Driver/Exception/UnknownRumEventException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/unknownrumeventexception.js~unknownrumeventexception#constructor",
+    "class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js",
+    "file/lib/Driver/RUM/AbstractEvent.js.html",
+    "lib/Driver/RUM/AbstractEvent.js",
+    "file"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent#constructor",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#instance-constructor-constructor",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent#isvalid",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#instance-method-isValid",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#isValid",
+    "method"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent#validate",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#instance-method-validate",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#validate",
+    "method"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent#validationerror",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#instance-get-validationError",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#validationError",
+    "member"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent.backend_context",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-BACKEND_CONTEXT",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.BACKEND_CONTEXT",
+    "member"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent.contexts",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-CONTEXTS",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.CONTEXTS",
+    "member"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent.framework_event_level",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-FRAMEWORK_EVENT_LEVEL",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.FRAMEWORK_EVENT_LEVEL",
+    "member"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent.frontend_context",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-FRONTEND_CONTEXT",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.FRONTEND_CONTEXT",
+    "member"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent.resource_types",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-RESOURCE_TYPES",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.RESOURCE_TYPES",
+    "member"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent.services",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-SERVICES",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.SERVICES",
+    "member"
+  ],
+  [
+    "lib/driver/rum/abstractevent.js~abstractevent.create",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-method-create",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.create",
+    "method"
+  ],
+  [
+    "lib/driver/rum/frameworkevent.js",
+    "file/lib/Driver/RUM/FrameworkEvent.js.html",
+    "lib/Driver/RUM/FrameworkEvent.js",
+    "file"
+  ],
+  [
+    "lib/driver/rum/frameworkevent.js~frameworkevent#constructor",
+    "class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html#instance-constructor-constructor",
+    "lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/rum/frameworkevent.js~frameworkevent#geteventlevel",
+    "class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html#instance-method-getEventLevel",
+    "lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent#getEventLevel",
+    "method"
+  ],
+  [
+    "lib/driver/rum/frameworkevent.js~frameworkevent#getvalidationschema",
+    "class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html#instance-method-getValidationSchema",
+    "lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent#getValidationSchema",
+    "method"
+  ],
+  [
+    "lib/driver/rum/frameworkevent.js~frameworkevent#tojson",
+    "class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html#instance-method-toJSON",
+    "lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent#toJSON",
+    "method"
+  ],
+  [
     "lib/driver/ravenbrowserdriver.js",
     "file/lib/Driver/RavenBrowserDriver.js.html",
     "lib/Driver/RavenBrowserDriver.js",
@@ -465,6 +729,78 @@ window.esdocSearchIndex = [
     "lib/driver/ravendriver.js~ravendriver#log",
     "class/lib/Driver/RavenDriver.js~RavenDriver.html#instance-method-log",
     "lib/Driver/RavenDriver.js~RavenDriver#log",
+    "method"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js",
+    "file/lib/Driver/RumSqsDriver.js.html",
+    "lib/Driver/RumSqsDriver.js",
+    "file"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#constructor",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-constructor-constructor",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#deletemessages",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-deleteMessages",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#deleteMessages",
+    "method"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#enabled",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-get-enabled",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#enabled",
+    "member"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#flush",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-flush",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#flush",
+    "method"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#kernel",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-get-kernel",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#kernel",
+    "member"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#log",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-log",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#log",
+    "method"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#queueurl",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-get-queueUrl",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#queueUrl",
+    "member"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#receivemessages",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-receiveMessages",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#receiveMessages",
+    "method"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#sqs",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-get-sqs",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#sqs",
+    "member"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver.batch_size",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#static-get-BATCH_SIZE",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver.BATCH_SIZE",
+    "member"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver.getregionfromsqsqueueurl",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#static-method-getRegionFromSqsQueueUrl",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver.getRegionFromSqsQueueUrl",
     "method"
   ],
   [
@@ -564,6 +900,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/log.js~log#isrumenabled",
+    "class/lib/Log.js~Log.html#instance-method-isRumEnabled",
+    "lib/Log.js~Log#isRumEnabled",
+    "method"
+  ],
+  [
     "lib/log.js~log#log",
     "class/lib/Log.js~Log.html#instance-method-log",
     "lib/Log.js~Log#log",
@@ -585,6 +927,24 @@ window.esdocSearchIndex = [
     "lib/log.js~log#register",
     "class/lib/Log.js~Log.html#instance-method-register",
     "lib/Log.js~Log#register",
+    "method"
+  ],
+  [
+    "lib/log.js~log#rumdriver",
+    "class/lib/Log.js~Log.html#instance-method-rumDriver",
+    "lib/Log.js~Log#rumDriver",
+    "method"
+  ],
+  [
+    "lib/log.js~log#rumflush",
+    "class/lib/Log.js~Log.html#instance-method-rumFlush",
+    "lib/Log.js~Log#rumFlush",
+    "method"
+  ],
+  [
+    "lib/log.js~log#rumlog",
+    "class/lib/Log.js~Log.html#instance-method-rumLog",
+    "lib/Log.js~Log#rumLog",
     "method"
   ],
   [

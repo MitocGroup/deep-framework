@@ -1,7 +1,7 @@
-## Changes since Tue Nov 17 2015 11:19:01 GMT+0200 (EET)
+## Changes since Fri Feb 26 2016 12:14:59 GMT+0200 (EET)
 
- * @alexanderc: Fix several deep-resource issues
- * @alexanderc: Fix several deep-cache issues
- * @vcernomschi: Refactor and adding new unit test for deep-fs (#100)
-
-
+ * @eistrati: Synchronizing dev and master branches (#253)
+ * @vcernomschi: Add skipping code transpiling to ES5 for travis (#252)
+ * @mgoria: #PM166: Fix hard dependency of kernel in FS (#251)
+ * @mgoria: #PM166: Fix deep-db RUM logging when used in deploy hooks (#250)
+ * @AlexanderC: Implement deep-microservice-registry (#229)

@@ -1,29 +1,29 @@
 {
   "name": "deep-fs",
-  "version": "1.2.3",
+  "version": "1.7.3",
   "description": "DEEP File System Library",
   "keywords": [
-    "Digital End-To-End Enterprise Platform",
-    "Amazon Web Services",
-    "Platform-as-a-Service",
-    "DEEP",
-    "AWS",
-    "PaaS",
-    "Cloud",
-    "Computing",
-    "Microservices",
-    "Architecture",
-    "Serverless",
-    "Abstracted",
-    "Core",
-    "Library",
-    "FS",
-    "File System",
-    "Storage"
+    "digital enterprise end-to-end platform",
+    "amazon web services",
+    "platform-as-a-service",
+    "deep",
+    "aws",
+    "paas",
+    "cloud",
+    "computing",
+    "microservices",
+    "architecture",
+    "serverless",
+    "abstracted",
+    "core",
+    "library",
+    "fs",
+    "file system",
+    "storage"
   ],
-  "homepage": "https://github.com/MitocGroup/deep",
+  "homepage": "https://github.com/MitocGroup/deep-framework",
   "bugs": {
-    "url": "https://github.com/MitocGroup/deep/issues"
+    "url": "https://github.com/MitocGroup/deep-framework/issues"
   },
   "license": "MIT",
   "author": {
@@ -48,23 +48,25 @@
   "main": "lib.compiled/bootstrap.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MitocGroup/deep.git"
+    "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
-    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
+    "test": "bash node-bin/test.sh",
+    "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile",
-    "pretest": "npm link deep-kernel deep-core"
+    "pretest": "npm link deep-kernel deep-core deep-log"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
-    "s3fs": "^2.3.x",
+    "s3fs": "MitocGroup/s3fs",
     "es6-promise": "^3.0.x"
   },
-  "devDependencies": {
+  "optionalDependencies": {
     "relative-fs": "MitocGroup/relative-fs",
-    "fs-extra": "^0.26.x",
+    "fs-extra": "^0.26.x"
+  },
+  "devDependencies": {
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
     "sinon-chai": "^2.8.x"

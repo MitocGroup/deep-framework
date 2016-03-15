@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -50,6 +50,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -75,6 +76,10 @@ export class Response {
 
     this._rawError = error;
     this._rawData = data;
+
+    if (this._rawError) {
+      this._rawError = Response._toErrorObj(this._rawError);
+    }
 
     this._statusCode = null;
     this._data = null;
@@ -106,60 +111,39 @@ export class Response {
    * @returns {Object}
    */
   get data() {
-    if (this._data) {
-      return this._data;
-    }
-
-    if (this._rawData) {
-      var response = JSON.parse(this._rawData.Payload);
-      if (response &amp;&amp; typeof response.errorMessage === &apos;undefined&apos;) {
-        this._data = response;
-      }
-    }
-
     return this._data;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  get statusCode() {
+    return this._statusCode;
+  }
+
+  /**
+   * @returns {Error}
+   */
+  get error() {
+    return this._error;
   }
 
   /**
    * @returns {Boolean}
    */
   get isError() {
-    return typeof this.error === &apos;string&apos;;
+    return !!this.error;
   }
 
   /**
-   * @returns {String}
+   * @param {String|Error|*} rawError
+   * @returns {Error}
+   * @private
    */
-  get error() {
-    if (this._error) {
-      return this._error;
-    }
-
-    if (this._rawError) {
-      this._error = this._rawError;
-    } else {
-      var response = JSON.parse(this._rawData.Payload);
-      if (response &amp;&amp; typeof response.errorMessage !== &apos;undefined&apos;) {
-        this._error = response.errorMessage;
-      }
-    }
-
-    return this._error;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get statusCode() {
-    if (this._statusCode) {
-      return this._statusCode;
-    }
-
-    if (this._rawData) {
-      this._statusCode = this._rawData.StatusCode;
-    }
-
-    return this._statusCode;
+  static _toErrorObj(rawError) {
+    return rawError instanceof Error
+      ? rawError
+      : new Error(rawError.toString());
   }
 }
 </code></pre>

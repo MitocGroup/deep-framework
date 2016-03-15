@@ -9,7 +9,7 @@ Instead of providing configuration parameter inline (from command line directly)
 configuration file is used. The `deeploy.json` file must be located in bundle root directory.
 
 > After creating application environment `deepify deploy` command saves internal 
-> config in `.cfg.deeploy.json` file from the application root
+> config in `.{hash}.{env}.provisioning.json` file from the application root
 
 Example:
 
@@ -22,19 +22,8 @@ Example of `deeploy.json`
 
 ```js
 {
-  "dependencies": {
-    "bucket": "deep.deps.repository", // bucket dependencies to be uploaded to
-    "prefix": "", // repository prefix
-    "aws": { // native AWS config injected into aws-sdk library (OPTIONAL! aws config from the top level used)
-        "accessKeyId": "<aws_access_key_id>",
-        "secretAccessKey": "<aws_secret_access_key>",
-        "region": "us-east-1",
-        "httpOptions": {
-          "timeout": 30000
-        }
-      },
-  },
   "env": "dev",
+  "domain": "example.com", // Read when running `deepify enable-ssl path/to/web_app`
   "awsAccountId": 999999999999,
   "appIdentifier": "deep_platform_dev",
   "aws": { // native AWS config injected into aws-sdk library
@@ -61,4 +50,5 @@ Available hooks
 
 The list of available hooks:
  
- - [Post Deploy](deploy/hooks/post-deploy.md)
+ - [Initialize](hooks/on-init.md)
+ - [Post Deploy](hooks/post-deploy.md)

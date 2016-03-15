@@ -5,9 +5,14 @@
 
 import {Interface} from '../../OOP/Interface';
 import {Response} from './Response';
+import {ErrorResponse} from './ErrorResponse';
 import {Request} from './Request';
 import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';
 import {MissingUserContextException} from './Exception/MissingUserContextException';
+import {Context} from './Context';
+import {Sandbox} from '../../Runtime/Sandbox';
+import path from 'path';
+import fs from 'fs';
 
 /**
  * Lambda runtime context
@@ -25,8 +30,25 @@ export class Runtime extends Interface {
 
     this._loggedUserId = null;
     this._forceUserIdentity = false;
+    this._contextSent = false;
+
+    this._calleeConfig = null;
 
     this._fillDenyMissingUserContextOption();
+  }
+
+  /**
+   * @returns {null|Context}
+   */
+  get context() {
+    return this._context;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get contextSent() {
+    return this._contextSent;
   }
 
   /**
@@ -62,71 +84,143 @@ export class Runtime extends Interface {
   }
 
   /**
-   * @param {*} event
-   * @param {*} context
+   * @param {String} schemaName
+   * @param {Function} cb
    * @returns {Runtime}
    */
-  run(event, context) {
-    this._context = context;
-    this._addExceptionListener();
-    
-    this._request = new Request(event);
-    
-    this._fillUserContext();
+  validateInput(schemaName, cb) {
+    let validation = this._kernel.get('validation');
 
-    if (!this._loggedUserId && this._forceUserIdentity) {
-      throw new MissingUserContextException();
-    }
-
-    this.handle(this._request);
+    validation.validateRuntimeInput(this, schemaName, cb);
 
     return this;
   }
 
   /**
-   * @private
+   * @param {Object} event
+   * @param {Object} context
+   * @returns {Runtime}
    */
-  _addExceptionListener() {
-    process.removeAllListeners('uncaughtException');
-    process.on('uncaughtException', function(error) {
-      return this.createError(error).send();
-    }.bind(this));
+  run(event, context) {
+    this._context = new Context(context);
+    this._request = new Request(event);
+
+    this.logService.rumLog({
+      service: 'deep-core',
+      resourceType: 'Lambda',
+      resourceId: this._context.invokedFunctionArn,
+      eventName: 'Run',
+      payload: event,
+    });
+
+    new Sandbox(() => {
+      this._fillUserContext();
+
+      if (!this._loggedUserId && this._forceUserIdentity) {
+        throw new MissingUserContextException();
+      }
+
+      let validationSchema = this.validationSchema;
+
+      if (validationSchema) {
+        this._runValidate(validationSchema);
+      } else {
+        this.handle(this._request);
+      }
+    })
+      .fail((error) => {
+        this.createError(error).send();
+      })
+      .run();
+
+    return this;
   }
 
   /**
-   * @param {String} iError
+   * @param {String} validationSchema
+   * @private
    */
-  createError(iError) {
-    let oError = {};
+  _runValidate(validationSchema) {
+    let validation = this._kernel.get('validation');
+    let validationSchemaName = validationSchema;
 
-    if (typeof iError === 'string') {
-      oError = {
-        errorType: 'Error',
-        errorMessage: iError,
-        errorStack: (new Error(iError)).stack,
-      };
-    } else {
-      oError = {
-        errorType: iError.name,
-        errorMessage: iError.message,
-        errorStack: iError.stack,
-      };
+    if (typeof validationSchema !== 'string') {
+      validationSchemaName = this._injectValidationSchema(validationSchema);
     }
 
-    let response = new Response(oError);
-    response.runtimeContext = this._context;
+    this.validateInput(validationSchemaName, (validatedData) => {
+      this.handle(validatedData);
+    });
+  }
 
-    return response;
+  /**
+   * @param {Object} schema
+   * @param {String|null} name
+   * @returns {String}
+   * @private
+   */
+  _injectValidationSchema(schema, name = null) {
+    let validation = this._kernel.get('validation');
+
+    name = name || `DeepHandlerValidation_${new Date().getTime()}`;
+
+    validation.setGuessSchema(name, schema);
+
+    return name;
+  }
+
+  /**
+   * @param {String|Error|*} error
+   */
+  createError(error) {
+    return new ErrorResponse(this, error);
   }
 
   /**
    * @param {Object} data
    */
   createResponse(data) {
-    let response = new Response(data);
-    response.runtimeContext = this._context;
+    return new Response(this, data);
+  }
 
-    return response;
+  /**
+   * @param {Object} data
+   * @param {Number} ttl
+   * @param {Function} callback
+   */
+  createCachedResponse(data, ttl = 0, callback = response => response.send()) {
+    let publicCache = this._kernel.get('cache').shared;
+    let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);
+    let response = new Response(this, data);
+
+    publicCache.assure(publicCacheKey, {body: data}, ttl, () => {
+      callback(response);
+    });
+  }
+
+  /**
+   * @returns {null|Object}
+   */
+  get calleeConfig() {
+    if (!this._calleeConfig &&
+      this._context &&
+      this._kernel &&
+      this._context.has('invokedFunctionArn')) {
+
+      let resource = this._kernel.get('resource');
+      let calleeArn = this._context.getOption('invokedFunctionArn');
+
+      this._calleeConfig = resource.getActionConfig(calleeArn);
+    }
+
+    return this._calleeConfig;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get validationSchema() {
+    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;
   }
 
   /**
@@ -141,6 +235,13 @@ export class Runtime extends Interface {
    */
   get securityService() {
     return this.kernel.get('security');
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get logService() {
+    return this.kernel.get('log');
   }
 
   /**
@@ -159,7 +260,7 @@ export class Runtime extends Interface {
    */
   _fillUserContext() {
     if (this._context &&
-      this._context.hasOwnProperty('identity') &&
+      this._context.has('identity') &&
       this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&
       this._context.identity.hasOwnProperty('cognitoIdentityId')
     ) {
@@ -175,5 +276,12 @@ export class Runtime extends Interface {
 
       this._loggedUserId = this._context.identity.cognitoIdentityId;
     }
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get VALIDATION_SCHEMAS_DIR() {
+    return '__deep_validation_schemas__';
   }
 }

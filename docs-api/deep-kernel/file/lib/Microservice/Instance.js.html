@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -32,6 +32,14 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ContainerAware.js~ContainerAware.html">ContainerAware</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Config</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Config/Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/AsyncConfig.js~AsyncConfig.html">AsyncConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/ComplexDriver.js~ComplexDriver.html">ComplexDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/FsDriver.js~FsDriver.html">FsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/HttpDriver.js~HttpDriver.html">HttpDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/KernelDriver.js~KernelDriver.html">KernelDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html">ScopeDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException.html">InvalidDeepIdentifierException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingMicroserviceException.js~MissingMicroserviceException.html">MissingMicroserviceException</a></span></span></li>
@@ -59,11 +67,13 @@ export class Instance {
   /**
    * @param {String} identifier
    * @param {Object} rawResources
+   * @param {Object} parameters
    */
-  constructor(identifier, rawResources) {
+  constructor(identifier, rawResources, parameters = {}) {
     this._isRoot = false;
     this._rawResources = rawResources;
     this._identifier = identifier;
+    this._parameters = parameters;
   }
 
   /**
@@ -80,7 +90,12 @@ export class Instance {
 
       let microservice = globalConfig.microservices[identifier];
 
-      let microserviceObject = new Instance(identifier, microservice.resources);
+      let microserviceObject = new Instance(
+        identifier,
+        microservice.resources,
+        microservice.parameters || {}
+      );
+
       microserviceObject.isRoot = microservice.isRoot;
 
       vector.push(microserviceObject);
@@ -108,6 +123,13 @@ export class Instance {
    */
   toString() {
     return this._identifier;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get parameters() {
+    return this._parameters;
   }
 
   /**

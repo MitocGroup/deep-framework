@@ -1,0 +1,71 @@
+{
+  "name": "deep-search",
+  "version": "0.0.5",
+  "description": "DEEP Search Library",
+  "keywords": [
+    "digital enterprise end-to-end platform",
+    "amazon web services",
+    "platform-as-a-service",
+    "deep",
+    "aws",
+    "paas",
+    "cloud",
+    "computing",
+    "microservices",
+    "architecture",
+    "serverless",
+    "abstracted",
+    "core",
+    "library",
+    "search",
+    "elasticsearch",
+    "cloudsearch"
+  ],
+  "homepage": "https://github.com/MitocGroup/deep-framework",
+  "bugs": {
+    "url": "https://github.com/MitocGroup/deep-framework/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Mitoc Group",
+    "email": "hello@mitocgroup.com",
+    "url": "http://www.mitocgroup.com"
+  },
+  "contributors": [
+    {
+      "name": "AlexanderC",
+      "email": "alexanderc@mitocgroup.com"
+    },
+    {
+      "name": "Marcel Goria",
+      "email": "mgoria@mitocgroup.com"
+    }
+  ],
+  "main": "lib.compiled/bootstrap.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MitocGroup/deep-framework.git"
+  },
+  "scripts": {
+    "test": "bash node-bin/test.sh",
+    "compile": "bash node-bin/compile.sh",
+    "postinstall": "bash node-bin/cleanup.sh",
+    "prepublish": "npm run compile",
+    "pretest": "npm link deep-kernel deep-core"
+  },
+  "dependencies": {
+    "deep-kernel": "^1.x.x",
+    "deep-core": "^1.x.x",
+    "elasticsearch": "^10.1.x"
+  },
+  "optionalDependencies": {
+    "aws-sdk": "^2.2.x"
+  },
+  "devDependencies": {
+    "chai": "^3.2.x",
+    "sinon": "^1.17.x",
+    "sinon-chai": "^2.8.x"
+  },
+  "preferGlobal": false,
+  "analyze": true
+}

@@ -1,27 +1,28 @@
 {
   "name": "deep-asset",
-  "version": "1.3.3",
+  "version": "1.7.1",
   "description": "DEEP Asset Library",
   "keywords": [
-    "Digital Enterprise End-To-End Platform",
-    "Amazon Web Services",
-    "Platform-as-a-Service",
-    "DEEP",
-    "AWS",
-    "PaaS",
-    "Cloud",
-    "Computing",
-    "Microservices",
-    "Architecture",
-    "Serverless",
-    "Abstracted",
-    "Core",
-    "Library",
-    "Asset"
+    "digital enterprise end-to-end platform",
+    "amazon web services",
+    "platform-as-a-service",
+    "deep",
+    "aws",
+    "paas",
+    "cloud",
+    "computing",
+    "microservices",
+    "architecture",
+    "serverless",
+    "abstracted",
+    "core",
+    "library",
+    "asset",
+    "assets"
   ],
-  "homepage": "https://github.com/MitocGroup/deep",
+  "homepage": "https://github.com/MitocGroup/deep-framework",
   "bugs": {
-    "url": "https://github.com/MitocGroup/deep/issues"
+    "url": "https://github.com/MitocGroup/deep-framework/issues"
   },
   "license": "MIT",
   "author": {
@@ -46,11 +47,11 @@
   "main": "lib.compiled/bootstrap.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MitocGroup/deep.git"
+    "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
-    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
+    "test": "bash node-bin/test.sh",
+    "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core"
   },

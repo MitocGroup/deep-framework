@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -31,12 +31,18 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedKey.js~SharedKey.html">SharedKey</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
@@ -55,6 +61,7 @@
 import {AbstractDriver} from &apos;./AbstractDriver&apos;;
 import {RedisClusterException} from &apos;./Exception/RedisClusterException&apos;;
 import Redis from &apos;ioredis&apos;;
+import RedisAutoDiscovery from &apos;ecad&apos;;
 
 /**
  * Redis/Elasticache driver implementation
@@ -66,9 +73,73 @@ export class RedisDriver extends AbstractDriver {
   constructor(dsn) {
     super();
 
-    let nativeDriver = this.NATIVE_DRIVER;
+    this._autoDiscoveryError = null;
+    this._client = null;
 
-    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();
+    this._autoDiscover(dsn);
+  }
+
+  /**
+   * @param {String} dsn
+   * @private
+   */
+  _autoDiscover(dsn) {
+    let payload = {
+      endpoints: [dsn,],
+      timeout: RedisDriver.DEFAULT_AUTO_DISCOVERY_TIMEOUT,
+    };
+
+    let client = new RedisAutoDiscovery(payload);
+
+    client.fetch((error, hosts) =&gt; {
+      if (error) {
+        this._autoDiscoveryError = error;
+      } else {
+        let options = {
+          sentinels: [],
+          name: dsn,
+        };
+
+        hosts.forEach((host) =&gt; {
+          options.sentinels.push(`redis://${host}/`);
+        });
+
+        this._client = new this.NATIVE_DRIVER(options);
+      }
+    });
+  }
+
+  /**
+   * @param {Function} cb
+   * @private
+   */
+  clientWait(cb) {
+    if (this._client) {
+      cb(null, this._client);
+    } else if (this._autoDiscoveryError) {
+      cb(this._autoDiscoveryError, null);
+    } else {
+      setTimeout(() =&gt; {
+        process.nextTick(() =&gt; {
+          this.clientWait(cb);
+        });
+      }, RedisDriver.CLIENT_WAIT_MS_INTERVAL);
+    }
+  }
+
+  /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return &apos;Redis&apos;;
+  }
+
+  /**
+   * @returns {Error|String|null}
+   */
+  get autoDiscoveryError() {
+    return this._autoDiscoveryError;
   }
 
   /**
@@ -83,14 +154,20 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    */
   _has(key, callback = () =&gt; {}) {
-    this._client.exists(key, (error, results) =&gt; {
+    this.clientWait((error, client) =&gt; {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, results);
+      client.exists(key, (error, results) =&gt; {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+          return;
+        }
+
+        callback(null, results);
+      });
     });
   }
 
@@ -99,14 +176,21 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    */
   _get(key, callback = () =&gt; {}) {
-    this._client.get(key, (error, results) =&gt; {
+    this.clientWait((error, client) =&gt; {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, results);
+      client.get(key, (error, results) =&gt; {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+
+          return;
+        }
+
+        callback(null, results);
+      });
     });
   }
 
@@ -118,14 +202,21 @@ export class RedisDriver extends AbstractDriver {
    * @returns {Boolean}
    */
   _set(key, value, ttl = 0, callback = () =&gt; {}) {
-    this._client.set(key, value, ttl, (error) =&gt; {
+    this.clientWait((error, client) =&gt; {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, true);
+      client.set(key, value, ttl, (error) =&gt; {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+
+          return;
+        }
+
+        callback(null, true);
+      });
     });
   }
 
@@ -135,14 +226,21 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    */
   _invalidate(key, timeout = 0, callback = () =&gt; {}) {
-    this._client.del(key, timeout, (error) =&gt; {
+    this.clientWait((error, client) =&gt; {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, true);
+      client.del(key, timeout, (error) =&gt; {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+
+          return;
+        }
+
+        callback(null, true);
+      });
     });
   }
 
@@ -151,14 +249,21 @@ export class RedisDriver extends AbstractDriver {
    * @returns {AbstractDriver}
    */
   _flush(callback = () =&gt; {}) {
-    this._client.flushall((error) =&gt; {
+    this.clientWait((error, client) =&gt; {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, true);
+      client.flushall((error) =&gt; {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+
+          return;
+        }
+
+        callback(null, true);
+      });
     });
   }
 
@@ -168,6 +273,20 @@ export class RedisDriver extends AbstractDriver {
    */
   get NATIVE_DRIVER() {
     return Redis;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get CLIENT_WAIT_MS_INTERVAL() {
+    return 5;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get DEFAULT_AUTO_DISCOVERY_TIMEOUT() {
+    return 700;
   }
 }
 </code></pre>

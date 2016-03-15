@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -50,6 +50,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -62,94 +63,64 @@
 &apos;use strict&apos;;
 
 import {Response} from &apos;./Response&apos;;
+import {LambdaResponse} from &apos;./LambdaResponse&apos;;
 
 export class SuperagentResponse extends Response {
   /**
-   * @param {Request} request
-   * @param {Object} data
-   * @param {String} error
+   * @param {*} args
    */
-  constructor(request, data, error) {
-    super(...arguments);
+  constructor(...args) {
+    super(...args);
 
-    this._error = error;
-
-    // @todo: treat the empty body somehow else?
-    if (!data.body) {
-      if (!data.status || data.status &gt; 300) {
-        this._error = data.error || &apos;Unexpected error occurred&apos;;
-        this._statusCode = data.status || 500;
-      } else {
-        this._statusCode = data.status;
-      }
+    if (this._request.isLambda) {
+      this._parseLambda();
     } else {
-      this._data = request.isLambda
-        ? this._parseLambdaResponse(data)
-        : this._parseResponse(data);
+      this._parseExternal();
     }
   }
 
   /**
-   * Parse response given by superagent library
-   * for Lambdas proxied through ApiGateway
-   *
-   * @param {Object} response
-   * @returns {Object}
    * @private
    */
-  _parseLambdaResponse(response) {
-    if (typeof response.body.errorMessage === &apos;string&apos;) {
-      this._error = response.body.errorMessage;
+  _parseLambda() {
+    this._parseExternal();
+
+    // check if any Lambda response available
+    if (this._data &amp;&amp; !this._error) {
+      let dataObj = this._data;
+
+      // check whether Lambda execution failed
+      if (dataObj.errorMessage) {
+        this._error = LambdaResponse.getPayloadError(dataObj);
+      } else {
+        this._data = dataObj;
+      }
     }
-
-    this._statusCode = this._error ? 500 : response.status;
-
-    return this._error ? null : response.body;
   }
 
   /**
-   * Parse response given by superagent library
-   *
-   * @param {Object} response
-   * @returns {Object}
    * @private
    */
-  _parseResponse(response) {
-    if (response.error) {
-      this._error = response.error;
+  _parseExternal() {
+    let data = this._rawData;
+    let error = this._rawError;
+
+    if (error) {
+      this._error = error;
+    } else if (data &amp;&amp; data.error) { // weird case...
+      this._error = data.error;
+    } else {
+      this._data = data &amp;&amp; data.body ? data.body : null;
     }
 
-    this._statusCode = response.status;
-
-    return response.body;
-  }
-
-  /**
-   * @returns {Object}
-   */
-  get data() {
-    return this._data;
-  }
-
-  /**
-   * @returns {Boolean}
-   */
-  get isError() {
-    return !!this._error;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get error() {
-    return this._error;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get statusCode() {
-    return this._statusCode;
+    // @todo: treat Response.status lack somehow else?
+    if (data &amp;&amp; data.status) {
+      this._statusCode = parseInt(data.status);
+    } else if (this._data &amp;&amp; !this._error) {
+      this._statusCode = 200;
+    } else {
+      this._statusCode = 500;
+    }
   }
 }
 </code></pre>

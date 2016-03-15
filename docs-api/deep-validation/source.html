@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -33,15 +33,16 @@
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ObjectToJoi.js~ObjectToJoi.html">ObjectToJoi</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Validation.js~Validation.html">Validation</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException.html">InvalidJoiSchemaException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidSchemaException.js~InvalidSchemaException.html">InvalidSchemaException</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html">ModelNotFoundException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException.html">ObjectValidationFailedException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException.html">ValidationSchemaNotFoundException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Helpers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Helpers/Joi.js~Joi.html">Joi</a></span></span></li>
 </ul>
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">38/38</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">41/43</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -65,6 +66,14 @@
       <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
     </tr>
 <tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Exception/InvalidJoiSchemaException.js.html#errorLines=9">lib/Exception/InvalidJoiSchemaException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException.html">InvalidJoiSchemaException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
+      <td style="display: none;" data-ice="size">324 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
+    </tr>
+<tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Exception/InvalidSchemaException.js.html">lib/Exception/InvalidSchemaException.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Exception/InvalidSchemaException.js~InvalidSchemaException.html">InvalidSchemaException</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
@@ -73,28 +82,44 @@
       <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
     </tr>
 <tr data-ice="file">
-      <td data-ice="filePath"><span><a href="file/lib/Exception/ModelNotFoundException.js.html">lib/Exception/ModelNotFoundException.js</a></span></td>
-      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html">ModelNotFoundException</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
-      <td style="display: none;" data-ice="size">327 byte</td>
-      <td style="display: none;" data-ice="lines">19</td>
-      <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
-    </tr>
-<tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Exception/ObjectValidationFailedException.js.html">lib/Exception/ObjectValidationFailedException.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException.html">ObjectValidationFailedException</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
-      <td style="display: none;" data-ice="size">420 byte</td>
-      <td style="display: none;" data-ice="lines">20</td>
-      <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">3/3</span></td>
+      <td style="display: none;" data-ice="size">549 byte</td>
+      <td style="display: none;" data-ice="lines">29</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Exception/ValidationSchemaNotFoundException.js.html#errorLines=9">lib/Exception/ValidationSchemaNotFoundException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException.html">ValidationSchemaNotFoundException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
+      <td style="display: none;" data-ice="size">302 byte</td>
+      <td style="display: none;" data-ice="lines">16</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Helpers/Joi.js.html">lib/Helpers/Joi.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Helpers/Joi.js~Joi.html">Joi</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">14/14</span></td>
-      <td style="display: none;" data-ice="size">1587 byte</td>
-      <td style="display: none;" data-ice="lines">109</td>
-      <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+      <td style="display: none;" data-ice="size">1774 byte</td>
+      <td style="display: none;" data-ice="lines">115</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Helpers/rfc3986.js.html">lib/Helpers/rfc3986.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">6149 byte</td>
+      <td style="display: none;" data-ice="lines">186</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Helpers/uriRegexp.js.html">lib/Helpers/uriRegexp.js</a></span></td>
+      <td data-ice="identifier" class="identifiers">-</td>
+      <td class="coverage"><span data-ice="coverage">-</span></td>
+      <td style="display: none;" data-ice="size">634 byte</td>
+      <td style="display: none;" data-ice="lines">25</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Helpers/vogelsPolyfill.js.html">lib/Helpers/vogelsPolyfill.js</a></span></td>
@@ -108,17 +133,17 @@
       <td data-ice="filePath"><span><a href="file/lib/ObjectToJoi.js.html">lib/ObjectToJoi.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/ObjectToJoi.js~ObjectToJoi.html">ObjectToJoi</a></span></td>
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">4/4</span></td>
-      <td style="display: none;" data-ice="size">1322 byte</td>
-      <td style="display: none;" data-ice="lines">69</td>
-      <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+      <td style="display: none;" data-ice="size">1364 byte</td>
+      <td style="display: none;" data-ice="lines">70</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Validation.js.html">lib/Validation.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Validation.js~Validation.html">Validation</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">12/12</span></td>
-      <td style="display: none;" data-ice="size">3426 byte</td>
-      <td style="display: none;" data-ice="lines">175</td>
-      <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">14/14</span></td>
+      <td style="display: none;" data-ice="size">6127 byte</td>
+      <td style="display: none;" data-ice="lines">270</td>
+      <td style="display: none;" data-ice="updated">2016-03-02 12:26:48 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/bootstrap.js.html">lib/bootstrap.js</a></span></td>

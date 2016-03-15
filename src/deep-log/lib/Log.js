@@ -9,6 +9,7 @@ import Core from 'deep-core';
 import {ConsoleDriver} from './Driver/ConsoleDriver';
 import {RavenDriver} from './Driver/RavenDriver';
 import {RavenBrowserDriver} from './Driver/RavenBrowserDriver';
+import {RumSqsDriver} from './Driver/RumSqsDriver';
 import {AbstractDriver} from './Driver/AbstractDriver';
 
 /**
@@ -39,10 +40,13 @@ export class Log extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    // @todo: remove this compatibility hook
-    let globals = kernel.config.globals || kernel.config;
+    let globals = kernel.config.globals;
+    let drivers = globals.logDrivers || {};
 
-    let drivers = globals.logDrivers;
+    // add console driver by default to all environments except for PROD
+    if (!drivers.hasOwnProperty('console') && kernel.env !== Kernel.PROD_ENVIRONMENT) {
+      drivers.console = {};
+    }
 
     for (let driverName in drivers) {
       if (!drivers.hasOwnProperty(driverName)) {
@@ -78,10 +82,16 @@ export class Log extends Kernel.ContainerAware {
             : null
         );
         break;
+      case 'rum':
+        let rumQueueUrl = this.kernel.config.rumQueue.url;
+        let enabled = (args.length > 0 && args[0] && typeof args[0] === 'object') ? args[0].enabled : false;
+
+        driver = new RumSqsDriver(rumQueueUrl, this.kernel, enabled);
+        break;
       default:
         throw new Core.Exception.InvalidArgumentException(
           type,
-          '[Console, Raven, Sentry]'
+          '[Console, Raven, Sentry, RUM]'
         );
     }
 
@@ -89,16 +99,20 @@ export class Log extends Kernel.ContainerAware {
   }
 
   /**
+   * @param {*} args
    * @returns {Log}
    *
    * @todo: do we need this here?
    */
-  overrideJsConsole() {
-    if (!this._drivers.find(ConsoleDriver)) {
+  overrideJsConsole(...args) {
+    let consoleDriver = this._drivers.find(ConsoleDriver);
+
+    if (!consoleDriver) {
       this.register('console');
     }
 
-    this._drivers.find(ConsoleDriver).overrideNative();
+    (consoleDriver || this._drivers.find(ConsoleDriver))
+      .overrideNative(...args);
 
     return this;
   }
@@ -145,10 +159,66 @@ export class Log extends Kernel.ContainerAware {
 
       let driver = driversArr[driverKey];
 
+      // do not log common messages into RUM
+      if (driver instanceof RumSqsDriver) {
+        continue;
+      }
+
       driver.log(msg, level, context);
     }
 
     return this;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  isRumEnabled() {
+    let driver = this.rumDriver();
+
+    return driver && driver.enabled;
+  }
+
+  /**
+   * @param {Object} event
+   */
+  rumLog(event) {
+    let driver = this.rumDriver();
+
+    if (driver) {
+      driver.log(event, (error, data) => {
+        if (error) {
+          this.log(error, Log.ERROR, event);
+        }
+      });
+    }
+  }
+
+  /**
+   * Flushes RUM batch messages
+   */
+  rumFlush(callback) {
+    let driver = this.rumDriver();
+
+    if (!driver) {
+      callback(null, null);
+      return;
+    }
+
+    driver.flush((error, data) => {
+      if (error) {
+        this.log(error, Log.ERROR);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @returns {RumSqsDriver}
+   */
+  rumDriver() {
+    return this.drivers.find(RumSqsDriver);
   }
 
   /**

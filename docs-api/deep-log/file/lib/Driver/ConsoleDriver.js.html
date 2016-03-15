@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -35,6 +35,17 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html">ConsoleDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver.html">RavenBrowserDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenDriver.js~RavenDriver.html">RavenDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html">RumSqsDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html">FailedToDeleteSqsMessagesException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html">FailedToReceiveSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html">FailedToSendBatchSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException.html">FailedToSendSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException.html">InvalidSqsQueueUrlException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/LogDriverException.js~LogDriverException.html">LogDriverException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html">RumEventValidationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html">UnknownRumEventException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/RUM</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html">FrameworkEvent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 </ul>
 </div>
@@ -82,6 +93,8 @@ export class ConsoleDriver extends AbstractDriver {
       }
 
       console[method] = nativeConsole[method];
+
+      console[method].bind(nativeConsole);
     }
 
     return console;
@@ -117,20 +130,24 @@ export class ConsoleDriver extends AbstractDriver {
     }
 
     // Fixes issue with node env
-    (this._console[nativeMethod] || this._console.log)(AbstractDriver.timeString, msg);
+    let logMethod = this._console[nativeMethod] || this._console.log;
+    logMethod.call(ConsoleDriver.nativeConsole, AbstractDriver.timeString, msg);
 
     // @todo: figure out a better way of dumping context
     if (context) {
       // Fixes issue with node env
-      (this._console.debug || this._console.log)(&apos;[DEBUG]&apos;, context);
+      let debugMethod = this._console.debug || this._console.log;
+      debugMethod.call(ConsoleDriver.nativeConsole, &apos;[DEBUG]&apos;, context);
     }
   }
 
   /**
+   * @param {Boolean} logTime
+   * @param {Boolean} coloredOutput
    * @param {Boolean} turnOff
    * @returns {ConsoleDriver}
    */
-  overrideNative(turnOff = false) {
+  overrideNative(logTime = true, coloredOutput = true, turnOff = false) {
     let nativeConsole = ConsoleDriver.nativeConsole;
 
     for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {
@@ -142,12 +159,47 @@ export class ConsoleDriver extends AbstractDriver {
 
       nativeConsole[method] = (...args) =&gt; {
         if (!turnOff) {
-          this._console[method](AbstractDriver.timeString, ...args);
+          let nativeArgs = args;
+
+          if (coloredOutput) {
+            nativeArgs = ConsoleDriver._colorOutput(method, nativeArgs);
+          }
+
+          if (logTime) {
+            nativeArgs.unshift(AbstractDriver.timeString);
+          }
+
+          this._console[method](...nativeArgs);
         }
       };
     }
 
     return this;
+  }
+
+  /**
+   * @param {String} type
+   * @param {Array} args
+   * @returns {Array}
+   * @private
+   */
+  static _colorOutput(type, args) {
+    let color = null;
+
+    switch(type.toLowerCase()) {
+      case &apos;error&apos;:
+        color = 31; // red
+        break;
+      case &apos;warn&apos;:
+        color = 33; // yellow
+        break;
+      default: color = 32; // green
+    }
+
+    args.unshift(`\x1b[${color}m`);
+    args.push(&apos;\x1b[0m&apos;);
+
+    return args;
   }
 
   /**

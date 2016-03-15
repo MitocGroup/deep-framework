@@ -16,6 +16,14 @@ export class LocalStorageDriver extends AbstractDriver {
   }
 
   /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return 'LocalStorage';
+  }
+
+  /**
    * @param {String} key
    * @param {Function} callback
    */
@@ -41,13 +49,19 @@ export class LocalStorageDriver extends AbstractDriver {
    * @returns {Boolean}
    */
   _set(key, value, ttl = 0, callback = () => {}) {
-    if (ttl <= 0) {
-      LocalStorage.set(key, {value: value, exd: null});
-    } else {
-      LocalStorage.set(key, {value: value, exd: (LocalStorageDriver._now + ttl)});
-    }
+    let exd = ttl > 0 ? LocalStorageDriver._now + ttl : null;
 
-    callback(null, true);
+    try {
+      LocalStorage.set(key, {value: value, exd: exd});
+      callback(null, true);
+
+    } catch (error) {
+      if (this._isQuotaExceededError(error) && this._flushStale()) {
+        this._set(key, value, ttl, callback);
+      }
+
+      callback(error, false);
+    }
   }
 
   /**
@@ -88,6 +102,44 @@ export class LocalStorageDriver extends AbstractDriver {
   }
 
   /**
+   * @returns {boolean}
+   * @private
+   */
+  _flushStale() {
+    let keysToRemove = [];
+
+    LocalStorage.forEach((key, val) => {
+      // @note - do not remove keys from cache at iteration time, it breaks the loop
+      if (this.isDeepKey(key) && !LocalStorageDriver._isAlive(val, key, false)) {
+        keysToRemove.push(key);
+      }
+    });
+
+    keysToRemove.forEach((key) => {
+      LocalStorage.remove(key);
+    });
+
+    return keysToRemove.length > 0;
+  }
+
+  /**
+   * @see http://chrisberkhout.com/blog/localstorage-errors/
+   *
+   * @param {Object} error
+   * @returns {Boolean}
+   * @private
+   */
+  _isQuotaExceededError(error) {
+    let quotaExceededErrors = [
+      'QuotaExceededError',
+      'QUOTA_EXCEEDED_ERR',
+      'NS_ERROR_DOM_QUOTA_REACHED'
+    ];
+
+    return quotaExceededErrors.indexOf(error.name) !== -1;
+  }
+
+  /**
    * @returns {Number}
    * @private
    */
@@ -99,19 +151,31 @@ export class LocalStorageDriver extends AbstractDriver {
    *
    * @param {Object} response
    * @param {String} key
+   * @param {Boolean} removeStale
    * @returns {Boolean}
    * @private
    */
-  static _isAlive(response, key) {
+  static _isAlive(response, key, removeStale = true) {
     if (!response) {
       return false;
     }
 
-    if (response.exd && response.exd !== null && response.exd <= LocalStorageDriver._now) {
-      LocalStorage.remove(key);
+    if (response.exd && response.exd <= LocalStorageDriver._now) {
+      if (removeStale) {
+        LocalStorage.remove(key);
+      }
       return false;
     }
 
     return true;
+  }
+
+  /**
+   * Checks for browser local storage availability
+   *
+   * @returns {boolean}
+   */
+  static isAvailable() {
+    return LocalStorage.enabled;
   }
 }

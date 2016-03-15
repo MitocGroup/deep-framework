@@ -1,6 +1,6 @@
 import backendConfig from './backend-cfg-json';
 import frontendConfig from './frontent-cfg-json';
-import {Kernel} from '../../lib.compiled/Kernel';
+import {Kernel} from '../../lib/Kernel';
 
 export default {
   /**

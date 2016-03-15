@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -40,11 +40,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Resource.js~Resource.html">Resource</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Statement.js~Statement.html">Statement</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/IAM/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Exception/InvalidArnException.js~InvalidArnException.html">InvalidArnException</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Context.js~Context.html">Context</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html">Runtime</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html">InvalidCognitoIdentityException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/ContextAlreadySentException.js~ContextAlreadySentException.html">ContextAlreadySentException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html">InvalidCognitoIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException.html">MissingRuntimeContextException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException.html">MissingUserContextException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DatabaseOperationException.js~DatabaseOperationException.html">DatabaseOperationException</a></span></span></li>
@@ -54,7 +56,10 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/MethodsProxy.js~MethodsProxy.html">MethodsProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/UniversalRequire.js~UniversalRequire.html">UniversalRequire</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">HTTP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/HTTP/Helper.js~Helper.html">Helper</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Runtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Runtime/Sandbox.js~Sandbox.html">Sandbox</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -67,57 +72,84 @@
 &apos;use strict&apos;;
 
 import {MissingRuntimeContextException} from &apos;./Exception/MissingRuntimeContextException&apos;;
+import {ContextAlreadySentException} from &apos;./Exception/ContextAlreadySentException&apos;;
 
 /**
  * Response sent to the lambda context
  */
 export class Response {
   /**
-   * @param {*} data
+   * @param {Runtime} runtime
+   * @param {Object} data
    */
-  constructor(data) {
+  constructor(runtime, data) {
     this._data = data;
-    this._runtimeContext = null;
+    this._runtime = runtime;
   }
 
   /**
-   * @param {Object} context
+   * @returns {Runtime}
    */
-  set runtimeContext(context) {
-    this._runtimeContext = context;
+  get runtime() {
+    return this._runtime;
   }
 
   /**
-   * @returns {Object}
+   * @returns {Boolean}
    */
-  get runtimeContext() {
-    return this._runtimeContext;
+  get contextSent() {
+    return this._runtime.contextSent;
   }
 
   /**
    * @returns {Response}
    */
   send() {
-    if (!this._runtimeContext) {
+    if (!this._runtime.context) {
       throw new MissingRuntimeContextException();
+    } else if (this.contextSent) {
+      throw new ContextAlreadySentException();
     }
 
-    this._runtimeContext[this.contextMethod](this._data);
+    this.runtime.logService.rumLog({
+      service: &apos;deep-core&apos;,
+      resourceType: &apos;Lambda&apos;,
+      resourceId: this.runtime.context.invokedFunctionArn,
+      eventName: &apos;Run&apos;,
+      payload: this.data,
+    });
+
+    // flush RUM batched messages if any
+    this.runtime.logService.rumFlush((error, data) =&gt; {
+      // @todo: via setter?
+      this._runtime._contextSent = true;
+
+      this._runtime.context[this.constructor.contextMethod](this.data);
+    });
 
     return this;
   }
 
   /**
-   * @returns {*}
+   *
+   * @returns {Object}
+   * @private
    */
   get data() {
     return this._data;
   }
 
   /**
+   * @returns {Object}
+   */
+  get rawData() {
+    return this._data;
+  }
+
+  /**
    * @returns {String}
    */
-  get contextMethod() {
+  static get contextMethod() {
     return &apos;succeed&apos;;
   }
 }

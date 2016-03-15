@@ -13,6 +13,7 @@ import Utils from 'util';
 import {FailedToCreateTableException} from './Exception/FailedToCreateTableException';
 import {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';
 import {AbstractDriver} from './Local/Driver/AbstractDriver';
+import {AutoScaleDynamoDB} from './DynamoDB/AutoScaleDynamoDB';
 
 /**
  * Vogels wrapper
@@ -25,15 +26,9 @@ export class DB extends Kernel.ContainerAware {
   constructor(models = [], tablesNames = {}) {
     super();
 
-    // @todo: set retries in a smarter way...
-    Vogels.AWS.config.maxRetries = 3;
-
     this._tablesNames = tablesNames;
     this._validation = new Validation(models);
     this._models = this._rawModelsToVogels(models);
-
-    // @todo: remove?
-    this._localDbProcess = null;
   }
 
   /**
@@ -67,7 +62,14 @@ export class DB extends Kernel.ContainerAware {
       throw new ModelNotFoundException(modelName);
     }
 
-    return this._models[modelName];
+    let model = this._models[modelName];
+
+    if (this.kernel && this.kernel.isRumEnabled) {
+      // inject logService into extended model to log RUM events
+      model.logService = this.kernel.get('log');
+    }
+
+    return model;
   }
 
   /**
@@ -84,13 +86,13 @@ export class DB extends Kernel.ContainerAware {
     options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);
     options[modelName] = options;
 
-    Vogels.createTables(options, function(error) {
+    Vogels.createTables(options, (error) => {
       if (error) {
         throw new FailedToCreateTableException(modelName);
       }
 
       callback();
-    }.bind(this));
+    });
 
     return this;
   }
@@ -113,13 +115,13 @@ export class DB extends Kernel.ContainerAware {
       allModelNames.push(modelName);
     }
 
-    Vogels.createTables(allModelsOptions, function(error) {
+    Vogels.createTables(allModelsOptions, (error) => {
       if (error) {
         throw new FailedToCreateTablesException(allModelNames, error);
       }
 
       callback();
-    }.bind(this));
+    });
 
     return this;
   }
@@ -131,18 +133,34 @@ export class DB extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    this._validation.boot(kernel, function() {
-      this._validation.immutable = true;
-
+    this._validation.boot(kernel, () => {
       this._tablesNames = kernel.config.tablesNames;
       this._models = this._rawModelsToVogels(kernel.config.models);
 
       if (this._localBackend) {
         this._enableLocalDB(callback);
       } else {
+
+        // @todo: uncomment when scale down functionality ready
+        //this._initVogelsAutoscale();
+
         callback();
       }
-    }.bind(this));
+    });
+  }
+
+  /**
+   * @private
+   */
+  _initVogelsAutoscale() {
+    Vogels.AWS.config.maxRetries = 3;
+
+    Vogels.documentClient(
+      new AutoScaleDynamoDB(
+        Vogels.dynamoDriver(),
+        Vogels.documentClient()
+      ).extend()
+    );
   }
 
   /**
@@ -173,18 +191,24 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {AWS.DynamoDB|VogelsMock.AWS.DynamoDB|*}
+   * @private
+   */
+  get _localDynamoDb() {
+    return new Vogels.AWS.DynamoDB({
+      endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),
+      accessKeyId: 'fake',
+      secretAccessKey: 'fake',
+      region: 'us-east-1',
+    });
+  }
+
+  /**
    * @param {Function} callback
    * @private
    */
   _enableLocalDB(callback) {
-    this._setVogelsDriver(
-      new Vogels.AWS.DynamoDB({
-        endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),
-        accessKeyId: 'fake',
-        secretAccessKey: 'fake',
-        region: 'us-east-1',
-      })
-    );
+    this._setVogelsDriver(this._localDynamoDb);
 
     this.assureTables(callback);
   }
@@ -194,8 +218,8 @@ export class DB extends Kernel.ContainerAware {
    */
   static get DEFAULT_TABLE_OPTIONS() {
     return {
-      readCapacity: 5,
-      writeCapacity: 5,
+      readCapacity: 1,
+      writeCapacity: 1,
     };
   }
 
@@ -238,7 +262,7 @@ export class DB extends Kernel.ContainerAware {
       hashKey: 'Id',
       timestamps: true,
       tableName: this._tablesNames[name],
-      schema: this._validation.get(name),
+      schema: this._validation.getSchema(name),
     };
   }
 

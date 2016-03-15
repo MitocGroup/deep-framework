@@ -1,10 +1,12 @@
 language: node_js
 sudo: false
 node_js:
-  - '0.12'
+  - '0.10'
+  - '4.2'
 cache:
   directories:
     - $(npm root -g)
+    - node_modules
 branches:
   only:
     - master
@@ -20,10 +22,10 @@ env:
 before_install:
   - npm install -g babel@5.8.19
   - npm install -g browserify@11.2.0
-  - npm install -g mocha@2.3.3
-  - npm install -g mocha-babel@3.0.0
-  - npm install -g istanbul@0.4.0
+  - npm install -g mocha@2.3.4
+  - npm install -g istanbul@0.3.21
   - npm install -g istanbul-combine@0.3.0
+  - npm install -g isparta@3.1.0
   - npm install -g codacy-coverage@1.1.3
   - npm install -g src/deep-kernel
   - npm install -g src/deep-core
@@ -31,6 +33,8 @@ before_install:
   - npm install -g src/deep-di
   - npm install -g src/deep-cache
   - npm install -g src/deep-security
+  - npm install -g src/deep-log
+  - test/bin/prepare_to_test.sh
   - cp test/package.json .
 after_success:
   - npm run coverage

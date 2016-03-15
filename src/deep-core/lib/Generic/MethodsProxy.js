@@ -11,6 +11,7 @@ export class MethodsProxy {
    */
   constructor(target) {
     this._target = target;
+    this._decorator = null;
   }
 
   /**
@@ -18,6 +19,16 @@ export class MethodsProxy {
    */
   get target() {
     return this._target;
+  }
+
+  /**
+   * @param {Function} decorator
+   * @returns {MethodsProxy}
+   */
+  decorate(decorator) {
+    this._decorator = decorator;
+
+    return this;
   }
 
   /**
@@ -46,7 +57,9 @@ export class MethodsProxy {
           prop,
           {
             value: (...args) => {
-              return handler[prop](...args);
+              return (typeof this._decorator === 'function') ?
+                this._decorator(handler, prop, ...args) :
+                handler[prop](...args);
             },
           }
         );

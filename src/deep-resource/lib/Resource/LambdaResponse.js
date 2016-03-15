@@ -5,107 +5,159 @@
 'use strict';
 
 import {Response} from './Response';
+import {ValidationError} from './Exception/ValidationError';
 
 /**
  * Response object
  */
 export class LambdaResponse extends Response {
   /**
-   * @param {Request} request
-   * @param {Object} data
-   * @param {String} error
+   * @param {*} args
    */
-  constructor(request, data, error) {
-    super(...arguments);
+  constructor(...args) {
+    super(...args);
 
-    this._errorType = null;
+    this._originalResponse = null;
     this._logResult = null;
+
+    // assure calling the very first!
+    this._fillStatusCode();
+
+    let responsePayload = this._decodePayload();
+
+    this._fillData(responsePayload);
+    this._fillError(responsePayload);
+  }
+
+  /**
+   * @param {AWS.Response|null} response
+   */
+  set originalResponse(response) {
+    this._originalResponse = response;
+  }
+
+  /**
+   *
+   * @returns {AWS.Response|null}
+   */
+  get originalResponse() {
+    return this._originalResponse;
   }
 
   /**
    * @returns {Object}
    */
-  get data() {
-    if (this._data) {
-      return this._data;
+  get headers() {
+    if (!this._headers && this.originalResponse) {
+      this._headers = this.originalResponse.httpResponse ? this.originalResponse.httpResponse.headers : {};
     }
 
-    if (this._rawData && !this._request.async) {
-      let response = this._getPayload();
-
-      if (response && typeof response.errorMessage === 'undefined') {
-        this._data = response;
-      }
-    }
-
-    return this._data;
+    return this._headers;
   }
 
   /**
-   * @returns {String}
+   * @returns {String|null}
    */
-  get error() {
-    if (this._error) {
-      return this._error;
+  get requestId() {
+    if (!this._requestId && this.headers) {
+      if (this.headers[Response.REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.REQUEST_ID_HEADER.toLowerCase()];
+      }
     }
 
+    return this._requestId;
+  }
+
+  /**
+   * @param {Object|null} responsePayload
+   * @private
+   */
+  _fillData(responsePayload) {
+    if (responsePayload &&
+      !this._request.async &&
+      !responsePayload.hasOwnProperty('errorMessage')) {
+
+      this._data = responsePayload;
+    }
+  }
+
+  /**
+   * @param {Object|null} responsePayload
+   * @private
+   */
+  _fillError(responsePayload) {
     if (this._rawError) {
       this._error = this._rawError;
-    } else {
-      if (!this._request.async) {
-        let response = this._getPayload();
-
-        if (response && typeof response.errorMessage !== 'undefined') {
-          this._error = response.errorMessage;
-        }
-      } else {
-        this._error = 'Unknown async invocation error';
+    } else if (!this._request.async) {
+      if (!responsePayload) {
+        this._error = new Error('There is no error nor payload in Lambda response');
+      } else if (responsePayload.hasOwnProperty('errorMessage')) {
+        this._error = LambdaResponse.getPayloadError(responsePayload);
       }
+    } else if (this._statusCode !== 202) { // check for failed async invocation
+      this._error = new Error('Unknown async invocation error');
     }
-
-    return this._error;
   }
 
   /**
-   * @returns {String}
+   * @private
    */
-  get errorType() {
-    if (this._errorType) {
-      return this._errorType;
-    }
-
-    if (this._rawError) {
-      this._errorType = (this._rawError && this._rawError.name) ? this._rawError.name : 'Error';
-    } else {
-      if (!this._request.async) {
-        let response = this._getPayload();
-
-        if (response && typeof response.errorType !== 'undefined') {
-          this._errorType = response.errorType;
-        } else {
-          this._errorType = 'Error';
-        }
-      } else {
-        this._errorType = 'AsyncInvocationError';
-      }
-    }
-
-    return this._errorType;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get statusCode() {
-    if (this._statusCode) {
-      return this._statusCode;
-    }
-
+  _fillStatusCode() {
     if (this._rawData) {
-      this._statusCode = this._rawData.StatusCode || this._rawData.Status;
+      this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status);
+    } else {
+      this._statusCode = 500;
+    }
+  }
+
+  /**
+   * @returns {Object|null}
+   * @private
+   */
+  _decodePayload() {
+    let decodedPayload = null;
+
+    if (this._rawData.hasOwnProperty('Payload')) {
+      decodedPayload = LambdaResponse._decodePayloadObject(this._rawData.Payload);
+
+      // treat the case when error is stored in payload (nested)
+      if (decodedPayload.hasOwnProperty('errorMessage')) {
+        decodedPayload = LambdaResponse._decodeRawErrorObject(decodedPayload.errorMessage);
+      }
+    } else if(this._rawData.hasOwnProperty('errorMessage')) {
+      decodedPayload = LambdaResponse._decodeRawErrorObject(this._rawData.errorMessage);
     }
 
-    return this._statusCode;
+    return decodedPayload;
+  }
+
+  /**
+   * @param {String|Object|*} rawError
+   * @returns {Object|String|null}
+   * @private
+   */
+  static _decodeRawErrorObject(rawError) {
+    let errorObj = rawError;
+
+    if (typeof errorObj === 'string') {
+      try {
+        errorObj = JSON.parse(errorObj);
+      } catch(e) {
+        errorObj = {
+          errorMessage: errorObj, // assume errorObj is the error message
+          errorStack: (new Error('Unknown error occurred.')).stack,
+          errorType: 'UnknownError',
+        };
+      }
+    } else {
+      errorObj = errorObj || {
+          errorMessage: 'Unknown error occurred.',
+          errorStack: (new Error('Unknown error occurred.')).stack,
+          errorType: 'UnknownError',
+        };
+    }
+
+    return errorObj;
   }
 
   /**
@@ -122,20 +174,78 @@ export class LambdaResponse extends Response {
 
     return this._logResult;
   }
-
+  
   /**
-   * @returns {Object|null}
+   * @param {String} rawPayload
+   * @returns {Object|String|null}
    * @private
    */
-  _getPayload() {
-    if (typeof this._rawData === 'object' &&
-      this._rawData.hasOwnProperty('Payload')) {
-      let payload = this._rawData.Payload;
+  static _decodePayloadObject(rawPayload) {
+    let payload = rawPayload;
 
-      return typeof payload === 'string' ? JSON.parse(payload) : payload;
+    if (typeof rawPayload === 'string') {
+      try {
+        payload = JSON.parse(payload);
+      } catch(e) {}
+    }
+
+    return payload;
+  }
+
+  /**
+   * @param {Object} payload
+   * @returns {Error|ValidationError|null}
+   */
+  static getPayloadError(payload) {
+    if (payload.hasOwnProperty('errorMessage')) {
+      let error = null;
+
+      if (LambdaResponse.isValidationError(payload)) {
+        error = new ValidationError(payload.errorMessage, payload.validationErrors);
+      } else {
+        payload.errorType = payload.errorType || 'UnknownError';
+        payload.errorMessage = payload.errorMessage || 'Unknown error occurred.';
+        payload.errorStack = payload.errorStack || (new Error(payload.errorMessage)).stack;
+
+        error = new Error(payload.errorMessage);
+
+        // try to define a custom constructor name
+        // fail silently in case of readonly property...
+        try {
+          Object.defineProperty(error, 'name', {
+            value: payload.errorType,
+          });
+        } catch (e) {   }
+      }
+
+      try {
+        Object.defineProperty(error, 'stack', {
+          value: payload.errorStack,
+        });
+      } catch (e) {   }
+
+      return error;
     }
 
     return null;
+  }
+
+  /**
+   * @param {Object} payload
+   * @returns {Boolean}
+   */
+  static isValidationError(payload) {
+    return payload.hasOwnProperty('errorType') &&
+      payload.hasOwnProperty('errorMessage') &&
+      payload.hasOwnProperty('validationErrors') &&
+      payload.errorType === LambdaResponse.VALIDATION_ERROR_TYPE;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get VALIDATION_ERROR_TYPE() {
+    return 'ValidationError';
   }
 
   /**

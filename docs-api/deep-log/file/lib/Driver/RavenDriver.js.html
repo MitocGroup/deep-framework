@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -35,6 +35,17 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html">ConsoleDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver.html">RavenBrowserDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenDriver.js~RavenDriver.html">RavenDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html">RumSqsDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html">FailedToDeleteSqsMessagesException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html">FailedToReceiveSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html">FailedToSendBatchSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException.html">FailedToSendSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException.html">InvalidSqsQueueUrlException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/LogDriverException.js~LogDriverException.html">LogDriverException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html">RumEventValidationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html">UnknownRumEventException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/RUM</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html">FrameworkEvent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 </ul>
 </div>
@@ -50,6 +61,7 @@
 import {AbstractDriver} from &apos;./AbstractDriver&apos;;
 import {Log} from &apos;../Log&apos;;
 import Raven from &apos;raven&apos;;
+import util from &apos;util&apos;;
 
 /**
  * Raven/Sentry logging
@@ -57,9 +69,14 @@ import Raven from &apos;raven&apos;;
 export class RavenDriver extends AbstractDriver {
   /**
    * @param {String} dsn
+   * @param {Object} options
    */
-  constructor(dsn) {
+  constructor(dsn, options = {}) {
     super();
+
+    options = util._extend(options, {
+      maxMessageLength: 256
+    });
 
     this._clients = {};
 
@@ -68,13 +85,11 @@ export class RavenDriver extends AbstractDriver {
         continue;
       }
 
-      let level = Log.LEVELS[levelKey];
+      let nativeLevel = RavenDriver._mapLevel(Log.LEVELS[levelKey]);
 
-      let nativeLevel = RavenDriver._mapLevel(level);
+      options.level = nativeLevel;
 
-      this._clients[nativeLevel] = new Raven.Client(dsn, {
-        level: nativeLevel,
-      });
+      this._clients[nativeLevel] = new Raven.Client(dsn, options);
     }
   }
 

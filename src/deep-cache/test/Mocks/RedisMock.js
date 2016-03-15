@@ -12,8 +12,8 @@ export class RedisMock extends Redis {
   }
 
   /**
-   * Enable failure in callback
-   */
+    * Enable failure in callback
+    */
   enableFailureMode() {
     this.error = RedisMock.ERROR;
     this.data = null;

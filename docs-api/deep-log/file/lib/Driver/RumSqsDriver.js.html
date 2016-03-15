@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/Driver/RumSqsDriver.js | DEEP Log Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Log.js~Log.html">Log</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html">ConsoleDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver.html">RavenBrowserDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenDriver.js~RavenDriver.html">RavenDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html">RumSqsDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html">FailedToDeleteSqsMessagesException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html">FailedToReceiveSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html">FailedToSendBatchSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException.html">FailedToSendSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException.html">InvalidSqsQueueUrlException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/LogDriverException.js~LogDriverException.html">LogDriverException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html">RumEventValidationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html">UnknownRumEventException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/RUM</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html">FrameworkEvent</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Driver/RumSqsDriver.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by mgoria on 1/19/16.
+ */
+
+&apos;use strict&apos;;
+
+import AWS from &apos;aws-sdk&apos;;
+import {AbstractDriver} from &apos;./AbstractDriver&apos;;
+import {FailedToSendSqsMessageException} from &apos;./Exception/FailedToSendSqsMessageException&apos;;
+import {FailedToSendBatchSqsMessageException} from &apos;./Exception/FailedToSendBatchSqsMessageException&apos;;
+import {FailedToReceiveSqsMessageException} from &apos;./Exception/FailedToReceiveSqsMessageException&apos;;
+import {FailedToDeleteSqsMessagesException} from &apos;./Exception/FailedToDeleteSqsMessagesException&apos;;
+import {InvalidSqsQueueUrlException} from &apos;./Exception/InvalidSqsQueueUrlException&apos;;
+import {RumEventValidationException} from &apos;./Exception/RumEventValidationException&apos;;
+//import {AbstractEvent} from &apos;./RUM/AbstractEvent&apos;;
+import {FrameworkEvent} from &apos;./RUM/FrameworkEvent&apos;;
+
+/**
+ * SQS logging driver
+ */
+export class RumSqsDriver extends AbstractDriver {
+  /**
+   * @param {String} queueUrl
+   * @param {Object} kernel
+   * @param {Boolean} enabled
+   */
+  constructor(queueUrl, kernel, enabled = false) {
+    super();
+
+    this._queueUrl = queueUrl;
+    this._kernel = kernel;
+    this._enabled = enabled;
+
+    this._messagesBatch = [];
+    this._runningBatches = 0;
+    this._sqs = null;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get BATCH_SIZE() {
+    return 10;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get queueUrl() {
+    return this._queueUrl;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get kernel() {
+    return this._kernel;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get enabled() {
+    return this._enabled;
+  }
+
+  /**
+   * @returns {AWS.SQS}
+   */
+  get sqs() {
+    if (!this._sqs) {
+      this._sqs = new AWS.SQS({
+        region: RumSqsDriver.getRegionFromSqsQueueUrl(this.queueUrl)
+      });
+    }
+
+    return this._sqs;
+  }
+
+  /**
+   * @param {Object} message
+   * @param {Function} callback
+   */
+  log(message, callback) {
+    if (!this.enabled) {
+      callback(null, null);
+      return;
+    }
+
+    //let event = AbstractEvent.create(this._kernel, message); // @todo - why it doesn&apos;t work ?
+    let event = new FrameworkEvent(this.kernel, message);
+
+    // @todo - check message size, max is 256 KB (262,144 bytes)
+    if (!event.isValid()) {
+      callback(new RumEventValidationException(event.getEventLevel(), event.validationError), null);
+      return;
+    }
+
+    if (this.kernel.isBackend) {
+      if (this._messagesBatch.length &lt; RumSqsDriver.BATCH_SIZE) {
+        this._messagesBatch.push(event);
+      }
+
+      if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {
+        let batch = this._messagesBatch.slice();
+        this._messagesBatch = [];
+
+        this._sendMessageBatch(batch, callback);
+      } else {
+        callback(null, null);
+      }
+    } else {
+      this._sendMessage(event, callback);
+    }
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  flush(callback) {
+    if (!this.enabled || (this._messagesBatch.length === 0 &amp;&amp; this._runningBatches === 0)) {
+      callback(null, null);
+      return;
+    }
+
+    this._sendMessageBatch(this._messagesBatch, (error, data) =&gt; {
+      this._messagesBatch = [];
+
+      if (this._runningBatches &gt; 0) {
+        // wait for all batches to be pushed into SQS
+        var intervalID = setInterval(() =&gt; {
+          if (this._runningBatches === 0) {
+            clearInterval(intervalID);
+            return callback(error, data);
+          }
+        }, 50);
+      } else {
+        callback(error, data);
+      }
+    });
+  }
+
+  /**
+   * @param {AbstractEvent} event
+   * @param callback
+   * @private
+   */
+  _sendMessage(event, callback) {
+    let params = {
+      MessageBody: JSON.stringify(event),
+      QueueUrl: this.queueUrl,
+    };
+
+    this.sqs.sendMessage(params, (error, data) =&gt; {
+      if (error) {
+        error = new FailedToSendSqsMessageException(params.QueueUrl, params.MessageBody, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {Array} messages
+   * @param callback
+   * @private
+   */
+  _sendMessageBatch(messages, callback) {
+    if (messages.length === 0) {
+      callback(null, null);
+      return;
+    }
+
+    this._runningBatches++;
+
+    let entries = [];
+    messages.forEach((event, index) =&gt; {
+      event = JSON.stringify(event);
+      let id = `${AbstractDriver._md5(event)}-${new Date().getTime()}-${index}`;
+
+      entries.push({
+        Id: id,
+        MessageBody: event,
+      });
+    });
+
+    var params = {
+      QueueUrl: this.queueUrl,
+      Entries: entries
+    };
+
+    this.sqs.sendMessageBatch(params, (error, data) =&gt; {
+      this._runningBatches--;
+
+      if (error) {
+        error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  receiveMessages(callback) {
+    let params = {
+      QueueUrl: this.queueUrl,
+      MaxNumberOfMessages: 10,
+      VisibilityTimeout: 0,
+      WaitTimeSeconds: 0
+    };
+
+    this.sqs.receiveMessage(params, (error, data) =&gt; {
+      if (error) {
+        error = new FailedToReceiveSqsMessageException(params.QueueUrl, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {Array} messages
+   * @param {Function} callback
+   */
+  deleteMessages(messages, callback) {
+    if (messages.length === 0) {
+      callback(null, null);
+      return;
+    }
+
+    let params = {
+      QueueUrl: this.queueUrl,
+      Entries: []
+    };
+
+    messages.forEach((message) =&gt; {
+      params.Entries.push({
+        Id: message.MessageId,
+        ReceiptHandle: message.ReceiptHandle
+      });
+    });
+
+    this.sqs.deleteMessageBatch(params, (error, data) =&gt; {
+      if (error) {
+        error = new FailedToDeleteSqsMessagesException(params.QueueUrl, error);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @param {String} queueUrl
+   * @returns {String}
+   */
+  static getRegionFromSqsQueueUrl(queueUrl) {
+    let regionParts = queueUrl.match(/\.([^\.]+)\.amazonaws\.com\/.*/i);
+
+    if (!regionParts || regionParts.length === 0) {
+      throw new InvalidSqsQueueUrlException(queueUrl, &apos;Unable to extract AWS region.&apos;);
+    }
+
+    return regionParts[1];
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

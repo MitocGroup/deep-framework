@@ -13,16 +13,102 @@ import {Action} from './Action';
 export class Instance {
   /**
    * @param {String} name
-   * @param {Object} rawActions
+   * @param {Object} microservice
    */
-  constructor(name, rawActions) {
+  constructor(name, microservice) {
     this._name = name;
-    this._rawActions = rawActions;
+    this._microservice = microservice;
+    this._rawActions = microservice.rawResources[name];
     this._actions = null;
     this._localBackend = false;
     this._isBackend = false;
     this._cache = null;
     this._security = null;
+    this._validation = null;
+    this._log = null;
+
+    this._fillActions();
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get actionsConfig() {
+    let config = {};
+
+    for (let actionName in this.actions) {
+      if (!this.actions.hasOwnProperty(actionName)) {
+        continue;
+      }
+
+      let action = this.actions[actionName];
+
+      config[action.sourceId] = {
+        resource: this._name,
+        name: action.name,
+        type: action.type,
+        methods: action.methods,
+        source: action.source,
+        region: action.region,
+        forceUserIdentity: action.forceUserIdentity,
+        validationSchema: action.validationSchemaName,
+      };
+    }
+
+    return config;
+  }
+
+  /**
+   * @private
+   */
+  _fillActions() {
+    this._actions = {};
+
+    for (let actionName in this._rawActions) {
+      if (!this._rawActions.hasOwnProperty(actionName)) {
+        continue;
+      }
+
+      let actionMetadata = this._rawActions[actionName];
+
+      let actionInstance = new Action(
+        this,
+        actionName,
+        actionMetadata.type,
+        actionMetadata.methods,
+        actionMetadata.source,
+        actionMetadata.region,
+        actionMetadata.forceUserIdentity,
+        actionMetadata.apiCache
+      );
+
+      if (actionMetadata.validationSchema) {
+        actionInstance.validationSchemaName = actionMetadata.validationSchema;
+      }
+
+      this._actions[actionName] = actionInstance;
+    }
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get microservice() {
+    return this._microservice;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get validation() {
+    return this._validation;
+  }
+
+  /**
+   * @param {Object} validation
+   */
+  set validation(validation) {
+    this._validation = validation;
   }
 
   /**
@@ -61,6 +147,20 @@ export class Instance {
   }
 
   /**
+   * @returns {Object}
+   */
+  get log() {
+    return this._log;
+  }
+
+  /**
+   * @param {Object} log
+   */
+  set log(log) {
+    this._log = log;
+  }
+
+  /**
    * @returns {Boolean}
    */
   get localBackend() {
@@ -92,28 +192,6 @@ export class Instance {
    * @returns {Object}
    */
   get actions() {
-    if (this._actions === null) {
-      this._actions = {};
-
-      for (let actionName in this._rawActions) {
-        if (!this._rawActions.hasOwnProperty(actionName)) {
-          continue;
-        }
-
-        let actionMetadata = this._rawActions[actionName];
-
-        this._actions[actionName] = new Action(
-          this,
-          actionName,
-          actionMetadata.type,
-          actionMetadata.methods,
-          actionMetadata.source,
-          actionMetadata.region,
-          actionMetadata.forceUserIdentity
-        );
-      }
-    }
-
     return this._actions;
   }
 

@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -40,11 +40,13 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Resource.js~Resource.html">Resource</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Statement.js~Statement.html">Statement</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/IAM/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/IAM/Exception/InvalidArnException.js~InvalidArnException.html">InvalidArnException</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Context.js~Context.html">Context</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Request.js~Request.html">Request</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html">Runtime</a></span></span></li>
-<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html">InvalidCognitoIdentityException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/ContextAlreadySentException.js~ContextAlreadySentException.html">ContextAlreadySentException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/InvalidCognitoIdentityException.js~InvalidCognitoIdentityException.html">InvalidCognitoIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingRuntimeContextException.js~MissingRuntimeContextException.html">MissingRuntimeContextException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/MissingUserContextException.js~MissingUserContextException.html">MissingUserContextException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DatabaseOperationException.js~DatabaseOperationException.html">DatabaseOperationException</a></span></span></li>
@@ -54,7 +56,10 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Generic</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/MethodsProxy.js~MethodsProxy.html">MethodsProxy</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectStorage.js~ObjectStorage.html">ObjectStorage</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/ObjectVector.js~ObjectVector.html">ObjectVector</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Generic/UniversalRequire.js~UniversalRequire.html">UniversalRequire</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">HTTP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/HTTP/Helper.js~Helper.html">Helper</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">OOP</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/OOP/Interface.js~Interface.html">Interface</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Runtime</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Runtime/Sandbox.js~Sandbox.html">Sandbox</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -67,9 +72,14 @@
 
 import {Interface} from &apos;../../OOP/Interface&apos;;
 import {Response} from &apos;./Response&apos;;
+import {ErrorResponse} from &apos;./ErrorResponse&apos;;
 import {Request} from &apos;./Request&apos;;
 import {InvalidCognitoIdentityException} from &apos;./Exception/InvalidCognitoIdentityException&apos;;
 import {MissingUserContextException} from &apos;./Exception/MissingUserContextException&apos;;
+import {Context} from &apos;./Context&apos;;
+import {Sandbox} from &apos;../../Runtime/Sandbox&apos;;
+import path from &apos;path&apos;;
+import fs from &apos;fs&apos;;
 
 /**
  * Lambda runtime context
@@ -87,8 +97,25 @@ export class Runtime extends Interface {
 
     this._loggedUserId = null;
     this._forceUserIdentity = false;
+    this._contextSent = false;
+
+    this._calleeConfig = null;
 
     this._fillDenyMissingUserContextOption();
+  }
+
+  /**
+   * @returns {null|Context}
+   */
+  get context() {
+    return this._context;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get contextSent() {
+    return this._contextSent;
   }
 
   /**
@@ -124,71 +151,143 @@ export class Runtime extends Interface {
   }
 
   /**
-   * @param {*} event
-   * @param {*} context
+   * @param {String} schemaName
+   * @param {Function} cb
    * @returns {Runtime}
    */
-  run(event, context) {
-    this._context = context;
-    this._addExceptionListener();
-    
-    this._request = new Request(event);
-    
-    this._fillUserContext();
+  validateInput(schemaName, cb) {
+    let validation = this._kernel.get(&apos;validation&apos;);
 
-    if (!this._loggedUserId &amp;&amp; this._forceUserIdentity) {
-      throw new MissingUserContextException();
-    }
-
-    this.handle(this._request);
+    validation.validateRuntimeInput(this, schemaName, cb);
 
     return this;
   }
 
   /**
-   * @private
+   * @param {Object} event
+   * @param {Object} context
+   * @returns {Runtime}
    */
-  _addExceptionListener() {
-    process.removeAllListeners(&apos;uncaughtException&apos;);
-    process.on(&apos;uncaughtException&apos;, function(error) {
-      return this.createError(error).send();
-    }.bind(this));
+  run(event, context) {
+    this._context = new Context(context);
+    this._request = new Request(event);
+
+    this.logService.rumLog({
+      service: &apos;deep-core&apos;,
+      resourceType: &apos;Lambda&apos;,
+      resourceId: this._context.invokedFunctionArn,
+      eventName: &apos;Run&apos;,
+      payload: event,
+    });
+
+    new Sandbox(() =&gt; {
+      this._fillUserContext();
+
+      if (!this._loggedUserId &amp;&amp; this._forceUserIdentity) {
+        throw new MissingUserContextException();
+      }
+
+      let validationSchema = this.validationSchema;
+
+      if (validationSchema) {
+        this._runValidate(validationSchema);
+      } else {
+        this.handle(this._request);
+      }
+    })
+      .fail((error) =&gt; {
+        this.createError(error).send();
+      })
+      .run();
+
+    return this;
   }
 
   /**
-   * @param {String} iError
+   * @param {String} validationSchema
+   * @private
    */
-  createError(iError) {
-    let oError = {};
+  _runValidate(validationSchema) {
+    let validation = this._kernel.get(&apos;validation&apos;);
+    let validationSchemaName = validationSchema;
 
-    if (typeof iError === &apos;string&apos;) {
-      oError = {
-        errorType: &apos;Error&apos;,
-        errorMessage: iError,
-        errorStack: (new Error(iError)).stack,
-      };
-    } else {
-      oError = {
-        errorType: iError.name,
-        errorMessage: iError.message,
-        errorStack: iError.stack,
-      };
+    if (typeof validationSchema !== &apos;string&apos;) {
+      validationSchemaName = this._injectValidationSchema(validationSchema);
     }
 
-    let response = new Response(oError);
-    response.runtimeContext = this._context;
+    this.validateInput(validationSchemaName, (validatedData) =&gt; {
+      this.handle(validatedData);
+    });
+  }
 
-    return response;
+  /**
+   * @param {Object} schema
+   * @param {String|null} name
+   * @returns {String}
+   * @private
+   */
+  _injectValidationSchema(schema, name = null) {
+    let validation = this._kernel.get(&apos;validation&apos;);
+
+    name = name || `DeepHandlerValidation_${new Date().getTime()}`;
+
+    validation.setGuessSchema(name, schema);
+
+    return name;
+  }
+
+  /**
+   * @param {String|Error|*} error
+   */
+  createError(error) {
+    return new ErrorResponse(this, error);
   }
 
   /**
    * @param {Object} data
    */
   createResponse(data) {
-    let response = new Response(data);
-    response.runtimeContext = this._context;
+    return new Response(this, data);
+  }
 
-    return response;
+  /**
+   * @param {Object} data
+   * @param {Number} ttl
+   * @param {Function} callback
+   */
+  createCachedResponse(data, ttl = 0, callback = response =&gt; response.send()) {
+    let publicCache = this._kernel.get(&apos;cache&apos;).shared;
+    let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);
+    let response = new Response(this, data);
+
+    publicCache.assure(publicCacheKey, {body: data}, ttl, () =&gt; {
+      callback(response);
+    });
+  }
+
+  /**
+   * @returns {null|Object}
+   */
+  get calleeConfig() {
+    if (!this._calleeConfig &amp;&amp;
+      this._context &amp;&amp;
+      this._kernel &amp;&amp;
+      this._context.has(&apos;invokedFunctionArn&apos;)) {
+
+      let resource = this._kernel.get(&apos;resource&apos;);
+      let calleeArn = this._context.getOption(&apos;invokedFunctionArn&apos;);
+
+      this._calleeConfig = resource.getActionConfig(calleeArn);
+    }
+
+    return this._calleeConfig;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get validationSchema() {
+    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;
   }
 
   /**
@@ -203,6 +302,13 @@ export class Runtime extends Interface {
    */
   get securityService() {
     return this.kernel.get(&apos;security&apos;);
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get logService() {
+    return this.kernel.get(&apos;log&apos;);
   }
 
   /**
@@ -221,7 +327,7 @@ export class Runtime extends Interface {
    */
   _fillUserContext() {
     if (this._context &amp;&amp;
-      this._context.hasOwnProperty(&apos;identity&apos;) &amp;&amp;
+      this._context.has(&apos;identity&apos;) &amp;&amp;
       this._context.identity.hasOwnProperty(&apos;cognitoIdentityPoolId&apos;) &amp;&amp;
       this._context.identity.hasOwnProperty(&apos;cognitoIdentityId&apos;)
     ) {
@@ -237,6 +343,13 @@ export class Runtime extends Interface {
 
       this._loggedUserId = this._context.identity.cognitoIdentityId;
     }
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get VALIDATION_SCHEMAS_DIR() {
+    return &apos;__deep_validation_schemas__&apos;;
   }
 }
 </code></pre>

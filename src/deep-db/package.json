@@ -1,29 +1,31 @@
 {
   "name": "deep-db",
-  "version": "1.3.2",
+  "version": "1.7.3",
   "description": "DEEP Database Library",
   "keywords": [
-    "Digital End-To-End Enterprise Platform",
-    "Amazon Web Services",
-    "Platform-as-a-Service",
-    "DEEP",
-    "AWS",
-    "PaaS",
-    "Cloud",
-    "Computing",
-    "Microservices",
-    "Architecture",
-    "Serverless",
-    "Abstracted",
-    "Core",
-    "Library",
-    "DB",
-    "NoSQL",
-    "Database"
+    "digital enterprise end-to-end platform",
+    "amazon web services",
+    "platform-as-a-service",
+    "deep",
+    "aws",
+    "paas",
+    "cloud",
+    "computing",
+    "microservices",
+    "architecture",
+    "serverless",
+    "abstracted",
+    "core",
+    "library",
+    "db",
+    "dbs",
+    "nosql",
+    "database",
+    "databases"
   ],
-  "homepage": "https://github.com/MitocGroup/deep",
+  "homepage": "https://github.com/MitocGroup/deep-framework",
   "bugs": {
-    "url": "https://github.com/MitocGroup/deep/issues"
+    "url": "https://github.com/MitocGroup/deep-framework/issues"
   },
   "license": "MIT",
   "author": {
@@ -52,25 +54,28 @@
   "main": "lib.compiled/bootstrap.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/MitocGroup/deep.git"
+    "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "babel-node `which istanbul` cover --report lcov _mocha -- --ui tdd --recursive --reporter spec",
-    "compile": "if [ -d 'lib/' ]; then BABEL_ENV=production babel lib/ --out-dir lib.compiled/; fi",
+    "test": "bash node-bin/test.sh",
+    "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile",
-    "pretest": "npm link deep-kernel deep-core deep-validation"
+    "pretest": "npm link deep-kernel deep-core deep-validation deep-log"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
     "deep-validation": "^1.x.x",
-    "vogels": "^2.1.x",
-    "joi": "^6.6.x"
+    "joi": "^5.x.x",
+    "dynamodb-throughput": "^0.2.x",
+    "vogels": "MitocGroup/vogels#v2.2.0"
   },
-  "devDependencies": {
+  "optionalDependencies": {
     "local-dynamo": "MitocGroup/local-dynamo",
     "dynalite": "^0.17.x",
-    "fs-extra": "^0.26.x",
+    "fs-extra": "^0.26.x"
+  },
+  "devDependencies": {
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
     "sinon-chai": "^2.8.x",

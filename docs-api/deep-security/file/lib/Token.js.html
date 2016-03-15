@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -41,6 +41,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DescribeIdentityException.js~DescribeIdentityException.html">DescribeIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException.html">GetCognitoRecordException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/IdentityProviderMismatchException.js~IdentityProviderMismatchException.html">IdentityProviderMismatchException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/IdentityProviderTokenExpiredException.js~IdentityProviderTokenExpiredException.html">IdentityProviderTokenExpiredException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidProviderIdentityException.js~InvalidProviderIdentityException.html">InvalidProviderIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/LoadUserException.js~LoadUserException.html">LoadUserException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingLoginProviderException.js~MissingLoginProviderException.html">MissingLoginProviderException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException.html">PutCognitoRecordException</a></span></span></li>
@@ -58,8 +61,13 @@
 
 import AWS from &apos;aws-sdk&apos;;
 import {AuthException} from &apos;./Exception/AuthException&apos;;
+import {IdentityProviderTokenExpiredException} from &apos;./Exception/IdentityProviderTokenExpiredException&apos;;
 import {DescribeIdentityException} from &apos;./Exception/DescribeIdentityException&apos;;
 import {CredentialsManager} from &apos;./CredentialsManager&apos;;
+import {Exception} from &apos;./Exception/Exception&apos;;
+import {Exception as CoreException} from &apos;deep-core&apos;;
+import {Security} from &apos;./Security&apos;;
+import util from &apos;util&apos;;
 
 /**
  * Security token holds details about logged user
@@ -71,12 +79,15 @@ export class Token {
   constructor(identityPoolId) {
     this._identityPoolId = identityPoolId;
 
-    this._identityProvider = null;
     this._lambdaContext = null;
     this._user = null;
-    this._userProvider = null;
     this._credentials = null;
     this._identityMetadata = null;
+    this._tokenExpiredCallback = null;
+
+    this._identityProvider = null;
+    this._userProvider = null;
+    this._logService = null;
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -129,56 +140,163 @@ export class Token {
   }
 
   /**
+   * @param {Object} logService
+   */
+  set logService(logService) {
+    this._logService = logService;
+  }
+
+  /**
    * @param {Function} callback
    */
   loadCredentials(callback = () =&gt; {}) {
+    let event = {
+      service: &apos;deep-security&apos;,
+      resourceType: &apos;Cognito&apos;,
+      resourceId: this._identityPoolId,
+      eventName: &apos;loadCredentials&apos;,
+      eventId: Security.customEventId(this._identityPoolId),
+      time: new Date().getTime(),
+    };
+
+    let proxyCallback = (error, credentials) =&gt; {
+      // log event only after credentials are loaded to get identityId
+      this._logService.rumLog(event);
+
+      event = util._extend({}, event);
+      event.payload = {error, credentials};
+
+      this._logService.rumLog(event);
+
+      callback(error, credentials);
+    };
+
     // avoid refreshing or loading credentials for each request
-    if (this._validCredentials()) {
-      callback(null, this.credentials);
+    if (this.validCredentials(this.credentials)) {
+      proxyCallback(null, this.credentials);
       return;
     }
 
     if (this.lambdaContext) {
-      this._credsManager.loadCredentials(this.identityId, (error, credentials) =&gt; {
+      this._backendLoadCredentials(proxyCallback);
+    } else {
+      this._frontendLoadCredentials(proxyCallback);
+    }
+  }
+
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _backendLoadCredentials(callback) {
+    if (!this.lambdaContext) {
+      throw new Exception(&apos;Call to _backendLoadCredentials method is not allowed from frontend context.&apos;);
+    }
+
+    this._credsManager.loadBackendCredentials(this.identityId, (error, credentials) =&gt; {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+
+      callback(null, this._credentials = credentials);
+    });
+  }
+
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _frontendLoadCredentials(callback) {
+    this._credentials = this._createCognitoIdentityCredentials();
+
+    // set AWS credentials before loading credentials from cache coz amazon-cognito-js uses them
+    AWS.config.credentials = this._credentials;
+
+    // trying to load old credentials from cache or CognitoSync
+    this._credsManager.loadFrontendCredentials((error, credentials) =&gt; {
+      if (!error &amp;&amp; credentials &amp;&amp; this.validCredentials(credentials)) {
+        callback(null, AWS.config.credentials = this._credentials = credentials);
+      } else {
+        this._refreshCredentials(this._credentials, callback);
+      }
+    });
+  }
+
+  /**
+   * @param {AWS.CognitoIdentityCredentials} credentials
+   * @param {Function} callback
+   * @private
+   */
+  _refreshCredentials(credentials, callback) {
+    if (!(credentials instanceof AWS.CognitoIdentityCredentials)) {
+      let error = new AuthException(
+        &apos;Invalid credentials instance. Passed credentials must be an instance of AWS.CognitoIdentityCredentials.&apos;
+      );
+      callback(error, null);
+      return;
+    }
+
+    if (this.identityProvider &amp;&amp; !this.identityProvider.isTokenValid()) {
+      if (typeof this._tokenExpiredCallback === &apos;function&apos;) {
+        this._tokenExpiredCallback(this.identityProvider);
+      } else {
+        let error = new IdentityProviderTokenExpiredException(
+          this.identityProvider.name,
+          this.identityProvider.tokenExpirationTime
+        );
+
+        callback(error, null);
+      }
+      return;
+    }
+
+    credentials.refresh((error) =&gt; {
+      if (error) {
+        callback(new AuthException(error), null);
+        return;
+      }
+
+      // @todo - save credentials in background not to affect page load time
+      this._credsManager.saveCredentials(credentials, (error, record) =&gt; {
         if (error) {
           callback(error, null);
           return;
         }
 
-        this._credentials = credentials;
-
-        callback(null, this._credentials);
+        callback(null, credentials);
       });
-    } else {
-      let cognitoParams = {
-        IdentityPoolId: this._identityPoolId,
-      };
+    });
+  }
 
-      if (this.identityProvider) {
-        cognitoParams.Logins = {};
-        cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
-      }
+  /**
+   * @returns {AWS.CognitoIdentityCredentials}
+   * @private
+   */
+  _createCognitoIdentityCredentials() {
+    let cognitoParams = {
+      IdentityPoolId: this._identityPoolId,
+    };
 
-      this._credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
-
-      this._credentials.refresh((error) =&gt; {
-        if (error) {
-          callback(new AuthException(error), null);
-          return;
-        }
-
-        AWS.config.credentials = this._credentials;
-
-        this._credsManager.saveCredentials(this._credentials, (error, record) =&gt; {
-          if (error) {
-            callback(error, null);
-            return;
-          }
-
-          callback(null, this._credentials);
-        });
-      });
+    if (this.identityProvider) {
+      cognitoParams.Logins = {};
+      cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
+      cognitoParams.LoginId = this.identityProvider.userId;
     }
+
+    let credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+
+    credentials.toJSON = function() {
+      return {
+        expired: credentials.expired,
+        expireTime: credentials.expireTime,
+        accessKeyId: credentials.accessKeyId,
+        secretAccessKey: credentials.secretAccessKey,
+        sessionToken: credentials.sessionToken,
+      };
+    }.bind(credentials);
+
+    return credentials;
   }
 
   /**
@@ -195,8 +313,15 @@ export class Token {
   get identityId() {
     let identityId = null;
 
-    if (this.credentials &amp;&amp; this.credentials.hasOwnProperty(&apos;IdentityId&apos;)) {
-      identityId = this.credentials.IdentityId;
+    if (this.credentials) {
+      if (this.credentials.identityId) {
+        identityId = this.credentials.identityId;
+      } else if (this.credentials.params &amp;&amp; this.credentials.params.IdentityId) {
+        // load IdentityId from localStorage cache
+        identityId = this.credentials.params.IdentityId;
+      } else if (this._credsManager.identityId) {
+        identityId = this._credsManager.identityId;
+      }
     } else if (this.lambdaContext) {
       identityId = this.lambdaContext.identity.cognitoIdentityId;
     }
@@ -212,23 +337,24 @@ export class Token {
   }
 
   /**
+   * @param {Object} credentials
    * @returns {boolean}
-   * @private
    */
-  _validCredentials() {
-    return this.credentials &amp;&amp; this.expireDateTime &gt; new Date();
+  validCredentials(credentials) {
+    return credentials &amp;&amp; this.getCredentialsExpireDateTime(credentials) &gt; new Date();
   }
 
   /**
+   * @param {Object} credentials
    * @returns {Date}
    */
-  get expireDateTime() {
+  getCredentialsExpireDateTime(credentials) {
     let dateTime = null;
 
-    if (this.credentials.hasOwnProperty(&apos;expireTime&apos;)) {
-      dateTime = this.credentials.expireTime instanceof Date ?
-        this.credentials.expireTime :
-        new Date(this.credentials.expireTime);
+    if (credentials &amp;&amp; credentials.hasOwnProperty(&apos;expireTime&apos;)) {
+      dateTime = credentials.expireTime instanceof Date ?
+        credentials.expireTime :
+        new Date(credentials.expireTime);
     }
 
     return dateTime;
@@ -252,24 +378,36 @@ export class Token {
    * @param {Function} callback
    */
   getUser(callback) {
-    this._describeIdentity(this.identityId, () =&gt; {
-      if (this.isAnonymous) {
-        callback(null);
-        return;
-      }
+    if (this.lambdaContext) {
+      this._describeIdentity(this.identityId, () =&gt; {
+        this._loadUser(callback);
+      });
+    } else {
+      this._loadUser(callback);
+    }
+  }
 
-      if (!this._user) {
-        this._userProvider.loadUserByIdentityId(this.identityId, (user) =&gt; {
-          this._user = user;
+  /**
+   * @param {Function} callback
+   * @private
+   */
+  _loadUser(callback) {
+    if (this.isAnonymous) {
+      callback(null);
+      return;
+    }
 
-          callback(this._user);
-        });
+    if (!this._user) {
+      this._userProvider.loadUserByIdentityId(this.identityId, (user) =&gt; {
+        this._user = user;
 
-        return;
-      }
+        callback(this._user);
+      });
 
-      callback(this._user);
-    });
+      return;
+    }
+
+    callback(this._user);
   }
 
   /**
@@ -333,6 +471,35 @@ export class Token {
     return this._identityMetadata &amp;&amp; this._identityMetadata.hasOwnProperty(&apos;Logins&apos;) ?
       this._identityMetadata.Logins :
       [];
+  }
+
+  /**
+   * @param {Function} callback
+   * @returns {Token}
+   */
+  registerTokenExpiredCallback(callback) {
+    if (typeof callback !== &apos;function&apos;) {
+      throw new CoreException.InvalidArgumentException(callback, &apos;function&apos;);
+    }
+
+    this._tokenExpiredCallback = callback;
+
+    return this;
+  }
+
+  /**
+   * Removes identity credentials related cached stuff
+   */
+  destroy() {
+    if (!(this._credentials instanceof AWS.CognitoIdentityCredentials)) {
+      this._credentials = this._createCognitoIdentityCredentials();
+    }
+
+    this._credsManager.deleteCredentials();
+    this._credentials.clearCachedId();
+
+    this._credentials = null;
+    this._credsManager = null;
   }
 }
 </code></pre>

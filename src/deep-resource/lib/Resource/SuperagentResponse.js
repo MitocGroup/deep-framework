@@ -5,93 +5,120 @@
 'use strict';
 
 import {Response} from './Response';
+import {LambdaResponse} from './LambdaResponse';
 
 export class SuperagentResponse extends Response {
   /**
-   * @param {Request} request
-   * @param {Object} data
-   * @param {String} error
+   * @param {*} args
    */
-  constructor(request, data, error) {
-    super(...arguments);
+  constructor(...args) {
+    super(...args);
 
-    this._error = error;
-
-    // @todo: treat the empty body somehow else?
-    if (!data.body) {
-      if (!data.status || data.status > 300) {
-        this._error = data.error || 'Unexpected error occurred';
-        this._statusCode = data.status || 500;
-      } else {
-        this._statusCode = data.status;
-      }
+    if (this._request.isLambda) {
+      this._parseLambda();
     } else {
-      this._data = request.isLambda
-        ? this._parseLambdaResponse(data)
-        : this._parseResponse(data);
+      this._parseExternal();
     }
   }
 
   /**
-   * Parse response given by superagent library
-   * for Lambdas proxied through ApiGateway
-   *
-   * @param {Object} response
    * @returns {Object}
+   */
+  get headers() {
+    if (!this._headers) {
+      // rawData in this case is superagent original Response object
+      this._headers = this.rawData && this.rawData.headers ? this.rawData.headers : {};
+    }
+
+    return this._headers;
+  }
+
+  /**
+   * @returns {String|null}
+   */
+  get requestId() {
+    if (!this._requestId && this.headers) {
+      if (this.headers[Response.ORIGINAL_REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.ORIGINAL_REQUEST_ID_HEADER.toLowerCase()];
+      } else if (this.headers[Response.REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.REQUEST_ID_HEADER.toLowerCase()];
+      }
+    }
+
+    return this._requestId;
+  }
+
+  /**
    * @private
    */
-  _parseLambdaResponse(response) {
-    if (typeof response.body.errorMessage === 'string') {
-      this._error = response.body.errorMessage;
+  _parseLambda() {
+    this._parseExternal();
+
+    // check if any Lambda response available
+    if (this._data && !this._error) {
+
+      // manage this weird case...
+      if (typeof this._data === 'string') {
+        try {
+          this._data = JSON.parse(this._data);
+        } catch (e) {
+        }
+      }
+
+      let dataObj = this._data;
+
+      // check whether Lambda execution failed
+      if (dataObj.errorMessage) {
+        let errorObj = null;
+
+        if (dataObj.errorStack && dataObj.errorType) {
+          errorObj = dataObj;
+        } else {
+          errorObj = dataObj.errorMessage;
+
+          if (typeof errorObj === 'string') {
+            try {
+              errorObj = JSON.parse(errorObj);
+            } catch(e) {}
+          } else {
+            errorObj = errorObj || {
+                errorMessage: 'Unknown error occurred.',
+                errorStack: (new Error('Unknown error occurred.')).stack,
+                errorType: 'UnknownError',
+              };
+          }
+        }
+
+        this._error = LambdaResponse.getPayloadError(errorObj);
+        this._data = null;
+      } else {
+        this._data = dataObj;
+      }
     }
-
-    this._statusCode = this._error ? 500 : response.status;
-
-    return this._error ? null : response.body;
   }
 
   /**
-   * Parse response given by superagent library
-   *
-   * @param {Object} response
-   * @returns {Object}
    * @private
    */
-  _parseResponse(response) {
-    if (response.error) {
-      this._error = response.error;
+  _parseExternal() {
+    let data = this._rawData;
+    let error = this._rawError;
+
+    if (error) {
+      this._error = error;
+    } else if (data && data.error) { // weird case...
+      this._error = data.error;
+    } else {
+      this._data = data && data.body ? data.body : null;
     }
 
-    this._statusCode = response.status;
-
-    return response.body;
-  }
-
-  /**
-   * @returns {Object}
-   */
-  get data() {
-    return this._data;
-  }
-
-  /**
-   * @returns {Boolean}
-   */
-  get isError() {
-    return !!this._error;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get error() {
-    return this._error;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get statusCode() {
-    return this._statusCode;
+    // @todo: treat Response.status lack somehow else?
+    if (data && data.status) {
+      this._statusCode = parseInt(data.status);
+    } else if (this._data && !this._error) {
+      this._statusCode = 200;
+    } else {
+      this._statusCode = 500;
+    }
   }
 }

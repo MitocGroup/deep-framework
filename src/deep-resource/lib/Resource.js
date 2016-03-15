@@ -19,6 +19,24 @@ export class Resource extends Kernel.ContainerAware {
     super();
 
     this._resources = resources;
+    this._actionsConfig = {};
+  }
+
+  /**
+   * @param {String} sourceId
+   * @returns {Object|null}
+   */
+  getActionConfig(sourceId) {
+    return this._actionsConfig.hasOwnProperty(sourceId) ?
+      this._actionsConfig[sourceId] :
+      null;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get actionsConfig() {
+    return this._actionsConfig;
   }
 
   /**
@@ -49,9 +67,11 @@ export class Resource extends Kernel.ContainerAware {
 
     let resource = this._resources[microserviceIdentifier][resourceIdentifier];
 
-    // inject dependencies
+    // inject dependencies (@todo - inject kernel instance instead)
     resource.cache = this.container.get('cache');
     resource.security = this.container.get('security');
+    resource.validation = this.container.get('validation');
+    resource.log = this.container.get('log');
 
     return actionIdentifier ? resource.action(actionIdentifier) : resource;
   }
@@ -114,15 +134,25 @@ export class Resource extends Kernel.ContainerAware {
 
         let resource = new ResourceInstance(
           resourceName,
-          microservice.rawResources[resourceName]
+          microservice
         );
 
         resource.localBackend = this.localBackend;
-        resource.isBackend = this.kernel.isBackend;
+        resource.isBackend = kernel.isBackend;
 
         this._resources[microservice.identifier][resourceName] = resource;
 
         resourcesVector.push(resource);
+
+        let actionsConfig = resource.actionsConfig;
+
+        for (let actionSourceId in actionsConfig) {
+          if (!actionsConfig.hasOwnProperty(actionSourceId)) {
+            continue;
+          }
+
+          this._actionsConfig[actionSourceId] = actionsConfig[actionSourceId];
+        }
       }
     }
 

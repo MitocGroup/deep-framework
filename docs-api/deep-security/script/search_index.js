@@ -42,6 +42,24 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-security/lib/exception/identityprovidermismatchexception.js~identityprovidermismatchexception",
+    "class/lib/Exception/IdentityProviderMismatchException.js~IdentityProviderMismatchException.html",
+    "<span>IdentityProviderMismatchException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/IdentityProviderMismatchException.js</span>",
+    "class"
+  ],
+  [
+    "deep-security/lib/exception/identityprovidertokenexpiredexception.js~identityprovidertokenexpiredexception",
+    "class/lib/Exception/IdentityProviderTokenExpiredException.js~IdentityProviderTokenExpiredException.html",
+    "<span>IdentityProviderTokenExpiredException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/IdentityProviderTokenExpiredException.js</span>",
+    "class"
+  ],
+  [
+    "deep-security/lib/exception/invalidprovideridentityexception.js~invalidprovideridentityexception",
+    "class/lib/Exception/InvalidProviderIdentityException.js~InvalidProviderIdentityException.html",
+    "<span>InvalidProviderIdentityException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/InvalidProviderIdentityException.js</span>",
+    "class"
+  ],
+  [
     "deep-security/lib/exception/loaduserexception.js~loaduserexception",
     "class/lib/Exception/LoadUserException.js~LoadUserException.html",
     "<span>LoadUserException</span> <span class=\"search-result-import-path\">deep-security/lib/Exception/LoadUserException.js</span>",
@@ -432,9 +450,27 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
-    "lib/credentialsmanager.js~credentialsmanager#loadcredentials",
-    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-loadCredentials",
-    "lib/CredentialsManager.js~CredentialsManager#loadCredentials",
+    "lib/credentialsmanager.js~credentialsmanager#deletecredentials",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-deleteCredentials",
+    "lib/CredentialsManager.js~CredentialsManager#deleteCredentials",
+    "method"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#identityid",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-get-identityId",
+    "lib/CredentialsManager.js~CredentialsManager#identityId",
+    "member"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#loadbackendcredentials",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-loadBackendCredentials",
+    "lib/CredentialsManager.js~CredentialsManager#loadBackendCredentials",
+    "method"
+  ],
+  [
+    "lib/credentialsmanager.js~credentialsmanager#loadfrontendcredentials",
+    "class/lib/CredentialsManager.js~CredentialsManager.html#instance-method-loadFrontendCredentials",
+    "lib/CredentialsManager.js~CredentialsManager#loadFrontendCredentials",
     "method"
   ],
   [
@@ -516,6 +552,42 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/exception/identityprovidermismatchexception.js",
+    "file/lib/Exception/IdentityProviderMismatchException.js.html",
+    "lib/Exception/IdentityProviderMismatchException.js",
+    "file"
+  ],
+  [
+    "lib/exception/identityprovidermismatchexception.js~identityprovidermismatchexception#constructor",
+    "class/lib/Exception/IdentityProviderMismatchException.js~IdentityProviderMismatchException.html#instance-constructor-constructor",
+    "lib/Exception/IdentityProviderMismatchException.js~IdentityProviderMismatchException#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/identityprovidertokenexpiredexception.js",
+    "file/lib/Exception/IdentityProviderTokenExpiredException.js.html",
+    "lib/Exception/IdentityProviderTokenExpiredException.js",
+    "file"
+  ],
+  [
+    "lib/exception/identityprovidertokenexpiredexception.js~identityprovidertokenexpiredexception#constructor",
+    "class/lib/Exception/IdentityProviderTokenExpiredException.js~IdentityProviderTokenExpiredException.html#instance-constructor-constructor",
+    "lib/Exception/IdentityProviderTokenExpiredException.js~IdentityProviderTokenExpiredException#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/invalidprovideridentityexception.js",
+    "file/lib/Exception/InvalidProviderIdentityException.js.html",
+    "lib/Exception/InvalidProviderIdentityException.js",
+    "file"
+  ],
+  [
+    "lib/exception/invalidprovideridentityexception.js~invalidprovideridentityexception#constructor",
+    "class/lib/Exception/InvalidProviderIdentityException.js~InvalidProviderIdentityException.html#instance-constructor-constructor",
+    "lib/Exception/InvalidProviderIdentityException.js~InvalidProviderIdentityException#constructor",
+    "method"
+  ],
+  [
     "lib/exception/loaduserexception.js",
     "file/lib/Exception/LoadUserException.js.html",
     "lib/Exception/LoadUserException.js",
@@ -582,6 +654,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/identityprovider.js~identityprovider#istokenvalid",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-method-isTokenValid",
+    "lib/IdentityProvider.js~IdentityProvider#isTokenValid",
+    "method"
+  ],
+  [
     "lib/identityprovider.js~identityprovider#name",
     "class/lib/IdentityProvider.js~IdentityProvider.html#instance-get-name",
     "lib/IdentityProvider.js~IdentityProvider#name",
@@ -591,6 +669,12 @@ window.esdocSearchIndex = [
     "lib/identityprovider.js~identityprovider#providers",
     "class/lib/IdentityProvider.js~IdentityProvider.html#instance-get-providers",
     "lib/IdentityProvider.js~IdentityProvider#providers",
+    "member"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider#tokenexpirationtime",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-get-tokenExpirationTime",
+    "lib/IdentityProvider.js~IdentityProvider#tokenExpirationTime",
     "member"
   ],
   [
@@ -604,6 +688,12 @@ window.esdocSearchIndex = [
     "class/lib/IdentityProvider.js~IdentityProvider.html#instance-get-userToken",
     "lib/IdentityProvider.js~IdentityProvider#userToken",
     "member"
+  ],
+  [
+    "lib/identityprovider.js~identityprovider.aliases",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#static-method-ALIASES",
+    "lib/IdentityProvider.js~IdentityProvider.ALIASES",
+    "method"
   ],
   [
     "lib/identityprovider.js~identityprovider.amazon",
@@ -633,6 +723,12 @@ window.esdocSearchIndex = [
     "lib/localtoken.js~localtoken#constructor",
     "class/lib/LocalToken.js~LocalToken.html#instance-constructor-constructor",
     "lib/LocalToken.js~LocalToken#constructor",
+    "method"
+  ],
+  [
+    "lib/localtoken.js~localtoken#destroy",
+    "class/lib/LocalToken.js~LocalToken.html#instance-method-destroy",
+    "lib/LocalToken.js~LocalToken#destroy",
     "method"
   ],
   [
@@ -678,6 +774,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/security.js~security#logout",
+    "class/lib/Security.js~Security.html#instance-method-logout",
+    "lib/Security.js~Security#logout",
+    "method"
+  ],
+  [
     "lib/security.js~security#token",
     "class/lib/Security.js~Security.html#instance-get-token",
     "lib/Security.js~Security#token",
@@ -693,6 +795,12 @@ window.esdocSearchIndex = [
     "lib/security.js~security#warmupbackendlogin",
     "class/lib/Security.js~Security.html#instance-method-warmupBackendLogin",
     "lib/Security.js~Security#warmupBackendLogin",
+    "method"
+  ],
+  [
+    "lib/security.js~security.customeventid",
+    "class/lib/Security.js~Security.html#static-method-customEventId",
+    "lib/Security.js~Security.customEventId",
     "method"
   ],
   [
@@ -714,10 +822,16 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/token.js~token#expiredatetime",
-    "class/lib/Token.js~Token.html#instance-get-expireDateTime",
-    "lib/Token.js~Token#expireDateTime",
-    "member"
+    "lib/token.js~token#destroy",
+    "class/lib/Token.js~Token.html#instance-method-destroy",
+    "lib/Token.js~Token#destroy",
+    "method"
+  ],
+  [
+    "lib/token.js~token#getcredentialsexpiredatetime",
+    "class/lib/Token.js~Token.html#instance-method-getCredentialsExpireDateTime",
+    "lib/Token.js~Token#getCredentialsExpireDateTime",
+    "method"
   ],
   [
     "lib/token.js~token#getuser",
@@ -733,13 +847,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/token.js~token#identityprovider",
-    "class/lib/Token.js~Token.html#instance-get-identityProvider",
+    "class/lib/Token.js~Token.html#instance-set-identityProvider",
     "lib/Token.js~Token#identityProvider",
     "member"
   ],
   [
     "lib/token.js~token#identityprovider",
-    "class/lib/Token.js~Token.html#instance-set-identityProvider",
+    "class/lib/Token.js~Token.html#instance-get-identityProvider",
     "lib/Token.js~Token#identityProvider",
     "member"
   ],
@@ -768,10 +882,28 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/token.js~token#logservice",
+    "class/lib/Token.js~Token.html#instance-set-logService",
+    "lib/Token.js~Token#logService",
+    "member"
+  ],
+  [
+    "lib/token.js~token#registertokenexpiredcallback",
+    "class/lib/Token.js~Token.html#instance-method-registerTokenExpiredCallback",
+    "lib/Token.js~Token#registerTokenExpiredCallback",
+    "method"
+  ],
+  [
     "lib/token.js~token#userprovider",
     "class/lib/Token.js~Token.html#instance-set-userProvider",
     "lib/Token.js~Token#userProvider",
     "member"
+  ],
+  [
+    "lib/token.js~token#validcredentials",
+    "class/lib/Token.js~Token.html#instance-method-validCredentials",
+    "lib/Token.js~Token#validCredentials",
+    "method"
   ],
   [
     "lib/token.js~token.create",

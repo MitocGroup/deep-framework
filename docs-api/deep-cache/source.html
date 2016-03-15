@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -31,12 +31,18 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedKey.js~SharedKey.html">SharedKey</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
@@ -45,7 +51,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">40/44</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">69/73</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -63,18 +69,34 @@
   <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Cache.js.html">lib/Cache.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">8/8</span></td>
-      <td style="display: none;" data-ice="size">2073 byte</td>
-      <td style="display: none;" data-ice="lines">103</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 13:35:41 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">13/13</span></td>
+      <td style="display: none;" data-ice="size">3778 byte</td>
+      <td style="display: none;" data-ice="lines">175</td>
+      <td style="display: none;" data-ice="updated">2016-03-05 12:41:28 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Driver/AbstractDriver.js.html#errorLines=16">lib/Driver/AbstractDriver.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></td>
-      <td class="coverage"><span data-ice="coverage">92 %</span><span data-ice="coverageCount" class="coverage-count">12/13</span></td>
-      <td style="display: none;" data-ice="size">3374 byte</td>
-      <td style="display: none;" data-ice="lines">189</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 11:02:15 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">93 %</span><span data-ice="coverageCount" class="coverage-count">14/15</span></td>
+      <td style="display: none;" data-ice="size">3576 byte</td>
+      <td style="display: none;" data-ice="lines">204</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Driver/AbstractFsDriver.js.html">lib/Driver/AbstractFsDriver.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">3/3</span></td>
+      <td style="display: none;" data-ice="size">1007 byte</td>
+      <td style="display: none;" data-ice="lines">54</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Driver/CloudFrontDriver.js.html">lib/Driver/CloudFrontDriver.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">3467 byte</td>
+      <td style="display: none;" data-ice="lines">159</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Driver/Exception/DriverException.js.html">lib/Driver/Exception/DriverException.js</a></span></td>
@@ -91,6 +113,14 @@
       <td style="display: none;" data-ice="size">293 byte</td>
       <td style="display: none;" data-ice="lines">19</td>
       <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Driver/Exception/MethodNotAvailableException.js.html">lib/Driver/Exception/MethodNotAvailableException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">348 byte</td>
+      <td style="display: none;" data-ice="lines">19</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Driver/Exception/MissingCacheException.js.html">lib/Driver/Exception/MissingCacheException.js</a></span></td>
@@ -120,25 +150,33 @@
       <td data-ice="filePath"><span><a href="file/lib/Driver/InMemoryDriver.js.html#errorLines=13">lib/Driver/InMemoryDriver.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></td>
       <td class="coverage"><span data-ice="coverage">66 %</span><span data-ice="coverageCount" class="coverage-count">2/3</span></td>
-      <td style="display: none;" data-ice="size">1864 byte</td>
-      <td style="display: none;" data-ice="lines">107</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 11:02:15 (UTC)</td>
+      <td style="display: none;" data-ice="size">1970 byte</td>
+      <td style="display: none;" data-ice="lines">115</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Driver/LocalStorageDriver.js.html#errorLines=14">lib/Driver/LocalStorageDriver.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></td>
-      <td class="coverage"><span data-ice="coverage">50 %</span><span data-ice="coverageCount" class="coverage-count">1/2</span></td>
-      <td style="display: none;" data-ice="size">2227 byte</td>
-      <td style="display: none;" data-ice="lines">117</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 11:02:15 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">66 %</span><span data-ice="coverageCount" class="coverage-count">2/3</span></td>
+      <td style="display: none;" data-ice="size">3532 byte</td>
+      <td style="display: none;" data-ice="lines">181</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Driver/RedisDriver.js.html">lib/Driver/RedisDriver.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">4/4</span></td>
-      <td style="display: none;" data-ice="size">2326 byte</td>
-      <td style="display: none;" data-ice="lines">124</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 13:14:56 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">7/7</span></td>
+      <td style="display: none;" data-ice="size">4532 byte</td>
+      <td style="display: none;" data-ice="lines">237</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Driver/S3FSDriver.js.html">lib/Driver/S3FSDriver.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">2533 byte</td>
+      <td style="display: none;" data-ice="lines">129</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Exception/Exception.js.html">lib/Exception/Exception.js</a></span></td>
@@ -147,6 +185,22 @@
       <td style="display: none;" data-ice="size">282 byte</td>
       <td style="display: none;" data-ice="lines">19</td>
       <td style="display: none;" data-ice="updated">2015-10-04 19:13:49 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/SharedCache.js.html">lib/SharedCache.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">5/5</span></td>
+      <td style="display: none;" data-ice="size">2535 byte</td>
+      <td style="display: none;" data-ice="lines">115</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/SharedKey.js.html">lib/SharedKey.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/SharedKey.js~SharedKey.html">SharedKey</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">4/4</span></td>
+      <td style="display: none;" data-ice="size">500 byte</td>
+      <td style="display: none;" data-ice="lines">34</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/bootstrap.js.html">lib/bootstrap.js</a></span></td>

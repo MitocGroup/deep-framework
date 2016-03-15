@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -35,6 +35,17 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/ConsoleDriver.js~ConsoleDriver.html">ConsoleDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenBrowserDriver.js~RavenBrowserDriver.html">RavenBrowserDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RavenDriver.js~RavenDriver.html">RavenDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html">RumSqsDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html">FailedToDeleteSqsMessagesException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html">FailedToReceiveSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html">FailedToSendBatchSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/FailedToSendSqsMessageException.js~FailedToSendSqsMessageException.html">FailedToSendSqsMessageException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/InvalidSqsQueueUrlException.js~InvalidSqsQueueUrlException.html">InvalidSqsQueueUrlException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/LogDriverException.js~LogDriverException.html">LogDriverException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html">RumEventValidationException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html">UnknownRumEventException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/RUM</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html">FrameworkEvent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 </ul>
 </div>
@@ -52,6 +63,7 @@ import Core from &apos;deep-core&apos;;
 import {ConsoleDriver} from &apos;./Driver/ConsoleDriver&apos;;
 import {RavenDriver} from &apos;./Driver/RavenDriver&apos;;
 import {RavenBrowserDriver} from &apos;./Driver/RavenBrowserDriver&apos;;
+import {RumSqsDriver} from &apos;./Driver/RumSqsDriver&apos;;
 import {AbstractDriver} from &apos;./Driver/AbstractDriver&apos;;
 
 /**
@@ -82,10 +94,13 @@ export class Log extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    // @todo: remove this compatibility hook
-    let globals = kernel.config.globals || kernel.config;
+    let globals = kernel.config.globals;
+    let drivers = globals.logDrivers || {};
 
-    let drivers = globals.logDrivers;
+    // add console driver by default to all environments except for PROD
+    if (!drivers.hasOwnProperty(&apos;console&apos;) &amp;&amp; kernel.env !== Kernel.PROD_ENVIRONMENT) {
+      drivers.console = {};
+    }
 
     for (let driverName in drivers) {
       if (!drivers.hasOwnProperty(driverName)) {
@@ -121,10 +136,16 @@ export class Log extends Kernel.ContainerAware {
             : null
         );
         break;
+      case &apos;rum&apos;:
+        let rumQueueUrl = this.kernel.config.rumQueue.url;
+        let enabled = (args.length &gt; 0 &amp;&amp; args[0] &amp;&amp; typeof args[0] === &apos;object&apos;) ? args[0].enabled : false;
+
+        driver = new RumSqsDriver(rumQueueUrl, this.kernel, enabled);
+        break;
       default:
         throw new Core.Exception.InvalidArgumentException(
           type,
-          &apos;[Console, Raven, Sentry]&apos;
+          &apos;[Console, Raven, Sentry, RUM]&apos;
         );
     }
 
@@ -132,16 +153,20 @@ export class Log extends Kernel.ContainerAware {
   }
 
   /**
+   * @param {*} args
    * @returns {Log}
    *
    * @todo: do we need this here?
    */
-  overrideJsConsole() {
-    if (!this._drivers.find(ConsoleDriver)) {
+  overrideJsConsole(...args) {
+    let consoleDriver = this._drivers.find(ConsoleDriver);
+
+    if (!consoleDriver) {
       this.register(&apos;console&apos;);
     }
 
-    this._drivers.find(ConsoleDriver).overrideNative();
+    (consoleDriver || this._drivers.find(ConsoleDriver))
+      .overrideNative(...args);
 
     return this;
   }
@@ -188,10 +213,66 @@ export class Log extends Kernel.ContainerAware {
 
       let driver = driversArr[driverKey];
 
+      // do not log common messages into RUM
+      if (driver instanceof RumSqsDriver) {
+        continue;
+      }
+
       driver.log(msg, level, context);
     }
 
     return this;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  isRumEnabled() {
+    let driver = this.rumDriver();
+
+    return driver &amp;&amp; driver.enabled;
+  }
+
+  /**
+   * @param {Object} event
+   */
+  rumLog(event) {
+    let driver = this.rumDriver();
+
+    if (driver) {
+      driver.log(event, (error, data) =&gt; {
+        if (error) {
+          this.log(error, Log.ERROR, event);
+        }
+      });
+    }
+  }
+
+  /**
+   * Flushes RUM batch messages
+   */
+  rumFlush(callback) {
+    let driver = this.rumDriver();
+
+    if (!driver) {
+      callback(null, null);
+      return;
+    }
+
+    driver.flush((error, data) =&gt; {
+      if (error) {
+        this.log(error, Log.ERROR);
+      }
+
+      callback(error, data);
+    });
+  }
+
+  /**
+   * @returns {RumSqsDriver}
+   */
+  rumDriver() {
+    return this.drivers.find(RumSqsDriver);
   }
 
   /**

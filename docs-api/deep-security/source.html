@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -41,6 +41,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DescribeIdentityException.js~DescribeIdentityException.html">DescribeIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException.html">GetCognitoRecordException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/IdentityProviderMismatchException.js~IdentityProviderMismatchException.html">IdentityProviderMismatchException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/IdentityProviderTokenExpiredException.js~IdentityProviderTokenExpiredException.html">IdentityProviderTokenExpiredException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidProviderIdentityException.js~InvalidProviderIdentityException.html">InvalidProviderIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/LoadUserException.js~LoadUserException.html">LoadUserException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingLoginProviderException.js~MissingLoginProviderException.html">MissingLoginProviderException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException.html">PutCognitoRecordException</a></span></span></li>
@@ -49,7 +52,7 @@
 </div>
 </nav>
 
-<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">66/67</span></h1>
+<div class="content" data-ice="content"><h1>Source <img data-ice="coverageBadge" src="./badge.svg"><span data-ice="totalCoverageCount" class="total-coverage-count">85/86</span></h1>
 
 <table class="files-summary" data-ice="files" data-use-coverage="true">
   <thead>
@@ -67,10 +70,10 @@
   <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/CredentialsManager.js.html#errorLines=13">lib/CredentialsManager.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/CredentialsManager.js~CredentialsManager.html">CredentialsManager</a></span></td>
-      <td class="coverage"><span data-ice="coverage">85 %</span><span data-ice="coverageCount" class="coverage-count">6/7</span></td>
-      <td style="display: none;" data-ice="size">4595 byte</td>
-      <td style="display: none;" data-ice="lines">185</td>
-      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">90 %</span><span data-ice="coverageCount" class="coverage-count">9/10</span></td>
+      <td style="display: none;" data-ice="size">6087 byte</td>
+      <td style="display: none;" data-ice="lines">252</td>
+      <td style="display: none;" data-ice="updated">2016-03-02 12:26:48 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Exception/AuthException.js.html">lib/Exception/AuthException.js</a></span></td>
@@ -86,7 +89,7 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
       <td style="display: none;" data-ice="size">409 byte</td>
       <td style="display: none;" data-ice="lines">20</td>
-      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2015-11-02 07:41:48 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Exception/DescribeIdentityException.js.html">lib/Exception/DescribeIdentityException.js</a></span></td>
@@ -94,7 +97,7 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
       <td style="display: none;" data-ice="size">400 byte</td>
       <td style="display: none;" data-ice="lines">20</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 09:29:47 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2015-11-02 07:41:48 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Exception/Exception.js.html">lib/Exception/Exception.js</a></span></td>
@@ -110,7 +113,31 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
       <td style="display: none;" data-ice="size">459 byte</td>
       <td style="display: none;" data-ice="lines">21</td>
-      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2015-11-02 07:41:48 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Exception/IdentityProviderMismatchException.js.html">lib/Exception/IdentityProviderMismatchException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Exception/IdentityProviderMismatchException.js~IdentityProviderMismatchException.html">IdentityProviderMismatchException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">494 byte</td>
+      <td style="display: none;" data-ice="lines">19</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Exception/IdentityProviderTokenExpiredException.js.html">lib/Exception/IdentityProviderTokenExpiredException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Exception/IdentityProviderTokenExpiredException.js~IdentityProviderTokenExpiredException.html">IdentityProviderTokenExpiredException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">436 byte</td>
+      <td style="display: none;" data-ice="lines">20</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
+    </tr>
+<tr data-ice="file">
+      <td data-ice="filePath"><span><a href="file/lib/Exception/InvalidProviderIdentityException.js.html">lib/Exception/InvalidProviderIdentityException.js</a></span></td>
+      <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Exception/InvalidProviderIdentityException.js~InvalidProviderIdentityException.html">InvalidProviderIdentityException</a></span></td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
+      <td style="display: none;" data-ice="size">489 byte</td>
+      <td style="display: none;" data-ice="lines">19</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Exception/LoadUserException.js.html">lib/Exception/LoadUserException.js</a></span></td>
@@ -134,7 +161,7 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
       <td style="display: none;" data-ice="size">457 byte</td>
       <td style="display: none;" data-ice="lines">21</td>
-      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2015-11-02 07:41:48 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Exception/SynchronizeCognitoDatasetException.js.html">lib/Exception/SynchronizeCognitoDatasetException.js</a></span></td>
@@ -142,39 +169,39 @@
       <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">2/2</span></td>
       <td style="display: none;" data-ice="size">408 byte</td>
       <td style="display: none;" data-ice="lines">20</td>
-      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
+      <td style="display: none;" data-ice="updated">2015-11-02 07:41:48 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/IdentityProvider.js.html">lib/IdentityProvider.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/IdentityProvider.js~IdentityProvider.html">IdentityProvider</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">10/10</span></td>
-      <td style="display: none;" data-ice="size">1559 byte</td>
-      <td style="display: none;" data-ice="lines">90</td>
-      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">13/13</span></td>
+      <td style="display: none;" data-ice="size">3046 byte</td>
+      <td style="display: none;" data-ice="lines">141</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:35 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/LocalToken.js.html">lib/LocalToken.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/LocalToken.js~LocalToken.html">LocalToken</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">3/3</span></td>
-      <td style="display: none;" data-ice="size">546 byte</td>
-      <td style="display: none;" data-ice="lines">29</td>
-      <td style="display: none;" data-ice="updated">2015-11-02 16:04:59 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">4/4</span></td>
+      <td style="display: none;" data-ice="size">722 byte</td>
+      <td style="display: none;" data-ice="lines">40</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Security.js.html">lib/Security.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Security.js~Security.html">Security</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">9/9</span></td>
-      <td style="display: none;" data-ice="size">3286 byte</td>
-      <td style="display: none;" data-ice="lines">136</td>
-      <td style="display: none;" data-ice="updated">2015-11-06 13:03:38 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">11/11</span></td>
+      <td style="display: none;" data-ice="size">5283 byte</td>
+      <td style="display: none;" data-ice="lines">230</td>
+      <td style="display: none;" data-ice="updated">2016-03-05 12:41:28 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/Token.js.html">lib/Token.js</a></span></td>
       <td data-ice="identifier" class="identifiers"><span><a href="class/lib/Token.js~Token.html">Token</a></span></td>
-      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">17/17</span></td>
-      <td style="display: none;" data-ice="size">6224 byte</td>
-      <td style="display: none;" data-ice="lines">285</td>
-      <td style="display: none;" data-ice="updated">2015-11-03 09:29:47 (UTC)</td>
+      <td class="coverage"><span data-ice="coverage">100 %</span><span data-ice="coverageCount" class="coverage-count">21/21</span></td>
+      <td style="display: none;" data-ice="size">10920 byte</td>
+      <td style="display: none;" data-ice="lines">449</td>
+      <td style="display: none;" data-ice="updated">2016-02-02 12:09:45 (UTC)</td>
     </tr>
 <tr data-ice="file">
       <td data-ice="filePath"><span><a href="file/lib/UserProvider.js.html">lib/UserProvider.js</a></span></td>

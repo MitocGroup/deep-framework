@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -31,12 +31,18 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedKey.js~SharedKey.html">SharedKey</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
@@ -46,13 +52,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Cache} from &apos;<span><a href="file/lib/Cache.js.html#lineNumber14">deep-cache/lib/Cache.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Cache} from &apos;<span><a href="file/lib/Cache.js.html#lineNumber15">deep-cache/lib/Cache.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/Cache.js.html#lineNumber14">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/Cache.js.html#lineNumber15">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -84,7 +90,38 @@
   
 </div>
 
-
+<div data-ice="staticMemberSummary"><h2>Static Member Summary</h2><table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3">Static Public Members</td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      <span data-ice="static">static</span>
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#static-get-SYSTEM_NAMESPACE">SYSTEM_NAMESPACE</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
 <div data-ice="staticMethodSummary"><h2>Static Method Summary</h2><table class="summary" data-ice="summary">
   <thead><tr><td data-ice="title" colspan="3">Static Public Methods</td></tr></thead>
   <tbody>
@@ -100,7 +137,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#static-method-createDriver">createDriver</a></span></span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, args: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>): <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#static-method-createDriver">createDriver</a></span></span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, args: <span>*</span>): <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span>
         </p>
       </div>
       <div>
@@ -132,7 +169,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-constructor-constructor">constructor</a></span></span><span data-ice="signature">(driver: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>)</span>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-constructor-constructor">constructor</a></span></span><span data-ice="signature">(driver: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>, systemDriver: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>)</span>
         </p>
       </div>
       <div>
@@ -229,6 +266,106 @@ It&apos;s used while kernel boot</div>
       
     </td>
   </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-get-shared">shared</a></span></span><span data-ice="signature">: <span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span> | <span>*</span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-get-system">system</a></span></span><span data-ice="signature">: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span> | <span>*</span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">set</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-set-systemDriver">systemDriver</a></span></span><span data-ice="signature">(driver: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-get-systemDriver">systemDriver</a></span></span><span data-ice="signature">: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
 </tbody>
 </table>
 </div>
@@ -247,7 +384,7 @@ It&apos;s used while kernel boot</div>
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-method-apply">apply</a></span></span><span data-ice="signature">(target: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>, args: <span>*</span>): <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html#instance-method-apply">apply</a></span></span><span data-ice="signature">(target: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span> | <span>*</span>, args: <span>*</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -292,7 +429,59 @@ It&apos;s used while kernel boot</div>
 
 
 
+<div data-ice="staticMemberDetails"><h2 data-ice="title">Static Public Members</h2>
 
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-get-SYSTEM_NAMESPACE">
+    <span class="access" data-ice="access">public</span>
+    <span data-ice="static">static</span>
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">SYSTEM_NAMESPACE</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber172">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+</div>
 <div data-ice="staticMethodDetails"><h2 data-ice="title">Static Public Methods</h2>
 
 <div class="detail" data-ice="detail">
@@ -302,11 +491,11 @@ It&apos;s used while kernel boot</div>
     
     
     
-    <span data-ice="name">createDriver</span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, args: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span>): <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span>
+    <span data-ice="name">createDriver</span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, args: <span>*</span>): <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber29">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber32">source</a></span></span>
     </span>
   </h3>
 
@@ -333,7 +522,7 @@ It&apos;s used while kernel boot</div>
     </tr>
 <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">args</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a></span></td>
+      <td data-ice="type"><span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -377,11 +566,11 @@ It&apos;s used while kernel boot</div>
     
     
     
-    <span data-ice="name">constructor</span><span data-ice="signature">(driver: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>)</span>
+    <span data-ice="name">constructor</span><span data-ice="signature">(driver: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>, systemDriver: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber18">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber20">source</a></span></span>
     </span>
   </h3>
 
@@ -402,6 +591,12 @@ It&apos;s used while kernel boot</div>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">driver</td>
+      <td data-ice="type"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">systemDriver</td>
       <td data-ice="type"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
@@ -440,7 +635,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber93">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber144">source</a></span></span>
     </span>
   </h3>
 
@@ -480,7 +675,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber100">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber151">source</a></span></span>
     </span>
   </h3>
 
@@ -530,7 +725,7 @@ It&apos;s used while kernel boot</div>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber81">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber132">source</a></span></span>
     </span>
   </h3>
 
@@ -571,6 +766,196 @@ It&apos;s used while kernel boot</p>
   
   
 </div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-shared">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">shared</span><span data-ice="signature">: <span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span> | <span>*</span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber91">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span> | <span>*</span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-system">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">system</span><span data-ice="signature">: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span> | <span>*</span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber98">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span> | <span>*</span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-set-systemDriver">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">set</span>
+    
+    
+    <span data-ice="name">systemDriver</span><span data-ice="signature">(driver: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber158">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-systemDriver">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">systemDriver</span><span data-ice="signature">: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber165">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
 </div>
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
@@ -581,11 +966,11 @@ It&apos;s used while kernel boot</p>
     
     
     
-    <span data-ice="name">apply</span><span data-ice="signature">(target: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span>, args: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">apply</span><span data-ice="signature">(target: <span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span> | <span>*</span>, args: <span>*</span>): <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber71">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber122">source</a></span></span>
     </span>
   </h3>
 
@@ -606,7 +991,7 @@ It&apos;s used while kernel boot</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">target</td>
-      <td data-ice="type"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></td>
+      <td data-ice="type"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span> | <span>*</span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -657,7 +1042,7 @@ It&apos;s used while kernel boot</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber55">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Cache.js.html#lineNumber69">source</a></span></span>
     </span>
   </h3>
 

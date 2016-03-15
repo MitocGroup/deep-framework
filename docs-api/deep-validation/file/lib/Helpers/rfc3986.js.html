@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/Helpers/rfc3986.js | DEEP Validation Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ObjectToJoi.js~ObjectToJoi.html">ObjectToJoi</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Validation.js~Validation.html">Validation</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidJoiSchemaException.js~InvalidJoiSchemaException.html">InvalidJoiSchemaException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidSchemaException.js~InvalidSchemaException.html">InvalidSchemaException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ObjectValidationFailedException.js~ObjectValidationFailedException.html">ObjectValidationFailedException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ValidationSchemaNotFoundException.js~ValidationSchemaNotFoundException.html">ValidationSchemaNotFoundException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Helpers</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Helpers/Joi.js~Joi.html">Joi</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Helpers/rfc3986.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 12/8/15.
+ */
+
+&apos;use strict&apos;;
+
+let internals = {
+  rfc3986: {}
+};
+
+internals.generate = function () {
+
+  /**
+   * elements separated by forward slash (&quot;/&quot;) are alternatives.
+   */
+  const or = &apos;|&apos;;
+
+  /**
+   * DIGIT = %x30-39 ; 0-9
+   */
+  const digit = &apos;0-9&apos;;
+  const digitOnly = &apos;[&apos; + digit + &apos;]&apos;;
+
+  /**
+   * ALPHA = %x41-5A / %x61-7A   ; A-Z / a-z
+   */
+  const alpha = &apos;a-zA-Z&apos;;
+  const alphaOnly = &apos;[&apos; + alpha + &apos;]&apos;;
+
+  /**
+   * cidr       = DIGIT                ; 0-9
+   *            / %x31-32 DIGIT         ; 10-29
+   *            / &quot;3&quot; %x30-32           ; 30-32
+   */
+  internals.rfc3986.cidr = digitOnly + or + &apos;[1-2]&apos; + digitOnly + or + &apos;3&apos; + &apos;[0-2]&apos;;
+
+  /**
+   * HEXDIG = DIGIT / &quot;A&quot; / &quot;B&quot; / &quot;C&quot; / &quot;D&quot; / &quot;E&quot; / &quot;F&quot;
+   */
+  const hexDigit = digit + &apos;A-Fa-f&apos;;
+  const hexDigitOnly = &apos;[&apos; + hexDigit + &apos;]&apos;;
+
+  /**
+   * unreserved = ALPHA / DIGIT / &quot;-&quot; / &quot;.&quot; / &quot;_&quot; / &quot;~&quot;
+   */
+  const unreserved = alpha + digit + &apos;-\\._~&apos;;
+
+  /**
+   * sub-delims = &quot;!&quot; / &quot;$&quot; / &quot;&amp;&quot; / &quot;&apos;&quot; / &quot;(&quot; / &quot;)&quot; / &quot;*&quot; / &quot;+&quot; / &quot;,&quot; / &quot;;&quot; / &quot;=&quot;
+   */
+  const subDelims = &apos;!\\$&amp;\&apos;\\(\\)\\*\\+,;=&apos;;
+
+  /**
+   * pct-encoded = &quot;%&quot; HEXDIG HEXDIG
+   */
+  const pctEncoded = &apos;%&apos; + hexDigit;
+
+  /**
+   * pchar = unreserved / pct-encoded / sub-delims / &quot;:&quot; / &quot;@&quot;
+   */
+  const pchar = unreserved + pctEncoded + subDelims + &apos;:@&apos;;
+  const pcharOnly = &apos;[&apos; + pchar + &apos;]&apos;;
+
+  /**
+   * Rule to support zero-padded addresses.
+   */
+  const zeroPad = &apos;0?&apos;;
+
+  /**
+   * dec-octet   = DIGIT                 ; 0-9
+   *            / %x31-39 DIGIT         ; 10-99
+   *            / &quot;1&quot; 2DIGIT            ; 100-199
+   *            / &quot;2&quot; %x30-34 DIGIT     ; 200-249
+   *            / &quot;25&quot; %x30-35          ; 250-255
+   */
+  const decOctect = &apos;(?:&apos; + zeroPad + zeroPad + digitOnly + or + zeroPad + &apos;[1-9]&apos; + digitOnly + or + &apos;1&apos; + digitOnly + digitOnly + or + &apos;2&apos; + &apos;[0-4]&apos; + digitOnly + or + &apos;25&apos; + &apos;[0-5])&apos;;
+
+  /**
+   * IPv4address = dec-octet &quot;.&quot; dec-octet &quot;.&quot; dec-octet &quot;.&quot; dec-octet
+   */
+  internals.rfc3986.IPv4address = &apos;(?:&apos; + decOctect + &apos;\\.){3}&apos; + decOctect;
+
+  /**
+   * h16 = 1*4HEXDIG ; 16 bits of address represented in hexadecimal
+   * ls32 = ( h16 &quot;:&quot; h16 ) / IPv4address ; least-significant 32 bits of address
+   * IPv6address =                            6( h16 &quot;:&quot; ) ls32
+   *             /                       &quot;::&quot; 5( h16 &quot;:&quot; ) ls32
+   *             / [               h16 ] &quot;::&quot; 4( h16 &quot;:&quot; ) ls32
+   *             / [ *1( h16 &quot;:&quot; ) h16 ] &quot;::&quot; 3( h16 &quot;:&quot; ) ls32
+   *             / [ *2( h16 &quot;:&quot; ) h16 ] &quot;::&quot; 2( h16 &quot;:&quot; ) ls32
+   *             / [ *3( h16 &quot;:&quot; ) h16 ] &quot;::&quot;    h16 &quot;:&quot;   ls32
+   *             / [ *4( h16 &quot;:&quot; ) h16 ] &quot;::&quot;              ls32
+   *             / [ *5( h16 &quot;:&quot; ) h16 ] &quot;::&quot;              h16
+   *             / [ *6( h16 &quot;:&quot; ) h16 ] &quot;::&quot;
+   */
+  const h16 = hexDigitOnly + &apos;{1,4}&apos;;
+  const ls32 = &apos;(?:&apos; + h16 + &apos;:&apos; + h16 + &apos;|&apos; + internals.rfc3986.IPv4address + &apos;)&apos;;
+  const IPv6SixHex = &apos;(?:&apos; + h16 + &apos;:){6}&apos; + ls32;
+  const IPv6FiveHex = &apos;::(?:&apos; + h16 + &apos;:){5}&apos; + ls32;
+  const IPv6FourHex = h16 + &apos;::(?:&apos; + h16 + &apos;:){4}&apos; + ls32;
+  const IPv6ThreeHex = &apos;(?:&apos; + h16 + &apos;:){0,1}&apos; + h16 + &apos;::(?:&apos; + h16 + &apos;:){3}&apos; + ls32;
+  const IPv6TwoHex = &apos;(?:&apos; + h16 + &apos;:){0,2}&apos; + h16 + &apos;::(?:&apos; + h16 + &apos;:){2}&apos; + ls32;
+  const IPv6OneHex = &apos;(?:&apos; + h16 + &apos;:){0,3}&apos; + h16 + &apos;::&apos; + h16 + &apos;:&apos; + ls32;
+  const IPv6NoneHex = &apos;(?:&apos; + h16 + &apos;:){0,4}&apos; + h16 + &apos;::&apos; + ls32;
+  const IPv6NoneHex2 = &apos;(?:&apos; + h16 + &apos;:){0,5}&apos; + h16 + &apos;::&apos; + h16;
+  const IPv6NoneHex3 = &apos;(?:&apos; + h16 + &apos;:){0,6}&apos; + h16 + &apos;::&apos;;
+  internals.rfc3986.IPv6address = &apos;(?:&apos; + IPv6SixHex + or + IPv6FiveHex + or + IPv6FourHex + or + IPv6ThreeHex + or + IPv6TwoHex + or + IPv6OneHex + or + IPv6NoneHex + or + IPv6NoneHex2 + or + IPv6NoneHex3 + &apos;)&apos;;
+
+  /**
+   * IPvFuture = &quot;v&quot; 1*HEXDIG &quot;.&quot; 1*( unreserved / sub-delims / &quot;:&quot; )
+   */
+  internals.rfc3986.IPvFuture = &apos;v&apos; + hexDigitOnly + &apos;+\\.[&apos; + unreserved + subDelims + &apos;:]+&apos;;
+
+  /**
+   * scheme = ALPHA *( ALPHA / DIGIT / &quot;+&quot; / &quot;-&quot; / &quot;.&quot; )
+   */
+  internals.rfc3986.scheme = alphaOnly + &apos;[&apos; + alpha + digit + &apos;+-\\.]*&apos;;
+
+  /**
+   * userinfo = *( unreserved / pct-encoded / sub-delims / &quot;:&quot; )
+   */
+  const userinfo = &apos;[&apos; + unreserved + pctEncoded + subDelims + &apos;:]*&apos;;
+
+  /**
+   * IP-literal = &quot;[&quot; ( IPv6address / IPvFuture  ) &quot;]&quot;
+   */
+  const IPLiteral = &apos;\\[(?:&apos; + internals.rfc3986.IPv6address + or + internals.rfc3986.IPvFuture + &apos;)\\]&apos;;
+
+  /**
+   * reg-name = *( unreserved / pct-encoded / sub-delims )
+   */
+  const regName = &apos;[&apos; + unreserved + pctEncoded + subDelims + &apos;]{0,255}&apos;;
+
+  /**
+   * host = IP-literal / IPv4address / reg-name
+   */
+  const host = &apos;(?:&apos; + IPLiteral + or + internals.rfc3986.IPv4address + or + regName + &apos;)&apos;;
+
+  /**
+   * port = *DIGIT
+   */
+  const port = digitOnly + &apos;*&apos;;
+
+  /**
+   * authority   = [ userinfo &quot;@&quot; ] host [ &quot;:&quot; port ]
+   */
+  const authority = &apos;(?:&apos; + userinfo + &apos;@)?&apos; + host + &apos;(?::&apos; + port + &apos;)?&apos;;
+
+  /**
+   * segment       = *pchar
+   * segment-nz    = 1*pchar
+   * path          = path-abempty    ; begins with &quot;/&quot; or is empty
+   *               / path-absolute   ; begins with &quot;/&quot; but not &quot;//&quot;
+   *               / path-noscheme   ; begins with a non-colon segment
+   *               / path-rootless   ; begins with a segment
+   *               / path-empty      ; zero characters
+   * path-abempty  = *( &quot;/&quot; segment )
+   * path-absolute = &quot;/&quot; [ segment-nz *( &quot;/&quot; segment ) ]
+   * path-rootless = segment-nz *( &quot;/&quot; segment )
+   */
+  const segment = pcharOnly + &apos;*&apos;;
+  const segmentNz = pcharOnly + &apos;+&apos;;
+  const pathAbEmpty = &apos;(?:\\/&apos; + segment + &apos;)*&apos;;
+  const pathAbsolute = &apos;\\/(?:&apos; + segmentNz + pathAbEmpty + &apos;)?&apos;;
+  const pathRootless = segmentNz + pathAbEmpty;
+
+  /**
+   * hier-part = &quot;//&quot; authority path
+   */
+  internals.rfc3986.hierPart = &apos;(?:\\/\\/&apos; + authority + pathAbEmpty + or + pathAbsolute + or + pathRootless + &apos;)&apos;;
+
+  /**
+   * query = *( pchar / &quot;/&quot; / &quot;?&quot; )
+   */
+  internals.rfc3986.query = &apos;[&apos; + pchar + &apos;\\/\\?]*(?=#|$)&apos;; //Finish matching either at the fragment part or end of the line.
+
+  /**
+   * fragment = *( pchar / &quot;/&quot; / &quot;?&quot; )
+   */
+  internals.rfc3986.fragment = &apos;[&apos; + pchar + &apos;\\/\\?]*&apos;;
+};
+
+
+internals.generate();
+
+export default internals.rfc3986;
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

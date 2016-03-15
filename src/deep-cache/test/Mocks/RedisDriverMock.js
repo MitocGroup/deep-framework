@@ -2,7 +2,7 @@
 
 
 import {RedisMock} from './RedisMock';
-import {RedisDriver} from '../../lib.compiled/Driver/RedisDriver';
+import {RedisDriver} from '../../lib/Driver/RedisDriver';
 
 export class RedisDriverMock extends RedisDriver {
   /**
@@ -11,6 +11,14 @@ export class RedisDriverMock extends RedisDriver {
   constructor(...args) {
     super(args);
     this.disableFailureMode();
+  }
+
+  /**
+   * @param {String} dsn
+   * @private
+   */
+  _autoDiscover(dsn) {
+    this._client = new this.NATIVE_DRIVER(dsn);
   }
 
   /**

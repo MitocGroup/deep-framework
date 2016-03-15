@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -50,6 +50,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -77,8 +78,86 @@ export class Instance {
     this._rawActions = rawActions;
     this._actions = null;
     this._localBackend = false;
+    this._isBackend = false;
     this._cache = null;
     this._security = null;
+    this._validation = null;
+
+    this._fillActions();
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get actionsConfig() {
+    let config = {};
+
+    for (let actionName in this.actions) {
+      if (!this.actions.hasOwnProperty(actionName)) {
+        continue;
+      }
+
+      let action = this.actions[actionName];
+
+      config[action.sourceId] = {
+        resource: this._name,
+        name: action.name,
+        type: action.type,
+        methods: action.methods,
+        source: action.source,
+        region: action.region,
+        forceUserIdentity: action.forceUserIdentity,
+        validationSchema: action.validationSchemaName,
+      };
+    }
+
+    return config;
+  }
+
+  /**
+   * @private
+   */
+  _fillActions() {
+    this._actions = {};
+
+    for (let actionName in this._rawActions) {
+      if (!this._rawActions.hasOwnProperty(actionName)) {
+        continue;
+      }
+
+      let actionMetadata = this._rawActions[actionName];
+
+      let actionInstance = new Action(
+        this,
+        actionName,
+        actionMetadata.type,
+        actionMetadata.methods,
+        actionMetadata.source,
+        actionMetadata.region,
+        actionMetadata.forceUserIdentity,
+        actionMetadata.apiCache
+      );
+
+      if (actionMetadata.validationSchema) {
+        actionInstance.validationSchemaName = actionMetadata.validationSchema;
+      }
+
+      this._actions[actionName] = actionInstance;
+    }
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get validation() {
+    return this._validation;
+  }
+
+  /**
+   * @param {Object} validation
+   */
+  set validation(validation) {
+    this._validation = validation;
   }
 
   /**
@@ -131,31 +210,23 @@ export class Instance {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  get isBackend() {
+    return this._isBackend;
+  }
+
+  /**
+   * @param {Boolean} state
+   */
+  set isBackend(state) {
+    this._isBackend = state;
+  }
+
+  /**
    * @returns {Object}
    */
   get actions() {
-    if (this._actions === null) {
-      this._actions = {};
-
-      for (let actionName in this._rawActions) {
-        if (!this._rawActions.hasOwnProperty(actionName)) {
-          continue;
-        }
-
-        let actionMetadata = this._rawActions[actionName];
-
-        this._actions[actionName] = new Action(
-          this,
-          actionName,
-          actionMetadata.type,
-          actionMetadata.methods,
-          actionMetadata.source,
-          actionMetadata.region,
-          actionMetadata.forceUserIdentity
-        );
-      }
-    }
-
     return this._actions;
   }
 

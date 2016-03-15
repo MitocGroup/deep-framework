@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -118,6 +118,15 @@ export class DI {
     }
 
     return this._bottle.container[key];
+  }
+
+  /**
+   * Checks if service / parameter exists in container
+   *
+   * @returns {Boolean}
+   */
+  has(key) {
+    return this._bottle.container.hasOwnProperty(key);
   }
 }
 </code></pre>

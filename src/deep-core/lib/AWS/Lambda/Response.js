@@ -5,57 +5,84 @@
 'use strict';
 
 import {MissingRuntimeContextException} from './Exception/MissingRuntimeContextException';
+import {ContextAlreadySentException} from './Exception/ContextAlreadySentException';
 
 /**
  * Response sent to the lambda context
  */
 export class Response {
   /**
-   * @param {*} data
+   * @param {Runtime} runtime
+   * @param {Object} data
    */
-  constructor(data) {
+  constructor(runtime, data) {
     this._data = data;
-    this._runtimeContext = null;
+    this._runtime = runtime;
   }
 
   /**
-   * @param {Object} context
+   * @returns {Runtime}
    */
-  set runtimeContext(context) {
-    this._runtimeContext = context;
+  get runtime() {
+    return this._runtime;
   }
 
   /**
-   * @returns {Object}
+   * @returns {Boolean}
    */
-  get runtimeContext() {
-    return this._runtimeContext;
+  get contextSent() {
+    return this._runtime.contextSent;
   }
 
   /**
    * @returns {Response}
    */
   send() {
-    if (!this._runtimeContext) {
+    if (!this._runtime.context) {
       throw new MissingRuntimeContextException();
+    } else if (this.contextSent) {
+      throw new ContextAlreadySentException();
     }
 
-    this._runtimeContext[this.contextMethod](this._data);
+    this.runtime.logService.rumLog({
+      service: 'deep-core',
+      resourceType: 'Lambda',
+      resourceId: this.runtime.context.invokedFunctionArn,
+      eventName: 'Run',
+      payload: this.data,
+    });
+
+    // flush RUM batched messages if any
+    this.runtime.logService.rumFlush((error, data) => {
+      // @todo: via setter?
+      this._runtime._contextSent = true;
+
+      this._runtime.context[this.constructor.contextMethod](this.data);
+    });
 
     return this;
   }
 
   /**
-   * @returns {*}
+   *
+   * @returns {Object}
+   * @private
    */
   get data() {
     return this._data;
   }
 
   /**
+   * @returns {Object}
+   */
+  get rawData() {
+    return this._data;
+  }
+
+  /**
    * @returns {String}
    */
-  get contextMethod() {
+  static get contextMethod() {
     return 'succeed';
   }
 }

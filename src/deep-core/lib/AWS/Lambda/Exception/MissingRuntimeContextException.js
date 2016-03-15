@@ -11,6 +11,6 @@ import {Exception} from '../../../Exception/Exception';
  */
 export class MissingRuntimeContextException extends Exception {
   constructor() {
-    super('Missing Lambda runtime context');
+    super('Missing Lambda runtime context', 400);
   }
 }

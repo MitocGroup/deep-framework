@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -50,6 +50,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -62,121 +63,162 @@
 &apos;use strict&apos;;
 
 import {Response} from &apos;./Response&apos;;
+import {ValidationError} from &apos;./Exception/ValidationError&apos;;
 
 /**
  * Response object
  */
 export class LambdaResponse extends Response {
   /**
-   * @param {Request} request
-   * @param {Object} data
-   * @param {String} error
+   * @param {*} args
    */
-  constructor(request, data, error) {
-    super(...arguments);
+  constructor(...args) {
+    super(...args);
 
-    this._errorType = null;
+    // assure calling the very first!
+    this._fillStatusCode();
+
+    let responsePayload = this._decodePayload();
+
+    this._fillData(responsePayload);
+    this._fillError(responsePayload);
   }
 
   /**
-   * @returns {Object}
+   * @param {Object|null} responsePayload
+   * @private
    */
-  get data() {
-    if (this._data) {
-      return this._data;
+  _fillData(responsePayload) {
+    if (responsePayload &amp;&amp;
+      !this._request.async &amp;&amp;
+      !responsePayload.hasOwnProperty(&apos;errorMessage&apos;)) {
+
+      this._data = responsePayload;
     }
-
-    if (this._rawData &amp;&amp; !this._request.async) {
-      let response = this._getPayload();
-
-      if (response &amp;&amp; typeof response.errorMessage === &apos;undefined&apos;) {
-        this._data = response;
-      }
-    }
-
-    return this._data;
   }
 
   /**
-   * @returns {String}
+   * @param {Object|null} responsePayload
+   * @private
    */
-  get error() {
-    if (this._error) {
-      return this._error;
-    }
-
+  _fillError(responsePayload) {
     if (this._rawError) {
       this._error = this._rawError;
-    } else {
-      if (!this._request.async) {
-        let response = this._getPayload();
-
-        if (response &amp;&amp; typeof response.errorMessage !== &apos;undefined&apos;) {
-          this._error = response.errorMessage;
-        }
-      } else {
-        this._error = &apos;Unknown async invocation error&apos;;
+    } else if (!this._request.async) {
+      if (!responsePayload) {
+        this._error = new Error(&apos;There is no error nor payload in Lambda response&apos;);
+      } else if (responsePayload.hasOwnProperty(&apos;errorMessage&apos;)) {
+        this._error = LambdaResponse.getPayloadError(responsePayload);
       }
+    } else if (this._statusCode !== 202) { // check for failed async invocation
+      this._error = new Error(&apos;Unknown async invocation error&apos;);
     }
-
-    return this._error;
   }
 
   /**
-   * @returns {String}
+   * @private
    */
-  get errorType() {
-    if (this._errorType) {
-      return this._errorType;
-    }
-
-    if (this._rawError) {
-      this._errorType = (this._rawError &amp;&amp; this._rawError.name) ? this._rawError.name : &apos;Error&apos;;
-    } else {
-      if (!this._request.async) {
-        let response = this._getPayload();
-
-        if (response &amp;&amp; typeof response.errorType !== &apos;undefined&apos;) {
-          this._errorType = response.errorType;
-        } else {
-          this._errorType = &apos;Error&apos;;
-        }
-      } else {
-        this._errorType = &apos;AsyncInvocationError&apos;;
-      }
-    }
-
-    return this._errorType;
-  }
-
-  /**
-   * @returns {String}
-   */
-  get statusCode() {
-    if (this._statusCode) {
-      return this._statusCode;
-    }
-
+  _fillStatusCode() {
     if (this._rawData) {
-      this._statusCode = this._rawData.StatusCode || this._rawData.Status;
+      this._statusCode = parseInt(this._rawData.StatusCode || this._rawData.Status);
+    } else {
+      this._statusCode = 500;
     }
-
-    return this._statusCode;
   }
 
   /**
    * @returns {Object|null}
    * @private
    */
-  _getPayload() {
-    if (typeof this._rawData === &apos;object&apos; &amp;&amp;
-      this._rawData.hasOwnProperty(&apos;Payload&apos;)) {
+  _decodePayload() {
+    if (this._rawData &amp;&amp; this._rawData.hasOwnProperty(&apos;Payload&apos;)) {
       let payload = this._rawData.Payload;
 
-      return typeof payload === &apos;string&apos; ? JSON.parse(payload) : payload;
+      if (typeof payload === &apos;string&apos;) {
+        try {
+          payload = JSON.parse(payload);
+        } catch(e) {}
+      }
+
+      return payload;
     }
 
     return null;
+  }
+
+  /**
+   * @param {Object} payload
+   * @returns {Error|ValidationError|null}
+   */
+  static getPayloadError(payload) {
+    if (LambdaResponse.isValidationError(payload)) {
+      return new ValidationError(payload.errorMessage, payload.validationErrors);
+    } else if (payload.errorMessage) {
+
+      // check for error object (on context.failed called)
+      if (!payload.hasOwnProperty(&apos;errorType&apos;) &amp;&amp;
+        !payload.hasOwnProperty(&apos;errorStack&apos;)) {
+
+        let rawErrorObj = null;
+
+        try {
+          rawErrorObj = JSON.parse(payload.errorMessage);
+          rawErrorObj = rawErrorObj || {
+              errorMessage: &apos;Unknown error occurred.&apos;,
+              errorStack: null,
+              errorType: &apos;UnknownError&apos;,
+            };
+
+          rawErrorObj.errorMessage = rawErrorObj.errorMessage || &apos;Unknown error occurred.&apos;;
+          rawErrorObj.errorType = rawErrorObj.errorType || &apos;UnknownError&apos;;
+        } catch (e) {
+        }
+
+        payload = rawErrorObj || {
+            errorMessage: payload.errorMessage,
+            errorStack: null,
+            errorType: &apos;UnknownError&apos;,
+          };
+      } else {
+        payload.errorType = payload.errorType || &apos;UnknownError&apos;;
+      }
+
+      let errorObj = new Error(payload.errorMessage);
+
+      // try to define a custom constructor name
+      // fail silently in case of readonly property...
+      try {
+        Object.defineProperty(errorObj, &apos;name&apos;, {
+          value: payload.errorType,
+        });
+      } catch (e) {   }
+
+      Object.defineProperty(errorObj, &apos;stack&apos;, {
+        value: payload.errorStack,
+      });
+
+      return errorObj;
+    }
+
+    return null;
+  }
+
+  /**
+   * @param {Object} payload
+   * @returns {Boolean}
+   */
+  static isValidationError(payload) {
+    return payload.hasOwnProperty(&apos;errorType&apos;) &amp;&amp;
+      payload.hasOwnProperty(&apos;errorMessage&apos;) &amp;&amp;
+      payload.hasOwnProperty(&apos;validationErrors&apos;) &amp;&amp;
+      payload.errorType === LambdaResponse.VALIDATION_ERROR_TYPE;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get VALIDATION_ERROR_TYPE() {
+    return &apos;ValidationError&apos;;
   }
 }
 </code></pre>

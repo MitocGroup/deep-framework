@@ -75,4 +75,5 @@ export default {
       },
     },
   },
+  validationSchemas: [],
 };

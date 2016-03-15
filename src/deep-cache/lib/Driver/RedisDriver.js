@@ -7,6 +7,7 @@
 import {AbstractDriver} from './AbstractDriver';
 import {RedisClusterException} from './Exception/RedisClusterException';
 import Redis from 'ioredis';
+import RedisAutoDiscovery from 'ecad';
 
 /**
  * Redis/Elasticache driver implementation
@@ -18,9 +19,73 @@ export class RedisDriver extends AbstractDriver {
   constructor(dsn) {
     super();
 
-    let nativeDriver = this.NATIVE_DRIVER;
+    this._autoDiscoveryError = null;
+    this._client = null;
 
-    this._client = dsn ? new nativeDriver(dsn) : new nativeDriver();
+    this._autoDiscover(dsn);
+  }
+
+  /**
+   * @param {String} dsn
+   * @private
+   */
+  _autoDiscover(dsn) {
+    let payload = {
+      endpoints: [dsn,],
+      timeout: RedisDriver.DEFAULT_AUTO_DISCOVERY_TIMEOUT,
+    };
+
+    let client = new RedisAutoDiscovery(payload);
+
+    client.fetch((error, hosts) => {
+      if (error) {
+        this._autoDiscoveryError = error;
+      } else {
+        let options = {
+          sentinels: [],
+          name: dsn,
+        };
+
+        hosts.forEach((host) => {
+          options.sentinels.push(`redis://${host}/`);
+        });
+
+        this._client = new this.NATIVE_DRIVER(options);
+      }
+    });
+  }
+
+  /**
+   * @param {Function} cb
+   * @private
+   */
+  clientWait(cb) {
+    if (this._client) {
+      cb(null, this._client);
+    } else if (this._autoDiscoveryError) {
+      cb(this._autoDiscoveryError, null);
+    } else {
+      setTimeout(() => {
+        process.nextTick(() => {
+          this.clientWait(cb);
+        });
+      }, RedisDriver.CLIENT_WAIT_MS_INTERVAL);
+    }
+  }
+
+  /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return 'Redis';
+  }
+
+  /**
+   * @returns {Error|String|null}
+   */
+  get autoDiscoveryError() {
+    return this._autoDiscoveryError;
   }
 
   /**
@@ -35,14 +100,20 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    */
   _has(key, callback = () => {}) {
-    this._client.exists(key, (error, results) => {
+    this.clientWait((error, client) => {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, results);
+      client.exists(key, (error, results) => {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+          return;
+        }
+
+        callback(null, results);
+      });
     });
   }
 
@@ -51,14 +122,21 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    */
   _get(key, callback = () => {}) {
-    this._client.get(key, (error, results) => {
+    this.clientWait((error, client) => {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, results);
+      client.get(key, (error, results) => {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+
+          return;
+        }
+
+        callback(null, results);
+      });
     });
   }
 
@@ -70,14 +148,21 @@ export class RedisDriver extends AbstractDriver {
    * @returns {Boolean}
    */
   _set(key, value, ttl = 0, callback = () => {}) {
-    this._client.set(key, value, ttl, (error) => {
+    this.clientWait((error, client) => {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, true);
+      client.set(key, value, ttl, (error) => {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+
+          return;
+        }
+
+        callback(null, true);
+      });
     });
   }
 
@@ -87,14 +172,21 @@ export class RedisDriver extends AbstractDriver {
    * @param {Function} callback
    */
   _invalidate(key, timeout = 0, callback = () => {}) {
-    this._client.del(key, timeout, (error) => {
+    this.clientWait((error, client) => {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, true);
+      client.del(key, timeout, (error) => {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+
+          return;
+        }
+
+        callback(null, true);
+      });
     });
   }
 
@@ -103,14 +195,21 @@ export class RedisDriver extends AbstractDriver {
    * @returns {AbstractDriver}
    */
   _flush(callback = () => {}) {
-    this._client.flushall((error) => {
+    this.clientWait((error, client) => {
       if (error) {
         callback(new RedisClusterException(error), null);
-
         return;
       }
 
-      callback(null, true);
+      client.flushall((error) => {
+        if (error) {
+          callback(new RedisClusterException(error), null);
+
+          return;
+        }
+
+        callback(null, true);
+      });
     });
   }
 
@@ -120,5 +219,19 @@ export class RedisDriver extends AbstractDriver {
    */
   get NATIVE_DRIVER() {
     return Redis;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get CLIENT_WAIT_MS_INTERVAL() {
+    return 5;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get DEFAULT_AUTO_DISCOVERY_TIMEOUT() {
+    return 700;
   }
 }

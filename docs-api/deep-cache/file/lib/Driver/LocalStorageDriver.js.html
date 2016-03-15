@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -31,12 +31,18 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Cache.js~Cache.html">Cache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedCache.js~SharedCache.html">SharedCache</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/SharedKey.js~SharedKey.html">SharedKey</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/AbstractFsDriver.js~AbstractFsDriver.html">AbstractFsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/CloudFrontDriver.js~CloudFrontDriver.html">CloudFrontDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/InMemoryDriver.js~InMemoryDriver.html">InMemoryDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/LocalStorageDriver.js~LocalStorageDriver.html">LocalStorageDriver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RedisDriver.js~RedisDriver.html">RedisDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/S3FSDriver.js~S3FSDriver.html">S3FSDriver</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/DriverException.js~DriverException.html">DriverException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MethodNotAvailableException.js~MethodNotAvailableException.html">MethodNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/MissingCacheException.js~MissingCacheException.html">MissingCacheException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/NoFlushException.js~NoFlushException.html">NoFlushException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RedisClusterException.js~RedisClusterException.html">RedisClusterException</a></span></span></li>
@@ -61,6 +67,14 @@ import LocalStorage from &apos;store&apos;;
 export class LocalStorageDriver extends AbstractDriver {
   constructor() {
     super();
+  }
+
+  /**
+   * @returns {String}
+   * @private
+   */
+  _type() {
+    return &apos;LocalStorage&apos;;
   }
 
   /**
@@ -89,13 +103,19 @@ export class LocalStorageDriver extends AbstractDriver {
    * @returns {Boolean}
    */
   _set(key, value, ttl = 0, callback = () =&gt; {}) {
-    if (ttl &lt;= 0) {
-      LocalStorage.set(key, {value: value, exd: null});
-    } else {
-      LocalStorage.set(key, {value: value, exd: (LocalStorageDriver._now + ttl)});
-    }
+    let exd = ttl &gt; 0 ? LocalStorageDriver._now + ttl : null;
 
-    callback(null, true);
+    try {
+      LocalStorage.set(key, {value: value, exd: exd});
+      callback(null, true);
+
+    } catch (error) {
+      if (this._isQuotaExceededError(error) &amp;&amp; this._flushStale()) {
+        this._set(key, value, ttl, callback);
+      }
+
+      callback(error, false);
+    }
   }
 
   /**
@@ -136,31 +156,81 @@ export class LocalStorageDriver extends AbstractDriver {
   }
 
   /**
+   * @returns {boolean}
+   * @private
+   */
+  _flushStale() {
+    let keysToRemove = [];
+
+    LocalStorage.forEach((key, val) =&gt; {
+      // @note - do not remove keys from cache at iteration time, it breaks the loop
+      if (this.isDeepKey(key) &amp;&amp; !LocalStorageDriver._isAlive(val, key, false)) {
+        keysToRemove.push(key);
+      }
+    });
+
+    keysToRemove.forEach((key) =&gt; {
+      LocalStorage.remove(key);
+    });
+
+    return keysToRemove.length &gt; 0;
+  }
+
+  /**
+   * @see http://chrisberkhout.com/blog/localstorage-errors/
+   *
+   * @param {Object} error
+   * @returns {Boolean}
+   * @private
+   */
+  _isQuotaExceededError(error) {
+    let quotaExceededErrors = [
+      &apos;QuotaExceededError&apos;,
+      &apos;QUOTA_EXCEEDED_ERR&apos;,
+      &apos;NS_ERROR_DOM_QUOTA_REACHED&apos;
+    ];
+
+    return quotaExceededErrors.indexOf(error.name) !== -1;
+  }
+
+  /**
    * @returns {Number}
    * @private
    */
   static get _now() {
-    return new Date().getTime();
+    return parseInt(new Date().getTime() / 1000);
   }
 
   /**
    *
    * @param {Object} response
    * @param {String} key
+   * @param {Boolean} removeStale
    * @returns {Boolean}
    * @private
    */
-  static _isAlive(response, key) {
+  static _isAlive(response, key, removeStale = true) {
     if (!response) {
       return false;
     }
 
-    if (response.exd &amp;&amp; response.exd !== null &amp;&amp; response.exd &lt;= LocalStorageDriver._now) {
-      LocalStorage.remove(key);
+    if (response.exd &amp;&amp; response.exd &lt;= LocalStorageDriver._now) {
+      if (removeStale) {
+        LocalStorage.remove(key);
+      }
       return false;
     }
 
     return true;
+  }
+
+  /**
+   * Checks for browser local storage availability
+   *
+   * @returns {boolean}
+   */
+  static isAvailable() {
+    return LocalStorage.enabled;
   }
 }
 </code></pre>

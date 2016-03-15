@@ -5,6 +5,7 @@
 'use strict';
 
 import Core from 'deep-core';
+import crypto from 'crypto';
 
 /**
  * Abstract log driver
@@ -45,5 +46,16 @@ export class AbstractDriver extends Core.OOP.Interface {
    */
   static get timeString() {
     return new Date().toTimeString();
+  }
+
+  /**
+   * @param {String} str
+   * @returns {String}
+   */
+  static _md5(str) {
+    return crypto
+      .createHash('md5')
+      .update(str)
+      .digest('hex');
   }
 }

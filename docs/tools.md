@@ -66,19 +66,20 @@ In order to remove provision created for `path/to/web_app` run the following com
 
 For more details read [documentation](tools/undeploy.md)
 
-Dependencies management locally
--------------------------------
+Enabling/Disabling SSL certificate on a deployed web app
+-------------------------------------------------------
 
-In order to push microservices from local machine use `deepify push-deps` command,
-as well as to pull - use `deepify pull-deps` command. Dependencies are uploaded to
-or downloaded from specified S3 bucket.
+In order to enable SSL certificate on a deployed web app use `deepify enable-ssl` command.
+It uses `CertificateManager` to generate the certificate and assigns 
+the certificate to the existing `CloudFront` distribution.
 
 ```bash
-~#: deepify push-deps path/to/web_app
+~#: deepify enable-ssl path/to/web_app --domain='example.com'
 ```
 
 ```bash
-~#: deepify pull-deps path/to/web_app
+~#: deepify disable-ssl path/to/web_app --domain='example.com'
 ```
 
-For more details read [documentation](tools/deps.md)
+> Note that you'll have to activate the certificate manually before
+> `deepify` could activate it and assign to the `CloudFront` distribution

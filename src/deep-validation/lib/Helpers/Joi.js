@@ -6,6 +6,7 @@
 
 import BaseJoi from 'joi';
 import Vogels from './vogelsPolyfill';
+import uriRegexp from './uriRegexp';
 
 /**
  * Abstraction on Joi validation expressions
@@ -85,7 +86,12 @@ export class Joi {
    * @returns {Object}
    */
   static get website() {
-    return BaseJoi.string().uri();
+    let strJoiObj = BaseJoi.string();
+
+    // Fix for Joi v5.x.x
+    return strJoiObj.hasOwnProperty('uri')
+      ? strJoiObj.uri()
+      : strJoiObj.regex(uriRegexp.createUriRegex());
   }
 
   /**

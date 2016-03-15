@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -49,19 +49,21 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/SourceNotAvailableException.js~SourceNotAvailableException.html">SourceNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Request} from &apos;<span><a href="file/lib/Resource/Request.js.html#lineNumber30">deep-resource/lib/Resource/Request.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Request} from &apos;<span><a href="file/lib/Resource/Request.js.html#lineNumber31">deep-resource/lib/Resource/Request.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/Resource/Request.js.html#lineNumber30">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/Resource/Request.js.html#lineNumber31">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -266,14 +268,14 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      <span class="kind" data-ice="kind">get</span>
+      <span class="kind" data-ice="kind">set</span>
       
       <span class="override" data-ice="override"></span>
     </td>
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-cacheImpl">cacheImpl</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-set-cacheImpl">cacheImpl</a></span></span><span data-ice="signature">(cache: <span>Cache</span>): <span>*</span></span>
         </p>
       </div>
       <div>
@@ -291,14 +293,39 @@
     <td>
       <span class="access" data-ice="access">public</span>
       
-      <span class="kind" data-ice="kind">set</span>
+      <span class="kind" data-ice="kind">get</span>
       
       <span class="override" data-ice="override"></span>
     </td>
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-set-cacheImpl">cacheImpl</a></span></span><span data-ice="signature">(cache: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-cacheImpl">cacheImpl</a></span></span><span data-ice="signature">: <span>Cache</span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-cacheTtl">cacheTtl</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -348,7 +375,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-cacheTtl">cacheTtl</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-customId">customId</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -399,6 +426,31 @@
       <div>
         <p>
            <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-isLambda">isLambda</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-isPublicCached">isPublicCached</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -474,6 +526,56 @@
       <div>
         <p>
            <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-payload">payload</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">set</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-set-validationSchemaName">validationSchemaName</a></span></span><span data-ice="signature">(validationSchemaName: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-get-validationSchemaName">validationSchemaName</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -680,7 +782,57 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-method-skipPreValidation">skipPreValidation</a></span></span><span data-ice="signature">(): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-method-useDirectCall">useDirectCall</a></span></span><span data-ice="signature">(): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-method-usePublicCache">usePublicCache</a></span></span><span data-ice="signature">(): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
         </p>
       </div>
       <div>
@@ -713,7 +865,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber559">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber786">source</a></span></span>
     </span>
   </h3>
 
@@ -763,7 +915,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber573">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber800">source</a></span></span>
     </span>
   </h3>
 
@@ -813,7 +965,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber566">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber793">source</a></span></span>
     </span>
   </h3>
 
@@ -867,7 +1019,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber36">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber37">source</a></span></span>
     </span>
   </h3>
 
@@ -938,7 +1090,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber537">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber764">source</a></span></span>
     </span>
   </h3>
 
@@ -988,7 +1140,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber53">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber82">source</a></span></span>
     </span>
   </h3>
 
@@ -1028,17 +1180,57 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-set-cacheImpl">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">set</span>
+    
+    
+    <span data-ice="name">cacheImpl</span><span data-ice="signature">(cache: <span>Cache</span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber213">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-cacheImpl">
     <span class="access" data-ice="access">public</span>
     
     <span class="kind" data-ice="kind">get</span>
     
     
-    <span data-ice="name">cacheImpl</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>: <span>*</span></span>
+    <span data-ice="name">cacheImpl</span><span data-ice="signature">: <span>Cache</span>: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber142">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber206">source</a></span></span>
     </span>
   </h3>
 
@@ -1056,93 +1248,13 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+        <td class="return-type" data-ice="returnType"><span>Cache</span></td>
         
       </tr>
     </table>
     <div data-ice="returnProperties">
 </div>
   </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-set-cacheImpl">
-    <span class="access" data-ice="access">public</span>
-    
-    <span class="kind" data-ice="kind">set</span>
-    
-    
-    <span data-ice="name">cacheImpl</span><span data-ice="signature">(cache: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber149">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-set-cacheTtl">
-    <span class="access" data-ice="access">public</span>
-    
-    <span class="kind" data-ice="kind">set</span>
-    
-    
-    <span data-ice="name">cacheTtl</span><span data-ice="signature">(ttl: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>): <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber135">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  
 
   
 
@@ -1168,7 +1280,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber128">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber192">source</a></span></span>
     </span>
   </h3>
 
@@ -1208,6 +1320,96 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-set-cacheTtl">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">set</span>
+    
+    
+    <span data-ice="name">cacheTtl</span><span data-ice="signature">(ttl: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber199">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-customId">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">customId</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber98">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-isCached">
     <span class="access" data-ice="access">public</span>
     
@@ -1218,7 +1420,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber90">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber147">source</a></span></span>
     </span>
   </h3>
 
@@ -1268,7 +1470,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber317">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber91">source</a></span></span>
     </span>
   </h3>
 
@@ -1309,6 +1511,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-isPublicCached">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">isPublicCached</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber154">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-method">
     <span class="access" data-ice="access">public</span>
     
@@ -1319,7 +1571,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber551">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber778">source</a></span></span>
     </span>
   </h3>
 
@@ -1369,7 +1621,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber123">source</a></span></span>
     </span>
   </h3>
 
@@ -1419,7 +1671,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber544">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber771">source</a></span></span>
     </span>
   </h3>
 
@@ -1458,6 +1710,96 @@
   
   
 </div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-set-validationSchemaName">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">set</span>
+    
+    
+    <span data-ice="name">validationSchemaName</span><span data-ice="signature">(validationSchemaName: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber75">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-validationSchemaName">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">validationSchemaName</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber68">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
 </div>
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
@@ -1472,7 +1814,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber114">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber178">source</a></span></span>
     </span>
   </h3>
 
@@ -1538,7 +1880,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber105">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber169">source</a></span></span>
     </span>
   </h3>
 
@@ -1588,7 +1930,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber161">source</a></span></span>
     </span>
   </h3>
 
@@ -1638,7 +1980,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber527">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber754">source</a></span></span>
     </span>
   </h3>
 
@@ -1704,7 +2046,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber231">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber300">source</a></span></span>
     </span>
   </h3>
 
@@ -1770,7 +2112,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber60">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber109">source</a></span></span>
     </span>
   </h3>
 
@@ -1820,7 +2162,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber267">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber336">source</a></span></span>
     </span>
   </h3>
 
@@ -1876,6 +2218,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-skipPreValidation">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">skipPreValidation</span><span data-ice="signature">(): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber59">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-useDirectCall">
     <span class="access" data-ice="access">public</span>
     
@@ -1886,7 +2278,57 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber81">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber130">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-usePublicCache">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">usePublicCache</span><span data-ice="signature">(): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber139">source</a></span></span>
     </span>
   </h3>
 

@@ -4,7 +4,6 @@
     {
       "Effect": "Allow",
       "Action": [
-        "apigateway:*",
         "cloudfront:createDistribution",
         "cloudfront:deleteDistribution",
         "cloudfront:getDistribution",
@@ -33,11 +32,24 @@
         "iam:passRole",
         "iam:putRolePolicy",
         "iam:simulatePrincipalPolicy",
+        "lambda:invokeFunction",
         "lambda:createFunction",
         "lambda:deleteFunction",
         "lambda:listFunctions",
         "lambda:updateFunctionCode",
-        "s3:*"
+        "s3:*",
+        "sqs:*",
+        "logs:*",
+        "cloudsearch:*",
+        "apigateway:*",
+        "acm:*",
+        "ec2:DescribeSecurityGroups",
+        "ec2:DescribeSubnets",
+        "ec2:CreateNetworkInterface",
+        "ec2:DescribeNetworkInterfaces",
+        "ec2:DeleteNetworkInterface",
+        "es:*",
+        "events:*"
       ],
       "Resource": "*"
     }

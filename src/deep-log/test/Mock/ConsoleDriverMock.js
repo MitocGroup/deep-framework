@@ -1,6 +1,6 @@
 'use strict';
 
-import {ConsoleDriver} from '../../lib.compiled/Driver/ConsoleDriver';
+import {ConsoleDriver} from '../../lib/Driver/ConsoleDriver';
 
 /**
  * Console native logging
@@ -74,5 +74,12 @@ export class ConsoleDriverMock extends ConsoleDriver {
   log(msg, level, context) {
     super.log(msg, level, context);
     this.logs.push(arguments);
+  }
+
+  /**
+   * @returns {ConsoleDriverMock}
+   */
+  overrideNative() {
+    return this;
   }
 }

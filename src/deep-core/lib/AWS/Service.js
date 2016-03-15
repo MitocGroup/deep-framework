@@ -18,6 +18,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get EC2() {
+    return 'ec2';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get LAMBDA() {
     return 'lambda';
   }
@@ -88,6 +95,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get CLOUD_SEARCH() {
+    return 'cloudsearch';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get SECURITY_TOKEN_SERVICE() {
     return 'sts';
   }
@@ -102,6 +116,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get CLOUD_WATCH_EVENTS() {
+    return 'events';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get API_GATEWAY() {
     return 'apigateway';
   }
@@ -111,6 +132,27 @@ export class Service {
    */
   static get API_GATEWAY_EXECUTE() {
     return 'execute-api';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SIMPLE_QUEUE_SERVICE() {
+    return 'sqs';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get CERTIFICATE_MANAGER() {
+    return 'acm';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ELASTIC_SEARCH() {
+    return 'es';
   }
 
   /**
@@ -149,6 +191,12 @@ export class Service {
       Service.CLOUD_WATCH_LOGS,
       Service.API_GATEWAY,
       Service.API_GATEWAY_EXECUTE,
+      Service.CLOUD_SEARCH,
+      Service.SIMPLE_QUEUE_SERVICE,
+      Service.CERTIFICATE_MANAGER,
+      Service.EC2,
+      Service.ELASTIC_SEARCH,
+      Service.CLOUD_WATCH_EVENTS,
     ];
   }
 }

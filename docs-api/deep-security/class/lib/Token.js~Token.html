@@ -17,7 +17,7 @@
   <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -41,6 +41,9 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/DescribeIdentityException.js~DescribeIdentityException.html">DescribeIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/GetCognitoRecordException.js~GetCognitoRecordException.html">GetCognitoRecordException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/IdentityProviderMismatchException.js~IdentityProviderMismatchException.html">IdentityProviderMismatchException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/IdentityProviderTokenExpiredException.js~IdentityProviderTokenExpiredException.html">IdentityProviderTokenExpiredException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidProviderIdentityException.js~InvalidProviderIdentityException.html">InvalidProviderIdentityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/LoadUserException.js~LoadUserException.html">LoadUserException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingLoginProviderException.js~MissingLoginProviderException.html">MissingLoginProviderException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/PutCognitoRecordException.js~PutCognitoRecordException.html">PutCognitoRecordException</a></span></span></li>
@@ -50,13 +53,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Token} from &apos;<span><a href="file/lib/Token.js.html#lineNumber15">deep-security/lib/Token.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Token} from &apos;<span><a href="file/lib/Token.js.html#lineNumber20">deep-security/lib/Token.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/Token.js.html#lineNumber15">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/Token.js.html#lineNumber20">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -268,31 +271,6 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-get-expireDateTime">expireDateTime</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span>: <span>*</span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-<tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      
-      <span class="kind" data-ice="kind">get</span>
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
            <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-get-identityId">identityId</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
         </p>
       </div>
@@ -443,6 +421,31 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-set-logService">logService</a></span></span><span data-ice="signature">(logService: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">set</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-set-userProvider">userProvider</a></span></span><span data-ice="signature">(userProvider: <span><a href="class/lib/UserProvider.js~UserProvider.html">UserProvider</a></span>): <span>*</span></span>
         </p>
       </div>
@@ -465,6 +468,56 @@
   <tbody>
   
   <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-method-destroy">destroy</a></span></span><span data-ice="signature">()</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description">Removes identity credentials related cached stuff</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-method-getCredentialsExpireDateTime">getCredentialsExpireDateTime</a></span></span><span data-ice="signature">(credentials: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
     <td>
       <span class="access" data-ice="access">public</span>
       
@@ -514,6 +567,56 @@
       
     </td>
   </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-method-registerTokenExpiredCallback">registerTokenExpiredCallback</a></span></span><span data-ice="signature">(callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Token.js~Token.html">Token</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-method-validCredentials">validCredentials</a></span></span><span data-ice="signature">(credentials: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
 </tbody>
 </table>
 </div>
@@ -534,7 +637,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber226">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber361">source</a></span></span>
     </span>
   </h3>
 
@@ -600,7 +703,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber234">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber369">source</a></span></span>
     </span>
   </h3>
 
@@ -672,7 +775,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber245">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber380">source</a></span></span>
     </span>
   </h3>
 
@@ -744,7 +847,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber136">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber251">source</a></span></span>
     </span>
   </h3>
 
@@ -813,7 +916,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber19">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber24">source</a></span></span>
     </span>
   </h3>
 
@@ -872,7 +975,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber158">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber280">source</a></span></span>
     </span>
   </h3>
 
@@ -912,56 +1015,6 @@
   
 </div>
 <div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="instance-get-expireDateTime">
-    <span class="access" data-ice="access">public</span>
-    
-    <span class="kind" data-ice="kind">get</span>
-    
-    
-    <span data-ice="name">expireDateTime</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span>: <span>*</span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber173">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties">
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tr>
-        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span></td>
-        
-      </tr>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-identityId">
     <span class="access" data-ice="access">public</span>
     
@@ -972,7 +1025,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber143">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber258">source</a></span></span>
     </span>
   </h3>
 
@@ -1022,7 +1075,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber54">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber62">source</a></span></span>
     </span>
   </h3>
 
@@ -1072,7 +1125,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber61">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber69">source</a></span></span>
     </span>
   </h3>
 
@@ -1112,7 +1165,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber188">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber311">source</a></span></span>
     </span>
   </h3>
 
@@ -1162,7 +1215,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber68">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber76">source</a></span></span>
     </span>
   </h3>
 
@@ -1212,7 +1265,47 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber75">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber83">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-set-logService">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">set</span>
+    
+    
+    <span data-ice="name">logService</span><span data-ice="signature">(logService: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber90">source</a></span></span>
     </span>
   </h3>
 
@@ -1252,7 +1345,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber195">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber318">source</a></span></span>
     </span>
   </h3>
 
@@ -1285,6 +1378,113 @@
 <div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-destroy">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">destroy</span><span data-ice="signature">()</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber438">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Removes identity credentials related cached stuff</p>
+</div>
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-getCredentialsExpireDateTime">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">getCredentialsExpireDateTime</span><span data-ice="signature">(credentials: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber296">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">credentials</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Date">Date</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-getUser">
     <span class="access" data-ice="access">public</span>
     
@@ -1295,7 +1495,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber202">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber325">source</a></span></span>
     </span>
   </h3>
 
@@ -1351,7 +1551,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber82">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber97">source</a></span></span>
     </span>
   </h3>
 
@@ -1382,6 +1582,138 @@
 </div>
 
   
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-registerTokenExpiredCallback">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">registerTokenExpiredCallback</span><span data-ice="signature">(callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>): <span><a href="class/lib/Token.js~Token.html">Token</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber425">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">callback</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Token.js~Token.html">Token</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-validCredentials">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">validCredentials</span><span data-ice="signature">(credentials: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber288">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">credentials</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
 
   
 

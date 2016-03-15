@@ -1,11 +1,10 @@
 'use strict';
+import Cache from 'deep-cache';
 
-export class CacheMock {
-  constructor() {
-    this._container = null;
-    this._driver = null;
-    this._localBackend = false;
-    this._microservice = null;
+export class CacheMock extends Cache {
+  constructor(...args) {
+    super(...args);
+
     this._methodsBehavior = new Map();
     this.setMode(CacheMock.NO_RESULT_MODE);
   }
@@ -29,6 +28,17 @@ export class CacheMock {
         callback(null, CacheMock.DATA);
         break;
     }
+  }
+
+  /**
+   * @returns {CacheMock}
+   */
+  get shared() {
+    this.buildKeyFromRequest = () => {
+      return 'to pass test';
+    };
+
+    return this;
   }
 
   /**
@@ -75,6 +85,15 @@ export class CacheMock {
   set(cacheKey, response, ttl, callback) {
     this.getCallbackByMetod(this._methodsBehavior.get('set'), callback);
 
+    return this;
+  }
+
+  /**
+   * Mock for type
+   * @param {Function} callback
+   * @returns {CacheMock}
+   */
+  type() {
     return this;
   }
 
@@ -160,6 +179,7 @@ export class CacheMock {
       'invalidate',
       'get',
       'set',
+      'type',
     ];
   }
 }

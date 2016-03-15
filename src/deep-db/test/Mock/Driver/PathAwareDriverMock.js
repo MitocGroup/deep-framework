@@ -1,6 +1,6 @@
 'use strict';
 
-import {PathAwareDriver} from '../../../lib.compiled/Local/Driver/PathAwareDriver';
+import {PathAwareDriver} from '../../../lib/Local/Driver/PathAwareDriver';
 
 export class PathAwareDriverMock extends PathAwareDriver {
   constructor() {
