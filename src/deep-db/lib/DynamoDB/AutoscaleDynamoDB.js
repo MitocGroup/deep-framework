@@ -145,6 +145,7 @@ export class AutoScaleDynamoDB {
       case 'update':
         tableName = payload.TableName;
         break;
+      default: throw new Error(`Unknown DynamoDB autoscale method '${method}'`);
     }
 
     return tableName;

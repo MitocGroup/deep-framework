@@ -26,15 +26,9 @@ export class DB extends Kernel.ContainerAware {
   constructor(models = [], tablesNames = {}) {
     super();
 
-    // @todo: set retries in a smarter way...
-    Vogels.AWS.config.maxRetries = 3;
-
     this._tablesNames = tablesNames;
     this._validation = new Validation(models);
     this._models = this._rawModelsToVogels(models);
-
-    // @todo: remove?
-    this._localDbProcess = null;
   }
 
   /**
@@ -144,11 +138,7 @@ export class DB extends Kernel.ContainerAware {
       this._models = this._rawModelsToVogels(kernel.config.models);
 
       if (this._localBackend) {
-        this._enableLocalDB(/*callback*/() => { //@todo:remove
-          this._initVogelsAutoscale();
-
-          callback();
-        });
+        this._enableLocalDB(callback);
       } else {
         this._initVogelsAutoscale();
 
@@ -161,6 +151,8 @@ export class DB extends Kernel.ContainerAware {
    * @private
    */
   _initVogelsAutoscale() {
+    Vogels.AWS.config.maxRetries = 3;
+
     Vogels.documentClient(
       new AutoScaleDynamoDB(
         Vogels.dynamoDriver(),
