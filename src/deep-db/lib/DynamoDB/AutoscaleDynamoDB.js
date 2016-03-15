@@ -4,9 +4,7 @@
 
 'use strict';
 
-import AWS from 'aws-sdk';
-import Core from 'deep-core';
-import DynamoDBThroughput from 'dynamodb-throughput';
+import dynamoDBThroughput from 'dynamodb-throughput';
 
 export class AutoScaleDynamoDB {
   /**
@@ -63,7 +61,7 @@ export class AutoScaleDynamoDB {
           return;
         }
 
-        let throughput = DynamoDBThroughput(table, {
+        let throughput = dynamoDBThroughput(table, {
           endpoint: this._dynamoDb.config.endpoint,
           region: this._dynamoDb.config.region,
           credentials: this._dynamoDb.config.credentials,
