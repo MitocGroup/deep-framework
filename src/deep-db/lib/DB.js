@@ -13,6 +13,7 @@ import Utils from 'util';
 import {FailedToCreateTableException} from './Exception/FailedToCreateTableException';
 import {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';
 import {AbstractDriver} from './Local/Driver/AbstractDriver';
+import {AutoScaleDynamoDB} from './DynamoDB/AutoScaleDynamoDB';
 
 /**
  * Vogels wrapper
@@ -25,15 +26,9 @@ export class DB extends Kernel.ContainerAware {
   constructor(models = [], tablesNames = {}) {
     super();
 
-    // @todo: set retries in a smarter way...
-    Vogels.AWS.config.maxRetries = 3;
-
     this._tablesNames = tablesNames;
     this._validation = new Validation(models);
     this._models = this._rawModelsToVogels(models);
-
-    // @todo: remove?
-    this._localDbProcess = null;
   }
 
   /**
@@ -145,9 +140,25 @@ export class DB extends Kernel.ContainerAware {
       if (this._localBackend) {
         this._enableLocalDB(callback);
       } else {
+        this._initVogelsAutoscale();
+
         callback();
       }
     });
+  }
+
+  /**
+   * @private
+   */
+  _initVogelsAutoscale() {
+    Vogels.AWS.config.maxRetries = 3;
+
+    Vogels.documentClient(
+      new AutoScaleDynamoDB(
+        Vogels.dynamoDriver(),
+        Vogels.documentClient()
+      ).extend()
+    );
   }
 
   /**
@@ -178,18 +189,24 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {AWS.DynamoDB|VogelsMock.AWS.DynamoDB|*}
+   * @private
+   */
+  get _localDynamoDb() {
+    return new Vogels.AWS.DynamoDB({
+      endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),
+      accessKeyId: 'fake',
+      secretAccessKey: 'fake',
+      region: 'us-east-1',
+    });
+  }
+
+  /**
    * @param {Function} callback
    * @private
    */
   _enableLocalDB(callback) {
-    this._setVogelsDriver(
-      new Vogels.AWS.DynamoDB({
-        endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),
-        accessKeyId: 'fake',
-        secretAccessKey: 'fake',
-        region: 'us-east-1',
-      })
-    );
+    this._setVogelsDriver(this._localDynamoDb);
 
     this.assureTables(callback);
   }

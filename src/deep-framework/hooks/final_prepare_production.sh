@@ -26,6 +26,14 @@ find "${path}"/../.. -type f -iname ".jscs.json" -print0 | xargs -0 rm -rf
 find "${path}"/../.. -type f -iname "jshint.json" -print0 | xargs -0 rm -rf
 find "${path}"/../.. -type f -iname "component.json" -print0 | xargs -0 rm -rf
 find "${path}"/../.. -type f -iname "bower.json" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type f -iname ".hound.yml" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type f -iname ".houndignore" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type f -iname ".gitignore" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type f -iname ".npmignore" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type f -iname ".bithoundrc" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type f -iname "esdoc.json" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type f -iname ".jshintrc" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type f -iname ".travis.yml" -print0 | xargs -0 rm -rf
 
 # Removing some certain files
 find "${path}"/../.. -type f -iname "inherits_browser.js" -print0 | xargs -0 rm -rf
