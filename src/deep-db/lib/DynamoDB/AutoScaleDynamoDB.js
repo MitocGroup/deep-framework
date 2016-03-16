@@ -77,8 +77,8 @@ export class AutoScaleDynamoDB {
 
           let increasePayload = {};
           let increaseType = AutoScaleDynamoDB.increaseType(method);
-          increasePayload[increaseType] = parseInt(info.main[increaseType]) *
-            AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT;
+          increasePayload[increaseType] = Math.abs(parseInt(info.main[increaseType]) *
+            AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT);
 
           throughput.setCapacity(increasePayload, (error) => {
             if (error) {
@@ -184,7 +184,7 @@ export class AutoScaleDynamoDB {
    * @returns {Number}
    */
   static get PROVISION_INCREASE_COEFFICIENT() {
-    return 2;
+    return 1.3;
   }
 
   /**
