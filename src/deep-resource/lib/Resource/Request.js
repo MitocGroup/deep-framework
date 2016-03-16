@@ -20,7 +20,6 @@ import qs from 'qs';
 import Core from 'deep-core';
 import {MissingSecurityServiceException} from './Exception/MissingSecurityServiceException';
 import {AsyncCallNotAvailableException} from './Exception/AsyncCallNotAvailableException';
-import {DirectCallNotAvailableException} from './Exception/DirectCallNotAvailableException';
 import {LambdaParamsCompatibilityException} from './Exception/LambdaParamsCompatibilityException';
 import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import {SourceNotAvailableException} from './Exception/SourceNotAvailableException';
