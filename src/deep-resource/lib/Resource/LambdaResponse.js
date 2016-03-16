@@ -18,6 +18,7 @@ export class LambdaResponse extends Response {
     super(...args);
 
     this._originalResponse = null;
+    this._logResult = null;
 
     // assure calling the very first!
     this._fillStatusCode();
@@ -160,6 +161,21 @@ export class LambdaResponse extends Response {
   }
 
   /**
+   * @returns {String}
+   */
+  get logResult() {
+    if (this._logResult) {
+      return this._logResult;
+    }
+
+    if (this._rawData && this._rawData.hasOwnProperty('LogResult')) {
+      this._logResult = this._decodeBase64(this._rawData.LogResult);
+    }
+
+    return this._logResult;
+  }
+  
+  /**
    * @param {String} rawPayload
    * @returns {Object|String|null}
    * @private
@@ -230,5 +246,20 @@ export class LambdaResponse extends Response {
    */
   static get VALIDATION_ERROR_TYPE() {
     return 'ValidationError';
+  }
+
+  /**
+   * @param {String} str
+   * @returns {String}
+   * @private
+   */
+  _decodeBase64(str) {
+    if (typeof Buffer !== 'undefined') {
+      str = new Buffer(str, 'base64').toString('utf8');
+    } else if (typeof atob !== 'undefined') {
+      str = atob(str);
+    }
+
+    return str;
   }
 }
