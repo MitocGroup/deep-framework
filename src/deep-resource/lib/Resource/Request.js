@@ -139,10 +139,6 @@ export class Request {
    * @returns {Request}
    */
   useDirectCall(returnLogs = false) {
-    if (!this.isLambda) {
-      throw new DirectCallNotAvailableException(this._action.type);
-    }
-
     if (this._async && returnLogs) {
       throw new LambdaParamsCompatibilityException({
         InvocationType: 'Event',
