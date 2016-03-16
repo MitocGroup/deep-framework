@@ -14,6 +14,7 @@ import {ContainerAware} from './ContainerAware';
 import WaitUntil from 'wait-until';
 import util from 'util';
 import {Loader as ConfigLoader} from './Config/Loader';
+import {AsyncConfig} from './Config/Driver/AsyncConfig';
 
 /**
  * Deep application kernel
@@ -560,6 +561,13 @@ export class Kernel {
    */
   static get DEV_ENVIRONMENT() {
     return 'dev';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ASYNC_CONFIG_FILE(){
+    return AsyncConfig.DEFAULT_CONFIG_FILE;
   }
 
   /**
