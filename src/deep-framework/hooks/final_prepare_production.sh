@@ -39,7 +39,8 @@ find "${path}"/../.. -type f -iname ".travis.yml" -print0 | xargs -0 rm -rf
 find "${path}"/../.. -type f -iname "inherits_browser.js" -print0 | xargs -0 rm -rf
 find "${path}"/../.. -type f -iname "superagent.js" -print0 | xargs -0 rm -rf
 
-find "${path}"/../.. -type d -ipath "*/moment*/min" -o -ipath "*/moment*/src" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type d -ipath "*/moment*/src*" -print0 | xargs -0 rm -rf
+find "${path}"/../.. -type d -ipath "*/moment*/min*" -print0 | xargs -0 rm -rf
 find "${path}"/../.. -type f -ipath "*/dist/async.js" -print0 | xargs -0 rm -rf
 find "${path}"/../.. -type f -ipath "*/dist/qs.js" -print0 | xargs -0 rm -rf
 find "${path}"/../.. -type f -ipath "*/lib/es6-promise*" -print0 | xargs -0 rm -rf
