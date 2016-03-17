@@ -31,15 +31,11 @@ export class AbstractDriver extends Core.OOP.Interface {
   /**
    * @param {*} args
    * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}
+   *
+   * @todo: Add Sandbox functionality?
    */
   load(...args) {
-    new Core.Runtime.Sandbox(() => {
-      this._load(...args);
-    })
-      .fail((error) => {
-        this._onFail(error);
-      })
-      .run();
+    this._load(...args);
 
     return this;
   }

@@ -26,8 +26,16 @@ export class Sandbox {
    * @returns {Sandbox}
    */
   run(...args) {
+    let failed = false;
     let execDomain = domain.create();
+
     let failCb = (error) => {
+      if (failed) {
+        return;
+      }
+
+      failed = true;
+
       execDomain.exit();
 
       process.nextTick(() => {
