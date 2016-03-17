@@ -41,13 +41,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FS} from &apos;<span><a href="file/lib/FS.js.html#lineNumber18">deep-fs/lib/FS.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {FS} from &apos;<span><a href="file/lib/FS.js.html#lineNumber19">deep-fs/lib/FS.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/FS.js.html#lineNumber18">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/FS.js.html#lineNumber19">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -169,6 +169,31 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#static-get-SHARED">SHARED</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      <span data-ice="static">static</span>
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#static-get-SYSTEM">SYSTEM</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
@@ -227,7 +252,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-constructor-constructor">constructor</a></span></span><span data-ice="signature">(tmpFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, publicFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, systemFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>)</span>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-constructor-constructor">constructor</a></span></span><span data-ice="signature">(tmpFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, publicFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, systemFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, sharedFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>)</span>
         </p>
       </div>
       <div>
@@ -259,7 +284,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-get-public">public</a></span></span><span data-ice="signature">: <span>*</span>: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-get-public">public</a></span></span><span data-ice="signature">: <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -309,7 +334,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-get-system">system</a></span></span><span data-ice="signature">: <span>*</span>: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-get-system">system</a></span></span><span data-ice="signature">: <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -334,7 +359,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-get-tmp">tmp</a></span></span><span data-ice="signature">: <span>*</span>: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-get-tmp">tmp</a></span></span><span data-ice="signature">: <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -391,13 +416,38 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-method-getFolder">getFolder</a></span></span><span data-ice="signature">(name: <span>*</span>): <span>*</span></span>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-method-getFolder">getFolder</a></span></span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, msIdentifier: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>): <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></span>
         </p>
       </div>
       <div>
         
         
         <div data-ice="description">Returns mounted file system folder (tmp, public or system)</div>
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/FS.js~FS.html#instance-method-shared">shared</a></span></span><span data-ice="signature">(microservice: <span>Microservice</span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span> | <span>*</span>): <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        <div data-ice="description">Returns mounted shared folder</div>
       </div>
     </td>
     <td>
@@ -424,7 +474,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber82">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber92">source</a></span></span>
     </span>
   </h3>
 
@@ -474,7 +524,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber68">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber71">source</a></span></span>
     </span>
   </h3>
 
@@ -524,7 +574,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber43">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber46">source</a></span></span>
     </span>
   </h3>
 
@@ -564,6 +614,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-get-SHARED">
+    <span class="access" data-ice="access">public</span>
+    <span data-ice="static">static</span>
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">SHARED</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber85">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="static-get-SYSTEM">
     <span class="access" data-ice="access">public</span>
     <span data-ice="static">static</span>
@@ -574,7 +674,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber75">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber78">source</a></span></span>
     </span>
   </h3>
 
@@ -624,7 +724,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber61">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber64">source</a></span></span>
     </span>
   </h3>
 
@@ -674,11 +774,11 @@
     
     
     
-    <span data-ice="name">constructor</span><span data-ice="signature">(tmpFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, publicFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, systemFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>)</span>
+    <span data-ice="name">constructor</span><span data-ice="signature">(tmpFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, publicFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, systemFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, sharedFsBucket: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber26">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber28">source</a></span></span>
     </span>
   </h3>
 
@@ -716,6 +816,12 @@
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">sharedFsBucket</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
 </tbody>
   </table>
 </div>
@@ -746,11 +852,11 @@
     <span class="kind" data-ice="kind">get</span>
     
     
-    <span data-ice="name">public</span><span data-ice="signature">: <span>*</span>: <span>*</span></span>
+    <span data-ice="name">public</span><span data-ice="signature">: <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span>: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber180">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber223">source</a></span></span>
     </span>
   </h3>
 
@@ -769,7 +875,7 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span>*</span></td>
+        <td class="return-type" data-ice="returnType"><span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></td>
         
       </tr>
     </table>
@@ -801,7 +907,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber50">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber53">source</a></span></span>
     </span>
   </h3>
 
@@ -847,11 +953,11 @@
     <span class="kind" data-ice="kind">get</span>
     
     
-    <span data-ice="name">system</span><span data-ice="signature">: <span>*</span>: <span>*</span></span>
+    <span data-ice="name">system</span><span data-ice="signature">: <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span>: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber189">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber232">source</a></span></span>
     </span>
   </h3>
 
@@ -870,7 +976,7 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span>*</span></td>
+        <td class="return-type" data-ice="returnType"><span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></td>
         
       </tr>
     </table>
@@ -898,11 +1004,11 @@
     <span class="kind" data-ice="kind">get</span>
     
     
-    <span data-ice="name">tmp</span><span data-ice="signature">: <span>*</span>: <span>*</span></span>
+    <span data-ice="name">tmp</span><span data-ice="signature">: <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span>: <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber171">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber214">source</a></span></span>
     </span>
   </h3>
 
@@ -921,7 +1027,7 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span>*</span></td>
+        <td class="return-type" data-ice="returnType"><span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></td>
         
       </tr>
     </table>
@@ -956,7 +1062,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber96">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber107">source</a></span></span>
     </span>
   </h3>
 
@@ -1015,11 +1121,11 @@
     
     
     
-    <span data-ice="name">getFolder</span><span data-ice="signature">(name: <span>*</span>): <span>*</span></span>
+    <span data-ice="name">getFolder</span><span data-ice="signature">(name: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, msIdentifier: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>): <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber118">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber140">source</a></span></span>
     </span>
   </h3>
 
@@ -1041,7 +1147,13 @@
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">name</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">msIdentifier</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"></td>
     </tr>
@@ -1054,7 +1166,74 @@
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span>*</span></td>
+        <td class="return-type" data-ice="returnType"><span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-shared">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">shared</span><span data-ice="signature">(microservice: <span>Microservice</span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span> | <span>*</span>): <span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/FS.js.html#lineNumber201">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  <div data-ice="description"><p>Returns mounted shared folder</p>
+</div>
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">microservice</td>
+      <td data-ice="type"><span>Microservice</span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span> | <span>*</span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span>fs</span> | <span>s3fs</span> | <span>S3FS</span> | <span><a href="class/lib/S3FsRumProxy.js~S3FsRumProxy.html">S3FsRumProxy</a></span> | <span>SimulatedS3FS</span> | <span>*</span></td>
         
       </tr>
     </table>

@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Vogels from 'vogels';\nimport {ExtendModel} from './Vogels/ExtendModel';\nimport {ModelNotFoundException} from './Exception/ModelNotFoundException';\nimport Validation from 'deep-validation';\nimport Utils from 'util';\nimport {FailedToCreateTableException} from './Exception/FailedToCreateTableException';\nimport {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';\nimport {AbstractDriver} from './Local/Driver/AbstractDriver';\n\n/**\n * Vogels wrapper\n */\nexport class DB extends Kernel.ContainerAware {\n  /**\n   * @param {Array} models\n   * @param {Object} tablesNames\n   */\n  constructor(models = [], tablesNames = {}) {\n    super();\n\n    // @todo: set retries in a smarter way...\n    Vogels.AWS.config.maxRetries = 3;\n\n    this._tablesNames = tablesNames;\n    this._validation = new Validation(models);\n    this._models = this._rawModelsToVogels(models);\n\n    // @todo: remove?\n    this._localDbProcess = null;\n  }\n\n  /**\n   * @returns {Validation}\n   */\n  get validation() {\n    return this._validation;\n  }\n\n  /**\n   * @returns {Vogels[]}\n   */\n  get models() {\n    return this._models;\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Boolean}\n   */\n  has(modelName) {\n    return typeof this._models[modelName] !== 'undefined';\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Vogels}\n   */\n  get(modelName) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    let model = this._models[modelName];\n\n    if (this.kernel instanceof Kernel) {\n      // inject logService into extended model to log RUM events\n      model.logService = this.kernel.get('log');\n    }\n\n    return model;\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTable(modelName, callback, options = {}) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n    options[modelName] = options;\n\n    Vogels.createTables(options, (error) => {\n      if (error) {\n        throw new FailedToCreateTableException(modelName);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTables(callback, options = {}) {\n    let allModelsOptions = {};\n    let allModelNames = [];\n\n    for (let modelName in this._models) {\n      if (!this._models.hasOwnProperty(modelName)) {\n        continue;\n      }\n\n      allModelsOptions[modelName] = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n      allModelNames.push(modelName);\n    }\n\n    Vogels.createTables(allModelsOptions, (error) => {\n      if (error) {\n        throw new FailedToCreateTablesException(allModelNames, error);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._validation.boot(kernel, () => {\n      this._tablesNames = kernel.config.tablesNames;\n      this._models = this._rawModelsToVogels(kernel.config.models);\n\n      if (this._localBackend) {\n        this._enableLocalDB(callback);\n      } else {\n        callback();\n      }\n    });\n  }\n\n  /**\n   * @param {Object} driver\n   * @returns {DB}\n   * @private\n   */\n  _setVogelsDriver(driver) {\n    Vogels.dynamoDriver(driver);\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {String} driver\n   * @param {Number} tts\n   * @returns {AbstractDriver}\n   */\n  static startLocalDynamoDBServer(callback, driver = 'LocalDynamo', tts = AbstractDriver.DEFAULT_TTS) {\n    let LocalDBServer = require('./Local/DBServer').DBServer;\n\n    let server = LocalDBServer.create(driver);\n\n    server.start(callback, tts);\n\n    return server;\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _enableLocalDB(callback) {\n    this._setVogelsDriver(\n      new Vogels.AWS.DynamoDB({\n        endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),\n        accessKeyId: 'fake',\n        secretAccessKey: 'fake',\n        region: 'us-east-1',\n      })\n    );\n\n    this.assureTables(callback);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_TABLE_OPTIONS() {\n    return {\n      readCapacity: 5,\n      writeCapacity: 5,\n    };\n  }\n\n  /**\n   * @param {Array} rawModels\n   * @returns {Object}\n   */\n  _rawModelsToVogels(rawModels) {\n    let models = {};\n\n    for (let modelKey in rawModels) {\n      if (!rawModels.hasOwnProperty(modelKey)) {\n        continue;\n      }\n\n      let backendModels = rawModels[modelKey];\n\n      for (let modelName in backendModels) {\n        if (!backendModels.hasOwnProperty(modelName)) {\n          continue;\n        }\n\n        models[modelName] = new ExtendModel(Vogels.define(\n          modelName,\n          this._wrapModelSchema(modelName)\n        )).inject();\n      }\n    }\n\n    return models;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   * @private\n   */\n  _wrapModelSchema(name) {\n    return {\n      hashKey: 'Id',\n      timestamps: true,\n      tableName: this._tablesNames[name],\n      schema: this._validation.getSchema(name),\n    };\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get LOCAL_DB_PORT() {\n    return AbstractDriver.DEFAULT_PORT;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Vogels from 'vogels';\nimport {ExtendModel} from './Vogels/ExtendModel';\nimport {ModelNotFoundException} from './Exception/ModelNotFoundException';\nimport Validation from 'deep-validation';\nimport Utils from 'util';\nimport {FailedToCreateTableException} from './Exception/FailedToCreateTableException';\nimport {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';\nimport {AbstractDriver} from './Local/Driver/AbstractDriver';\nimport {AutoScaleDynamoDB} from './DynamoDB/AutoScaleDynamoDB';\n\n/**\n * Vogels wrapper\n */\nexport class DB extends Kernel.ContainerAware {\n  /**\n   * @param {Array} models\n   * @param {Object} tablesNames\n   */\n  constructor(models = [], tablesNames = {}) {\n    super();\n\n    this._tablesNames = tablesNames;\n    this._validation = new Validation(models);\n    this._models = this._rawModelsToVogels(models);\n  }\n\n  /**\n   * @returns {Validation}\n   */\n  get validation() {\n    return this._validation;\n  }\n\n  /**\n   * @returns {Vogels[]}\n   */\n  get models() {\n    return this._models;\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Boolean}\n   */\n  has(modelName) {\n    return typeof this._models[modelName] !== 'undefined';\n  }\n\n  /**\n   * @param {String} modelName\n   * @returns {Vogels}\n   */\n  get(modelName) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    let model = this._models[modelName];\n\n    if (this.kernel && this.kernel.isRumEnabled) {\n      // inject logService into extended model to log RUM events\n      model.logService = this.kernel.get('log');\n    }\n\n    return model;\n  }\n\n  /**\n   * @param {String} modelName\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTable(modelName, callback, options = {}) {\n    if (!this.has(modelName)) {\n      throw new ModelNotFoundException(modelName);\n    }\n\n    options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n    options[modelName] = options;\n\n    Vogels.createTables(options, (error) => {\n      if (error) {\n        throw new FailedToCreateTableException(modelName);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {Object} options\n   * @returns {DB}\n   */\n  assureTables(callback, options = {}) {\n    let allModelsOptions = {};\n    let allModelNames = [];\n\n    for (let modelName in this._models) {\n      if (!this._models.hasOwnProperty(modelName)) {\n        continue;\n      }\n\n      allModelsOptions[modelName] = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);\n      allModelNames.push(modelName);\n    }\n\n    Vogels.createTables(allModelsOptions, (error) => {\n      if (error) {\n        throw new FailedToCreateTablesException(allModelNames, error);\n      }\n\n      callback();\n    });\n\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._validation.boot(kernel, () => {\n      this._tablesNames = kernel.config.tablesNames;\n      this._models = this._rawModelsToVogels(kernel.config.models);\n\n      if (this._localBackend) {\n        this._enableLocalDB(callback);\n      } else {\n        this._initVogelsAutoscale();\n\n        callback();\n      }\n    });\n  }\n\n  /**\n   * @private\n   */\n  _initVogelsAutoscale() {\n    Vogels.AWS.config.maxRetries = 3;\n\n    Vogels.documentClient(\n      new AutoScaleDynamoDB(\n        Vogels.dynamoDriver(),\n        Vogels.documentClient()\n      ).extend()\n    );\n  }\n\n  /**\n   * @param {Object} driver\n   * @returns {DB}\n   * @private\n   */\n  _setVogelsDriver(driver) {\n    Vogels.dynamoDriver(driver);\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {String} driver\n   * @param {Number} tts\n   * @returns {AbstractDriver}\n   */\n  static startLocalDynamoDBServer(callback, driver = 'LocalDynamo', tts = AbstractDriver.DEFAULT_TTS) {\n    let LocalDBServer = require('./Local/DBServer').DBServer;\n\n    let server = LocalDBServer.create(driver);\n\n    server.start(callback, tts);\n\n    return server;\n  }\n\n  /**\n   * @returns {AWS.DynamoDB|VogelsMock.AWS.DynamoDB|*}\n   * @private\n   */\n  get _localDynamoDb() {\n    return new Vogels.AWS.DynamoDB({\n      endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),\n      accessKeyId: 'fake',\n      secretAccessKey: 'fake',\n      region: 'us-east-1',\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _enableLocalDB(callback) {\n    this._setVogelsDriver(this._localDynamoDb);\n\n    this.assureTables(callback);\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get DEFAULT_TABLE_OPTIONS() {\n    return {\n      readCapacity: 1,\n      writeCapacity: 1,\n    };\n  }\n\n  /**\n   * @param {Array} rawModels\n   * @returns {Object}\n   */\n  _rawModelsToVogels(rawModels) {\n    let models = {};\n\n    for (let modelKey in rawModels) {\n      if (!rawModels.hasOwnProperty(modelKey)) {\n        continue;\n      }\n\n      let backendModels = rawModels[modelKey];\n\n      for (let modelName in backendModels) {\n        if (!backendModels.hasOwnProperty(modelName)) {\n          continue;\n        }\n\n        models[modelName] = new ExtendModel(Vogels.define(\n          modelName,\n          this._wrapModelSchema(modelName)\n        )).inject();\n      }\n    }\n\n    return models;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   * @private\n   */\n  _wrapModelSchema(name) {\n    return {\n      hashKey: 'Id',\n      timestamps: true,\n      tableName: this._tablesNames[name],\n      schema: this._validation.getSchema(name),\n    };\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get LOCAL_DB_PORT() {\n    return AbstractDriver.DEFAULT_PORT;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -23,7 +23,7 @@
     "importPath": "deep-db/lib/DB.js",
     "importStyle": "{DB}",
     "description": "Vogels wrapper",
-    "lineNumber": 20,
+    "lineNumber": 21,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
@@ -38,7 +38,7 @@
     "longname": "lib/DB.js~DB#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 26,
     "params": [
       {
         "nullable": null,
@@ -72,7 +72,7 @@
     "longname": "lib/DB.js~DB#_tablesNames",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 29,
     "undocument": true,
     "type": {
       "types": [
@@ -89,7 +89,7 @@
     "longname": "lib/DB.js~DB#_validation",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 30,
     "undocument": true,
     "type": {
       "types": [
@@ -106,24 +106,7 @@
     "longname": "lib/DB.js~DB#_models",
     "access": null,
     "description": null,
-    "lineNumber": 33,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_localDbProcess",
-    "memberof": "lib/DB.js~DB",
-    "longname": "lib/DB.js~DB#_localDbProcess",
-    "access": null,
-    "description": null,
-    "lineNumber": 36,
+    "lineNumber": 31,
     "undocument": true,
     "type": {
       "types": [
@@ -140,7 +123,7 @@
     "longname": "lib/DB.js~DB#validation",
     "access": null,
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 37,
     "unknown": [
       {
         "tagName": "@returns",
@@ -171,7 +154,7 @@
     "longname": "lib/DB.js~DB#models",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 44,
     "unknown": [
       {
         "tagName": "@returns",
@@ -202,7 +185,7 @@
     "longname": "lib/DB.js~DB#has",
     "access": null,
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 52,
     "unknown": [
       {
         "tagName": "@returns",
@@ -240,7 +223,7 @@
     "longname": "lib/DB.js~DB#get",
     "access": null,
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 60,
     "unknown": [
       {
         "tagName": "@returns",
@@ -278,7 +261,7 @@
     "longname": "lib/DB.js~DB#assureTable",
     "access": null,
     "description": null,
-    "lineNumber": 86,
+    "lineNumber": 81,
     "unknown": [
       {
         "tagName": "@returns",
@@ -336,7 +319,7 @@
     "longname": "lib/DB.js~DB#assureTables",
     "access": null,
     "description": null,
-    "lineNumber": 110,
+    "lineNumber": 105,
     "unknown": [
       {
         "tagName": "@returns",
@@ -384,7 +367,7 @@
     "longname": "lib/DB.js~DB#boot",
     "access": null,
     "description": "Booting a certain service",
-    "lineNumber": 140,
+    "lineNumber": 135,
     "params": [
       {
         "nullable": null,
@@ -418,7 +401,7 @@
     "longname": "lib/DB.js~DB#_tablesNames",
     "access": null,
     "description": null,
-    "lineNumber": 142,
+    "lineNumber": 137,
     "undocument": true,
     "type": {
       "types": [
@@ -435,7 +418,7 @@
     "longname": "lib/DB.js~DB#_models",
     "access": null,
     "description": null,
-    "lineNumber": 143,
+    "lineNumber": 138,
     "undocument": true,
     "type": {
       "types": [
@@ -447,12 +430,25 @@
     "kind": "method",
     "static": false,
     "variation": null,
+    "name": "_initVogelsAutoscale",
+    "memberof": "lib/DB.js~DB",
+    "longname": "lib/DB.js~DB#_initVogelsAutoscale",
+    "access": "private",
+    "description": null,
+    "lineNumber": 153,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
     "name": "_setVogelsDriver",
     "memberof": "lib/DB.js~DB",
     "longname": "lib/DB.js~DB#_setVogelsDriver",
     "access": "private",
     "description": null,
-    "lineNumber": 158,
+    "lineNumber": 169,
     "unknown": [
       {
         "tagName": "@returns",
@@ -490,7 +486,7 @@
     "longname": "lib/DB.js~DB.startLocalDynamoDBServer",
     "access": null,
     "description": null,
-    "lineNumber": 170,
+    "lineNumber": 181,
     "unknown": [
       {
         "tagName": "@returns",
@@ -540,6 +536,39 @@
     "generator": false
   },
   {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "_localDynamoDb",
+    "memberof": "lib/DB.js~DB",
+    "longname": "lib/DB.js~DB#_localDynamoDb",
+    "access": "private",
+    "description": null,
+    "lineNumber": 195,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AWS.DynamoDB|VogelsMock.AWS.DynamoDB|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AWS.DynamoDB",
+        "VogelsMock.AWS.DynamoDB",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": false,
     "variation": null,
@@ -548,7 +577,7 @@
     "longname": "lib/DB.js~DB#_enableLocalDB",
     "access": "private",
     "description": null,
-    "lineNumber": 184,
+    "lineNumber": 208,
     "params": [
       {
         "nullable": null,
@@ -572,7 +601,7 @@
     "longname": "lib/DB.js~DB.DEFAULT_TABLE_OPTIONS",
     "access": null,
     "description": null,
-    "lineNumber": 200,
+    "lineNumber": 217,
     "unknown": [
       {
         "tagName": "@returns",
@@ -603,7 +632,7 @@
     "longname": "lib/DB.js~DB#_rawModelsToVogels",
     "access": null,
     "description": null,
-    "lineNumber": 211,
+    "lineNumber": 228,
     "unknown": [
       {
         "tagName": "@returns",
@@ -641,7 +670,7 @@
     "longname": "lib/DB.js~DB#_wrapModelSchema",
     "access": "private",
     "description": null,
-    "lineNumber": 241,
+    "lineNumber": 258,
     "unknown": [
       {
         "tagName": "@returns",
@@ -679,7 +708,7 @@
     "longname": "lib/DB.js~DB.LOCAL_DB_PORT",
     "access": null,
     "description": null,
-    "lineNumber": 253,
+    "lineNumber": 270,
     "unknown": [
       {
         "tagName": "@returns",
@@ -697,6 +726,489 @@
     "type": {
       "types": [
         "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/DynamoDB/AutoScaleDynamoDB.js",
+    "memberof": null,
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/14/16.\n */\n\n'use strict';\n\nimport dynamoDBThroughput from 'dynamodb-throughput';\n\nexport class AutoScaleDynamoDB {\n  /**\n   * @param {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*} dynamoDb\n   * @param {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*} dynamoDbDocumentClient\n   */\n  constructor(dynamoDb, dynamoDbDocumentClient) {\n    this._dynamoDb = dynamoDb;\n    this._dynamoDbDocumentClient = dynamoDbDocumentClient;\n\n    this._increasedFor = {};\n  }\n\n  /**\n   * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}\n   */\n  extend() {\n    AutoScaleDynamoDB.PROXIED_METHODS.forEach((method) => {\n      let originalMethod = `__deep_db_AS_${method}__`;\n\n      this._dynamoDbDocumentClient[originalMethod] = this._dynamoDbDocumentClient[method];\n      this._dynamoDbDocumentClient[method] = (payload, originalCb) => {\n        let cb = this._decorate(method, payload, originalCb);\n\n        this._dynamoDbDocumentClient[originalMethod](payload, cb);\n      };\n    });\n\n    return this._dynamoDbDocumentClient;\n  }\n\n  /**\n   * @param {String} method\n   * @param {Object} payload\n   * @param {Function} originalCb\n   * @returns {Function}\n   * @private\n   */\n  _decorate(method, payload, originalCb) {\n    return (error, data) => {\n      if (error && error.code === AutoScaleDynamoDB.THROUGHPUT_EXCEEDED_ERROR) {\n        let originalError = error;\n        let table = AutoScaleDynamoDB._getTableNameFromPayload(method, payload);\n\n        if (!table) {\n          console.error(`Unable to find table name in payload while increasing throughput`);\n          originalCb(originalError, data);\n          return;\n        } else if (this._increasedFor[table] &&\n          this._increasedFor[table] >= AutoScaleDynamoDB.MAX_INCREASE_NUM_PER_TABLE) {\n\n          console.error(`The table '${table}' capacity increase count exceeded ${this._increasedFor[table]}`);\n          originalCb(originalError, data);\n          return;\n        }\n\n        let throughput = dynamoDBThroughput(table, {\n          endpoint: this._dynamoDb.config.endpoint,\n          region: this._dynamoDb.config.region,\n          credentials: this._dynamoDb.config.credentials,\n        });\n\n        throughput.tableInfo((error, info) => {\n          if (error) {\n            console.error(`Failed on gather information about table '${table}': ${error}`);\n\n            originalCb(originalError, data);\n            return;\n          }\n\n          let increasePayload = {};\n          let increaseType = AutoScaleDynamoDB.increaseType(method);\n          increasePayload[increaseType] = Math.abs(parseInt(info.main[increaseType]) *\n            AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT);\n\n          throughput.setCapacity(increasePayload, (error) => {\n            if (error) {\n              console.error(`Failed on increase throughput for table '${table}': ${error}`);\n              originalCb(originalError, data);\n              return;\n            }\n\n            this._increasedFor[table] = (this._increasedFor[table] || 0) + 1;\n\n            console.log(`The table '${table}' throughput increased by ${increasePayload[increaseType]}`);\n            this._dynamoDbDocumentClient[method](payload, originalCb);\n          });\n        });\n\n        return;\n      }\n\n      originalCb(error, data);\n    };\n  }\n\n  /**\n   * @param {String} method\n   * @returns {String}\n   */\n  static increaseType(method) {\n    let type = null;\n\n    switch (method) {\n      case 'get':\n      case 'scan':\n      case 'query':\n        type = 'read';\n        break;\n      case 'put':\n      case'delete':\n      case 'update':\n        type = 'write';\n        break;\n      default: throw new Error(`Unknown DynamoDB autoscale method '${method}'`);\n    }\n\n    return type;\n  }\n\n  /**\n   * @param {String} method\n   * @param {Object} payload\n   * @returns {String}\n   * @private\n   */\n  static _getTableNameFromPayload(method, payload) {\n    let tableName = null;\n\n    switch (method) {\n      case 'get':\n      case 'scan':\n      case 'query':\n      case 'put':\n      case 'delete':\n      case 'update':\n        tableName = payload.TableName;\n        break;\n      default: throw new Error(`Unknown DynamoDB autoscale method '${method}'`);\n    }\n\n    return tableName;\n  }\n\n  /**\n   * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}\n   */\n  get dynamoDbDocumentClient() {\n    return this._dynamoDbDocumentClient;\n  }\n\n  /**\n   * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}\n   */\n  get dynamoDb() {\n    return this._dynamoDb;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get PROXIED_METHODS() {\n    return [\n      'get', 'scan', 'query',\n      'put', 'delete', 'update',\n    ];\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get MAX_INCREASE_NUM_PER_TABLE() {\n    return 3;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get PROVISION_INCREASE_COEFFICIENT() {\n    return 1.3;\n  }\n\n  /**\n   * @see https://github.com/aws/aws-sdk-js/blob/master/apis%2Fdynamodb-2012-08-10.normal.json\n   * @returns {String}\n   */\n  static get THROUGHPUT_EXCEEDED_ERROR() {\n    return 'ProvisionedThroughputExceededException';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "AutoScaleDynamoDB",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "access": null,
+    "export": true,
+    "importPath": "deep-db/lib/DynamoDB/AutoScaleDynamoDB.js",
+    "importStyle": "{AutoScaleDynamoDB}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AWS.DynamoDB",
+          "AWS.DynamoDB.DocumentClient",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dynamoDb",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "AWS.DynamoDB",
+          "AWS.DynamoDB.DocumentClient",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "dynamoDbDocumentClient",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_dynamoDb",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#_dynamoDb",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_dynamoDbDocumentClient",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#_dynamoDbDocumentClient",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_increasedFor",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#_increasedFor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "extend",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#extend",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AWS.DynamoDB",
+        "AWS.DynamoDB.DocumentClient",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_decorate",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#_decorate",
+    "access": "private",
+    "description": null,
+    "lineNumber": 46,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Function}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "method",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "payload",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "originalCb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "increaseType",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.increaseType",
+    "access": null,
+    "description": null,
+    "lineNumber": 108,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "method",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "_getTableNameFromPayload",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB._getTableNameFromPayload",
+    "access": "private",
+    "description": null,
+    "lineNumber": 134,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "method",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "payload",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "dynamoDbDocumentClient",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#dynamoDbDocumentClient",
+    "access": null,
+    "description": null,
+    "lineNumber": 155,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AWS.DynamoDB",
+        "AWS.DynamoDB.DocumentClient",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "dynamoDb",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#dynamoDb",
+    "access": null,
+    "description": null,
+    "lineNumber": 162,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AWS.DynamoDB",
+        "AWS.DynamoDB.DocumentClient",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "PROXIED_METHODS",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.PROXIED_METHODS",
+    "access": null,
+    "description": null,
+    "lineNumber": 169,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "MAX_INCREASE_NUM_PER_TABLE",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.MAX_INCREASE_NUM_PER_TABLE",
+    "access": null,
+    "description": null,
+    "lineNumber": 179,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "number"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "PROVISION_INCREASE_COEFFICIENT",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT",
+    "access": null,
+    "description": null,
+    "lineNumber": 186,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Number}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Number"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "number"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "THROUGHPUT_EXCEEDED_ERROR",
+    "memberof": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB",
+    "longname": "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.THROUGHPUT_EXCEEDED_ERROR",
+    "access": null,
+    "description": null,
+    "see": [
+      "https://github.com/aws/aws-sdk-js/blob/master/apis%2Fdynamodb-2012-08-10.normal.json"
+    ],
+    "lineNumber": 194,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
       ]
     },
     "generator": false

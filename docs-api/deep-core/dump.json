@@ -3552,7 +3552,7 @@
     "access": null,
     "description": null,
     "lineNumber": 4,
-    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {ErrorResponse} from './ErrorResponse';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\nimport {Context} from './Context';\nimport {Sandbox} from '../../Runtime/Sandbox';\nimport path from 'path';\nimport fs from 'fs';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n    this._contextSent = false;\n\n    this._calleeConfig = null;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {null|Context}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._contextSent;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {String} schemaName\n   * @param {Function} cb\n   * @returns {Runtime}\n   */\n  validateInput(schemaName, cb) {\n    let validation = this._kernel.get('validation');\n\n    validation.validateRuntimeInput(this, schemaName, cb);\n\n    return this;\n  }\n\n  /**\n   * @param {Object} event\n   * @param {Object} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = new Context(context);\n    this._request = new Request(event);\n\n    this.logService.rumLog({\n      service: 'deep-core',\n      resourceType: 'Lambda',\n      resourceId: this._context.invokedFunctionArn,\n      eventName: 'Run',\n      payload: event,\n    });\n\n    new Sandbox(() => {\n      this._fillUserContext();\n\n      if (!this._loggedUserId && this._forceUserIdentity) {\n        throw new MissingUserContextException();\n      }\n\n      let validationSchema = this.validationSchema;\n\n      if (validationSchema) {\n        this._runValidate(validationSchema);\n      } else {\n        this.handle(this._request);\n      }\n    })\n      .fail((error) => {\n        this.createError(error).send();\n      })\n      .run();\n\n    return this;\n  }\n\n  /**\n   * @param {String} validationSchema\n   * @private\n   */\n  _runValidate(validationSchema) {\n    let validation = this._kernel.get('validation');\n    let validationSchemaName = validationSchema;\n\n    if (typeof validationSchema !== 'string') {\n      validationSchemaName = this._injectValidationSchema(validationSchema);\n    }\n\n    this.validateInput(validationSchemaName, (validatedData) => {\n      this.handle(validatedData);\n    });\n  }\n\n  /**\n   * @param {Object} schema\n   * @param {String|null} name\n   * @returns {String}\n   * @private\n   */\n  _injectValidationSchema(schema, name = null) {\n    let validation = this._kernel.get('validation');\n\n    name = name || `DeepHandlerValidation_${new Date().getTime()}`;\n\n    validation.setGuessSchema(name, schema);\n\n    return name;\n  }\n\n  /**\n   * @param {String|Error|*} error\n   */\n  createError(error) {\n    return new ErrorResponse(this, error);\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    return new Response(this, data);\n  }\n\n  /**\n   * @param {Object} data\n   * @param {Number} ttl\n   * @param {Function} callback\n   */\n  createCachedResponse(data, ttl = 0, callback = response => response.send()) {\n    let publicCache = this._kernel.get('cache').shared;\n    let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);\n    let response = new Response(this, data);\n\n    publicCache.assure(publicCacheKey, {body: data}, ttl, () => {\n      callback(response);\n    });\n  }\n\n  /**\n   * @returns {null|Object}\n   */\n  get calleeConfig() {\n    if (!this._calleeConfig &&\n      this._context &&\n      this._kernel &&\n      this._context.has('invokedFunctionArn')) {\n\n      let resource = this._kernel.get('resource');\n      let calleeArn = this._context.getOption('invokedFunctionArn');\n\n      this._calleeConfig = resource.getActionConfig(calleeArn);\n    }\n\n    return this._calleeConfig;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get validationSchema() {\n    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get logService() {\n    return this.kernel.get('log');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.has('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      // inject lambda context into security service\n      // and instantiate security token without loading credentials\n      this.securityService.warmupBackendLogin(this._context);\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get VALIDATION_SCHEMAS_DIR() {\n    return '__deep_validation_schemas__';\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/25/15.\n */\n'use strict';\n\nimport {Interface} from '../../OOP/Interface';\nimport {Response} from './Response';\nimport {ErrorResponse} from './ErrorResponse';\nimport {Request} from './Request';\nimport {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentityException';\nimport {MissingUserContextException} from './Exception/MissingUserContextException';\nimport {Context} from './Context';\nimport {Sandbox} from '../../Runtime/Sandbox';\nimport path from 'path';\nimport fs from 'fs';\n\n/**\n * Lambda runtime context\n */\nexport class Runtime extends Interface {\n  /**\n   * @param {Object} kernel\n   */\n  constructor(kernel) {\n    super(['handle']);\n\n    this._kernel = kernel;\n    this._request = null;\n    this._context = null;\n\n    this._loggedUserId = null;\n    this._forceUserIdentity = false;\n    this._contextSent = false;\n\n    this._calleeConfig = null;\n\n    this._fillDenyMissingUserContextOption();\n  }\n\n  /**\n   * @returns {null|Context}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get contextSent() {\n    return this._contextSent;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get loggedUserId() {\n    return this._loggedUserId;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get forceUserIdentity() {\n    return this._forceUserIdentity;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get lambda() {\n    let _this = this;\n\n    return function(event, context) {\n      _this.run(event, context);\n    };\n  }\n\n  /**\n   * @param {String} schemaName\n   * @param {Function} cb\n   * @returns {Runtime}\n   */\n  validateInput(schemaName, cb) {\n    let validation = this._kernel.get('validation');\n\n    validation.validateRuntimeInput(this, schemaName, cb);\n\n    return this;\n  }\n\n  /**\n   * @param {Object} event\n   * @param {Object} context\n   * @returns {Runtime}\n   */\n  run(event, context) {\n    this._context = new Context(context);\n    this._request = new Request(event);\n\n    this.logService.rumLog({\n      service: 'deep-core',\n      resourceType: 'Lambda',\n      resourceId: this._context.invokedFunctionArn,\n      eventName: 'Run',\n      payload: event,\n    });\n\n    new Sandbox(() => {\n      this._fillUserContext();\n\n      if (!this._loggedUserId && this._forceUserIdentity) {\n        throw new MissingUserContextException();\n      }\n\n      let validationSchema = this.validationSchema;\n\n      if (validationSchema) {\n        this._runValidate(validationSchema);\n      } else {\n        this.handle(this._request);\n      }\n    })\n      .fail((error) => {\n        this.createError(error).send();\n      })\n      .run();\n\n    return this;\n  }\n\n  /**\n   * @param {String} validationSchema\n   * @private\n   */\n  _runValidate(validationSchema) {\n    let validation = this._kernel.get('validation');\n    let validationSchemaName = validationSchema;\n\n    if (typeof validationSchema !== 'string') {\n      validationSchemaName = this._injectValidationSchema(validationSchema);\n    }\n\n    this.validateInput(validationSchemaName, (validatedData) => {\n      this.handle(validatedData);\n    });\n  }\n\n  /**\n   * @param {Object} schema\n   * @param {String|null} name\n   * @returns {String}\n   * @private\n   */\n  _injectValidationSchema(schema, name = null) {\n    let validation = this._kernel.get('validation');\n\n    name = name || `DeepHandlerValidation_${new Date().getTime()}`;\n\n    validation.setGuessSchema(name, schema);\n\n    return name;\n  }\n\n  /**\n   * @param {String|Error|*} error\n   */\n  createError(error) {\n    return new ErrorResponse(this, error);\n  }\n\n  /**\n   * @param {Object} data\n   */\n  createResponse(data) {\n    return new Response(this, data);\n  }\n\n  /**\n   * @param {Object} data\n   * @param {Number} ttl\n   * @param {Function} callback\n   */\n  createCachedResponse(data, ttl = 0, callback = response => response.send()) {\n    let publicCache = this._kernel.get('cache').shared;\n    let publicCacheKey = publicCache.buildKeyFromLambdaRuntime(this);\n    let response = new Response(this, data);\n\n    publicCache.assure(publicCacheKey, {body: data}, ttl, () => {\n      callback(response);\n    });\n  }\n\n  /**\n   * @returns {String}\n   */\n  get calleeName() {\n    if (this._context && this._context.has('invokedFunctionArn')) {\n      let calleeArn = this._context.getOption('invokedFunctionArn');\n\n      return calleeArn.replace(/^.+:function:/i, '');\n    }\n\n    return null;\n  }\n\n  /**\n   * @returns {null|Object}\n   */\n  get calleeConfig() {\n    if (!this._calleeConfig &&\n      this._context &&\n      this._kernel &&\n      this._context.has('invokedFunctionArn')) {\n\n      let resource = this._kernel.get('resource');\n      let calleeArn = this._context.getOption('invokedFunctionArn');\n\n      this._calleeConfig = resource.getActionConfig(calleeArn);\n    }\n\n    return this._calleeConfig;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get validationSchema() {\n    return this.calleeConfig ? (this.calleeConfig.validationSchema || null) : null;\n  }\n\n  /**\n   * @returns {Request}\n   */\n  get request() {\n    return this._request;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get securityService() {\n    return this.kernel.get('security');\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get logService() {\n    return this.kernel.get('log');\n  }\n\n  /**\n   * @private\n   */\n  _fillDenyMissingUserContextOption() {\n    if (this._kernel.config.hasOwnProperty('forceUserIdentity')) {\n      this._forceUserIdentity = this._kernel.config.forceUserIdentity;\n    }\n  }\n\n  /**\n   * Retrieves logged user id from lambda context\n   *\n   * @private\n   */\n  _fillUserContext() {\n    if (this._context &&\n      this._context.has('identity') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&\n      this._context.identity.hasOwnProperty('cognitoIdentityId')\n    ) {\n      let identityPoolId = this._context.identity.cognitoIdentityPoolId;\n\n      if (this.securityService.identityPoolId !== identityPoolId) {\n        throw new InvalidCognitoIdentityException(identityPoolId);\n      }\n\n      // inject lambda context into security service\n      // and instantiate security token without loading credentials\n      this.securityService.warmupBackendLogin(this._context);\n\n      this._loggedUserId = this._context.identity.cognitoIdentityId;\n    }\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get VALIDATION_SCHEMAS_DIR() {\n    return '__deep_validation_schemas__';\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -4213,12 +4213,43 @@
     "kind": "get",
     "static": false,
     "variation": null,
+    "name": "calleeName",
+    "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
+    "longname": "lib/AWS/Lambda/Runtime.js~Runtime#calleeName",
+    "access": null,
+    "description": null,
+    "lineNumber": 204,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
     "name": "calleeConfig",
     "memberof": "lib/AWS/Lambda/Runtime.js~Runtime",
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#calleeConfig",
     "access": null,
     "description": null,
-    "lineNumber": 204,
+    "lineNumber": 217,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4250,7 +4281,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_calleeConfig",
     "access": null,
     "description": null,
-    "lineNumber": 213,
+    "lineNumber": 226,
     "undocument": true,
     "type": {
       "types": [
@@ -4267,7 +4298,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#validationSchema",
     "access": null,
     "description": null,
-    "lineNumber": 222,
+    "lineNumber": 235,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4298,7 +4329,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#request",
     "access": null,
     "description": null,
-    "lineNumber": 229,
+    "lineNumber": 242,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4329,7 +4360,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#securityService",
     "access": null,
     "description": null,
-    "lineNumber": 236,
+    "lineNumber": 249,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4360,7 +4391,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#logService",
     "access": null,
     "description": null,
-    "lineNumber": 243,
+    "lineNumber": 256,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4391,7 +4422,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillDenyMissingUserContextOption",
     "access": "private",
     "description": null,
-    "lineNumber": 250,
+    "lineNumber": 263,
     "params": [],
     "generator": false
   },
@@ -4404,7 +4435,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_forceUserIdentity",
     "access": null,
     "description": null,
-    "lineNumber": 252,
+    "lineNumber": 265,
     "undocument": true,
     "type": {
       "types": [
@@ -4421,7 +4452,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_fillUserContext",
     "access": "private",
     "description": "Retrieves logged user id from lambda context",
-    "lineNumber": 261,
+    "lineNumber": 274,
     "params": [],
     "generator": false
   },
@@ -4434,7 +4465,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime#_loggedUserId",
     "access": null,
     "description": null,
-    "lineNumber": 277,
+    "lineNumber": 290,
     "undocument": true,
     "type": {
       "types": [
@@ -4451,7 +4482,7 @@
     "longname": "lib/AWS/Lambda/Runtime.js~Runtime.VALIDATION_SCHEMAS_DIR",
     "access": null,
     "description": null,
-    "lineNumber": 284,
+    "lineNumber": 297,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4991,7 +5022,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EC2() {\n    return 'ec2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_SEARCH() {\n    return 'cloudsearch';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY_EXECUTE() {\n    return 'execute-api';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_QUEUE_SERVICE() {\n    return 'sqs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CERTIFICATE_MANAGER() {\n    return 'acm';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.ANY,\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n      Service.API_GATEWAY_EXECUTE,\n      Service.CLOUD_SEARCH,\n      Service.SIMPLE_QUEUE_SERVICE,\n      Service.CERTIFICATE_MANAGER,\n      Service.EC2,\n    ];\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 5/27/15.\n */\n\n'use strict';\n\n/**\n * Available AWS services\n */\nexport class Service {\n  /**\n   * @returns {String}\n   */\n  static get ANY() {\n    return '*';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EC2() {\n    return 'ec2';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get LAMBDA() {\n    return 'lambda';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_STORAGE_SERVICE() {\n    return 's3';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DYNAMO_DB() {\n    return 'dynamodb';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_NOTIFICATION_SERVICE() {\n    return 'sns';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_IDENTITY() {\n    return 'cognito-identity';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get COGNITO_SYNC() {\n    return 'cognito-sync';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_CACHE() {\n    return 'elasticache';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get IDENTITY_AND_ACCESS_MANAGEMENT() {\n    return 'iam';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KINESIS() {\n    return 'kinesis';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_FRONT() {\n    return 'cloudfront';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_SEARCH() {\n    return 'cloudsearch';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SECURITY_TOKEN_SERVICE() {\n    return 'sts';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_LOGS() {\n    return 'logs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CLOUD_WATCH_EVENTS() {\n    return 'events';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY() {\n    return 'apigateway';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get API_GATEWAY_EXECUTE() {\n    return 'execute-api';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SIMPLE_QUEUE_SERVICE() {\n    return 'sqs';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CERTIFICATE_MANAGER() {\n    return 'acm';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ELASTIC_SEARCH() {\n    return 'es';\n  }\n\n  /**\n   * @param {String} service\n   * @returns {String}\n   */\n  static identifier(service) {\n    return `${service}.amazonaws.com`;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Boolean}\n   */\n  static exists(name) {\n    return -1 !== Service.list().indexOf(name);\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static list() {\n    return [\n      Service.ANY,\n      Service.LAMBDA,\n      Service.SIMPLE_STORAGE_SERVICE,\n      Service.DYNAMO_DB,\n      Service.SIMPLE_NOTIFICATION_SERVICE,\n      Service.COGNITO_IDENTITY,\n      Service.COGNITO_SYNC,\n      Service.ELASTIC_CACHE,\n      Service.IDENTITY_AND_ACCESS_MANAGEMENT,\n      Service.KINESIS,\n      Service.CLOUD_FRONT,\n      Service.SECURITY_TOKEN_SERVICE,\n      Service.CLOUD_WATCH_LOGS,\n      Service.API_GATEWAY,\n      Service.API_GATEWAY_EXECUTE,\n      Service.CLOUD_SEARCH,\n      Service.SIMPLE_QUEUE_SERVICE,\n      Service.CERTIFICATE_MANAGER,\n      Service.EC2,\n      Service.ELASTIC_SEARCH,\n      Service.CLOUD_WATCH_EVENTS,\n    ];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -5477,12 +5508,43 @@
     "kind": "get",
     "static": true,
     "variation": null,
+    "name": "CLOUD_WATCH_EVENTS",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.CLOUD_WATCH_EVENTS",
+    "access": null,
+    "description": null,
+    "lineNumber": 119,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
     "name": "API_GATEWAY",
     "memberof": "lib/AWS/Service.js~Service",
     "longname": "lib/AWS/Service.js~Service.API_GATEWAY",
     "access": null,
     "description": null,
-    "lineNumber": 119,
+    "lineNumber": 126,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5513,7 +5575,7 @@
     "longname": "lib/AWS/Service.js~Service.API_GATEWAY_EXECUTE",
     "access": null,
     "description": null,
-    "lineNumber": 126,
+    "lineNumber": 133,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5544,7 +5606,7 @@
     "longname": "lib/AWS/Service.js~Service.SIMPLE_QUEUE_SERVICE",
     "access": null,
     "description": null,
-    "lineNumber": 133,
+    "lineNumber": 140,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5575,7 +5637,38 @@
     "longname": "lib/AWS/Service.js~Service.CERTIFICATE_MANAGER",
     "access": null,
     "description": null,
-    "lineNumber": 140,
+    "lineNumber": 147,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ELASTIC_SEARCH",
+    "memberof": "lib/AWS/Service.js~Service",
+    "longname": "lib/AWS/Service.js~Service.ELASTIC_SEARCH",
+    "access": null,
+    "description": null,
+    "lineNumber": 154,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5606,7 +5699,7 @@
     "longname": "lib/AWS/Service.js~Service.identifier",
     "access": null,
     "description": null,
-    "lineNumber": 148,
+    "lineNumber": 162,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5644,7 +5737,7 @@
     "longname": "lib/AWS/Service.js~Service.exists",
     "access": null,
     "description": null,
-    "lineNumber": 156,
+    "lineNumber": 170,
     "unknown": [
       {
         "tagName": "@returns",
@@ -5682,7 +5775,7 @@
     "longname": "lib/AWS/Service.js~Service.list",
     "access": null,
     "description": null,
-    "lineNumber": 163,
+    "lineNumber": 177,
     "unknown": [
       {
         "tagName": "@returns",
@@ -6133,7 +6226,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 11/10/15.\n */\n\n'use strict';\n\n\nexport class MethodsProxy {\n  /**\n   * @param {Object} target\n   */\n  constructor(target) {\n    this._target = target;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get target() {\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   */\n  proxyOverride(handler, ...explMethods) {\n    let methods = Object.keys(handler).concat(explMethods);\n\n    for (let i in methods) {\n      if (!methods.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let prop = methods[i];\n\n      if (!handler.hasOwnProperty(prop) &&\n        explMethods.indexOf(prop) === -1) {\n        continue;\n      }\n\n      if (typeof handler[prop] === 'function') {\n        Object.defineProperty(\n          this._target,\n          prop,\n          {\n            value: (...args) => {\n              return handler[prop](...args);\n            },\n          }\n        );\n      }\n    }\n\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   *\n   * @todo Replace typeof hook with hasOwnProperty() when get rid of babel\n   */\n  proxy(handler, ...explMethods) {\n    return this.proxyOverride(\n      handler,\n      ...(explMethods.filter((prop) => typeof this._target[prop] === 'undefined'))\n    );\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 11/10/15.\n */\n\n'use strict';\n\n\nexport class MethodsProxy {\n  /**\n   * @param {Object} target\n   */\n  constructor(target) {\n    this._target = target;\n    this._decorator = null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get target() {\n    return this._target;\n  }\n\n  /**\n   * @param {Function} decorator\n   * @returns {MethodsProxy}\n   */\n  decorate(decorator) {\n    this._decorator = decorator;\n\n    return this;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   */\n  proxyOverride(handler, ...explMethods) {\n    let methods = Object.keys(handler).concat(explMethods);\n\n    for (let i in methods) {\n      if (!methods.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let prop = methods[i];\n\n      if (!handler.hasOwnProperty(prop) &&\n        explMethods.indexOf(prop) === -1) {\n        continue;\n      }\n\n      if (typeof handler[prop] === 'function') {\n        Object.defineProperty(\n          this._target,\n          prop,\n          {\n            value: (...args) => {\n              return (typeof this._decorator === 'function') ?\n                this._decorator(handler, prop, ...args) :\n                handler[prop](...args);\n            },\n          }\n        );\n      }\n    }\n\n    return this._target;\n  }\n\n  /**\n   * @param {Object} handler\n   * @param {String|String[]} explMethods\n   * @returns {Object}\n   *\n   * @todo Replace typeof hook with hasOwnProperty() when get rid of babel\n   */\n  proxy(handler, ...explMethods) {\n    return this.proxyOverride(\n      handler,\n      ...(explMethods.filter((prop) => typeof this._target[prop] === 'undefined'))\n    );\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -6193,6 +6286,23 @@
     }
   },
   {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_decorator",
+    "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#_decorator",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -6201,7 +6311,7 @@
     "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#target",
     "access": null,
     "description": null,
-    "lineNumber": 19,
+    "lineNumber": 20,
     "unknown": [
       {
         "tagName": "@returns",
@@ -6227,12 +6337,67 @@
     "kind": "method",
     "static": false,
     "variation": null,
+    "name": "decorate",
+    "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#decorate",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{MethodsProxy}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "decorator",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "MethodsProxy"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_decorator",
+    "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
+    "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#_decorator",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
     "name": "proxyOverride",
     "memberof": "lib/Generic/MethodsProxy.js~MethodsProxy",
     "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#proxyOverride",
     "access": null,
     "description": null,
-    "lineNumber": 28,
+    "lineNumber": 39,
     "unknown": [
       {
         "tagName": "@returns",
@@ -6281,7 +6446,7 @@
     "longname": "lib/Generic/MethodsProxy.js~MethodsProxy#proxy",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 79,
     "todo": [
       "Replace typeof hook with hasOwnProperty() when get rid of babel"
     ],

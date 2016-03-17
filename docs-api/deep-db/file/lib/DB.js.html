@@ -31,6 +31,7 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/DB.js~DB.html">DB</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">DynamoDB</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html">AutoScaleDynamoDB</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/FailedToCreateTableException.js~FailedToCreateTableException.html">FailedToCreateTableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/FailedToCreateTablesException.js~FailedToCreateTablesException.html">FailedToCreateTablesException</a></span></span></li>
@@ -68,6 +69,7 @@ import Utils from &apos;util&apos;;
 import {FailedToCreateTableException} from &apos;./Exception/FailedToCreateTableException&apos;;
 import {FailedToCreateTablesException} from &apos;./Exception/FailedToCreateTablesException&apos;;
 import {AbstractDriver} from &apos;./Local/Driver/AbstractDriver&apos;;
+import {AutoScaleDynamoDB} from &apos;./DynamoDB/AutoScaleDynamoDB&apos;;
 
 /**
  * Vogels wrapper
@@ -80,15 +82,9 @@ export class DB extends Kernel.ContainerAware {
   constructor(models = [], tablesNames = {}) {
     super();
 
-    // @todo: set retries in a smarter way...
-    Vogels.AWS.config.maxRetries = 3;
-
     this._tablesNames = tablesNames;
     this._validation = new Validation(models);
     this._models = this._rawModelsToVogels(models);
-
-    // @todo: remove?
-    this._localDbProcess = null;
   }
 
   /**
@@ -124,7 +120,7 @@ export class DB extends Kernel.ContainerAware {
 
     let model = this._models[modelName];
 
-    if (this.kernel instanceof Kernel) {
+    if (this.kernel &amp;&amp; this.kernel.isRumEnabled) {
       // inject logService into extended model to log RUM events
       model.logService = this.kernel.get(&apos;log&apos;);
     }
@@ -200,9 +196,25 @@ export class DB extends Kernel.ContainerAware {
       if (this._localBackend) {
         this._enableLocalDB(callback);
       } else {
+        this._initVogelsAutoscale();
+
         callback();
       }
     });
+  }
+
+  /**
+   * @private
+   */
+  _initVogelsAutoscale() {
+    Vogels.AWS.config.maxRetries = 3;
+
+    Vogels.documentClient(
+      new AutoScaleDynamoDB(
+        Vogels.dynamoDriver(),
+        Vogels.documentClient()
+      ).extend()
+    );
   }
 
   /**
@@ -233,18 +245,24 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {AWS.DynamoDB|VogelsMock.AWS.DynamoDB|*}
+   * @private
+   */
+  get _localDynamoDb() {
+    return new Vogels.AWS.DynamoDB({
+      endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),
+      accessKeyId: &apos;fake&apos;,
+      secretAccessKey: &apos;fake&apos;,
+      region: &apos;us-east-1&apos;,
+    });
+  }
+
+  /**
    * @param {Function} callback
    * @private
    */
   _enableLocalDB(callback) {
-    this._setVogelsDriver(
-      new Vogels.AWS.DynamoDB({
-        endpoint: new Vogels.AWS.Endpoint(`http://localhost:${DB.LOCAL_DB_PORT}`),
-        accessKeyId: &apos;fake&apos;,
-        secretAccessKey: &apos;fake&apos;,
-        region: &apos;us-east-1&apos;,
-      })
-    );
+    this._setVogelsDriver(this._localDynamoDb);
 
     this.assureTables(callback);
   }
@@ -254,8 +272,8 @@ export class DB extends Kernel.ContainerAware {
    */
   static get DEFAULT_TABLE_OPTIONS() {
     return {
-      readCapacity: 5,
-      writeCapacity: 5,
+      readCapacity: 1,
+      writeCapacity: 1,
     };
   }
 

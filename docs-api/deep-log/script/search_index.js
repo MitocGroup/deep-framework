@@ -24,6 +24,18 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-log/lib/driver/exception/failedtodeletesqsmessagesexception.js~failedtodeletesqsmessagesexception",
+    "class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html",
+    "<span>FailedToDeleteSqsMessagesException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/exception/failedtoreceivesqsmessageexception.js~failedtoreceivesqsmessageexception",
+    "class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html",
+    "<span>FailedToReceiveSqsMessageException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/FailedToReceiveSqsMessageException.js</span>",
+    "class"
+  ],
+  [
     "deep-log/lib/driver/exception/failedtosendbatchsqsmessageexception.js~failedtosendbatchsqsmessageexception",
     "class/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js~FailedToSendBatchSqsMessageException.html",
     "<span>FailedToSendBatchSqsMessageException</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js</span>",
@@ -480,6 +492,30 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/driver/exception/failedtodeletesqsmessagesexception.js",
+    "file/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js.html",
+    "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/failedtodeletesqsmessagesexception.js~failedtodeletesqsmessagesexception#constructor",
+    "class/lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/FailedToDeleteSqsMessagesException.js~FailedToDeleteSqsMessagesException#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/exception/failedtoreceivesqsmessageexception.js",
+    "file/lib/Driver/Exception/FailedToReceiveSqsMessageException.js.html",
+    "lib/Driver/Exception/FailedToReceiveSqsMessageException.js",
+    "file"
+  ],
+  [
+    "lib/driver/exception/failedtoreceivesqsmessageexception.js~failedtoreceivesqsmessageexception#constructor",
+    "class/lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException.html#instance-constructor-constructor",
+    "lib/Driver/Exception/FailedToReceiveSqsMessageException.js~FailedToReceiveSqsMessageException#constructor",
+    "method"
+  ],
+  [
     "lib/driver/exception/failedtosendbatchsqsmessageexception.js",
     "file/lib/Driver/Exception/FailedToSendBatchSqsMessageException.js.html",
     "lib/Driver/Exception/FailedToSendBatchSqsMessageException.js",
@@ -708,6 +744,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#deletemessages",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-deleteMessages",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#deleteMessages",
+    "method"
+  ],
+  [
     "lib/driver/rumsqsdriver.js~rumsqsdriver#enabled",
     "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-get-enabled",
     "lib/Driver/RumSqsDriver.js~RumSqsDriver#enabled",
@@ -736,6 +778,12 @@ window.esdocSearchIndex = [
     "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-get-queueUrl",
     "lib/Driver/RumSqsDriver.js~RumSqsDriver#queueUrl",
     "member"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#receivemessages",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-receiveMessages",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#receiveMessages",
+    "method"
   ],
   [
     "lib/driver/rumsqsdriver.js~rumsqsdriver#sqs",
@@ -879,6 +927,12 @@ window.esdocSearchIndex = [
     "lib/log.js~log#register",
     "class/lib/Log.js~Log.html#instance-method-register",
     "lib/Log.js~Log#register",
+    "method"
+  ],
+  [
+    "lib/log.js~log#rumdriver",
+    "class/lib/Log.js~Log.html#instance-method-rumDriver",
+    "lib/Log.js~Log#rumDriver",
     "method"
   ],
   [

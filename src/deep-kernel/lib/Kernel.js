@@ -14,6 +14,7 @@ import {ContainerAware} from './ContainerAware';
 import WaitUntil from 'wait-until';
 import util from 'util';
 import {Loader as ConfigLoader} from './Config/Loader';
+import {AsyncConfig} from './Config/Driver/AsyncConfig';
 
 /**
  * Deep application kernel
@@ -220,19 +221,18 @@ export class Kernel {
       .load((config) => {
         this.load(config, (kernel) => {
           if (this.isBackend) {
-
             // Log event 'start' time
             rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;
+
+            this.get('log').rumLog(rumEvent);
+
+            // log event 'stop' time
+            let event = util._extend({}, rumEvent);
+            event.payload = kernel.config;
+            event.time = new Date().getTime();
+
+            this.get('log').rumLog(event);
           }
-
-          this.get('log').rumLog(rumEvent);
-
-          // log event 'stop' time
-          let event = util._extend({}, rumEvent);
-          event.payload = kernel.config;
-          event.time = new Date().getTime();
-
-          this.get('log').rumLog(event);
 
           callback(kernel);
         });
@@ -560,6 +560,13 @@ export class Kernel {
    */
   static get DEV_ENVIRONMENT() {
     return 'dev';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ASYNC_CONFIG_FILE(){
+    return AsyncConfig.DEFAULT_CONFIG_FILE;
   }
 
   /**

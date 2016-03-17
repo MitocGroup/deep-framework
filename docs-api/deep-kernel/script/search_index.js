@@ -1,5 +1,23 @@
 window.esdocSearchIndex = [
   [
+    "deep-kernel/lib/config/driver/abstractdriver.js~abstractdriver",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html",
+    "<span>AbstractDriver</span> <span class=\"search-result-import-path\">deep-kernel/lib/Config/Driver/AbstractDriver.js</span>",
+    "class"
+  ],
+  [
+    "deep-kernel/lib/config/driver/asyncconfig.js~asyncconfig",
+    "class/lib/Config/Driver/AsyncConfig.js~AsyncConfig.html",
+    "<span>AsyncConfig</span> <span class=\"search-result-import-path\">deep-kernel/lib/Config/Driver/AsyncConfig.js</span>",
+    "class"
+  ],
+  [
+    "deep-kernel/lib/config/driver/complexdriver.js~complexdriver",
+    "class/lib/Config/Driver/ComplexDriver.js~ComplexDriver.html",
+    "<span>ComplexDriver</span> <span class=\"search-result-import-path\">deep-kernel/lib/Config/Driver/ComplexDriver.js</span>",
+    "class"
+  ],
+  [
     "deep-kernel/lib/containeraware.js~containeraware",
     "class/lib/ContainerAware.js~ContainerAware.html",
     "<span>ContainerAware</span> <span class=\"search-result-import-path\">deep-kernel/lib/ContainerAware.js</span>",
@@ -9,6 +27,18 @@ window.esdocSearchIndex = [
     "deep-kernel/lib/exception/exception.js~exception",
     "class/lib/Exception/Exception.js~Exception.html",
     "<span>Exception</span> <span class=\"search-result-import-path\">deep-kernel/lib/Exception/Exception.js</span>",
+    "class"
+  ],
+  [
+    "deep-kernel/lib/config/driver/fsdriver.js~fsdriver",
+    "class/lib/Config/Driver/FsDriver.js~FsDriver.html",
+    "<span>FsDriver</span> <span class=\"search-result-import-path\">deep-kernel/lib/Config/Driver/FsDriver.js</span>",
+    "class"
+  ],
+  [
+    "deep-kernel/lib/config/driver/httpdriver.js~httpdriver",
+    "class/lib/Config/Driver/HttpDriver.js~HttpDriver.html",
+    "<span>HttpDriver</span> <span class=\"search-result-import-path\">deep-kernel/lib/Config/Driver/HttpDriver.js</span>",
     "class"
   ],
   [
@@ -36,6 +66,18 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-kernel/lib/config/driver/kerneldriver.js~kerneldriver",
+    "class/lib/Config/Driver/KernelDriver.js~KernelDriver.html",
+    "<span>KernelDriver</span> <span class=\"search-result-import-path\">deep-kernel/lib/Config/Driver/KernelDriver.js</span>",
+    "class"
+  ],
+  [
+    "deep-kernel/lib/config/loader.js~loader",
+    "class/lib/Config/Loader.js~Loader.html",
+    "<span>Loader</span> <span class=\"search-result-import-path\">deep-kernel/lib/Config/Loader.js</span>",
+    "class"
+  ],
+  [
     "deep-kernel/lib/exception/missingmicroserviceexception.js~missingmicroserviceexception",
     "class/lib/Exception/MissingMicroserviceException.js~MissingMicroserviceException.html",
     "<span>MissingMicroserviceException</span> <span class=\"search-result-import-path\">deep-kernel/lib/Exception/MissingMicroserviceException.js</span>",
@@ -45,6 +87,12 @@ window.esdocSearchIndex = [
     "deep-kernel/lib/microservice/exception/missingworkingmicroserviceexception.js~missingworkingmicroserviceexception",
     "class/lib/Microservice/Exception/MissingWorkingMicroserviceException.js~MissingWorkingMicroserviceException.html",
     "<span>MissingWorkingMicroserviceException</span> <span class=\"search-result-import-path\">deep-kernel/lib/Microservice/Exception/MissingWorkingMicroserviceException.js</span>",
+    "class"
+  ],
+  [
+    "deep-kernel/lib/config/driver/scopedriver.js~scopedriver",
+    "class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html",
+    "<span>ScopeDriver</span> <span class=\"search-result-import-path\">deep-kernel/lib/Config/Driver/ScopeDriver.js</span>",
     "class"
   ],
   [
@@ -372,6 +420,306 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "lib/config/driver/abstractdriver.js",
+    "file/lib/Config/Driver/AbstractDriver.js.html",
+    "lib/Config/Driver/AbstractDriver.js",
+    "file"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#constructor",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-constructor-constructor",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#fail",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-fail",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#fail",
+    "method"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#inherit",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-inherit",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#inherit",
+    "method"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#load",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-load",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#load",
+    "method"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#loaded",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-loaded",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#loaded",
+    "method"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#loadedjson",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-loadedJson",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#loadedJson",
+    "method"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#onfail",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-onFail",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onFail",
+    "member"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#onfailcb",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-onFailCb",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onFailCb",
+    "method"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#onloaded",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-onLoaded",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onLoaded",
+    "member"
+  ],
+  [
+    "lib/config/driver/abstractdriver.js~abstractdriver#onloadedcb",
+    "class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html#instance-method-onLoadedCb",
+    "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onLoadedCb",
+    "method"
+  ],
+  [
+    "lib/config/driver/asyncconfig.js",
+    "file/lib/Config/Driver/AsyncConfig.js.html",
+    "lib/Config/Driver/AsyncConfig.js",
+    "file"
+  ],
+  [
+    "lib/config/driver/asyncconfig.js~asyncconfig#configfile",
+    "class/lib/Config/Driver/AsyncConfig.js~AsyncConfig.html#instance-get-configFile",
+    "lib/Config/Driver/AsyncConfig.js~AsyncConfig#configFile",
+    "member"
+  ],
+  [
+    "lib/config/driver/asyncconfig.js~asyncconfig#constructor",
+    "class/lib/Config/Driver/AsyncConfig.js~AsyncConfig.html#instance-constructor-constructor",
+    "lib/Config/Driver/AsyncConfig.js~AsyncConfig#constructor",
+    "method"
+  ],
+  [
+    "lib/config/driver/asyncconfig.js~asyncconfig#kernel",
+    "class/lib/Config/Driver/AsyncConfig.js~AsyncConfig.html#instance-get-kernel",
+    "lib/Config/Driver/AsyncConfig.js~AsyncConfig#kernel",
+    "member"
+  ],
+  [
+    "lib/config/driver/asyncconfig.js~asyncconfig.default_config_file",
+    "class/lib/Config/Driver/AsyncConfig.js~AsyncConfig.html#static-get-DEFAULT_CONFIG_FILE",
+    "lib/Config/Driver/AsyncConfig.js~AsyncConfig.DEFAULT_CONFIG_FILE",
+    "member"
+  ],
+  [
+    "lib/config/driver/complexdriver.js",
+    "file/lib/Config/Driver/ComplexDriver.js.html",
+    "lib/Config/Driver/ComplexDriver.js",
+    "file"
+  ],
+  [
+    "lib/config/driver/complexdriver.js~complexdriver#add",
+    "class/lib/Config/Driver/ComplexDriver.js~ComplexDriver.html#instance-method-add",
+    "lib/Config/Driver/ComplexDriver.js~ComplexDriver#add",
+    "method"
+  ],
+  [
+    "lib/config/driver/complexdriver.js~complexdriver#constructor",
+    "class/lib/Config/Driver/ComplexDriver.js~ComplexDriver.html#instance-constructor-constructor",
+    "lib/Config/Driver/ComplexDriver.js~ComplexDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/config/driver/complexdriver.js~complexdriver#drivers",
+    "class/lib/Config/Driver/ComplexDriver.js~ComplexDriver.html#instance-get-drivers",
+    "lib/Config/Driver/ComplexDriver.js~ComplexDriver#drivers",
+    "member"
+  ],
+  [
+    "lib/config/driver/fsdriver.js",
+    "file/lib/Config/Driver/FsDriver.js.html",
+    "lib/Config/Driver/FsDriver.js",
+    "file"
+  ],
+  [
+    "lib/config/driver/fsdriver.js~fsdriver#constructor",
+    "class/lib/Config/Driver/FsDriver.js~FsDriver.html#instance-constructor-constructor",
+    "lib/Config/Driver/FsDriver.js~FsDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/config/driver/fsdriver.js~fsdriver#file",
+    "class/lib/Config/Driver/FsDriver.js~FsDriver.html#instance-get-file",
+    "lib/Config/Driver/FsDriver.js~FsDriver#file",
+    "member"
+  ],
+  [
+    "lib/config/driver/fsdriver.js~fsdriver#fs",
+    "class/lib/Config/Driver/FsDriver.js~FsDriver.html#instance-get-fs",
+    "lib/Config/Driver/FsDriver.js~FsDriver#fs",
+    "member"
+  ],
+  [
+    "lib/config/driver/fsdriver.js~fsdriver#setfile",
+    "class/lib/Config/Driver/FsDriver.js~FsDriver.html#instance-method-setFile",
+    "lib/Config/Driver/FsDriver.js~FsDriver#setFile",
+    "method"
+  ],
+  [
+    "lib/config/driver/fsdriver.js~fsdriver#setfs",
+    "class/lib/Config/Driver/FsDriver.js~FsDriver.html#instance-method-setFs",
+    "lib/Config/Driver/FsDriver.js~FsDriver#setFs",
+    "method"
+  ],
+  [
+    "lib/config/driver/httpdriver.js",
+    "file/lib/Config/Driver/HttpDriver.js.html",
+    "lib/Config/Driver/HttpDriver.js",
+    "file"
+  ],
+  [
+    "lib/config/driver/httpdriver.js~httpdriver#constructor",
+    "class/lib/Config/Driver/HttpDriver.js~HttpDriver.html#instance-constructor-constructor",
+    "lib/Config/Driver/HttpDriver.js~HttpDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/config/driver/httpdriver.js~httpdriver#endpoint",
+    "class/lib/Config/Driver/HttpDriver.js~HttpDriver.html#instance-get-endpoint",
+    "lib/Config/Driver/HttpDriver.js~HttpDriver#endpoint",
+    "member"
+  ],
+  [
+    "lib/config/driver/httpdriver.js~httpdriver#setendpoint",
+    "class/lib/Config/Driver/HttpDriver.js~HttpDriver.html#instance-method-setEndpoint",
+    "lib/Config/Driver/HttpDriver.js~HttpDriver#setEndpoint",
+    "method"
+  ],
+  [
+    "lib/config/driver/kerneldriver.js",
+    "file/lib/Config/Driver/KernelDriver.js.html",
+    "lib/Config/Driver/KernelDriver.js",
+    "file"
+  ],
+  [
+    "lib/config/driver/kerneldriver.js~kerneldriver#configfile",
+    "class/lib/Config/Driver/KernelDriver.js~KernelDriver.html#instance-get-configFile",
+    "lib/Config/Driver/KernelDriver.js~KernelDriver#configFile",
+    "member"
+  ],
+  [
+    "lib/config/driver/kerneldriver.js~kerneldriver#constructor",
+    "class/lib/Config/Driver/KernelDriver.js~KernelDriver.html#instance-constructor-constructor",
+    "lib/Config/Driver/KernelDriver.js~KernelDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/config/driver/kerneldriver.js~kerneldriver#kernel",
+    "class/lib/Config/Driver/KernelDriver.js~KernelDriver.html#instance-get-kernel",
+    "lib/Config/Driver/KernelDriver.js~KernelDriver#kernel",
+    "member"
+  ],
+  [
+    "lib/config/driver/kerneldriver.js~kerneldriver#scopekey",
+    "class/lib/Config/Driver/KernelDriver.js~KernelDriver.html#instance-get-scopeKey",
+    "lib/Config/Driver/KernelDriver.js~KernelDriver#scopeKey",
+    "member"
+  ],
+  [
+    "lib/config/driver/kerneldriver.js~kerneldriver.default_config_file",
+    "class/lib/Config/Driver/KernelDriver.js~KernelDriver.html#static-get-DEFAULT_CONFIG_FILE",
+    "lib/Config/Driver/KernelDriver.js~KernelDriver.DEFAULT_CONFIG_FILE",
+    "member"
+  ],
+  [
+    "lib/config/driver/kerneldriver.js~kerneldriver.scope_key",
+    "class/lib/Config/Driver/KernelDriver.js~KernelDriver.html#static-get-SCOPE_KEY",
+    "lib/Config/Driver/KernelDriver.js~KernelDriver.SCOPE_KEY",
+    "member"
+  ],
+  [
+    "lib/config/driver/scopedriver.js",
+    "file/lib/Config/Driver/ScopeDriver.js.html",
+    "lib/Config/Driver/ScopeDriver.js",
+    "file"
+  ],
+  [
+    "lib/config/driver/scopedriver.js~scopedriver#constructor",
+    "class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html#instance-constructor-constructor",
+    "lib/Config/Driver/ScopeDriver.js~ScopeDriver#constructor",
+    "method"
+  ],
+  [
+    "lib/config/driver/scopedriver.js~scopedriver#key",
+    "class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html#instance-get-key",
+    "lib/Config/Driver/ScopeDriver.js~ScopeDriver#key",
+    "member"
+  ],
+  [
+    "lib/config/driver/scopedriver.js~scopedriver#scope",
+    "class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html#instance-get-scope",
+    "lib/Config/Driver/ScopeDriver.js~ScopeDriver#scope",
+    "member"
+  ],
+  [
+    "lib/config/driver/scopedriver.js~scopedriver#setkey",
+    "class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html#instance-method-setKey",
+    "lib/Config/Driver/ScopeDriver.js~ScopeDriver#setKey",
+    "method"
+  ],
+  [
+    "lib/config/driver/scopedriver.js~scopedriver#setscope",
+    "class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html#instance-method-setScope",
+    "lib/Config/Driver/ScopeDriver.js~ScopeDriver#setScope",
+    "method"
+  ],
+  [
+    "lib/config/loader.js",
+    "file/lib/Config/Loader.js.html",
+    "lib/Config/Loader.js",
+    "file"
+  ],
+  [
+    "lib/config/loader.js~loader#constructor",
+    "class/lib/Config/Loader.js~Loader.html#instance-constructor-constructor",
+    "lib/Config/Loader.js~Loader#constructor",
+    "method"
+  ],
+  [
+    "lib/config/loader.js~loader#driver",
+    "class/lib/Config/Loader.js~Loader.html#instance-get-driver",
+    "lib/Config/Loader.js~Loader#driver",
+    "member"
+  ],
+  [
+    "lib/config/loader.js~loader#load",
+    "class/lib/Config/Loader.js~Loader.html#instance-method-load",
+    "lib/Config/Loader.js~Loader#load",
+    "method"
+  ],
+  [
+    "lib/config/loader.js~loader#setdriver",
+    "class/lib/Config/Loader.js~Loader.html#instance-method-setDriver",
+    "lib/Config/Loader.js~Loader#setDriver",
+    "method"
+  ],
+  [
+    "lib/config/loader.js~loader.asyncconfigloader",
+    "class/lib/Config/Loader.js~Loader.html#static-method-asyncConfigLoader",
+    "lib/Config/Loader.js~Loader.asyncConfigLoader",
+    "method"
+  ],
+  [
+    "lib/config/loader.js~loader.kernelloader",
+    "class/lib/Config/Loader.js~Loader.html#static-method-kernelLoader",
+    "lib/Config/Loader.js~Loader.kernelLoader",
+    "method"
+  ],
+  [
     "lib/containeraware.js",
     "file/lib/ContainerAware.js.html",
     "lib/ContainerAware.js",
@@ -534,6 +882,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/kernel.js~kernel#has",
+    "class/lib/Kernel.js~Kernel.html#instance-method-has",
+    "lib/Kernel.js~Kernel#has",
+    "method"
+  ],
+  [
     "lib/kernel.js~kernel#isbackend",
     "class/lib/Kernel.js~Kernel.html#instance-get-isBackend",
     "lib/Kernel.js~Kernel#isBackend",
@@ -558,21 +912,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/kernel.js~kernel#isrumenabled",
+    "class/lib/Kernel.js~Kernel.html#instance-get-isRumEnabled",
+    "lib/Kernel.js~Kernel#isRumEnabled",
+    "member"
+  ],
+  [
     "lib/kernel.js~kernel#load",
     "class/lib/Kernel.js~Kernel.html#instance-method-load",
     "lib/Kernel.js~Kernel#load",
     "method"
   ],
   [
-    "lib/kernel.js~kernel#loadfromfile",
-    "class/lib/Kernel.js~Kernel.html#instance-method-loadFromFile",
-    "lib/Kernel.js~Kernel#loadFromFile",
-    "method"
-  ],
-  [
-    "lib/kernel.js~kernel#loadfromscopeorfile",
-    "class/lib/Kernel.js~Kernel.html#instance-method-loadFromScopeOrFile",
-    "lib/Kernel.js~Kernel#loadFromScopeOrFile",
+    "lib/kernel.js~kernel#loadasyncconfig",
+    "class/lib/Kernel.js~Kernel.html#instance-method-loadAsyncConfig",
+    "lib/Kernel.js~Kernel#loadAsyncConfig",
     "method"
   ],
   [
@@ -585,6 +939,12 @@ window.esdocSearchIndex = [
     "lib/kernel.js~kernel#microservices",
     "class/lib/Kernel.js~Kernel.html#instance-get-microservices",
     "lib/Kernel.js~Kernel#microservices",
+    "member"
+  ],
+  [
+    "lib/kernel.js~kernel#rootmicroservice",
+    "class/lib/Kernel.js~Kernel.html#instance-get-rootMicroservice",
+    "lib/Kernel.js~Kernel#rootMicroservice",
     "member"
   ],
   [
@@ -618,6 +978,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/kernel.js~kernel.async_config_file",
+    "class/lib/Kernel.js~Kernel.html#static-get-ASYNC_CONFIG_FILE",
+    "lib/Kernel.js~Kernel.ASYNC_CONFIG_FILE",
+    "member"
+  ],
+  [
     "lib/kernel.js~kernel.backend_context",
     "class/lib/Kernel.js~Kernel.html#static-get-BACKEND_CONTEXT",
     "lib/Kernel.js~Kernel.BACKEND_CONTEXT",
@@ -639,12 +1005,6 @@ window.esdocSearchIndex = [
     "lib/kernel.js~kernel.containeraware",
     "class/lib/Kernel.js~Kernel.html#static-get-ContainerAware",
     "lib/Kernel.js~Kernel.ContainerAware",
-    "member"
-  ],
-  [
-    "lib/kernel.js~kernel.default_config_file_name",
-    "class/lib/Kernel.js~Kernel.html#static-get-DEFAULT_CONFIG_FILE_NAME",
-    "lib/Kernel.js~Kernel.DEFAULT_CONFIG_FILE_NAME",
     "member"
   ],
   [

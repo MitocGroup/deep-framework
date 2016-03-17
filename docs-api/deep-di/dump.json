@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/26/2015\n */\n\n'use strict';\n\nimport Bottle from 'bottlejs';\nimport {MissingServiceException} from './Exception/MissingServiceException';\nimport Core from 'deep-core';\n\n/**\n * Deep dependency injection module\n */\nexport class DI {\n  constructor() {\n    this._bottle = new Bottle();\n  }\n\n  /**\n   * Registers a service to container\n   *\n   * @param {String} serviceName\n   * @param {Object} serviceClass\n   * @param {String[]} dependencies\n   */\n  register(serviceName, serviceClass, dependencies) {\n    var args = [serviceName, serviceClass];\n\n    if (dependencies) {\n      args = args.concat(dependencies);\n    }\n\n    this._bottle.service.apply(this._bottle, args);\n  }\n\n  /**\n   * Defines a factory method to create a service\n   *\n   * @param {String} serviceName\n   * @param {Object} factoryClass\n   */\n  factory(serviceName, factoryClass) {\n    this._bottle.factory(serviceName, factoryClass);\n  }\n\n  /**\n   * Adds a parameter into container\n   *\n   * @param {String} name\n   * @param {*} value\n   */\n  addParameter(name, value) {\n    this._bottle.value(name, value);\n  }\n\n  /**\n   * Adds an instantiated service into container\n   *\n   * @param {String} name\n   * @param {Object} value\n   */\n  addService(name, value) {\n    if (!(value instanceof Object)) {\n      throw new Core.Exception.InvalidArgumentException(value, 'Object');\n    }\n\n    this._bottle.value(name, value);\n  }\n\n  /**\n   * Returns a service / parameter from container\n   *\n   * @returns {Object}\n   */\n  get(key) {\n    if (typeof this._bottle.container[key] === 'undefined') {\n      throw new MissingServiceException(`Unregistered service or parameter \"${key}\"`);\n    }\n\n    return this._bottle.container[key];\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/26/2015\n */\n\n'use strict';\n\nimport Bottle from 'bottlejs';\nimport {MissingServiceException} from './Exception/MissingServiceException';\nimport Core from 'deep-core';\n\n/**\n * Deep dependency injection module\n */\nexport class DI {\n  constructor() {\n    this._bottle = new Bottle();\n  }\n\n  /**\n   * Registers a service to container\n   *\n   * @param {String} serviceName\n   * @param {Object} serviceClass\n   * @param {String[]} dependencies\n   */\n  register(serviceName, serviceClass, dependencies) {\n    var args = [serviceName, serviceClass];\n\n    if (dependencies) {\n      args = args.concat(dependencies);\n    }\n\n    this._bottle.service.apply(this._bottle, args);\n  }\n\n  /**\n   * Defines a factory method to create a service\n   *\n   * @param {String} serviceName\n   * @param {Object} factoryClass\n   */\n  factory(serviceName, factoryClass) {\n    this._bottle.factory(serviceName, factoryClass);\n  }\n\n  /**\n   * Adds a parameter into container\n   *\n   * @param {String} name\n   * @param {*} value\n   */\n  addParameter(name, value) {\n    this._bottle.value(name, value);\n  }\n\n  /**\n   * Adds an instantiated service into container\n   *\n   * @param {String} name\n   * @param {Object} value\n   */\n  addService(name, value) {\n    if (!(value instanceof Object)) {\n      throw new Core.Exception.InvalidArgumentException(value, 'Object');\n    }\n\n    this._bottle.value(name, value);\n  }\n\n  /**\n   * Returns a service / parameter from container\n   *\n   * @returns {Object}\n   */\n  get(key) {\n    if (typeof this._bottle.container[key] === 'undefined') {\n      throw new MissingServiceException(`Unregistered service or parameter \"${key}\"`);\n    }\n\n    return this._bottle.container[key];\n  }\n\n  /**\n   * Checks if service / parameter exists in container\n   *\n   * @returns {Boolean}\n   */\n  has(key) {\n    return this._bottle.container.hasOwnProperty(key);\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -231,6 +231,40 @@
       "nullable": null,
       "types": [
         "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "has",
+    "memberof": "lib/DI.js~DI",
+    "longname": "lib/DI.js~DI#has",
+    "access": null,
+    "description": "Checks if service / parameter exists in container",
+    "lineNumber": 88,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "name": "key",
+        "types": [
+          "*"
+        ]
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
       ],
       "spread": false,
       "description": ""

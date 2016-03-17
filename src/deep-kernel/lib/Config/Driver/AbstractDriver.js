@@ -36,7 +36,9 @@ export class AbstractDriver extends Core.OOP.Interface {
     new Core.Runtime.Sandbox(() => {
       this._load(...args);
     })
-      .fail(this.fail)
+      .fail((error) => {
+        this._onFail(error);
+      })
       .run();
 
     return this;

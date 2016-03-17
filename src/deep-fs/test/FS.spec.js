@@ -79,6 +79,15 @@ suite('FS', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly();
   });
 
+  test('Check shared() getter returns valid mounted shared folder', () => {
+    let bucketName = 'deep.dev.system.32f3705a';
+    let actualResult = fs.shared();
+
+    chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
+    chai.expect(actualResult.bucket).to.equal(bucketName);
+    chai.expect(actualResult.path).to.equal(`shared/${path}`);
+  });
+
   test('Check tmp() getter returns valid mounted tmp folder', () => {
     let bucketName = 'deep.dev.system.32f3705a';
     let actualResult = fs.tmp;

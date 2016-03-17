@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../">
+  <title data-ice="title">lib/DynamoDB/AutoScaleDynamoDB.js | DEEP Database Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/DB.js~DB.html">DB</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">DynamoDB</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html">AutoScaleDynamoDB</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/FailedToCreateTableException.js~FailedToCreateTableException.html">FailedToCreateTableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/FailedToCreateTablesException.js~FailedToCreateTablesException.html">FailedToCreateTablesException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/ModelNotFoundException.js~ModelNotFoundException.html">ModelNotFoundException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/DBServer.js~DBServer.html">DBServer</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local/Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Dynalite.js~Dynalite.html">Dynalite</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html">LocalDynamo</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html">PathAwareDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Local/Driver/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/FailedToStartServerException.js~FailedToStartServerException.html">FailedToStartServerException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/ServerAlreadyRunningException.js~ServerAlreadyRunningException.html">ServerAlreadyRunningException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Local/Driver/Exception/ServerTtsExceededException.js~ServerTtsExceededException.html">ServerTtsExceededException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Vogels</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/ExtendModel.js~ExtendModel.html">ExtendModel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Vogels/Exceptions</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/InvalidArgumentException.js~InvalidArgumentException.html">InvalidArgumentException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Vogels/Exceptions/UndefinedMethodException.js~UndefinedMethodException.html">UndefinedMethodException</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/DynamoDB/AutoScaleDynamoDB.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 3/14/16.
+ */
+
+&apos;use strict&apos;;
+
+import dynamoDBThroughput from &apos;dynamodb-throughput&apos;;
+
+export class AutoScaleDynamoDB {
+  /**
+   * @param {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*} dynamoDb
+   * @param {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*} dynamoDbDocumentClient
+   */
+  constructor(dynamoDb, dynamoDbDocumentClient) {
+    this._dynamoDb = dynamoDb;
+    this._dynamoDbDocumentClient = dynamoDbDocumentClient;
+
+    this._increasedFor = {};
+  }
+
+  /**
+   * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}
+   */
+  extend() {
+    AutoScaleDynamoDB.PROXIED_METHODS.forEach((method) =&gt; {
+      let originalMethod = `__deep_db_AS_${method}__`;
+
+      this._dynamoDbDocumentClient[originalMethod] = this._dynamoDbDocumentClient[method];
+      this._dynamoDbDocumentClient[method] = (payload, originalCb) =&gt; {
+        let cb = this._decorate(method, payload, originalCb);
+
+        this._dynamoDbDocumentClient[originalMethod](payload, cb);
+      };
+    });
+
+    return this._dynamoDbDocumentClient;
+  }
+
+  /**
+   * @param {String} method
+   * @param {Object} payload
+   * @param {Function} originalCb
+   * @returns {Function}
+   * @private
+   */
+  _decorate(method, payload, originalCb) {
+    return (error, data) =&gt; {
+      if (error &amp;&amp; error.code === AutoScaleDynamoDB.THROUGHPUT_EXCEEDED_ERROR) {
+        let originalError = error;
+        let table = AutoScaleDynamoDB._getTableNameFromPayload(method, payload);
+
+        if (!table) {
+          console.error(`Unable to find table name in payload while increasing throughput`);
+          originalCb(originalError, data);
+          return;
+        } else if (this._increasedFor[table] &amp;&amp;
+          this._increasedFor[table] &gt;= AutoScaleDynamoDB.MAX_INCREASE_NUM_PER_TABLE) {
+
+          console.error(`The table &apos;${table}&apos; capacity increase count exceeded ${this._increasedFor[table]}`);
+          originalCb(originalError, data);
+          return;
+        }
+
+        let throughput = dynamoDBThroughput(table, {
+          endpoint: this._dynamoDb.config.endpoint,
+          region: this._dynamoDb.config.region,
+          credentials: this._dynamoDb.config.credentials,
+        });
+
+        throughput.tableInfo((error, info) =&gt; {
+          if (error) {
+            console.error(`Failed on gather information about table &apos;${table}&apos;: ${error}`);
+
+            originalCb(originalError, data);
+            return;
+          }
+
+          let increasePayload = {};
+          let increaseType = AutoScaleDynamoDB.increaseType(method);
+          increasePayload[increaseType] = Math.abs(parseInt(info.main[increaseType]) *
+            AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT);
+
+          throughput.setCapacity(increasePayload, (error) =&gt; {
+            if (error) {
+              console.error(`Failed on increase throughput for table &apos;${table}&apos;: ${error}`);
+              originalCb(originalError, data);
+              return;
+            }
+
+            this._increasedFor[table] = (this._increasedFor[table] || 0) + 1;
+
+            console.log(`The table &apos;${table}&apos; throughput increased by ${increasePayload[increaseType]}`);
+            this._dynamoDbDocumentClient[method](payload, originalCb);
+          });
+        });
+
+        return;
+      }
+
+      originalCb(error, data);
+    };
+  }
+
+  /**
+   * @param {String} method
+   * @returns {String}
+   */
+  static increaseType(method) {
+    let type = null;
+
+    switch (method) {
+      case &apos;get&apos;:
+      case &apos;scan&apos;:
+      case &apos;query&apos;:
+        type = &apos;read&apos;;
+        break;
+      case &apos;put&apos;:
+      case&apos;delete&apos;:
+      case &apos;update&apos;:
+        type = &apos;write&apos;;
+        break;
+      default: throw new Error(`Unknown DynamoDB autoscale method &apos;${method}&apos;`);
+    }
+
+    return type;
+  }
+
+  /**
+   * @param {String} method
+   * @param {Object} payload
+   * @returns {String}
+   * @private
+   */
+  static _getTableNameFromPayload(method, payload) {
+    let tableName = null;
+
+    switch (method) {
+      case &apos;get&apos;:
+      case &apos;scan&apos;:
+      case &apos;query&apos;:
+      case &apos;put&apos;:
+      case &apos;delete&apos;:
+      case &apos;update&apos;:
+        tableName = payload.TableName;
+        break;
+      default: throw new Error(`Unknown DynamoDB autoscale method &apos;${method}&apos;`);
+    }
+
+    return tableName;
+  }
+
+  /**
+   * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}
+   */
+  get dynamoDbDocumentClient() {
+    return this._dynamoDbDocumentClient;
+  }
+
+  /**
+   * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}
+   */
+  get dynamoDb() {
+    return this._dynamoDb;
+  }
+
+  /**
+   * @returns {String[]}
+   */
+  static get PROXIED_METHODS() {
+    return [
+      &apos;get&apos;, &apos;scan&apos;, &apos;query&apos;,
+      &apos;put&apos;, &apos;delete&apos;, &apos;update&apos;,
+    ];
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get MAX_INCREASE_NUM_PER_TABLE() {
+    return 3;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get PROVISION_INCREASE_COEFFICIENT() {
+    return 1.3;
+  }
+
+  /**
+   * @see https://github.com/aws/aws-sdk-js/blob/master/apis%2Fdynamodb-2012-08-10.normal.json
+   * @returns {String}
+   */
+  static get THROUGHPUT_EXCEEDED_ERROR() {
+    return &apos;ProvisionedThroughputExceededException&apos;;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

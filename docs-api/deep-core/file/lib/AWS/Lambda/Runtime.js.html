@@ -266,6 +266,19 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @returns {String}
+   */
+  get calleeName() {
+    if (this._context &amp;&amp; this._context.has(&apos;invokedFunctionArn&apos;)) {
+      let calleeArn = this._context.getOption(&apos;invokedFunctionArn&apos;);
+
+      return calleeArn.replace(/^.+:function:/i, &apos;&apos;);
+    }
+
+    return null;
+  }
+
+  /**
    * @returns {null|Object}
    */
   get calleeConfig() {

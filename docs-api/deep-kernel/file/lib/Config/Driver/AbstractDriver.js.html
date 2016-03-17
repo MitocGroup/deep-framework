@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <base data-ice="baseUrl" href="../../../../">
+  <title data-ice="title">lib/Config/Driver/AbstractDriver.js | DEEP Kernel Library API Document</title>
+  <link type="text/css" rel="stylesheet" href="css/style.css">
+  <link type="text/css" rel="stylesheet" href="css/prettify-tomorrow.css">
+  <script src="script/prettify/prettify.js"></script>
+  
+  
+</head>
+<body class="layout-container">
+
+<header>
+  <a href="./">Home</a>
+  <a href="identifiers.html">Identifier</a>
+  <a href="source.html">Source</a>
+  
+  <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
+  <div class="search-box">
+  <span>
+    <img src="./image/search.png">
+    <span class="search-input-edge"></span><input class="search-input"><span class="search-input-edge"></span>
+  </span>
+    <ul class="search-result"></ul>
+  </div>
+</header>
+
+<nav class="navigation" data-ice="nav"><div>
+  <ul>
+    
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/ContainerAware.js~ContainerAware.html">ContainerAware</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Kernel.js~Kernel.html">Kernel</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Config</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Loader.js~Loader.html">Loader</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Config/Driver</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/AbstractDriver.js~AbstractDriver.html">AbstractDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/AsyncConfig.js~AsyncConfig.html">AsyncConfig</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/ComplexDriver.js~ComplexDriver.html">ComplexDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/FsDriver.js~FsDriver.html">FsDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/HttpDriver.js~HttpDriver.html">HttpDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/KernelDriver.js~KernelDriver.html">KernelDriver</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Config/Driver/ScopeDriver.js~ScopeDriver.html">ScopeDriver</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/InvalidDeepIdentifierException.js~InvalidDeepIdentifierException.html">InvalidDeepIdentifierException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/MissingMicroserviceException.js~MissingMicroserviceException.html">MissingMicroserviceException</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Microservice</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Microservice/Injectable.js~Injectable.html">Injectable</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Microservice/Instance.js~Instance.html">Instance</a></span></span></li>
+<li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Microservice/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Microservice/Exception/MissingWorkingMicroserviceException.js~MissingWorkingMicroserviceException.html">MissingWorkingMicroserviceException</a></span></span></li>
+</ul>
+</div>
+</nav>
+
+<div class="content" data-ice="content"><h1 data-ice="title">lib/Config/Driver/AbstractDriver.js</h1>
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
+ * Created by AlexanderC on 3/7/16.
+ */
+
+&apos;use strict&apos;;
+
+import Core from &apos;deep-core&apos;;
+import {Exception} from &apos;../../Exception/Exception&apos;;
+
+export class AbstractDriver extends Core.OOP.Interface {
+  constructor() {
+    super([
+      &apos;_load&apos;
+    ]);
+
+    this._onLoaded = () =&gt; {};
+    this._onFail = () =&gt; {};
+  }
+
+  /**
+   * @param {AbstractDriver|*} mainDriver
+   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}
+   */
+  inherit(mainDriver) {
+    this.onLoadedCb(mainDriver.onLoaded);
+    this.onFailCb(mainDriver.onFail);
+
+    return this;
+  }
+
+  /**
+   * @param {*} args
+   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}
+   */
+  load(...args) {
+    new Core.Runtime.Sandbox(() =&gt; {
+      this._load(...args);
+    })
+      .fail((error) =&gt; {
+        this._onFail(error);
+      })
+      .run();
+
+    return this;
+  }
+
+  /**
+   * @param {String} rawConfig
+   * @returns {AbstractDriver}
+   */
+  loadedJson(rawConfig) {
+    let config = null;
+
+    try {
+      config = JSON.parse(rawConfig);
+    } catch (error) {
+      return this.fail(`Failed to parse config from ${this._endpoint}: ${error}`);
+    }
+
+    return this.loaded(config);
+  }
+
+  /**
+   * @param {*} config
+   * @returns {AbstractDriver}
+   */
+  loaded(config) {
+    this._onLoaded(config);
+
+    return this;
+  }
+
+  /**
+   * @param {Error|*} error
+   * @returns {AbstractDriver}
+   */
+  fail(error) {
+    this._onFail(typeof error === &apos;string&apos; ? new Exception(error) : error);
+
+    return this;
+  }
+
+  /**
+   * @returns {Function|*}
+   */
+  get onLoaded() {
+    return this._onLoaded;
+  }
+
+  /**
+   * @param {Function} cb
+   * @returns {AbstractDriver}
+   */
+  onLoadedCb(cb) {
+    this._onLoaded = cb;
+
+    return this;
+  }
+
+  /**
+   * @returns {Function|*}
+   */
+  get onFail() {
+    return this._onFail;
+  }
+
+  /**
+   * @param {Function} cb
+   * @returns {AbstractDriver}
+   */
+  onFailCb(cb) {
+    this._onFail = cb;
+
+    return this;
+  }
+}
+</code></pre>
+
+</div>
+
+<footer class="footer">
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+</footer>
+
+<script src="script/search_index.js"></script>
+<script src="script/search.js"></script>
+<script src="script/pretty-print.js"></script>
+<script src="script/inherited-summary.js"></script>
+<script src="script/test-summary.js"></script>
+<script src="script/inner-link.js"></script>
+<script src="script/patch-for-local.js"></script>
+</body>
+</html>

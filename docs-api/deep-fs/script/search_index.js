@@ -420,6 +420,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/fs.js~fs#shared",
+    "class/lib/FS.js~FS.html#instance-method-shared",
+    "lib/FS.js~FS#shared",
+    "method"
+  ],
+  [
     "lib/fs.js~fs#system",
     "class/lib/FS.js~FS.html#instance-get-system",
     "lib/FS.js~FS#system",
@@ -447,6 +453,12 @@ window.esdocSearchIndex = [
     "lib/fs.js~fs.registryinstance",
     "class/lib/FS.js~FS.html#static-get-RegistryInstance",
     "lib/FS.js~FS.RegistryInstance",
+    "member"
+  ],
+  [
+    "lib/fs.js~fs.shared",
+    "class/lib/FS.js~FS.html#static-get-SHARED",
+    "lib/FS.js~FS.SHARED",
     "member"
   ],
   [

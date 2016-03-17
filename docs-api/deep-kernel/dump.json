@@ -3,6 +3,2399 @@
     "kind": "file",
     "static": true,
     "variation": null,
+    "name": "lib/Config/Driver/AbstractDriver.js",
+    "memberof": null,
+    "longname": "lib/Config/Driver/AbstractDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {Exception} from '../../Exception/Exception';\n\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super([\n      '_load'\n    ]);\n\n    this._onLoaded = () => {};\n    this._onFail = () => {};\n  }\n\n  /**\n   * @param {AbstractDriver|*} mainDriver\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  inherit(mainDriver) {\n    this.onLoadedCb(mainDriver.onLoaded);\n    this.onFailCb(mainDriver.onFail);\n\n    return this;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  load(...args) {\n    new Core.Runtime.Sandbox(() => {\n      this._load(...args);\n    })\n      .fail((error) => {\n        this._onFail(error);\n      })\n      .run();\n\n    return this;\n  }\n\n  /**\n   * @param {String} rawConfig\n   * @returns {AbstractDriver}\n   */\n  loadedJson(rawConfig) {\n    let config = null;\n\n    try {\n      config = JSON.parse(rawConfig);\n    } catch (error) {\n      return this.fail(`Failed to parse config from ${this._endpoint}: ${error}`);\n    }\n\n    return this.loaded(config);\n  }\n\n  /**\n   * @param {*} config\n   * @returns {AbstractDriver}\n   */\n  loaded(config) {\n    this._onLoaded(config);\n\n    return this;\n  }\n\n  /**\n   * @param {Error|*} error\n   * @returns {AbstractDriver}\n   */\n  fail(error) {\n    this._onFail(typeof error === 'string' ? new Exception(error) : error);\n\n    return this;\n  }\n\n  /**\n   * @returns {Function|*}\n   */\n  get onLoaded() {\n    return this._onLoaded;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  onLoadedCb(cb) {\n    this._onLoaded = cb;\n\n    return this;\n  }\n\n  /**\n   * @returns {Function|*}\n   */\n  get onFail() {\n    return this._onFail;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  onFailCb(cb) {\n    this._onFail = cb;\n\n    return this;\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "AbstractDriver",
+    "memberof": "lib/Config/Driver/AbstractDriver.js",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Config/Driver/AbstractDriver.js",
+    "importStyle": "{AbstractDriver}",
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "deep-core~Core.OOP.Interface"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_onLoaded",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#_onLoaded",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_onFail",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#_onFail",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "inherit",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#inherit",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "mainDriver",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver",
+        "FsDriver",
+        "HttpDriver",
+        "KernelDriver",
+        "ComplexDriver",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "load",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#load",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver",
+        "FsDriver",
+        "HttpDriver",
+        "KernelDriver",
+        "ComplexDriver",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loadedJson",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#loadedJson",
+    "access": null,
+    "description": null,
+    "lineNumber": 51,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "rawConfig",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "loaded",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#loaded",
+    "access": null,
+    "description": null,
+    "lineNumber": 67,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "config",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "fail",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#fail",
+    "access": null,
+    "description": null,
+    "lineNumber": 77,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Error",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "onLoaded",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onLoaded",
+    "access": null,
+    "description": null,
+    "lineNumber": 86,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Function|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onLoadedCb",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onLoadedCb",
+    "access": null,
+    "description": null,
+    "lineNumber": 94,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_onLoaded",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#_onLoaded",
+    "access": null,
+    "description": null,
+    "lineNumber": 95,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "onFail",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onFail",
+    "access": null,
+    "description": null,
+    "lineNumber": 103,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Function|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Function",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "onFailCb",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onFailCb",
+    "access": null,
+    "description": null,
+    "lineNumber": 111,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_onFail",
+    "memberof": "lib/Config/Driver/AbstractDriver.js~AbstractDriver",
+    "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#_onFail",
+    "access": null,
+    "description": null,
+    "lineNumber": 112,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Config/Driver/AsyncConfig.js",
+    "memberof": null,
+    "longname": "lib/Config/Driver/AsyncConfig.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {HttpDriver} from './HttpDriver';\nimport {FsDriver} from './FsDriver';\n\nexport class AsyncConfig extends AbstractDriver {\n  /**\n   * @param {Kernel|*} kernel\n   * @param {String} configFile\n   */\n  constructor(kernel, configFile = AsyncConfig.DEFAULT_CONFIG_FILE) {\n    super();\n\n    this._kernel = kernel;\n    this._configFile = configFile;\n  }\n\n  /**\n   * @returns {Kernel|*}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {String|*}\n   */\n  get configFile() {\n    return this._configFile;\n  }\n\n  /**\n   * @param {String} configFile\n   * @private\n   */\n  _load(configFile = null) {\n    this._configFile = configFile || this._configFile;\n\n    this._kernel.isBackend ? this._loadFromFS() : this._loadFromEndpoint();\n  }\n\n  /**\n   * @private\n   */\n  _loadFromFS() {\n    let sharedFs = this._kernel.get('fs')\n      .shared(this._kernel.rootMicroservice.identifier);\n\n    new FsDriver(this._configFile)\n      .setFs(sharedFs)\n      .inherit(this)\n      .load();\n  }\n\n  /**\n   * @private\n   */\n  _loadFromEndpoint() {\n    new HttpDriver(this._configFile)\n      .inherit(this)\n      .load();\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_CONFIG_FILE() {\n    return '_async_config.json';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "AsyncConfig",
+    "memberof": "lib/Config/Driver/AsyncConfig.js",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Config/Driver/AsyncConfig.js",
+    "importStyle": "{AsyncConfig}",
+    "description": null,
+    "lineNumber": 11,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Config/Driver/AbstractDriver~AbstractDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Kernel",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "kernel",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configFile",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_kernel",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#_kernel",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_configFile",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#_configFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 20,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "kernel",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#kernel",
+    "access": null,
+    "description": null,
+    "lineNumber": 26,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Kernel|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Kernel",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "configFile",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#configFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 33,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_load",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#_load",
+    "access": "private",
+    "description": null,
+    "lineNumber": 41,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configFile",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_configFile",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#_configFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 42,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_loadFromFS",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#_loadFromFS",
+    "access": "private",
+    "description": null,
+    "lineNumber": 50,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_loadFromEndpoint",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig#_loadFromEndpoint",
+    "access": "private",
+    "description": null,
+    "lineNumber": 63,
+    "params": [],
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DEFAULT_CONFIG_FILE",
+    "memberof": "lib/Config/Driver/AsyncConfig.js~AsyncConfig",
+    "longname": "lib/Config/Driver/AsyncConfig.js~AsyncConfig.DEFAULT_CONFIG_FILE",
+    "access": null,
+    "description": null,
+    "lineNumber": 72,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Config/Driver/ComplexDriver.js",
+    "memberof": null,
+    "longname": "lib/Config/Driver/ComplexDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\nexport class ComplexDriver extends AbstractDriver {\n  /**\n   * @param {AbstractDriver|*} drivers\n   */\n  constructor(...drivers) {\n    super();\n\n    this._drivers = drivers;\n  }\n\n  /**\n   * @returns {AbstractDriver[]|*[]|*}\n   */\n  get drivers() {\n    return this._drivers;\n  }\n\n  /**\n   * @param {AbstractDriver|*} driver\n   * @returns {ComplexDriver}\n   */\n  add(driver) {\n    this._drivers.push(driver);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _load(...drivers) {\n    this._drivers = this._drivers.concat(drivers);\n\n    this._loadDriversQueue([].concat(this._drivers));\n  }\n\n  /**\n   * @param {AbstractDriver[]|*[]} drivers\n   * @param {Error[]|String[]|*[]} errors\n   * @private\n   */\n  _loadDriversQueue(drivers, errors = []) {\n    if (drivers.length <= 0) {\n      this.fail(`All drivers failed to load: ${errors.join('; ')}`);\n\n      return;\n    }\n\n    let driver = drivers.shift();\n\n    driver.onLoadedCb((config) => {\n      this.loaded(config);\n    });\n\n    driver.onFailCb((error) => {\n      errors.push(error.toString());\n\n      this._loadDriversQueue(drivers, errors);\n    });\n\n    driver.load();\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ComplexDriver",
+    "memberof": "lib/Config/Driver/ComplexDriver.js",
+    "longname": "lib/Config/Driver/ComplexDriver.js~ComplexDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Config/Driver/ComplexDriver.js",
+    "importStyle": "{ComplexDriver}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Config/Driver/AbstractDriver~AbstractDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Config/Driver/ComplexDriver.js~ComplexDriver",
+    "longname": "lib/Config/Driver/ComplexDriver.js~ComplexDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "drivers",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_drivers",
+    "memberof": "lib/Config/Driver/ComplexDriver.js~ComplexDriver",
+    "longname": "lib/Config/Driver/ComplexDriver.js~ComplexDriver#_drivers",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "drivers",
+    "memberof": "lib/Config/Driver/ComplexDriver.js~ComplexDriver",
+    "longname": "lib/Config/Driver/ComplexDriver.js~ComplexDriver#drivers",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver[]|*[]|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver[]",
+        "*[]",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "add",
+    "memberof": "lib/Config/Driver/ComplexDriver.js~ComplexDriver",
+    "longname": "lib/Config/Driver/ComplexDriver.js~ComplexDriver#add",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{ComplexDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "driver",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ComplexDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_load",
+    "memberof": "lib/Config/Driver/ComplexDriver.js~ComplexDriver",
+    "longname": "lib/Config/Driver/ComplexDriver.js~ComplexDriver#_load",
+    "access": "private",
+    "description": null,
+    "lineNumber": 39,
+    "params": [
+      {
+        "name": "drivers",
+        "types": [
+          "...*"
+        ],
+        "spread": true
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_drivers",
+    "memberof": "lib/Config/Driver/ComplexDriver.js~ComplexDriver",
+    "longname": "lib/Config/Driver/ComplexDriver.js~ComplexDriver#_drivers",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_loadDriversQueue",
+    "memberof": "lib/Config/Driver/ComplexDriver.js~ComplexDriver",
+    "longname": "lib/Config/Driver/ComplexDriver.js~ComplexDriver#_loadDriversQueue",
+    "access": "private",
+    "description": null,
+    "lineNumber": 50,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver[]",
+          "*[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "drivers",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Error[]",
+          "String[]",
+          "*[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "errors",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Config/Driver/FsDriver.js",
+    "memberof": null,
+    "longname": "lib/Config/Driver/FsDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport fs from 'fs';\n\nexport class FsDriver extends AbstractDriver {\n  /**\n   * @param {String} file\n   */\n  constructor(file = null) {\n    super();\n\n    this._fs = fs;\n    this._file = file;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get file() {\n    return this._file;\n  }\n\n  /**\n   * @returns {fs|s3fs*}\n   */\n  get fs() {\n    return this._fs;\n  }\n\n  /**\n   * @param {fs|s3fs|*} fs\n   * @returns {FsDriver}\n   */\n  setFs(fs) {\n    this._fs = fs;\n\n    return this;\n  }\n\n  /**\n   * @param {String} file\n   * @returns {FsDriver}\n   */\n  setFile(file) {\n    this._file = file;\n\n    return this;\n  }\n\n  /**\n   * @param {String} file\n   * @private\n   */\n  _load(file = null) {\n    this._file = file || this._file;\n\n    this._fs.readFile(this._file, (error, data) => {\n      if (error) {\n        this.fail(`Error reading configuration file '${this._file}': ${error}`);\n\n        return;\n      }\n\n      this.loadedJson(data.toString());\n    });\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "FsDriver",
+    "memberof": "lib/Config/Driver/FsDriver.js",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Config/Driver/FsDriver.js",
+    "importStyle": "{FsDriver}",
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Config/Driver/AbstractDriver~AbstractDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "file",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_fs",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#_fs",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_file",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#_file",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "file",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#file",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "fs",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#fs",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{fs|s3fs*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "fs",
+        "s3fs*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setFs",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#setFs",
+    "access": null,
+    "description": null,
+    "lineNumber": 39,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{FsDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "fs",
+          "s3fs",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "fs",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "FsDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_fs",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#_fs",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setFile",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#setFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{FsDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "file",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "FsDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_file",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#_file",
+    "access": null,
+    "description": null,
+    "lineNumber": 50,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_load",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#_load",
+    "access": "private",
+    "description": null,
+    "lineNumber": 59,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "file",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_file",
+    "memberof": "lib/Config/Driver/FsDriver.js~FsDriver",
+    "longname": "lib/Config/Driver/FsDriver.js~FsDriver#_file",
+    "access": null,
+    "description": null,
+    "lineNumber": 60,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Config/Driver/HttpDriver.js",
+    "memberof": null,
+    "longname": "lib/Config/Driver/HttpDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\nexport class HttpDriver extends AbstractDriver {\n  /**\n   * @param {String} endpoint\n   */\n  constructor(endpoint = null) {\n    super();\n\n    this._endpoint = endpoint;\n  }\n\n  /**\n   * @returns {String|*}\n   */\n  get endpoint() {\n    return this._endpoint;\n  }\n\n  /**\n   * @param {String} endpoint\n   * @returns {HttpDriver}\n   */\n  setEndpoint(endpoint) {\n    this._endpoint = endpoint;\n\n    return this;\n  }\n\n  /**\n   * @param {String} endpoint\n   * @private\n   */\n  _load(endpoint = null) {\n    this._endpoint = endpoint || this._endpoint;\n\n    let client = new XMLHttpRequest();\n\n    client.open('GET', this._endpoint);\n\n    client.onreadystatechange = () => {\n      if (client.readyState === 4) {\n        if (client.status !== 200) {\n          this.fail(`Failed to load config from ${this._endpoint} (status=${client.status})`);\n        } else {\n          this.loadedJson(client.responseText);\n        }\n      }\n    };\n\n    client.send();\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "HttpDriver",
+    "memberof": "lib/Config/Driver/HttpDriver.js",
+    "longname": "lib/Config/Driver/HttpDriver.js~HttpDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Config/Driver/HttpDriver.js",
+    "importStyle": "{HttpDriver}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Config/Driver/AbstractDriver~AbstractDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Config/Driver/HttpDriver.js~HttpDriver",
+    "longname": "lib/Config/Driver/HttpDriver.js~HttpDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "endpoint",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_endpoint",
+    "memberof": "lib/Config/Driver/HttpDriver.js~HttpDriver",
+    "longname": "lib/Config/Driver/HttpDriver.js~HttpDriver#_endpoint",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "endpoint",
+    "memberof": "lib/Config/Driver/HttpDriver.js~HttpDriver",
+    "longname": "lib/Config/Driver/HttpDriver.js~HttpDriver#endpoint",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setEndpoint",
+    "memberof": "lib/Config/Driver/HttpDriver.js~HttpDriver",
+    "longname": "lib/Config/Driver/HttpDriver.js~HttpDriver#setEndpoint",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{HttpDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "endpoint",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "HttpDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_endpoint",
+    "memberof": "lib/Config/Driver/HttpDriver.js~HttpDriver",
+    "longname": "lib/Config/Driver/HttpDriver.js~HttpDriver#_endpoint",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_load",
+    "memberof": "lib/Config/Driver/HttpDriver.js~HttpDriver",
+    "longname": "lib/Config/Driver/HttpDriver.js~HttpDriver#_load",
+    "access": "private",
+    "description": null,
+    "lineNumber": 40,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "endpoint",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_endpoint",
+    "memberof": "lib/Config/Driver/HttpDriver.js~HttpDriver",
+    "longname": "lib/Config/Driver/HttpDriver.js~HttpDriver#_endpoint",
+    "access": null,
+    "description": null,
+    "lineNumber": 41,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Config/Driver/KernelDriver.js",
+    "memberof": null,
+    "longname": "lib/Config/Driver/KernelDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {ComplexDriver} from './ComplexDriver';\nimport {ScopeDriver} from './ScopeDriver';\nimport {FsDriver} from './FsDriver';\nimport {HttpDriver} from './HttpDriver';\n\nexport class KernelDriver extends AbstractDriver {\n  /**\n   * @param {Kernel|*} kernel\n   * @param {String} scopeKey\n   * @param {String} configFile\n   */\n  constructor(kernel, scopeKey = KernelDriver.SCOPE_KEY, configFile = KernelDriver.DEFAULT_CONFIG_FILE) {\n    super();\n\n    this._kernel = kernel;\n    this._scopeKey = scopeKey;\n    this._configFile = configFile;\n  }\n\n  /**\n   * @returns {String|*}\n   */\n  get scopeKey() {\n    return this._scopeKey;\n  }\n\n  /**\n   * @returns {String|*}\n   */\n  get configFile() {\n    return this._configFile;\n  }\n\n  /**\n   * @returns {Kernel|*}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @param {String} scopeKey\n   * @param {String} configFile\n   * @private\n   */\n  _load(scopeKey = null, configFile = null) {\n    this._scopeKey = scopeKey || this._scopeKey;\n    this._configFile = configFile || this._configFile;\n\n    new ComplexDriver()\n      .inherit(this)\n      .add((new ScopeDriver(this._scopeKey)).setScope(this._globalScope))\n      .add(this._kernel.isBackend ? new FsDriver(this._configFile) : new HttpDriver(this._configFile))\n      .load();\n  }\n\n  /**\n   * @returns {Object}\n   * @private\n   */\n  get _globalScope() {\n    return this._kernel.isBackend ? global : window || {};\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SCOPE_KEY() {\n    return '__DEEP_CFG__';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_CONFIG_FILE() {\n    return '_config.json';\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "KernelDriver",
+    "memberof": "lib/Config/Driver/KernelDriver.js",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Config/Driver/KernelDriver.js",
+    "importStyle": "{KernelDriver}",
+    "description": null,
+    "lineNumber": 13,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Config/Driver/AbstractDriver~AbstractDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 19,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Kernel",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "kernel",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "scopeKey",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configFile",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_kernel",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#_kernel",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_scopeKey",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#_scopeKey",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_configFile",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#_configFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "scopeKey",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#scopeKey",
+    "access": null,
+    "description": null,
+    "lineNumber": 30,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "configFile",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#configFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 37,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "kernel",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#kernel",
+    "access": null,
+    "description": null,
+    "lineNumber": 44,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Kernel|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Kernel",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_load",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#_load",
+    "access": "private",
+    "description": null,
+    "lineNumber": 53,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "scopeKey",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "configFile",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_scopeKey",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#_scopeKey",
+    "access": null,
+    "description": null,
+    "lineNumber": 54,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_configFile",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#_configFile",
+    "access": null,
+    "description": null,
+    "lineNumber": 55,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "_globalScope",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver#_globalScope",
+    "access": "private",
+    "description": null,
+    "lineNumber": 68,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "SCOPE_KEY",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver.SCOPE_KEY",
+    "access": null,
+    "description": null,
+    "lineNumber": 75,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "DEFAULT_CONFIG_FILE",
+    "memberof": "lib/Config/Driver/KernelDriver.js~KernelDriver",
+    "longname": "lib/Config/Driver/KernelDriver.js~KernelDriver.DEFAULT_CONFIG_FILE",
+    "access": null,
+    "description": null,
+    "lineNumber": 82,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Config/Driver/ScopeDriver.js",
+    "memberof": null,
+    "longname": "lib/Config/Driver/ScopeDriver.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\nexport class ScopeDriver extends AbstractDriver {\n  /**\n   * @param {String} key\n   */\n  constructor(key) {\n    super();\n\n    this._scope = global || {};\n    this._key = key;\n  }\n\n  /**\n   * @returns {Object|*}\n   */\n  get scope() {\n    return this._scope;\n  }\n\n  /**\n   * @param {Object} scope\n   * @returns {ScopeDriver}\n   */\n  setScope(scope) {\n    this._scope = scope;\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get key() {\n    return this._key;\n  }\n\n  /**\n   * @param {String} key\n   * @returns {ScopeDriver}\n   */\n  setKey(key) {\n    this._key = key;\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @private\n   */\n  _load(key = null) {\n    this._key = key || this._key;\n\n    this._scope.hasOwnProperty(this._key) ?\n      this.loaded(this._scope[this._key]) :\n      this.fail(`Unable to load configuration from scope: No such key '${this._key}' exists`);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "ScopeDriver",
+    "memberof": "lib/Config/Driver/ScopeDriver.js",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Config/Driver/ScopeDriver.js",
+    "importStyle": "{ScopeDriver}",
+    "description": null,
+    "lineNumber": 9,
+    "undocument": true,
+    "interface": false,
+    "extends": [
+      "lib/Config/Driver/AbstractDriver~AbstractDriver"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 13,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_scope",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#_scope",
+    "access": null,
+    "description": null,
+    "lineNumber": 16,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_key",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#_key",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "scope",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#scope",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setScope",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#setScope",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{ScopeDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "scope",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ScopeDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_scope",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#_scope",
+    "access": null,
+    "description": null,
+    "lineNumber": 32,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "key",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#key",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setKey",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#setKey",
+    "access": null,
+    "description": null,
+    "lineNumber": 48,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{ScopeDriver}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "ScopeDriver"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_key",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#_key",
+    "access": null,
+    "description": null,
+    "lineNumber": 49,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_load",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#_load",
+    "access": "private",
+    "description": null,
+    "lineNumber": 58,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "key",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_key",
+    "memberof": "lib/Config/Driver/ScopeDriver.js~ScopeDriver",
+    "longname": "lib/Config/Driver/ScopeDriver.js~ScopeDriver#_key",
+    "access": null,
+    "description": null,
+    "lineNumber": 59,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Config/Loader.js",
+    "memberof": null,
+    "longname": "lib/Config/Loader.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {KernelDriver} from './Driver/KernelDriver';\nimport {AsyncConfig} from './Driver/AsyncConfig';\n\nexport class Loader {\n  /**\n   * @param {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*} driver\n   */\n  constructor(driver = null) {\n    this._driver = driver;\n  }\n\n  /**\n   * @param {Kernel|*} kernel\n   */\n  static asyncConfigLoader(kernel) {\n    return new Loader(new AsyncConfig(kernel));\n  }\n\n  /**\n   * @param {Kernel|*} kernel\n   */\n  static kernelLoader(kernel) {\n    return new Loader(new KernelDriver(kernel));\n  }\n\n  /**\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  get driver() {\n    return this._driver;\n  }\n\n  /**\n   * @param {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*} driver\n   * @returns {Loader}\n   */\n  setDriver(driver) {\n    this._driver = driver;\n\n    return this;\n  }\n\n  /**\n   * @param {Function} onLoaded\n   * @param {Function} onFail\n   */\n  load(onLoaded = () => {}, onFail = () => {}) {\n    onLoaded && this._driver.onLoadedCb(onLoaded);\n    onFail && this._driver.onFailCb(onFail);\n\n    this._driver.load();\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "Loader",
+    "memberof": "lib/Config/Loader.js",
+    "longname": "lib/Config/Loader.js~Loader",
+    "access": null,
+    "export": true,
+    "importPath": "deep-kernel/lib/Config/Loader.js",
+    "importStyle": "{Loader}",
+    "description": null,
+    "lineNumber": 10,
+    "undocument": true,
+    "interface": false
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Config/Loader.js~Loader",
+    "longname": "lib/Config/Loader.js~Loader#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 14,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver",
+          "FsDriver",
+          "HttpDriver",
+          "KernelDriver",
+          "ComplexDriver",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "driver",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_driver",
+    "memberof": "lib/Config/Loader.js~Loader",
+    "longname": "lib/Config/Loader.js~Loader#_driver",
+    "access": null,
+    "description": null,
+    "lineNumber": 15,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "asyncConfigLoader",
+    "memberof": "lib/Config/Loader.js~Loader",
+    "longname": "lib/Config/Loader.js~Loader.asyncConfigLoader",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Kernel",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "kernel",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "kernelLoader",
+    "memberof": "lib/Config/Loader.js~Loader",
+    "longname": "lib/Config/Loader.js~Loader.kernelLoader",
+    "access": null,
+    "description": null,
+    "lineNumber": 28,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Kernel",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "kernel",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "driver",
+    "memberof": "lib/Config/Loader.js~Loader",
+    "longname": "lib/Config/Loader.js~Loader#driver",
+    "access": null,
+    "description": null,
+    "lineNumber": 35,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "AbstractDriver",
+        "FsDriver",
+        "HttpDriver",
+        "KernelDriver",
+        "ComplexDriver",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "setDriver",
+    "memberof": "lib/Config/Loader.js~Loader",
+    "longname": "lib/Config/Loader.js~Loader#setDriver",
+    "access": null,
+    "description": null,
+    "lineNumber": 43,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Loader}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "AbstractDriver",
+          "FsDriver",
+          "HttpDriver",
+          "KernelDriver",
+          "ComplexDriver",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "driver",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Loader"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_driver",
+    "memberof": "lib/Config/Loader.js~Loader",
+    "longname": "lib/Config/Loader.js~Loader#_driver",
+    "access": null,
+    "description": null,
+    "lineNumber": 44,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "load",
+    "memberof": "lib/Config/Loader.js~Loader",
+    "longname": "lib/Config/Loader.js~Loader#load",
+    "access": null,
+    "description": null,
+    "lineNumber": 53,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "onLoaded",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "onFail",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
     "name": "lib/ContainerAware.js",
     "memberof": null,
     "longname": "lib/ContainerAware.js",
@@ -649,7 +3042,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport FileSystem from 'fs';\nimport WaitUntil from 'wait-until';\nimport util from 'util';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._runtimeContext = {};\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get runtimeContext() {\n    return this._runtimeContext;\n  }\n\n  /**\n   * @param {Object} runtimeContext\n   */\n  set runtimeContext(runtimeContext) {\n    this._runtimeContext = runtimeContext;\n  }\n\n  /**\n   * @param {String|null} identifier\n   * @returns {Microservice|*}\n   */\n  microservice(identifier = null) {\n    if (!identifier) {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Kernel}\n   *\n   * @todo: put config file name into a constant?\n   */\n  bootstrap(callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    return this.loadFromScopeOrFile(Kernel.DEFAULT_CONFIG_FILE_NAME, callback);\n  }\n\n  /**\n   * @param {String} jsonFile\n   * @param {Function} callback\n   * @returns {Kernel}\n   */\n  loadFromScopeOrFile(jsonFile, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let scope = null;\n\n    if (this.isBackend) {\n      scope = global;\n    } else {\n      scope = window || {};\n    }\n\n    let globalConfig = scope.hasOwnProperty('__DEEP_CFG__') ? scope['__DEEP_CFG__'] : null;\n\n    return globalConfig ? this.load(globalConfig, callback) : this.loadFromFile(jsonFile, callback);\n  }\n\n  /**\n   * @param {String} jsonFile\n   * @param {Function} callback\n   * @returns {Kernel}\n   */\n  loadFromFile(jsonFile, callback) {\n    let rumEvent = {\n      service: 'deep-kernel',\n      resourceType: 'Lambda',\n      eventName: 'KernelLoad',\n      time: new Date().getTime(),\n    };\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda context sharing after a cold start\n    if (this._isLoaded) {\n      if (this.isBackend) {\n        rumEvent.eventName = 'KernelLoadFromCache';\n        rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n        rumEvent.payload = this.config;\n        this.get('log').rumLog(rumEvent);\n      }\n\n      callback(this);\n      return this;\n    }\n\n    if (this.isBackend) {\n      FileSystem.readFile(jsonFile, 'utf8', (error, data) => {\n        if (error) {\n          throw new Exception(`Failed to load kernel config from ${jsonFile} (${error})`);\n        }\n\n        this.load(JSON.parse(data), (kernel) => {\n          // Log event 'start' time\n          rumEvent.resourceId = kernel.runtimeContext.invokedFunctionArn;\n          kernel.get('log').rumLog(rumEvent);\n\n          // log event 'stop' time\n          let event = util._extend({}, rumEvent);\n          event.payload = kernel.config;\n          event.time = new Date().getTime();\n          kernel.get('log').rumLog(event);\n\n          callback(kernel);\n        });\n      });\n    } else { // @todo: get rid of native code...\n      var client = new XMLHttpRequest();\n\n      client.open('GET', jsonFile);\n      client.onreadystatechange = function(event) {\n        if (client.readyState === 4) {\n          if (client.status !== 200) {\n            throw new Exception(`Failed to load kernel config from ${jsonFile}`);\n          }\n\n          this.load(JSON.parse(client.responseText), callback);\n        }\n      }.bind(this);\n\n      client.send();\n    }\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} globalConfig\n   * @param {Function} callback\n   *\n   * @returns {Kernel}\n   */\n  load(globalConfig, callback) {\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = function(kernel) {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    }.bind(this);\n\n    this._config = globalConfig;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend\n      && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      if (!serviceInstance instanceof ContainerAware) {\n        let serviceType = typeof serviceInstance;\n\n        throw new Exception(`Service ${serviceType} must be Kernel.ContainerAware instance`);\n      }\n\n      bootingServices++;\n\n      serviceInstance.kernel = this;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, function() {\n        bootingServices--;\n      }.bind(this));\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(5)\n      .times(999999) // @todo: get rid of magic here...\n      .condition(function(cb) {\n        process.nextTick(function() {\n          cb(bootingServices <= 0);\n        }.bind(this));\n      }).done(function() {\n        callback(this);\n      }.bind(this));\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_CONFIG_FILE_NAME() {\n    return '_config.json';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get PROD_ENVIRONMENT() {\n    return 'prod';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get STAGE_ENVIRONMENT() {\n    return 'stage';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get TEST_ENVIRONMENT() {\n    return 'test';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEV_ENVIRONMENT() {\n    return 'dev';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_ENVIRONMENTS() {\n    return [\n      Kernel.PROD_ENVIRONMENT,\n      Kernel.STAGE_ENVIRONMENT,\n      Kernel.TEST_ENVIRONMENT,\n      Kernel.DEV_ENVIRONMENT,\n    ];\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport WaitUntil from 'wait-until';\nimport util from 'util';\nimport {Loader as ConfigLoader} from './Config/Loader';\nimport {AsyncConfig} from './Config/Driver/AsyncConfig';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._runtimeContext = {};\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n\n    this._asyncConfigCache = null;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get runtimeContext() {\n    return this._runtimeContext;\n  }\n\n  /**\n   * @param {Object} runtimeContext\n   */\n  set runtimeContext(runtimeContext) {\n    this._runtimeContext = runtimeContext;\n  }\n\n  /**\n   * @returns {Microservice|*}\n   */\n  get rootMicroservice() {\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.isRoot) {\n        return microservice;\n      }\n    }\n\n    // this should never happen...\n    throw new MissingMicroserviceException('ROOT');\n  }\n\n  /**\n   * @param {String|null} identifier\n   * @returns {Microservice|*}\n   */\n  microservice(identifier = null) {\n    if (!identifier) {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {Function} cb\n   */\n  loadAsyncConfig(cb) {\n    if (this._asyncConfigCache) {\n      cb(this._asyncConfigCache);\n\n      return this;\n    }\n\n    let cache = this.get('cache').system;\n    let cacheKey = 'asyncConfig';\n\n    cache.has(cacheKey, (error, exists) => {\n      this._logErrorIfExistsAndNotProd(error);\n\n      if (exists) {\n        cache.get(cacheKey, (error, rawConfig) => {\n          this._logErrorIfExistsAndNotProd(error);\n\n          if (rawConfig) {\n            try {\n              this._asyncConfigCache = JSON.parse(rawConfig);\n\n              cb(this._asyncConfigCache);\n\n              return;\n            } catch (error) {\n              this._logErrorIfExistsAndNotProd(error);\n            }\n          }\n\n          this._loadAsyncConfig(cache, cacheKey, cb);\n        });\n\n        return;\n      }\n\n      this._loadAsyncConfig(cache, cacheKey, cb);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Cache|*} cache\n   * @param {String} cacheKey\n   * @param {Function} cb\n   * @private\n   */\n  _loadAsyncConfig(cache, cacheKey, cb) {\n    ConfigLoader\n      .asyncConfigLoader(this)\n      .load((config) => {\n        cache.set(cacheKey, JSON.stringify(config), 0, (error) => {\n          this._logErrorIfExistsAndNotProd(error);\n\n          this._asyncConfigCache = config;\n\n          cb(config);\n        });\n      }, (error) => {\n        this._logErrorIfExistsAndNotProd(error);\n\n        cb(null);\n      });\n  }\n\n  /**\n   * @todo: get rid of this?\n   *\n   * @param {Error|String|*} error\n   * @private\n   */\n  _logErrorIfExistsAndNotProd(error) {\n    if (error && this.env !== Kernel.PROD_ENVIRONMENT) {\n      console.error(error);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Kernel}\n   *\n   * @todo: put config file name into a constant?\n   */\n  bootstrap(callback) {\n    let rumEvent = {\n      service: 'deep-kernel',\n      resourceType: 'Lambda',\n      eventName: 'KernelLoad',\n      time: new Date().getTime(),\n    };\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      if (this.isBackend) {\n        rumEvent.eventName = 'KernelLoadFromCache';\n        rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n        rumEvent.payload = this.config;\n\n        this.get('log').rumLog(rumEvent);\n      }\n\n      callback(this);\n\n      return this;\n    }\n\n    ConfigLoader\n      .kernelLoader(this)\n      .load((config) => {\n        this.load(config, (kernel) => {\n          if (this.isBackend) {\n            // Log event 'start' time\n            rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n\n            this.get('log').rumLog(rumEvent);\n\n            // log event 'stop' time\n            let event = util._extend({}, rumEvent);\n            event.payload = kernel.config;\n            event.time = new Date().getTime();\n\n            this.get('log').rumLog(event);\n          }\n\n          callback(kernel);\n        });\n      }, (error) => {\n        throw new Exception(`Error loading kernel: ${error}`);\n      });\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} config\n   * @param {Function} callback\n   *\n   * @returns {Kernel}\n   */\n  load(config, callback) {\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = (kernel) => {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    };\n\n    this._config = config;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {Boolean}\n   */\n  has(...args) {\n    return this._container.has(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isRumEnabled() {\n    return this.has('log') && this.get('log').isRumEnabled();\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      bootingServices++;\n\n      serviceInstance.kernel = this;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, () => {\n        bootingServices--;\n      });\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(10)\n      .times(999999) // @todo: get rid of magic here...\n      .condition((cb) => {\n        process.nextTick(() => {\n          cb(bootingServices <= 0);\n        });\n      }).done(() => {\n        callback(this);\n      });\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get PROD_ENVIRONMENT() {\n    return 'prod';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get STAGE_ENVIRONMENT() {\n    return 'stage';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get TEST_ENVIRONMENT() {\n    return 'test';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEV_ENVIRONMENT() {\n    return 'dev';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASYNC_CONFIG_FILE(){\n    return AsyncConfig.DEFAULT_CONFIG_FILE;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_ENVIRONMENTS() {\n    return [\n      Kernel.PROD_ENVIRONMENT,\n      Kernel.STAGE_ENVIRONMENT,\n      Kernel.TEST_ENVIRONMENT,\n      Kernel.DEV_ENVIRONMENT,\n    ];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -663,7 +3056,7 @@
     "importPath": "deep-kernel/lib/Kernel.js",
     "importStyle": "{Kernel}",
     "description": "Deep application kernel",
-    "lineNumber": 21,
+    "lineNumber": 22,
     "interface": false
   },
   {
@@ -675,7 +3068,7 @@
     "longname": "lib/Kernel.js~Kernel#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 27,
     "params": [
       {
         "nullable": null,
@@ -709,7 +3102,7 @@
     "longname": "lib/Kernel.js~Kernel#_config",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
@@ -726,7 +3119,7 @@
     "longname": "lib/Kernel.js~Kernel#_services",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -743,7 +3136,7 @@
     "longname": "lib/Kernel.js~Kernel#_context",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 34,
     "undocument": true,
     "type": {
       "types": [
@@ -760,7 +3153,7 @@
     "longname": "lib/Kernel.js~Kernel#_runtimeContext",
     "access": null,
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -777,7 +3170,7 @@
     "longname": "lib/Kernel.js~Kernel#_env",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -794,7 +3187,7 @@
     "longname": "lib/Kernel.js~Kernel#_container",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 37,
     "undocument": true,
     "type": {
       "types": [
@@ -811,11 +3204,28 @@
     "longname": "lib/Kernel.js~Kernel#_isLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 38,
     "undocument": true,
     "type": {
       "types": [
         "boolean"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_asyncConfigCache",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#_asyncConfigCache",
+    "access": null,
+    "description": null,
+    "lineNumber": 40,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
       ]
     }
   },
@@ -828,7 +3238,7 @@
     "longname": "lib/Kernel.js~Kernel#isLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 43,
+    "lineNumber": 46,
     "unknown": [
       {
         "tagName": "@returns",
@@ -859,7 +3269,7 @@
     "longname": "lib/Kernel.js~Kernel#runtimeContext",
     "access": null,
     "description": null,
-    "lineNumber": 50,
+    "lineNumber": 53,
     "unknown": [
       {
         "tagName": "@returns",
@@ -890,7 +3300,7 @@
     "longname": "lib/Kernel.js~Kernel#runtimeContext",
     "access": null,
     "description": null,
-    "lineNumber": 57,
+    "lineNumber": 60,
     "params": [
       {
         "nullable": null,
@@ -919,13 +3329,45 @@
     "longname": "lib/Kernel.js~Kernel#_runtimeContext",
     "access": null,
     "description": null,
-    "lineNumber": 58,
+    "lineNumber": 61,
     "undocument": true,
     "type": {
       "types": [
         "*"
       ]
     }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "rootMicroservice",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#rootMicroservice",
+    "access": null,
+    "description": null,
+    "lineNumber": 67,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Microservice|*}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Microservice",
+        "*"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
   },
   {
     "kind": "method",
@@ -936,7 +3378,7 @@
     "longname": "lib/Kernel.js~Kernel#microservice",
     "access": null,
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 88,
     "unknown": [
       {
         "tagName": "@returns",
@@ -971,12 +3413,152 @@
     "kind": "method",
     "static": false,
     "variation": null,
+    "name": "loadAsyncConfig",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#loadAsyncConfig",
+    "access": null,
+    "description": null,
+    "lineNumber": 111,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "return": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_asyncConfigCache",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#_asyncConfigCache",
+    "access": null,
+    "description": null,
+    "lineNumber": 130,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_loadAsyncConfig",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#_loadAsyncConfig",
+    "access": "private",
+    "description": null,
+    "lineNumber": 158,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Cache",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cache",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cacheKey",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "cb",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_asyncConfigCache",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#_asyncConfigCache",
+    "access": null,
+    "description": null,
+    "lineNumber": 165,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_logErrorIfExistsAndNotProd",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#_logErrorIfExistsAndNotProd",
+    "access": "private",
+    "description": null,
+    "lineNumber": 182,
+    "unknown": [
+      {
+        "tagName": "@todo: get rid of this?\n\n",
+        "tagValue": ""
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Error",
+          "String",
+          "*"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "error",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
     "name": "bootstrap",
     "memberof": "lib/Kernel.js~Kernel",
     "longname": "lib/Kernel.js~Kernel#bootstrap",
     "access": null,
     "description": null,
-    "lineNumber": 91,
+    "lineNumber": 194,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1009,108 +3591,12 @@
     "kind": "method",
     "static": false,
     "variation": null,
-    "name": "loadFromScopeOrFile",
-    "memberof": "lib/Kernel.js~Kernel",
-    "longname": "lib/Kernel.js~Kernel#loadFromScopeOrFile",
-    "access": null,
-    "description": null,
-    "lineNumber": 108,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Kernel}"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "jsonFile",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Function"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "callback",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Kernel"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "loadFromFile",
-    "memberof": "lib/Kernel.js~Kernel",
-    "longname": "lib/Kernel.js~Kernel#loadFromFile",
-    "access": null,
-    "description": null,
-    "lineNumber": 135,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Kernel}"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "String"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "jsonFile",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Function"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "callback",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Kernel"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "kind": "method",
-    "static": false,
-    "variation": null,
     "name": "load",
     "memberof": "lib/Kernel.js~Kernel",
     "longname": "lib/Kernel.js~Kernel#load",
     "access": null,
     "description": "Loads all Kernel dependencies",
-    "lineNumber": 205,
+    "lineNumber": 254,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1125,7 +3611,7 @@
         ],
         "spread": false,
         "optional": false,
-        "name": "globalConfig",
+        "name": "config",
         "description": ""
       },
       {
@@ -1158,7 +3644,7 @@
     "longname": "lib/Kernel.js~Kernel#_isLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 217,
+    "lineNumber": 267,
     "undocument": true,
     "type": {
       "types": [
@@ -1175,7 +3661,7 @@
     "longname": "lib/Kernel.js~Kernel#_config",
     "access": null,
     "description": null,
-    "lineNumber": 222,
+    "lineNumber": 272,
     "undocument": true,
     "type": {
       "types": [
@@ -1192,7 +3678,7 @@
     "longname": "lib/Kernel.js~Kernel#get",
     "access": null,
     "description": null,
-    "lineNumber": 233,
+    "lineNumber": 283,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1203,7 +3689,7 @@
       {
         "nullable": null,
         "types": [
-          "Array"
+          "*"
         ],
         "spread": false,
         "optional": false,
@@ -1222,6 +3708,44 @@
     "generator": false
   },
   {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "has",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#has",
+    "access": null,
+    "description": null,
+    "lineNumber": 291,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Array"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1230,7 +3754,7 @@
     "longname": "lib/Kernel.js~Kernel#services",
     "access": null,
     "description": null,
-    "lineNumber": 240,
+    "lineNumber": 298,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1261,7 +3785,7 @@
     "longname": "lib/Kernel.js~Kernel#container",
     "access": null,
     "description": null,
-    "lineNumber": 247,
+    "lineNumber": 305,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1287,12 +3811,43 @@
     "kind": "get",
     "static": false,
     "variation": null,
+    "name": "isRumEnabled",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel#isRumEnabled",
+    "access": null,
+    "description": null,
+    "lineNumber": 312,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
     "name": "isFrontend",
     "memberof": "lib/Kernel.js~Kernel",
     "longname": "lib/Kernel.js~Kernel#isFrontend",
     "access": null,
     "description": null,
-    "lineNumber": 254,
+    "lineNumber": 319,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1323,7 +3878,7 @@
     "longname": "lib/Kernel.js~Kernel#isLocalhost",
     "access": null,
     "description": null,
-    "lineNumber": 261,
+    "lineNumber": 326,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1354,7 +3909,7 @@
     "longname": "lib/Kernel.js~Kernel#isBackend",
     "access": null,
     "description": null,
-    "lineNumber": 272,
+    "lineNumber": 336,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1385,7 +3940,7 @@
     "longname": "lib/Kernel.js~Kernel#buildId",
     "access": null,
     "description": null,
-    "lineNumber": 279,
+    "lineNumber": 343,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1416,7 +3971,7 @@
     "longname": "lib/Kernel.js~Kernel#context",
     "access": null,
     "description": null,
-    "lineNumber": 286,
+    "lineNumber": 350,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1447,7 +4002,7 @@
     "longname": "lib/Kernel.js~Kernel#env",
     "access": null,
     "description": null,
-    "lineNumber": 293,
+    "lineNumber": 357,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1478,7 +4033,7 @@
     "longname": "lib/Kernel.js~Kernel#config",
     "access": null,
     "description": null,
-    "lineNumber": 300,
+    "lineNumber": 364,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1509,7 +4064,7 @@
     "longname": "lib/Kernel.js~Kernel#microservices",
     "access": null,
     "description": null,
-    "lineNumber": 308,
+    "lineNumber": 373,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1540,7 +4095,7 @@
     "longname": "lib/Kernel.js~Kernel#_buildContainer",
     "access": null,
     "description": "Loads all parameters and services into DI container",
-    "lineNumber": 317,
+    "lineNumber": 382,
     "params": [
       {
         "nullable": null,
@@ -1564,7 +4119,7 @@
     "longname": "lib/Kernel.js~Kernel#_env",
     "access": null,
     "description": null,
-    "lineNumber": 318,
+    "lineNumber": 383,
     "undocument": true,
     "type": {
       "types": [
@@ -1581,7 +4136,7 @@
     "longname": "lib/Kernel.js~Kernel._createProxyIfNeeded",
     "access": "private",
     "description": null,
-    "lineNumber": 390,
+    "lineNumber": 449,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1622,7 +4177,7 @@
     "longname": "lib/Kernel.js~Kernel.MicroserviceInjectable",
     "access": null,
     "description": null,
-    "lineNumber": 408,
+    "lineNumber": 467,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1653,7 +4208,7 @@
     "longname": "lib/Kernel.js~Kernel.ContainerAware",
     "access": null,
     "description": null,
-    "lineNumber": 415,
+    "lineNumber": 474,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1679,43 +4234,12 @@
     "kind": "get",
     "static": true,
     "variation": null,
-    "name": "DEFAULT_CONFIG_FILE_NAME",
-    "memberof": "lib/Kernel.js~Kernel",
-    "longname": "lib/Kernel.js~Kernel.DEFAULT_CONFIG_FILE_NAME",
-    "access": null,
-    "description": null,
-    "lineNumber": 422,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "kind": "get",
-    "static": true,
-    "variation": null,
     "name": "FRONTEND_BOOTSTRAP_VECTOR",
     "memberof": "lib/Kernel.js~Kernel",
     "longname": "lib/Kernel.js~Kernel.FRONTEND_BOOTSTRAP_VECTOR",
     "access": null,
     "description": null,
-    "lineNumber": 429,
+    "lineNumber": 481,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1746,7 +4270,7 @@
     "longname": "lib/Kernel.js~Kernel.CONFIG",
     "access": null,
     "description": null,
-    "lineNumber": 436,
+    "lineNumber": 488,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1777,7 +4301,7 @@
     "longname": "lib/Kernel.js~Kernel.KERNEL",
     "access": null,
     "description": null,
-    "lineNumber": 443,
+    "lineNumber": 495,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1808,7 +4332,7 @@
     "longname": "lib/Kernel.js~Kernel.CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 450,
+    "lineNumber": 502,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1839,7 +4363,7 @@
     "longname": "lib/Kernel.js~Kernel.MICROSERVICES",
     "access": null,
     "description": null,
-    "lineNumber": 457,
+    "lineNumber": 509,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1870,7 +4394,7 @@
     "longname": "lib/Kernel.js~Kernel.FRONTEND_CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 464,
+    "lineNumber": 516,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1901,7 +4425,7 @@
     "longname": "lib/Kernel.js~Kernel.BACKEND_CONTEXT",
     "access": null,
     "description": null,
-    "lineNumber": 471,
+    "lineNumber": 523,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1932,7 +4456,7 @@
     "longname": "lib/Kernel.js~Kernel.ALL_CONTEXTS",
     "access": null,
     "description": null,
-    "lineNumber": 478,
+    "lineNumber": 530,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1963,7 +4487,7 @@
     "longname": "lib/Kernel.js~Kernel.PROD_ENVIRONMENT",
     "access": null,
     "description": null,
-    "lineNumber": 488,
+    "lineNumber": 540,
     "unknown": [
       {
         "tagName": "@returns",
@@ -1994,7 +4518,7 @@
     "longname": "lib/Kernel.js~Kernel.STAGE_ENVIRONMENT",
     "access": null,
     "description": null,
-    "lineNumber": 495,
+    "lineNumber": 547,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2025,7 +4549,7 @@
     "longname": "lib/Kernel.js~Kernel.TEST_ENVIRONMENT",
     "access": null,
     "description": null,
-    "lineNumber": 502,
+    "lineNumber": 554,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2056,7 +4580,7 @@
     "longname": "lib/Kernel.js~Kernel.DEV_ENVIRONMENT",
     "access": null,
     "description": null,
-    "lineNumber": 509,
+    "lineNumber": 561,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2082,12 +4606,43 @@
     "kind": "get",
     "static": true,
     "variation": null,
+    "name": "ASYNC_CONFIG_FILE",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel.ASYNC_CONFIG_FILE",
+    "access": null,
+    "description": null,
+    "lineNumber": 568,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
     "name": "ALL_ENVIRONMENTS",
     "memberof": "lib/Kernel.js~Kernel",
     "longname": "lib/Kernel.js~Kernel.ALL_ENVIRONMENTS",
     "access": null,
     "description": null,
-    "lineNumber": 516,
+    "lineNumber": 575,
     "unknown": [
       {
         "tagName": "@returns",

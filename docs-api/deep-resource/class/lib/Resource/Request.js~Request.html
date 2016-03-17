@@ -42,6 +42,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectCallNotAvailableException.js~DirectCallNotAvailableException.html">DirectCallNotAvailableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LambdaParamsCompatibilityException.js~LambdaParamsCompatibilityException.html">LambdaParamsCompatibilityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
@@ -49,6 +51,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/SourceNotAvailableException.js~SourceNotAvailableException.html">SourceNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
@@ -56,13 +59,13 @@
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Request} from &apos;<span><a href="file/lib/Resource/Request.js.html#lineNumber30">deep-resource/lib/Resource/Request.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {Request} from &apos;<span><a href="file/lib/Resource/Request.js.html#lineNumber32">deep-resource/lib/Resource/Request.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/Resource/Request.js.html#lineNumber30">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/Resource/Request.js.html#lineNumber32">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -806,7 +809,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-method-useDirectCall">useDirectCall</a></span></span><span data-ice="signature">(): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
+           <span data-ice="name"><span><a href="class/lib/Resource/Request.js~Request.html#instance-method-useDirectCall">useDirectCall</a></span></span><span data-ice="signature">(returnLogs: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span>): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
         </p>
       </div>
       <div>
@@ -864,7 +867,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber775">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber805">source</a></span></span>
     </span>
   </h3>
 
@@ -914,7 +917,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber789">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber819">source</a></span></span>
     </span>
   </h3>
 
@@ -964,7 +967,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber782">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber812">source</a></span></span>
     </span>
   </h3>
 
@@ -1018,7 +1021,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber36">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber38">source</a></span></span>
     </span>
   </h3>
 
@@ -1089,7 +1092,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber753">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber783">source</a></span></span>
     </span>
   </h3>
 
@@ -1139,7 +1142,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber81">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber84">source</a></span></span>
     </span>
   </h3>
 
@@ -1189,7 +1192,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber212">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber231">source</a></span></span>
     </span>
   </h3>
 
@@ -1229,7 +1232,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber205">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber224">source</a></span></span>
     </span>
   </h3>
 
@@ -1279,7 +1282,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber191">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber210">source</a></span></span>
     </span>
   </h3>
 
@@ -1329,7 +1332,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber198">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber217">source</a></span></span>
     </span>
   </h3>
 
@@ -1369,7 +1372,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber100">source</a></span></span>
     </span>
   </h3>
 
@@ -1419,7 +1422,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber146">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber165">source</a></span></span>
     </span>
   </h3>
 
@@ -1469,7 +1472,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber90">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber93">source</a></span></span>
     </span>
   </h3>
 
@@ -1520,7 +1523,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber153">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber172">source</a></span></span>
     </span>
   </h3>
 
@@ -1570,7 +1573,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber767">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber797">source</a></span></span>
     </span>
   </h3>
 
@@ -1620,7 +1623,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber122">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber132">source</a></span></span>
     </span>
   </h3>
 
@@ -1670,7 +1673,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber760">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber790">source</a></span></span>
     </span>
   </h3>
 
@@ -1720,7 +1723,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber74">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber77">source</a></span></span>
     </span>
   </h3>
 
@@ -1760,7 +1763,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber67">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber70">source</a></span></span>
     </span>
   </h3>
 
@@ -1813,7 +1816,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber177">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber196">source</a></span></span>
     </span>
   </h3>
 
@@ -1879,7 +1882,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber168">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber187">source</a></span></span>
     </span>
   </h3>
 
@@ -1929,7 +1932,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber160">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber179">source</a></span></span>
     </span>
   </h3>
 
@@ -1979,7 +1982,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber743">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber773">source</a></span></span>
     </span>
   </h3>
 
@@ -2045,7 +2048,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber299">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber318">source</a></span></span>
     </span>
   </h3>
 
@@ -2111,7 +2114,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber108">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber111">source</a></span></span>
     </span>
   </h3>
 
@@ -2161,7 +2164,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber335">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber354">source</a></span></span>
     </span>
   </h3>
 
@@ -2227,7 +2230,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber58">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber61">source</a></span></span>
     </span>
   </h3>
 
@@ -2273,11 +2276,11 @@
     
     
     
-    <span data-ice="name">useDirectCall</span><span data-ice="signature">(): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
+    <span data-ice="name">useDirectCall</span><span data-ice="signature">(returnLogs: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span>): <span><a href="class/lib/Resource/Request.js~Request.html">Request</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber129">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber140">source</a></span></span>
     </span>
   </h3>
 
@@ -2288,7 +2291,23 @@
 
   
 
-  <div data-ice="properties">
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">returnLogs</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
 </div>
 
   <div class="return-params" data-ice="returnParams">
@@ -2327,7 +2346,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber138">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Request.js.html#lineNumber157">source</a></span></span>
     </span>
   </h3>
 

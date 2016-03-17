@@ -474,6 +474,30 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/cache.js~cache#system",
+    "class/lib/Cache.js~Cache.html#instance-get-system",
+    "lib/Cache.js~Cache#system",
+    "member"
+  ],
+  [
+    "lib/cache.js~cache#systemdriver",
+    "class/lib/Cache.js~Cache.html#instance-get-systemDriver",
+    "lib/Cache.js~Cache#systemDriver",
+    "member"
+  ],
+  [
+    "lib/cache.js~cache#systemdriver",
+    "class/lib/Cache.js~Cache.html#instance-set-systemDriver",
+    "lib/Cache.js~Cache#systemDriver",
+    "member"
+  ],
+  [
+    "lib/cache.js~cache.system_namespace",
+    "class/lib/Cache.js~Cache.html#static-get-SYSTEM_NAMESPACE",
+    "lib/Cache.js~Cache.SYSTEM_NAMESPACE",
+    "member"
+  ],
+  [
     "lib/cache.js~cache.createdriver",
     "class/lib/Cache.js~Cache.html#static-method-createDriver",
     "lib/Cache.js~Cache.createDriver",
@@ -535,13 +559,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#namespace",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-namespace",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-namespace",
     "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "member"
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#namespace",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-namespace",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-namespace",
     "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "member"
   ],
