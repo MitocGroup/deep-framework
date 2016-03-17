@@ -178,7 +178,7 @@ export class AbstractEvent extends Core.OOP.Interface {
       };
 
       let securityToken = this._kernel.get('security').token;
-      event.identityId = securityToken && securityToken.identityId ? securityToken.identityId : '';
+      event.identityId = securityToken && securityToken.identityId ? securityToken.identityId : 'anonymous';
     }
 
     return event;
