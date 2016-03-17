@@ -9,7 +9,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {Exception} from '../../Exception/Exception';\n\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super([\n      '_load'\n    ]);\n\n    this._onLoaded = () => {};\n    this._onFail = () => {};\n  }\n\n  /**\n   * @param {AbstractDriver|*} mainDriver\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  inherit(mainDriver) {\n    this.onLoadedCb(mainDriver.onLoaded);\n    this.onFailCb(mainDriver.onFail);\n\n    return this;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  load(...args) {\n    new Core.Runtime.Sandbox(() => {\n      this._load(...args);\n    })\n      .fail(this.fail)\n      .run();\n\n    return this;\n  }\n\n  /**\n   * @param {String} rawConfig\n   * @returns {AbstractDriver}\n   */\n  loadedJson(rawConfig) {\n    let config = null;\n\n    try {\n      config = JSON.parse(rawConfig);\n    } catch (error) {\n      return this.fail(`Failed to parse config from ${this._endpoint}: ${error}`);\n    }\n\n    return this.loaded(config);\n  }\n\n  /**\n   * @param {*} config\n   * @returns {AbstractDriver}\n   */\n  loaded(config) {\n    this._onLoaded(config);\n\n    return this;\n  }\n\n  /**\n   * @param {Error|*} error\n   * @returns {AbstractDriver}\n   */\n  fail(error) {\n    this._onFail(typeof error === 'string' ? new Exception(error) : error);\n\n    return this;\n  }\n\n  /**\n   * @returns {Function|*}\n   */\n  get onLoaded() {\n    return this._onLoaded;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  onLoadedCb(cb) {\n    this._onLoaded = cb;\n\n    return this;\n  }\n\n  /**\n   * @returns {Function|*}\n   */\n  get onFail() {\n    return this._onFail;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  onFailCb(cb) {\n    this._onFail = cb;\n\n    return this;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {Exception} from '../../Exception/Exception';\n\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super([\n      '_load'\n    ]);\n\n    this._onLoaded = () => {};\n    this._onFail = () => {};\n  }\n\n  /**\n   * @param {AbstractDriver|*} mainDriver\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  inherit(mainDriver) {\n    this.onLoadedCb(mainDriver.onLoaded);\n    this.onFailCb(mainDriver.onFail);\n\n    return this;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  load(...args) {\n    new Core.Runtime.Sandbox(() => {\n      this._load(...args);\n    })\n      .fail((error) => {\n        this._onFail(error);\n      })\n      .run();\n\n    return this;\n  }\n\n  /**\n   * @param {String} rawConfig\n   * @returns {AbstractDriver}\n   */\n  loadedJson(rawConfig) {\n    let config = null;\n\n    try {\n      config = JSON.parse(rawConfig);\n    } catch (error) {\n      return this.fail(`Failed to parse config from ${this._endpoint}: ${error}`);\n    }\n\n    return this.loaded(config);\n  }\n\n  /**\n   * @param {*} config\n   * @returns {AbstractDriver}\n   */\n  loaded(config) {\n    this._onLoaded(config);\n\n    return this;\n  }\n\n  /**\n   * @param {Error|*} error\n   * @returns {AbstractDriver}\n   */\n  fail(error) {\n    this._onFail(typeof error === 'string' ? new Exception(error) : error);\n\n    return this;\n  }\n\n  /**\n   * @returns {Function|*}\n   */\n  get onLoaded() {\n    return this._onLoaded;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  onLoadedCb(cb) {\n    this._onLoaded = cb;\n\n    return this;\n  }\n\n  /**\n   * @returns {Function|*}\n   */\n  get onFail() {\n    return this._onFail;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  onFailCb(cb) {\n    this._onFail = cb;\n\n    return this;\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -174,7 +174,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#loadedJson",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 51,
     "unknown": [
       {
         "tagName": "@returns",
@@ -212,7 +212,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#loaded",
     "access": null,
     "description": null,
-    "lineNumber": 65,
+    "lineNumber": 67,
     "unknown": [
       {
         "tagName": "@returns",
@@ -250,7 +250,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#fail",
     "access": null,
     "description": null,
-    "lineNumber": 75,
+    "lineNumber": 77,
     "unknown": [
       {
         "tagName": "@returns",
@@ -289,7 +289,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 86,
     "unknown": [
       {
         "tagName": "@returns",
@@ -321,7 +321,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onLoadedCb",
     "access": null,
     "description": null,
-    "lineNumber": 92,
+    "lineNumber": 94,
     "unknown": [
       {
         "tagName": "@returns",
@@ -359,7 +359,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#_onLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 93,
+    "lineNumber": 95,
     "undocument": true,
     "type": {
       "types": [
@@ -376,7 +376,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onFail",
     "access": null,
     "description": null,
-    "lineNumber": 101,
+    "lineNumber": 103,
     "unknown": [
       {
         "tagName": "@returns",
@@ -408,7 +408,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#onFailCb",
     "access": null,
     "description": null,
-    "lineNumber": 109,
+    "lineNumber": 111,
     "unknown": [
       {
         "tagName": "@returns",
@@ -446,7 +446,7 @@
     "longname": "lib/Config/Driver/AbstractDriver.js~AbstractDriver#_onFail",
     "access": null,
     "description": null,
-    "lineNumber": 110,
+    "lineNumber": 112,
     "undocument": true,
     "type": {
       "types": [
@@ -3042,7 +3042,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport WaitUntil from 'wait-until';\nimport util from 'util';\nimport {Loader as ConfigLoader} from './Config/Loader';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._runtimeContext = {};\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n\n    this._asyncConfigCache = null;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get runtimeContext() {\n    return this._runtimeContext;\n  }\n\n  /**\n   * @param {Object} runtimeContext\n   */\n  set runtimeContext(runtimeContext) {\n    this._runtimeContext = runtimeContext;\n  }\n\n  /**\n   * @returns {Microservice|*}\n   */\n  get rootMicroservice() {\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.isRoot) {\n        return microservice;\n      }\n    }\n\n    // this should never happen...\n    throw new MissingMicroserviceException('ROOT');\n  }\n\n  /**\n   * @param {String|null} identifier\n   * @returns {Microservice|*}\n   */\n  microservice(identifier = null) {\n    if (!identifier) {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {Function} cb\n   */\n  loadAsyncConfig(cb) {\n    if (this._asyncConfigCache) {\n      cb(this._asyncConfigCache);\n\n      return this;\n    }\n\n    let cache = this.get('cache').system;\n    let cacheKey = 'asyncConfig';\n\n    cache.has(cacheKey, (error, exists) => {\n      this._logErrorIfExistsAndNotProd(error);\n\n      if (exists) {\n        cache.get(cacheKey, (error, rawConfig) => {\n          this._logErrorIfExistsAndNotProd(error);\n\n          if (rawConfig) {\n            try {\n              this._asyncConfigCache = JSON.parse(rawConfig);\n\n              cb(this._asyncConfigCache);\n\n              return;\n            } catch (error) {\n              this._logErrorIfExistsAndNotProd(error);\n            }\n          }\n\n          this._loadAsyncConfig(cache, cacheKey, cb);\n        });\n\n        return;\n      }\n\n      this._loadAsyncConfig(cache, cacheKey, cb);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Cache|*} cache\n   * @param {String} cacheKey\n   * @param {Function} cb\n   * @private\n   */\n  _loadAsyncConfig(cache, cacheKey, cb) {\n    ConfigLoader\n      .asyncConfigLoader(this)\n      .load((config) => {\n        cache.set(cacheKey, JSON.stringify(config), 0, (error) => {\n          this._logErrorIfExistsAndNotProd(error);\n\n          this._asyncConfigCache = config;\n\n          cb(config);\n        });\n      }, (error) => {\n        this._logErrorIfExistsAndNotProd(error);\n\n        cb(null);\n      });\n  }\n\n  /**\n   * @todo: get rid of this?\n   *\n   * @param {Error|String|*} error\n   * @private\n   */\n  _logErrorIfExistsAndNotProd(error) {\n    if (error && this.env !== Kernel.PROD_ENVIRONMENT) {\n      console.error(error);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Kernel}\n   *\n   * @todo: put config file name into a constant?\n   */\n  bootstrap(callback) {\n    let rumEvent = {\n      service: 'deep-kernel',\n      resourceType: 'Lambda',\n      eventName: 'KernelLoad',\n      time: new Date().getTime(),\n    };\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      if (this.isBackend) {\n        rumEvent.eventName = 'KernelLoadFromCache';\n        rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n        rumEvent.payload = this.config;\n\n        this.get('log').rumLog(rumEvent);\n      }\n\n      callback(this);\n\n      return this;\n    }\n\n    ConfigLoader\n      .kernelLoader(this)\n      .load((config) => {\n        this.load(config, (kernel) => {\n          if (this.isBackend) {\n\n            // Log event 'start' time\n            rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n          }\n\n          this.get('log').rumLog(rumEvent);\n\n          // log event 'stop' time\n          let event = util._extend({}, rumEvent);\n          event.payload = kernel.config;\n          event.time = new Date().getTime();\n\n          this.get('log').rumLog(event);\n\n          callback(kernel);\n        });\n      }, (error) => {\n        throw new Exception(`Error loading kernel: ${error}`);\n      });\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} config\n   * @param {Function} callback\n   *\n   * @returns {Kernel}\n   */\n  load(config, callback) {\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = (kernel) => {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    };\n\n    this._config = config;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {Boolean}\n   */\n  has(...args) {\n    return this._container.has(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isRumEnabled() {\n    return this.has('log') && this.get('log').isRumEnabled();\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      bootingServices++;\n\n      serviceInstance.kernel = this;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, () => {\n        bootingServices--;\n      });\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(10)\n      .times(999999) // @todo: get rid of magic here...\n      .condition((cb) => {\n        process.nextTick(() => {\n          cb(bootingServices <= 0);\n        });\n      }).done(() => {\n        callback(this);\n      });\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get PROD_ENVIRONMENT() {\n    return 'prod';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get STAGE_ENVIRONMENT() {\n    return 'stage';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get TEST_ENVIRONMENT() {\n    return 'test';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEV_ENVIRONMENT() {\n    return 'dev';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_ENVIRONMENTS() {\n    return [\n      Kernel.PROD_ENVIRONMENT,\n      Kernel.STAGE_ENVIRONMENT,\n      Kernel.TEST_ENVIRONMENT,\n      Kernel.DEV_ENVIRONMENT,\n    ];\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport WaitUntil from 'wait-until';\nimport util from 'util';\nimport {Loader as ConfigLoader} from './Config/Loader';\nimport {AsyncConfig} from './Config/Driver/AsyncConfig';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._runtimeContext = {};\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n\n    this._asyncConfigCache = null;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get runtimeContext() {\n    return this._runtimeContext;\n  }\n\n  /**\n   * @param {Object} runtimeContext\n   */\n  set runtimeContext(runtimeContext) {\n    this._runtimeContext = runtimeContext;\n  }\n\n  /**\n   * @returns {Microservice|*}\n   */\n  get rootMicroservice() {\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.isRoot) {\n        return microservice;\n      }\n    }\n\n    // this should never happen...\n    throw new MissingMicroserviceException('ROOT');\n  }\n\n  /**\n   * @param {String|null} identifier\n   * @returns {Microservice|*}\n   */\n  microservice(identifier = null) {\n    if (!identifier) {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {Function} cb\n   */\n  loadAsyncConfig(cb) {\n    if (this._asyncConfigCache) {\n      cb(this._asyncConfigCache);\n\n      return this;\n    }\n\n    let cache = this.get('cache').system;\n    let cacheKey = 'asyncConfig';\n\n    cache.has(cacheKey, (error, exists) => {\n      this._logErrorIfExistsAndNotProd(error);\n\n      if (exists) {\n        cache.get(cacheKey, (error, rawConfig) => {\n          this._logErrorIfExistsAndNotProd(error);\n\n          if (rawConfig) {\n            try {\n              this._asyncConfigCache = JSON.parse(rawConfig);\n\n              cb(this._asyncConfigCache);\n\n              return;\n            } catch (error) {\n              this._logErrorIfExistsAndNotProd(error);\n            }\n          }\n\n          this._loadAsyncConfig(cache, cacheKey, cb);\n        });\n\n        return;\n      }\n\n      this._loadAsyncConfig(cache, cacheKey, cb);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Cache|*} cache\n   * @param {String} cacheKey\n   * @param {Function} cb\n   * @private\n   */\n  _loadAsyncConfig(cache, cacheKey, cb) {\n    ConfigLoader\n      .asyncConfigLoader(this)\n      .load((config) => {\n        cache.set(cacheKey, JSON.stringify(config), 0, (error) => {\n          this._logErrorIfExistsAndNotProd(error);\n\n          this._asyncConfigCache = config;\n\n          cb(config);\n        });\n      }, (error) => {\n        this._logErrorIfExistsAndNotProd(error);\n\n        cb(null);\n      });\n  }\n\n  /**\n   * @todo: get rid of this?\n   *\n   * @param {Error|String|*} error\n   * @private\n   */\n  _logErrorIfExistsAndNotProd(error) {\n    if (error && this.env !== Kernel.PROD_ENVIRONMENT) {\n      console.error(error);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Kernel}\n   *\n   * @todo: put config file name into a constant?\n   */\n  bootstrap(callback) {\n    let rumEvent = {\n      service: 'deep-kernel',\n      resourceType: 'Lambda',\n      eventName: 'KernelLoad',\n      time: new Date().getTime(),\n    };\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      if (this.isBackend) {\n        rumEvent.eventName = 'KernelLoadFromCache';\n        rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n        rumEvent.payload = this.config;\n\n        this.get('log').rumLog(rumEvent);\n      }\n\n      callback(this);\n\n      return this;\n    }\n\n    ConfigLoader\n      .kernelLoader(this)\n      .load((config) => {\n        this.load(config, (kernel) => {\n          if (this.isBackend) {\n            // Log event 'start' time\n            rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n\n            this.get('log').rumLog(rumEvent);\n\n            // log event 'stop' time\n            let event = util._extend({}, rumEvent);\n            event.payload = kernel.config;\n            event.time = new Date().getTime();\n\n            this.get('log').rumLog(event);\n          }\n\n          callback(kernel);\n        });\n      }, (error) => {\n        throw new Exception(`Error loading kernel: ${error}`);\n      });\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} config\n   * @param {Function} callback\n   *\n   * @returns {Kernel}\n   */\n  load(config, callback) {\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = (kernel) => {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    };\n\n    this._config = config;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {Boolean}\n   */\n  has(...args) {\n    return this._container.has(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isRumEnabled() {\n    return this.has('log') && this.get('log').isRumEnabled();\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      bootingServices++;\n\n      serviceInstance.kernel = this;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, () => {\n        bootingServices--;\n      });\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(10)\n      .times(999999) // @todo: get rid of magic here...\n      .condition((cb) => {\n        process.nextTick(() => {\n          cb(bootingServices <= 0);\n        });\n      }).done(() => {\n        callback(this);\n      });\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get PROD_ENVIRONMENT() {\n    return 'prod';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get STAGE_ENVIRONMENT() {\n    return 'stage';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get TEST_ENVIRONMENT() {\n    return 'test';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEV_ENVIRONMENT() {\n    return 'dev';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASYNC_CONFIG_FILE(){\n    return AsyncConfig.DEFAULT_CONFIG_FILE;\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_ENVIRONMENTS() {\n    return [\n      Kernel.PROD_ENVIRONMENT,\n      Kernel.STAGE_ENVIRONMENT,\n      Kernel.TEST_ENVIRONMENT,\n      Kernel.DEV_ENVIRONMENT,\n    ];\n  }\n}\n"
   },
   {
     "kind": "class",
@@ -3056,7 +3056,7 @@
     "importPath": "deep-kernel/lib/Kernel.js",
     "importStyle": "{Kernel}",
     "description": "Deep application kernel",
-    "lineNumber": 21,
+    "lineNumber": 22,
     "interface": false
   },
   {
@@ -3068,7 +3068,7 @@
     "longname": "lib/Kernel.js~Kernel#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 26,
+    "lineNumber": 27,
     "params": [
       {
         "nullable": null,
@@ -3102,7 +3102,7 @@
     "longname": "lib/Kernel.js~Kernel#_config",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
@@ -3119,7 +3119,7 @@
     "longname": "lib/Kernel.js~Kernel#_services",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -3136,7 +3136,7 @@
     "longname": "lib/Kernel.js~Kernel#_context",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 34,
     "undocument": true,
     "type": {
       "types": [
@@ -3153,7 +3153,7 @@
     "longname": "lib/Kernel.js~Kernel#_runtimeContext",
     "access": null,
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -3170,7 +3170,7 @@
     "longname": "lib/Kernel.js~Kernel#_env",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 36,
     "undocument": true,
     "type": {
       "types": [
@@ -3187,7 +3187,7 @@
     "longname": "lib/Kernel.js~Kernel#_container",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 37,
     "undocument": true,
     "type": {
       "types": [
@@ -3204,7 +3204,7 @@
     "longname": "lib/Kernel.js~Kernel#_isLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 38,
     "undocument": true,
     "type": {
       "types": [
@@ -3221,7 +3221,7 @@
     "longname": "lib/Kernel.js~Kernel#_asyncConfigCache",
     "access": null,
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 40,
     "undocument": true,
     "type": {
       "types": [
@@ -3238,7 +3238,7 @@
     "longname": "lib/Kernel.js~Kernel#isLoaded",
     "access": null,
     "description": null,
-    "lineNumber": 45,
+    "lineNumber": 46,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3269,7 +3269,7 @@
     "longname": "lib/Kernel.js~Kernel#runtimeContext",
     "access": null,
     "description": null,
-    "lineNumber": 52,
+    "lineNumber": 53,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3300,7 +3300,7 @@
     "longname": "lib/Kernel.js~Kernel#runtimeContext",
     "access": null,
     "description": null,
-    "lineNumber": 59,
+    "lineNumber": 60,
     "params": [
       {
         "nullable": null,
@@ -3329,7 +3329,7 @@
     "longname": "lib/Kernel.js~Kernel#_runtimeContext",
     "access": null,
     "description": null,
-    "lineNumber": 60,
+    "lineNumber": 61,
     "undocument": true,
     "type": {
       "types": [
@@ -3346,7 +3346,7 @@
     "longname": "lib/Kernel.js~Kernel#rootMicroservice",
     "access": null,
     "description": null,
-    "lineNumber": 66,
+    "lineNumber": 67,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3378,7 +3378,7 @@
     "longname": "lib/Kernel.js~Kernel#microservice",
     "access": null,
     "description": null,
-    "lineNumber": 87,
+    "lineNumber": 88,
     "unknown": [
       {
         "tagName": "@returns",
@@ -3418,7 +3418,7 @@
     "longname": "lib/Kernel.js~Kernel#loadAsyncConfig",
     "access": null,
     "description": null,
-    "lineNumber": 110,
+    "lineNumber": 111,
     "params": [
       {
         "nullable": null,
@@ -3447,7 +3447,7 @@
     "longname": "lib/Kernel.js~Kernel#_asyncConfigCache",
     "access": null,
     "description": null,
-    "lineNumber": 129,
+    "lineNumber": 130,
     "undocument": true,
     "type": {
       "types": [
@@ -3464,7 +3464,7 @@
     "longname": "lib/Kernel.js~Kernel#_loadAsyncConfig",
     "access": "private",
     "description": null,
-    "lineNumber": 157,
+    "lineNumber": 158,
     "params": [
       {
         "nullable": null,
@@ -3509,7 +3509,7 @@
     "longname": "lib/Kernel.js~Kernel#_asyncConfigCache",
     "access": null,
     "description": null,
-    "lineNumber": 164,
+    "lineNumber": 165,
     "undocument": true,
     "type": {
       "types": [
@@ -3526,7 +3526,7 @@
     "longname": "lib/Kernel.js~Kernel#_logErrorIfExistsAndNotProd",
     "access": "private",
     "description": null,
-    "lineNumber": 181,
+    "lineNumber": 182,
     "unknown": [
       {
         "tagName": "@todo: get rid of this?\n\n",
@@ -3558,7 +3558,7 @@
     "longname": "lib/Kernel.js~Kernel#bootstrap",
     "access": null,
     "description": null,
-    "lineNumber": 193,
+    "lineNumber": 194,
     "unknown": [
       {
         "tagName": "@returns",
@@ -4606,12 +4606,43 @@
     "kind": "get",
     "static": true,
     "variation": null,
+    "name": "ASYNC_CONFIG_FILE",
+    "memberof": "lib/Kernel.js~Kernel",
+    "longname": "lib/Kernel.js~Kernel.ASYNC_CONFIG_FILE",
+    "access": null,
+    "description": null,
+    "lineNumber": 568,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
     "name": "ALL_ENVIRONMENTS",
     "memberof": "lib/Kernel.js~Kernel",
     "longname": "lib/Kernel.js~Kernel.ALL_ENVIRONMENTS",
     "access": null,
     "description": null,
-    "lineNumber": 568,
+    "lineNumber": 575,
     "unknown": [
       {
         "tagName": "@returns",

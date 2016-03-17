@@ -6,6 +6,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-db/lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html",
+    "<span>AutoScaleDynamoDB</span> <span class=\"search-result-import-path\">deep-db/lib/DynamoDB/AutoScaleDynamoDB.js</span>",
+    "class"
+  ],
+  [
     "deep-db/lib/db.js~db",
     "class/lib/DB.js~DB.html",
     "<span>DB</span> <span class=\"search-result-import-path\">deep-db/lib/DB.js</span>",
@@ -504,6 +510,66 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/dynamodb/autoscaledynamodb.js",
+    "file/lib/DynamoDB/AutoScaleDynamoDB.js.html",
+    "lib/DynamoDB/AutoScaleDynamoDB.js",
+    "file"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb#constructor",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#instance-constructor-constructor",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#constructor",
+    "method"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb#dynamodb",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#instance-get-dynamoDb",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#dynamoDb",
+    "member"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb#dynamodbdocumentclient",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#instance-get-dynamoDbDocumentClient",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#dynamoDbDocumentClient",
+    "member"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb#extend",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#instance-method-extend",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#extend",
+    "method"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.max_increase_num_per_table",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#static-get-MAX_INCREASE_NUM_PER_TABLE",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.MAX_INCREASE_NUM_PER_TABLE",
+    "member"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.provision_increase_coefficient",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#static-get-PROVISION_INCREASE_COEFFICIENT",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT",
+    "member"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.proxied_methods",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#static-get-PROXIED_METHODS",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.PROXIED_METHODS",
+    "member"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.throughput_exceeded_error",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#static-get-THROUGHPUT_EXCEEDED_ERROR",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.THROUGHPUT_EXCEEDED_ERROR",
+    "member"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.increasetype",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#static-method-increaseType",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.increaseType",
+    "method"
+  ],
+  [
     "lib/exception/exception.js",
     "file/lib/Exception/Exception.js.html",
     "lib/Exception/Exception.js",
@@ -727,13 +793,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/local/driver/localdynamo.js~localdynamo#pickupoldinstance",
-    "class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html#instance-get-pickUpOldInstance",
+    "class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html#instance-set-pickUpOldInstance",
     "lib/Local/Driver/LocalDynamo.js~LocalDynamo#pickUpOldInstance",
     "member"
   ],
   [
     "lib/local/driver/localdynamo.js~localdynamo#pickupoldinstance",
-    "class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html#instance-set-pickUpOldInstance",
+    "class/lib/Local/Driver/LocalDynamo.js~LocalDynamo.html#instance-get-pickUpOldInstance",
     "lib/Local/Driver/LocalDynamo.js~LocalDynamo#pickUpOldInstance",
     "member"
   ],
@@ -757,13 +823,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/local/driver/pathawaredriver.js~pathawaredriver#path",
-    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-get-path",
+    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-set-path",
     "lib/Local/Driver/PathAwareDriver.js~PathAwareDriver#path",
     "member"
   ],
   [
     "lib/local/driver/pathawaredriver.js~pathawaredriver#path",
-    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-set-path",
+    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-get-path",
     "lib/Local/Driver/PathAwareDriver.js~PathAwareDriver#path",
     "member"
   ],

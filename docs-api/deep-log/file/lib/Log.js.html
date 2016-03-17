@@ -137,7 +137,7 @@ export class Log extends Kernel.ContainerAware {
         );
         break;
       case &apos;rum&apos;:
-        let rumQueueUrl = this.kernel.config.rumQueue.url;
+        let rumQueueUrl = this.kernel.config.hasOwnProperty(&apos;rumQueue&apos;) ? this.kernel.config.rumQueue.url : &apos;&apos;;
         let enabled = (args.length &gt; 0 &amp;&amp; args[0] &amp;&amp; typeof args[0] === &apos;object&apos;) ? args[0].enabled : false;
 
         driver = new RumSqsDriver(rumQueueUrl, this.kernel, enabled);

@@ -365,7 +365,7 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 3/4/16.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {Elasticsearch as ElasticSearchClient} from './Client/Elasticsearch';\nimport {UnknownSearchDomainException} from './Exception/UnknownSearchDomainException';\nimport {MissingSearchClientException} from './Exception/MissingSearchClientException';\n\n/**\n * Deep Search implementation\n */\nexport class Search extends Kernel.ContainerAware {\n  /**\n   * @param {Object} domains\n   *\n   * @example domains = {\n   *  rum: {\n   *    name: '<DomainName>',\n   *    url: '<DomainUrl>'\n   *  },\n   *  ...\n   * }\n   */\n  constructor(domains) {\n    super();\n\n    this._domains = domains;\n    this._domainClients = [];\n  }\n\n  /**\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._domains = kernel.config.searchDomains || {};\n\n    callback();\n  }\n\n  /**\n   * @param {String} domainName\n   * @returns {ElasticSearchClient}\n   */\n  getClient(domainName) {\n    if (this._domainClients.indexOf(domainName) === -1) {\n      this._domainClients[domainName] = this._createClient(domainName);\n    }\n\n    return this._domainClients[domainName];\n  }\n\n  /**\n   * @param {String} domainName\n   * @returns {ElasticSearchClient}\n   * @private\n   */\n  _createClient(domainName) {\n    if (!this._domains.hasOwnProperty(domainName)) {\n      throw new UnknownSearchDomainException(domainName, Object.keys(this._domains));\n    }\n\n    let client = null;\n    let domainUrl = this._domains[domainName].url;\n\n    // @todo - use below check when domain url will be available\n    //if (domainUrl.indexOf('es.amazonaws.com') !== -1) {\n      client = new ElasticSearchClient(domainUrl, this.clientDecorator);\n    //}\n\n    if (!client) {\n      throw new MissingSearchClientException(domainUrl);\n    }\n\n    return client;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get clientDecorator() {\n    let func = null;\n\n    if (this.kernel && this.kernel.isRumEnabled) {\n      func = function(instance, originalFunctionName, ...args) {\n        // RUM log ...\n\n        let originalCallback = null;\n\n        // seeking the callback function through the arguments and proxy it\n        args.forEach((arg, index) => {\n          if (typeof arg === 'function') {\n            originalCallback = arg;\n\n            args[index] = (...cbArgs) => {\n              // RUM log ...\n\n              originalCallback.call(instance, ...cbArgs);\n            };\n          }\n        });\n\n        originalFunctionName.call(instance, ...args);\n      };\n    }\n\n    return func;\n  }\n}"
+    "content": "/**\n * Created by mgoria on 3/4/16.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Elasticsearch as ElasticSearchClient} from './Client/Elasticsearch';\nimport {UnknownSearchDomainException} from './Exception/UnknownSearchDomainException';\nimport {MissingSearchClientException} from './Exception/MissingSearchClientException';\n\n/**\n * Deep Search implementation\n */\nexport class Search extends Kernel.ContainerAware {\n  /**\n   * @param {Object} domains\n   *\n   * @example domains = {\n   *  rum: {\n   *    type: 'es|cloudsearch',\n   *    name: '<DomainName>',\n   *    url: '<DomainUrl>'\n   *  },\n   *  ...\n   * }\n   */\n  constructor(domains) {\n    super();\n\n    this._domains = domains;\n    this._domainClients = [];\n  }\n\n  /**\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._domains = kernel.config.searchDomains || {};\n\n    callback();\n  }\n\n  /**\n   * @param {String} domainName\n   * @returns {ElasticSearchClient}\n   */\n  getClient(domainName) {\n    if (this._domainClients.indexOf(domainName) === -1) {\n      this._domainClients[domainName] = this._createClient(domainName);\n    }\n\n    return this._domainClients[domainName];\n  }\n\n  /**\n   * @param {String} domainName\n   * @returns {ElasticSearchClient}\n   * @private\n   */\n  _createClient(domainName) {\n    if (!this._domains.hasOwnProperty(domainName)) {\n      throw new UnknownSearchDomainException(domainName, Object.keys(this._domains));\n    }\n\n    let client = null;\n    let domain = this._domains[domainName];\n\n    if (domain.type === Core.AWS.Service.ELASTIC_SEARCH) {\n      client = new ElasticSearchClient(domain.url, this.clientDecorator);\n    }\n\n    if (!client) {\n      throw new MissingSearchClientException(domain.name);\n    }\n\n    return client;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get clientDecorator() {\n    let func = null;\n\n    if (this.kernel && this.kernel.isRumEnabled) {\n      func = function(instance, originalFunctionName, ...args) {\n        // RUM log ...\n\n        let originalCallback = null;\n\n        // seeking the callback function through the arguments and proxy it\n        args.forEach((arg, index) => {\n          if (typeof arg === 'function') {\n            originalCallback = arg;\n\n            args[index] = (...cbArgs) => {\n              // RUM log ...\n\n              originalCallback.call(instance, ...cbArgs);\n            };\n          }\n        });\n\n        originalFunctionName.call(instance, ...args);\n      };\n    }\n\n    return func;\n  }\n}"
   },
   {
     "kind": "class",
@@ -379,7 +379,7 @@
     "importPath": "deep-search/lib/Search.js",
     "importStyle": "{Search}",
     "description": "Deep Search implementation",
-    "lineNumber": 15,
+    "lineNumber": 16,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
@@ -395,9 +395,9 @@
     "access": null,
     "description": null,
     "examples": [
-      "domains = {\n rum: {\n   name: '<DomainName>',\n   url: '<DomainUrl>'\n },\n ...\n}"
+      "domains = {\n rum: {\n   type: 'es|cloudsearch',\n   name: '<DomainName>',\n   url: '<DomainUrl>'\n },\n ...\n}"
     ],
-    "lineNumber": 27,
+    "lineNumber": 29,
     "params": [
       {
         "nullable": null,
@@ -421,7 +421,7 @@
     "longname": "lib/Search.js~Search#_domains",
     "access": null,
     "description": null,
-    "lineNumber": 30,
+    "lineNumber": 32,
     "undocument": true,
     "type": {
       "types": [
@@ -438,7 +438,7 @@
     "longname": "lib/Search.js~Search#_domainClients",
     "access": null,
     "description": null,
-    "lineNumber": 31,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -455,7 +455,7 @@
     "longname": "lib/Search.js~Search#boot",
     "access": null,
     "description": null,
-    "lineNumber": 38,
+    "lineNumber": 40,
     "params": [
       {
         "nullable": null,
@@ -489,7 +489,7 @@
     "longname": "lib/Search.js~Search#_domains",
     "access": null,
     "description": null,
-    "lineNumber": 39,
+    "lineNumber": 41,
     "undocument": true,
     "type": {
       "types": [
@@ -506,7 +506,7 @@
     "longname": "lib/Search.js~Search#getClient",
     "access": null,
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 50,
     "unknown": [
       {
         "tagName": "@returns",
@@ -544,7 +544,7 @@
     "longname": "lib/Search.js~Search#_createClient",
     "access": "private",
     "description": null,
-    "lineNumber": 61,
+    "lineNumber": 63,
     "unknown": [
       {
         "tagName": "@returns",
@@ -582,7 +582,7 @@
     "longname": "lib/Search.js~Search#clientDecorator",
     "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 85,
     "unknown": [
       {
         "tagName": "@returns",

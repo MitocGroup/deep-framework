@@ -535,13 +535,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
@@ -721,13 +721,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
@@ -805,13 +805,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
@@ -1059,6 +1059,12 @@ window.esdocSearchIndex = [
     "lib/aws/lambda/runtime.js~runtime#calleeconfig",
     "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-calleeConfig",
     "lib/AWS/Lambda/Runtime.js~Runtime#calleeConfig",
+    "member"
+  ],
+  [
+    "lib/aws/lambda/runtime.js~runtime#calleename",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-calleeName",
+    "lib/AWS/Lambda/Runtime.js~Runtime#calleeName",
     "member"
   ],
   [
@@ -1429,13 +1435,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/exception/exception.js~exception#code",
-    "class/lib/Exception/Exception.js~Exception.html#instance-set-code",
+    "class/lib/Exception/Exception.js~Exception.html#instance-get-code",
     "lib/Exception/Exception.js~Exception#code",
     "member"
   ],
   [
     "lib/exception/exception.js~exception#code",
-    "class/lib/Exception/Exception.js~Exception.html#instance-get-code",
+    "class/lib/Exception/Exception.js~Exception.html#instance-set-code",
     "lib/Exception/Exception.js~Exception#code",
     "member"
   ],
