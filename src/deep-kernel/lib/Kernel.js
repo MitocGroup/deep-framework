@@ -221,19 +221,18 @@ export class Kernel {
       .load((config) => {
         this.load(config, (kernel) => {
           if (this.isBackend) {
-
             // Log event 'start' time
             rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;
+
+            this.get('log').rumLog(rumEvent);
+
+            // log event 'stop' time
+            let event = util._extend({}, rumEvent);
+            event.payload = kernel.config;
+            event.time = new Date().getTime();
+
+            this.get('log').rumLog(event);
           }
-
-          this.get('log').rumLog(rumEvent);
-
-          // log event 'stop' time
-          let event = util._extend({}, rumEvent);
-          event.payload = kernel.config;
-          event.time = new Date().getTime();
-
-          this.get('log').rumLog(event);
 
           callback(kernel);
         });
