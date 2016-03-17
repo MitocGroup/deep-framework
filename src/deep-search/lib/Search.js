@@ -9,6 +9,8 @@ import Core from 'deep-core';
 import {Elasticsearch as ElasticSearchClient} from './Client/Elasticsearch';
 import {UnknownSearchDomainException} from './Exception/UnknownSearchDomainException';
 import {MissingSearchClientException} from './Exception/MissingSearchClientException';
+import {NotReadySearchDomainException} from './Exception/NotReadySearchDomainException';
+import util from 'util';
 
 /**
  * Deep Search implementation
@@ -45,38 +47,60 @@ export class Search extends Kernel.ContainerAware {
 
   /**
    * @param {String} domainName
-   * @returns {ElasticSearchClient}
+   * @param {Function} callback
    */
-  getClient(domainName) {
-    if (this._domainClients.indexOf(domainName) === -1) {
-      this._domainClients[domainName] = this._createClient(domainName);
+  getClient(domainName, callback) {
+    if (this._domainClients.indexOf(domainName) !== -1) {
+      callback(null, this._domainClients[domainName]);
+      return;
     }
 
-    return this._domainClients[domainName];
+    this._createClient(domainName, (error, client) => {
+      if (!error) {
+        this._domainClients[domainName] = client;
+      }
+
+      callback(error, client);
+    });
   }
 
   /**
    * @param {String} domainName
-   * @returns {ElasticSearchClient}
+   * @param {Function} callback
    * @private
    */
-  _createClient(domainName) {
+  _createClient(domainName, callback) {
     if (!this._domains.hasOwnProperty(domainName)) {
-      throw new UnknownSearchDomainException(domainName, Object.keys(this._domains));
+      callback(new UnknownSearchDomainException(domainName, Object.keys(this._domains)));
+      return;
     }
 
-    let client = null;
-    let domain = this._domains[domainName];
+    let domainConfig = this._domains[domainName];
 
-    if (domain.type === Core.AWS.Service.ELASTIC_SEARCH) {
-      client = new ElasticSearchClient(domain.url, this.clientDecorator);
-    }
+    this.kernel.loadAsyncConfig((asyncConfig) => {
+      if (asyncConfig.searchDomains && asyncConfig.searchDomains.hasOwnProperty(domainName)) {
+        let client = null;
+        domainConfig = util._extend(domainConfig, asyncConfig.searchDomains[domainName]);
 
-    if (!client) {
-      throw new MissingSearchClientException(domain.name);
-    }
+        if (!domainConfig.hasOwnProperty('url')) {
+          callback(new NotReadySearchDomainException(domainConfig.name, domainConfig.type));
+          return;
+        }
 
-    return client;
+        if (domainConfig.type === Core.AWS.Service.ELASTIC_SEARCH) {
+          client = new ElasticSearchClient(domainConfig.url, this.clientDecorator);
+        }
+
+        if (!client) {
+          callback(new MissingSearchClientException(domainConfig.name, domainConfig.type));
+          return;
+        }
+
+        callback(null, client);
+      } else {
+        callback(new NotReadySearchDomainException(domainConfig.name, domainConfig.type));
+      }
+    });
   }
 
   /**
