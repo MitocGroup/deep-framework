@@ -161,6 +161,20 @@ export class FS extends Kernel.ContainerAware {
         let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;
 
         this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;
+      } else if (name === FS.SHARED) {
+        let s3Fs = this._mountedFolders[name];
+
+        if (typeof s3Fs === 'undefined') {
+          s3Fs = new S3FS(this._buckets[name], {});
+
+          if (this.kernel && this.kernel.isRumEnabled) {
+            s3Fs = new S3FsRumProxy(s3Fs, this.kernel.get('log')).proxy();
+          }
+
+          this._mountedFolders[name] = s3Fs;
+        }
+
+        this._mountedFolders[realName] = s3Fs.clone(msIdentifier);
       } else {
         let s3Fs = new S3FS(this._buckets[name], {});
 
@@ -168,11 +182,7 @@ export class FS extends Kernel.ContainerAware {
           s3Fs = new S3FsRumProxy(s3Fs, this.kernel.get('log')).proxy();
         }
 
-        if (name === FS.SHARED) {
-          s3Fs = s3Fs.clone(msIdentifier);
-        }
-
-        this._mountedFolders[realName || name] = s3Fs;
+        this._mountedFolders[name] = s3Fs;
       }
     }
 
