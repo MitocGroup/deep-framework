@@ -43,7 +43,7 @@ export class S3FsRumProxy {
                   payload: {args: cbArgs},
                 });
 
-                originalCallback.call(this._originalInstance, ...cbArgs);
+                return originalCallback.call(this._originalInstance, ...cbArgs);
               };
             }
           });
@@ -56,7 +56,7 @@ export class S3FsRumProxy {
             });
           }
 
-          originalFunction.call(this._originalInstance, ...args);
+          return originalFunction.call(this._originalInstance, ...args);
         };
       } else {
         proxy[property] = this._originalInstance[property];
