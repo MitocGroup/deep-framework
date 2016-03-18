@@ -60,13 +60,15 @@ export class FsDriver extends AbstractDriver {
     this._file = file || this._file;
 
     this._fs.readFile(this._file, (error, data) => {
-      if (error) {
+      let configStr = data ? data.toString() : '{}';
+
+      if (error && error.name !== 'NoSuchKey') {
         this.fail(`Error reading configuration file '${this._file}': ${error}`);
 
         return;
       }
 
-      this.loadedJson(data.toString());
+      this.loadedJson(configStr);
     });
   }
 }
