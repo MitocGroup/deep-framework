@@ -78,7 +78,7 @@ export class Search extends Kernel.ContainerAware {
     let domainConfig = this._domains[domainName];
 
     this.kernel.loadAsyncConfig((asyncConfig) => {
-      if (asyncConfig.searchDomains && asyncConfig.searchDomains.hasOwnProperty(domainName)) {
+      if (asyncConfig && asyncConfig.searchDomains && asyncConfig.searchDomains.hasOwnProperty(domainName)) {
         let client = null;
         domainConfig = util._extend(domainConfig, asyncConfig.searchDomains[domainName]);
 
