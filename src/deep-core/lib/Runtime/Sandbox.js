@@ -38,7 +38,7 @@ export class Sandbox {
 
       execDomain.exit();
 
-      process.nextTick(() => {
+      setImmediate(() => {
         this._onFail(error);
       });
     };
