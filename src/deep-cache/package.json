@@ -1,6 +1,6 @@
 {
   "name": "deep-cache",
-  "version": "1.7.2",
+  "version": "1.7.3",
   "description": "DEEP Cache Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -56,6 +56,7 @@
   "scripts": {
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
+    "prepare-browserify": "npm install store@^1.3.x",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core deep-log"
   },
@@ -63,8 +64,7 @@
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
     "ioredis": "^1.5.x",
-    "ecad": "^0.2.x",
-    "store": "^1.3.x"
+    "ecad": "^0.2.x"
   },
   "devDependencies": {
     "chai": "^3.2.x",
