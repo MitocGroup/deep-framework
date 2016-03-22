@@ -26,24 +26,19 @@ export class Sandbox {
    * @returns {Sandbox}
    */
   run(...args) {
-    let failed = false;
     let execDomain = domain.create();
 
     let failCb = (error) => {
-      if (failed) {
-        return;
-      }
-
-      failed = true;
-
-      execDomain.exit();
+      try {
+        execDomain.exit();
+      } catch (e) {/* silent fail */}
 
       setImmediate(() => {
         this._onFail(error);
       });
     };
 
-    execDomain.on('error', failCb);
+    execDomain.once('error', failCb);
 
     try {
       execDomain.run(this._func, ...args);
