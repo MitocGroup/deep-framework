@@ -29,7 +29,9 @@ export class Sandbox {
     let execDomain = domain.create();
 
     let failCb = (error) => {
-      execDomain.exit();
+      try {
+        execDomain.exit();
+      } catch (e) {/* silent fail */}
 
       setImmediate(() => {
         this._onFail(error);
