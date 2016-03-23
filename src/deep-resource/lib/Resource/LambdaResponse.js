@@ -117,7 +117,7 @@ export class LambdaResponse extends Response {
   _decodePayload() {
     let decodedPayload = null;
 
-    if (this._rawData || this._rawData.hasOwnProperty('Payload')) {
+    if (this._rawData && this._rawData.hasOwnProperty('Payload')) {
       decodedPayload = LambdaResponse._decodePayloadObject(this._rawData.Payload);
 
       // treat the case when error is stored in payload (nested)
