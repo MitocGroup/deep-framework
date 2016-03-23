@@ -116,7 +116,7 @@ export class Kernel {
     }
 
     let cache = this.get('cache').system;
-    let cacheKey = 'asyncConfig';
+    let cacheKey = Kernel.ASYNC_CONFIG_CACHE_KEY;
 
     cache.has(cacheKey, (error, exists) => {
       this._logErrorIfExistsAndNotProd(error);
@@ -567,6 +567,13 @@ export class Kernel {
    */
   static get ASYNC_CONFIG_FILE(){
     return AsyncConfig.DEFAULT_CONFIG_FILE;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ASYNC_CONFIG_CACHE_KEY() {
+    return 'asyncConfig';
   }
 
   /**
