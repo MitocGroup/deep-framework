@@ -117,15 +117,17 @@ export class LambdaResponse extends Response {
   _decodePayload() {
     let decodedPayload = null;
 
-    if (this._rawData && this._rawData.hasOwnProperty('Payload')) {
-      decodedPayload = LambdaResponse._decodePayloadObject(this._rawData.Payload);
+    if (this._rawData) {
+      if (this._rawData.hasOwnProperty('Payload')) {
+        decodedPayload = LambdaResponse._decodePayloadObject(this._rawData.Payload);
 
-      // treat the case when error is stored in payload (nested)
-      if (decodedPayload.hasOwnProperty('errorMessage')) {
-        decodedPayload = LambdaResponse._decodeRawErrorObject(decodedPayload.errorMessage);
+        // treat the case when error is stored in payload (nested)
+        if (decodedPayload.hasOwnProperty('errorMessage')) {
+          decodedPayload = LambdaResponse._decodeRawErrorObject(decodedPayload.errorMessage);
+        }
+      } else if(this._rawData.hasOwnProperty('errorMessage')) {
+        decodedPayload = LambdaResponse._decodeRawErrorObject(this._rawData.errorMessage);
       }
-    } else if(this._rawData.hasOwnProperty('errorMessage')) {
-      decodedPayload = LambdaResponse._decodeRawErrorObject(this._rawData.errorMessage);
     }
 
     return decodedPayload;
