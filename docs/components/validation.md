@@ -125,6 +125,8 @@ The following types are supported:
 - boolean
 - email
 - website
+- map
+- mapSet
 
 
 Validation Schema Anatomy
