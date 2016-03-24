@@ -19,7 +19,14 @@ import KernelFactory from './../../common/KernelFactory';
 suite('AWS/Lambda/Runtime', () => {
   let runtime = null;
   let event = {event: 'runLambda'};
-  let context = {context: 'simpleContext', invokedFunctionArn: 'test invokedFunctionArn'};
+  let context = {
+    context: 'simpleContext',
+    invokedFunctionArn: 'test invokedFunctionArn',
+    succeed: function() { this._succeeded = true; }, // do not replace with arrow function
+    fail: function() { this._failed = true },
+    _succeeded: false,
+    _failed: false,
+  };
   let data = {data: 'responseData'};
   let validation = null;
   let backendKernelInstance = null;
@@ -152,13 +159,13 @@ suite('AWS/Lambda/Runtime', () => {
     let error = null;
     let _runtime = new RuntimeMock(backendKernelInstance);
     let _context = {
-      context: 'simpleContext',
-      invokedFunctionArn: 'test invokedFunctionArn',
+      ...context,
       identity: {
         cognitoIdentityPoolId: 'test cognitoIdentityPoolId',
         cognitoIdentityId: 'test cognitoIdentityId',
-      },
+      }
     };
+
     _runtime.run(event, _context);
 
     try {
