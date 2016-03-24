@@ -22,10 +22,10 @@ suite('AWS/Lambda/Runtime', () => {
   let context = {
     context: 'simpleContext',
     invokedFunctionArn: 'test invokedFunctionArn',
-    succeed: function() { this._succeeded = true; }, // do not replace with arrow function
-    fail: function() { this._failed = true },
-    _succeeded: false,
-    _failed: false,
+    failed: false,
+    succeeded: false,
+    succeed: function() { this.succeeded = true; }, // do not replace with arrow function
+    fail: function() { this.failed = true; }
   };
   let data = {data: 'responseData'};
   let validation = null;
