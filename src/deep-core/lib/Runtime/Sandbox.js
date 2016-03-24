@@ -33,9 +33,7 @@ export class Sandbox {
         execDomain.exit();
       } catch (e) {/* silent fail */}
 
-      setImmediate(() => {
-        this._onFail(error);
-      });
+      this._onFail(error);
     };
 
     execDomain.once('error', failCb);
