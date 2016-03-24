@@ -128,7 +128,7 @@ export class AbstractEvent extends Core.OOP.Interface {
    * @returns {Object}
    */
   validate() {
-    let result = Joi.validate(this._rawData, this.getValidationSchema(), {
+    let result = Joi.validate(this._data, this.getValidationSchema(), {
       stripUnknown: true,
       convert: true,
       abortEarly: false,
