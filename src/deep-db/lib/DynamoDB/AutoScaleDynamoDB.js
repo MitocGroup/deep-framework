@@ -33,6 +33,8 @@ export class AutoScaleDynamoDB {
       };
     });
 
+    this._dynamoDbDocumentClient[AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG] = true;
+
     return this._dynamoDbDocumentClient;
   }
 
@@ -77,7 +79,7 @@ export class AutoScaleDynamoDB {
 
           let increasePayload = {};
           let increaseType = AutoScaleDynamoDB.increaseType(method);
-          increasePayload[increaseType] = Math.abs(parseInt(info.main[increaseType]) *
+          increasePayload[increaseType] = Math.ceil(parseInt(info.main[increaseType]) *
             AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT);
 
           throughput.setCapacity(increasePayload, (error) => {
@@ -185,6 +187,13 @@ export class AutoScaleDynamoDB {
    */
   static get PROVISION_INCREASE_COEFFICIENT() {
     return 1.3;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEEP_DB_DECORATOR_FLAG() {
+    return '__deep_db_decorator__';
   }
 
   /**
