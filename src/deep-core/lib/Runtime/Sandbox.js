@@ -29,11 +29,13 @@ export class Sandbox {
     let execDomain = domain.create();
 
     let failCb = (error) => {
-      try {
-        execDomain.exit();
-      } catch (e) {/* silent fail */}
+        try {
+          execDomain.exit();
+        } catch (e) {/* silent fail */}
 
-      this._onFail(error);
+      setImmediate(() => {
+        this._onFail(error);
+      });
     };
 
     execDomain.once('error', failCb);
