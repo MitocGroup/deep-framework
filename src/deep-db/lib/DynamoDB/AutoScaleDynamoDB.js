@@ -189,6 +189,9 @@ export class AutoScaleDynamoDB {
     return 1.3;
   }
 
+  /**
+   * @returns {String}
+   */
   static get DEEP_DB_DECORATOR_FLAG() {
     return '__deep_db_decorator__'
   }
