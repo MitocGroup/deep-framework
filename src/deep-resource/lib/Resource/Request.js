@@ -67,13 +67,6 @@ export class Request {
   }
 
   /**
-   * @returns {Boolean}
-   */
-  get loadCredentials() {
-    return this._withUserCredentials;
-  }
-
-  /**
    * @returns {Request}
    */
   skipPreValidation() {
