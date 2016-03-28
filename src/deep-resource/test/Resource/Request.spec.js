@@ -141,10 +141,6 @@ suite('Resource/Request', () => {
     chai.expect(request.payload).to.be.equal(payload);
   });
 
-  test('Check constructor sets valid value for _lambda=null', () => {
-    chai.expect(request._lambda).to.be.equal(null);
-  });
-
   test('Check constructor sets valid value for _native=false', () => {
     chai.expect(request.native).to.be.equal(false);
   });
