@@ -39,7 +39,7 @@ export class Request {
     this._action = action;
     this._payload = payload;
     this._method = method;
-    this._lambda = null;
+    this._lambda = new AWS.Lambda();
 
     this._cacheImpl = null;
     this._cacheTtl = Request.TTL_FOREVER;
