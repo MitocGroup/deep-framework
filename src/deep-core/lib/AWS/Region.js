@@ -155,6 +155,7 @@ export class Region {
   /**
    *
    * @param {String} region
+   * @returns {string}
    */
   static getRegionPrefix(region) {
     return region === Region.EU_FRANKFURT || region === Region.ASIA_PACIFIC_TOKYO ? '.' : '-';
