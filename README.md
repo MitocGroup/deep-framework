@@ -24,7 +24,9 @@ Help needed to add support for [Google Cloud Platform](https://cloud.google.com/
 
 Documentation is available at [docs.deep.mg](http://docs.deep.mg).
 
-Learn hands-on how to build web applications from [this blog post](https://blog.mitocgroup.com/building-scalable-web-apps-with-aws-lambda-and-home-grown-serverless-web-framework-e04c912d08f0) and [this video playlist](https://www.youtube.com/playlist?list=PLPGfD-tGOl7uNDXo_eMN1odMZflYVu2n9).
+Learn hands-on how to build and deploy cloud-native web applications from
+[this blog post](https://blog.mitocgroup.com/building-scalable-web-apps-with-aws-lambda-and-home-grown-serverless-web-framework-e04c912d08f0)
+and [this video playlist](https://www.youtube.com/playlist?list=PLPGfD-tGOl7uNDXo_eMN1odMZflYVu2n9).
 
 
 ## Getting Started
