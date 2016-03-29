@@ -49,7 +49,7 @@ Next, run locally the helloworld project:
 deepify server ~/deep-hello-world -o
 ```
 
-> When this step is finished, you can open in your browser the link http://localhost:8000
+> When this step is finished, you can open in your browser the link *http://localhost:8000*
 and enjoy the helloworld project running locally.
 
 Finally, deploy the helloworld to cloud provider:
