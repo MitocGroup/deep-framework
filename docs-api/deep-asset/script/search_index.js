@@ -294,6 +294,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -355,13 +361,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/asset.js~asset#injectbuildid",
-    "class/lib/Asset.js~Asset.html#instance-set-injectBuildId",
+    "class/lib/Asset.js~Asset.html#instance-get-injectBuildId",
     "lib/Asset.js~Asset#injectBuildId",
     "member"
   ],
   [
     "lib/asset.js~asset#injectbuildid",
-    "class/lib/Asset.js~Asset.html#instance-get-injectBuildId",
+    "class/lib/Asset.js~Asset.html#instance-set-injectBuildId",
     "lib/Asset.js~Asset#injectBuildId",
     "member"
   ],

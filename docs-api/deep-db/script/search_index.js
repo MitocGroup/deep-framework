@@ -396,6 +396,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -538,6 +544,12 @@ window.esdocSearchIndex = [
     "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#instance-method-extend",
     "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB#extend",
     "method"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.deep_db_decorator_flag",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#static-get-DEEP_DB_DECORATOR_FLAG",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG",
+    "member"
   ],
   [
     "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.max_increase_num_per_table",
