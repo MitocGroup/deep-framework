@@ -131,9 +131,8 @@ Interested in contributing to DEEP Framework?
 ## Sponsors
 
 This repository is being sponsored by:
-> [Mitoc Group](https://www.mitocgroup.com)
-
-> [DEEP Marketplace](https://www.deep.mg)
+- [Mitoc Group](https://www.mitocgroup.com)
+- [DEEP Marketplace](https://www.deep.mg)
 
 The code can be used under the MIT license:
 > See [LICENSE](https://github.com/MitocGroup/deep-framework/blob/master/LICENSE) for more details.
