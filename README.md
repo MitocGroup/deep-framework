@@ -72,7 +72,7 @@ DEEP Framework is a nodejs package that is published on npmjs: https://www.npmjs
 
 > If you are new to node and npm, check out the tutorial [how to install nodejs](http://howtonode.org/how-to-install-nodejs).
 
-In fact, this framework is a collection of nodejs packages, also identifiable as abstracted libraries. Here below is the complete list:
+In fact, this framework is a collection of nodejs packages, also identifiable as abstracted libraries:
 
 [DEEP Framework](https://www.npmjs.com/package/deep-framework) | [API Docs](http://docs.deep.mg) | Abstracted Web Service(s)
 ---------------------------------------------------------------|---------------------------------|--------------------------
