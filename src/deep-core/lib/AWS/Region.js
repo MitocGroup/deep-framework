@@ -158,6 +158,6 @@ export class Region {
    * @returns {string}
    */
   static getRegionPrefix(region) {
-    return region === Region.EU_FRANKFURT || region === Region.ASIA_PACIFIC_TOKYO ? '.' : '-';
+    return region === Region.EU_FRANKFURT || region === Region.ASIA_PACIFIC_SEOUL ? '.' : '-';
   }
 }
