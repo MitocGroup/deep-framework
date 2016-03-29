@@ -27,15 +27,18 @@ export class Sandbox {
    */
   run(...args) {
     let execDomain = domain.create();
-    let failCb = (error) => {
-      execDomain.exit();
 
-      process.nextTick(() => {
+    let failCb = (error) => {
+      try {
+        execDomain.exit();
+      } catch (e) {/* silent fail */}
+
+      setImmediate(() => {
         this._onFail(error);
       });
     };
 
-    execDomain.on('error', failCb);
+    execDomain.once('error', failCb);
 
     try {
       execDomain.run(this._func, ...args);

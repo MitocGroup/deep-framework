@@ -12,8 +12,11 @@ import {Exception} from './Exception';
 export class MissingSearchClientException extends Exception {
   /**
    * @param {String} domainUrl
+   * @param {String} domainType
    */
-  constructor(domainUrl) {
-    super(`Error on creating client for "${domainUrl}" domain. Client implementation is missing.`);
+  constructor(domainUrl, domainType) {
+    super(
+      `Error on creating "${domainType}" client for "${domainUrl}" domain . Client implementation is missing.`
+    );
   }
 }

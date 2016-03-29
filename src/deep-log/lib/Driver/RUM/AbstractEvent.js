@@ -128,7 +128,7 @@ export class AbstractEvent extends Core.OOP.Interface {
    * @returns {Object}
    */
   validate() {
-    let result = Joi.validate(this._rawData, this.getValidationSchema(), {
+    let result = Joi.validate(this._data, this.getValidationSchema(), {
       stripUnknown: true,
       convert: true,
       abortEarly: false,
@@ -178,7 +178,7 @@ export class AbstractEvent extends Core.OOP.Interface {
       };
 
       let securityToken = this._kernel.get('security').token;
-      event.identityId = securityToken && securityToken.identityId ? securityToken.identityId : '';
+      event.identityId = securityToken && securityToken.identityId ? securityToken.identityId : 'anonymous';
     }
 
     return event;

@@ -39,7 +39,7 @@ export class Request {
     this._action = action;
     this._payload = payload;
     this._method = method;
-    this._lambda = null;
+    this._lambda = new AWS.Lambda();
 
     this._cacheImpl = null;
     this._cacheTtl = Request.TTL_FOREVER;
@@ -53,6 +53,17 @@ export class Request {
 
     this._customId = null;
     this._returnLogs = false;
+
+    this._withUserCredentials = true;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  skipLoadingCredentials() {
+    this._withUserCredentials = false;
+
+    return this;
   }
 
   /**
@@ -596,7 +607,6 @@ export class Request {
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
-    let that = this;
     let options = {
       region: this._action.region,
     };
@@ -608,26 +618,42 @@ export class Request {
       LogType: this._returnLogs ? 'Tail' : 'None',
     };
 
-    this._loadSecurityCredentials((error, credentials) => {
-      // use cognito identity credentials if present
-      // if not, fallback to lambda execution role permissions
-      if (!error && credentials) {
-        options.credentials = credentials;
-      }
+    if (!this._withUserCredentials) {
+      this._invokeLambda(invocationParameters, callback);
+    } else {
+      this._loadSecurityCredentials((error, credentials) => {
 
-      this._lambda = new AWS.Lambda(options);
+        // use cognito identity credentials if present
+        // if not, fallback to lambda execution role permissions
+        if (!error && credentials) {
+          options.credentials = credentials;
+        }
 
-      // @note - don't replace this callback function with an arrow one
-      // (we need injected context to access AWS.Response)
-      this._lambda.invoke(invocationParameters, function(error, data) {
-        let lambdaResponse = new LambdaResponse(that, data, error);
-        lambdaResponse.originalResponse = this; // this is an instance of AWS.Response
+        this._lambda = new AWS.Lambda(options);
 
-        callback(lambdaResponse);
+        this._invokeLambda(invocationParameters, callback);
       });
-    });
+    }
 
     return this;
+  }
+
+  /**
+   * @param {Object} invocationParameters
+   * @param {Function} callback
+   * @private
+   */
+  _invokeLambda(invocationParameters, callback) {
+    let _this = this;
+
+    // @note - don't replace this callback function with an arrow one
+    // (we need injected context to access AWS.Response)
+    this._lambda.invoke(invocationParameters, function(error, data) {
+      let lambdaResponse = new LambdaResponse(_this, data, error);
+      lambdaResponse.originalResponse = this; // this is an instance of AWS.Response
+
+      callback(lambdaResponse);
+    });
   }
 
   /**

@@ -51,6 +51,8 @@ echo "- Execute prepare hooks"
 # @todo: move this into another script?
 cd "${path}"/../node_modules/deep-log && \
     "${npm}" run prepare-browserify
+cd "${path}"/../node_modules/deep-cache && \
+    "${npm}" run prepare-browserify
 
 echo "- Installing shared aws-sdk@^2.2.x instance"
 cd "${path}"/../

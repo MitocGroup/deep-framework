@@ -59,6 +59,7 @@ export class S3FSRelativeFSExtender {
   get EXTEND_OBJECT() {
     let extendObject = {
       bucket: 'relative_fs',
+      path: '',
       s3: {}, // @todo: mock `AWS.S3()`
 
       /**

@@ -140,7 +140,9 @@ export class DB extends Kernel.ContainerAware {
       if (this._localBackend) {
         this._enableLocalDB(callback);
       } else {
-        this._initVogelsAutoscale();
+        if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
+          this._initVogelsAutoscale();
+        }
 
         callback();
       }
