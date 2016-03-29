@@ -44,6 +44,9 @@ Using deepify, dump locally the helloworld example:
 deepify helloworld ~/deep-hello-world
 ```
 
+> This command is equivalent to the generic command used globally:
+`deepify install github://MitocGroup/deep-microservices-helloworld ~/deep-hello-world`
+
 Next, run locally the helloworld project:
 
 ```bash
