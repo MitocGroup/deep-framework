@@ -68,10 +68,10 @@ DEEP Framework is a nodejs package that is published on npmjs: https://www.npmjs
 
 > If you are new to node and npm, check out the tutorial [how to install nodejs](http://howtonode.org/how-to-install-nodejs).
 
-In fact, this framework is a collection of nodejs packages, also known as DEEP Abstracted Libraries. Here below is the complete list:
+In fact, this framework is a collection of nodejs packages, also identifiable as abstracted libraries. Here below is the complete list:
 
-DEEP Abstracted Library | [API Docs](http://docs.deep.mg) | Abstracted Web Service(s)
-------------------------|---------------------------------|--------------------------
+[DEEP Framework](https://www.npmjs.com/package/deep-framework) | [API Docs](http://docs.deep.mg) | Abstracted Web Service(s)
+---------------------------------------------------------------|---------------------------------|--------------------------
 [deep-asset](https://www.npmjs.com/package/deep-asset) | [Assets Management Library](http://docs.deep.mg/deep-asset) | Amazon S3
 [deep-cache](https://www.npmjs.com/package/deep-cache) | [Cache Management Library](http://docs.deep.mg/deep-cache) | Amazon ElastiCache
 [deep-core](https://www.npmjs.com/package/deep-core) | [Core Management Library](http://docs.deep.mg/deep-core) | -
