@@ -18,8 +18,9 @@ Using DEEP Framework, developers get out-of-the-box:
 - virtually infinite scalability with zero devops (aka *serverless computing*)
 - abstracted use of web services from cloud providers (e.g. AWS, GCP, etc.)
 
-> [Amazon Web Services](https://aws.amazon.com) is the only supported cloud provider. Help needed to add support
-for [Google Cloud Platform](https://cloud.google.com/), [Microsoft Azure](https://azure.microsoft.com), and others.
+> [Amazon Web Services](https://aws.amazon.com) is the only supported cloud provider at the moment.
+Help needed to add support for [Google Cloud Platform](https://cloud.google.com/),
+[Microsoft Azure](https://azure.microsoft.com), and others.
 
 Documentation is available at [docs.deep.mg](http://docs.deep.mg).
 
