@@ -68,7 +68,7 @@ if it returns an HTTP error in the first couple of minutes.
 
 DEEP Framework is a nodejs package that is published on npmjs: https://www.npmjs.com/package/deep-framework.
 
-> If you are new to node and npm, check out [how to install nodejs](http://howtonode.org/how-to-install-nodejs) tutorial.
+> If you are new to node and npm, check out the tutorial [how to install nodejs](http://howtonode.org/how-to-install-nodejs).
 
 In fact, this framework is a collection of nodejs packages, also known as DEEP Abstracted Libraries. Here below is the complete list:
 
