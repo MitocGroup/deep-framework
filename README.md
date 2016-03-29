@@ -34,7 +34,7 @@ Install DEEP CLI, also known as deepify:
 npm install deepify -g
 ```
 
-> Note: If you want to use `deepify` on Windows, please follow the steps from
+> If you want to use `deepify` on Windows, please follow the steps from
 [Windows Configuration](https://github.com/MitocGroup/deep-framework/blob/master/docs/windows.md)
 before running `npm install deepify -g` and make sure all `npm` and `deepify` commands are executed
 inside Git Bash.
@@ -51,7 +51,7 @@ Next, run locally the helloworld project:
 deepify server ~/deep-hello-world -o
 ```
 
-> Note: When this step is finished, you can open in your browser the link http://localhost:8000
+> When this step is finished, you can open in your browser the link http://localhost:8000
 and enjoy the helloworld project running locally.
 
 Finally, deploy the helloworld to cloud provider:
@@ -60,7 +60,7 @@ Finally, deploy the helloworld to cloud provider:
 deepify deploy ~/deep-hello-world
 ```
 
-> Note: Amazon CloudFront distribution takes up to 20 minutes to provision, therefore don’t worry
+> Amazon CloudFront distribution takes up to 20 minutes to provision, therefore don’t worry
 if it returns an HTTP error in the first couple of minutes.
 
 
@@ -132,6 +132,7 @@ Interested in contributing to DEEP Framework?
 
 This repository is being sponsored by:
 > [Mitoc Group](https://www.mitocgroup.com)
+
 > [DEEP Marketplace](https://www.deep.mg)
 
 The code can be used under the MIT license:
