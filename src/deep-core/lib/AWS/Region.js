@@ -151,4 +151,12 @@ export class Region {
 
     return availableRegions[0]; // fallback to first available region
   }
+
+  /**
+   *
+   * @param {String} region
+   */
+  static getRegionPrefix(region) {
+    return region === Region.EU_FRANKFURT || region === Region.ASIA_PACIFIC_TOKYO ? '.' : '-';
+  }
 }
