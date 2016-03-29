@@ -9,7 +9,7 @@ DEEP Framework
 DEEP Framework is a full-stack web framework for building cloud-native web applications.
 
 > This framework is a core component of a larger ecosystem, called
-[Digital Enterprise End-to-end Platform](https://github.com/MitocGroup/deep-framework/blob/master/README.md#appendix-b-deep-ecosystem).
+[Digital Enterprise End-to-end Platform](https://github.com/MitocGroup/deep-framework/blob/master/docs/index.md).
 
 Using DEEP Framework, developers get out-of-the-box:
 
@@ -22,8 +22,6 @@ Using DEEP Framework, developers get out-of-the-box:
 for [Google Cloud Platform](https://cloud.google.com/), [Microsoft Azure](https://azure.microsoft.com), and others.
 
 Documentation is available at [docs.deep.mg](http://docs.deep.mg).
-
-Getting started tutorial is available at [try.deep.mg](http://try.deep.mg).
 
 
 ## Getting Started
