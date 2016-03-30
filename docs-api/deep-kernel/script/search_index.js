@@ -378,6 +378,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -757,13 +763,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/containeraware.js~containeraware#kernel",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-kernel",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-kernel",
     "lib/ContainerAware.js~ContainerAware#kernel",
     "member"
   ],
   [
     "lib/containeraware.js~containeraware#kernel",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-kernel",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-kernel",
     "lib/ContainerAware.js~ContainerAware#kernel",
     "member"
   ],
@@ -978,6 +984,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/kernel.js~kernel.async_config_cache_key",
+    "class/lib/Kernel.js~Kernel.html#static-get-ASYNC_CONFIG_CACHE_KEY",
+    "lib/Kernel.js~Kernel.ASYNC_CONFIG_CACHE_KEY",
+    "member"
+  ],
+  [
     "lib/kernel.js~kernel.async_config_file",
     "class/lib/Kernel.js~Kernel.html#static-get-ASYNC_CONFIG_FILE",
     "lib/Kernel.js~Kernel.ASYNC_CONFIG_FILE",
@@ -1093,13 +1105,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/microservice/injectable.js~injectable#microservice",
-    "class/lib/Microservice/Injectable.js~Injectable.html#instance-get-microservice",
+    "class/lib/Microservice/Injectable.js~Injectable.html#instance-set-microservice",
     "lib/Microservice/Injectable.js~Injectable#microservice",
     "member"
   ],
   [
     "lib/microservice/injectable.js~injectable#microservice",
-    "class/lib/Microservice/Injectable.js~Injectable.html#instance-set-microservice",
+    "class/lib/Microservice/Injectable.js~Injectable.html#instance-get-microservice",
     "lib/Microservice/Injectable.js~Injectable#microservice",
     "member"
   ],
@@ -1129,13 +1141,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/microservice/instance.js~instance#isroot",
-    "class/lib/Microservice/Instance.js~Instance.html#instance-set-isRoot",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-get-isRoot",
     "lib/Microservice/Instance.js~Instance#isRoot",
     "member"
   ],
   [
     "lib/microservice/instance.js~instance#isroot",
-    "class/lib/Microservice/Instance.js~Instance.html#instance-get-isRoot",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-set-isRoot",
     "lib/Microservice/Instance.js~Instance#isRoot",
     "member"
   ],

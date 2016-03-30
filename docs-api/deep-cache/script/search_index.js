@@ -384,6 +384,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -559,13 +565,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#namespace",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-namespace",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-namespace",
     "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "member"
   ],
   [
     "lib/driver/abstractdriver.js~abstractdriver#namespace",
-    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-set-namespace",
+    "class/lib/Driver/AbstractDriver.js~AbstractDriver.html#instance-get-namespace",
     "lib/Driver/AbstractDriver.js~AbstractDriver#namespace",
     "member"
   ],

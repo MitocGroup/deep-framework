@@ -1,5 +1,6 @@
 [
   {
+    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -12,6 +13,7 @@
     "content": "/**\n * Created by mgoria on 3/4/16.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport elasticsearch from 'elasticsearch';\n\n/**\n * Elasticsearch client\n * @see https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/index.html\n */\nexport class Elasticsearch {\n  /**\n   * @param {String} host\n   * @param {Function|null} decorator\n   */\n  constructor(host, decorator = null) {\n    this._host = host;\n    this._decorator = decorator;\n\n    this._esClient = new elasticsearch.Client({\n      host: this._host,\n      apiVersion: '2.1', // @note - If you want to change this version do update deep-search/node-bin/cleanup.sh also\n    });\n\n    this._proxy(this, this._esClient, this._decorator);\n  }\n\n  /**\n   * @param {Elasticsearch} target\n   * @param {elasticsearch} handler\n   * @param {Function} decorator\n   * @param {Array} methods\n   *\n   * @returns {Object}\n   * @private\n   */\n  _proxy(target, handler, decorator, methods = []) {\n    return new Core.Generic.MethodsProxy(target)\n      .decorate(decorator)\n      .proxyOverride(handler, methods);\n  }\n}"
   },
   {
+    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -30,6 +32,7 @@
     "interface": false
   },
   {
+    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -65,6 +68,7 @@
     "generator": false
   },
   {
+    "__docId__": 3,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -82,6 +86,7 @@
     }
   },
   {
+    "__docId__": 4,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -99,6 +104,7 @@
     }
   },
   {
+    "__docId__": 5,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -116,6 +122,7 @@
     }
   },
   {
+    "__docId__": 6,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -184,6 +191,7 @@
     "generator": false
   },
   {
+    "__docId__": 7,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -196,6 +204,7 @@
     "content": "/**\n * Created by mgoria on 03/04/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
+    "__docId__": 8,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -214,6 +223,7 @@
     ]
   },
   {
+    "__docId__": 9,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -238,6 +248,7 @@
     "generator": false
   },
   {
+    "__docId__": 10,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -247,9 +258,10 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 3/7/16.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when any exception occurs\n */\nexport class MissingSearchClientException extends Exception {\n  /**\n   * @param {String} domainUrl\n   */\n  constructor(domainUrl) {\n    super(`Error on creating client for \"${domainUrl}\" domain. Client implementation is missing.`);\n  }\n}"
+    "content": "/**\n * Created by mgoria on 3/7/16.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when any exception occurs\n */\nexport class MissingSearchClientException extends Exception {\n  /**\n   * @param {String} domainUrl\n   * @param {String} domainType\n   */\n  constructor(domainUrl, domainType) {\n    super(\n      `Error on creating \"${domainType}\" client for \"${domainUrl}\" domain . Client implementation is missing.`\n    );\n  }\n}"
   },
   {
+    "__docId__": 11,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -268,6 +280,7 @@
     ]
   },
   {
+    "__docId__": 12,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -276,7 +289,7 @@
     "longname": "lib/Exception/MissingSearchClientException.js~MissingSearchClientException#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 16,
+    "lineNumber": 17,
     "params": [
       {
         "nullable": null,
@@ -287,11 +300,89 @@
         "optional": false,
         "name": "domainUrl",
         "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "domainType",
+        "description": ""
       }
     ],
     "generator": false
   },
   {
+    "__docId__": 13,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Exception/NotReadySearchDomainException.js",
+    "memberof": null,
+    "longname": "lib/Exception/NotReadySearchDomainException.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by mgoria on 3/17/16.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when any exception occurs\n */\nexport class NotReadySearchDomainException extends Exception {\n  /**\n   * @param {String} domainName\n   * @param {String} domainType\n   */\n  constructor(domainName, domainType) {\n    super(\n      `\"${domainType}\" domain \"${domainName}\" is not yet ready.`\n    );\n  }\n}"
+  },
+  {
+    "__docId__": 14,
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "NotReadySearchDomainException",
+    "memberof": "lib/Exception/NotReadySearchDomainException.js",
+    "longname": "lib/Exception/NotReadySearchDomainException.js~NotReadySearchDomainException",
+    "access": null,
+    "export": true,
+    "importPath": "deep-search/lib/Exception/NotReadySearchDomainException.js",
+    "importStyle": "{NotReadySearchDomainException}",
+    "description": "Thrown when any exception occurs",
+    "lineNumber": 12,
+    "interface": false,
+    "extends": [
+      "lib/Exception/Exception~Exception"
+    ]
+  },
+  {
+    "__docId__": 15,
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Exception/NotReadySearchDomainException.js~NotReadySearchDomainException",
+    "longname": "lib/Exception/NotReadySearchDomainException.js~NotReadySearchDomainException#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "domainName",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "domainType",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "__docId__": 16,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -304,6 +395,7 @@
     "content": "/**\n * Created by mgoria on 3/4/16.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when any exception occurs\n */\nexport class UnknownSearchDomainException extends Exception {\n  /**\n   * @param {String} domainName\n   * @param {Array} domains\n   */\n  constructor(domainName, domains) {\n    super(`Unknown search domain \"${domainName}\". Defined domains are \"${domains.join(', ')}\"`);\n  }\n}"
   },
   {
+    "__docId__": 17,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -322,6 +414,7 @@
     ]
   },
   {
+    "__docId__": 18,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -356,6 +449,7 @@
     "generator": false
   },
   {
+    "__docId__": 19,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -365,9 +459,10 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 3/4/16.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Elasticsearch as ElasticSearchClient} from './Client/Elasticsearch';\nimport {UnknownSearchDomainException} from './Exception/UnknownSearchDomainException';\nimport {MissingSearchClientException} from './Exception/MissingSearchClientException';\n\n/**\n * Deep Search implementation\n */\nexport class Search extends Kernel.ContainerAware {\n  /**\n   * @param {Object} domains\n   *\n   * @example domains = {\n   *  rum: {\n   *    type: 'es|cloudsearch',\n   *    name: '<DomainName>',\n   *    url: '<DomainUrl>'\n   *  },\n   *  ...\n   * }\n   */\n  constructor(domains) {\n    super();\n\n    this._domains = domains;\n    this._domainClients = [];\n  }\n\n  /**\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._domains = kernel.config.searchDomains || {};\n\n    callback();\n  }\n\n  /**\n   * @param {String} domainName\n   * @returns {ElasticSearchClient}\n   */\n  getClient(domainName) {\n    if (this._domainClients.indexOf(domainName) === -1) {\n      this._domainClients[domainName] = this._createClient(domainName);\n    }\n\n    return this._domainClients[domainName];\n  }\n\n  /**\n   * @param {String} domainName\n   * @returns {ElasticSearchClient}\n   * @private\n   */\n  _createClient(domainName) {\n    if (!this._domains.hasOwnProperty(domainName)) {\n      throw new UnknownSearchDomainException(domainName, Object.keys(this._domains));\n    }\n\n    let client = null;\n    let domain = this._domains[domainName];\n\n    if (domain.type === Core.AWS.Service.ELASTIC_SEARCH) {\n      client = new ElasticSearchClient(domain.url, this.clientDecorator);\n    }\n\n    if (!client) {\n      throw new MissingSearchClientException(domain.name);\n    }\n\n    return client;\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get clientDecorator() {\n    let func = null;\n\n    if (this.kernel && this.kernel.isRumEnabled) {\n      func = function(instance, originalFunctionName, ...args) {\n        // RUM log ...\n\n        let originalCallback = null;\n\n        // seeking the callback function through the arguments and proxy it\n        args.forEach((arg, index) => {\n          if (typeof arg === 'function') {\n            originalCallback = arg;\n\n            args[index] = (...cbArgs) => {\n              // RUM log ...\n\n              originalCallback.call(instance, ...cbArgs);\n            };\n          }\n        });\n\n        originalFunctionName.call(instance, ...args);\n      };\n    }\n\n    return func;\n  }\n}"
+    "content": "/**\n * Created by mgoria on 3/4/16.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {Elasticsearch as ElasticSearchClient} from './Client/Elasticsearch';\nimport {UnknownSearchDomainException} from './Exception/UnknownSearchDomainException';\nimport {MissingSearchClientException} from './Exception/MissingSearchClientException';\nimport {NotReadySearchDomainException} from './Exception/NotReadySearchDomainException';\nimport util from 'util';\n\n/**\n * Deep Search implementation\n */\nexport class Search extends Kernel.ContainerAware {\n  /**\n   * @param {Object} domains\n   *\n   * @example domains = {\n   *  rum: {\n   *    type: 'es|cloudsearch',\n   *    name: '<DomainName>',\n   *    url: '<DomainUrl>'\n   *  },\n   *  ...\n   * }\n   */\n  constructor(domains) {\n    super();\n\n    this._domains = domains;\n    this._domainClients = [];\n  }\n\n  /**\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    this._domains = kernel.config.searchDomains || {};\n\n    callback();\n  }\n\n  /**\n   * @param {String} domainName\n   * @param {Function} callback\n   */\n  getClient(domainName, callback) {\n    if (this._domainClients.indexOf(domainName) !== -1) {\n      callback(null, this._domainClients[domainName]);\n      return;\n    }\n\n    this._createClient(domainName, (error, client) => {\n      if (!error) {\n        this._domainClients[domainName] = client;\n      }\n\n      callback(error, client);\n    });\n  }\n\n  /**\n   * @param {String} domainName\n   * @param {Function} callback\n   * @private\n   */\n  _createClient(domainName, callback) {\n    if (!this._domains.hasOwnProperty(domainName)) {\n      callback(new UnknownSearchDomainException(domainName, Object.keys(this._domains)));\n      return;\n    }\n\n    let domainConfig = this._domains[domainName];\n\n    this.kernel.loadAsyncConfig((asyncConfig) => {\n      if (asyncConfig && asyncConfig.searchDomains && asyncConfig.searchDomains.hasOwnProperty(domainName)) {\n        let client = null;\n        domainConfig = util._extend(domainConfig, asyncConfig.searchDomains[domainName]);\n\n        if (!domainConfig.hasOwnProperty('url')) {\n          callback(new NotReadySearchDomainException(domainConfig.name, domainConfig.type));\n          return;\n        }\n\n        if (domainConfig.type === Core.AWS.Service.ELASTIC_SEARCH) {\n          client = new ElasticSearchClient(domainConfig.url, this.clientDecorator);\n        }\n\n        if (!client) {\n          callback(new MissingSearchClientException(domainConfig.name, domainConfig.type));\n          return;\n        }\n\n        callback(null, client);\n      } else {\n        callback(new NotReadySearchDomainException(domainConfig.name, domainConfig.type));\n      }\n    });\n  }\n\n  /**\n   * @returns {Function}\n   */\n  get clientDecorator() {\n    let func = null;\n\n    if (this.kernel && this.kernel.isRumEnabled) {\n      func = function(instance, originalFunctionName, ...args) {\n        // RUM log ...\n\n        let originalCallback = null;\n\n        // seeking the callback function through the arguments and proxy it\n        args.forEach((arg, index) => {\n          if (typeof arg === 'function') {\n            originalCallback = arg;\n\n            args[index] = (...cbArgs) => {\n              // RUM log ...\n\n              originalCallback.call(instance, ...cbArgs);\n            };\n          }\n        });\n\n        originalFunctionName.call(instance, ...args);\n      };\n    }\n\n    return func;\n  }\n}"
   },
   {
+    "__docId__": 20,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -379,13 +474,14 @@
     "importPath": "deep-search/lib/Search.js",
     "importStyle": "{Search}",
     "description": "Deep Search implementation",
-    "lineNumber": 16,
+    "lineNumber": 18,
     "interface": false,
     "extends": [
       "deep-kernel~Kernel.ContainerAware"
     ]
   },
   {
+    "__docId__": 21,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -397,7 +493,7 @@
     "examples": [
       "domains = {\n rum: {\n   type: 'es|cloudsearch',\n   name: '<DomainName>',\n   url: '<DomainUrl>'\n },\n ...\n}"
     ],
-    "lineNumber": 29,
+    "lineNumber": 31,
     "params": [
       {
         "nullable": null,
@@ -413,6 +509,7 @@
     "generator": false
   },
   {
+    "__docId__": 22,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -421,7 +518,7 @@
     "longname": "lib/Search.js~Search#_domains",
     "access": null,
     "description": null,
-    "lineNumber": 32,
+    "lineNumber": 34,
     "undocument": true,
     "type": {
       "types": [
@@ -430,6 +527,7 @@
     }
   },
   {
+    "__docId__": 23,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -438,7 +536,7 @@
     "longname": "lib/Search.js~Search#_domainClients",
     "access": null,
     "description": null,
-    "lineNumber": 33,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -447,6 +545,7 @@
     }
   },
   {
+    "__docId__": 24,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -455,7 +554,7 @@
     "longname": "lib/Search.js~Search#boot",
     "access": null,
     "description": null,
-    "lineNumber": 40,
+    "lineNumber": 42,
     "params": [
       {
         "nullable": null,
@@ -481,6 +580,7 @@
     "generator": false
   },
   {
+    "__docId__": 25,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -489,7 +589,7 @@
     "longname": "lib/Search.js~Search#_domains",
     "access": null,
     "description": null,
-    "lineNumber": 41,
+    "lineNumber": 43,
     "undocument": true,
     "type": {
       "types": [
@@ -498,6 +598,7 @@
     }
   },
   {
+    "__docId__": 26,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -506,13 +607,7 @@
     "longname": "lib/Search.js~Search#getClient",
     "access": null,
     "description": null,
-    "lineNumber": 50,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{ElasticSearchClient}"
-      }
-    ],
+    "lineNumber": 52,
     "params": [
       {
         "nullable": null,
@@ -523,19 +618,22 @@
         "optional": false,
         "name": "domainName",
         "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
       }
     ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "ElasticSearchClient"
-      ],
-      "spread": false,
-      "description": ""
-    },
     "generator": false
   },
   {
+    "__docId__": 27,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -544,13 +642,7 @@
     "longname": "lib/Search.js~Search#_createClient",
     "access": "private",
     "description": null,
-    "lineNumber": 63,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{ElasticSearchClient}"
-      }
-    ],
+    "lineNumber": 72,
     "params": [
       {
         "nullable": null,
@@ -561,19 +653,22 @@
         "optional": false,
         "name": "domainName",
         "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
       }
     ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "ElasticSearchClient"
-      ],
-      "spread": false,
-      "description": ""
-    },
     "generator": false
   },
   {
+    "__docId__": 28,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -582,7 +677,7 @@
     "longname": "lib/Search.js~Search#clientDecorator",
     "access": null,
     "description": null,
-    "lineNumber": 85,
+    "lineNumber": 109,
     "unknown": [
       {
         "tagName": "@returns",
@@ -605,6 +700,7 @@
     "generator": false
   },
   {
+    "__docId__": 29,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -617,6 +713,7 @@
     "content": "/**\n * Created by mgoria on 03/04/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Search} from './Search';\n\nlet exports = module.exports = Search;"
   },
   {
+    "__docId__": 30,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -637,6 +734,7 @@
     }
   },
   {
+    "__docId__": 32,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -649,6 +747,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 33,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -661,6 +760,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 34,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -673,6 +773,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 35,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -685,6 +786,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 36,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -697,6 +799,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 37,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -709,6 +812,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 38,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -721,6 +825,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 39,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -733,6 +838,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 40,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -745,6 +851,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -757,6 +864,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -769,6 +877,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -781,6 +890,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -793,6 +903,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -805,6 +916,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -817,6 +929,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -829,6 +942,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -841,6 +955,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -853,6 +968,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -865,6 +981,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -877,6 +994,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -889,6 +1007,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -901,6 +1020,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -913,6 +1033,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -925,6 +1046,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -937,6 +1059,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -949,6 +1072,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -961,6 +1085,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -973,6 +1098,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -985,6 +1111,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -997,6 +1124,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1009,6 +1137,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1021,6 +1150,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1033,6 +1163,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 65,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1045,6 +1176,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1057,6 +1189,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1069,6 +1202,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1081,6 +1215,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1093,6 +1228,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1105,6 +1241,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1117,6 +1254,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1129,6 +1267,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1141,6 +1280,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1153,6 +1293,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 75,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1165,6 +1306,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 76,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1177,6 +1319,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1189,6 +1332,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1201,6 +1345,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 80,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1213,6 +1358,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1225,6 +1371,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1237,6 +1384,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1249,6 +1397,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1261,6 +1410,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1273,6 +1423,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1280,6 +1431,19 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 87,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

@@ -9,12 +9,14 @@
   <script src="script/prettify/prettify.js"></script>
   
   
+  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container">
+<body class="layout-container" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  <a href="identifiers.html">Identifier</a>
+  
+  <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -42,6 +44,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectCallNotAvailableException.js~DirectCallNotAvailableException.html">DirectCallNotAvailableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LambdaParamsCompatibilityException.js~LambdaParamsCompatibilityException.html">LambdaParamsCompatibilityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
@@ -49,6 +53,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/SourceNotAvailableException.js~SourceNotAvailableException.html">SourceNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
@@ -80,6 +85,33 @@ export class SuperagentResponse extends Response {
   }
 
   /**
+   * @returns {Object}
+   */
+  get headers() {
+    if (!this._headers) {
+      // rawData in this case is superagent original Response object
+      this._headers = this.rawData &amp;&amp; this.rawData.headers ? this.rawData.headers : {};
+    }
+
+    return this._headers;
+  }
+
+  /**
+   * @returns {String|null}
+   */
+  get requestId() {
+    if (!this._requestId &amp;&amp; this.headers) {
+      if (this.headers[Response.ORIGINAL_REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.ORIGINAL_REQUEST_ID_HEADER.toLowerCase()];
+      } else if (this.headers[Response.REQUEST_ID_HEADER.toLowerCase()]) {
+        this._requestId = this.headers[Response.REQUEST_ID_HEADER.toLowerCase()];
+      }
+    }
+
+    return this._requestId;
+  }
+
+  /**
    * @private
    */
   _parseLambda() {
@@ -87,11 +119,41 @@ export class SuperagentResponse extends Response {
 
     // check if any Lambda response available
     if (this._data &amp;&amp; !this._error) {
+
+      // manage this weird case...
+      if (typeof this._data === &apos;string&apos;) {
+        try {
+          this._data = JSON.parse(this._data);
+        } catch (e) {
+        }
+      }
+
       let dataObj = this._data;
 
       // check whether Lambda execution failed
       if (dataObj.errorMessage) {
-        this._error = LambdaResponse.getPayloadError(dataObj);
+        let errorObj = null;
+
+        if (dataObj.errorStack &amp;&amp; dataObj.errorType) {
+          errorObj = dataObj;
+        } else {
+          errorObj = dataObj.errorMessage;
+
+          if (typeof errorObj === &apos;string&apos;) {
+            try {
+              errorObj = JSON.parse(errorObj);
+            } catch(e) {}
+          } else {
+            errorObj = errorObj || {
+                errorMessage: &apos;Unknown error occurred.&apos;,
+                errorStack: (new Error(&apos;Unknown error occurred.&apos;)).stack,
+                errorType: &apos;UnknownError&apos;,
+              };
+          }
+        }
+
+        this._error = LambdaResponse.getPayloadError(errorObj);
+        this._data = null;
       } else {
         this._data = dataObj;
       }
@@ -128,7 +190,7 @@ export class SuperagentResponse extends Response {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

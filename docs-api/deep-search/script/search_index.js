@@ -18,6 +18,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-search/lib/exception/notreadysearchdomainexception.js~notreadysearchdomainexception",
+    "class/lib/Exception/NotReadySearchDomainException.js~NotReadySearchDomainException.html",
+    "<span>NotReadySearchDomainException</span> <span class=\"search-result-import-path\">deep-search/lib/Exception/NotReadySearchDomainException.js</span>",
+    "class"
+  ],
+  [
     "deep-search/lib/search.js~search",
     "class/lib/Search.js~Search.html",
     "<span>Search</span> <span class=\"search-result-import-path\">deep-search/lib/Search.js</span>",
@@ -312,6 +318,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -387,6 +399,18 @@ window.esdocSearchIndex = [
     "lib/exception/missingsearchclientexception.js~missingsearchclientexception#constructor",
     "class/lib/Exception/MissingSearchClientException.js~MissingSearchClientException.html#instance-constructor-constructor",
     "lib/Exception/MissingSearchClientException.js~MissingSearchClientException#constructor",
+    "method"
+  ],
+  [
+    "lib/exception/notreadysearchdomainexception.js",
+    "file/lib/Exception/NotReadySearchDomainException.js.html",
+    "lib/Exception/NotReadySearchDomainException.js",
+    "file"
+  ],
+  [
+    "lib/exception/notreadysearchdomainexception.js~notreadysearchdomainexception#constructor",
+    "class/lib/Exception/NotReadySearchDomainException.js~NotReadySearchDomainException.html#instance-constructor-constructor",
+    "lib/Exception/NotReadySearchDomainException.js~NotReadySearchDomainException#constructor",
     "method"
   ],
   [

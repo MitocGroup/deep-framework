@@ -109,7 +109,7 @@ export class Token {
       this._logService.rumLog(event);
 
       event = util._extend({}, event);
-      event.payload = {error, credentials};
+      event.payload = {error: error, credentials: {}}; // avoid logging user credentials
 
       this._logService.rumLog(event);
 

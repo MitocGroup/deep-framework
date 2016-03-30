@@ -18,6 +18,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-resource/lib/resource/exception/directcallnotavailableexception.js~directcallnotavailableexception",
+    "class/lib/Resource/Exception/DirectCallNotAvailableException.js~DirectCallNotAvailableException.html",
+    "<span>DirectCallNotAvailableException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/DirectCallNotAvailableException.js</span>",
+    "class"
+  ],
+  [
     "deep-resource/lib/exception/exception.js~exception",
     "class/lib/Exception/Exception.js~Exception.html",
     "<span>Exception</span> <span class=\"search-result-import-path\">deep-resource/lib/Exception/Exception.js</span>",
@@ -27,6 +33,12 @@ window.esdocSearchIndex = [
     "deep-resource/lib/resource/instance.js~instance",
     "class/lib/Resource/Instance.js~Instance.html",
     "<span>Instance</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Instance.js</span>",
+    "class"
+  ],
+  [
+    "deep-resource/lib/resource/exception/lambdaparamscompatibilityexception.js~lambdaparamscompatibilityexception",
+    "class/lib/Resource/Exception/LambdaParamsCompatibilityException.js~LambdaParamsCompatibilityException.html",
+    "<span>LambdaParamsCompatibilityException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/LambdaParamsCompatibilityException.js</span>",
     "class"
   ],
   [
@@ -105,6 +117,12 @@ window.esdocSearchIndex = [
     "deep-resource/lib/resource/response.js~response",
     "class/lib/Resource/Response.js~Response.html",
     "<span>Response</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Response.js</span>",
+    "class"
+  ],
+  [
+    "deep-resource/lib/resource/exception/sourcenotavailableexception.js~sourcenotavailableexception",
+    "class/lib/Resource/Exception/SourceNotAvailableException.js~SourceNotAvailableException.html",
+    "<span>SourceNotAvailableException</span> <span class=\"search-result-import-path\">deep-resource/lib/Resource/Exception/SourceNotAvailableException.js</span>",
     "class"
   ],
   [
@@ -408,6 +426,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -552,6 +576,24 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/resource/action.js~action#fullname",
+    "class/lib/Resource/Action.js~Action.html#instance-get-fullName",
+    "lib/Resource/Action.js~Action#fullName",
+    "member"
+  ],
+  [
+    "lib/resource/action.js~action#isapisourceinvokable",
+    "class/lib/Resource/Action.js~Action.html#instance-get-isApiSourceInvokable",
+    "lib/Resource/Action.js~Action#isApiSourceInvokable",
+    "member"
+  ],
+  [
+    "lib/resource/action.js~action#isoriginalsourceinvokable",
+    "class/lib/Resource/Action.js~Action.html#instance-get-isOriginalSourceInvokable",
+    "lib/Resource/Action.js~Action#isOriginalSourceInvokable",
+    "member"
+  ],
+  [
     "lib/resource/action.js~action#methods",
     "class/lib/Resource/Action.js~Action.html#instance-get-methods",
     "lib/Resource/Action.js~Action#methods",
@@ -660,6 +702,30 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/exception/directcallnotavailableexception.js",
+    "file/lib/Resource/Exception/DirectCallNotAvailableException.js.html",
+    "lib/Resource/Exception/DirectCallNotAvailableException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/directcallnotavailableexception.js~directcallnotavailableexception#constructor",
+    "class/lib/Resource/Exception/DirectCallNotAvailableException.js~DirectCallNotAvailableException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/DirectCallNotAvailableException.js~DirectCallNotAvailableException#constructor",
+    "method"
+  ],
+  [
+    "lib/resource/exception/lambdaparamscompatibilityexception.js",
+    "file/lib/Resource/Exception/LambdaParamsCompatibilityException.js.html",
+    "lib/Resource/Exception/LambdaParamsCompatibilityException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/lambdaparamscompatibilityexception.js~lambdaparamscompatibilityexception#constructor",
+    "class/lib/Resource/Exception/LambdaParamsCompatibilityException.js~LambdaParamsCompatibilityException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/LambdaParamsCompatibilityException.js~LambdaParamsCompatibilityException#constructor",
+    "method"
+  ],
+  [
     "lib/resource/exception/loadcredentialsexception.js",
     "file/lib/Resource/Exception/LoadCredentialsException.js.html",
     "lib/Resource/Exception/LoadCredentialsException.js",
@@ -744,6 +810,18 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/exception/sourcenotavailableexception.js",
+    "file/lib/Resource/Exception/SourceNotAvailableException.js.html",
+    "lib/Resource/Exception/SourceNotAvailableException.js",
+    "file"
+  ],
+  [
+    "lib/resource/exception/sourcenotavailableexception.js~sourcenotavailableexception#constructor",
+    "class/lib/Resource/Exception/SourceNotAvailableException.js~SourceNotAvailableException.html#instance-constructor-constructor",
+    "lib/Resource/Exception/SourceNotAvailableException.js~SourceNotAvailableException#constructor",
+    "method"
+  ],
+  [
     "lib/resource/exception/unknownmethodexception.js",
     "file/lib/Resource/Exception/UnknownMethodException.js.html",
     "lib/Resource/Exception/UnknownMethodException.js",
@@ -823,14 +901,20 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#isbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-isBackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-isBackend",
     "lib/Resource/Instance.js~Instance#isBackend",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#isbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-isBackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-isBackend",
     "lib/Resource/Instance.js~Instance#isBackend",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#localbackend",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
+    "lib/Resource/Instance.js~Instance#localBackend",
     "member"
   ],
   [
@@ -840,9 +924,21 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/resource/instance.js~instance#localbackend",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-localBackend",
-    "lib/Resource/Instance.js~Instance#localBackend",
+    "lib/resource/instance.js~instance#log",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-log",
+    "lib/Resource/Instance.js~Instance#log",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#log",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-log",
+    "lib/Resource/Instance.js~Instance#log",
+    "member"
+  ],
+  [
+    "lib/resource/instance.js~instance#microservice",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-microservice",
+    "lib/Resource/Instance.js~Instance#microservice",
     "member"
   ],
   [
@@ -871,13 +967,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/resource/instance.js~instance#validation",
-    "class/lib/Resource/Instance.js~Instance.html#instance-set-validation",
+    "class/lib/Resource/Instance.js~Instance.html#instance-get-validation",
     "lib/Resource/Instance.js~Instance#validation",
     "member"
   ],
   [
     "lib/resource/instance.js~instance#validation",
-    "class/lib/Resource/Instance.js~Instance.html#instance-get-validation",
+    "class/lib/Resource/Instance.js~Instance.html#instance-set-validation",
     "lib/Resource/Instance.js~Instance#validation",
     "member"
   ],
@@ -892,6 +988,36 @@ window.esdocSearchIndex = [
     "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-constructor-constructor",
     "lib/Resource/LambdaResponse.js~LambdaResponse#constructor",
     "method"
+  ],
+  [
+    "lib/resource/lambdaresponse.js~lambdaresponse#headers",
+    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-get-headers",
+    "lib/Resource/LambdaResponse.js~LambdaResponse#headers",
+    "member"
+  ],
+  [
+    "lib/resource/lambdaresponse.js~lambdaresponse#logresult",
+    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-get-logResult",
+    "lib/Resource/LambdaResponse.js~LambdaResponse#logResult",
+    "member"
+  ],
+  [
+    "lib/resource/lambdaresponse.js~lambdaresponse#originalresponse",
+    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-set-originalResponse",
+    "lib/Resource/LambdaResponse.js~LambdaResponse#originalResponse",
+    "member"
+  ],
+  [
+    "lib/resource/lambdaresponse.js~lambdaresponse#originalresponse",
+    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-get-originalResponse",
+    "lib/Resource/LambdaResponse.js~LambdaResponse#originalResponse",
+    "member"
+  ],
+  [
+    "lib/resource/lambdaresponse.js~lambdaresponse#requestid",
+    "class/lib/Resource/LambdaResponse.js~LambdaResponse.html#instance-get-requestId",
+    "lib/Resource/LambdaResponse.js~LambdaResponse#requestId",
+    "member"
   ],
   [
     "lib/resource/lambdaresponse.js~lambdaresponse.validation_error_type",
@@ -996,6 +1122,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/request.js~request#customid",
+    "class/lib/Resource/Request.js~Request.html#instance-get-customId",
+    "lib/Resource/Request.js~Request#customId",
+    "member"
+  ],
+  [
     "lib/resource/request.js~request#disablecache",
     "class/lib/Resource/Request.js~Request.html#instance-method-disableCache",
     "lib/Resource/Request.js~Request#disableCache",
@@ -1038,9 +1170,9 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/resource/request.js~request#isprevalidated",
-    "class/lib/Resource/Request.js~Request.html#instance-get-isPreValidated",
-    "lib/Resource/Request.js~Request#isPreValidated",
+    "lib/resource/request.js~request#ispubliccached",
+    "class/lib/Resource/Request.js~Request.html#instance-get-isPublicCached",
+    "lib/Resource/Request.js~Request#isPublicCached",
     "member"
   ],
   [
@@ -1068,6 +1200,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/resource/request.js~request#skiploadingcredentials",
+    "class/lib/Resource/Request.js~Request.html#instance-method-skipLoadingCredentials",
+    "lib/Resource/Request.js~Request#skipLoadingCredentials",
+    "method"
+  ],
+  [
     "lib/resource/request.js~request#skipprevalidation",
     "class/lib/Resource/Request.js~Request.html#instance-method-skipPreValidation",
     "lib/Resource/Request.js~Request#skipPreValidation",
@@ -1077,6 +1215,12 @@ window.esdocSearchIndex = [
     "lib/resource/request.js~request#usedirectcall",
     "class/lib/Resource/Request.js~Request.html#instance-method-useDirectCall",
     "lib/Resource/Request.js~Request#useDirectCall",
+    "method"
+  ],
+  [
+    "lib/resource/request.js~request#usepubliccache",
+    "class/lib/Resource/Request.js~Request.html#instance-method-usePublicCache",
+    "lib/Resource/Request.js~Request#usePublicCache",
     "method"
   ],
   [
@@ -1134,6 +1278,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/resource/response.js~response#headers",
+    "class/lib/Resource/Response.js~Response.html#instance-get-headers",
+    "lib/Resource/Response.js~Response#headers",
+    "member"
+  ],
+  [
     "lib/resource/response.js~response#iserror",
     "class/lib/Resource/Response.js~Response.html#instance-get-isError",
     "lib/Resource/Response.js~Response#isError",
@@ -1158,9 +1308,33 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/resource/response.js~response#requestid",
+    "class/lib/Resource/Response.js~Response.html#instance-get-requestId",
+    "lib/Resource/Response.js~Response#requestId",
+    "member"
+  ],
+  [
     "lib/resource/response.js~response#statuscode",
     "class/lib/Resource/Response.js~Response.html#instance-get-statusCode",
     "lib/Resource/Response.js~Response#statusCode",
+    "member"
+  ],
+  [
+    "lib/resource/response.js~response#tojson",
+    "class/lib/Resource/Response.js~Response.html#instance-method-toJSON",
+    "lib/Resource/Response.js~Response#toJSON",
+    "method"
+  ],
+  [
+    "lib/resource/response.js~response.original_request_id_header",
+    "class/lib/Resource/Response.js~Response.html#static-get-ORIGINAL_REQUEST_ID_HEADER",
+    "lib/Resource/Response.js~Response.ORIGINAL_REQUEST_ID_HEADER",
+    "member"
+  ],
+  [
+    "lib/resource/response.js~response.request_id_header",
+    "class/lib/Resource/Response.js~Response.html#static-get-REQUEST_ID_HEADER",
+    "lib/Resource/Response.js~Response.REQUEST_ID_HEADER",
     "member"
   ],
   [
@@ -1174,6 +1348,18 @@ window.esdocSearchIndex = [
     "class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html#instance-constructor-constructor",
     "lib/Resource/SuperagentResponse.js~SuperagentResponse#constructor",
     "method"
+  ],
+  [
+    "lib/resource/superagentresponse.js~superagentresponse#headers",
+    "class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html#instance-get-headers",
+    "lib/Resource/SuperagentResponse.js~SuperagentResponse#headers",
+    "member"
+  ],
+  [
+    "lib/resource/superagentresponse.js~superagentresponse#requestid",
+    "class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html#instance-get-requestId",
+    "lib/Resource/SuperagentResponse.js~SuperagentResponse#requestId",
+    "member"
   ],
   [
     "lib/bootstrap.js",

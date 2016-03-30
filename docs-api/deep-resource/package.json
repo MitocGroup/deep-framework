@@ -1,6 +1,6 @@
 {
   "name": "deep-resource",
-  "version": "1.6.0",
+  "version": "1.7.9",
   "description": "DEEP Resource Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -62,7 +62,8 @@
   "scripts": {
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
-    "prepublish": "npm run compile"
+    "prepublish": "npm run compile",
+    "pretest": "npm link deep-kernel deep-validation deep-security deep-cache deep-log"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
@@ -76,9 +77,6 @@
     "aws-sdk": "^2.2.x"
   },
   "devDependencies": {
-    "deep-cache": "^1.x.x",
-    "deep-security": "^1.x.x",
-    "deep-validation": "file:../deep-validation",
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
     "sinon-chai": "^2.8.x",

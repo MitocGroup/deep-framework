@@ -1,5 +1,6 @@
 [
   {
+    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -12,6 +13,7 @@
     "content": "/**\n * Created by mgoria on 11/6/15.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport CognitoSyncManager from 'amazon-cognito-js';\nimport {CreateCognitoDatasetException} from './Exception/CreateCognitoDatasetException';\nimport {PutCognitoRecordException} from './Exception/PutCognitoRecordException';\nimport {SynchronizeCognitoDatasetException} from './Exception/SynchronizeCognitoDatasetException';\n\nexport class CredentialsManager {\n  /**\n   * @returns {String}\n   */\n  static get DATASET_NAME() {\n    return 'deep_session';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get RECORD_NAME() {\n    return 'session_creds';\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {Object|null} cognitoSyncClient\n   */\n  constructor(identityPoolId, cognitoSyncClient = null) {\n    this._identityPoolId = identityPoolId;\n    this._cognitoSyncClient = cognitoSyncClient;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get cognitoSyncClient() {\n    if (!this._cognitoSyncClient) {\n      this._cognitoSyncClient = new AWS.CognitoSyncManager();\n    }\n\n    return this._cognitoSyncClient;\n  }\n\n  /**\n   * @param {Object} credentials\n   * @param {Function} callback\n   */\n  saveCredentials(credentials, callback) {\n    this._createOrGetDataset((error, dataset) => {\n      if (error) {\n        callback(error, null);\n        return;\n      }\n\n      dataset.put(CredentialsManager.RECORD_NAME, this._encodeCredentials(credentials), (error, record) => {\n        if (error) {\n          callback(new PutCognitoRecordException(\n            CredentialsManager.DATASET_NAME, CredentialsManager.RECORD_NAME, error\n          ), null);\n          return;\n        }\n\n        this._synchronizeDataset(dataset, (error, savedRecords) => {\n          if (error) {\n            callback(new SynchronizeCognitoDatasetException(dataset, error), null);\n            return;\n          }\n\n          callback(null, savedRecords);\n        });\n      });\n    });\n  }\n\n  /**\n   * @param {String} identityId\n   * @param {Function} callback\n   */\n  loadBackendCredentials(identityId, callback) {\n    let cognitosync = new AWS.CognitoSync();\n\n    let params = {\n      DatasetName: CredentialsManager.DATASET_NAME,\n      IdentityId: identityId,\n      IdentityPoolId: this._identityPoolId,\n    };\n\n    cognitosync.listRecords(params, (error, data) => {\n      if (error) {\n        callback(error, null);\n        return;\n      }\n\n      let creds = null;\n      data.Records.forEach((record) => {\n        if (record.Key === CredentialsManager.RECORD_NAME) {\n          creds = this._decodeCredentials(record.Value);\n          return creds;\n        }\n      });\n\n      callback(null, creds);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadFrontendCredentials(callback) {\n    this._createOrGetDataset((error, dataset) => {\n      if (error) {\n        callback(error, null);\n        return;\n      }\n\n      dataset.get(CredentialsManager.RECORD_NAME, (error, data) => {\n        if (error) {\n          callback(error, null);\n          return;\n        }\n\n        callback(null, this._decodeCredentials(data));\n      });\n    });\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identityId() {\n    return this.cognitoSyncClient.getIdentityId();\n  }\n\n  /**\n   * Deletes cached credentials from local storage\n   *\n   * @returns {CredentialsManager}\n   */\n  deleteCredentials() {\n    this.cognitoSyncClient.wipeData();\n\n    return this;\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _createOrGetDataset(callback) {\n    this.cognitoSyncClient.openOrCreateDataset(CredentialsManager.DATASET_NAME, (error, dataset) => {\n      if (error) {\n        callback(new CreateCognitoDatasetException(CredentialsManager.DATASET_NAME, error), null);\n        return;\n      }\n\n      callback(null, dataset);\n    });\n  }\n\n  /**\n   * @param {Object} dataset\n   * @param {Function} callback\n   * @private\n   */\n  _synchronizeDataset(dataset, callback) {\n    dataset.synchronize({\n      onSuccess: (dataset, newRecords) => {\n        callback(null, newRecords);\n      },\n      onFailure: (error) => {\n        callback(error, null);\n      },\n      onConflict: (dataset, conflicts, cb) => {\n        let resolved = [];\n\n        for (let i = 0; i < conflicts.length; i++) {\n          // take local version. @todo: implement custom merge logic to take latest changes\n          resolved.push(conflicts[i].resolveWithLocalRecord());\n        }\n\n        dataset.resolve(resolved, () => {\n          return cb(true);\n        });\n      },\n      onDatasetDeleted: (dataset, datasetName, cb) => {\n        return cb(true);\n      },\n      onDatasetMerged: (dataset, datasetNames, cb) => {\n        return cb(true);\n      }\n    });\n  }\n\n  /**\n   * @todo: implement an encoding method\n   *\n   * @param {Object} credentials\n   * @returns {String}\n   */\n  _encodeCredentials(credentials) {\n    // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore\n    credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');\n\n    return JSON.stringify(\n      credentials,\n      ['expired', 'expireTime', 'accessKeyId', 'secretAccessKey', 'sessionToken']\n    );\n  }\n\n  /**\n   * @todo: implement a decoding method\n   *\n   * @param {String} credentials\n   * @returns {Object}\n   */\n  _decodeCredentials(credentials) {\n    if (credentials && typeof credentials === 'string') {\n      credentials = JSON.parse(credentials);\n      let expireTime = credentials.expireTime;\n\n      credentials = new AWS.Credentials(credentials);\n\n      // restore expireTime because AWS.Credentials resets it to null\n      credentials.expireTime = expireTime;\n\n      // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore\n      credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');\n    }\n\n    return credentials;\n  }\n\n  /**\n   * @param {Object} obj\n   * @param {String} key\n   * @returns {Object}\n   * @private\n   */\n  _makeKeyEnumerable(obj, key) {\n    obj = Object.defineProperty(obj, key, {\n      enumerable: true,\n      writable: true,\n      configurable: true\n    });\n\n    return obj;\n  }\n}\n"
   },
   {
+    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -28,6 +30,7 @@
     "interface": false
   },
   {
+    "__docId__": 2,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -59,6 +62,7 @@
     "generator": false
   },
   {
+    "__docId__": 3,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -90,6 +94,7 @@
     "generator": false
   },
   {
+    "__docId__": 4,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -125,6 +130,7 @@
     "generator": false
   },
   {
+    "__docId__": 5,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -142,6 +148,7 @@
     }
   },
   {
+    "__docId__": 6,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -159,6 +166,7 @@
     }
   },
   {
+    "__docId__": 7,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -190,6 +198,7 @@
     "generator": false
   },
   {
+    "__docId__": 8,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -207,6 +216,7 @@
     }
   },
   {
+    "__docId__": 9,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -241,6 +251,7 @@
     "generator": false
   },
   {
+    "__docId__": 10,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -275,6 +286,7 @@
     "generator": false
   },
   {
+    "__docId__": 11,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -299,6 +311,7 @@
     "generator": false
   },
   {
+    "__docId__": 12,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -330,6 +343,7 @@
     "generator": false
   },
   {
+    "__docId__": 13,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -357,6 +371,7 @@
     "generator": false
   },
   {
+    "__docId__": 14,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -381,6 +396,7 @@
     "generator": false
   },
   {
+    "__docId__": 15,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -415,6 +431,7 @@
     "generator": false
   },
   {
+    "__docId__": 16,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -457,6 +474,7 @@
     "generator": false
   },
   {
+    "__docId__": 17,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -499,6 +517,7 @@
     "generator": false
   },
   {
+    "__docId__": 18,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -547,6 +566,7 @@
     "generator": false
   },
   {
+    "__docId__": 19,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -559,6 +579,7 @@
     "content": "/**\n * Created by mgoria on 6/30/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when auth error occurs\n */\nexport class AuthException extends Exception {\n  /**\n   * @param {Object} error\n   */\n  constructor(error) {\n    super(`Error on authentication. ${error}`);\n  }\n}\n"
   },
   {
+    "__docId__": 20,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -577,6 +598,7 @@
     ]
   },
   {
+    "__docId__": 21,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -601,6 +623,7 @@
     "generator": false
   },
   {
+    "__docId__": 22,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -613,6 +636,7 @@
     "content": "/**\n * Created by mgoria on 11/09/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when open or create a CognitoSync dataset\n */\nexport class CreateCognitoDatasetException extends Exception {\n  /**\n   * @param {String} dataset\n   * @param {Object} error\n   */\n  constructor(dataset, error) {\n    super(`Error on opening or creating \"${dataset}\" Cognito dataset. ${error}`);\n  }\n}\n"
   },
   {
+    "__docId__": 23,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -631,6 +655,7 @@
     ]
   },
   {
+    "__docId__": 24,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -665,6 +690,7 @@
     "generator": false
   },
   {
+    "__docId__": 25,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -677,6 +703,7 @@
     "content": "/**\n * Created by mgoria on 11/23/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when describe cognito identity failed\n */\nexport class DescribeIdentityException extends Exception {\n  /**\n   * @param {String} identityId\n   * @param {Object} error\n   */\n  constructor(identityId, error) {\n    super(`Error on describing cognito identity ${identityId}. ${error}`);\n  }\n}\n"
   },
   {
+    "__docId__": 26,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -695,6 +722,7 @@
     ]
   },
   {
+    "__docId__": 27,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -729,6 +757,7 @@
     "generator": false
   },
   {
+    "__docId__": 28,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -741,6 +770,7 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
+    "__docId__": 29,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -759,6 +789,7 @@
     ]
   },
   {
+    "__docId__": 30,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -783,6 +814,7 @@
     "generator": false
   },
   {
+    "__docId__": 31,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -795,6 +827,7 @@
     "content": "/**\n * Created by mgoria on 11/09/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when getting a record from a CognitoSync dataset failed\n */\nexport class GetCognitoRecordException extends Exception {\n  /**\n   * @param {String} dataset\n   * @param {String} record\n   * @param {Object} error\n   */\n  constructor(dataset, record, error) {\n    super(`Error on getting \"${record}\" record from \"${dataset}\" dataset. ${error}`);\n  }\n}\n"
   },
   {
+    "__docId__": 32,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -813,6 +846,7 @@
     ]
   },
   {
+    "__docId__": 33,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -857,6 +891,7 @@
     "generator": false
   },
   {
+    "__docId__": 34,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -869,6 +904,7 @@
     "content": "/**\n * Created by mgoria on 12/22/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when passed identity provider name does not match provider name from identityMetadata\n */\nexport class IdentityProviderMismatchException extends Exception {\n  /**\n   * @param {String} providerName\n   */\n  constructor(providerName, identityMetadataProvider) {\n    super(`Provider \"${providerName}\" does not match with identityMetadataProvider \"${identityMetadataProvider}\".`);\n  }\n}\n"
   },
   {
+    "__docId__": 35,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -887,6 +923,7 @@
     ]
   },
   {
+    "__docId__": 36,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -911,6 +948,7 @@
     "generator": false
   },
   {
+    "__docId__": 37,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -923,6 +961,7 @@
     "content": "/**\n * Created by mgoria on 12/22/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when identity provider token expired\n */\nexport class IdentityProviderTokenExpiredException extends Exception {\n  /**\n   * @param {String} providerName\n   * @param {Date} expireTime\n   */\n  constructor(providerName, expireTime) {\n    super(`\"${providerName}\" access_token has expired on \"${expireTime.toString()}\".`);\n  }\n}\n"
   },
   {
+    "__docId__": 38,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -941,6 +980,7 @@
     ]
   },
   {
+    "__docId__": 39,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -975,6 +1015,7 @@
     "generator": false
   },
   {
+    "__docId__": 40,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -987,6 +1028,7 @@
     "content": "/**\n * Created by mgoria on 12/22/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when provider identity metadata does not contain required fields (access_token and token expiration time)\n */\nexport class InvalidProviderIdentityException extends Exception {\n  /**\n   * @param {String} providerName\n   */\n  constructor(providerName) {\n    super(`Passed \"${providerName}\" identity does not contain mandatory access_token or tokenExpirationTime fields.`);\n  }\n}\n"
   },
   {
+    "__docId__": 41,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1005,6 +1047,7 @@
     ]
   },
   {
+    "__docId__": 42,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1029,6 +1072,7 @@
     "generator": false
   },
   {
+    "__docId__": 43,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1041,6 +1085,7 @@
     "content": "/**\n * Created by mgoria on 7/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when load user form db failed\n */\nexport class LoadUserException extends Exception {\n  /**\n   * @param {String} identityId\n   * @param {Object} error\n   */\n  constructor(identityId, error) {\n    super(`Error on loading user ${identityId} from db. ${error}`);\n  }\n}\n"
   },
   {
+    "__docId__": 44,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1059,6 +1104,7 @@
     ]
   },
   {
+    "__docId__": 45,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1093,6 +1139,7 @@
     "generator": false
   },
   {
+    "__docId__": 46,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1105,6 +1152,7 @@
     "content": "/**\n * Created by mgoria on 6/23/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when requested login provider is missing\n */\nexport class MissingLoginProviderException extends Exception {\n  /**\n   * @param {String} providerName\n   */\n  constructor(providerName) {\n    super(`Missing login provider \"${providerName}\" in deep-security.`);\n  }\n}\n"
   },
   {
+    "__docId__": 47,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1123,6 +1171,7 @@
     ]
   },
   {
+    "__docId__": 48,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1147,6 +1196,7 @@
     "generator": false
   },
   {
+    "__docId__": 49,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1159,6 +1209,7 @@
     "content": "/**\n * Created by mgoria on 11/09/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when put a new record to a CognitoSync dataset failed\n */\nexport class PutCognitoRecordException extends Exception {\n  /**\n   * @param {String} dataset\n   * @param {String} record\n   * @param {Object} error\n   */\n  constructor(dataset, record, error) {\n    super(`Error on putting \"${record}\" record into \"${dataset}\" dataset. ${error}`);\n  }\n}\n"
   },
   {
+    "__docId__": 50,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1177,6 +1228,7 @@
     ]
   },
   {
+    "__docId__": 51,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1221,6 +1273,7 @@
     "generator": false
   },
   {
+    "__docId__": 52,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1233,6 +1286,7 @@
     "content": "/**\n * Created by mgoria on 11/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when failed to sync a CognitoSync dataset\n */\nexport class SynchronizeCognitoDatasetException extends Exception {\n  /**\n   * @param {String} dataset\n   * @param {Object} error\n   */\n  constructor(dataset, error) {\n    super(`Error on synchronizing \"${dataset}\" Cognito dataset. ${error}`);\n  }\n}\n"
   },
   {
+    "__docId__": 53,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1251,6 +1305,7 @@
     ]
   },
   {
+    "__docId__": 54,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1285,6 +1340,7 @@
     "generator": false
   },
   {
+    "__docId__": 55,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1297,6 +1353,7 @@
     "content": "/**\n * Created by mgoria on 11/12/15.\n */\n\n'use strict';\n\nimport {MissingLoginProviderException} from './Exception/MissingLoginProviderException';\nimport {IdentityProviderMismatchException} from './Exception/IdentityProviderMismatchException';\nimport {InvalidProviderIdentityException} from './Exception/InvalidProviderIdentityException';\n\n/**\n * 3rd Party identity provider (Amazon, Facebook, Google, etc.)\n */\nexport class IdentityProvider {\n  /**\n   * @returns {string}\n   */\n  static get AMAZON() {\n    return 'www.amazon.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get FACEBOOK() {\n    return 'graph.facebook.com';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get GOOGLE() {\n    return 'accounts.google.com';\n  }\n\n  /**\n   * @param {String} providerName\n   * @returns {Array}\n   */\n  static ALIASES(providerName) {\n    let aliases = [];\n\n    switch(providerName) {\n      case IdentityProvider.AMAZON:\n        aliases = ['www.amazon.com', 'amazon'];\n        break;\n      case IdentityProvider.FACEBOOK:\n        aliases = ['graph.facebook.com', 'facebook'];\n        break;\n      case IdentityProvider.GOOGLE:\n        aliases = ['accounts.google.com', 'google', 'google-oauth2'];\n        break;\n    }\n\n    return aliases;\n  }\n\n  /**\n   * @param {Object} providers\n   * @param {String} providerName\n   * @param {Object} identityMetadata\n   */\n  constructor(providers, providerName, identityMetadata) {\n    if (Object.keys(providers).indexOf(providerName) === -1) {\n      throw new MissingLoginProviderException(providerName);\n    }\n\n    if (identityMetadata.hasOwnProperty('provider') &&\n      IdentityProvider.ALIASES(providerName).indexOf(identityMetadata.provider) === -1) {\n      throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);\n    }\n\n    if (!identityMetadata.access_token || !identityMetadata.tokenExpirationTime) {\n      throw new InvalidProviderIdentityException(providerName);\n    }\n\n    this._providers = providers;\n    this._name = providerName;\n    this._userToken = identityMetadata.access_token;\n    this._tokenExpTime = new Date(identityMetadata.tokenExpirationTime);\n    this._userId = identityMetadata.user_id || null;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get providers() {\n    return this._providers;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this._name;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get userToken() {\n    return this._userToken;\n  }\n\n  /**\n   * @returns {Date}\n   */\n  get tokenExpirationTime() {\n    return this._tokenExpTime;\n  }\n\n  /**\n   * @returns {boolean}\n   */\n  isTokenValid() {\n    if (this.userToken && this.tokenExpirationTime) {\n      return this.tokenExpirationTime > new Date();\n    }\n\n    return false;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get userId() {\n    return this._userId;\n  }\n\n  /**\n   * @param {String} name\n   * @returns {Object}\n   */\n  config(name) {\n    if (!this.providers.hasOwnProperty(name)) {\n      throw new MissingLoginProviderException(name);\n    }\n\n    return this.providers[name];\n  }\n}\n"
   },
   {
+    "__docId__": 56,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1312,6 +1369,7 @@
     "interface": false
   },
   {
+    "__docId__": 57,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1343,6 +1401,7 @@
     "generator": false
   },
   {
+    "__docId__": 58,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1374,6 +1433,7 @@
     "generator": false
   },
   {
+    "__docId__": 59,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1405,6 +1465,7 @@
     "generator": false
   },
   {
+    "__docId__": 60,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1443,6 +1504,7 @@
     "generator": false
   },
   {
+    "__docId__": 61,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1487,6 +1549,7 @@
     "generator": false
   },
   {
+    "__docId__": 62,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1504,6 +1567,7 @@
     }
   },
   {
+    "__docId__": 63,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1521,6 +1585,7 @@
     }
   },
   {
+    "__docId__": 64,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1538,6 +1603,7 @@
     }
   },
   {
+    "__docId__": 65,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1555,6 +1621,7 @@
     }
   },
   {
+    "__docId__": 66,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1572,6 +1639,7 @@
     }
   },
   {
+    "__docId__": 67,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1603,6 +1671,7 @@
     "generator": false
   },
   {
+    "__docId__": 68,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1634,6 +1703,7 @@
     "generator": false
   },
   {
+    "__docId__": 69,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1665,6 +1735,7 @@
     "generator": false
   },
   {
+    "__docId__": 70,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1696,6 +1767,7 @@
     "generator": false
   },
   {
+    "__docId__": 71,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1723,6 +1795,7 @@
     "generator": false
   },
   {
+    "__docId__": 72,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1754,6 +1827,7 @@
     "generator": false
   },
   {
+    "__docId__": 73,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1792,6 +1866,7 @@
     "generator": false
   },
   {
+    "__docId__": 74,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1804,6 +1879,7 @@
     "content": "/**\n * Created by mgoria on 09/01/15.\n */\n\n'use strict';\n\nimport {Token} from './Token';\n\n/**\n * Security token holds details about logged user\n */\nexport class LocalToken extends Token {\n  /**\n   * @param args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadCredentials(callback = () => {}) {\n    // fake local credentials\n    this._credentials = {\n      // use provider user id instead of cognito identity id for local backend\n      identityId: this.identityProvider ? this.identityProvider.userId : null\n    };\n\n    callback(null, this);\n  }\n\n  /**\n   * 'Reset' credentials\n   */\n  destroy() {\n    this._credentials = null;\n    this._credsManager = null;\n  }\n}\n"
   },
   {
+    "__docId__": 75,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1822,6 +1898,7 @@
     ]
   },
   {
+    "__docId__": 76,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1846,6 +1923,7 @@
     "generator": false
   },
   {
+    "__docId__": 77,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1870,6 +1948,7 @@
     "generator": false
   },
   {
+    "__docId__": 78,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1887,6 +1966,7 @@
     }
   },
   {
+    "__docId__": 79,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1900,6 +1980,7 @@
     "generator": false
   },
   {
+    "__docId__": 80,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1917,6 +1998,7 @@
     }
   },
   {
+    "__docId__": 81,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1934,6 +2016,7 @@
     }
   },
   {
+    "__docId__": 82,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1946,6 +2029,7 @@
     "content": "/**\n * Created by mgoria on 6/17/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport {Exception} from './Exception/Exception';\nimport {Token} from './Token';\nimport {LocalToken} from './LocalToken';\nimport {UserProvider} from './UserProvider';\nimport {IdentityProvider} from './IdentityProvider';\nimport util from 'util';\nimport crypto from 'crypto';\n\n/**\n * Deep Security implementation\n */\nexport class Security extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} identityPoolId\n   * @param {Object} identityProviders\n   */\n  constructor(identityPoolId = null, identityProviders = {}) {\n    super();\n\n    this._identityPoolId = identityPoolId;\n    this._identityProviders = identityProviders;\n\n    this._token = null;\n    this._userProvider = null;\n    this._userProviderEndpoint = null;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identityPoolId() {\n    return this._identityPoolId;\n  }\n\n  /**\n   * @returns {UserProvider}\n   */\n  get userProvider() {\n    if (!this._userProvider) {\n      this._userProvider = new UserProvider(this._userProviderEndpoint, this.container.get('resource'));\n    }\n\n    return this._userProvider;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: remove this compatibility hook\n    let globals = kernel.config.globals || kernel.config;\n\n    this._identityProviders = globals.security.identityProviders;\n    this._userProviderEndpoint = globals.userProviderEndpoint;\n\n    this._identityPoolId = kernel.config.identityPoolId;\n\n    callback();\n  }\n\n  /**\n   * @returns {null|Token}\n   */\n  get token() {\n    return this._token;\n  }\n\n  /**\n   * @param {String} providerName\n   * @param {Object} identityMetadata\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  login(providerName, identityMetadata, callback) {\n    let identityProvider = new IdentityProvider(this._identityProviders, providerName, identityMetadata);\n\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);\n\n    this._token.userProvider = this.userProvider;\n    this._token.logService = this.kernel.get('log');\n\n    let event = {\n      eventName: 'login',\n      eventId: Security.customEventId(this.identityPoolId),\n      payload: {providerName, identityMetadata},\n      time: new Date().getTime(),\n    };\n\n    this._token.loadCredentials((error, credentials) => {\n      this._logRumEvent(event);\n\n      event = util._extend({}, event);\n      event.payload = {credentials};\n\n      this._logRumEvent(event);\n\n      callback(error, this._token);\n    });\n\n    return this._token;\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  anonymousLogin(callback) {\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = TokenImplementation.create(this.identityPoolId);\n\n    this._token.userProvider = this.userProvider;\n    this._token.logService = this.kernel.get('log');\n\n    let event = {\n      eventName: 'anonymousLogin',\n      eventId: Security.customEventId(this.identityPoolId),\n      time: new Date().getTime(),\n    };\n\n    this._token.loadCredentials((error, credentials) => {\n      this._logRumEvent(event);\n\n      event = util._extend({}, event);\n      event.payload = {credentials};\n\n      this._logRumEvent(event);\n\n      callback(error, this._token);\n    });\n\n    return this._token;\n  }\n\n  /**\n   * @param {Object} lambdaContext\n   * @returns {Token}\n   */\n  warmupBackendLogin(lambdaContext) {\n    if (this.kernel.isFrontend) {\n      throw new Exception('Call to warmupBackendLogin method is not allowed from frontend context.');\n    }\n\n    let TokenImplementation = this._localBackend ? LocalToken : Token;\n\n    this._token = TokenImplementation.createFromLambdaContext(this._identityPoolId, lambdaContext);\n\n    this._token.userProvider = this.userProvider;\n    this._token.logService = this.kernel.get('log');\n\n    return this._token;\n  }\n\n  /**\n   * Destroys user session\n   *\n   * @returns {Security}\n   */\n  logout() {\n    this._logRumEvent({\n      eventName: 'logout',\n    });\n    \n    if (this._token) {\n      this._token.destroy();\n    }\n    \n    this._token = null;\n\n    return this;\n  }\n\n  /**\n   * @param {Object} customData\n   * @returns {Boolean}\n   * @private\n   */\n  _logRumEvent(customData) {\n    if (this.kernel && !this.kernel.isRumEnabled) {\n      return false;\n    }\n\n    let logService = this.kernel.get('log');\n    let event = util._extend(customData, {\n      service: 'deep-security',\n      resourceType: 'Cognito',\n      resourceId: this.identityPoolId,\n    });\n\n    logService.rumLog(event);\n\n    return true;\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @returns {String}\n   */\n  static customEventId(identityPoolId) {\n    return Security._md5(identityPoolId + new Date().getTime());\n  }\n\n  /**\n   * @todo - move all this utils methods into separate class somewhere in deep-core or deep-kernel\n   *\n   * @param {String} str\n   * @returns {String}\n   */\n  static _md5(str) {\n    var md5sum = crypto.createHash('md5');\n\n    md5sum.update(str);\n\n    return md5sum.digest('hex');\n  }\n}\n"
   },
   {
+    "__docId__": 83,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1964,6 +2048,7 @@
     ]
   },
   {
+    "__docId__": 84,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1998,6 +2083,7 @@
     "generator": false
   },
   {
+    "__docId__": 85,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2015,6 +2101,7 @@
     }
   },
   {
+    "__docId__": 86,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2032,6 +2119,7 @@
     }
   },
   {
+    "__docId__": 87,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2049,6 +2137,7 @@
     }
   },
   {
+    "__docId__": 88,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2066,6 +2155,7 @@
     }
   },
   {
+    "__docId__": 89,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2083,6 +2173,7 @@
     }
   },
   {
+    "__docId__": 90,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2114,6 +2205,7 @@
     "generator": false
   },
   {
+    "__docId__": 91,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2145,6 +2237,7 @@
     "generator": false
   },
   {
+    "__docId__": 92,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2162,6 +2255,7 @@
     }
   },
   {
+    "__docId__": 93,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2196,6 +2290,7 @@
     "generator": false
   },
   {
+    "__docId__": 94,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2213,6 +2308,7 @@
     }
   },
   {
+    "__docId__": 95,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2230,6 +2326,7 @@
     }
   },
   {
+    "__docId__": 96,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2247,6 +2344,7 @@
     }
   },
   {
+    "__docId__": 97,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2279,6 +2377,7 @@
     "generator": false
   },
   {
+    "__docId__": 98,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2337,6 +2436,7 @@
     "generator": false
   },
   {
+    "__docId__": 99,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2354,6 +2454,7 @@
     }
   },
   {
+    "__docId__": 100,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2392,6 +2493,7 @@
     "generator": false
   },
   {
+    "__docId__": 101,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2409,6 +2511,7 @@
     }
   },
   {
+    "__docId__": 102,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2447,6 +2550,7 @@
     "generator": false
   },
   {
+    "__docId__": 103,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2464,6 +2568,7 @@
     }
   },
   {
+    "__docId__": 104,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2491,6 +2596,7 @@
     "generator": false
   },
   {
+    "__docId__": 105,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2508,6 +2614,7 @@
     }
   },
   {
+    "__docId__": 106,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2546,6 +2653,7 @@
     "generator": false
   },
   {
+    "__docId__": 107,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2584,6 +2692,7 @@
     "generator": false
   },
   {
+    "__docId__": 108,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2625,6 +2734,7 @@
     "generator": false
   },
   {
+    "__docId__": 109,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2637,6 +2747,7 @@
     "content": "/**\n * Created by mgoria on 6/23/15.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AuthException} from './Exception/AuthException';\nimport {IdentityProviderTokenExpiredException} from './Exception/IdentityProviderTokenExpiredException';\nimport {DescribeIdentityException} from './Exception/DescribeIdentityException';\nimport {CredentialsManager} from './CredentialsManager';\nimport {Exception} from './Exception/Exception';\nimport {Exception as CoreException} from 'deep-core';\nimport {Security} from './Security';\nimport util from 'util';\n\n/**\n * Security token holds details about logged user\n */\nexport class Token {\n  /**\n   * @param {String} identityPoolId\n   */\n  constructor(identityPoolId) {\n    this._identityPoolId = identityPoolId;\n\n    this._lambdaContext = null;\n    this._user = null;\n    this._credentials = null;\n    this._identityMetadata = null;\n    this._tokenExpiredCallback = null;\n\n    this._identityProvider = null;\n    this._userProvider = null;\n    this._logService = null;\n\n    this._credsManager = new CredentialsManager(identityPoolId);\n\n    this._setupAwsCognitoConfig();\n  }\n\n  /**\n   * Setup region for CognitoIdentity and CognitoSync services\n   *\n   * @private\n   */\n  _setupAwsCognitoConfig() {\n    // @todo: set retries in a smarter way...\n    AWS.config.maxRetries = 3;\n\n    let cognitoRegion = Token.getRegionFromIdentityPoolId(this._identityPoolId);\n\n    AWS.config.update({\n      cognitoidentity: {region: cognitoRegion},\n      cognitosync: {region: cognitoRegion},\n    });\n  }\n\n  /**\n   * @returns {IdentityProvider}\n   */\n  get identityProvider() {\n    return this._identityProvider;\n  }\n\n  /**\n   * @param {IdentityProvider} provider\n   */\n  set identityProvider(provider) {\n    this._identityProvider = provider;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get lambdaContext() {\n    return this._lambdaContext;\n  }\n\n  /**\n   * @param {Object} lambdaContext\n   */\n  set lambdaContext(lambdaContext) {\n    this._lambdaContext = lambdaContext;\n  }\n\n  /**\n   * @param {Object} logService\n   */\n  set logService(logService) {\n    this._logService = logService;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  loadCredentials(callback = () => {}) {\n    let event = {\n      service: 'deep-security',\n      resourceType: 'Cognito',\n      resourceId: this._identityPoolId,\n      eventName: 'loadCredentials',\n      eventId: Security.customEventId(this._identityPoolId),\n      time: new Date().getTime(),\n    };\n\n    let proxyCallback = (error, credentials) => {\n      // log event only after credentials are loaded to get identityId\n      this._logService.rumLog(event);\n\n      event = util._extend({}, event);\n      event.payload = {error, credentials};\n\n      this._logService.rumLog(event);\n\n      callback(error, credentials);\n    };\n\n    // avoid refreshing or loading credentials for each request\n    if (this.validCredentials(this.credentials)) {\n      proxyCallback(null, this.credentials);\n      return;\n    }\n\n    if (this.lambdaContext) {\n      this._backendLoadCredentials(proxyCallback);\n    } else {\n      this._frontendLoadCredentials(proxyCallback);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _backendLoadCredentials(callback) {\n    if (!this.lambdaContext) {\n      throw new Exception('Call to _backendLoadCredentials method is not allowed from frontend context.');\n    }\n\n    this._credsManager.loadBackendCredentials(this.identityId, (error, credentials) => {\n      if (error) {\n        callback(error, null);\n        return;\n      }\n\n      callback(null, this._credentials = credentials);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _frontendLoadCredentials(callback) {\n    this._credentials = this._createCognitoIdentityCredentials();\n\n    // set AWS credentials before loading credentials from cache coz amazon-cognito-js uses them\n    AWS.config.credentials = this._credentials;\n\n    // trying to load old credentials from cache or CognitoSync\n    this._credsManager.loadFrontendCredentials((error, credentials) => {\n      if (!error && credentials && this.validCredentials(credentials)) {\n        callback(null, AWS.config.credentials = this._credentials = credentials);\n      } else {\n        this._refreshCredentials(this._credentials, callback);\n      }\n    });\n  }\n\n  /**\n   * @param {AWS.CognitoIdentityCredentials} credentials\n   * @param {Function} callback\n   * @private\n   */\n  _refreshCredentials(credentials, callback) {\n    if (!(credentials instanceof AWS.CognitoIdentityCredentials)) {\n      let error = new AuthException(\n        'Invalid credentials instance. Passed credentials must be an instance of AWS.CognitoIdentityCredentials.'\n      );\n      callback(error, null);\n      return;\n    }\n\n    if (this.identityProvider && !this.identityProvider.isTokenValid()) {\n      if (typeof this._tokenExpiredCallback === 'function') {\n        this._tokenExpiredCallback(this.identityProvider);\n      } else {\n        let error = new IdentityProviderTokenExpiredException(\n          this.identityProvider.name,\n          this.identityProvider.tokenExpirationTime\n        );\n\n        callback(error, null);\n      }\n      return;\n    }\n\n    credentials.refresh((error) => {\n      if (error) {\n        callback(new AuthException(error), null);\n        return;\n      }\n\n      // @todo - save credentials in background not to affect page load time\n      this._credsManager.saveCredentials(credentials, (error, record) => {\n        if (error) {\n          callback(error, null);\n          return;\n        }\n\n        callback(null, credentials);\n      });\n    });\n  }\n\n  /**\n   * @returns {AWS.CognitoIdentityCredentials}\n   * @private\n   */\n  _createCognitoIdentityCredentials() {\n    let cognitoParams = {\n      IdentityPoolId: this._identityPoolId,\n    };\n\n    if (this.identityProvider) {\n      cognitoParams.Logins = {};\n      cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;\n      cognitoParams.LoginId = this.identityProvider.userId;\n    }\n\n    let credentials = new AWS.CognitoIdentityCredentials(cognitoParams);\n\n    credentials.toJSON = function() {\n      return {\n        expired: credentials.expired,\n        expireTime: credentials.expireTime,\n        accessKeyId: credentials.accessKeyId,\n        secretAccessKey: credentials.secretAccessKey,\n        sessionToken: credentials.sessionToken,\n      };\n    }.bind(credentials);\n\n    return credentials;\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @returns {String}\n   */\n  static getRegionFromIdentityPoolId(identityPoolId) {\n    return identityPoolId.split(':')[0];\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identityId() {\n    let identityId = null;\n\n    if (this.credentials) {\n      if (this.credentials.identityId) {\n        identityId = this.credentials.identityId;\n      } else if (this.credentials.params && this.credentials.params.IdentityId) {\n        // load IdentityId from localStorage cache\n        identityId = this.credentials.params.IdentityId;\n      } else if (this._credsManager.identityId) {\n        identityId = this._credsManager.identityId;\n      }\n    } else if (this.lambdaContext) {\n      identityId = this.lambdaContext.identity.cognitoIdentityId;\n    }\n\n    return identityId;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get credentials() {\n    return this._credentials;\n  }\n\n  /**\n   * @param {Object} credentials\n   * @returns {boolean}\n   */\n  validCredentials(credentials) {\n    return credentials && this.getCredentialsExpireDateTime(credentials) > new Date();\n  }\n\n  /**\n   * @param {Object} credentials\n   * @returns {Date}\n   */\n  getCredentialsExpireDateTime(credentials) {\n    let dateTime = null;\n\n    if (credentials && credentials.hasOwnProperty('expireTime')) {\n      dateTime = credentials.expireTime instanceof Date ?\n        credentials.expireTime :\n        new Date(credentials.expireTime);\n    }\n\n    return dateTime;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isAnonymous() {\n    return (!this.identityProvider && !this.lambdaContext) || this._identityLogins.length <= 0;\n  }\n\n  /**\n   * @param {UserProvider} userProvider\n   */\n  set userProvider(userProvider) {\n    this._userProvider = userProvider;\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  getUser(callback) {\n    if (this.lambdaContext) {\n      this._describeIdentity(this.identityId, () => {\n        this._loadUser(callback);\n      });\n    } else {\n      this._loadUser(callback);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   * @private\n   */\n  _loadUser(callback) {\n    if (this.isAnonymous) {\n      callback(null);\n      return;\n    }\n\n    if (!this._user) {\n      this._userProvider.loadUserByIdentityId(this.identityId, (user) => {\n        this._user = user;\n\n        callback(this._user);\n      });\n\n      return;\n    }\n\n    callback(this._user);\n  }\n\n  /**\n   * @param {String} identityPoolId\n   */\n  static create(identityPoolId) {\n    return new this(identityPoolId);\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {IdentityProvider} identityProvider\n   */\n  static createFromIdentityProvider(identityPoolId, identityProvider) {\n    let token = new this(identityPoolId);\n    token.identityProvider = identityProvider;\n\n    return token;\n  }\n\n  /**\n   * @param {String} identityPoolId\n   * @param {Object} lambdaContext\n   */\n  static createFromLambdaContext(identityPoolId, lambdaContext) {\n    let token = new this(identityPoolId);\n    token.lambdaContext = lambdaContext;\n\n    return token;\n  }\n\n  /**\n   * @param {String} identityId\n   * @param {Function} callback\n   * @private\n   */\n  _describeIdentity(identityId, callback) {\n    if (this._identityMetadata) {\n      callback(this._identityMetadata);\n      return;\n    }\n\n    let cognitoIdentity = new AWS.CognitoIdentity();\n\n    cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) => {\n      if (error) {\n        throw new DescribeIdentityException(identityId, error);\n      }\n\n      this._identityMetadata = data;\n\n      callback(this._identityMetadata);\n    });\n  }\n\n  /**\n   * @returns {Array}\n   * @private\n   */\n  get _identityLogins() {\n    return this._identityMetadata && this._identityMetadata.hasOwnProperty('Logins') ?\n      this._identityMetadata.Logins :\n      [];\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Token}\n   */\n  registerTokenExpiredCallback(callback) {\n    if (typeof callback !== 'function') {\n      throw new CoreException.InvalidArgumentException(callback, 'function');\n    }\n\n    this._tokenExpiredCallback = callback;\n\n    return this;\n  }\n\n  /**\n   * Removes identity credentials related cached stuff\n   */\n  destroy() {\n    if (!(this._credentials instanceof AWS.CognitoIdentityCredentials)) {\n      this._credentials = this._createCognitoIdentityCredentials();\n    }\n\n    this._credsManager.deleteCredentials();\n    this._credentials.clearCachedId();\n\n    this._credentials = null;\n    this._credsManager = null;\n  }\n}\n"
   },
   {
+    "__docId__": 110,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2652,6 +2763,7 @@
     "interface": false
   },
   {
+    "__docId__": 111,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2676,6 +2788,7 @@
     "generator": false
   },
   {
+    "__docId__": 112,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2693,6 +2806,7 @@
     }
   },
   {
+    "__docId__": 113,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2710,6 +2824,7 @@
     }
   },
   {
+    "__docId__": 114,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2727,6 +2842,7 @@
     }
   },
   {
+    "__docId__": 115,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2744,6 +2860,7 @@
     }
   },
   {
+    "__docId__": 116,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2761,6 +2878,7 @@
     }
   },
   {
+    "__docId__": 117,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2778,6 +2896,7 @@
     }
   },
   {
+    "__docId__": 118,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2795,6 +2914,7 @@
     }
   },
   {
+    "__docId__": 119,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2812,6 +2932,7 @@
     }
   },
   {
+    "__docId__": 120,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2829,6 +2950,7 @@
     }
   },
   {
+    "__docId__": 121,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2846,6 +2968,7 @@
     }
   },
   {
+    "__docId__": 122,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2859,6 +2982,7 @@
     "generator": false
   },
   {
+    "__docId__": 123,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2890,6 +3014,7 @@
     "generator": false
   },
   {
+    "__docId__": 124,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2919,6 +3044,7 @@
     "generator": false
   },
   {
+    "__docId__": 125,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2936,6 +3062,7 @@
     }
   },
   {
+    "__docId__": 126,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2967,6 +3094,7 @@
     "generator": false
   },
   {
+    "__docId__": 127,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2996,6 +3124,7 @@
     "generator": false
   },
   {
+    "__docId__": 128,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3013,6 +3142,7 @@
     }
   },
   {
+    "__docId__": 129,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -3042,6 +3172,7 @@
     "generator": false
   },
   {
+    "__docId__": 130,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3059,6 +3190,7 @@
     }
   },
   {
+    "__docId__": 131,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3083,6 +3215,7 @@
     "generator": false
   },
   {
+    "__docId__": 132,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3107,6 +3240,7 @@
     "generator": false
   },
   {
+    "__docId__": 133,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3131,6 +3265,7 @@
     "generator": false
   },
   {
+    "__docId__": 134,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3148,6 +3283,7 @@
     }
   },
   {
+    "__docId__": 135,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3182,6 +3318,7 @@
     "generator": false
   },
   {
+    "__docId__": 136,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3209,6 +3346,7 @@
     "generator": false
   },
   {
+    "__docId__": 137,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3247,6 +3385,7 @@
     "generator": false
   },
   {
+    "__docId__": 138,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3278,6 +3417,7 @@
     "generator": false
   },
   {
+    "__docId__": 139,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3309,6 +3449,7 @@
     "generator": false
   },
   {
+    "__docId__": 140,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3347,6 +3488,7 @@
     "generator": false
   },
   {
+    "__docId__": 141,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3385,6 +3527,7 @@
     "generator": false
   },
   {
+    "__docId__": 142,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3416,6 +3559,7 @@
     "generator": false
   },
   {
+    "__docId__": 143,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -3445,6 +3589,7 @@
     "generator": false
   },
   {
+    "__docId__": 144,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3462,6 +3607,7 @@
     }
   },
   {
+    "__docId__": 145,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3486,6 +3632,7 @@
     "generator": false
   },
   {
+    "__docId__": 146,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3510,6 +3657,7 @@
     "generator": false
   },
   {
+    "__docId__": 147,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3527,6 +3675,7 @@
     }
   },
   {
+    "__docId__": 148,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3556,6 +3705,7 @@
     "generator": false
   },
   {
+    "__docId__": 149,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3595,6 +3745,7 @@
     "generator": false
   },
   {
+    "__docId__": 150,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -3634,6 +3785,7 @@
     "generator": false
   },
   {
+    "__docId__": 151,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3668,6 +3820,7 @@
     "generator": false
   },
   {
+    "__docId__": 152,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3685,6 +3838,7 @@
     }
   },
   {
+    "__docId__": 153,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3716,6 +3870,7 @@
     "generator": false
   },
   {
+    "__docId__": 154,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3754,6 +3909,7 @@
     "generator": false
   },
   {
+    "__docId__": 155,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3771,6 +3927,7 @@
     }
   },
   {
+    "__docId__": 156,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3784,6 +3941,7 @@
     "generator": false
   },
   {
+    "__docId__": 157,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3801,6 +3959,7 @@
     }
   },
   {
+    "__docId__": 158,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3818,6 +3977,7 @@
     }
   },
   {
+    "__docId__": 159,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3835,6 +3995,7 @@
     }
   },
   {
+    "__docId__": 160,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3847,6 +4008,7 @@
     "content": "'use strict';\n\nimport {LoadUserException} from './Exception/LoadUserException';\n\n/**\n * Loads user from db\n */\nexport class UserProvider {\n  /**\n   * @param {String} retrieveUserResource\n   * @param {Object} deepResourceService\n   */\n  constructor(retrieveUserResource, deepResourceService) {\n    this._retrieveUserResource = retrieveUserResource;\n    this._deepResource = deepResourceService;\n  }\n\n  /**\n   * @param {String} id\n   * @param {Function} callback\n   * @returns {*}\n   */\n  loadUserByIdentityId(id, callback) {\n    let retrieveUserResource = this._deepResource.get(this._retrieveUserResource);\n\n    retrieveUserResource.request({Id: id}).send(function(response) {\n      if (response.error) {\n        throw new LoadUserException(id, response.error);\n      }\n\n      return callback(JSON.parse(response.data.Payload));\n    });\n  }\n}\n"
   },
   {
+    "__docId__": 161,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3862,6 +4024,7 @@
     "interface": false
   },
   {
+    "__docId__": 162,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3896,6 +4059,7 @@
     "generator": false
   },
   {
+    "__docId__": 163,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3913,6 +4077,7 @@
     }
   },
   {
+    "__docId__": 164,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3930,6 +4095,7 @@
     }
   },
   {
+    "__docId__": 165,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3978,6 +4144,7 @@
     "generator": false
   },
   {
+    "__docId__": 166,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3990,6 +4157,7 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Security} from './Security';\n\nlet exports = module.exports = Security;\n"
   },
   {
+    "__docId__": 167,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -4010,6 +4178,7 @@
     }
   },
   {
+    "__docId__": 169,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4022,6 +4191,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 170,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4034,6 +4204,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 171,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4046,6 +4217,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 172,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4058,6 +4230,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 173,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4070,6 +4243,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 174,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4082,6 +4256,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 175,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4094,6 +4269,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 176,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4106,6 +4282,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 177,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4118,6 +4295,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 178,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4130,6 +4308,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 179,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4142,6 +4321,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 180,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4154,6 +4334,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 181,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4166,6 +4347,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 182,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4178,6 +4360,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 183,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4190,6 +4373,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 184,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4202,6 +4386,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 185,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4214,6 +4399,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 186,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4226,6 +4412,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 187,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4238,6 +4425,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 188,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4250,6 +4438,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 189,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4262,6 +4451,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 190,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4274,6 +4464,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 191,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4286,6 +4477,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 192,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4298,6 +4490,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 193,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4310,6 +4503,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 194,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4322,6 +4516,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 195,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4334,6 +4529,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 196,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4346,6 +4542,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 197,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4358,6 +4555,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 198,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4370,6 +4568,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 199,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4382,6 +4581,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 200,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4394,6 +4594,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 201,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4406,6 +4607,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 202,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4418,6 +4620,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 203,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4430,6 +4633,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 204,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4442,6 +4646,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 205,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4454,6 +4659,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 206,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4466,6 +4672,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 207,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4478,6 +4685,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 208,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4490,6 +4698,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 209,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4502,6 +4711,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 210,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4514,6 +4724,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 211,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4526,6 +4737,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 212,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4538,6 +4750,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 213,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4550,6 +4763,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 214,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4562,6 +4776,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 215,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4574,6 +4789,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 217,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4586,6 +4802,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 218,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4598,6 +4815,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 219,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4610,6 +4828,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 220,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4622,6 +4841,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 221,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4634,6 +4854,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 222,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4646,6 +4867,7 @@
     "builtinExternal": true
   },
   {
+    "__docId__": 223,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4653,6 +4875,19 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
+    "access": null,
+    "description": null,
+    "builtinExternal": true
+  },
+  {
+    "__docId__": 224,
+    "kind": "external",
+    "static": true,
+    "variation": null,
+    "name": "AudioContext",
+    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
+    "memberof": "BuiltinExternal/WebAPIExternal.js",
+    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

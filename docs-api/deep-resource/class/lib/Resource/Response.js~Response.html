@@ -9,12 +9,14 @@
   <script src="script/prettify/prettify.js"></script>
   
   
+  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container">
+<body class="layout-container" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  <a href="identifiers.html">Identifier</a>
+  
+  <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -42,6 +44,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectCallNotAvailableException.js~DirectCallNotAvailableException.html">DirectCallNotAvailableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LambdaParamsCompatibilityException.js~LambdaParamsCompatibilityException.html">LambdaParamsCompatibilityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
@@ -49,6 +53,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/SourceNotAvailableException.js~SourceNotAvailableException.html">SourceNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
@@ -94,7 +99,63 @@
   
 </div>
 
-
+<div data-ice="staticMemberSummary"><h2>Static Member Summary</h2><table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3">Static Public Members</td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      <span data-ice="static">static</span>
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html#static-get-ORIGINAL_REQUEST_ID_HEADER">ORIGINAL_REQUEST_ID_HEADER</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      <span data-ice="static">static</span>
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html#static-get-REQUEST_ID_HEADER">REQUEST_ID_HEADER</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
 
 <div data-ice="constructorSummary"><h2>Constructor Summary</h2><table class="summary" data-ice="summary">
   <thead><tr><td data-ice="title" colspan="3">Public Constructor</td></tr></thead>
@@ -169,6 +230,31 @@
       <div>
         <p>
            <span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html#instance-get-error">error</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html#instance-get-headers">headers</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span>: <span>*</span></span>
         </p>
       </div>
       <div>
@@ -293,7 +379,64 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html#instance-get-requestId">requestId</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html#instance-get-statusCode">statusCode</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+</tbody>
+</table>
+</div>
+<div data-ice="methodSummary"><h2>Method Summary</h2><table class="summary" data-ice="summary">
+  <thead><tr><td data-ice="title" colspan="3">Public Methods</td></tr></thead>
+  <tbody>
+  
+  <tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Resource/Response.js~Response.html#instance-method-toJSON">toJSON</a></span></span><span data-ice="signature">(): {requestId: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, statusCode: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>, headers: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>|<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span>, data: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, error: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></span>}</span>
         </p>
       </div>
       <div>
@@ -313,8 +456,109 @@
 
 
 
+<div data-ice="staticMemberDetails"><h2 data-ice="title">Static Public Members</h2>
 
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-get-ORIGINAL_REQUEST_ID_HEADER">
+    <span class="access" data-ice="access">public</span>
+    <span data-ice="static">static</span>
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">ORIGINAL_REQUEST_ID_HEADER</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber36">source</a></span></span>
+    </span>
+  </h3>
 
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-get-REQUEST_ID_HEADER">
+    <span class="access" data-ice="access">public</span>
+    <span data-ice="static">static</span>
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">REQUEST_ID_HEADER</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber43">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+</div>
 
 <div data-ice="constructorDetails"><h2 data-ice="title">Public Constructors</h2>
 
@@ -400,7 +644,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber55">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber71">source</a></span></span>
     </span>
   </h3>
 
@@ -450,7 +694,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber69">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber85">source</a></span></span>
     </span>
   </h3>
 
@@ -490,6 +734,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-headers">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">headers</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber99">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span> | <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-isError">
     <span class="access" data-ice="access">public</span>
     
@@ -500,7 +794,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber76">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber106">source</a></span></span>
     </span>
   </h3>
 
@@ -550,7 +844,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber34">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber50">source</a></span></span>
     </span>
   </h3>
 
@@ -600,7 +894,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber41">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber57">source</a></span></span>
     </span>
   </h3>
 
@@ -650,7 +944,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber48">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber64">source</a></span></span>
     </span>
   </h3>
 
@@ -690,6 +984,56 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-requestId">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">requestId</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber92">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-get-statusCode">
     <span class="access" data-ice="access">public</span>
     
@@ -700,7 +1044,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber62">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber78">source</a></span></span>
     </span>
   </h3>
 
@@ -740,11 +1084,63 @@
   
 </div>
 </div>
+<div data-ice="methodDetails"><h2 data-ice="title">Public Methods</h2>
 
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-toJSON">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">toJSON</span><span data-ice="signature">(): {requestId: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, statusCode: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>, headers: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>|<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span>, data: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, error: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></span>}</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Resource/Response.js.html#lineNumber124">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType">{requestId: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>, statusCode: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>, headers: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>|<span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/null">null</a></span>, data: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, error: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a></span>}</td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+</div>
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

@@ -462,6 +462,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -511,13 +517,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#action",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-action",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-action",
     "lib/AWS/IAM/Action.js~Action#action",
     "member"
   ],
@@ -535,13 +541,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
   [
     "lib/aws/iam/action.js~action#service",
-    "class/lib/AWS/IAM/Action.js~Action.html#instance-get-service",
+    "class/lib/AWS/IAM/Action.js~Action.html#instance-set-service",
     "lib/AWS/IAM/Action.js~Action#service",
     "member"
   ],
@@ -691,13 +697,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
   [
     "lib/aws/iam/policy.js~policy#version",
-    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-get-version",
+    "class/lib/AWS/IAM/Policy.js~Policy.html#instance-set-version",
     "lib/AWS/IAM/Policy.js~Policy#version",
     "member"
   ],
@@ -721,13 +727,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#accountid",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-accountId",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-accountId",
     "lib/AWS/IAM/Resource.js~Resource#accountId",
     "member"
   ],
@@ -745,13 +751,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
@@ -805,13 +811,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#condition",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-condition",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-condition",
     "lib/AWS/IAM/Statement.js~Statement#condition",
     "member"
   ],
@@ -853,13 +859,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#principal",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-principal",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-principal",
     "lib/AWS/IAM/Statement.js~Statement#principal",
     "member"
   ],

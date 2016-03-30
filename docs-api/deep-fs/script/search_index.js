@@ -318,6 +318,12 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "builtinexternal/webapiexternal.js~audiocontext",
+    "external/index.html",
+    "BuiltinExternal/WebAPIExternal.js~AudioContext",
+    "external"
+  ],
+  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -529,13 +535,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/registry.js~registry#ensurefresh",
-    "class/lib/Registry.js~Registry.html#instance-get-ensureFresh",
+    "class/lib/Registry.js~Registry.html#instance-set-ensureFresh",
     "lib/Registry.js~Registry#ensureFresh",
     "member"
   ],
   [
     "lib/registry.js~registry#ensurefresh",
-    "class/lib/Registry.js~Registry.html#instance-set-ensureFresh",
+    "class/lib/Registry.js~Registry.html#instance-get-ensureFresh",
     "lib/Registry.js~Registry#ensureFresh",
     "member"
   ],

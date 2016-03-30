@@ -9,12 +9,14 @@
   <script src="script/prettify/prettify.js"></script>
   
   
+  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container">
+<body class="layout-container" data-ice="rootContainer">
 
 <header>
   <a href="./">Home</a>
-  <a href="identifiers.html">Identifier</a>
+  
+  <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -42,6 +44,8 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/SuperagentResponse.js~SuperagentResponse.html">SuperagentResponse</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Resource/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/AsyncCallNotAvailableException.js~AsyncCallNotAvailableException.html">AsyncCallNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/CachedRequestException.js~CachedRequestException.html">CachedRequestException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/DirectCallNotAvailableException.js~DirectCallNotAvailableException.html">DirectCallNotAvailableException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LambdaParamsCompatibilityException.js~LambdaParamsCompatibilityException.html">LambdaParamsCompatibilityException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/LoadCredentialsException.js~LoadCredentialsException.html">LoadCredentialsException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingActionException.js~MissingActionException.html">MissingActionException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingCacheImplementationException.js~MissingCacheImplementationException.html">MissingCacheImplementationException</a></span></span></li>
@@ -49,6 +53,7 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingLocalLambdaExecWrapperException.js~MissingLocalLambdaExecWrapperException.html">MissingLocalLambdaExecWrapperException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/MissingSecurityServiceException.js~MissingSecurityServiceException.html">MissingSecurityServiceException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/NotAuthenticatedException.js~NotAuthenticatedException.html">NotAuthenticatedException</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/SourceNotAvailableException.js~SourceNotAvailableException.html">SourceNotAvailableException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/UnknownMethodException.js~UnknownMethodException.html">UnknownMethodException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Resource/Exception/ValidationError.js~ValidationError.html">ValidationError</a></span></span></li>
 </ul>
@@ -78,7 +83,9 @@ import qs from &apos;qs&apos;;
 import Core from &apos;deep-core&apos;;
 import {MissingSecurityServiceException} from &apos;./Exception/MissingSecurityServiceException&apos;;
 import {AsyncCallNotAvailableException} from &apos;./Exception/AsyncCallNotAvailableException&apos;;
+import {LambdaParamsCompatibilityException} from &apos;./Exception/LambdaParamsCompatibilityException&apos;;
 import {LoadCredentialsException} from &apos;./Exception/LoadCredentialsException&apos;;
+import {SourceNotAvailableException} from &apos;./Exception/SourceNotAvailableException&apos;;
 import crypto from &apos;crypto&apos;;
 import util from &apos;util&apos;;
 
@@ -95,16 +102,31 @@ export class Request {
     this._action = action;
     this._payload = payload;
     this._method = method;
-    this._lambda = null;
+    this._lambda = new AWS.Lambda();
 
     this._cacheImpl = null;
     this._cacheTtl = Request.TTL_FOREVER;
     this._cached = false;
+    this._publicCached = false;
 
     this._async = false;
     this._native = false;
 
     this._validationSchemaName = null;
+
+    this._customId = null;
+    this._returnLogs = false;
+
+    this._withUserCredentials = true;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  skipLoadingCredentials() {
+    this._withUserCredentials = false;
+
+    return this;
   }
 
   /**
@@ -114,13 +136,6 @@ export class Request {
     this._validationSchemaName = null;
 
     return this;
-  }
-
-  /**
-   * @returns {Boolean}
-   */
-  get isPreValidated() {
-    return !!this._validationSchemaName;
   }
 
   /**
@@ -145,11 +160,38 @@ export class Request {
   }
 
   /**
+   * @returns {Boolean}
+   *
+   * @todo: remove this?
+   */
+  get isLambda() {
+    return this._action.type === Action.LAMBDA;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get customId() {
+    if (!this._customId) {
+      this._customId = Request._md5(this._buildCacheKey() + new Date().getTime());
+    }
+
+    return this._customId;
+  }
+
+  /**
    * @returns {Request}
    */
   invokeAsync() {
     if (!this.isLambda) {
       throw new AsyncCallNotAvailableException(this._action.type);
+    }
+
+    if (this._returnLogs) {
+      throw new LambdaParamsCompatibilityException({
+        InvocationType: &apos;Event&apos;,
+        LogType: &apos;Tail&apos;,
+      });
     }
 
     this._native = true;
@@ -166,11 +208,28 @@ export class Request {
   }
 
   /**
+   * @param {Boolean} returnLogs
    * @returns {Request}
    */
-  useDirectCall() {
-    this._native = true;
+  useDirectCall(returnLogs = false) {
+    if (this._async &amp;&amp; returnLogs) {
+      throw new LambdaParamsCompatibilityException({
+        InvocationType: &apos;Event&apos;,
+        LogType: &apos;Tail&apos;,
+      });
+    }
 
+    this._native = true;
+    this._returnLogs = returnLogs;
+
+    return this;
+  }
+
+  /**
+   * @returns {Request}
+   */
+  usePublicCache() {
+    this._publicCached = true;
     return this;
   }
 
@@ -179,6 +238,13 @@ export class Request {
    */
   get isCached() {
     return this._cacheImpl &amp;&amp; this._cached;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get isPublicCached() {
+    return this._publicCached &amp;&amp; this._cacheImpl &amp;&amp; this._cacheImpl.shared;
   }
 
   /**
@@ -227,14 +293,14 @@ export class Request {
   }
 
   /**
-   * @returns {Object}
+   * @returns {Cache}
    */
   get cacheImpl() {
     return this._cacheImpl;
   }
 
   /**
-   * @param {Object} cache
+   * @param {Cache} cache
    */
   set cacheImpl(cache) {
     this._cacheImpl = cache;
@@ -276,28 +342,33 @@ export class Request {
       _class: response.constructor.name,
       data: response.rawData,
       error: response.rawError,
+      headers: response.headers,
     });
   }
 
   /**
-   * @param {String} rawData
+   * @param {String|Object} rawData
    * @returns {Response}
    * @private
    */
   _rebuildResponse(rawData) {
-    let response = JSON.parse(rawData);
+    let response = typeof rawData === &apos;string&apos; ? JSON.parse(rawData) : rawData;
 
     if (!response) {
       throw new CachedRequestException(`Unable to unpack cached JSON object from ${rawData}`);
     }
 
-    let ResponseImpl = Request._chooseResponseImpl(response._class);
+    if (response._class) {
+      let ResponseImpl = Request._chooseResponseImpl(response._class);
 
-    if (!ResponseImpl) {
-      throw new Exception(`Unknown Response implementation ${response._class}`);
+      if (!ResponseImpl) {
+        throw new Exception(`Unknown Response implementation ${response._class}`);
+      }
+
+      return new ResponseImpl(this, response.data, response.error);
     }
 
-    return new ResponseImpl(this, response.data, response.error);
+    return new SuperagentResponse(this, response, null);
   }
 
   /**
@@ -355,59 +426,38 @@ export class Request {
    * @param {Function} callback
    */
   send(callback = () =&gt; {}) {
-    if (!this.isCached || this._async) {
-      return this._send(callback);
-    }
-
-    let cache = this._cacheImpl;
-    let invalidateCache = this._cacheTtl === Request.TTL_INVALIDATE;
+    let cache = this.cacheImpl;
     let cacheKey = this._buildCacheKey();
 
-    cache.has(cacheKey, (error, result) =&gt; {
-      if (error) {
-        throw new CachedRequestException(error);
-      }
-
-      if (result &amp;&amp; !invalidateCache) {
-        cache.get(cacheKey, (error, result) =&gt; {
-          if (error) {
-            throw new CachedRequestException(error);
-          }
-
-          callback(this._rebuildResponse(result));
-        });
-
+    if (!this.isCached || this._async || (this.cacheTtl === Request.TTL_INVALIDATE)) {
+      return this._send(callback);
+    }
+    
+    this._loadResponseFromCache(cache, cacheKey, (error, response) =&gt; {
+      if (!error) {
+        callback(response);
         return;
       }
 
-      this._send((response) =&gt; {
-        if (!response.isError) {
-          cache.set(cacheKey, Request._stringifyResponse(response), this._cacheTtl, (error, result) =&gt; {
-            if (!error &amp;&amp; !result) {
-              error = `Unable to persist request cache under key ${cacheKey}.`;
-            }
+      if (this.isPublicCached) {
+        let publicCache = cache.shared;
+        let publicCacheKey = publicCache.buildKeyFromRequest(this);
 
-            if (error) {
-              throw new CachedRequestException(error);
-            }
-          });
-        }
+        this._loadResponseFromCache(publicCache, publicCacheKey, (error, response) =&gt; {
+          if (!error) {
+            callback(response);
+            return;
+          }
 
-        // @todo: do it synchronous?
-        callback(response);
-      });
+          this._send(callback);
+        });
+
+      } else {
+        this._send(callback);
+      }
     });
 
     return this;
-  }
-
-  /**
-   * @returns {Boolean}
-   *
-   * @todo: remove this?
-   */
-  get isLambda() {
-    return this._action.type === Action.LAMBDA;
   }
 
   /**
@@ -415,40 +465,182 @@ export class Request {
    * @returns {Request}
    */
   _send(callback = () =&gt; {}) {
-     if (this.isPreValidated) {
-      let validation = this._action.resource.validation;
+    let logService = this.action.resource.log;
+    let event = {
+      service: &apos;deep-resource&apos;,
+      resourceType: &apos;Browser&apos;,
+      resourceId: this.native ? this.action.source.original : this.action.source.api,
+      eventName: this.method,
+      eventId: this.customId,
+      requestId: this.customId,
+      payload: this.payload,
+    };
 
-      let validationResult = validation.validate(this._validationSchemaName, this.payload, true);
+    logService.rumLog(event);
 
-      if (validationResult.error) {
-        let error = validationResult.error;
+    let decoratedCallback = (response) =&gt; {
+      this._saveResponseToCache(response, (error) =&gt; {
+        if (error) {
+          throw error;
+        }
+      });
 
-        callback(new LambdaResponse(this, {
-          errorType: error.name,
-          errorMessage: error.annotate(),
-          errorStack: error.stack || (new Error(error.message)).stack,
-          validationErrors: error.details,
-        }, null));
+      event = util._extend({}, event);
+      event.payload = response;
+      event.requestId = response.requestId;
 
-        return this;
+      logService.rumLog(event);
+
+      callback(response);
+    };
+
+    if (this.validationSchemaName) {
+      let result = this._validate();
+
+      if (result.error) {
+        decoratedCallback(this._createValidationErrorResponse(result.error));
       }
     }
 
     if (!this._native) {
-      return this._sendThroughApi(callback);
+      return this._sendThroughApi(decoratedCallback);
     }
 
     switch (this._action.type) {
       case Action.LAMBDA:
-        this._sendLambda(callback);
+        if (!this._action.isOriginalSourceInvokable) {
+          throw new SourceNotAvailableException(Action.LAMBDA, this._action);
+        }
+
+        this._sendLambda(decoratedCallback);
         break;
       case Action.EXTERNAL:
-        this._sendExternal(callback);
+        if (!this._action.isApiSourceInvokable) {
+          throw new SourceNotAvailableException(Action.EXTERNAL, this._action);
+        }
+
+        this._sendExternal(decoratedCallback);
         break;
       default: throw new Exception(`Request of type ${this._action.type} is not implemented`);
     }
 
     return this;
+  }
+
+  /**
+   * @param {Object} response
+   * @param {Function} callback
+   * @private
+   */
+  _saveResponseToCache(response, callback) {
+    if (!this.isCached || this.async || (this.cacheTtl === Request.TTL_INVALIDATE) || response.isError) {
+      callback(null, response);
+      return;
+    }
+
+    let cacheKey = this._buildCacheKey();
+    let logService = this.action.resource.log;
+
+    let event = {
+      service: &apos;deep-cache&apos;,
+      resourceType: this.cacheImpl.type(),
+      resourceId: cacheKey,
+      eventName: &apos;set&apos;,
+      requestId: response.requestId,
+      payload: {response,},
+    };
+
+    logService.rumLog(event);
+
+    this.cacheImpl.set(cacheKey, Request._stringifyResponse(response), this.cacheTtl, (error, result) =&gt; {
+      event = util._extend({}, event);
+      event.payload = {error, result,};
+      logService.rumLog(event);
+
+      if (!error &amp;&amp; !result) {
+        error = `Unable to persist request cache under key ${cacheKey}.`;
+      }
+
+      if (error) {
+        error = new CachedRequestException(error);
+      }
+
+      callback(error, result);
+    });
+  }
+
+  /**
+   * @param {Object} driver
+   * @param {String|Key} key
+   * @param {Function} callback
+   */
+  _loadResponseFromCache(driver, key, callback) {
+    driver.has(key, (err, has) =&gt; {
+      if (has) {
+        let logService = this.action.resource.log;
+
+        let event = {
+          service: &apos;deep-cache&apos;,
+          resourceType: driver.type(),
+          resourceId: key,
+          eventName: &apos;get&apos;,
+          requestId: this.customId,
+        };
+
+        logService.rumLog(event);
+
+        driver.get(key, (err, data) =&gt; {
+          event = util._extend({}, event);
+          event.payload = {err, data,};
+
+          logService.rumLog(event);
+
+          if (err) {
+            callback(err, null);
+
+            return;
+          }
+
+          callback(null, this._rebuildResponse(data));
+        });
+
+        return;
+      }
+
+      callback(new CachedRequestException(`Missing key ${key}`), null);
+    });
+  }
+
+
+  /**
+   * @returns {Object}
+   * @private
+   */
+  _validate() {
+    if (!this.validationSchemaName) {
+      throw new Exception(&apos;Error on validating request. Validation schema is not defined.&apos;);
+    }
+
+    return this.action.resource.validation.validate(
+      this.validationSchemaName, this.payload, true
+    );
+  }
+
+  /**
+   * @param validationError
+   *
+   * @returns {LambdaResponse}
+   * @private
+   */
+  _createValidationErrorResponse(validationError) {
+    return new LambdaResponse(this, {
+      errorMessage: JSON.stringify({
+        errorType: validationError.name,
+        errorMessage: validationError.annotate(),
+        errorStack: validationError.stack || (new Error(validationError.message)).stack,
+        validationErrors: validationError.details,
+      })
+    }, null);
   }
 
   /**
@@ -474,6 +666,7 @@ export class Request {
    * @private
    */
   _sendLambda(callback = () =&gt; {}) {
+
     // @todo: set retries in a smarter way...
     AWS.config.maxRetries = 3;
 
@@ -485,23 +678,45 @@ export class Request {
       FunctionName: this._action.source.original,
       Payload: JSON.stringify(this.payload),
       InvocationType: this._async ? &apos;Event&apos; : &apos;RequestResponse&apos;,
+      LogType: this._returnLogs ? &apos;Tail&apos; : &apos;None&apos;,
     };
 
-    this._loadSecurityCredentials((error, credentials) =&gt; {
-      // use cognito identity credentials if present
-      // if not, fallback to lambda execution role permissions
-      if (!error &amp;&amp; credentials) {
-        options.credentials = credentials;
-      }
+    if (!this._withUserCredentials) {
+      this._invokeLambda(invocationParameters, callback);
+    } else {
+      this._loadSecurityCredentials((error, credentials) =&gt; {
 
-      this._lambda = new AWS.Lambda(options);
+        // use cognito identity credentials if present
+        // if not, fallback to lambda execution role permissions
+        if (!error &amp;&amp; credentials) {
+          options.credentials = credentials;
+        }
 
-      this._lambda.invoke(invocationParameters, (error, data) =&gt; {
-        callback(new LambdaResponse(this, data, error));
+        this._lambda = new AWS.Lambda(options);
+
+        this._invokeLambda(invocationParameters, callback);
       });
-    });
+    }
 
     return this;
+  }
+
+  /**
+   * @param {Object} invocationParameters
+   * @param {Function} callback
+   * @private
+   */
+  _invokeLambda(invocationParameters, callback) {
+    let _this = this;
+
+    // @note - don&apos;t replace this callback function with an arrow one
+    // (we need injected context to access AWS.Response)
+    this._lambda.invoke(invocationParameters, function(error, data) {
+      let lambdaResponse = new LambdaResponse(_this, data, error);
+      lambdaResponse.originalResponse = this; // this is an instance of AWS.Response
+
+      callback(lambdaResponse);
+    });
   }
 
   /**
@@ -699,7 +914,7 @@ export class Request {
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

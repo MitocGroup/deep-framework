@@ -1,5 +1,6 @@
 Contributing to DEEP Framework
 ==============================
+
 This project is open source, and we encourage developers to contribute. Here below is the easiest way to do so:
 
 1. [Fork](http://help.github.com/forking/) this repository in GitHub.
