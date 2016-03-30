@@ -19,7 +19,6 @@ export class Aws4SignedHttpConnectionFactory {
   }
 
   /**
-   * @param {Object} aws4Signature
    * @returns {$ES6_ANONYMOUS_CLASS$}
    */
   create() {
