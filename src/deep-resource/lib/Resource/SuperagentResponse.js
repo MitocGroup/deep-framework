@@ -55,7 +55,7 @@ export class SuperagentResponse extends Response {
     this._parseExternal();
 
     // check if any Lambda response available
-    if (this._data && !this._error) {
+    if (this._data) {
 
       // manage this weird case...
       if (typeof this._data === 'string') {
@@ -104,20 +104,15 @@ export class SuperagentResponse extends Response {
     let data = this._rawData;
     let error = this._rawError;
 
-    if (error && data.body && data.body.errorMessage) {
-      try {
-        let parsedError = JSON.parse(data.body.errorMessage);
-        error = parsedError.errorMessage;
-      } catch(e) {}
-    }
-
     if (error) {
       this._error = error;
-    } else if (data && data.error) { // weird case...
-      this._error = data.error;
-    } else {
-      this._data = data && data.body ? data.body : null;
     }
+
+    if (data && data.error) { // weird case...
+      this._error = data.error;
+    }
+
+    this._data = data && data.body ? data.body : null;
 
     // @todo: treat Response.status lack somehow else?
     if (data && data.status) {
