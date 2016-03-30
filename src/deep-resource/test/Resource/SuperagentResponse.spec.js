@@ -99,7 +99,7 @@ suite('Resource/SuperagentResponse', () => {
     superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
 
     chai.expect(superagentResponse.error).to.be.equal(_rawData.error);
-    chai.expect(superagentResponse.data).to.be.equal(null);
+    chai.expect(superagentResponse.data).to.be.equal('bodyTest');
     chai.expect(superagentResponse.statusCode).to.be.equal(500);
   });
 
@@ -110,7 +110,7 @@ suite('Resource/SuperagentResponse', () => {
     superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
 
     chai.expect(superagentResponse.error).to.be.eql(_rawError);
-    chai.expect(superagentResponse.data).to.be.equal(null);
+    chai.expect(superagentResponse.data).to.be.equal('bodyTest');
     chai.expect(superagentResponse.statusCode).to.be.equal(500);
   });
 
@@ -121,7 +121,7 @@ suite('Resource/SuperagentResponse', () => {
     superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
 
     chai.expect(superagentResponse.error).to.be.eql(_rawError);
-    chai.expect(superagentResponse.data).to.be.equal(null);
+    chai.expect(superagentResponse.data).to.be.equal('bodyTest');
     chai.expect(superagentResponse.statusCode).to.be.equal(500);
   });
 
