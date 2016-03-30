@@ -104,7 +104,7 @@ export class SuperagentResponse extends Response {
     let data = this._rawData;
     let error = this._rawError;
 
-    if (error && data.body.errorMessage) {
+    if (error && data.body && data.body.errorMessage) {
       try {
         let parsedError = JSON.parse(data.body.errorMessage);
         error = parsedError.errorMessage;
