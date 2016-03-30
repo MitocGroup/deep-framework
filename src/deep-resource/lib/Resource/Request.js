@@ -403,7 +403,7 @@ export class Request {
    */
   _send(callback = () => {}) {
     let logService = this.action.resource.log;
-    let event = {
+    let requestEvent = {
       service: 'deep-resource',
       resourceType: 'Browser',
       resourceId: this.native ? this.action.source.original : this.action.source.api,
@@ -413,8 +413,6 @@ export class Request {
       payload: this.payload,
     };
 
-    logService.rumLog(event);
-
     let decoratedCallback = (response) => {
       this._saveResponseToCache(response, (error) => {
         if (error) {
@@ -422,11 +420,13 @@ export class Request {
         }
       });
 
-      event = util._extend({}, event);
-      event.payload = response;
-      event.requestId = response.requestId;
+      requestEvent.requestId = response.requestId;
 
-      logService.rumLog(event);
+      let responseEvent = util._extend({}, requestEvent);
+      responseEvent.payload = response;
+
+      logService.rumLog(requestEvent);
+      logService.rumLog(responseEvent);
 
       callback(response);
     };
