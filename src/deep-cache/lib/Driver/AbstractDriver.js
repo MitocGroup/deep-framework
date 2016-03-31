@@ -196,6 +196,20 @@ export class AbstractDriver extends Core.OOP.Interface {
 
   /**
    * @param {String} key
+   * @returns {String}
+   */
+  _getKeyBuildId(key) {
+    if (this.isDeepKey(key)) {
+      let matches = key.match(/^([^:])+:/);
+
+      return matches[1];
+    }
+
+    return null;
+  }
+
+  /**
+   * @param {String} key
    * @returns {Boolean}
    */
   isDeepKey(key) {
