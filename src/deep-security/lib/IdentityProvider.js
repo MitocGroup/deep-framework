@@ -34,6 +34,13 @@ export class IdentityProvider {
   }
 
   /**
+   * @returns {string}
+   */
+  static get AUTH0() {
+    return 'auth0';
+  }
+
+  /**
    * @param {String} providerName
    * @returns {Array}
    */
@@ -49,6 +56,9 @@ export class IdentityProvider {
         break;
       case IdentityProvider.GOOGLE:
         aliases = ['accounts.google.com', 'google', 'google-oauth2'];
+        break;
+      case IdentityProvider.AUTH0:
+        aliases = ['auth0'];
         break;
     }
 
