@@ -414,11 +414,9 @@ export class Request {
     };
 
     let decoratedCallback = (response) => {
-      this._saveResponseToCache(response, (error) => {
-        if (error) {
-          throw error;
-        }
-      });
+      if (this.method.toUpperCase() === 'GET') {
+        this._saveResponseToCache(response);
+      }
 
       requestEvent.requestId = response.requestId;
 
@@ -469,7 +467,7 @@ export class Request {
    * @param {Function} callback
    * @private
    */
-  _saveResponseToCache(response, callback) {
+  _saveResponseToCache(response, callback = () => {}) {
     if (!this.isCached || this.async || (this.cacheTtl === Request.TTL_INVALIDATE) || response.isError) {
       callback(null, response);
       return;
