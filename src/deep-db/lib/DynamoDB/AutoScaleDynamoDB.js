@@ -84,7 +84,7 @@ export class AutoScaleDynamoDB {
 
           throughput.setCapacity(increasePayload, (error) => {
             if (error) {
-              if (this._isResourceInUseError(error)) {
+              if (error.name === AutoScaleDynamoDB.RESOURCE_IN_USE_ERROR) {
                 console.error(`'${table}' is already in use: ${error}`);
 
                 setTimeout(
@@ -113,15 +113,6 @@ export class AutoScaleDynamoDB {
 
       originalCb(error, data);
     };
-  }
-
-  /**
-   * @param {Error} error
-   * @returns {String}
-   * @private
-   */
-  _isResourceInUseError(error) {
-    return error.name === 'ResourceInUseException';
   }
 
   /**
@@ -223,5 +214,12 @@ export class AutoScaleDynamoDB {
    */
   static get THROUGHPUT_EXCEEDED_ERROR() {
     return 'ProvisionedThroughputExceededException';
+  }
+  
+  /**
+   * @returns {String}
+   */
+  static get RESOURCE_IN_USE_ERROR() {
+    return 'ResourceInUseException';
   }
 }
