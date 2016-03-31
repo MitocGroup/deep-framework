@@ -84,6 +84,18 @@ export class AutoScaleDynamoDB {
 
           throughput.setCapacity(increasePayload, (error) => {
             if (error) {
+              if (this._isResourceInUseError(error)) {
+                console.error(`'${table}' is already in use: ${error}`);
+
+                setTimeout(
+                  this._dynamoDbDocumentClient[method].bind(this),
+                  500, // increasing IOPS runs ~ 500ms
+                  payload, originalCb
+                );
+
+                return;
+              }
+
               console.error(`Failed on increase throughput for table '${table}': ${error}`);
               originalCb(originalError, data);
               return;
@@ -101,6 +113,15 @@ export class AutoScaleDynamoDB {
 
       originalCb(error, data);
     };
+  }
+
+  /**
+   * @param {Error} error
+   * @returns {String}
+   * @private
+   */
+  _isResourceInUseError(error) {
+    return error.name === 'ResourceInUseException';
   }
 
   /**
