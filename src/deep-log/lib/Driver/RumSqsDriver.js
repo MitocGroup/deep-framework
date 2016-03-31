@@ -207,7 +207,7 @@ export class RumSqsDriver extends AbstractDriver {
     let params = {
       QueueUrl: this.queueUrl,
       MaxNumberOfMessages: 10,
-      VisibilityTimeout: 0,
+      VisibilityTimeout: 20,
       WaitTimeSeconds: 0
     };
 
@@ -252,6 +252,29 @@ export class RumSqsDriver extends AbstractDriver {
   }
 
   /**
+   * @param {Function} callback
+   * @param {Object[]} additionalAttributes
+   */
+  getQueueAttributes(callback, additionalAttributes = []) {
+    let defaultAttributes = [
+      'ApproximateNumberOfMessages',
+      'ApproximateNumberOfMessagesNotVisible',
+      'ApproximateNumberOfMessagesDelayed'
+    ];
+
+    let attributes = defaultAttributes.concat(
+      additionalAttributes.filter(attr => defaultAttributes.indexOf(attr) === -1)
+    );
+
+    let params = {
+      QueueUrl: this.queueUrl,
+      AttributeNames: attributes
+    };
+
+    this.sqs.getQueueAttributes(params, callback);
+  }
+
+  /**
    * @param {String} queueUrl
    * @returns {String}
    */
@@ -263,5 +286,19 @@ export class RumSqsDriver extends AbstractDriver {
     }
 
     return regionParts[1];
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ES_LOGS_INDEX() {
+    return 'rum';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ES_LOGS_TYPE() {
+    return 'logs';
   }
 }

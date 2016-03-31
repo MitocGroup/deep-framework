@@ -151,4 +151,14 @@ export class Region {
 
     return availableRegions[0]; // fallback to first available region
   }
+
+  /**
+   *
+   * @param {String} region
+   * @returns {String}
+   */
+  static getRegionPrefix(region) {
+    let regionsWithDifferentPrefix = [Region.EU_FRANKFURT, Region.ASIA_PACIFIC_SEOUL];
+    return regionsWithDifferentPrefix.indexOf(region) !== -1 ? '.' : '-';
+  }
 }
