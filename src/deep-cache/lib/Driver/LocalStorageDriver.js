@@ -110,9 +110,9 @@ export class LocalStorageDriver extends AbstractDriver {
 
     LocalStorage.forEach((key, val) => {
       // @note - do not remove keys from cache at iteration time, it breaks the loop
-      if (this.isDeepKey(key)
-        && !LocalStorageDriver._isAlive(val, key, false)
-        || this._getKeyBuildId(key) !== this._buildId) {
+      if (this.isDeepKey(key) &&
+        !LocalStorageDriver._isAlive(val, key, false) ||
+        this._getKeyBuildId(key) !== this._buildId) {
         keysToRemove.push(key);
       }
     });
