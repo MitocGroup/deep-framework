@@ -141,7 +141,7 @@ export class DB extends Kernel.ContainerAware {
         this._enableLocalDB(callback);
       } else {
         if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
-          this._initVogelsAutoscale();
+          this._initVogelsAutoscale(kernel);
         }
 
         callback();
@@ -150,15 +150,18 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
+   * @param {Kernel} kernel
+   *
    * @private
    */
-  _initVogelsAutoscale() {
+  _initVogelsAutoscale(kernel) {
     Vogels.AWS.config.maxRetries = 3;
 
     Vogels.documentClient(
       new AutoScaleDynamoDB(
         Vogels.dynamoDriver(),
-        Vogels.documentClient()
+        Vogels.documentClient(),
+        kernel
       ).extend()
     );
   }
