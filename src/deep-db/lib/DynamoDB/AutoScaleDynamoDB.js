@@ -15,7 +15,7 @@ export class AutoScaleDynamoDB {
   constructor(dynamoDb, dynamoDbDocumentClient, deepKernel) {
     this._dynamoDb = dynamoDb;
     this._dynamoDbDocumentClient = dynamoDbDocumentClient;
-    this._logger = deepKernel.get('log');
+    this._kernel = deepKernel;
 
     this._increasedFor = {};
   }
@@ -49,18 +49,20 @@ export class AutoScaleDynamoDB {
    */
   _decorate(method, payload, originalCb) {
     return (error, data) => {
+      let logger = this._kernel.get('log');
+
       if (error && error.code === AutoScaleDynamoDB.THROUGHPUT_EXCEEDED_ERROR) {
         let originalError = error;
         let table = AutoScaleDynamoDB._getTableNameFromPayload(method, payload);
 
         if (!table) {
-          this._logger.warn(`Unable to find table name in payload while increasing throughput`);
+          logger.warn(`Unable to find table name in payload while increasing throughput`);
           originalCb(originalError, data);
           return;
         } else if (this._increasedFor[table] &&
           this._increasedFor[table] >= AutoScaleDynamoDB.MAX_INCREASE_NUM_PER_TABLE) {
 
-          this._logger.warn(`The table '${table}' capacity increase count exceeded ${this._increasedFor[table]}`);
+          logger.warn(`The table '${table}' capacity increase count exceeded ${this._increasedFor[table]}`);
           originalCb(originalError, data);
           return;
         }
@@ -73,7 +75,7 @@ export class AutoScaleDynamoDB {
 
         throughput.tableInfo((error, info) => {
           if (error) {
-            this._logger.error(`Failed on gather information about table '${table}'`, error);
+            logger.error(`Failed on gather information about table '${table}'`, error);
 
             originalCb(originalError, data);
             return;
@@ -87,7 +89,7 @@ export class AutoScaleDynamoDB {
           throughput.setCapacity(increasePayload, (error) => {
             if (error) {
               if (error.name === AutoScaleDynamoDB.RESOURCE_IN_USE_ERROR) {
-                this._logger.warn(`'${table}' is already in use`, error);
+                logger.warn(`'${table}' is already in use`, error);
 
                 setTimeout(
                   this._dynamoDbDocumentClient[method].bind(this),
@@ -98,14 +100,14 @@ export class AutoScaleDynamoDB {
                 return;
               }
 
-              this._logger.error(`Failed on increase throughput for table '${table}'`, error);
+              logger.error(`Failed on increase throughput for table '${table}'`, error);
               originalCb(originalError, data);
               return;
             }
 
             this._increasedFor[table] = (this._increasedFor[table] || 0) + 1;
 
-            this._logger.info(`The table '${table}' throughput increased by ${increasePayload[increaseType]}`);
+            logger.info(`The table '${table}' throughput increased by ${increasePayload[increaseType]}`);
             this._dynamoDbDocumentClient[method](payload, originalCb);
           });
         });
