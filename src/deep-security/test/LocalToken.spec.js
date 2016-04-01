@@ -19,15 +19,15 @@ suite('LocalToken', function () {
   };
   let providers = {
     amazon: {
-      name: IdentityProvider.AMAZON,
+      name: 'amazon',
       data: {},
     },
     facebook: {
-      name: IdentityProvider.FACEBOOK,
+      name: 'facebook',
       data: {},
     },
     google: {
-      name: IdentityProvider.GOOGLE,
+      name: 'google',
       data: {},
     },
   };

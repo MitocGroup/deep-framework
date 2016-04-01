@@ -21,33 +21,21 @@ suite('IdentityProvider', () => {
   };
   let providers = {
     amazon: {
-      name: IdentityProvider.AMAZON,
+      name: 'amazon',
       data: {},
     },
     facebook: {
-      name: IdentityProvider.FACEBOOK,
+      name: 'facebook',
       data: {},
     },
     google: {
-      name: IdentityProvider.GOOGLE,
+      name: 'google',
       data: {},
     },
   };
 
   test('Class IdentityProvider exists in IdentityProvider', () => {
     chai.expect(IdentityProvider).to.be.an('function');
-  });
-
-  test('Check AMAZON static getter returns value "www.amazon.com"', () => {
-    chai.expect(IdentityProvider.AMAZON).to.be.equal('www.amazon.com');
-  });
-
-  test('Check FACEBOOK static getter returns value "graph.facebook.com"', () => {
-    chai.expect(IdentityProvider.FACEBOOK).to.be.equal('graph.facebook.com');
-  });
-
-  test('Check GOOGLE static getter returns value "graph.facebook.com"', () => {
-    chai.expect(IdentityProvider.GOOGLE).to.be.equal('accounts.google.com');
   });
 
   test('Check constructor sets values by default', () => {
@@ -130,24 +118,6 @@ suite('IdentityProvider', () => {
     chai.assert.instanceOf(
       error, MissingLoginProviderException, 'error is an instance of MissingLoginProviderException'
     );
-  });
-
-  test('Check ALIASES static method returns valid array of aliases for AMAZON', () => {
-    let actualResult = IdentityProvider.ALIASES(IdentityProvider.AMAZON);
-
-    chai.expect(actualResult).to.be.eql(['www.amazon.com', 'amazon']);
-  });
-
-  test('Check ALIASES static method returns valid array of aliases for GOOGLE', () => {
-    let actualResult = IdentityProvider.ALIASES(IdentityProvider.GOOGLE);
-
-    chai.expect(actualResult).to.be.eql(['accounts.google.com', 'google', 'google-oauth2']);
-  });
-
-  test('Check ALIASES static method returns valid array of aliases for FACEBOOK', () => {
-    let actualResult = IdentityProvider.ALIASES(IdentityProvider.FACEBOOK);
-
-    chai.expect(actualResult).to.be.eql(['graph.facebook.com', 'facebook']);
   });
 
   test('Check isTokenValid() returns true', () => {
