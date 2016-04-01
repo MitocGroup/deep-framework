@@ -6,6 +6,7 @@
 
 import Core from 'deep-core';
 import elasticsearch from 'elasticsearch';
+import {Aws4SignedHttpConnectionFactory} from './Connection/Aws4SignedHttpConnectionFactory';
 
 /**
  * Elasticsearch client
@@ -23,6 +24,7 @@ export class Elasticsearch {
     this._esClient = new elasticsearch.Client({
       host: this._host,
       apiVersion: '2.1', // @note - If you want to change this version do update deep-search/node-bin/cleanup.sh also
+      connectionClass: new Aws4SignedHttpConnectionFactory().create()
     });
 
     this._proxy(this, this._esClient, this._decorator);
