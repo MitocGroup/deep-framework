@@ -91,7 +91,7 @@ export class AutoScaleDynamoDB {
 
                 setTimeout(
                   this._dynamoDbDocumentClient[method].bind(this),
-                  500, // increasing IOPS runs ~ 500ms
+                  500, // increasing IOPS runs ~ 30s
                   payload, originalCb
                 );
 
