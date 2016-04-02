@@ -36,7 +36,8 @@ and [this video playlist](https://www.youtube.com/playlist?list=PLPGfD-tGOl7uNDX
 - [x] [Create an Amazon Web Services account](https://www.youtube.com/watch?v=WviHsoz8yHk)
 - [x] [Configure AWS Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
 - [x] [Get Started - Installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-- [x] [Install nvm](https://github.com/creationix/nvm#install-script) and [use latest node v4](https://github.com/creationix/nvm#usage)
+- [x] [JDK 8 and JRE 8 Installation Start Here](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html)
+- [x] [Install nvm](https://github.com/creationix/nvm#install-script) and [use node v4.3+](https://github.com/creationix/nvm#usage)
 - [ ] Install DEEP CLI, also known as `deepify`:
 
 ```bash
@@ -54,9 +55,9 @@ inside Git Bash.
 deepify install github://MitocGroup/deep-microservices-helloworld ~/deep-microservices-helloworld
 ```
 
-> If you execute `mkdir ~/deep-microservices-helloworld && cd ~/deep-microservices-helloworld`
-before `deepify install ...`, in this case path parameter is optional and can be skipped (e.g. 
-`~/deep-microservices-helloworld`). It will assume current folder in all `deepify` commands.
+> Path parameter in all `deepify` commands is optional and if not specified, assumes current
+working directory. Therefore you can skip `~/deep-microservices-helloworld` by executing
+`mkdir ~/deep-microservices-helloworld && cd ~/deep-microservices-helloworld` before `deepify install`.
 
 ### Step 3. Run Microservice(s) in Development
 
@@ -75,6 +76,15 @@ deepify deploy ~/deep-microservices-helloworld
 
 > Amazon CloudFront distribution takes up to 20 minutes to provision, therefore don’t worry
 if it returns an HTTP error in the first couple of minutes.
+
+### Step 5. Remove Microservice(s) from Production
+
+```bash
+deepify undeploy ~/deep-microservices-helloworld
+```
+
+> Amazon CloudFront distribution takes up to 20 minutes to unprovision. That's why `deepify`
+command checks every 30 seconds if it's disabled and when successful, removes it from your account.
 
 
 ## What is DEEP Framework?
@@ -115,12 +125,11 @@ Interested in contributing to deep-framework?
 - Releases: https://github.com/MitocGroup/deep-framework/releases
 - Roadmap: https://github.com/MitocGroup/deep-framework/blob/master/ROADMAP.md
 
-Looking for web applications that uses (or are similar to) deep-framework?
+Looking for web applications that use (or are similar to) deep-framework?
 
 - Hello World: https://hello.deep.mg | https://github.com/MitocGroup/deep-microservices-helloworld
 - Todo App: https://todo.deep.mg | https://github.com/MitocGroup/deep-microservices-todo-app
 - Enterprise Software Marketplace: https://www.deep.mg
-
 
 ## Sponsors
 
