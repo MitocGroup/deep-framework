@@ -21,15 +21,15 @@ suite('IdentityProvider', () => {
   };
   let providers = {
     amazon: {
-      name: 'amazon',
+      name: 'www.amazon.com',
       data: {},
     },
     facebook: {
-      name: 'facebook',
+      name: 'graph.facebook.com',
       data: {},
     },
     google: {
-      name: 'google',
+      name: 'accounts.google.com',
       data: {},
     },
   };
