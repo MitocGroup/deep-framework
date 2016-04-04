@@ -35,6 +35,10 @@ export class IdentityProvider {
         break;
     }
 
+    if (!domainRegexp) {
+      return null;
+    }
+
     for (let providerDomain in providers) {
       if (!providers.hasOwnProperty(providerDomain)) {
         continue;

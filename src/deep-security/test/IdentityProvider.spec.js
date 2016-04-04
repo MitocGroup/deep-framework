@@ -20,15 +20,15 @@ suite('IdentityProvider', () => {
     user_id: 'test_userId',
   };
   let providers = {
-    amazon: {
+    'www.amazon.com': {
       name: 'www.amazon.com',
       data: {},
     },
-    facebook: {
+    'graph.facebook.com': {
       name: 'graph.facebook.com',
       data: {},
     },
-    google: {
+    'accounts.google.com': {
       name: 'accounts.google.com',
       data: {},
     },
@@ -42,7 +42,7 @@ suite('IdentityProvider', () => {
     identityProvider = new IdentityProvider(providers, providerName, identityMetadata);
 
     chai.expect(identityProvider.providers).to.be.eql(providers);
-    chai.expect(identityProvider.name).to.be.eql(providerName);
+    chai.expect(identityProvider.name).to.be.eql('graph.facebook.com');
     chai.expect(identityProvider.userToken).to.be.eql(identityMetadata.access_token);
     chai.expect(identityProvider.userId).to.be.eql(identityMetadata.user_id);
     chai.expect(identityProvider.tokenExpirationTime).to.be.eql(identityMetadata.tokenExpirationTime);
@@ -101,9 +101,9 @@ suite('IdentityProvider', () => {
   });
 
   test('Check config() throws "MissingLoginProviderException" for missing provider', () => {
-    let actualResult = identityProvider.config(providerName);
+    let actualResult = identityProvider.config('graph.facebook.com');
 
-    chai.expect(actualResult).to.eql(providers[providerName]);
+    chai.expect(actualResult).to.eql(providers['graph.facebook.com']);
   });
 
   test('Check config() throws "MissingLoginProviderException" for missing provider', () => {

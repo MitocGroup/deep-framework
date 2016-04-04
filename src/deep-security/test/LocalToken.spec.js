@@ -18,15 +18,15 @@ suite('LocalToken', function () {
     user_id: 'test_userId',
   };
   let providers = {
-    amazon: {
+    'www.amazon.com': {
       name: 'www.amazon.com',
       data: {},
     },
-    facebook: {
+    'graph.facebook.com': {
       name: 'graph.facebook.com',
       data: {},
     },
-    google: {
+    'accounts.google.com': {
       name: 'accounts.google.com',
       data: {},
     },
