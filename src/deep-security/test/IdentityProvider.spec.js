@@ -20,16 +20,16 @@ suite('IdentityProvider', () => {
     user_id: 'test_userId',
   };
   let providers = {
-    amazon: {
-      name: IdentityProvider.AMAZON,
+    'www.amazon.com': {
+      name: 'www.amazon.com',
       data: {},
     },
-    facebook: {
-      name: IdentityProvider.FACEBOOK,
+    'graph.facebook.com': {
+      name: 'graph.facebook.com',
       data: {},
     },
-    google: {
-      name: IdentityProvider.GOOGLE,
+    'accounts.google.com': {
+      name: 'accounts.google.com',
       data: {},
     },
   };
@@ -38,23 +38,11 @@ suite('IdentityProvider', () => {
     chai.expect(IdentityProvider).to.be.an('function');
   });
 
-  test('Check AMAZON static getter returns value "www.amazon.com"', () => {
-    chai.expect(IdentityProvider.AMAZON).to.be.equal('www.amazon.com');
-  });
-
-  test('Check FACEBOOK static getter returns value "graph.facebook.com"', () => {
-    chai.expect(IdentityProvider.FACEBOOK).to.be.equal('graph.facebook.com');
-  });
-
-  test('Check GOOGLE static getter returns value "graph.facebook.com"', () => {
-    chai.expect(IdentityProvider.GOOGLE).to.be.equal('accounts.google.com');
-  });
-
   test('Check constructor sets values by default', () => {
     identityProvider = new IdentityProvider(providers, providerName, identityMetadata);
 
     chai.expect(identityProvider.providers).to.be.eql(providers);
-    chai.expect(identityProvider.name).to.be.eql(providerName);
+    chai.expect(identityProvider.name).to.be.eql('graph.facebook.com');
     chai.expect(identityProvider.userToken).to.be.eql(identityMetadata.access_token);
     chai.expect(identityProvider.userId).to.be.eql(identityMetadata.user_id);
     chai.expect(identityProvider.tokenExpirationTime).to.be.eql(identityMetadata.tokenExpirationTime);
@@ -113,9 +101,9 @@ suite('IdentityProvider', () => {
   });
 
   test('Check config() throws "MissingLoginProviderException" for missing provider', () => {
-    let actualResult = identityProvider.config(providerName);
+    let actualResult = identityProvider.config('graph.facebook.com');
 
-    chai.expect(actualResult).to.eql(providers[providerName]);
+    chai.expect(actualResult).to.eql(providers['graph.facebook.com']);
   });
 
   test('Check config() throws "MissingLoginProviderException" for missing provider', () => {
@@ -130,24 +118,6 @@ suite('IdentityProvider', () => {
     chai.assert.instanceOf(
       error, MissingLoginProviderException, 'error is an instance of MissingLoginProviderException'
     );
-  });
-
-  test('Check ALIASES static method returns valid array of aliases for AMAZON', () => {
-    let actualResult = IdentityProvider.ALIASES(IdentityProvider.AMAZON);
-
-    chai.expect(actualResult).to.be.eql(['www.amazon.com', 'amazon']);
-  });
-
-  test('Check ALIASES static method returns valid array of aliases for GOOGLE', () => {
-    let actualResult = IdentityProvider.ALIASES(IdentityProvider.GOOGLE);
-
-    chai.expect(actualResult).to.be.eql(['accounts.google.com', 'google', 'google-oauth2']);
-  });
-
-  test('Check ALIASES static method returns valid array of aliases for FACEBOOK', () => {
-    let actualResult = IdentityProvider.ALIASES(IdentityProvider.FACEBOOK);
-
-    chai.expect(actualResult).to.be.eql(['graph.facebook.com', 'facebook']);
   });
 
   test('Check isTokenValid() returns true', () => {

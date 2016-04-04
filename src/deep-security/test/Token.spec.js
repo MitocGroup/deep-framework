@@ -46,16 +46,16 @@ suite('Token', () => {
     user_id: 'test_userId',
   };
   let providers = {
-    amazon: {
-      name: IdentityProvider.AMAZON,
+    'www.amazon.com': {
+      name: 'www.amazon.com',
       data: {},
     },
-    facebook: {
-      name: IdentityProvider.FACEBOOK,
+    'graph.facebook.com': {
+      name: 'graph.facebook.com',
       data: {},
     },
-    google: {
-      name: IdentityProvider.GOOGLE,
+    'accounts.google.com': {
+      name: 'accounts.google.com',
       data: {},
     },
   };

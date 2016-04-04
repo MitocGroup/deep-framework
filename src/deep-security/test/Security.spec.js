@@ -118,7 +118,7 @@ suite('Security', function () {
   });
 
   test('Check login() method returns valid instance of LocalToken for localBackend', () => {
-    let providerName = 'www.amazon.com';
+    let providerName = 'amazon';
     let identityMetadata = {
       access_token: 'test_userToken',
       tokenExpirationTime: new Date(),
