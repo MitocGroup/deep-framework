@@ -12,7 +12,7 @@ export default {
   ],
   identityPoolId: 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef',
   identityProviders: {
-    'www.amazon.com': 'amzn1.application.5g5k2jb86379368kjh5b23kj5hb',
+    'www.amazon.com': 'amzn1.application.3b5k2jb65432352gfd5b23kj5hb',
   },
   microservices: {
     'hello.world.example': {

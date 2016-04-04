@@ -13,46 +13,43 @@ import {InvalidProviderIdentityException} from './Exception/InvalidProviderIdent
  */
 export class IdentityProvider {
   /**
-   * @returns {string}
+   * @param providerName
+   * @param providers
+   * @returns {*}
    */
-  static get AMAZON() {
-    return 'www.amazon.com';
-  }
-
-  /**
-   * @returns {string}
-   */
-  static get FACEBOOK() {
-    return 'graph.facebook.com';
-  }
-
-  /**
-   * @returns {string}
-   */
-  static get GOOGLE() {
-    return 'accounts.google.com';
-  }
-
-  /**
-   * @param {String} providerName
-   * @returns {Array}
-   */
-  static ALIASES(providerName) {
-    let aliases = [];
+  getProviderDomain(providerName, providers) {
+    let domainRegexp;
 
     switch(providerName) {
-      case IdentityProvider.AMAZON:
-        aliases = ['www.amazon.com', 'amazon'];
+      case 'amazon':
+        domainRegexp = /^www\.amazon\.com$/;
         break;
-      case IdentityProvider.FACEBOOK:
-        aliases = ['graph.facebook.com', 'facebook'];
+      case 'facebook':
+        domainRegexp = /^graph\.facebook\.com$/;
         break;
-      case IdentityProvider.GOOGLE:
-        aliases = ['accounts.google.com', 'google', 'google-oauth2'];
+      case 'google':
+        domainRegexp = /^accounts\.google\.com$/;
+        break;
+      case 'auth0':
+        domainRegexp = /^.+\.auth0\.com$/;
         break;
     }
 
-    return aliases;
+    if (!domainRegexp) {
+      return null;
+    }
+
+    for (let providerDomain in providers) {
+      if (!providers.hasOwnProperty(providerDomain)) {
+        continue;
+      }
+
+      if (domainRegexp.test(providerDomain)) {
+        return providerDomain;
+      }
+    }
+
+    return null;
   }
 
   /**
@@ -61,12 +58,13 @@ export class IdentityProvider {
    * @param {Object} identityMetadata
    */
   constructor(providers, providerName, identityMetadata) {
-    if (Object.keys(providers).indexOf(providerName) === -1) {
+    let providerDomain = this.getProviderDomain(providerName, providers);
+
+    if (!providerDomain) {
       throw new MissingLoginProviderException(providerName);
     }
 
-    if (identityMetadata.hasOwnProperty('provider') &&
-      IdentityProvider.ALIASES(providerName).indexOf(identityMetadata.provider) === -1) {
+    if (identityMetadata.provider && identityMetadata.provider !== providerName) {
       throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);
     }
 
@@ -75,7 +73,7 @@ export class IdentityProvider {
     }
 
     this._providers = providers;
-    this._name = providerName;
+    this._name = providerDomain;
     this._userToken = identityMetadata.access_token;
     this._tokenExpTime = new Date(identityMetadata.tokenExpirationTime);
     this._userId = identityMetadata.user_id || null;
