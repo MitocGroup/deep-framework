@@ -60,8 +60,8 @@ export class Security extends Kernel.ContainerAware {
    */
   boot(kernel, callback) {
     this._identityPoolId = kernel.config.identityPoolId;
-    this._identityProviders = kernel.config.identityProviders;
-    this._userProviderEndpoint = kernel.config.globals.userProviderEndpoint;
+    this._identityProviders = kernel.config.identityProviders || {};
+    this._userProviderEndpoint = kernel.config.globals.userProviderEndpoint || null;
 
     callback();
   }
