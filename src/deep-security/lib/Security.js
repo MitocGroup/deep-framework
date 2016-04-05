@@ -59,9 +59,11 @@ export class Security extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
+    let globals = kernel.config.globals;
+
     this._identityPoolId = kernel.config.identityPoolId;
-    this._identityProviders = kernel.config.identityProviders || {};
-    this._userProviderEndpoint = kernel.config.globals.userProviderEndpoint || null;
+    this._identityProviders = kernel.config.identityProviders || globals.security.identityProviders || {};
+    this._userProviderEndpoint = globals.userProviderEndpoint || null;
 
     callback();
   }
