@@ -62,7 +62,7 @@ export class Security extends Kernel.ContainerAware {
     let globals = kernel.config.globals;
 
     this._identityPoolId = kernel.config.identityPoolId;
-    this._identityProviders = kernel.config.identityProviders || globals.security.identityProviders || {};
+    this._identityProviders = kernel.config.identityProviders || {};
     this._userProviderEndpoint = globals.userProviderEndpoint || null;
 
     callback();
@@ -82,9 +82,13 @@ export class Security extends Kernel.ContainerAware {
    * @returns {Token}
    */
   login(providerName, identityMetadata, callback) {
-    let identityProvider = new IdentityProvider(this._identityProviders, providerName, identityMetadata);
+    let identityProvider = null;
+    let TokenImplementation = LocalToken;
 
-    let TokenImplementation = this._localBackend ? LocalToken : Token;
+    if (!this._localBackend) {
+      TokenImplementation = Token;
+      identityProvider = new IdentityProvider(this._identityProviders, providerName, identityMetadata);
+    }
 
     this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);
 
