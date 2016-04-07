@@ -1,25 +1,29 @@
 deep-framework
-=============
+==============
 
-Main modules:
------------
+DEEP Framework is a nodejs package that is published on npmjs: https://www.npmjs.com/package/deep-framework.
 
-- [deep-asset](components/asset.md) (Managing and accessing assets)
-- [deep-cache](components/cache.md) (Cache management)
-- [deep-core](components/core.md) (Core features and base functionality)
-- [deep-validation](components/validation.md) (Validation engine widely used in framework)
-- [deep-db](components/db.md) (Database abstraction layer based on Active Record pattern)
-- [deep-di](components/di.md) (Dependency Injection)
-- [deep-event](components/event.md) (Cross runtime event system)
-- [deep-fs](components/fs.md) (File system abstraction layer that mimics NodeJS js fs base module)
-- [deep-kernel](components/kernel.md) (Kernel module that combines all the beans together)
-- [deep-log](components/logs.md) (Logging components)
-- [deep-notification](components/notification.md) (Broadcasting notifications to the end user)
-- [deep-resource](components/resource.md) (Resources management and invocation)
-- [deep-security](components/security.md) (Managing and injecting user context into the runtime)
+In fact, this framework is a collection of nodejs packages, also identifiable as abstracted libraries:
 
-The deep-framework Anatomy
--------------------------
+[DEEP Framework](https://www.npmjs.com/package/deep-framework) | [API Docs](http://docs.deep.mg) | Abstracted Web Service(s)
+---------------------------------------------------------------|---------------------------------|--------------------------
+[deep-asset](https://www.npmjs.com/package/deep-asset) | [Assets Management Library](http://docs.deep.mg/deep-asset) | Amazon S3
+[deep-cache](https://www.npmjs.com/package/deep-cache) | [Cache Management Library](http://docs.deep.mg/deep-cache) | Amazon ElastiCache
+[deep-core](https://www.npmjs.com/package/deep-core) | [Core Management Library](http://docs.deep.mg/deep-core) | -
+[deep-db](https://www.npmjs.com/package/deep-db) | [Database Management Library](http://docs.deep.mg/deep-db) | Amazon DynamoDB, Amazon SQS
+[deep-di](https://www.npmjs.com/package/deep-di) | [Dependency Injection Management Library](http://docs.deep.mg/deep-di) | -
+[deep-event](https://www.npmjs.com/package/deep-event) | [Events Management Library](http://docs.deep.mg/deep-event) | Amazon Kinesis
+[deep-fs](https://www.npmjs.com/package/deep-fs) | [File System Management Library](http://docs.deep.mg/deep-fs) | Amazon S3
+[deep-kernel](https://www.npmjs.com/package/deep-kernel) | [Kernel Management Library](http://docs.deep.mg/deep-kernel) | -
+[deep-log](https://www.npmjs.com/package/deep-log) | [Logs Management Library](http://docs.deep.mg/deep-log) | Amazon CloudWatch Logs
+[deep-notification](https://www.npmjs.com/package/deep-notification) | [Notifications Management Library](http://docs.deep.mg/deep-notification) | Amazon SNS
+[deep-resource](https://www.npmjs.com/package/deep-resource) | [Resouces Management Library](http://docs.deep.mg/deep-resource) | AWS Lambda, Amazon API Gateway
+[deep-security](https://www.npmjs.com/package/deep-security) | [Security Management Library](http://docs.deep.mg/deep-security) | AWS IAM, Amazon Cognito
+[deep-validation](https://www.npmjs.com/package/deep-validation) | [Validation Management Library](http://docs.deep.mg/deep-validation) | -
+
+
+The Anatomy of DEEP Framework
+-----------------------------
 
 Each DEEP framework module except the basis (`deep-core`) uses `deep-kernel` and `deep-di`.
 
@@ -31,6 +35,7 @@ that is loaded in runtime into a service.
 `Kernel.ContainerAware` makes possible you to bind a microservice instance using `.bind(microserviceObject)` method.
 
 > Be aware- a service action that requires a `microservice` would throw an error if it is missing
+
 
 Initializing and using the app
 ------------------------------
