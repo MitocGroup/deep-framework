@@ -22,7 +22,8 @@ Using DEEP Framework, developers get out-of-the-box:
 Help needed to add support for [Google Cloud Platform](https://cloud.google.com/),
 [Microsoft Azure](https://azure.microsoft.com), and others.
 
-Documentation is available at [docs.deep.mg](http://docs.deep.mg).
+Documentation is available as [Developer Guide](https://github.com/MitocGroup/deep-framework/blob/master/docs/framework.md)
+and [API Guide](http://docs.deep.mg).
 
 Learn hands-on how to build and deploy cloud-native web applications from
 [this blog post](https://blog.mitocgroup.com/building-scalable-web-apps-with-aws-lambda-and-home-grown-serverless-web-framework-e04c912d08f0)
@@ -68,7 +69,7 @@ deepify server ~/deep-microservices-helloworld -o
 > When this step is finished, you can open in your browser the link *http://localhost:8000*
 and enjoy the deep-microservices-helloworld running locally.
 
-### Step 4. Run Microservice(s) in Production
+### Step 4. Deploy Microservice(s) to Production
 
 ```bash
 deepify deploy ~/deep-microservices-helloworld
@@ -85,29 +86,6 @@ deepify undeploy ~/deep-microservices-helloworld
 
 > Amazon CloudFront distribution takes up to 20 minutes to unprovision. That's why `deepify`
 command checks every 30 seconds if it's disabled and when successful, removes it from your account.
-
-
-## What is DEEP Framework?
-
-DEEP Framework is a nodejs package that is published on npmjs: https://www.npmjs.com/package/deep-framework.
-
-In fact, this framework is a collection of nodejs packages, also identifiable as abstracted libraries:
-
-[DEEP Framework](https://www.npmjs.com/package/deep-framework) | [API Docs](http://docs.deep.mg) | Abstracted Web Service(s)
----------------------------------------------------------------|---------------------------------|--------------------------
-[deep-asset](https://www.npmjs.com/package/deep-asset) | [Assets Management Library](http://docs.deep.mg/deep-asset) | Amazon S3
-[deep-cache](https://www.npmjs.com/package/deep-cache) | [Cache Management Library](http://docs.deep.mg/deep-cache) | Amazon ElastiCache
-[deep-core](https://www.npmjs.com/package/deep-core) | [Core Management Library](http://docs.deep.mg/deep-core) | -
-[deep-db](https://www.npmjs.com/package/deep-db) | [Database Management Library](http://docs.deep.mg/deep-db) | Amazon DynamoDB, Amazon SQS
-[deep-di](https://www.npmjs.com/package/deep-di) | [Dependency Injection Management Library](http://docs.deep.mg/deep-di) | -
-[deep-event](https://www.npmjs.com/package/deep-event) | [Events Management Library](http://docs.deep.mg/deep-event) | Amazon Kinesis
-[deep-fs](https://www.npmjs.com/package/deep-fs) | [File System Management Library](http://docs.deep.mg/deep-fs) | Amazon S3
-[deep-kernel](https://www.npmjs.com/package/deep-kernel) | [Kernel Management Library](http://docs.deep.mg/deep-kernel) | -
-[deep-log](https://www.npmjs.com/package/deep-log) | [Logs Management Library](http://docs.deep.mg/deep-log) | Amazon CloudWatch Logs
-[deep-notification](https://www.npmjs.com/package/deep-notification) | [Notifications Management Library](http://docs.deep.mg/deep-notification) | Amazon SNS
-[deep-resource](https://www.npmjs.com/package/deep-resource) | [Resouces Management Library](http://docs.deep.mg/deep-resource) | AWS Lambda, Amazon API Gateway
-[deep-security](https://www.npmjs.com/package/deep-security) | [Security Management Library](http://docs.deep.mg/deep-security) | AWS IAM, Amazon Cognito
-[deep-validation](https://www.npmjs.com/package/deep-validation) | [Validation Management Library](http://docs.deep.mg/deep-validation) | -
 
 
 ## Developer Resources
@@ -130,6 +108,7 @@ Looking for web applications that use (or are similar to) deep-framework?
 - Hello World: https://hello.deep.mg | https://github.com/MitocGroup/deep-microservices-helloworld
 - Todo App: https://todo.deep.mg | https://github.com/MitocGroup/deep-microservices-todo-app
 - Enterprise Software Marketplace: https://www.deep.mg
+
 
 ## Sponsors
 
