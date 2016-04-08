@@ -42,7 +42,7 @@ export class Injectable {
    */
   set microservice(instance) {
     if (!(instance instanceof Instance)) {
-      throw new Core.Exception.InvalidArgumentException(microservice, 'Microservice');
+      throw new Core.Exception.InvalidArgumentException(instance, 'Microservice');
     }
 
     this._microservice = instance;

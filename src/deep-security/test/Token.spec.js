@@ -261,7 +261,7 @@ suite('Token', () => {
     token.getUser(spyCallback);
 
     chai.expect(spyCallback).to.have.been.calledWithExactly(
-      JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
+      DeepResourceServiceMock.DATA.data
     );
   });
 
@@ -271,7 +271,7 @@ suite('Token', () => {
     token.getUser(spyCallback);
 
     chai.expect(spyCallback).to.have.been.calledWithExactly(
-      JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
+      DeepResourceServiceMock.DATA.data
     );
   });
 
