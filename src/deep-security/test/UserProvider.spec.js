@@ -51,7 +51,7 @@ suite('UserProvider', () => {
 
     chai.expect(error).to.be.equal(null);
     chai.expect(spyCallback).to.have.been.calledWith(
-      JSON.parse(DeepResourceServiceMock.DATA.data.Payload)
+      DeepResourceServiceMock.DATA.data
     );
   });
 });

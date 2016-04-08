@@ -46,7 +46,9 @@ suite('Microservice/Injectable', () => {
     }
 
     chai.expect(error).to.be.not.equal(null);
-    chai.expect(error.message).to.be.equal('microservice is not defined');
+    chai.expect(error.message).to.be.equal(
+      'Invalid argument invalidInstance of type string provided (meant Microservice).'
+    );
   });
 
   test('Check microservice setter sets _microservice', () => {
