@@ -66,6 +66,7 @@ export class DB extends Kernel.ContainerAware {
     let model = this._models[modelName];
 
     if (this.kernel && this.kernel.isRumEnabled) {
+
       // inject logService into extended model to log RUM events
       model.logService = this.kernel.get('log');
     }
@@ -141,6 +142,8 @@ export class DB extends Kernel.ContainerAware {
       if (this._localBackend) {
         this._enableLocalDB(callback);
       } else {
+        this._fixNodeHttpsIssue();
+
         if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
           this._initVogelsAutoscale(kernel);
         }
@@ -151,16 +154,13 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {Kernel} kernel
+   * NetworkingError: write EPROTO
    *
+   * @see https://github.com/aws/aws-sdk-js/issues/862
    * @private
    */
-  _initVogelsAutoscale(kernel) {
-    Vogels.AWS.config.maxRetries = 3;
-
-    // @fix NetworkingError: write EPROTO
-    // @see https://github.com/aws/aws-sdk-js/issues/862
-    let dynamoDriver = new Vogels.AWS.DynamoDB({
+  _fixNodeHttpsIssue() {
+    this._setVogelsDriver(new Vogels.AWS.DynamoDB({
       httpOptions: {
         agent: new https.Agent({
           rejectUnauthorized: true,
@@ -169,9 +169,16 @@ export class DB extends Kernel.ContainerAware {
           ciphers: 'ALL',
         }),
       },
-    });
+    }));
+  }
 
-    Vogels.dynamoDriver(dynamoDriver);
+  /**
+   * @param {Kernel} kernel
+   *
+   * @private
+   */
+  _initVogelsAutoscale(kernel) {
+    Vogels.AWS.config.maxRetries = 3;
 
     Vogels.documentClient(
       new AutoScaleDynamoDB(

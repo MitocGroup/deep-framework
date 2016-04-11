@@ -8,7 +8,7 @@ export class VogelsMock {
         maxRetries: 1,
       },
 
-      DynamoDB: (options ={}) => {
+      DynamoDB: (options = {}) => {
         this._dynamoDB.options = options;
 
         return this;
