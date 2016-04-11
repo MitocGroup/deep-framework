@@ -14,6 +14,7 @@ import {FailedToCreateTableException} from './Exception/FailedToCreateTableExcep
 import {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';
 import {AbstractDriver} from './Local/Driver/AbstractDriver';
 import {AutoScaleDynamoDB} from './DynamoDB/AutoScaleDynamoDB';
+import https from 'https';
 
 /**
  * Vogels wrapper
@@ -156,6 +157,21 @@ export class DB extends Kernel.ContainerAware {
    */
   _initVogelsAutoscale(kernel) {
     Vogels.AWS.config.maxRetries = 3;
+
+    // @fix NetworkingError: write EPROTO
+    // @see https://github.com/aws/aws-sdk-js/issues/862
+    let dynamoDriver = new Vogels.AWS.DynamoDB({
+      httpOptions: {
+        agent: new https.Agent({
+          rejectUnauthorized: true,
+          keepAlive: true,
+          secureProtocol: 'TLSv1_method',
+          ciphers: 'ALL',
+        }),
+      },
+    });
+
+    Vogels.dynamoDriver(dynamoDriver);
 
     Vogels.documentClient(
       new AutoScaleDynamoDB(
