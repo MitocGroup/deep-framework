@@ -26,8 +26,8 @@ Documentation is available as [Developer Guide](https://github.com/MitocGroup/de
 and [API Guide](http://docs.deep.mg).
 
 Learn hands-on how to build and deploy cloud-native web applications from
-[this blog post](https://blog.mitocgroup.com/building-scalable-web-apps-with-aws-lambda-and-home-grown-serverless-web-framework-e04c912d08f0)
-and [this video playlist](https://www.youtube.com/playlist?list=PLPGfD-tGOl7uNDXo_eMN1odMZflYVu2n9).
+[this blog post](https://blog.mitocgroup.com/building-enterprise-level-web-applications-on-aws-lambda-with-the-deep-framework-dd81719b0dff)
+and [this tutorial video](https://www.youtube.com/playlist?list=PLPGfD-tGOl7uNDXo_eMN1odMZflYVu2n9).
 
 
 ## Getting Started
