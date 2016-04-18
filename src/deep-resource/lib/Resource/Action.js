@@ -21,8 +21,9 @@ export class Action {
    * @param {String} region
    * @param {Boolean} forceUserIdentity
    * @param {Object} apiCache
+   * @param {String} scope
    */
-  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache) {
+  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope) {
     this._resource = resource;
     this._name = name;
     this._type = type;
@@ -32,6 +33,7 @@ export class Action {
     this._forceUserIdentity = forceUserIdentity;
     this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;
     this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
+    this._scope = scope;
 
     this._validationSchemaName = null;
   }
@@ -157,6 +159,13 @@ export class Action {
    */
   get apiCacheTtl() {
     return this._apiCacheTtl;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get scope() {
+    return this._scope;
   }
 
   /**
