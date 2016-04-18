@@ -67,6 +67,17 @@ export class Request {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  get withUserCredentials() {
+    if (this.action.scope === 'private') {
+      this._withUserCredentials = false;
+    }
+
+    return this._withUserCredentials;
+  }
+
+  /**
    * @returns {Request}
    */
   skipPreValidation() {
@@ -616,7 +627,7 @@ export class Request {
       LogType: this._returnLogs ? 'Tail' : 'None',
     };
 
-    if (!this._withUserCredentials) {
+    if (!this.withUserCredentials) {
       this._invokeLambda(invocationParameters, callback);
     } else {
       this._loadSecurityCredentials((error, credentials) => {
