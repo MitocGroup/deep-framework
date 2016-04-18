@@ -43,7 +43,7 @@ suite('LocalToken', function () {
     localToken.loadCredentials(spyCallback);
 
     chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
-    chai.expect(localToken._credentials).to.eql({identityId: null});
+    chai.expect(localToken._credentials).to.eql({identityId: identityPoolId});
   });
 
   test('Check identityProvider setter',
