@@ -23,8 +23,8 @@ export class LocalToken extends Token {
   loadCredentials(callback = () => {}) {
     // fake local credentials
     this._credentials = {
-      // use provider user id or identityPoolId  instead of cognito identity id for local backend
-      identityId: this.identityProvider ? this.identityProvider.userId : this._identityPoolId
+      // use provider user id or a fake userId instead of cognito identity id for local backend
+      identityId: this.identityProvider ? this.identityProvider.userId : 'us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
     };
 
     callback(null, this);
