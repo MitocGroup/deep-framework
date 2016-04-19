@@ -730,7 +730,7 @@ suite('Resource/Request', () => {
     let testAction = {
       _name: 'testAction',
       resource: {
-        security: 'insuffcient value',
+        security: 'insufficient value',
       },
       apiCacheEnabled: true,
     };
@@ -746,6 +746,8 @@ suite('Resource/Request', () => {
     } catch (e) {
       error = e;
     }
+
+    error = spyCallback.args[0][0];
 
     chai.assert.instanceOf(
       error, NotAuthenticatedException, 'error is an instance of NotAuthenticatedException'

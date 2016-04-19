@@ -27,7 +27,7 @@ export class LocalToken extends Token {
       identityId: this.identityProvider ? this.identityProvider.userId : 'us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'
     };
 
-    callback(null, this);
+    callback(null, this._credentials);
   }
 
   /**
