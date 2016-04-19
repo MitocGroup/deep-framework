@@ -43,7 +43,7 @@ suite('LocalToken', function () {
 
     localToken.loadCredentials(spyCallback);
 
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken._credentials);
     chai.expect(localToken._credentials).to.eql({identityId: fakeIdentityId});
   });
 
@@ -63,7 +63,7 @@ suite('LocalToken', function () {
 
     localToken.loadCredentials(spyCallback);
 
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken._credentials);
     chai.expect(localToken._credentials).to.eql({identityId: identityProvider.userId});
   });
 });
