@@ -4,7 +4,7 @@ if [ -d 'lib/' ] && [ "$OSTYPE" != "msys" ] && [ "$OSTYPE" != "win32" ] && [ "$O
 
     COMPILE() {
         local resource=$1;
-        deepify ${resource} -x .js --out-dir ${COMPILE_DIR}/${resource}
+        deepify compile-es6 ${resource} -x .js --out-dir ${COMPILE_DIR}/${resource}
     }
 
     COMPILE lib;
