@@ -158,13 +158,12 @@ suite('AWS/Lambda/Runtime', () => {
   test('Check _fillUserContext throws InvalidCognitoIdentityException', () => {
     let error = null;
     let _runtime = new RuntimeMock(backendKernelInstance);
-    let _context = {
-      ...context,
+    let _context = Object.assign(context, {
       identity: {
         cognitoIdentityPoolId: 'test cognitoIdentityPoolId',
         cognitoIdentityId: 'test cognitoIdentityId',
       }
-    };
+    });
 
     _runtime.run(event, _context);
 
