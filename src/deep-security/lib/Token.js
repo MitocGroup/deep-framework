@@ -185,14 +185,14 @@ export class Token {
     if (this.identityProvider && !this.identityProvider.isTokenValid()) {
       if (typeof this._tokenExpiredCallback === 'function') {
         this._tokenExpiredCallback(this.identityProvider);
-      } else {
-        let error = new IdentityProviderTokenExpiredException(
-          this.identityProvider.name,
-          this.identityProvider.tokenExpirationTime
-        );
-
-        callback(error, null);
       }
+
+      let error = new IdentityProviderTokenExpiredException(
+        this.identityProvider.name,
+        this.identityProvider.tokenExpirationTime
+      );
+
+      callback(error, null);
       return;
     }
 

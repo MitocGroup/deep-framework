@@ -67,6 +67,17 @@ export class Request {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  get withUserCredentials() {
+    if (this.action.scope === 'private') {
+      this._withUserCredentials = false;
+    }
+
+    return this._withUserCredentials;
+  }
+
+  /**
    * @returns {Request}
    */
   skipPreValidation() {
@@ -586,7 +597,12 @@ export class Request {
   _sendThroughApi(callback = () => {}) {
     let endpoint = this._action.source.api;
 
-    this._createAws4SignedRequest(endpoint, this.method, this.payload, (signedRequest) => {
+    this._createAws4SignedRequest(endpoint, this.method, this.payload, (error, signedRequest) => {
+      if (error) {
+        callback(new SuperagentResponse(this, null, error));
+        return;
+      }
+
       signedRequest.end((error, response) => {
         callback(new SuperagentResponse(this, response, error));
       });
@@ -616,7 +632,7 @@ export class Request {
       LogType: this._returnLogs ? 'Tail' : 'None',
     };
 
-    if (!this._withUserCredentials) {
+    if (!this.withUserCredentials) {
       this._invokeLambda(invocationParameters, callback);
     } else {
       this._loadSecurityCredentials((error, credentials) => {
@@ -726,7 +742,8 @@ export class Request {
 
     this._loadSecurityCredentials((error, credentials) => {
       if (error) {
-        throw error;
+        callback(error);
+        return;
       }
 
       let signature = aws4.sign(opsToSign, credentials);
@@ -741,7 +758,7 @@ export class Request {
         request.set('Content-Length', signature.headers['Content-Length']);
       }
 
-      callback(request);
+      callback(null, request);
     });
   }
 

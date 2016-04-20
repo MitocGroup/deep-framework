@@ -14,6 +14,7 @@ import {FailedToCreateTableException} from './Exception/FailedToCreateTableExcep
 import {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';
 import {AbstractDriver} from './Local/Driver/AbstractDriver';
 import {AutoScaleDynamoDB} from './DynamoDB/AutoScaleDynamoDB';
+import https from 'https';
 
 /**
  * Vogels wrapper
@@ -65,6 +66,7 @@ export class DB extends Kernel.ContainerAware {
     let model = this._models[modelName];
 
     if (this.kernel && this.kernel.isRumEnabled) {
+
       // inject logService into extended model to log RUM events
       model.logService = this.kernel.get('log');
     }
@@ -140,6 +142,8 @@ export class DB extends Kernel.ContainerAware {
       if (this._localBackend) {
         this._enableLocalDB(callback);
       } else {
+        this._fixNodeHttpsIssue();
+
         if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
           this._initVogelsAutoscale(kernel);
         }
@@ -147,6 +151,25 @@ export class DB extends Kernel.ContainerAware {
         callback();
       }
     });
+  }
+
+  /**
+   * NetworkingError: write EPROTO
+   *
+   * @see https://github.com/aws/aws-sdk-js/issues/862
+   * @private
+   */
+  _fixNodeHttpsIssue() {
+    this._setVogelsDriver(new Vogels.AWS.DynamoDB({
+      httpOptions: {
+        agent: new https.Agent({
+          rejectUnauthorized: true,
+          keepAlive: true,
+          secureProtocol: 'TLSv1_method',
+          ciphers: 'ALL',
+        }),
+      },
+    }));
   }
 
   /**

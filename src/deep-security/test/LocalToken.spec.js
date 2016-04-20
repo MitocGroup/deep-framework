@@ -10,6 +10,7 @@ chai.use(sinonChai);
 
 suite('LocalToken', function () {
   let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
+  let fakeIdentityId = 'us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx';
   let localToken = new LocalToken(identityPoolId);
   let providerName = 'amazon';
   let identityMetadata = {
@@ -42,8 +43,8 @@ suite('LocalToken', function () {
 
     localToken.loadCredentials(spyCallback);
 
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
-    chai.expect(localToken._credentials).to.eql({identityId: null});
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken._credentials);
+    chai.expect(localToken._credentials).to.eql({identityId: fakeIdentityId});
   });
 
   test('Check identityProvider setter',
@@ -62,7 +63,7 @@ suite('LocalToken', function () {
 
     localToken.loadCredentials(spyCallback);
 
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken);
+    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken._credentials);
     chai.expect(localToken._credentials).to.eql({identityId: identityProvider.userId});
   });
 });

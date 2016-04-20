@@ -28,7 +28,7 @@ export class UserProvider {
         throw new LoadUserException(id, response.error);
       }
 
-      return callback(JSON.parse(response.data.Payload));
+      return callback(response.data);
     });
   }
 }
