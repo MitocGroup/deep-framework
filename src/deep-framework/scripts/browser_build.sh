@@ -85,7 +85,10 @@ __FW=${browser_build_path}"/framework.js"
 echo '/** Built on '$(date) > ${__FW}
 "${npm}" ls --long=false --global=false --depth=0 --production=true | sed 's/ \/.*//' | grep deep- >> ${__FW}
 echo '*/' >> ${__FW}
-AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -d ${browserify_require} lib.compiled/browser-framework.js | uglifyjs >> ${__FW}
+
+AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -d ${browserify_require} lib.compiled/browser-framework.js > ${__FW}.es6;
+deepify compile-es6 ${__FW}.es6 --source --es5 | uglifyjs | sed -e 's/^"use\s\+strict";//' >> ${__FW}
+rm -f ${__FW}.es6
 
 echo "- Uninstall shared aws-sdk@^2.2.x instance"
 cd "${path}"/../
