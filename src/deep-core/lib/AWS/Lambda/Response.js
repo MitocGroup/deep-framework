@@ -57,7 +57,7 @@ export class Response {
       // @todo: via setter?
       this._runtime._contextSent = true;
 
-      this._runtime.context[this.constructor.contextMethod](this.data);
+      (this._runtime.resolver || this._runtime.context)[this.constructor.contextMethod](this.data);
     });
 
     return this;
