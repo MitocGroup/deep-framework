@@ -111,10 +111,13 @@ export class Runtime extends Interface {
    * @param {Function} lambdaCallback
    * @returns {Runtime}
    */
-  run(event, context, lambdaCallback) {
+  run(event, context, lambdaCallback = null) {
     this._context = new Context(context);
     this._request = new Request(event);
-    lambdaCallback && (this._resolver = new Resolver(lambdaCallback));
+
+    if (lambdaCallback) {
+      this._resolver = new Resolver(lambdaCallback);
+    }
 
     this._context.waitForEmptyEventLoop();
 
