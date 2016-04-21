@@ -309,7 +309,11 @@ export class Token {
    * @returns {Boolean}
    */
   get isAnonymous() {
-    return (!this.identityProvider && !this.lambdaContext) || this._identityLogins.length <= 0;
+    if (this.lambdaContext) {
+      return this._identityLogins.length <= 0;
+    } else {
+      return !this.identityProvider;
+    }
   }
 
   /**
