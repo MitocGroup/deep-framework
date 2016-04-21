@@ -6,8 +6,6 @@
 
 import Core from 'deep-core';
 import Joi from 'joi';
-import {UnknownRumEventException} from '../Exception/UnknownRumEventException';
-import {FrameworkEvent} from './FrameworkEvent';
 
 /**
  * Abstract RUM event
@@ -32,6 +30,13 @@ export class AbstractEvent extends Core.OOP.Interface {
    */
   static get FRAMEWORK_EVENT_LEVEL() {
     return 'Framework';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get FRONTEND_EVENT_LEVEL() {
+    return 'Frontend';
   }
 
   /**
@@ -94,25 +99,6 @@ export class AbstractEvent extends Core.OOP.Interface {
       'S3FS',
       'Cognito',
     ];
-  }
-
-  /**
-   * @param {Object} kernel
-   * @param {Object} rawData
-   * @returns {AbstractEvent}
-   */
-  static create(kernel, rawData) {
-    let event = null;
-
-    // @note - For the time being event type is guessed by event.service
-    // (it'll be changed once we'll have other types of events)
-    if (rawData.service && AbstractEvent.SERVICES.indexOf(rawData.service) !== -1) {
-      event = new FrameworkEvent(kernel, rawData);
-    } else {
-      throw new UnknownRumEventException(rawData);
-    }
-
-    return event;
   }
 
   /**
