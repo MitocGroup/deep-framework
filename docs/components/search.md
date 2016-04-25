@@ -26,6 +26,9 @@ deepSearch.getClient((error, client) => {
 
 Thrown Exceptions
 -----------------
-`UnknownSearchDomainException` - Thrown when deepSearch.getClient("<domain_name>", cb) is invoked with invalid search domain name
-`NotReadySearchDomainException` - Thrown when search domain url is not yet ready (It's available in ~15min after app is deployed)
-`MissingSearchClientException` - Thrown when Client implementation is missing for specific domain type (e.g. ElasticSearch or CloudSearch)
+- `UnknownSearchDomainException` - Thrown when deepSearch.getClient("<domain_name>", cb) is invoked with invalid 
+search domain name
+- `NotReadySearchDomainException` - Thrown when search domain url is not yet ready (It's available in ~15min after app
+ is deployed)
+- `MissingSearchClientException` - Thrown when Client implementation is missing for specific domain type (e.g. 
+ElasticSearch or CloudSearch)
