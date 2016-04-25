@@ -22,4 +22,10 @@ deepSearch.getClient((error, client) => {
 });
 ```
 
-client - is an instance of [elasticsearch.js](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html) client
+`client` - is an instance of [elasticsearch.js](https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/api-reference.html) client
+
+Thrown Exceptions
+-----------------
+`UnknownSearchDomainException` - Thrown when deepSearch.getClient("<domain_name>", cb) is invoked with invalid search domain name
+`NotReadySearchDomainException` - Thrown when search domain url is not yet ready (It's available in ~15min after app is deployed)
+`MissingSearchClientException` - Thrown when Client implementation is missing for specific domain type (e.g. ElasticSearch or CloudSearch)
