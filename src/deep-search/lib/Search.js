@@ -134,7 +134,7 @@ export class Search extends Kernel.ContainerAware {
           }
         });
 
-        originalFunctionName.call(instance, ...args);
+        instance[originalFunctionName](...args);
       };
     }
 

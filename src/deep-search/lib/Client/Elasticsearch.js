@@ -23,7 +23,7 @@ export class Elasticsearch {
 
     this._esClient = new elasticsearch.Client({
       host: this._host,
-      apiVersion: '2.1', // @note - If you want to change this version do update deep-search/node-bin/cleanup.sh also
+      apiVersion: Elasticsearch.API_VERSION,
       connectionClass: new Aws4SignedHttpConnectionFactory().create()
     });
 
@@ -39,9 +39,26 @@ export class Elasticsearch {
    * @returns {Object}
    * @private
    */
-  _proxy(target, handler, decorator, methods = []) {
+  _proxy(target, handler, decorator, methods = Elasticsearch.API_METHODS) {
     return new Core.Generic.MethodsProxy(target)
       .decorate(decorator)
-      .proxyOverride(handler, methods);
+      .proxyOverride(handler, ...methods);
+  }
+
+  /**
+   * @returns {Object[]}
+   */
+  static get API_METHODS() {
+    let esApis = require('elasticsearch/src/lib/apis');
+
+    return Object.keys(esApis[Elasticsearch.API_VERSION]);
+  }
+
+  /**
+   * @returns {String}
+   * @note - If you want to change this version do update deep-search/node-bin/cleanup.sh also
+   */
+  static get API_VERSION() {
+    return '2.1';
   }
 }
