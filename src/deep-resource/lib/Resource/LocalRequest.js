@@ -26,6 +26,7 @@ export class LocalRequest extends Request {
    */
   _send(callback = () => {}) {
     let actionType = this._action.type;
+    let securityService = this._action.resource.security;
 
     if (actionType === Action.LAMBDA) {
       let data = {
@@ -33,7 +34,9 @@ export class LocalRequest extends Request {
         payload: this.payload,
         method: this._method,
         identity: {
-          // @todo - pass logged user object
+          cognitoIdentityPoolId: securityService.token ? securityService.token.identityPoolId : null,
+          cognitoIdentityId: securityService.token ? securityService.token.identityId : null,
+          isAnonymous: securityService.token ? securityService.token.isAnonymous : true,
         },
       };
 
