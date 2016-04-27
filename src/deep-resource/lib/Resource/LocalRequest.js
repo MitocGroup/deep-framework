@@ -33,10 +33,12 @@ export class LocalRequest extends Request {
         lambda: this._action.source.original,
         payload: this.payload,
         method: this._method,
-        identity: {
-          cognitoIdentityPoolId: securityService.token ? securityService.token.identityPoolId : null,
-          cognitoIdentityId: securityService.token ? securityService.token.identityId : null,
-          isAnonymous: securityService.token ? securityService.token.isAnonymous : true,
+        context: {
+          identity: {
+            cognitoIdentityPoolId: securityService.token ? securityService.token.identityPoolId : null,
+            cognitoIdentityId: securityService.token ? securityService.token.identityId : null,
+            isAnonymous: securityService.token ? securityService.token.isAnonymous : true,
+          },
         },
       };
 
