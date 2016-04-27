@@ -15,6 +15,8 @@ export class LocalToken extends Token {
    */
   constructor(...args) {
     super(...args);
+
+    this._identityPoolId = 'us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xx0123456789';
   }
 
   /**

@@ -32,6 +32,9 @@ export class LocalRequest extends Request {
         lambda: this._action.source.original,
         payload: this.payload,
         method: this._method,
+        identity: {
+          // @todo - pass logged user object
+        },
       };
 
       if (typeof window === 'undefined') {
