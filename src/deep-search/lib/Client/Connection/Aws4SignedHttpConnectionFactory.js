@@ -33,11 +33,11 @@ export class Aws4SignedHttpConnectionFactory {
        * @returns {Object}
        */
       makeReqParams(params) {
-        let signParams = Object.assign(params, {service: 'es'});
-        let aws4Signature = connectionFactory._createAws4Signature(signParams);
-
         params = super.makeReqParams(params);
         params.headers = params.headers || {};
+
+        let signParams = Object.assign(params, {service: 'es'});
+        let aws4Signature = connectionFactory._createAws4Signature(signParams);
 
         ['X-Amz-Date', 'X-Amz-Security-Token', 'Authorization'].forEach((header) => {
           params.headers[header] = aws4Signature.headers[header];
