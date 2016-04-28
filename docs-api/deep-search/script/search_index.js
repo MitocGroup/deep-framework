@@ -1,5 +1,11 @@
 window.esdocSearchIndex = [
   [
+    "deep-search/lib/client/connection/aws4signedhttpconnectionfactory.js~aws4signedhttpconnectionfactory",
+    "class/lib/Client/Connection/Aws4SignedHttpConnectionFactory.js~Aws4SignedHttpConnectionFactory.html",
+    "<span>Aws4SignedHttpConnectionFactory</span> <span class=\"search-result-import-path\">deep-search/lib/Client/Connection/Aws4SignedHttpConnectionFactory.js</span>",
+    "class"
+  ],
+  [
     "deep-search/lib/client/elasticsearch.js~elasticsearch",
     "class/lib/Client/Elasticsearch.js~Elasticsearch.html",
     "<span>Elasticsearch</span> <span class=\"search-result-import-path\">deep-search/lib/Client/Elasticsearch.js</span>",
@@ -318,12 +324,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -366,6 +366,24 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
+    "lib/client/connection/aws4signedhttpconnectionfactory.js",
+    "file/lib/Client/Connection/Aws4SignedHttpConnectionFactory.js.html",
+    "lib/Client/Connection/Aws4SignedHttpConnectionFactory.js",
+    "file"
+  ],
+  [
+    "lib/client/connection/aws4signedhttpconnectionfactory.js~aws4signedhttpconnectionfactory#constructor",
+    "class/lib/Client/Connection/Aws4SignedHttpConnectionFactory.js~Aws4SignedHttpConnectionFactory.html#instance-constructor-constructor",
+    "lib/Client/Connection/Aws4SignedHttpConnectionFactory.js~Aws4SignedHttpConnectionFactory#constructor",
+    "method"
+  ],
+  [
+    "lib/client/connection/aws4signedhttpconnectionfactory.js~aws4signedhttpconnectionfactory#create",
+    "class/lib/Client/Connection/Aws4SignedHttpConnectionFactory.js~Aws4SignedHttpConnectionFactory.html#instance-method-create",
+    "lib/Client/Connection/Aws4SignedHttpConnectionFactory.js~Aws4SignedHttpConnectionFactory#create",
+    "method"
+  ],
+  [
     "lib/client/elasticsearch.js",
     "file/lib/Client/Elasticsearch.js.html",
     "lib/Client/Elasticsearch.js",
@@ -376,6 +394,18 @@ window.esdocSearchIndex = [
     "class/lib/Client/Elasticsearch.js~Elasticsearch.html#instance-constructor-constructor",
     "lib/Client/Elasticsearch.js~Elasticsearch#constructor",
     "method"
+  ],
+  [
+    "lib/client/elasticsearch.js~elasticsearch.api_methods",
+    "class/lib/Client/Elasticsearch.js~Elasticsearch.html#static-get-API_METHODS",
+    "lib/Client/Elasticsearch.js~Elasticsearch.API_METHODS",
+    "member"
+  ],
+  [
+    "lib/client/elasticsearch.js~elasticsearch.api_version",
+    "class/lib/Client/Elasticsearch.js~Elasticsearch.html#static-get-API_VERSION",
+    "lib/Client/Elasticsearch.js~Elasticsearch.API_VERSION",
+    "member"
   ],
   [
     "lib/exception/exception.js",

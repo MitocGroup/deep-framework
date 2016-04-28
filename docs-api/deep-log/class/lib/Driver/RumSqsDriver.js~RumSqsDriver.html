@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -47,20 +45,22 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html">RumEventValidationException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html">UnknownRumEventException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/RUM</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/EventFactory.js~EventFactory.html">EventFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html">FrameworkEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrontendEvent.js~FrontendEvent.html">FrontendEvent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {RumSqsDriver} from &apos;<span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber21">deep-log/lib/Driver/RumSqsDriver.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {RumSqsDriver} from &apos;<span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber20">deep-log/lib/Driver/RumSqsDriver.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber21">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber20">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -108,6 +108,56 @@
       <div>
         <p>
            <span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#static-get-BATCH_SIZE">BATCH_SIZE</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      <span data-ice="static">static</span>
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#static-get-ES_LOGS_INDEX">ES_LOGS_INDEX</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      <span data-ice="static">static</span>
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
+           <span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#static-get-ES_LOGS_TYPE">ES_LOGS_TYPE</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
       <div>
@@ -360,6 +410,31 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-getQueueAttributes">getQueueAttributes</a></span></span><span data-ice="signature">(callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>, additionalAttributes: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span><span>[]</span></span>)</span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-log">log</a></span></span><span data-ice="signature">(message: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>)</span>
         </p>
       </div>
@@ -418,7 +493,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber42">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber41">source</a></span></span>
     </span>
   </h3>
 
@@ -457,6 +532,106 @@
   
   
 </div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-get-ES_LOGS_INDEX">
+    <span class="access" data-ice="access">public</span>
+    <span data-ice="static">static</span>
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">ES_LOGS_INDEX</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber292">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-get-ES_LOGS_TYPE">
+    <span class="access" data-ice="access">public</span>
+    <span data-ice="static">static</span>
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">ES_LOGS_TYPE</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber299">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
 </div>
 <div data-ice="staticMethodDetails"><h2 data-ice="title">Static Public Methods</h2>
 
@@ -471,7 +646,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber258">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber279">source</a></span></span>
     </span>
   </h3>
 
@@ -540,7 +715,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber27">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber26">source</a></span></span>
     </span>
   </h3>
 
@@ -611,7 +786,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber63">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber62">source</a></span></span>
     </span>
   </h3>
 
@@ -661,7 +836,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber56">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber55">source</a></span></span>
     </span>
   </h3>
 
@@ -711,7 +886,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber49">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber48">source</a></span></span>
     </span>
   </h3>
 
@@ -761,7 +936,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber70">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber69">source</a></span></span>
     </span>
   </h3>
 
@@ -814,7 +989,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber227">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber225">source</a></span></span>
     </span>
   </h3>
 
@@ -876,7 +1051,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber120">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber118">source</a></span></span>
     </span>
   </h3>
 
@@ -922,6 +1097,68 @@
   
 </div>
 <div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-method-getQueueAttributes">
+    <span class="access" data-ice="access">public</span>
+    
+    
+    
+    
+    <span data-ice="name">getQueueAttributes</span><span data-ice="signature">(callback: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span>, additionalAttributes: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span><span>[]</span></span>)</span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber256">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties"><div data-ice="properties">
+  <h4 data-ice="title">Params:</h4>
+  <table class="params">
+    <thead>
+    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
+    </thead>
+    <tbody>
+    
+    <tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">callback</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">Function</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+<tr data-ice="property" data-depth="0">
+      <td data-ice="name" data-depth="0">additionalAttributes</td>
+      <td data-ice="type"><span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span><span>[]</span></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"></td>
+    </tr>
+</tbody>
+  </table>
+</div>
+</div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
   <h3 data-ice="anchor" id="instance-method-log">
     <span class="access" data-ice="access">public</span>
     
@@ -932,7 +1169,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber84">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber83">source</a></span></span>
     </span>
   </h3>
 
@@ -994,7 +1231,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber206">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RumSqsDriver.js.html#lineNumber204">source</a></span></span>
     </span>
   </h3>
 
@@ -1043,7 +1280,7 @@
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

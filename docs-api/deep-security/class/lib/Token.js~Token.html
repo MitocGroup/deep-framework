@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -34,6 +32,7 @@
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/CredentialsManager.js~CredentialsManager.html">CredentialsManager</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/IdentityProvider.js~IdentityProvider.html">IdentityProvider</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/LocalIdentityProvider.js~LocalIdentityProvider.html">LocalIdentityProvider</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/LocalToken.js~LocalToken.html">LocalToken</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Security.js~Security.html">Security</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Token.js~Token.html">Token</a></span></span></li>
@@ -298,6 +297,31 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-get-identityPoolId">identityPoolId</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Token.js~Token.html#instance-get-identityProvider">identityProvider</a></span></span><span data-ice="signature">: <span><a href="class/lib/IdentityProvider.js~IdentityProvider.html">IdentityProvider</a></span>: <span>*</span></span>
         </p>
       </div>
@@ -486,8 +510,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Removes identity credentials related cached stuff</p>
-</div>
+        <div data-ice="description">Removes identity credentials related cached stuff</div>
       </div>
     </td>
     <td>
@@ -640,7 +663,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber361">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber372">source</a></span></span>
     </span>
   </h3>
 
@@ -706,7 +729,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber369">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber380">source</a></span></span>
     </span>
   </h3>
 
@@ -778,7 +801,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber380">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber391">source</a></span></span>
     </span>
   </h3>
 
@@ -850,7 +873,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber251">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber258">source</a></span></span>
     </span>
   </h3>
 
@@ -978,7 +1001,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber280">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber287">source</a></span></span>
     </span>
   </h3>
 
@@ -1028,7 +1051,57 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber258">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber265">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="instance-get-identityPoolId">
+    <span class="access" data-ice="access">public</span>
+    
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">identityPoolId</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span>*</span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber69">source</a></span></span>
     </span>
   </h3>
 
@@ -1128,7 +1201,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber69">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber76">source</a></span></span>
     </span>
   </h3>
 
@@ -1168,7 +1241,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber311">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber318">source</a></span></span>
     </span>
   </h3>
 
@@ -1218,7 +1291,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber76">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber83">source</a></span></span>
     </span>
   </h3>
 
@@ -1268,7 +1341,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber83">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber90">source</a></span></span>
     </span>
   </h3>
 
@@ -1308,7 +1381,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber90">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber97">source</a></span></span>
     </span>
   </h3>
 
@@ -1348,7 +1421,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber318">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber329">source</a></span></span>
     </span>
   </h3>
 
@@ -1391,7 +1464,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber438">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber449">source</a></span></span>
     </span>
   </h3>
 
@@ -1432,7 +1505,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber296">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber303">source</a></span></span>
     </span>
   </h3>
 
@@ -1498,7 +1571,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber325">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber336">source</a></span></span>
     </span>
   </h3>
 
@@ -1554,7 +1627,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber97">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber104">source</a></span></span>
     </span>
   </h3>
 
@@ -1610,7 +1683,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber425">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber436">source</a></span></span>
     </span>
   </h3>
 
@@ -1676,7 +1749,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber288">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Token.js.html#lineNumber295">source</a></span></span>
     </span>
   </h3>
 
@@ -1735,7 +1808,7 @@
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

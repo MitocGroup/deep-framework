@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -47,20 +45,22 @@
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/RumEventValidationException.js~RumEventValidationException.html">RumEventValidationException</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/Exception/UnknownRumEventException.js~UnknownRumEventException.html">UnknownRumEventException</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Driver/RUM</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/EventFactory.js~EventFactory.html">EventFactory</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html">FrameworkEvent</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Driver/RUM/FrontendEvent.js~FrontendEvent.html">FrontendEvent</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/Exception/Exception.js~Exception.html">Exception</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div class="header-notice">
-  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {AbstractEvent} from &apos;<span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber15">deep-log/lib/Driver/RUM/AbstractEvent.js</a></span>&apos;</code></pre></div>
+  <div data-ice="importPath" class="import-path"><pre class="prettyprint"><code data-ice="importPathCode">import {AbstractEvent} from &apos;<span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber13">deep-log/lib/Driver/RUM/AbstractEvent.js</a></span>&apos;</code></pre></div>
   <span data-ice="access">public</span>
   <span data-ice="kind">class</span>
   
   
   
-  <span data-ice="source">| <span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber15">source</a></span></span>
+  <span data-ice="source">| <span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber13">source</a></span></span>
 </div>
 
 <div class="self-detail detail">
@@ -207,6 +207,31 @@
     <td>
       <div>
         <p>
+           <span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-FRONTEND_EVENT_LEVEL">FRONTEND_EVENT_LEVEL</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+        </p>
+      </div>
+      <div>
+        
+        
+        
+      </div>
+    </td>
+    <td>
+      
+      
+    </td>
+  </tr>
+<tr data-ice="target">
+    <td>
+      <span class="access" data-ice="access">public</span>
+      <span data-ice="static">static</span>
+      <span class="kind" data-ice="kind">get</span>
+      
+      <span class="override" data-ice="override"></span>
+    </td>
+    <td>
+      <div>
+        <p>
            <span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-RESOURCE_TYPES">RESOURCE_TYPES</a></span></span><span data-ice="signature">: <span><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span><span>[]</span></span>: <span>*</span></span>
         </p>
       </div>
@@ -249,38 +274,7 @@
 </tbody>
 </table>
 </div>
-<div data-ice="staticMethodSummary"><h2>Static Method Summary</h2><table class="summary" data-ice="summary">
-  <thead><tr><td data-ice="title" colspan="3">Static Public Methods</td></tr></thead>
-  <tbody>
-  
-  <tr data-ice="target">
-    <td>
-      <span class="access" data-ice="access">public</span>
-      <span data-ice="static">static</span>
-      
-      
-      <span class="override" data-ice="override"></span>
-    </td>
-    <td>
-      <div>
-        <p>
-           <span data-ice="name"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-method-create">create</a></span></span><span data-ice="signature">(kernel: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, rawData: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span>
-        </p>
-      </div>
-      <div>
-        
-        
-        
-      </div>
-    </td>
-    <td>
-      
-      
-    </td>
-  </tr>
-</tbody>
-</table>
-</div>
+
 <div data-ice="constructorSummary"><h2>Constructor Summary</h2><table class="summary" data-ice="summary">
   <thead><tr><td data-ice="title" colspan="3">Public Constructor</td></tr></thead>
   <tbody>
@@ -418,7 +412,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber40">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber45">source</a></span></span>
     </span>
   </h3>
 
@@ -468,7 +462,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber54">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber59">source</a></span></span>
     </span>
   </h3>
 
@@ -518,7 +512,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber33">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber31">source</a></span></span>
     </span>
   </h3>
 
@@ -568,7 +562,57 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber47">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber52">source</a></span></span>
+    </span>
+  </h3>
+
+  
+  
+  
+  
+
+  
+
+  <div data-ice="properties">
+</div>
+
+  <div class="return-params" data-ice="returnParams">
+    <h4>Return:</h4>
+    <table>
+      <tr>
+        <td class="return-type" data-ice="returnType"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span></td>
+        
+      </tr>
+    </table>
+    <div data-ice="returnProperties">
+</div>
+  </div>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+</div>
+<div class="detail" data-ice="detail">
+  <h3 data-ice="anchor" id="static-get-FRONTEND_EVENT_LEVEL">
+    <span class="access" data-ice="access">public</span>
+    <span data-ice="static">static</span>
+    <span class="kind" data-ice="kind">get</span>
+    
+    
+    <span data-ice="name">FRONTEND_EVENT_LEVEL</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a></span>: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
+    <span class="right-info">
+      
+      
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber38">source</a></span></span>
     </span>
   </h3>
 
@@ -618,7 +662,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber84">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber89">source</a></span></span>
     </span>
   </h3>
 
@@ -668,7 +712,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber64">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber69">source</a></span></span>
     </span>
   </h3>
 
@@ -708,81 +752,7 @@
   
 </div>
 </div>
-<div data-ice="staticMethodDetails"><h2 data-ice="title">Static Public Methods</h2>
 
-<div class="detail" data-ice="detail">
-  <h3 data-ice="anchor" id="static-method-create">
-    <span class="access" data-ice="access">public</span>
-    <span data-ice="static">static</span>
-    
-    
-    
-    <span data-ice="name">create</span><span data-ice="signature">(kernel: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>, rawData: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span>): <span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></span>
-    <span class="right-info">
-      
-      
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber104">source</a></span></span>
-    </span>
-  </h3>
-
-  
-  
-  
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">kernel</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-<tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">rawData</td>
-      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a></span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
-</div>
-</div>
-
-  <div class="return-params" data-ice="returnParams">
-    <h4>Return:</h4>
-    <table>
-      <tr>
-        <td class="return-type" data-ice="returnType"><span><a href="class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html">AbstractEvent</a></span></td>
-        
-      </tr>
-    </table>
-    <div data-ice="returnProperties">
-</div>
-  </div>
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-</div>
-</div>
 <div data-ice="constructorDetails"><h2 data-ice="title">Public Constructors</h2>
 
 <div class="detail" data-ice="detail">
@@ -796,7 +766,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber20">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber18">source</a></span></span>
     </span>
   </h3>
 
@@ -861,7 +831,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber149">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber135">source</a></span></span>
     </span>
   </h3>
 
@@ -914,7 +884,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber121">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber107">source</a></span></span>
     </span>
   </h3>
 
@@ -964,7 +934,7 @@
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber130">source</a></span></span>
+      <span data-ice="source"><span><a href="file/lib/Driver/RUM/AbstractEvent.js.html#lineNumber116">source</a></span></span>
     </span>
   </h3>
 
@@ -1007,7 +977,7 @@
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

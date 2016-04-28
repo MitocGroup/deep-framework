@@ -31,6 +31,24 @@ export class LocalToken extends Token {
   }
 
   /**
+   * @returns {Boolean}
+   */
+  get isAnonymous() {
+    if (this.lambdaContext) {
+      return this.lambdaContext.identity.isAnonymous;
+    } else {
+      return !this.identityProvider;
+    }
+  }
+
+  /**
+   * @param {Function} callback
+   */
+  getUser(callback) {
+    this._loadUser(callback);
+  }
+
+  /**
    * 'Reset' credentials
    */
   destroy() {
