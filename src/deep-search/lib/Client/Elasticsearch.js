@@ -40,9 +40,9 @@ export class Elasticsearch {
    * @private
    */
   _proxy(target, handler, decorator, methods = Elasticsearch.API_METHODS) {
-    return new Core.Generic.MethodsProxy(target)
-      .decorate(decorator)
-      .proxyOverride(handler, ...methods);
+    let proxy = new Core.Generic.MethodsProxy(target).decorate(decorator);
+    proxy.proxyOverride(handler, ...methods);
+    proxy.proxyProperties(handler);
   }
 
   /**

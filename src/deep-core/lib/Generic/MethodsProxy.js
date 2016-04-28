@@ -4,7 +4,9 @@
 
 'use strict';
 
-
+/**
+ * @todo: Rename to Proxy
+ */
 export class MethodsProxy {
   /**
    * @param {Object} target
@@ -64,6 +66,35 @@ export class MethodsProxy {
           }
         );
       }
+    }
+
+    return this._target;
+  }
+
+  /**
+   * @param {String} handler
+   * @param {Object[]} explProps
+   */
+  proxyProperties(handler, ...explProps) {
+    let propList = Object.keys(handler).concat(explProps);
+
+    for (let prop of propList) {
+      if (typeof handler[prop] === 'function') {
+        continue;
+      }
+
+      let descriptor = Object.getOwnPropertyDescriptor(handler, prop);
+      let targetDescriptor = {
+        enumerable: descriptor.enumerable,
+        configurable: descriptor.configurable,
+        get: () => handler[prop],
+      };
+
+      if (descriptor.writable) {
+        targetDescriptor.set = (value) => handler[prop] = value;
+      }
+
+      Object.defineProperty(this._target, prop, targetDescriptor);
     }
 
     return this._target;
