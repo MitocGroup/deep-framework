@@ -6,10 +6,10 @@
 
 export class Context {
   /**
-   * @param {Object} options
+   * @param {Object} lambdaContext
    */
-  constructor(options) {
-    this._options = options;
+  constructor(lambdaContext) {
+    this._lambdaContext = lambdaContext;
 
     this._registerDataAsOptions();
   }
@@ -18,20 +18,20 @@ export class Context {
    * @returns {Object}
    */
   get options() {
-    return this._options;
+    return this._lambdaContext;
   }
 
   /**
    * @private
    */
   _registerDataAsOptions() {
-    for (let key in this._options) {
-      if (!this._options.hasOwnProperty(key)) {
+    for (let key in this._lambdaContext) {
+      if (!this._lambdaContext.hasOwnProperty(key)) {
         continue;
       }
 
       Object.defineProperty(this, key, {
-        value: this._options[key],
+        value: this._lambdaContext[key],
         writable: false,
         configurable: false,
         enumerable: true,
@@ -50,7 +50,7 @@ export class Context {
    * @returns {boolean}
    */
   has(option) {
-    return this._options.hasOwnProperty(option);
+    return this._lambdaContext.hasOwnProperty(option);
   }
 
   /**
@@ -59,6 +59,13 @@ export class Context {
    * @returns {*}
    */
   getOption(option, defaultValue = undefined) {
-    return this._options.hasOwnProperty(option) ? this._options[option] : defaultValue;
+    return this._lambdaContext.hasOwnProperty(option) ? this._lambdaContext[option] : defaultValue;
+  }
+
+  /**
+   * Enables Callback wait for empty event loop
+   */
+  waitForEmptyEventLoop() {
+    this._lambdaContext.callbackWaitsForEmptyEventLoop = true;
   }
 }

@@ -11,6 +11,7 @@ import {InvalidCognitoIdentityException} from './Exception/InvalidCognitoIdentit
 import {MissingUserContextException} from './Exception/MissingUserContextException';
 import {Context} from './Context';
 import {Sandbox} from '../../Runtime/Sandbox';
+import {Resolver} from './Resolver';
 import path from 'path';
 import fs from 'fs';
 
@@ -27,6 +28,7 @@ export class Runtime extends Interface {
     this._kernel = kernel;
     this._request = null;
     this._context = null;
+    this._resolver = null;
 
     this._loggedUserId = null;
     this._forceUserIdentity = false;
@@ -42,6 +44,13 @@ export class Runtime extends Interface {
    */
   get context() {
     return this._context;
+  }
+
+  /**
+   * @returns {null|Resolver}
+   */
+  get resolver() {
+    return this._resolver;
   }
 
   /**
@@ -99,11 +108,18 @@ export class Runtime extends Interface {
   /**
    * @param {Object} event
    * @param {Object} context
+   * @param {Function} lambdaCallback
    * @returns {Runtime}
    */
-  run(event, context) {
+  run(event, context, lambdaCallback = null) {
     this._context = new Context(context);
     this._request = new Request(event);
+
+    if (lambdaCallback) {
+      this._resolver = new Resolver(lambdaCallback);
+    }
+
+    this._context.waitForEmptyEventLoop();
 
     this.logService.rumLog({
       service: 'deep-core',

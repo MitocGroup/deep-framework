@@ -396,12 +396,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -567,6 +561,12 @@ window.esdocSearchIndex = [
     "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.proxied_methods",
     "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#static-get-PROXIED_METHODS",
     "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.PROXIED_METHODS",
+    "member"
+  ],
+  [
+    "lib/dynamodb/autoscaledynamodb.js~autoscaledynamodb.resource_in_use_error",
+    "class/lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.html#static-get-RESOURCE_IN_USE_ERROR",
+    "lib/DynamoDB/AutoScaleDynamoDB.js~AutoScaleDynamoDB.RESOURCE_IN_USE_ERROR",
     "member"
   ],
   [
@@ -835,13 +835,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/local/driver/pathawaredriver.js~pathawaredriver#path",
-    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-set-path",
+    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-get-path",
     "lib/Local/Driver/PathAwareDriver.js~PathAwareDriver#path",
     "member"
   ],
   [
     "lib/local/driver/pathawaredriver.js~pathawaredriver#path",
-    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-get-path",
+    "class/lib/Local/Driver/PathAwareDriver.js~PathAwareDriver.html#instance-set-path",
     "lib/Local/Driver/PathAwareDriver.js~PathAwareDriver#path",
     "member"
   ],

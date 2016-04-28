@@ -64,6 +64,13 @@ export class Token {
   }
 
   /**
+   * @returns {String}
+   */
+  get identityPoolId() {
+    return this._identityPoolId;
+  }
+
+  /**
    * @param {IdentityProvider} provider
    */
   set identityProvider(provider) {
@@ -309,7 +316,11 @@ export class Token {
    * @returns {Boolean}
    */
   get isAnonymous() {
-    return (!this.identityProvider && !this.lambdaContext) || this._identityLogins.length <= 0;
+    if (this.lambdaContext) {
+      return this._identityLogins.length <= 0;
+    } else {
+      return !this.identityProvider;
+    }
   }
 
   /**

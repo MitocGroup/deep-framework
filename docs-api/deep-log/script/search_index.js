@@ -18,6 +18,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-log/lib/driver/rum/eventfactory.js~eventfactory",
+    "class/lib/Driver/RUM/EventFactory.js~EventFactory.html",
+    "<span>EventFactory</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/RUM/EventFactory.js</span>",
+    "class"
+  ],
+  [
     "deep-log/lib/exception/exception.js~exception",
     "class/lib/Exception/Exception.js~Exception.html",
     "<span>Exception</span> <span class=\"search-result-import-path\">deep-log/lib/Exception/Exception.js</span>",
@@ -51,6 +57,12 @@ window.esdocSearchIndex = [
     "deep-log/lib/driver/rum/frameworkevent.js~frameworkevent",
     "class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html",
     "<span>FrameworkEvent</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/RUM/FrameworkEvent.js</span>",
+    "class"
+  ],
+  [
+    "deep-log/lib/driver/rum/frontendevent.js~frontendevent",
+    "class/lib/Driver/RUM/FrontendEvent.js~FrontendEvent.html",
+    "<span>FrontendEvent</span> <span class=\"search-result-import-path\">deep-log/lib/Driver/RUM/FrontendEvent.js</span>",
     "class"
   ],
   [
@@ -384,12 +396,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -648,6 +654,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/driver/rum/abstractevent.js~abstractevent.frontend_event_level",
+    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-FRONTEND_EVENT_LEVEL",
+    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.FRONTEND_EVENT_LEVEL",
+    "member"
+  ],
+  [
     "lib/driver/rum/abstractevent.js~abstractevent.resource_types",
     "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-get-RESOURCE_TYPES",
     "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.RESOURCE_TYPES",
@@ -660,9 +672,15 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/driver/rum/abstractevent.js~abstractevent.create",
-    "class/lib/Driver/RUM/AbstractEvent.js~AbstractEvent.html#static-method-create",
-    "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.create",
+    "lib/driver/rum/eventfactory.js",
+    "file/lib/Driver/RUM/EventFactory.js.html",
+    "lib/Driver/RUM/EventFactory.js",
+    "file"
+  ],
+  [
+    "lib/driver/rum/eventfactory.js~eventfactory.create",
+    "class/lib/Driver/RUM/EventFactory.js~EventFactory.html#static-method-create",
+    "lib/Driver/RUM/EventFactory.js~EventFactory.create",
     "method"
   ],
   [
@@ -694,6 +712,42 @@ window.esdocSearchIndex = [
     "class/lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent.html#instance-method-toJSON",
     "lib/Driver/RUM/FrameworkEvent.js~FrameworkEvent#toJSON",
     "method"
+  ],
+  [
+    "lib/driver/rum/frontendevent.js",
+    "file/lib/Driver/RUM/FrontendEvent.js.html",
+    "lib/Driver/RUM/FrontendEvent.js",
+    "file"
+  ],
+  [
+    "lib/driver/rum/frontendevent.js~frontendevent#constructor",
+    "class/lib/Driver/RUM/FrontendEvent.js~FrontendEvent.html#instance-constructor-constructor",
+    "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#constructor",
+    "method"
+  ],
+  [
+    "lib/driver/rum/frontendevent.js~frontendevent#geteventlevel",
+    "class/lib/Driver/RUM/FrontendEvent.js~FrontendEvent.html#instance-method-getEventLevel",
+    "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#getEventLevel",
+    "method"
+  ],
+  [
+    "lib/driver/rum/frontendevent.js~frontendevent#getvalidationschema",
+    "class/lib/Driver/RUM/FrontendEvent.js~FrontendEvent.html#instance-method-getValidationSchema",
+    "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#getValidationSchema",
+    "method"
+  ],
+  [
+    "lib/driver/rum/frontendevent.js~frontendevent#tojson",
+    "class/lib/Driver/RUM/FrontendEvent.js~FrontendEvent.html#instance-method-toJSON",
+    "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#toJSON",
+    "method"
+  ],
+  [
+    "lib/driver/rum/frontendevent.js~frontendevent.engines",
+    "class/lib/Driver/RUM/FrontendEvent.js~FrontendEvent.html#static-get-ENGINES",
+    "lib/Driver/RUM/FrontendEvent.js~FrontendEvent.ENGINES",
+    "member"
   ],
   [
     "lib/driver/ravenbrowserdriver.js",
@@ -768,6 +822,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver#getqueueattributes",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-method-getQueueAttributes",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver#getQueueAttributes",
+    "method"
+  ],
+  [
     "lib/driver/rumsqsdriver.js~rumsqsdriver#kernel",
     "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#instance-get-kernel",
     "lib/Driver/RumSqsDriver.js~RumSqsDriver#kernel",
@@ -801,6 +861,18 @@ window.esdocSearchIndex = [
     "lib/driver/rumsqsdriver.js~rumsqsdriver.batch_size",
     "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#static-get-BATCH_SIZE",
     "lib/Driver/RumSqsDriver.js~RumSqsDriver.BATCH_SIZE",
+    "member"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver.es_logs_index",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#static-get-ES_LOGS_INDEX",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver.ES_LOGS_INDEX",
+    "member"
+  ],
+  [
+    "lib/driver/rumsqsdriver.js~rumsqsdriver.es_logs_type",
+    "class/lib/Driver/RumSqsDriver.js~RumSqsDriver.html#static-get-ES_LOGS_TYPE",
+    "lib/Driver/RumSqsDriver.js~RumSqsDriver.ES_LOGS_TYPE",
     "member"
   ],
   [

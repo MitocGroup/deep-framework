@@ -46,9 +46,9 @@ export class Framework {
    */
   LambdaHandler(Handler) {
     return {
-      handler: (event, context) => {
+      handler: (event, context, callback) => {
         this.KernelFromLambdaContext(context).bootstrap((deepKernel) => {
-          new Handler(deepKernel).run(event, context);
+          new Handler(deepKernel).run(event, context, callback);
         });
       },
     };

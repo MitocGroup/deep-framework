@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport crypto from 'crypto';\n\n/**\n * Abstract log driver\n */\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super(['log']);\n  }\n\n  /**\n   * @param {*} context\n   * @returns {String}\n   */\n  static plainifyContext(context) {\n    let type = typeof context;\n    var plainContext;\n\n    if (type === 'object') {\n      plainContext = JSON.stringify(context);\n    } else if (context instanceof Object) {\n      plainContext = `${type}: ${context.toString()}`;\n    } else {\n      plainContext = context.toString();\n    }\n\n    return plainContext;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get datetime() {\n    return new Date().toISOString();\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get timeString() {\n    return new Date().toTimeString();\n  }\n\n  /**\n   * @param {String} str\n   * @returns {String}\n   */\n  static _md5(str) {\n    return crypto\n      .createHash('md5')\n      .update(str)\n      .digest('hex');\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -32,7 +30,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -47,7 +44,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -86,7 +82,6 @@
     "generator": false
   },
   {
-    "__docId__": 4,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -118,7 +113,6 @@
     "generator": false
   },
   {
-    "__docId__": 5,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -150,7 +144,6 @@
     "generator": false
   },
   {
-    "__docId__": 6,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -189,7 +182,6 @@
     "generator": false
   },
   {
-    "__docId__": 7,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -202,7 +194,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\n\n/**\n * Console native logging\n */\nexport class ConsoleDriver extends AbstractDriver {\n  constructor() {\n    super();\n\n    this._console = ConsoleDriver._buildConsole();\n  }\n\n  /**\n   * @returns {Object}\n   * @private\n   */\n  static _buildConsole() {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n    let console = {};\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      // Fixes issue with node env\n      if (method === 'debug' &&\n        typeof nativeConsole[method] === 'undefined') {\n        method = 'log';\n      }\n\n      console[method] = nativeConsole[method];\n\n      console[method].bind(nativeConsole);\n    }\n\n    return console;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeMethod = 'log';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.ERROR:\n      case Log.CRITICAL:\n        nativeMethod = 'error';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n        nativeMethod = 'warn';\n        break;\n      case Log.NOTICE:\n        nativeMethod = 'log';\n        break;\n      case Log.INFO:\n        nativeMethod = 'info';\n        break;\n      case Log.DEBUG:\n        nativeMethod = 'debug';\n        break;\n    }\n\n    // Fixes issue with node env\n    let logMethod = this._console[nativeMethod] || this._console.log;\n    logMethod.call(ConsoleDriver.nativeConsole, AbstractDriver.timeString, msg);\n\n    // @todo: figure out a better way of dumping context\n    if (context) {\n      // Fixes issue with node env\n      let debugMethod = this._console.debug || this._console.log;\n      debugMethod.call(ConsoleDriver.nativeConsole, '[DEBUG]', context);\n    }\n  }\n\n  /**\n   * @param {Boolean} logTime\n   * @param {Boolean} coloredOutput\n   * @param {Boolean} turnOff\n   * @returns {ConsoleDriver}\n   */\n  overrideNative(logTime = true, coloredOutput = true, turnOff = false) {\n    let nativeConsole = ConsoleDriver.nativeConsole;\n\n    for (let i in ConsoleDriver.METHODS_TO_OVERRIDE) {\n      if (!ConsoleDriver.METHODS_TO_OVERRIDE.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];\n\n      nativeConsole[method] = (...args) => {\n        if (!turnOff) {\n          let nativeArgs = args;\n\n          if (coloredOutput) {\n            nativeArgs = ConsoleDriver._colorOutput(method, nativeArgs);\n          }\n\n          if (logTime) {\n            nativeArgs.unshift(AbstractDriver.timeString);\n          }\n\n          this._console[method](...nativeArgs);\n        }\n      };\n    }\n\n    return this;\n  }\n\n  /**\n   * @param {String} type\n   * @param {Array} args\n   * @returns {Array}\n   * @private\n   */\n  static _colorOutput(type, args) {\n    let color = null;\n\n    switch(type.toLowerCase()) {\n      case 'error':\n        color = 31; // red\n        break;\n      case 'warn':\n        color = 33; // yellow\n        break;\n      default: color = 32; // green\n    }\n\n    args.unshift(`\\x1b[${color}m`);\n    args.push('\\x1b[0m');\n\n    return args;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  static get nativeConsole() {\n    return typeof window === 'undefined' ? console : window.console;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get METHODS_TO_OVERRIDE() {\n    return ['error', 'log', 'warn', 'info', 'debug'];\n  }\n}\n"
   },
   {
-    "__docId__": 8,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -221,7 +212,6 @@
     ]
   },
   {
-    "__docId__": 9,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -236,7 +226,6 @@
     "generator": false
   },
   {
-    "__docId__": 10,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -254,7 +243,6 @@
     }
   },
   {
-    "__docId__": 11,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -282,7 +270,6 @@
     "generator": false
   },
   {
-    "__docId__": 12,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -327,7 +314,6 @@
     "generator": false
   },
   {
-    "__docId__": 13,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -386,7 +372,6 @@
     "generator": false
   },
   {
-    "__docId__": 14,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -435,7 +420,6 @@
     "generator": false
   },
   {
-    "__docId__": 15,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -467,7 +451,6 @@
     "generator": false
   },
   {
-    "__docId__": 16,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -499,7 +482,6 @@
     "generator": false
   },
   {
-    "__docId__": 17,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -512,7 +494,6 @@
     "content": "/**\n * Created by mgoria on 03/03/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when failed to delete sqs messages\n */\nexport class FailedToDeleteSqsMessagesException extends LogDriverException {\n  /**\n   * @param {String} sqsQueueUrl\n   * @param {Object} error\n   */\n  constructor(sqsQueueUrl, error) {\n    super(`Failed to delete batch messages from \"${sqsQueueUrl}\" SQS queue. ${error}`);\n  }\n}"
   },
   {
-    "__docId__": 18,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -531,7 +512,6 @@
     ]
   },
   {
-    "__docId__": 19,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -566,7 +546,6 @@
     "generator": false
   },
   {
-    "__docId__": 20,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -579,7 +558,6 @@
     "content": "/**\n * Created by mgoria on 03/03/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when failed to receive sqs messages\n */\nexport class FailedToReceiveSqsMessageException extends LogDriverException {\n  /**\n   * @param {String} sqsQueueUrl\n   * @param {Object} error\n   */\n  constructor(sqsQueueUrl, error) {\n    super(`Failed to receive messages from \"${sqsQueueUrl}\" SQS queue. ${error}`);\n  }\n}"
   },
   {
-    "__docId__": 21,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -598,7 +576,6 @@
     ]
   },
   {
-    "__docId__": 22,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -633,7 +610,6 @@
     "generator": false
   },
   {
-    "__docId__": 23,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -646,7 +622,6 @@
     "content": "/**\n * Created by mgoria on 1/20/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when failed to send sqs message\n */\nexport class FailedToSendBatchSqsMessageException extends LogDriverException {\n  /**\n   * @param {String} sqsQueueUrl\n   * @param {Object} error\n   */\n  constructor(sqsQueueUrl, error) {\n    super(`Failed to send batch messages to ${sqsQueueUrl} SQS queue. ${error}`);\n  }\n}"
   },
   {
-    "__docId__": 24,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -665,7 +640,6 @@
     ]
   },
   {
-    "__docId__": 25,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -700,7 +674,6 @@
     "generator": false
   },
   {
-    "__docId__": 26,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -713,7 +686,6 @@
     "content": "/**\n * Created by mgoria on 1/20/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when failed to send sqs message\n */\nexport class FailedToSendSqsMessageException extends LogDriverException {\n  /**\n   * @param {String} sqsQueueUrl\n   * @param {String} message\n   * @param {Object} error\n   */\n  constructor(sqsQueueUrl, message, error) {\n    super(`Failed to send \"${message}\" message to ${sqsQueueUrl} SQS queue. ${error}`);\n  }\n}"
   },
   {
-    "__docId__": 27,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -732,7 +704,6 @@
     ]
   },
   {
-    "__docId__": 28,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -777,7 +748,6 @@
     "generator": false
   },
   {
-    "__docId__": 29,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -790,7 +760,6 @@
     "content": "/**\n * Created by mgoria on 1/21/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when SQS queue url is invalid\n */\nexport class InvalidSqsQueueUrlException extends LogDriverException {\n  /**\n   * @param {String} sqsQueueUrl\n   * @param {Object|String} error\n   */\n  constructor(sqsQueueUrl, error) {\n    super(`Invalid SQS queue url \"${sqsQueueUrl}\". ${error}`);\n  }\n}"
   },
   {
-    "__docId__": 30,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -809,7 +778,6 @@
     ]
   },
   {
-    "__docId__": 31,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -845,7 +813,6 @@
     "generator": false
   },
   {
-    "__docId__": 32,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -858,7 +825,6 @@
     "content": "/**\n * Created by mgoria on 1/20/16.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\n/**\n * Base exception\n */\nexport class LogDriverException extends Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}"
   },
   {
-    "__docId__": 33,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -877,7 +843,6 @@
     ]
   },
   {
-    "__docId__": 34,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -902,7 +867,6 @@
     "generator": false
   },
   {
-    "__docId__": 35,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -915,7 +879,6 @@
     "content": "/**\n * Created by mgoria on 1/29/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when RUM event is invalid\n */\nexport class RumEventValidationException extends LogDriverException {\n  /**\n   * @param {String} eventLevel\n   * @param {Object} error\n   */\n  constructor(eventLevel, error) {\n    super(`Failed to validate \"${eventLevel}\" event: ${error}`);\n  }\n}"
   },
   {
-    "__docId__": 36,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -934,7 +897,6 @@
     ]
   },
   {
-    "__docId__": 37,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -969,7 +931,6 @@
     "generator": false
   },
   {
-    "__docId__": 38,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -982,7 +943,6 @@
     "content": "/**\n * Created by mgoria on 02/01/16.\n */\n\n'use strict';\n\nimport {LogDriverException} from './LogDriverException';\n\n/**\n * Thrown when failed to 'guess' RUM event 'type'\n */\nexport class UnknownRumEventException extends LogDriverException {\n  /**\n   * @param {Object} event\n   */\n  constructor(event) {\n    super(`Failed to 'guess' event type for ${JSON.stringify(event)} event.`);\n  }\n}"
   },
   {
-    "__docId__": 39,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1001,7 +961,6 @@
     ]
   },
   {
-    "__docId__": 40,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1026,7 +985,6 @@
     "generator": false
   },
   {
-    "__docId__": 41,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1036,10 +994,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 1/29/16.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport Joi from 'joi';\nimport {UnknownRumEventException} from '../Exception/UnknownRumEventException';\nimport {FrameworkEvent} from './FrameworkEvent';\n\n/**\n * Abstract RUM event\n */\nexport class AbstractEvent extends Core.OOP.Interface {\n  /**\n   * @param {Object} kernel\n   * @param {Object} rawData\n   */\n  constructor(kernel, rawData) {\n    super(['toJSON', 'getValidationSchema', 'getEventLevel']);\n\n    this._kernel = kernel;\n    this._rawData = rawData;\n    this._data = this._enrichWithContextData(rawData);\n\n    this._validationError = null;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRAMEWORK_EVENT_LEVEL() {\n    return 'Framework';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'Backend';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'Frontend';\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get CONTEXTS() {\n    return [\n      AbstractEvent.BACKEND_CONTEXT,\n      AbstractEvent.FRONTEND_CONTEXT,\n    ];\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get SERVICES() {\n    return [\n      'deep-asset',\n      'deep-cache',\n      'deep-core',\n      'deep-db',\n      'deep-event',\n      'deep-fs',\n      'deep-kernel',\n      'deep-log',\n      'deep-notification',\n      'deep-resource',\n      'deep-security',\n      'deep-validation',\n    ];\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get RESOURCE_TYPES() {\n    return [\n      'Browser',\n      'Lambda',\n      'S3',\n      'DynamoDB',\n      'CloudFront',\n      'InMemory',\n      'LocalStorage',\n      'Redis',\n      'S3FS',\n      'Cognito',\n    ];\n  }\n\n  /**\n   * @param {Object} kernel\n   * @param {Object} rawData\n   * @returns {AbstractEvent}\n   */\n  static create(kernel, rawData) {\n    let event = null;\n\n    // @note - For the time being event type is guessed by event.service\n    // (it'll be changed once we'll have other types of events)\n    if (rawData.service && AbstractEvent.SERVICES.indexOf(rawData.service) !== -1) {\n      event = new FrameworkEvent(kernel, rawData);\n    } else {\n      throw new UnknownRumEventException(rawData);\n    }\n\n    return event;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  isValid() {\n    let result = this.validate();\n\n    return result.error ? false : true;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  validate() {\n    let result = Joi.validate(this._data, this.getValidationSchema(), {\n      stripUnknown: true,\n      convert: true,\n      abortEarly: false,\n    });\n\n    if (result.error) {\n      this._validationError = result.error;\n    } else {\n      this._data = result.value;\n    }\n\n    return result;\n  }\n\n  /**\n   * @returns {Object|null}\n   */\n  get validationError() {\n    return this._validationError;\n  }\n\n  /**\n   * @param {Object} event\n   * @returns {Object}\n   * @private\n   */\n  _enrichWithContextData(event) {\n    event.eventLevel = this.getEventLevel();\n    event.time = event.time || new Date().getTime();\n    event.metadata = event.metadata || {};\n\n    if (this._kernel.isBackend) {\n      let runtimeContext = this._kernel.runtimeContext;\n\n      event.context = AbstractEvent.BACKEND_CONTEXT;\n      event.memoryUsage = process.memoryUsage();\n      event.environment = {}; // @todo - find a way to get Lambda container info (id, OS, etc)\n\n      event.requestId = runtimeContext.awsRequestId;\n      event.identityId = runtimeContext.identity && runtimeContext.identity.cognitoIdentityId ?\n        runtimeContext.identity.cognitoIdentityId : '';\n    } else {\n      event.context = AbstractEvent.FRONTEND_CONTEXT;\n      event.memoryUsage = window.performance && window.performance.memory ? window.performance.memory : {};\n      event.environment = {\n        userAgent: navigator ? navigator.userAgent : '',\n      };\n\n      let securityToken = this._kernel.get('security').token;\n      event.identityId = securityToken && securityToken.identityId ? securityToken.identityId : 'anonymous';\n    }\n\n    return event;\n  }\n}"
+    "content": "/**\n * Created by mgoria on 1/29/16.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport Joi from 'joi';\n\n/**\n * Abstract RUM event\n */\nexport class AbstractEvent extends Core.OOP.Interface {\n  /**\n   * @param {Object} kernel\n   * @param {Object} rawData\n   */\n  constructor(kernel, rawData) {\n    super(['toJSON', 'getValidationSchema', 'getEventLevel']);\n\n    this._kernel = kernel;\n    this._rawData = rawData;\n    this._data = this._enrichWithContextData(rawData);\n\n    this._validationError = null;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRAMEWORK_EVENT_LEVEL() {\n    return 'Framework';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_EVENT_LEVEL() {\n    return 'Frontend';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'Backend';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'Frontend';\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get CONTEXTS() {\n    return [\n      AbstractEvent.BACKEND_CONTEXT,\n      AbstractEvent.FRONTEND_CONTEXT,\n    ];\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get SERVICES() {\n    return [\n      'deep-asset',\n      'deep-cache',\n      'deep-core',\n      'deep-db',\n      'deep-event',\n      'deep-fs',\n      'deep-kernel',\n      'deep-log',\n      'deep-notification',\n      'deep-resource',\n      'deep-security',\n      'deep-validation',\n    ];\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get RESOURCE_TYPES() {\n    return [\n      'Browser',\n      'Lambda',\n      'S3',\n      'DynamoDB',\n      'CloudFront',\n      'InMemory',\n      'LocalStorage',\n      'Redis',\n      'S3FS',\n      'Cognito',\n    ];\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  isValid() {\n    let result = this.validate();\n\n    return result.error ? false : true;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  validate() {\n    let result = Joi.validate(this._data, this.getValidationSchema(), {\n      stripUnknown: true,\n      convert: true,\n      abortEarly: false,\n    });\n\n    if (result.error) {\n      this._validationError = result.error;\n    } else {\n      this._data = result.value;\n    }\n\n    return result;\n  }\n\n  /**\n   * @returns {Object|null}\n   */\n  get validationError() {\n    return this._validationError;\n  }\n\n  /**\n   * @param {Object} event\n   * @returns {Object}\n   * @private\n   */\n  _enrichWithContextData(event) {\n    event.eventLevel = this.getEventLevel();\n    event.time = event.time || new Date().getTime();\n    event.metadata = event.metadata || {};\n\n    if (this._kernel.isBackend) {\n      let runtimeContext = this._kernel.runtimeContext;\n\n      event.context = AbstractEvent.BACKEND_CONTEXT;\n      event.memoryUsage = process.memoryUsage();\n      event.environment = {}; // @todo - find a way to get Lambda container info (id, OS, etc)\n\n      event.requestId = runtimeContext.awsRequestId;\n      event.identityId = runtimeContext.identity && runtimeContext.identity.cognitoIdentityId ?\n        runtimeContext.identity.cognitoIdentityId : '';\n    } else {\n      event.context = AbstractEvent.FRONTEND_CONTEXT;\n      event.memoryUsage = window.performance && window.performance.memory ? window.performance.memory : {};\n      event.environment = {\n        userAgent: navigator ? navigator.userAgent : '',\n      };\n\n      let securityToken = this._kernel.get('security').token;\n      event.identityId = securityToken && securityToken.identityId ? securityToken.identityId : 'anonymous';\n    }\n\n    return event;\n  }\n}"
   },
   {
-    "__docId__": 42,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1051,20 +1008,523 @@
     "importPath": "deep-log/lib/Driver/RUM/AbstractEvent.js",
     "importStyle": "{AbstractEvent}",
     "description": "Abstract RUM event",
-    "lineNumber": 15,
+    "lineNumber": 13,
     "interface": false,
     "extends": [
       "deep-core~Core.OOP.Interface"
     ]
   },
   {
-    "__docId__": 43,
     "kind": "constructor",
     "static": false,
     "variation": null,
     "name": "constructor",
     "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
     "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 18,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "kernel",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "rawData",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_kernel",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_kernel",
+    "access": null,
+    "description": null,
+    "lineNumber": 21,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_rawData",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_rawData",
+    "access": null,
+    "description": null,
+    "lineNumber": 22,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 23,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_validationError",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_validationError",
+    "access": null,
+    "description": null,
+    "lineNumber": 25,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "FRAMEWORK_EVENT_LEVEL",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.FRAMEWORK_EVENT_LEVEL",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "FRONTEND_EVENT_LEVEL",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.FRONTEND_EVENT_LEVEL",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "BACKEND_CONTEXT",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.BACKEND_CONTEXT",
+    "access": null,
+    "description": null,
+    "lineNumber": 45,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "FRONTEND_CONTEXT",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.FRONTEND_CONTEXT",
+    "access": null,
+    "description": null,
+    "lineNumber": 52,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "CONTEXTS",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.CONTEXTS",
+    "access": null,
+    "description": null,
+    "lineNumber": 59,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "SERVICES",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.SERVICES",
+    "access": null,
+    "description": null,
+    "lineNumber": 69,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "RESOURCE_TYPES",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.RESOURCE_TYPES",
+    "access": null,
+    "description": null,
+    "lineNumber": 89,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "isValid",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#isValid",
+    "access": null,
+    "description": null,
+    "lineNumber": 107,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Boolean}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Boolean"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "validate",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#validate",
+    "access": null,
+    "description": null,
+    "lineNumber": 116,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_validationError",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_validationError",
+    "access": null,
+    "description": null,
+    "lineNumber": 124,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_data",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_data",
+    "access": null,
+    "description": null,
+    "lineNumber": 126,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "get",
+    "static": false,
+    "variation": null,
+    "name": "validationError",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#validationError",
+    "access": null,
+    "description": null,
+    "lineNumber": 135,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object|null}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object",
+        "null"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_enrichWithContextData",
+    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
+    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_enrichWithContextData",
+    "access": "private",
+    "description": null,
+    "lineNumber": 144,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Driver/RUM/EventFactory.js",
+    "memberof": null,
+    "longname": "lib/Driver/RUM/EventFactory.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 4/19/16.\n */\n\n'use strict';\n\nimport {FrameworkEvent} from './FrameworkEvent';\nimport {FrontendEvent} from './FrontendEvent';\nimport {AbstractEvent} from './AbstractEvent';\nimport {UnknownRumEventException} from '../Exception/UnknownRumEventException';\n\n/**\n * Event Factory\n */\nexport class EventFactory {\n  /**\n   * @param {Object} kernel\n   * @param {Object} rawData\n   */\n  static create(kernel, rawData) {\n    let EventClass = null;\n\n    // @note - For the time being event type is guessed by event.service\n    // (it'll be changed once we'll have other types of events)\n    if (rawData.service && AbstractEvent.SERVICES.indexOf(rawData.service) !== -1) {\n      EventClass = FrameworkEvent;\n    } else if (rawData.engine) {\n      EventClass = FrontendEvent;\n    } else {\n      throw new UnknownRumEventException(rawData);\n    }\n\n    return new EventClass(kernel, rawData);\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "EventFactory",
+    "memberof": "lib/Driver/RUM/EventFactory.js",
+    "longname": "lib/Driver/RUM/EventFactory.js~EventFactory",
+    "access": null,
+    "export": true,
+    "importPath": "deep-log/lib/Driver/RUM/EventFactory.js",
+    "importStyle": "{EventFactory}",
+    "description": "Event Factory",
+    "lineNumber": 15,
+    "interface": false
+  },
+  {
+    "kind": "method",
+    "static": true,
+    "variation": null,
+    "name": "create",
+    "memberof": "lib/Driver/RUM/EventFactory.js~EventFactory",
+    "longname": "lib/Driver/RUM/EventFactory.js~EventFactory.create",
     "access": null,
     "description": null,
     "lineNumber": 20,
@@ -1090,202 +1550,7 @@
         "description": ""
       }
     ],
-    "generator": false
-  },
-  {
-    "__docId__": 44,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_kernel",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_kernel",
-    "access": null,
-    "description": null,
-    "lineNumber": 23,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 45,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_rawData",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_rawData",
-    "access": null,
-    "description": null,
-    "lineNumber": 24,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 46,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_data",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_data",
-    "access": null,
-    "description": null,
-    "lineNumber": 25,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 47,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_validationError",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_validationError",
-    "access": null,
-    "description": null,
-    "lineNumber": 27,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 48,
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "FRAMEWORK_EVENT_LEVEL",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.FRAMEWORK_EVENT_LEVEL",
-    "access": null,
-    "description": null,
-    "lineNumber": 33,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
     "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 49,
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "BACKEND_CONTEXT",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.BACKEND_CONTEXT",
-    "access": null,
-    "description": null,
-    "lineNumber": 40,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 50,
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "FRONTEND_CONTEXT",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.FRONTEND_CONTEXT",
-    "access": null,
-    "description": null,
-    "lineNumber": 47,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "string"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 51,
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "CONTEXTS",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.CONTEXTS",
-    "access": null,
-    "description": null,
-    "lineNumber": 54,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String[]}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String[]"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
       "types": [
         "*"
       ]
@@ -1293,284 +1558,6 @@
     "generator": false
   },
   {
-    "__docId__": 52,
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "SERVICES",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.SERVICES",
-    "access": null,
-    "description": null,
-    "lineNumber": 64,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String[]}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String[]"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 53,
-    "kind": "get",
-    "static": true,
-    "variation": null,
-    "name": "RESOURCE_TYPES",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.RESOURCE_TYPES",
-    "access": null,
-    "description": null,
-    "lineNumber": 84,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{String[]}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "String[]"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 54,
-    "kind": "method",
-    "static": true,
-    "variation": null,
-    "name": "create",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent.create",
-    "access": null,
-    "description": null,
-    "lineNumber": 104,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{AbstractEvent}"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "kernel",
-        "description": ""
-      },
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "rawData",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "AbstractEvent"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 55,
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "isValid",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#isValid",
-    "access": null,
-    "description": null,
-    "lineNumber": 121,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Boolean}"
-      }
-    ],
-    "params": [],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Boolean"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 56,
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "validate",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#validate",
-    "access": null,
-    "description": null,
-    "lineNumber": 130,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "params": [],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 57,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_validationError",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_validationError",
-    "access": null,
-    "description": null,
-    "lineNumber": 138,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 58,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_data",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_data",
-    "access": null,
-    "description": null,
-    "lineNumber": 140,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 59,
-    "kind": "get",
-    "static": false,
-    "variation": null,
-    "name": "validationError",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#validationError",
-    "access": null,
-    "description": null,
-    "lineNumber": 149,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object|null}"
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object",
-        "null"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "type": {
-      "types": [
-        "*"
-      ]
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 60,
-    "kind": "method",
-    "static": false,
-    "variation": null,
-    "name": "_enrichWithContextData",
-    "memberof": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent",
-    "longname": "lib/Driver/RUM/AbstractEvent.js~AbstractEvent#_enrichWithContextData",
-    "access": "private",
-    "description": null,
-    "lineNumber": 158,
-    "unknown": [
-      {
-        "tagName": "@returns",
-        "tagValue": "{Object}"
-      }
-    ],
-    "params": [
-      {
-        "nullable": null,
-        "types": [
-          "Object"
-        ],
-        "spread": false,
-        "optional": false,
-        "name": "event",
-        "description": ""
-      }
-    ],
-    "return": {
-      "nullable": null,
-      "types": [
-        "Object"
-      ],
-      "spread": false,
-      "description": ""
-    },
-    "generator": false
-  },
-  {
-    "__docId__": 61,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1583,7 +1570,6 @@
     "content": "/**\n * Created by mgoria on 1/29/16.\n */\n\n'use strict';\n\nimport Joi from 'joi';\nimport {AbstractEvent} from './AbstractEvent';\n\n/**\n * Framework event level\n */\nexport class FrameworkEvent extends AbstractEvent {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @returns {String}\n   */\n  getEventLevel() {\n    return AbstractEvent.FRAMEWORK_EVENT_LEVEL;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  toJSON() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  getValidationSchema() {\n    return Joi.object().keys({\n      eventLevel: Joi.string().required().allow([AbstractEvent.FRAMEWORK_EVENT_LEVEL]),\n      service: Joi.string().required().allow(AbstractEvent.SERVICES),\n      resourceType: Joi.string().required().allow(AbstractEvent.RESOURCE_TYPES),\n      resourceId: Joi.string().required(),\n      eventName: Joi.string().required(),\n      eventId: Joi.string().alphanum().optional(),\n      time: Joi.number().integer().required(),\n      context: Joi.string().required().allow(AbstractEvent.CONTEXTS),\n      memoryUsage: Joi.object().unknown().optional().default({}),\n      payload: Joi.object().unknown().optional().default({}),\n      metadata: Joi.object().unknown().optional().default({}),\n      environment: Joi.object().unknown().optional().default({}),\n      requestId: Joi.string(),\n      identityId: Joi.string().required()\n    });\n  }\n}"
   },
   {
-    "__docId__": 62,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1602,7 +1588,6 @@
     ]
   },
   {
-    "__docId__": 63,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1627,7 +1612,6 @@
     "generator": false
   },
   {
-    "__docId__": 64,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1655,7 +1639,6 @@
     "generator": false
   },
   {
-    "__docId__": 65,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1683,7 +1666,6 @@
     "generator": false
   },
   {
-    "__docId__": 66,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1711,7 +1693,210 @@
     "generator": false
   },
   {
-    "__docId__": 67,
+    "kind": "file",
+    "static": true,
+    "variation": null,
+    "name": "lib/Driver/RUM/FrontendEvent.js",
+    "memberof": null,
+    "longname": "lib/Driver/RUM/FrontendEvent.js",
+    "access": null,
+    "description": null,
+    "lineNumber": 5,
+    "content": "/**\n * Created by CCristi <ccovali@mitocgroup.com> on 4/19/16.\n */\n\n'use strict';\n\nimport Joi from 'joi';\nimport {AbstractEvent} from './AbstractEvent';\n\n/**\n * Frontend Event\n */\nexport class FrontendEvent extends AbstractEvent {\n  /**\n   * @param {String} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n\n  /**\n   * @returns {String}\n   */\n  getEventLevel() {\n    return AbstractEvent.FRONTEND_EVENT_LEVEL;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  toJSON() {\n    return this._data;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  getValidationSchema() {\n    return Joi.object().keys({\n      eventLevel: Joi.string().required().allow([AbstractEvent.FRONTEND_EVENT_LEVEL]),\n      engine: Joi.string().required().allow(FrontendEvent.ENGINES),\n      time: Joi.number().integer().required(),\n      context: Joi.string().required().allow([AbstractEvent.FRONTEND_CONTEXT]),\n      environment: Joi.object().unknown().optional().default({}),\n      identityId: Joi.string().required(),\n      memoryUsage: Joi.object().unknown().optional().default({}),\n      metadata: Joi.object().unknown().optional().default({}),\n      location: Joi.string().optional()\n    });\n  }\n\n  /**\n   * @param {Object} event\n   * @returns {Object}\n   * @private\n   */\n  _enrichWithContextData(event) {\n    event = super._enrichWithContextData(event);\n    event.location = typeof window !== 'undefined' ? `${window.location.pathname}${window.location.hash}` : null;\n\n    return event;\n  }\n\n  /**\n   * @returns {String[]}\n   */\n  static get ENGINES() {\n    return [\n      'angular',\n      'vanilla',\n    ];\n  }\n}\n"
+  },
+  {
+    "kind": "class",
+    "static": true,
+    "variation": null,
+    "name": "FrontendEvent",
+    "memberof": "lib/Driver/RUM/FrontendEvent.js",
+    "longname": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent",
+    "access": null,
+    "export": true,
+    "importPath": "deep-log/lib/Driver/RUM/FrontendEvent.js",
+    "importStyle": "{FrontendEvent}",
+    "description": "Frontend Event",
+    "lineNumber": 13,
+    "interface": false,
+    "extends": [
+      "lib/Driver/RUM/AbstractEvent~AbstractEvent"
+    ]
+  },
+  {
+    "kind": "constructor",
+    "static": false,
+    "variation": null,
+    "name": "constructor",
+    "memberof": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent",
+    "longname": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#constructor",
+    "access": null,
+    "description": null,
+    "lineNumber": 17,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "String"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "args",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getEventLevel",
+    "memberof": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent",
+    "longname": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#getEventLevel",
+    "access": null,
+    "description": null,
+    "lineNumber": 24,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "toJSON",
+    "memberof": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent",
+    "longname": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#toJSON",
+    "access": null,
+    "description": null,
+    "lineNumber": 31,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getValidationSchema",
+    "memberof": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent",
+    "longname": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#getValidationSchema",
+    "access": null,
+    "description": null,
+    "lineNumber": 38,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "_enrichWithContextData",
+    "memberof": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent",
+    "longname": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent#_enrichWithContextData",
+    "access": "private",
+    "description": null,
+    "lineNumber": 57,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{Object}"
+      }
+    ],
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "event",
+        "description": ""
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "Object"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ENGINES",
+    "memberof": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent",
+    "longname": "lib/Driver/RUM/FrontendEvent.js~FrontendEvent.ENGINES",
+    "access": null,
+    "description": null,
+    "lineNumber": 67,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String[]}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String[]"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "*"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1724,7 +1909,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport url from 'url';\nimport util from 'util';\n\n/**\n * Raven/Sentry logging for browser\n *\n * @todo replace it on compile time rather than runtime!\n */\nexport class RavenBrowserDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   * @param {Object} options\n   */\n  constructor(dsn, options = {}) {\n    super();\n\n    options = util._extend(options, {\n      maxMessageLength: 256\n    });\n\n    Raven.config(RavenBrowserDriver._prepareDsn(dsn), options).install();\n  }\n\n  /**\n   * @todo: tmp hook, remove it before persisting frontend config\n   *\n   * Remove password from url to not expose it into browser\n   *\n   * @param {String} dsn\n   * @returns {String}\n   */\n  static _prepareDsn(dsn) {\n    let parsedDsn = url.parse(dsn);\n    parsedDsn.auth = parsedDsn.auth.split(':')[0];\n\n    return url.format(parsedDsn);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenBrowserDriver._mapLevel(level);\n\n\n    Raven.captureMessage(msg, {\n      level: nativeLevel,\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
   },
   {
-    "__docId__": 68,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1746,7 +1930,6 @@
     ]
   },
   {
-    "__docId__": 69,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1781,7 +1964,6 @@
     "generator": false
   },
   {
-    "__docId__": 70,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1824,7 +2006,6 @@
     "generator": false
   },
   {
-    "__docId__": 71,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1869,7 +2050,6 @@
     "generator": false
   },
   {
-    "__docId__": 72,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1908,7 +2088,6 @@
     "generator": false
   },
   {
-    "__docId__": 73,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1921,7 +2100,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {Log} from '../Log';\nimport Raven from 'raven';\nimport util from 'util';\n\n/**\n * Raven/Sentry logging\n */\nexport class RavenDriver extends AbstractDriver {\n  /**\n   * @param {String} dsn\n   * @param {Object} options\n   */\n  constructor(dsn, options = {}) {\n    super();\n\n    options = util._extend(options, {\n      maxMessageLength: 256\n    });\n\n    this._clients = {};\n\n    for (let levelKey in Log.LEVELS) {\n      if (!Log.LEVELS.hasOwnProperty(levelKey)) {\n        continue;\n      }\n\n      let nativeLevel = RavenDriver._mapLevel(Log.LEVELS[levelKey]);\n\n      options.level = nativeLevel;\n\n      this._clients[nativeLevel] = new Raven.Client(dsn, options);\n    }\n  }\n\n  /**\n   * @returns {Raven.Client[]}\n   */\n  get clients() {\n    return this._clients;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   */\n  log(msg, level, context) {\n    let nativeLevel = RavenDriver._mapLevel(level);\n\n    this._clients[nativeLevel].captureMessage(msg, {\n      extra: context,\n      tags: {\n        originalLevel: level,\n      },\n    });\n  }\n\n  /**\n   * @param {String} level\n   * @returns {string}\n   * @private\n   */\n  static _mapLevel(level) {\n    let nativeLevel = 'info';\n\n    switch (level) {\n      case Log.EMERGENCY:\n      case Log.CRITICAL:\n        nativeLevel = 'fatal';\n        break;\n      case Log.ALERT:\n      case Log.WARNING:\n      case Log.NOTICE:\n        nativeLevel = 'warning';\n        break;\n      case Log.ERROR:\n        nativeLevel = 'error';\n        break;\n      case Log.INFO:\n        nativeLevel = 'info';\n        break;\n      case Log.DEBUG:\n        nativeLevel = 'debug';\n        break;\n    }\n\n    return nativeLevel;\n  }\n}\n"
   },
   {
-    "__docId__": 74,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1940,7 +2118,6 @@
     ]
   },
   {
-    "__docId__": 75,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1975,7 +2152,6 @@
     "generator": false
   },
   {
-    "__docId__": 76,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1993,7 +2169,6 @@
     }
   },
   {
-    "__docId__": 77,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2025,7 +2200,6 @@
     "generator": false
   },
   {
-    "__docId__": 78,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2070,7 +2244,6 @@
     "generator": false
   },
   {
-    "__docId__": 79,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2109,7 +2282,6 @@
     "generator": false
   },
   {
-    "__docId__": 80,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2119,10 +2291,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by mgoria on 1/19/16.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AbstractDriver} from './AbstractDriver';\nimport {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException';\nimport {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';\nimport {FailedToReceiveSqsMessageException} from './Exception/FailedToReceiveSqsMessageException';\nimport {FailedToDeleteSqsMessagesException} from './Exception/FailedToDeleteSqsMessagesException';\nimport {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';\nimport {RumEventValidationException} from './Exception/RumEventValidationException';\n//import {AbstractEvent} from './RUM/AbstractEvent';\nimport {FrameworkEvent} from './RUM/FrameworkEvent';\n\n/**\n * SQS logging driver\n */\nexport class RumSqsDriver extends AbstractDriver {\n  /**\n   * @param {String} queueUrl\n   * @param {Object} kernel\n   * @param {Boolean} enabled\n   */\n  constructor(queueUrl, kernel, enabled = false) {\n    super();\n\n    this._queueUrl = queueUrl;\n    this._kernel = kernel;\n    this._enabled = enabled;\n\n    this._messagesBatch = [];\n    this._runningBatches = 0;\n    this._sqs = null;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get BATCH_SIZE() {\n    return 10;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get queueUrl() {\n    return this._queueUrl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get enabled() {\n    return this._enabled;\n  }\n\n  /**\n   * @returns {AWS.SQS}\n   */\n  get sqs() {\n    if (!this._sqs) {\n      this._sqs = new AWS.SQS({\n        region: RumSqsDriver.getRegionFromSqsQueueUrl(this.queueUrl)\n      });\n    }\n\n    return this._sqs;\n  }\n\n  /**\n   * @param {Object} message\n   * @param {Function} callback\n   */\n  log(message, callback) {\n    if (!this.enabled) {\n      callback(null, null);\n      return;\n    }\n\n    //let event = AbstractEvent.create(this._kernel, message); // @todo - why it doesn't work ?\n    let event = new FrameworkEvent(this.kernel, message);\n\n    // @todo - check message size, max is 256 KB (262,144 bytes)\n    if (!event.isValid()) {\n      callback(new RumEventValidationException(event.getEventLevel(), event.validationError), null);\n      return;\n    }\n\n    if (this.kernel.isBackend) {\n      if (this._messagesBatch.length < RumSqsDriver.BATCH_SIZE) {\n        this._messagesBatch.push(event);\n      }\n\n      if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {\n        let batch = this._messagesBatch.slice();\n        this._messagesBatch = [];\n\n        this._sendMessageBatch(batch, callback);\n      } else {\n        callback(null, null);\n      }\n    } else {\n      this._sendMessage(event, callback);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  flush(callback) {\n    if (!this.enabled || (this._messagesBatch.length === 0 && this._runningBatches === 0)) {\n      callback(null, null);\n      return;\n    }\n\n    this._sendMessageBatch(this._messagesBatch, (error, data) => {\n      this._messagesBatch = [];\n\n      if (this._runningBatches > 0) {\n        // wait for all batches to be pushed into SQS\n        var intervalID = setInterval(() => {\n          if (this._runningBatches === 0) {\n            clearInterval(intervalID);\n            return callback(error, data);\n          }\n        }, 50);\n      } else {\n        callback(error, data);\n      }\n    });\n  }\n\n  /**\n   * @param {AbstractEvent} event\n   * @param callback\n   * @private\n   */\n  _sendMessage(event, callback) {\n    let params = {\n      MessageBody: JSON.stringify(event),\n      QueueUrl: this.queueUrl,\n    };\n\n    this.sqs.sendMessage(params, (error, data) => {\n      if (error) {\n        error = new FailedToSendSqsMessageException(params.QueueUrl, params.MessageBody, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Array} messages\n   * @param callback\n   * @private\n   */\n  _sendMessageBatch(messages, callback) {\n    if (messages.length === 0) {\n      callback(null, null);\n      return;\n    }\n\n    this._runningBatches++;\n\n    let entries = [];\n    messages.forEach((event, index) => {\n      event = JSON.stringify(event);\n      let id = `${AbstractDriver._md5(event)}-${new Date().getTime()}-${index}`;\n\n      entries.push({\n        Id: id,\n        MessageBody: event,\n      });\n    });\n\n    var params = {\n      QueueUrl: this.queueUrl,\n      Entries: entries\n    };\n\n    this.sqs.sendMessageBatch(params, (error, data) => {\n      this._runningBatches--;\n\n      if (error) {\n        error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  receiveMessages(callback) {\n    let params = {\n      QueueUrl: this.queueUrl,\n      MaxNumberOfMessages: 10,\n      VisibilityTimeout: 0,\n      WaitTimeSeconds: 0\n    };\n\n    this.sqs.receiveMessage(params, (error, data) => {\n      if (error) {\n        error = new FailedToReceiveSqsMessageException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Array} messages\n   * @param {Function} callback\n   */\n  deleteMessages(messages, callback) {\n    if (messages.length === 0) {\n      callback(null, null);\n      return;\n    }\n\n    let params = {\n      QueueUrl: this.queueUrl,\n      Entries: []\n    };\n\n    messages.forEach((message) => {\n      params.Entries.push({\n        Id: message.MessageId,\n        ReceiptHandle: message.ReceiptHandle\n      });\n    });\n\n    this.sqs.deleteMessageBatch(params, (error, data) => {\n      if (error) {\n        error = new FailedToDeleteSqsMessagesException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {String} queueUrl\n   * @returns {String}\n   */\n  static getRegionFromSqsQueueUrl(queueUrl) {\n    let regionParts = queueUrl.match(/\\.([^\\.]+)\\.amazonaws\\.com\\/.*/i);\n\n    if (!regionParts || regionParts.length === 0) {\n      throw new InvalidSqsQueueUrlException(queueUrl, 'Unable to extract AWS region.');\n    }\n\n    return regionParts[1];\n  }\n}\n"
+    "content": "/**\n * Created by mgoria on 1/19/16.\n */\n\n'use strict';\n\nimport AWS from 'aws-sdk';\nimport {AbstractDriver} from './AbstractDriver';\nimport {FailedToSendSqsMessageException} from './Exception/FailedToSendSqsMessageException';\nimport {FailedToSendBatchSqsMessageException} from './Exception/FailedToSendBatchSqsMessageException';\nimport {FailedToReceiveSqsMessageException} from './Exception/FailedToReceiveSqsMessageException';\nimport {FailedToDeleteSqsMessagesException} from './Exception/FailedToDeleteSqsMessagesException';\nimport {InvalidSqsQueueUrlException} from './Exception/InvalidSqsQueueUrlException';\nimport {RumEventValidationException} from './Exception/RumEventValidationException';\nimport {EventFactory} from './RUM/EventFactory';\n\n/**\n * SQS logging driver\n */\nexport class RumSqsDriver extends AbstractDriver {\n  /**\n   * @param {String} queueUrl\n   * @param {Object} kernel\n   * @param {Boolean} enabled\n   */\n  constructor(queueUrl, kernel, enabled = false) {\n    super();\n\n    this._queueUrl = queueUrl;\n    this._kernel = kernel;\n    this._enabled = enabled;\n\n    this._messagesBatch = [];\n    this._runningBatches = 0;\n    this._sqs = null;\n  }\n\n  /**\n   * @returns {Number}\n   */\n  static get BATCH_SIZE() {\n    return 10;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get queueUrl() {\n    return this._queueUrl;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get enabled() {\n    return this._enabled;\n  }\n\n  /**\n   * @returns {AWS.SQS}\n   */\n  get sqs() {\n    if (!this._sqs) {\n      this._sqs = new AWS.SQS({\n        region: RumSqsDriver.getRegionFromSqsQueueUrl(this.queueUrl)\n      });\n    }\n\n    return this._sqs;\n  }\n\n  /**\n   * @param {Object} message\n   * @param {Function} callback\n   */\n  log(message, callback) {\n    if (!this.enabled) {\n      callback(null, null);\n      return;\n    }\n\n    let event = EventFactory.create(this.kernel, message);\n\n    // @todo - check message size, max is 256 KB (262,144 bytes)\n    if (!event.isValid()) {\n      callback(new RumEventValidationException(event.getEventLevel(), event.validationError), null);\n      return;\n    }\n\n    if (this.kernel.isBackend) {\n      if (this._messagesBatch.length < RumSqsDriver.BATCH_SIZE) {\n        this._messagesBatch.push(event);\n      }\n\n      if (this._messagesBatch.length === RumSqsDriver.BATCH_SIZE) {\n        let batch = this._messagesBatch.slice();\n        this._messagesBatch = [];\n\n        this._sendMessageBatch(batch, callback);\n      } else {\n        callback(null, null);\n      }\n    } else {\n      this._sendMessage(event, callback);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  flush(callback) {\n    if (!this.enabled || (this._messagesBatch.length === 0 && this._runningBatches === 0)) {\n      callback(null, null);\n      return;\n    }\n\n    this._sendMessageBatch(this._messagesBatch, (error, data) => {\n      this._messagesBatch = [];\n\n      if (this._runningBatches > 0) {\n        // wait for all batches to be pushed into SQS\n        var intervalID = setInterval(() => {\n          if (this._runningBatches === 0) {\n            clearInterval(intervalID);\n            return callback(error, data);\n          }\n        }, 50);\n      } else {\n        callback(error, data);\n      }\n    });\n  }\n\n  /**\n   * @param {AbstractEvent} event\n   * @param callback\n   * @private\n   */\n  _sendMessage(event, callback) {\n    let params = {\n      MessageBody: JSON.stringify(event),\n      QueueUrl: this.queueUrl,\n    };\n\n    this.sqs.sendMessage(params, (error, data) => {\n      if (error) {\n        error = new FailedToSendSqsMessageException(params.QueueUrl, params.MessageBody, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Array} messages\n   * @param callback\n   * @private\n   */\n  _sendMessageBatch(messages, callback) {\n    if (messages.length === 0) {\n      callback(null, null);\n      return;\n    }\n\n    this._runningBatches++;\n\n    let entries = [];\n    messages.forEach((event, index) => {\n      event = JSON.stringify(event);\n      let id = `${AbstractDriver._md5(event)}-${new Date().getTime()}-${index}`;\n\n      entries.push({\n        Id: id,\n        MessageBody: event,\n      });\n    });\n\n    var params = {\n      QueueUrl: this.queueUrl,\n      Entries: entries\n    };\n\n    this.sqs.sendMessageBatch(params, (error, data) => {\n      this._runningBatches--;\n\n      if (error) {\n        error = new FailedToSendBatchSqsMessageException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   */\n  receiveMessages(callback) {\n    let params = {\n      QueueUrl: this.queueUrl,\n      MaxNumberOfMessages: 10,\n      VisibilityTimeout: 20,\n      WaitTimeSeconds: 0\n    };\n\n    this.sqs.receiveMessage(params, (error, data) => {\n      if (error) {\n        error = new FailedToReceiveSqsMessageException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Array} messages\n   * @param {Function} callback\n   */\n  deleteMessages(messages, callback) {\n    if (messages.length === 0) {\n      callback(null, null);\n      return;\n    }\n\n    let params = {\n      QueueUrl: this.queueUrl,\n      Entries: []\n    };\n\n    messages.forEach((message) => {\n      params.Entries.push({\n        Id: message.MessageId,\n        ReceiptHandle: message.ReceiptHandle\n      });\n    });\n\n    this.sqs.deleteMessageBatch(params, (error, data) => {\n      if (error) {\n        error = new FailedToDeleteSqsMessagesException(params.QueueUrl, error);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @param {Function} callback\n   * @param {Object[]} additionalAttributes\n   */\n  getQueueAttributes(callback, additionalAttributes = []) {\n    let defaultAttributes = [\n      'ApproximateNumberOfMessages',\n      'ApproximateNumberOfMessagesNotVisible',\n      'ApproximateNumberOfMessagesDelayed'\n    ];\n\n    let attributes = defaultAttributes.concat(\n      additionalAttributes.filter(attr => defaultAttributes.indexOf(attr) === -1)\n    );\n\n    let params = {\n      QueueUrl: this.queueUrl,\n      AttributeNames: attributes\n    };\n\n    this.sqs.getQueueAttributes(params, callback);\n  }\n\n  /**\n   * @param {String} queueUrl\n   * @returns {String}\n   */\n  static getRegionFromSqsQueueUrl(queueUrl) {\n    let regionParts = queueUrl.match(/\\.([^\\.]+)\\.amazonaws\\.com\\/.*/i);\n\n    if (!regionParts || regionParts.length === 0) {\n      throw new InvalidSqsQueueUrlException(queueUrl, 'Unable to extract AWS region.');\n    }\n\n    return regionParts[1];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ES_LOGS_INDEX() {\n    return 'rum';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ES_LOGS_TYPE() {\n    return 'logs';\n  }\n}\n"
   },
   {
-    "__docId__": 81,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2134,14 +2305,13 @@
     "importPath": "deep-log/lib/Driver/RumSqsDriver.js",
     "importStyle": "{RumSqsDriver}",
     "description": "SQS logging driver",
-    "lineNumber": 21,
+    "lineNumber": 20,
     "interface": false,
     "extends": [
       "lib/Driver/AbstractDriver~AbstractDriver"
     ]
   },
   {
-    "__docId__": 82,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2150,7 +2320,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#constructor",
     "access": null,
     "description": null,
-    "lineNumber": 27,
+    "lineNumber": 26,
     "params": [
       {
         "nullable": null,
@@ -2186,13 +2356,29 @@
     "generator": false
   },
   {
-    "__docId__": 83,
     "kind": "member",
     "static": false,
     "variation": null,
     "name": "_queueUrl",
     "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_queueUrl",
+    "access": null,
+    "description": null,
+    "lineNumber": 29,
+    "undocument": true,
+    "type": {
+      "types": [
+        "*"
+      ]
+    }
+  },
+  {
+    "kind": "member",
+    "static": false,
+    "variation": null,
+    "name": "_kernel",
+    "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
+    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_kernel",
     "access": null,
     "description": null,
     "lineNumber": 30,
@@ -2204,13 +2390,12 @@
     }
   },
   {
-    "__docId__": 84,
     "kind": "member",
     "static": false,
     "variation": null,
-    "name": "_kernel",
+    "name": "_enabled",
     "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
-    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_kernel",
+    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_enabled",
     "access": null,
     "description": null,
     "lineNumber": 31,
@@ -2222,25 +2407,6 @@
     }
   },
   {
-    "__docId__": 85,
-    "kind": "member",
-    "static": false,
-    "variation": null,
-    "name": "_enabled",
-    "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
-    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_enabled",
-    "access": null,
-    "description": null,
-    "lineNumber": 32,
-    "undocument": true,
-    "type": {
-      "types": [
-        "*"
-      ]
-    }
-  },
-  {
-    "__docId__": 86,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2249,7 +2415,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_messagesBatch",
     "access": null,
     "description": null,
-    "lineNumber": 34,
+    "lineNumber": 33,
     "undocument": true,
     "type": {
       "types": [
@@ -2258,7 +2424,6 @@
     }
   },
   {
-    "__docId__": 87,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2267,7 +2432,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_runningBatches",
     "access": null,
     "description": null,
-    "lineNumber": 35,
+    "lineNumber": 34,
     "undocument": true,
     "type": {
       "types": [
@@ -2276,7 +2441,6 @@
     }
   },
   {
-    "__docId__": 88,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2285,7 +2449,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_sqs",
     "access": null,
     "description": null,
-    "lineNumber": 36,
+    "lineNumber": 35,
     "undocument": true,
     "type": {
       "types": [
@@ -2294,7 +2458,6 @@
     }
   },
   {
-    "__docId__": 89,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2303,7 +2466,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver.BATCH_SIZE",
     "access": null,
     "description": null,
-    "lineNumber": 42,
+    "lineNumber": 41,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2326,7 +2489,6 @@
     "generator": false
   },
   {
-    "__docId__": 90,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2335,7 +2497,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#queueUrl",
     "access": null,
     "description": null,
-    "lineNumber": 49,
+    "lineNumber": 48,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2358,7 +2520,6 @@
     "generator": false
   },
   {
-    "__docId__": 91,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2367,7 +2528,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#kernel",
     "access": null,
     "description": null,
-    "lineNumber": 56,
+    "lineNumber": 55,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2390,7 +2551,6 @@
     "generator": false
   },
   {
-    "__docId__": 92,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2399,7 +2559,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#enabled",
     "access": null,
     "description": null,
-    "lineNumber": 63,
+    "lineNumber": 62,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2422,7 +2582,6 @@
     "generator": false
   },
   {
-    "__docId__": 93,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2431,7 +2590,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#sqs",
     "access": null,
     "description": null,
-    "lineNumber": 70,
+    "lineNumber": 69,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2454,7 +2613,6 @@
     "generator": false
   },
   {
-    "__docId__": 94,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2463,7 +2621,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_sqs",
     "access": null,
     "description": null,
-    "lineNumber": 72,
+    "lineNumber": 71,
     "undocument": true,
     "type": {
       "types": [
@@ -2472,7 +2630,6 @@
     }
   },
   {
-    "__docId__": 95,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2481,7 +2638,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#log",
     "access": null,
     "description": null,
-    "lineNumber": 84,
+    "lineNumber": 83,
     "params": [
       {
         "nullable": null,
@@ -2507,7 +2664,6 @@
     "generator": false
   },
   {
-    "__docId__": 96,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2516,7 +2672,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_messagesBatch",
     "access": null,
     "description": null,
-    "lineNumber": 106,
+    "lineNumber": 104,
     "undocument": true,
     "type": {
       "types": [
@@ -2525,7 +2681,6 @@
     }
   },
   {
-    "__docId__": 97,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2534,7 +2689,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#flush",
     "access": null,
     "description": null,
-    "lineNumber": 120,
+    "lineNumber": 118,
     "params": [
       {
         "nullable": null,
@@ -2550,7 +2705,6 @@
     "generator": false
   },
   {
-    "__docId__": 98,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2559,7 +2713,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_messagesBatch",
     "access": null,
     "description": null,
-    "lineNumber": 127,
+    "lineNumber": 125,
     "undocument": true,
     "type": {
       "types": [
@@ -2568,7 +2722,6 @@
     }
   },
   {
-    "__docId__": 99,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2577,7 +2730,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_sendMessage",
     "access": "private",
     "description": null,
-    "lineNumber": 148,
+    "lineNumber": 146,
     "params": [
       {
         "nullable": null,
@@ -2603,7 +2756,6 @@
     "generator": false
   },
   {
-    "__docId__": 100,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2612,7 +2764,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#_sendMessageBatch",
     "access": "private",
     "description": null,
-    "lineNumber": 168,
+    "lineNumber": 166,
     "params": [
       {
         "nullable": null,
@@ -2638,7 +2790,6 @@
     "generator": false
   },
   {
-    "__docId__": 101,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2647,7 +2798,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#receiveMessages",
     "access": null,
     "description": null,
-    "lineNumber": 206,
+    "lineNumber": 204,
     "params": [
       {
         "nullable": null,
@@ -2663,7 +2814,6 @@
     "generator": false
   },
   {
-    "__docId__": 102,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2672,7 +2822,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#deleteMessages",
     "access": null,
     "description": null,
-    "lineNumber": 227,
+    "lineNumber": 225,
     "params": [
       {
         "nullable": null,
@@ -2698,7 +2848,40 @@
     "generator": false
   },
   {
-    "__docId__": 103,
+    "kind": "method",
+    "static": false,
+    "variation": null,
+    "name": "getQueueAttributes",
+    "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
+    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver#getQueueAttributes",
+    "access": null,
+    "description": null,
+    "lineNumber": 256,
+    "params": [
+      {
+        "nullable": null,
+        "types": [
+          "Function"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "callback",
+        "description": ""
+      },
+      {
+        "nullable": null,
+        "types": [
+          "Object[]"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "additionalAttributes",
+        "description": ""
+      }
+    ],
+    "generator": false
+  },
+  {
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2707,7 +2890,7 @@
     "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver.getRegionFromSqsQueueUrl",
     "access": null,
     "description": null,
-    "lineNumber": 258,
+    "lineNumber": 279,
     "unknown": [
       {
         "tagName": "@returns",
@@ -2737,7 +2920,68 @@
     "generator": false
   },
   {
-    "__docId__": 104,
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ES_LOGS_INDEX",
+    "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
+    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver.ES_LOGS_INDEX",
+    "access": null,
+    "description": null,
+    "lineNumber": 292,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
+    "kind": "get",
+    "static": true,
+    "variation": null,
+    "name": "ES_LOGS_TYPE",
+    "memberof": "lib/Driver/RumSqsDriver.js~RumSqsDriver",
+    "longname": "lib/Driver/RumSqsDriver.js~RumSqsDriver.ES_LOGS_TYPE",
+    "access": null,
+    "description": null,
+    "lineNumber": 299,
+    "unknown": [
+      {
+        "tagName": "@returns",
+        "tagValue": "{String}"
+      }
+    ],
+    "return": {
+      "nullable": null,
+      "types": [
+        "String"
+      ],
+      "spread": false,
+      "description": ""
+    },
+    "type": {
+      "types": [
+        "string"
+      ]
+    },
+    "generator": false
+  },
+  {
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2750,7 +2994,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 105,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2769,7 +3012,6 @@
     ]
   },
   {
-    "__docId__": 106,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2794,7 +3036,6 @@
     "generator": false
   },
   {
-    "__docId__": 107,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2807,7 +3048,6 @@
     "content": "/**\n * Created by AlexanderC on 6/15/15.\n */\n\n'use strict';\n\nimport Kernel from 'deep-kernel';\nimport Core from 'deep-core';\nimport {ConsoleDriver} from './Driver/ConsoleDriver';\nimport {RavenDriver} from './Driver/RavenDriver';\nimport {RavenBrowserDriver} from './Driver/RavenBrowserDriver';\nimport {RumSqsDriver} from './Driver/RumSqsDriver';\nimport {AbstractDriver} from './Driver/AbstractDriver';\n\n/**\n * Logging manager\n */\nexport class Log extends Kernel.ContainerAware {\n  /**\n   * @param {Object} drivers\n   */\n  constructor(drivers = {}) {\n    super();\n\n    this._drivers = new Core.Generic.ObjectStorage();\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let globals = kernel.config.globals;\n    let drivers = globals.logDrivers || {};\n\n    // add console driver by default to all environments except for PROD\n    if (!drivers.hasOwnProperty('console') && kernel.env !== Kernel.PROD_ENVIRONMENT) {\n      drivers.console = {};\n    }\n\n    for (let driverName in drivers) {\n      if (!drivers.hasOwnProperty(driverName)) {\n        continue;\n      }\n\n      this.register(driverName, drivers[driverName]);\n    }\n\n    callback();\n  }\n\n  /**\n   *\n   * @param {String} type\n   * @param {Array} args\n   * @returns {AbstractDriver}\n   */\n  create(type, ...args) {\n    var driver;\n\n    switch (type.toLowerCase()) {\n      case 'console':\n        driver = new ConsoleDriver(...args);\n        break;\n      case 'raven':\n      case 'sentry':\n        let DriverPrototype = this.container.get(Kernel.CONTEXT).isFrontend ? RavenBrowserDriver : RavenDriver;\n\n        driver = new DriverPrototype(\n          args.length > 0 && typeof args[0] === 'object'\n            ? args[0].dsn\n            : null\n        );\n        break;\n      case 'rum':\n        let rumQueueUrl = this.kernel.config.hasOwnProperty('rumQueue') ? this.kernel.config.rumQueue.url : '';\n        let enabled = (args.length > 0 && args[0] && typeof args[0] === 'object') ? args[0].enabled : false;\n\n        driver = new RumSqsDriver(rumQueueUrl, this.kernel, enabled);\n        break;\n      default:\n        throw new Core.Exception.InvalidArgumentException(\n          type,\n          '[Console, Raven, Sentry, RUM]'\n        );\n    }\n\n    return driver;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {Log}\n   *\n   * @todo: do we need this here?\n   */\n  overrideJsConsole(...args) {\n    let consoleDriver = this._drivers.find(ConsoleDriver);\n\n    if (!consoleDriver) {\n      this.register('console');\n    }\n\n    (consoleDriver || this._drivers.find(ConsoleDriver))\n      .overrideNative(...args);\n\n    return this;\n  }\n\n  /**\n   * @param {AbstractDriver|String} driver\n   * @param {Array} args\n   * @returns {Log}\n   */\n  register(driver, ...args) {\n    if (typeof driver === 'string') {\n      driver = this.create(driver, ...args);\n    }\n\n    if (!(driver instanceof AbstractDriver)) {\n      throw new Core.Exception.InvalidArgumentException(driver, 'AbstractDriver');\n    }\n\n    this._drivers.add(driver);\n\n    return this;\n  }\n\n  /**\n   * @returns {Core.Generic.ObjectStorage}\n   */\n  get drivers() {\n    return this._drivers;\n  }\n\n  /**\n   * @param {String} msg\n   * @param {String} level\n   * @param {*} context\n   * @returns Log\n   */\n  log(msg, level = Log.INFO, context = {}) {\n    let driversArr = this.drivers.iterator;\n\n    for (let driverKey in driversArr) {\n      if (!driversArr.hasOwnProperty(driverKey)) {\n        continue;\n      }\n\n      let driver = driversArr[driverKey];\n\n      // do not log common messages into RUM\n      if (driver instanceof RumSqsDriver) {\n        continue;\n      }\n\n      driver.log(msg, level, context);\n    }\n\n    return this;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  isRumEnabled() {\n    let driver = this.rumDriver();\n\n    return driver && driver.enabled;\n  }\n\n  /**\n   * @param {Object} event\n   */\n  rumLog(event) {\n    let driver = this.rumDriver();\n\n    if (driver) {\n      driver.log(event, (error, data) => {\n        if (error) {\n          this.log(error, Log.ERROR, event);\n        }\n      });\n    }\n  }\n\n  /**\n   * Flushes RUM batch messages\n   */\n  rumFlush(callback) {\n    let driver = this.rumDriver();\n\n    if (!driver) {\n      callback(null, null);\n      return;\n    }\n\n    driver.flush((error, data) => {\n      if (error) {\n        this.log(error, Log.ERROR);\n      }\n\n      callback(error, data);\n    });\n  }\n\n  /**\n   * @returns {RumSqsDriver}\n   */\n  rumDriver() {\n    return this.drivers.find(RumSqsDriver);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  debug(msg, context = {}) {\n    return this.log(msg, Log.DEBUG, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  err(msg, context = {}) {\n    return this.log(msg, Log.ERROR, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  error(...args) {\n    return this.err(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  info(msg, context = {}) {\n    return this.log(msg, Log.INFO, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  warn(msg, context = {}) {\n    return this.log(msg, Log.WARNING, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  warning(...args) {\n    return this.warn(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  emerg(msg, context = {}) {\n    return this.log(msg, Log.EMERGENCY, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  emergency(...args) {\n    return this.emerg(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  crit(msg, context = {}) {\n    return this.log(msg, Log.CRITICAL, context);\n  }\n\n  /**\n   * @param {*} args\n   */\n  critical(...args) {\n    return this.crit(...args);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  notice(msg, context = {}) {\n    return this.log(msg, Log.NOTICE, context);\n  }\n\n  /**\n   * @param {String} msg\n   * @param {Object} context\n   * @returns {Log}\n   */\n  alert(msg, context = {}) {\n    return this.log(msg, Log.ALERT, context);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get LEVELS() {\n    return [\n      Log.EMERGENCY,\n      Log.ALERT,\n      Log.CRITICAL,\n      Log.ERROR,\n      Log.WARNING,\n      Log.NOTICE,\n      Log.INFO,\n      Log.DEBUG,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get EMERGENCY() {\n    return 'emergency';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ALERT() {\n    return 'alert';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CRITICAL() {\n    return 'critical';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ERROR() {\n    return 'error';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get WARNING() {\n    return 'warning';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get NOTICE() {\n    return 'notice';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get INFO() {\n    return 'info';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEBUG() {\n    return 'debug';\n  }\n}\n"
   },
   {
-    "__docId__": 108,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2826,7 +3066,6 @@
     ]
   },
   {
-    "__docId__": 109,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2851,7 +3090,6 @@
     "generator": false
   },
   {
-    "__docId__": 110,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2869,7 +3107,6 @@
     }
   },
   {
-    "__docId__": 111,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2904,7 +3141,6 @@
     "generator": false
   },
   {
-    "__docId__": 112,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2953,7 +3189,6 @@
     "generator": false
   },
   {
-    "__docId__": 113,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2992,7 +3227,6 @@
     "generator": false
   },
   {
-    "__docId__": 114,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3042,7 +3276,6 @@
     "generator": false
   },
   {
-    "__docId__": 115,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3074,7 +3307,6 @@
     "generator": false
   },
   {
-    "__docId__": 116,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3133,7 +3365,6 @@
     "generator": false
   },
   {
-    "__docId__": 117,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3161,7 +3392,6 @@
     "generator": false
   },
   {
-    "__docId__": 118,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3186,7 +3416,6 @@
     "generator": false
   },
   {
-    "__docId__": 119,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3207,7 +3436,6 @@
     "generator": false
   },
   {
-    "__docId__": 120,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3235,7 +3463,6 @@
     "generator": false
   },
   {
-    "__docId__": 121,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3284,7 +3511,6 @@
     "generator": false
   },
   {
-    "__docId__": 122,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3333,7 +3559,6 @@
     "generator": false
   },
   {
-    "__docId__": 123,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3363,7 +3588,6 @@
     "generator": false
   },
   {
-    "__docId__": 124,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3412,7 +3636,6 @@
     "generator": false
   },
   {
-    "__docId__": 125,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3461,7 +3684,6 @@
     "generator": false
   },
   {
-    "__docId__": 126,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3491,7 +3713,6 @@
     "generator": false
   },
   {
-    "__docId__": 127,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3540,7 +3761,6 @@
     "generator": false
   },
   {
-    "__docId__": 128,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3570,7 +3790,6 @@
     "generator": false
   },
   {
-    "__docId__": 129,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3619,7 +3838,6 @@
     "generator": false
   },
   {
-    "__docId__": 130,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3649,7 +3867,6 @@
     "generator": false
   },
   {
-    "__docId__": 131,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3698,7 +3915,6 @@
     "generator": false
   },
   {
-    "__docId__": 132,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3747,7 +3963,6 @@
     "generator": false
   },
   {
-    "__docId__": 133,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3779,7 +3994,6 @@
     "generator": false
   },
   {
-    "__docId__": 134,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3811,7 +4025,6 @@
     "generator": false
   },
   {
-    "__docId__": 135,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3843,7 +4056,6 @@
     "generator": false
   },
   {
-    "__docId__": 136,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3875,7 +4087,6 @@
     "generator": false
   },
   {
-    "__docId__": 137,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3907,7 +4118,6 @@
     "generator": false
   },
   {
-    "__docId__": 138,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3939,7 +4149,6 @@
     "generator": false
   },
   {
-    "__docId__": 139,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -3971,7 +4180,6 @@
     "generator": false
   },
   {
-    "__docId__": 140,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4003,7 +4211,6 @@
     "generator": false
   },
   {
-    "__docId__": 141,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4035,7 +4242,6 @@
     "generator": false
   },
   {
-    "__docId__": 142,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -4048,7 +4254,6 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Log} from './Log';\n\nlet exports = module.exports = Log;\n"
   },
   {
-    "__docId__": 143,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -4069,7 +4274,6 @@
     }
   },
   {
-    "__docId__": 145,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4082,7 +4286,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 146,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4095,7 +4298,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 147,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4108,7 +4310,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 148,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4121,7 +4322,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 149,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4134,7 +4334,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 150,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4147,7 +4346,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 151,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4160,7 +4358,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 152,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4173,7 +4370,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 153,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4186,7 +4382,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 154,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4199,7 +4394,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 155,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4212,7 +4406,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 156,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4225,7 +4418,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 157,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4238,7 +4430,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 158,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4251,7 +4442,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 159,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4264,7 +4454,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 160,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4277,7 +4466,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 161,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4290,7 +4478,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 162,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4303,7 +4490,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 163,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4316,7 +4502,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 164,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4329,7 +4514,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 165,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4342,7 +4526,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 166,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4355,7 +4538,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 167,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4368,7 +4550,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 168,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4381,7 +4562,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 169,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4394,7 +4574,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 170,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4407,7 +4586,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 171,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4420,7 +4598,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 172,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4433,7 +4610,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 173,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4446,7 +4622,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 174,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4459,7 +4634,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 175,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4472,7 +4646,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 176,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4485,7 +4658,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 177,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4498,7 +4670,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 178,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4511,7 +4682,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 179,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4524,7 +4694,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 180,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4537,7 +4706,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 181,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4550,7 +4718,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 182,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4563,7 +4730,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 183,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4576,7 +4742,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 184,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4589,7 +4754,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 185,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4602,7 +4766,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 186,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4615,7 +4778,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 187,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4628,7 +4790,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 188,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4641,7 +4802,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 189,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4654,7 +4814,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 190,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4667,7 +4826,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 191,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4680,7 +4838,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 193,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4693,7 +4850,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 194,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4706,7 +4862,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 195,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4719,7 +4874,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 196,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4732,7 +4886,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 197,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4745,7 +4898,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 198,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4758,7 +4910,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 199,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -4766,19 +4917,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 200,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

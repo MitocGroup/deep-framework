@@ -10,6 +10,7 @@ import {Token} from './Token';
 import {LocalToken} from './LocalToken';
 import {UserProvider} from './UserProvider';
 import {IdentityProvider} from './IdentityProvider';
+import {LocalIdentityProvider} from './LocalIdentityProvider';
 import util from 'util';
 import crypto from 'crypto';
 
@@ -82,14 +83,15 @@ export class Security extends Kernel.ContainerAware {
    * @returns {Token}
    */
   login(providerName, identityMetadata, callback) {
-    let identityProvider = null;
     let TokenImplementation = LocalToken;
+    let IdentityProviderImplementation = LocalIdentityProvider;
 
     if (!this._localBackend) {
       TokenImplementation = Token;
-      identityProvider = new IdentityProvider(this._identityProviders, providerName, identityMetadata);
+      IdentityProviderImplementation = IdentityProvider;
     }
 
+    let identityProvider = new IdentityProviderImplementation(this._identityProviders, providerName, identityMetadata);
     this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);
 
     this._token.userProvider = this.userProvider;

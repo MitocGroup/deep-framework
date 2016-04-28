@@ -378,12 +378,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -763,25 +757,25 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/containeraware.js~containeraware#kernel",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-kernel",
-    "lib/ContainerAware.js~ContainerAware#kernel",
-    "member"
-  ],
-  [
-    "lib/containeraware.js~containeraware#kernel",
     "class/lib/ContainerAware.js~ContainerAware.html#instance-set-kernel",
     "lib/ContainerAware.js~ContainerAware#kernel",
     "member"
   ],
   [
-    "lib/containeraware.js~containeraware#localbackend",
-    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-localBackend",
-    "lib/ContainerAware.js~ContainerAware#localBackend",
+    "lib/containeraware.js~containeraware#kernel",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-get-kernel",
+    "lib/ContainerAware.js~ContainerAware#kernel",
     "member"
   ],
   [
     "lib/containeraware.js~containeraware#localbackend",
     "class/lib/ContainerAware.js~ContainerAware.html#instance-get-localBackend",
+    "lib/ContainerAware.js~ContainerAware#localBackend",
+    "member"
+  ],
+  [
+    "lib/containeraware.js~containeraware#localbackend",
+    "class/lib/ContainerAware.js~ContainerAware.html#instance-set-localBackend",
     "lib/ContainerAware.js~ContainerAware#localBackend",
     "member"
   ],
@@ -955,13 +949,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/kernel.js~kernel#runtimecontext",
-    "class/lib/Kernel.js~Kernel.html#instance-get-runtimeContext",
+    "class/lib/Kernel.js~Kernel.html#instance-set-runtimeContext",
     "lib/Kernel.js~Kernel#runtimeContext",
     "member"
   ],
   [
     "lib/kernel.js~kernel#runtimecontext",
-    "class/lib/Kernel.js~Kernel.html#instance-set-runtimeContext",
+    "class/lib/Kernel.js~Kernel.html#instance-get-runtimeContext",
     "lib/Kernel.js~Kernel#runtimeContext",
     "member"
   ],
@@ -1105,13 +1099,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/microservice/injectable.js~injectable#microservice",
-    "class/lib/Microservice/Injectable.js~Injectable.html#instance-set-microservice",
+    "class/lib/Microservice/Injectable.js~Injectable.html#instance-get-microservice",
     "lib/Microservice/Injectable.js~Injectable#microservice",
     "member"
   ],
   [
     "lib/microservice/injectable.js~injectable#microservice",
-    "class/lib/Microservice/Injectable.js~Injectable.html#instance-get-microservice",
+    "class/lib/Microservice/Injectable.js~Injectable.html#instance-set-microservice",
     "lib/Microservice/Injectable.js~Injectable#microservice",
     "member"
   ],
@@ -1141,13 +1135,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/microservice/instance.js~instance#isroot",
-    "class/lib/Microservice/Instance.js~Instance.html#instance-get-isRoot",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-set-isRoot",
     "lib/Microservice/Instance.js~Instance#isRoot",
     "member"
   ],
   [
     "lib/microservice/instance.js~instance#isroot",
-    "class/lib/Microservice/Instance.js~Instance.html#instance-set-isRoot",
+    "class/lib/Microservice/Instance.js~Instance.html#instance-get-isRoot",
     "lib/Microservice/Instance.js~Instance#isRoot",
     "member"
   ],

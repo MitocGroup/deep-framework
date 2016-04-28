@@ -40,8 +40,9 @@ export class Response {
   send() {
     if (!this._runtime.context) {
       throw new MissingRuntimeContextException();
-    } else if (this.contextSent) {
-      throw new ContextAlreadySentException();
+    // @TODO: Figure out why lambda container caches _runtime.contextSent
+    // } else if (this.contextSent) {
+    //   throw new ContextAlreadySentException();
     }
 
     this.runtime.logService.rumLog({
@@ -57,7 +58,7 @@ export class Response {
       // @todo: via setter?
       this._runtime._contextSent = true;
 
-      this._runtime.context[this.constructor.contextMethod](this.data);
+      (this._runtime.resolver || this._runtime.context)[this.constructor.contextMethod](this.data);
     });
 
     return this;

@@ -46,10 +46,16 @@ export class Search extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {String} domainName
+   * @param {String|Function} domainName
    * @param {Function} callback
    */
   getClient(domainName, callback) {
+    // use 'client' as default domainName
+    if (typeof domainName === 'function') {
+      callback = domainName;
+      domainName = 'client';
+    }
+
     if (this._domainClients.indexOf(domainName) !== -1) {
       callback(null, this._domainClients[domainName]);
       return;
@@ -128,7 +134,7 @@ export class Search extends Kernel.ContainerAware {
           }
         });
 
-        originalFunctionName.call(instance, ...args);
+        instance[originalFunctionName](...args);
       };
     }
 
