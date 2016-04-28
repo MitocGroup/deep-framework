@@ -9,14 +9,12 @@
   <script src="script/prettify/prettify.js"></script>
   
   
-  <script src="script/manual.js"></script>
 </head>
-<body class="layout-container" data-ice="rootContainer">
+<body class="layout-container">
 
 <header>
   <a href="./">Home</a>
-  
-  <a href="identifiers.html">Reference</a>
+  <a href="identifiers.html">Identifier</a>
   <a href="source.html">Source</a>
   
   <a data-ice="repoURL" href="https://github.com/MitocGroup/deep-framework.git" class="repo-url-github">Repository</a>
@@ -45,6 +43,7 @@
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Context.js~Context.html">Context</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/ErrorResponse.js~ErrorResponse.html">ErrorResponse</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Request.js~Request.html">Request</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Resolver.js~Resolver.html">Resolver</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Response.js~Response.html">Response</a></span></span></li>
 <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Runtime.js~Runtime.html">Runtime</a></span></span></li>
 <li data-ice="doc"><div data-ice="dirPath" class="nav-dir-path">AWS/Lambda/Exception</div><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/lib/AWS/Lambda/Exception/ContextAlreadySentException.js~ContextAlreadySentException.html">ContextAlreadySentException</a></span></span></li>
@@ -88,9 +87,21 @@
 Help needed to add support for <a href="https://cloud.google.com/">Google Cloud Platform</a>,
 <a href="https://azure.microsoft.com">Microsoft Azure</a>, and others.</p>
 </blockquote>
-<p>Documentation is available at <a href="http://docs.deep.mg">docs.deep.mg</a>.</p>
+<p>Documentation is available as <a href="https://github.com/MitocGroup/deep-framework/blob/master/docs/framework.md">Developer Guide</a>
+and <a href="http://docs.deep.mg">API Guide</a>.</p>
+<p>Learn hands-on how to build and deploy cloud-native web applications from
+<a href="https://blog.mitocgroup.com/building-enterprise-level-web-applications-on-aws-lambda-with-the-deep-framework-dd81719b0dff">this blog post</a>
+and <a href="https://www.youtube.com/playlist?list=PLPGfD-tGOl7uNDXo_eMN1odMZflYVu2n9">this tutorial video</a>.</p>
 <h2 id="getting-started">Getting Started</h2>
-<p>Install DEEP CLI, also known as deepify:</p>
+<h3 id="step-1-pre-requisites">Step 1. Pre-requisites</h3>
+<ul>
+<li>[x] <a href="https://www.youtube.com/watch?v=WviHsoz8yHk">Create an Amazon Web Services account</a></li>
+<li>[x] <a href="https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html">Configure AWS Command Line Interface</a></li>
+<li>[x] <a href="https://git-scm.com/book/en/v2/Getting-Started-Installing-Git">Get Started - Installing Git</a></li>
+<li>[x] <a href="https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html">JDK 8 and JRE 8 Installation Start Here</a></li>
+<li>[x] <a href="https://github.com/creationix/nvm#install-script">Install nvm</a> and <a href="https://github.com/creationix/nvm#usage">use node v4.3+</a></li>
+<li>[ ] Install DEEP CLI, also known as <code>deepify</code>:</li>
+</ul>
 <pre><code class="lang-bash"><code class="source-code prettyprint">npm install deepify -g</code>
 </code></pre>
 <blockquote>
@@ -99,139 +110,54 @@ Help needed to add support for <a href="https://cloud.google.com/">Google Cloud 
 before running <code>npm install deepify -g</code> and make sure all <code>npm</code> and <code>deepify</code> commands are executed
 inside Git Bash.</p>
 </blockquote>
-<p>Using deepify, dump locally the helloworld example:</p>
-<pre><code class="lang-bash"><code class="source-code prettyprint">deepify helloworld ~/deep-hello-world</code>
+<h3 id="step-2-install-microservice-s-locally">Step 2. Install Microservice(s) Locally</h3>
+<pre><code class="lang-bash"><code class="source-code prettyprint">deepify install github://MitocGroup/deep-microservices-helloworld ~/deep-microservices-helloworld</code>
 </code></pre>
 <blockquote>
-<p>This command is equivalent to the generic command used globally:
-<code>deepify install github://MitocGroup/deep-microservices-helloworld ~/deep-hello-world</code></p>
+<p>Path parameter in all <code>deepify</code> commands is optional and if not specified, assumes current
+working directory. Therefore you can skip <code>~/deep-microservices-helloworld</code> by executing
+<code>mkdir ~/deep-microservices-helloworld &amp;&amp; cd ~/deep-microservices-helloworld</code> before <code>deepify install</code>.</p>
 </blockquote>
-<p>Next, run locally the helloworld project:</p>
-<pre><code class="lang-bash"><code class="source-code prettyprint">deepify server ~/deep-hello-world -o</code>
+<h3 id="step-3-run-microservice-s-in-development">Step 3. Run Microservice(s) in Development</h3>
+<pre><code class="lang-bash"><code class="source-code prettyprint">deepify server ~/deep-microservices-helloworld -o</code>
 </code></pre>
 <blockquote>
 <p>When this step is finished, you can open in your browser the link <em><a href="http://localhost:8000">http://localhost:8000</a></em>
-and enjoy the helloworld project running locally.</p>
+and enjoy the deep-microservices-helloworld running locally.</p>
 </blockquote>
-<p>Finally, deploy the helloworld to cloud provider:</p>
-<pre><code class="lang-bash"><code class="source-code prettyprint">deepify deploy ~/deep-hello-world</code>
+<h3 id="step-4-deploy-microservice-s-to-production">Step 4. Deploy Microservice(s) to Production</h3>
+<pre><code class="lang-bash"><code class="source-code prettyprint">deepify deploy ~/deep-microservices-helloworld</code>
 </code></pre>
 <blockquote>
 <p>Amazon CloudFront distribution takes up to 20 minutes to provision, therefore don&#x2019;t worry
 if it returns an HTTP error in the first couple of minutes.</p>
 </blockquote>
-<h2 id="what-is-deep-framework-">What is DEEP Framework?</h2>
-<p>DEEP Framework is a nodejs package that is published on npmjs: <a href="https://www.npmjs.com/package/deep-framework">https://www.npmjs.com/package/deep-framework</a>.</p>
+<h3 id="step-5-remove-microservice-s-from-production">Step 5. Remove Microservice(s) from Production</h3>
+<pre><code class="lang-bash"><code class="source-code prettyprint">deepify undeploy ~/deep-microservices-helloworld</code>
+</code></pre>
 <blockquote>
-<p>If you are new to node and npm, check out the tutorial <a href="http://howtonode.org/how-to-install-nodejs">how to install nodejs</a>.</p>
+<p>Amazon CloudFront distribution takes up to 20 minutes to unprovision. That&apos;s why <code>deepify</code>
+command checks every 30 seconds if it&apos;s disabled and when successful, removes it from your account.</p>
 </blockquote>
-<p>In fact, this framework is a collection of nodejs packages, also identifiable as abstracted libraries:</p>
-<table>
-<thead>
-<tr>
-<th><a href="https://www.npmjs.com/package/deep-framework">DEEP Framework</a></th>
-<th><a href="http://docs.deep.mg">API Docs</a></th>
-<th>Abstracted Web Service(s)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-asset">deep-asset</a></td>
-<td><a href="http://docs.deep.mg/deep-asset">Assets Management Library</a></td>
-<td>Amazon S3</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-cache">deep-cache</a></td>
-<td><a href="http://docs.deep.mg/deep-cache">Cache Management Library</a></td>
-<td>Amazon ElastiCache</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-core">deep-core</a></td>
-<td><a href="http://docs.deep.mg/deep-core">Core Management Library</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-db">deep-db</a></td>
-<td><a href="http://docs.deep.mg/deep-db">Database Management Library</a></td>
-<td>Amazon DynamoDB, Amazon SQS</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-di">deep-di</a></td>
-<td><a href="http://docs.deep.mg/deep-di">Dependency Injection Management Library</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-event">deep-event</a></td>
-<td><a href="http://docs.deep.mg/deep-event">Events Management Library</a></td>
-<td>Amazon Kinesis</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-fs">deep-fs</a></td>
-<td><a href="http://docs.deep.mg/deep-fs">File System Management Library</a></td>
-<td>Amazon S3</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-kernel">deep-kernel</a></td>
-<td><a href="http://docs.deep.mg/deep-kernel">Kernel Management Library</a></td>
-<td>-</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-log">deep-log</a></td>
-<td><a href="http://docs.deep.mg/deep-log">Logs Management Library</a></td>
-<td>Amazon CloudWatch Logs</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-notification">deep-notification</a></td>
-<td><a href="http://docs.deep.mg/deep-notification">Notifications Management Library</a></td>
-<td>Amazon SNS</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-resource">deep-resource</a></td>
-<td><a href="http://docs.deep.mg/deep-resource">Resouces Management Library</a></td>
-<td>AWS Lambda, Amazon API Gateway</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-security">deep-security</a></td>
-<td><a href="http://docs.deep.mg/deep-security">Security Management Library</a></td>
-<td>AWS IAM, Amazon Cognito</td>
-</tr>
-<tr>
-<td><a href="https://www.npmjs.com/package/deep-validation">deep-validation</a></td>
-<td><a href="http://docs.deep.mg/deep-validation">Validation Management Library</a></td>
-<td>-</td>
-</tr>
-</tbody>
-</table>
-<h2 id="who-is-using-deep-framework-">Who is using DEEP Framework?</h2>
-<p>There are couple examples / web applications that are built on top of DEEP Framework:</p>
-<h3 id="deep-hello-world">DEEP Hello World</h3>
-<p><a href="https://github.com/MitocGroup/deep-microservices-helloworld">DEEP Hello World</a> is a web app
-that show cases a full stack example of using DEEP Microservices in the context of Platform-as-a-Service.
-Developers can either fork this repository or <code>npm install deepify -g</code> and run in the command line
-<code>deepify helloworld ~/deep-hello-world</code>.</p>
-<h3 id="deep-todo-app">DEEP Todo App</h3>
-<p><a href="https://github.com/MitocGroup/deep-microservices-todo-app">DEEP Todo App</a> is a web app inspired from 
-<a href="https://github.com/tastejs/todomvc/tree/master/examples/angularjs">AngularJS TodoMVC Example</a>.
-It reuses AngularJS module and integrates using DEEP Framework to streamline development and deployment
-using cloud-based web services.</p>
-<h3 id="deep-marketplace">DEEP Marketplace</h3>
-<p><a href="https://www.deep.mg">DEEP Marketplace</a> is Software-as-a-Service for enterprise software, built on top of DEEP,
-that empowers customers to choose functionality from listed microservices and deploy them together as an web app
-into their own AWS accounts with just few clicks; as well as empowers developers to create and publish their 
-microservices and monetize them in similar approach to Apple&apos;s App Store.</p>
 <h2 id="developer-resources">Developer Resources</h2>
-<p>Building an application with DEEP Framework?</p>
+<p>Having questions related to deep-framework?</p>
 <ul>
 <li>Ask questions: <a href="https://stackoverflow.com/questions/tagged/deep-framework">https://stackoverflow.com/questions/tagged/deep-framework</a></li>
 <li>Chat with us: <a href="https://gitter.im/MitocGroup/deep-framework">https://gitter.im/MitocGroup/deep-framework</a></li>
-<li>Send messages: feedback@deep.mg</li>
+<li>Send an email: feedback@deep.mg</li>
 </ul>
-<p>Interested in contributing to DEEP Framework?</p>
+<p>Interested in contributing to deep-framework?</p>
 <ul>
 <li>Contributing: <a href="https://github.com/MitocGroup/deep-framework/blob/master/CONTRIBUTING.md">https://github.com/MitocGroup/deep-framework/blob/master/CONTRIBUTING.md</a></li>
 <li>Issue tracker: <a href="https://github.com/MitocGroup/deep-framework/issues">https://github.com/MitocGroup/deep-framework/issues</a></li>
+<li>Releases: <a href="https://github.com/MitocGroup/deep-framework/releases">https://github.com/MitocGroup/deep-framework/releases</a></li>
 <li>Roadmap: <a href="https://github.com/MitocGroup/deep-framework/blob/master/ROADMAP.md">https://github.com/MitocGroup/deep-framework/blob/master/ROADMAP.md</a></li>
-<li>Changelog: <a href="https://github.com/MitocGroup/deep-framework/blob/master/CHANGELOG.md">https://github.com/MitocGroup/deep-framework/blob/master/CHANGELOG.md</a></li>
+</ul>
+<p>Looking for web applications that use (or are similar to) deep-framework?</p>
+<ul>
+<li>Hello World: <a href="https://hello.deep.mg">https://hello.deep.mg</a> | <a href="https://github.com/MitocGroup/deep-microservices-helloworld">https://github.com/MitocGroup/deep-microservices-helloworld</a></li>
+<li>Todo App: <a href="https://todo.deep.mg">https://todo.deep.mg</a> | <a href="https://github.com/MitocGroup/deep-microservices-todo-app">https://github.com/MitocGroup/deep-microservices-todo-app</a></li>
+<li>Enterprise Software Marketplace: <a href="https://www.deep.mg">https://www.deep.mg</a></li>
 </ul>
 <h2 id="sponsors">Sponsors</h2>
 <p>This repository is being sponsored by:</p>
@@ -239,7 +165,7 @@ microservices and monetize them in similar approach to Apple&apos;s App Store.</
 <li><a href="https://www.mitocgroup.com">Mitoc Group</a></li>
 <li><a href="https://www.deep.mg">DEEP Marketplace</a></li>
 </ul>
-<p>The code can be used under the MIT license:</p>
+<p>This code can be used under MIT license:</p>
 <blockquote>
 <p>See <a href="https://github.com/MitocGroup/deep-framework/blob/master/LICENSE">LICENSE</a> for more details.</p>
 </blockquote>
@@ -247,7 +173,7 @@ microservices and monetize them in similar approach to Apple&apos;s App Store.</
 </div>
 
 <footer class="footer">
-  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.4.3)</span></a>
+  Generated by <a href="https://esdoc.org">ESDoc<span data-ice="esdocVersion">(0.3.1)</span></a>
 </footer>
 
 <script src="script/search_index.js"></script>

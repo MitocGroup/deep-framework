@@ -138,6 +138,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-core/lib/aws/lambda/resolver.js~resolver",
+    "class/lib/AWS/Lambda/Resolver.js~Resolver.html",
+    "<span>Resolver</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/Lambda/Resolver.js</span>",
+    "class"
+  ],
+  [
     "deep-core/lib/aws/iam/resource.js~resource",
     "class/lib/AWS/IAM/Resource.js~Resource.html",
     "<span>Resource</span> <span class=\"search-result-import-path\">deep-core/lib/AWS/IAM/Resource.js</span>",
@@ -462,12 +468,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -751,13 +751,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#descriptor",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-descriptor",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-descriptor",
     "lib/AWS/IAM/Resource.js~Resource#descriptor",
     "member"
   ],
@@ -769,13 +769,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
   [
     "lib/aws/iam/resource.js~resource#region",
-    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-get-region",
+    "class/lib/AWS/IAM/Resource.js~Resource.html#instance-set-region",
     "lib/AWS/IAM/Resource.js~Resource#region",
     "member"
   ],
@@ -829,13 +829,13 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
   [
     "lib/aws/iam/statement.js~statement#effect",
-    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-set-effect",
+    "class/lib/AWS/IAM/Statement.js~Statement.html#instance-get-effect",
     "lib/AWS/IAM/Statement.js~Statement#effect",
     "member"
   ],
@@ -916,6 +916,12 @@ window.esdocSearchIndex = [
     "class/lib/AWS/Lambda/Context.js~Context.html#instance-get-options",
     "lib/AWS/Lambda/Context.js~Context#options",
     "member"
+  ],
+  [
+    "lib/aws/lambda/context.js~context#waitforemptyeventloop",
+    "class/lib/AWS/Lambda/Context.js~Context.html#instance-method-waitForEmptyEventLoop",
+    "lib/AWS/Lambda/Context.js~Context#waitForEmptyEventLoop",
+    "method"
   ],
   [
     "lib/aws/lambda/errorresponse.js",
@@ -1011,6 +1017,30 @@ window.esdocSearchIndex = [
     "lib/aws/lambda/request.js~request#getparam",
     "class/lib/AWS/Lambda/Request.js~Request.html#instance-method-getParam",
     "lib/AWS/Lambda/Request.js~Request#getParam",
+    "method"
+  ],
+  [
+    "lib/aws/lambda/resolver.js",
+    "file/lib/AWS/Lambda/Resolver.js.html",
+    "lib/AWS/Lambda/Resolver.js",
+    "file"
+  ],
+  [
+    "lib/aws/lambda/resolver.js~resolver#constructor",
+    "class/lib/AWS/Lambda/Resolver.js~Resolver.html#instance-constructor-constructor",
+    "lib/AWS/Lambda/Resolver.js~Resolver#constructor",
+    "method"
+  ],
+  [
+    "lib/aws/lambda/resolver.js~resolver#fail",
+    "class/lib/AWS/Lambda/Resolver.js~Resolver.html#instance-method-fail",
+    "lib/AWS/Lambda/Resolver.js~Resolver#fail",
+    "method"
+  ],
+  [
+    "lib/aws/lambda/resolver.js~resolver#succeed",
+    "class/lib/AWS/Lambda/Resolver.js~Resolver.html#instance-method-succeed",
+    "lib/AWS/Lambda/Resolver.js~Resolver#succeed",
     "method"
   ],
   [
@@ -1146,6 +1176,12 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
+    "lib/aws/lambda/runtime.js~runtime#resolver",
+    "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-get-resolver",
+    "lib/AWS/Lambda/Runtime.js~Runtime#resolver",
+    "member"
+  ],
+  [
     "lib/aws/lambda/runtime.js~runtime#run",
     "class/lib/AWS/Lambda/Runtime.js~Runtime.html#instance-method-run",
     "lib/AWS/Lambda/Runtime.js~Runtime#run",
@@ -1263,6 +1299,12 @@ window.esdocSearchIndex = [
     "lib/aws/region.js~region.getappropriateawsregion",
     "class/lib/AWS/Region.js~Region.html#static-method-getAppropriateAwsRegion",
     "lib/AWS/Region.js~Region.getAppropriateAwsRegion",
+    "method"
+  ],
+  [
+    "lib/aws/region.js~region.getregionprefix",
+    "class/lib/AWS/Region.js~Region.html#static-method-getRegionPrefix",
+    "lib/AWS/Region.js~Region.getRegionPrefix",
     "method"
   ],
   [

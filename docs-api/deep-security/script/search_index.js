@@ -66,6 +66,12 @@ window.esdocSearchIndex = [
     "class"
   ],
   [
+    "deep-security/lib/localidentityprovider.js~localidentityprovider",
+    "class/lib/LocalIdentityProvider.js~LocalIdentityProvider.html",
+    "<span>LocalIdentityProvider</span> <span class=\"search-result-import-path\">deep-security/lib/LocalIdentityProvider.js</span>",
+    "class"
+  ],
+  [
     "deep-security/lib/localtoken.js~localtoken",
     "class/lib/LocalToken.js~LocalToken.html",
     "<span>LocalToken</span> <span class=\"search-result-import-path\">deep-security/lib/LocalToken.js</span>",
@@ -390,12 +396,6 @@ window.esdocSearchIndex = [
     "external"
   ],
   [
-    "builtinexternal/webapiexternal.js~audiocontext",
-    "external/index.html",
-    "BuiltinExternal/WebAPIExternal.js~AudioContext",
-    "external"
-  ],
-  [
     "builtinexternal/webapiexternal.js~canvasrenderingcontext2d",
     "external/index.html",
     "BuiltinExternal/WebAPIExternal.js~CanvasRenderingContext2D",
@@ -660,6 +660,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "lib/identityprovider.js~identityprovider#getproviderdomain",
+    "class/lib/IdentityProvider.js~IdentityProvider.html#instance-method-getProviderDomain",
+    "lib/IdentityProvider.js~IdentityProvider#getProviderDomain",
+    "method"
+  ],
+  [
     "lib/identityprovider.js~identityprovider#istokenvalid",
     "class/lib/IdentityProvider.js~IdentityProvider.html#instance-method-isTokenValid",
     "lib/IdentityProvider.js~IdentityProvider#isTokenValid",
@@ -696,28 +702,22 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "lib/identityprovider.js~identityprovider.aliases",
-    "class/lib/IdentityProvider.js~IdentityProvider.html#static-method-ALIASES",
-    "lib/IdentityProvider.js~IdentityProvider.ALIASES",
+    "lib/localidentityprovider.js",
+    "file/lib/LocalIdentityProvider.js.html",
+    "lib/LocalIdentityProvider.js",
+    "file"
+  ],
+  [
+    "lib/localidentityprovider.js~localidentityprovider#constructor",
+    "class/lib/LocalIdentityProvider.js~LocalIdentityProvider.html#instance-constructor-constructor",
+    "lib/LocalIdentityProvider.js~LocalIdentityProvider#constructor",
     "method"
   ],
   [
-    "lib/identityprovider.js~identityprovider.amazon",
-    "class/lib/IdentityProvider.js~IdentityProvider.html#static-get-AMAZON",
-    "lib/IdentityProvider.js~IdentityProvider.AMAZON",
-    "member"
-  ],
-  [
-    "lib/identityprovider.js~identityprovider.facebook",
-    "class/lib/IdentityProvider.js~IdentityProvider.html#static-get-FACEBOOK",
-    "lib/IdentityProvider.js~IdentityProvider.FACEBOOK",
-    "member"
-  ],
-  [
-    "lib/identityprovider.js~identityprovider.google",
-    "class/lib/IdentityProvider.js~IdentityProvider.html#static-get-GOOGLE",
-    "lib/IdentityProvider.js~IdentityProvider.GOOGLE",
-    "member"
+    "lib/localidentityprovider.js~localidentityprovider#getproviderdomain",
+    "class/lib/LocalIdentityProvider.js~LocalIdentityProvider.html#instance-method-getProviderDomain",
+    "lib/LocalIdentityProvider.js~LocalIdentityProvider#getProviderDomain",
+    "method"
   ],
   [
     "lib/localtoken.js",
@@ -736,6 +736,18 @@ window.esdocSearchIndex = [
     "class/lib/LocalToken.js~LocalToken.html#instance-method-destroy",
     "lib/LocalToken.js~LocalToken#destroy",
     "method"
+  ],
+  [
+    "lib/localtoken.js~localtoken#getuser",
+    "class/lib/LocalToken.js~LocalToken.html#instance-method-getUser",
+    "lib/LocalToken.js~LocalToken#getUser",
+    "method"
+  ],
+  [
+    "lib/localtoken.js~localtoken#isanonymous",
+    "class/lib/LocalToken.js~LocalToken.html#instance-get-isAnonymous",
+    "lib/LocalToken.js~LocalToken#isAnonymous",
+    "member"
   ],
   [
     "lib/localtoken.js~localtoken#loadcredentials",
@@ -849,6 +861,12 @@ window.esdocSearchIndex = [
     "lib/token.js~token#identityid",
     "class/lib/Token.js~Token.html#instance-get-identityId",
     "lib/Token.js~Token#identityId",
+    "member"
+  ],
+  [
+    "lib/token.js~token#identitypoolid",
+    "class/lib/Token.js~Token.html#instance-get-identityPoolId",
+    "lib/Token.js~Token#identityPoolId",
     "member"
   ],
   [

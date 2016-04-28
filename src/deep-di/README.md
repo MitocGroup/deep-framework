@@ -22,12 +22,24 @@ Using DEEP Framework, developers get out-of-the-box:
 Help needed to add support for [Google Cloud Platform](https://cloud.google.com/),
 [Microsoft Azure](https://azure.microsoft.com), and others.
 
-Documentation is available at [docs.deep.mg](http://docs.deep.mg).
+Documentation is available as [Developer Guide](https://github.com/MitocGroup/deep-framework/blob/master/docs/framework.md)
+and [API Guide](http://docs.deep.mg).
+
+Learn hands-on how to build and deploy cloud-native web applications from
+[this blog post](https://blog.mitocgroup.com/building-enterprise-level-web-applications-on-aws-lambda-with-the-deep-framework-dd81719b0dff)
+and [this tutorial video](https://www.youtube.com/playlist?list=PLPGfD-tGOl7uNDXo_eMN1odMZflYVu2n9).
 
 
 ## Getting Started
 
-Install DEEP CLI, also known as deepify:
+### Step 1. Pre-requisites
+
+- [x] [Create an Amazon Web Services account](https://www.youtube.com/watch?v=WviHsoz8yHk)
+- [x] [Configure AWS Command Line Interface](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html)
+- [x] [Get Started - Installing Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+- [x] [JDK 8 and JRE 8 Installation Start Here](https://docs.oracle.com/javase/8/docs/technotes/guides/install/install_overview.html)
+- [x] [Install nvm](https://github.com/creationix/nvm#install-script) and [use node v4.3+](https://github.com/creationix/nvm#usage)
+- [ ] Install DEEP CLI, also known as `deepify`:
 
 ```bash
 npm install deepify -g
@@ -38,96 +50,64 @@ npm install deepify -g
 before running `npm install deepify -g` and make sure all `npm` and `deepify` commands are executed
 inside Git Bash.
 
-Using deepify, dump locally the helloworld example:
+### Step 2. Install Microservice(s) Locally
 
 ```bash
-deepify helloworld ~/deep-hello-world
+deepify install github://MitocGroup/deep-microservices-helloworld ~/deep-microservices-helloworld
 ```
 
-> This command is equivalent to the generic command used globally:
-`deepify install github://MitocGroup/deep-microservices-helloworld ~/deep-hello-world`
+> Path parameter in all `deepify` commands is optional and if not specified, assumes current
+working directory. Therefore you can skip `~/deep-microservices-helloworld` by executing
+`mkdir ~/deep-microservices-helloworld && cd ~/deep-microservices-helloworld` before `deepify install`.
 
-Next, run locally the helloworld project:
+### Step 3. Run Microservice(s) in Development
 
 ```bash
-deepify server ~/deep-hello-world -o
+deepify server ~/deep-microservices-helloworld -o
 ```
 
 > When this step is finished, you can open in your browser the link *http://localhost:8000*
-and enjoy the helloworld project running locally.
+and enjoy the deep-microservices-helloworld running locally.
 
-Finally, deploy the helloworld to cloud provider:
+### Step 4. Deploy Microservice(s) to Production
 
 ```bash
-deepify deploy ~/deep-hello-world
+deepify deploy ~/deep-microservices-helloworld
 ```
 
 > Amazon CloudFront distribution takes up to 20 minutes to provision, therefore don’t worry
 if it returns an HTTP error in the first couple of minutes.
 
+### Step 5. Remove Microservice(s) from Production
 
-## What is DEEP Framework?
+```bash
+deepify undeploy ~/deep-microservices-helloworld
+```
 
-DEEP Framework is a nodejs package that is published on npmjs: https://www.npmjs.com/package/deep-framework.
-
-> If you are new to node and npm, check out the tutorial [how to install nodejs](http://howtonode.org/how-to-install-nodejs).
-
-In fact, this framework is a collection of nodejs packages, also identifiable as abstracted libraries:
-
-[DEEP Framework](https://www.npmjs.com/package/deep-framework) | [API Docs](http://docs.deep.mg) | Abstracted Web Service(s)
----------------------------------------------------------------|---------------------------------|--------------------------
-[deep-asset](https://www.npmjs.com/package/deep-asset) | [Assets Management Library](http://docs.deep.mg/deep-asset) | Amazon S3
-[deep-cache](https://www.npmjs.com/package/deep-cache) | [Cache Management Library](http://docs.deep.mg/deep-cache) | Amazon ElastiCache
-[deep-core](https://www.npmjs.com/package/deep-core) | [Core Management Library](http://docs.deep.mg/deep-core) | -
-[deep-db](https://www.npmjs.com/package/deep-db) | [Database Management Library](http://docs.deep.mg/deep-db) | Amazon DynamoDB, Amazon SQS
-[deep-di](https://www.npmjs.com/package/deep-di) | [Dependency Injection Management Library](http://docs.deep.mg/deep-di) | -
-[deep-event](https://www.npmjs.com/package/deep-event) | [Events Management Library](http://docs.deep.mg/deep-event) | Amazon Kinesis
-[deep-fs](https://www.npmjs.com/package/deep-fs) | [File System Management Library](http://docs.deep.mg/deep-fs) | Amazon S3
-[deep-kernel](https://www.npmjs.com/package/deep-kernel) | [Kernel Management Library](http://docs.deep.mg/deep-kernel) | -
-[deep-log](https://www.npmjs.com/package/deep-log) | [Logs Management Library](http://docs.deep.mg/deep-log) | Amazon CloudWatch Logs
-[deep-notification](https://www.npmjs.com/package/deep-notification) | [Notifications Management Library](http://docs.deep.mg/deep-notification) | Amazon SNS
-[deep-resource](https://www.npmjs.com/package/deep-resource) | [Resouces Management Library](http://docs.deep.mg/deep-resource) | AWS Lambda, Amazon API Gateway
-[deep-security](https://www.npmjs.com/package/deep-security) | [Security Management Library](http://docs.deep.mg/deep-security) | AWS IAM, Amazon Cognito
-[deep-validation](https://www.npmjs.com/package/deep-validation) | [Validation Management Library](http://docs.deep.mg/deep-validation) | -
-
-
-## Who is using DEEP Framework?
-
-There are couple examples / web applications that are built on top of DEEP Framework:
-
-### DEEP Hello World
-[DEEP Hello World](https://github.com/MitocGroup/deep-microservices-helloworld) is a web app
-that show cases a full stack example of using DEEP Microservices in the context of Platform-as-a-Service.
-Developers can either fork this repository or `npm install deepify -g` and run in the command line
-`deepify helloworld ~/deep-hello-world`.
-
-### DEEP Todo App
-[DEEP Todo App](https://github.com/MitocGroup/deep-microservices-todo-app) is a web app inspired from 
-[AngularJS TodoMVC Example](https://github.com/tastejs/todomvc/tree/master/examples/angularjs).
-It reuses AngularJS module and integrates using DEEP Framework to streamline development and deployment
-using cloud-based web services.
-
-### DEEP Marketplace
-[DEEP Marketplace](https://www.deep.mg) is Software-as-a-Service for enterprise software, built on top of DEEP,
-that empowers customers to choose functionality from listed microservices and deploy them together as an web app
-into their own AWS accounts with just few clicks; as well as empowers developers to create and publish their 
-microservices and monetize them in similar approach to Apple's App Store.
+> Amazon CloudFront distribution takes up to 20 minutes to unprovision. That's why `deepify`
+command checks every 30 seconds if it's disabled and when successful, removes it from your account.
 
 
 ## Developer Resources
 
-Building an application with DEEP Framework?
+Having questions related to deep-framework?
 
 - Ask questions: https://stackoverflow.com/questions/tagged/deep-framework
 - Chat with us: https://gitter.im/MitocGroup/deep-framework
-- Send messages: feedback@deep.mg
+- Send an email: feedback@deep.mg
 
-Interested in contributing to DEEP Framework?
+Interested in contributing to deep-framework?
 
 - Contributing: https://github.com/MitocGroup/deep-framework/blob/master/CONTRIBUTING.md
 - Issue tracker: https://github.com/MitocGroup/deep-framework/issues
+- Releases: https://github.com/MitocGroup/deep-framework/releases
 - Roadmap: https://github.com/MitocGroup/deep-framework/blob/master/ROADMAP.md
-- Changelog: https://github.com/MitocGroup/deep-framework/blob/master/CHANGELOG.md
+
+Looking for web applications that use (or are similar to) deep-framework?
+
+- Hello World: https://hello.deep.mg | https://github.com/MitocGroup/deep-microservices-helloworld
+- Todo App: https://todo.deep.mg | https://github.com/MitocGroup/deep-microservices-todo-app
+- Enterprise Software Marketplace: https://www.deep.mg
 
 
 ## Sponsors
@@ -136,5 +116,5 @@ This repository is being sponsored by:
 - [Mitoc Group](https://www.mitocgroup.com)
 - [DEEP Marketplace](https://www.deep.mg)
 
-The code can be used under the MIT license:
+This code can be used under MIT license:
 > See [LICENSE](https://github.com/MitocGroup/deep-framework/blob/master/LICENSE) for more details.

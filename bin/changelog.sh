@@ -25,7 +25,7 @@ fi
 
 NPM_EXISTS=$(npm info ${REPOSITORY} &>/dev/null; echo $?)
 
-if [ "$NPM_EXISTS" == 0 ]; then
+if [ "$NPM_EXISTS" == 0 ] && [ -z ${LAST_MODIFIED} ]; then
     LAST_MODIFIED=$(npm info ${REPOSITORY} time.modified)
 fi
 

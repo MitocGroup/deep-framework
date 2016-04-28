@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {Exception} from '../../Exception/Exception';\n\nexport class AbstractDriver extends Core.OOP.Interface {\n  constructor() {\n    super([\n      '_load'\n    ]);\n\n    this._onLoaded = () => {};\n    this._onFail = () => {};\n  }\n\n  /**\n   * @param {AbstractDriver|*} mainDriver\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  inherit(mainDriver) {\n    this.onLoadedCb(mainDriver.onLoaded);\n    this.onFailCb(mainDriver.onFail);\n\n    return this;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   *\n   * @todo: Add Sandbox functionality?\n   */\n  load(...args) {\n    this._load(...args);\n\n    return this;\n  }\n\n  /**\n   * @param {String} rawConfig\n   * @returns {AbstractDriver}\n   */\n  loadedJson(rawConfig) {\n    let config = null;\n\n    try {\n      config = JSON.parse(rawConfig);\n    } catch (error) {\n      return this.fail(`Failed to parse config from ${this._endpoint}: ${error}`);\n    }\n\n    return this.loaded(config);\n  }\n\n  /**\n   * @param {*} config\n   * @returns {AbstractDriver}\n   */\n  loaded(config) {\n    this._onLoaded(config);\n\n    return this;\n  }\n\n  /**\n   * @param {Error|*} error\n   * @returns {AbstractDriver}\n   */\n  fail(error) {\n    this._onFail(typeof error === 'string' ? new Exception(error) : error);\n\n    return this;\n  }\n\n  /**\n   * @returns {Function|*}\n   */\n  get onLoaded() {\n    return this._onLoaded;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  onLoadedCb(cb) {\n    this._onLoaded = cb;\n\n    return this;\n  }\n\n  /**\n   * @returns {Function|*}\n   */\n  get onFail() {\n    return this._onFail;\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {AbstractDriver}\n   */\n  onFailCb(cb) {\n    this._onFail = cb;\n\n    return this;\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -33,7 +31,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -48,7 +45,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -66,7 +62,6 @@
     }
   },
   {
-    "__docId__": 4,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -84,7 +79,6 @@
     }
   },
   {
-    "__docId__": 5,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -129,7 +123,6 @@
     "generator": false
   },
   {
-    "__docId__": 6,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -173,7 +166,6 @@
     "generator": false
   },
   {
-    "__docId__": 7,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -212,7 +204,6 @@
     "generator": false
   },
   {
-    "__docId__": 8,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -251,7 +242,6 @@
     "generator": false
   },
   {
-    "__docId__": 9,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -291,7 +281,6 @@
     "generator": false
   },
   {
-    "__docId__": 10,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -324,7 +313,6 @@
     "generator": false
   },
   {
-    "__docId__": 11,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -363,7 +351,6 @@
     "generator": false
   },
   {
-    "__docId__": 12,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -381,7 +368,6 @@
     }
   },
   {
-    "__docId__": 13,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -414,7 +400,6 @@
     "generator": false
   },
   {
-    "__docId__": 14,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -453,7 +438,6 @@
     "generator": false
   },
   {
-    "__docId__": 15,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -471,7 +455,6 @@
     }
   },
   {
-    "__docId__": 16,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -484,7 +467,6 @@
     "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {HttpDriver} from './HttpDriver';\nimport {FsDriver} from './FsDriver';\n\nexport class AsyncConfig extends AbstractDriver {\n  /**\n   * @param {Kernel|*} kernel\n   * @param {String} configFile\n   */\n  constructor(kernel, configFile = AsyncConfig.DEFAULT_CONFIG_FILE) {\n    super();\n\n    this._kernel = kernel;\n    this._configFile = configFile;\n  }\n\n  /**\n   * @returns {Kernel|*}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @returns {String|*}\n   */\n  get configFile() {\n    return this._configFile;\n  }\n\n  /**\n   * @param {String} configFile\n   * @private\n   */\n  _load(configFile = null) {\n    this._configFile = configFile || this._configFile;\n\n    this._kernel.isBackend ? this._loadFromFS() : this._loadFromEndpoint();\n  }\n\n  /**\n   * @private\n   */\n  _loadFromFS() {\n    let sharedFs = this._kernel.get('fs')\n      .shared(this._kernel.rootMicroservice.identifier);\n\n    new FsDriver(this._configFile)\n      .setFs(sharedFs)\n      .inherit(this)\n      .load();\n  }\n\n  /**\n   * @private\n   */\n  _loadFromEndpoint() {\n    new HttpDriver(this._configFile)\n      .inherit(this)\n      .load();\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_CONFIG_FILE() {\n    return '_async_config.json';\n  }\n}\n"
   },
   {
-    "__docId__": 17,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -504,7 +486,6 @@
     ]
   },
   {
-    "__docId__": 18,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -540,7 +521,6 @@
     "generator": false
   },
   {
-    "__docId__": 19,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -558,7 +538,6 @@
     }
   },
   {
-    "__docId__": 20,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -576,7 +555,6 @@
     }
   },
   {
-    "__docId__": 21,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -609,7 +587,6 @@
     "generator": false
   },
   {
-    "__docId__": 22,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -642,7 +619,6 @@
     "generator": false
   },
   {
-    "__docId__": 23,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -667,7 +643,6 @@
     "generator": false
   },
   {
-    "__docId__": 24,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -685,7 +660,6 @@
     }
   },
   {
-    "__docId__": 25,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -699,7 +673,6 @@
     "generator": false
   },
   {
-    "__docId__": 26,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -713,7 +686,6 @@
     "generator": false
   },
   {
-    "__docId__": 27,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -745,7 +717,6 @@
     "generator": false
   },
   {
-    "__docId__": 28,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -758,7 +729,6 @@
     "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\nexport class ComplexDriver extends AbstractDriver {\n  /**\n   * @param {AbstractDriver|*} drivers\n   */\n  constructor(...drivers) {\n    super();\n\n    this._drivers = drivers;\n  }\n\n  /**\n   * @returns {AbstractDriver[]|*[]|*}\n   */\n  get drivers() {\n    return this._drivers;\n  }\n\n  /**\n   * @param {AbstractDriver|*} driver\n   * @returns {ComplexDriver}\n   */\n  add(driver) {\n    this._drivers.push(driver);\n\n    return this;\n  }\n\n  /**\n   * @private\n   */\n  _load(...drivers) {\n    this._drivers = this._drivers.concat(drivers);\n\n    this._loadDriversQueue([].concat(this._drivers));\n  }\n\n  /**\n   * @param {AbstractDriver[]|*[]} drivers\n   * @param {Error[]|String[]|*[]} errors\n   * @private\n   */\n  _loadDriversQueue(drivers, errors = []) {\n    if (drivers.length <= 0) {\n      this.fail(`All drivers failed to load: ${errors.join('; ')}`);\n\n      return;\n    }\n\n    let driver = drivers.shift();\n\n    driver.onLoadedCb((config) => {\n      this.loaded(config);\n    });\n\n    driver.onFailCb((error) => {\n      errors.push(error.toString());\n\n      this._loadDriversQueue(drivers, errors);\n    });\n\n    driver.load();\n  }\n}\n"
   },
   {
-    "__docId__": 29,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -778,7 +748,6 @@
     ]
   },
   {
-    "__docId__": 30,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -804,7 +773,6 @@
     "generator": false
   },
   {
-    "__docId__": 31,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -822,7 +790,6 @@
     }
   },
   {
-    "__docId__": 32,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -856,7 +823,6 @@
     "generator": false
   },
   {
-    "__docId__": 33,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -896,7 +862,6 @@
     "generator": false
   },
   {
-    "__docId__": 34,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -918,7 +883,6 @@
     "generator": false
   },
   {
-    "__docId__": 35,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -936,7 +900,6 @@
     }
   },
   {
-    "__docId__": 36,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -974,7 +937,6 @@
     "generator": false
   },
   {
-    "__docId__": 37,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -987,7 +949,6 @@
     "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport fs from 'fs';\n\nexport class FsDriver extends AbstractDriver {\n  /**\n   * @param {String} file\n   */\n  constructor(file = null) {\n    super();\n\n    this._fs = fs;\n    this._file = file;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get file() {\n    return this._file;\n  }\n\n  /**\n   * @returns {fs|s3fs*}\n   */\n  get fs() {\n    return this._fs;\n  }\n\n  /**\n   * @param {fs|s3fs|*} fs\n   * @returns {FsDriver}\n   */\n  setFs(fs) {\n    this._fs = fs;\n\n    return this;\n  }\n\n  /**\n   * @param {String} file\n   * @returns {FsDriver}\n   */\n  setFile(file) {\n    this._file = file;\n\n    return this;\n  }\n\n  /**\n   * @param {String} file\n   * @private\n   */\n  _load(file = null) {\n    this._file = file || this._file;\n\n    this._fs.readFile(this._file, (error, data) => {\n      let configStr = data ? data.toString() : '{}';\n\n      if (error && error.name !== 'NoSuchKey') {\n        this.fail(`Error reading configuration file '${this._file}': ${error}`);\n\n        return;\n      }\n\n      this.loadedJson(configStr);\n    });\n  }\n}\n"
   },
   {
-    "__docId__": 38,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1007,7 +968,6 @@
     ]
   },
   {
-    "__docId__": 39,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1032,7 +992,6 @@
     "generator": false
   },
   {
-    "__docId__": 40,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1050,7 +1009,6 @@
     }
   },
   {
-    "__docId__": 41,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1068,7 +1026,6 @@
     }
   },
   {
-    "__docId__": 42,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1100,7 +1057,6 @@
     "generator": false
   },
   {
-    "__docId__": 43,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1133,7 +1089,6 @@
     "generator": false
   },
   {
-    "__docId__": 44,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1174,7 +1129,6 @@
     "generator": false
   },
   {
-    "__docId__": 45,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1192,7 +1146,6 @@
     }
   },
   {
-    "__docId__": 46,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1231,7 +1184,6 @@
     "generator": false
   },
   {
-    "__docId__": 47,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1249,7 +1201,6 @@
     }
   },
   {
-    "__docId__": 48,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1274,7 +1225,6 @@
     "generator": false
   },
   {
-    "__docId__": 49,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1292,7 +1242,6 @@
     }
   },
   {
-    "__docId__": 50,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1305,7 +1254,6 @@
     "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\nexport class HttpDriver extends AbstractDriver {\n  /**\n   * @param {String} endpoint\n   */\n  constructor(endpoint = null) {\n    super();\n\n    this._endpoint = endpoint;\n  }\n\n  /**\n   * @returns {String|*}\n   */\n  get endpoint() {\n    return this._endpoint;\n  }\n\n  /**\n   * @param {String} endpoint\n   * @returns {HttpDriver}\n   */\n  setEndpoint(endpoint) {\n    this._endpoint = endpoint;\n\n    return this;\n  }\n\n  /**\n   * @param {String} endpoint\n   * @private\n   */\n  _load(endpoint = null) {\n    this._endpoint = endpoint || this._endpoint;\n\n    let client = new XMLHttpRequest();\n\n    client.open('GET', this._endpoint);\n\n    client.onreadystatechange = () => {\n      if (client.readyState === 4) {\n        if (client.status !== 200) {\n          this.fail(`Failed to load config from ${this._endpoint} (status=${client.status})`);\n        } else {\n          this.loadedJson(client.responseText);\n        }\n      }\n    };\n\n    client.send();\n  }\n}\n"
   },
   {
-    "__docId__": 51,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1325,7 +1273,6 @@
     ]
   },
   {
-    "__docId__": 52,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1350,7 +1297,6 @@
     "generator": false
   },
   {
-    "__docId__": 53,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1368,7 +1314,6 @@
     }
   },
   {
-    "__docId__": 54,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1401,7 +1346,6 @@
     "generator": false
   },
   {
-    "__docId__": 55,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1440,7 +1384,6 @@
     "generator": false
   },
   {
-    "__docId__": 56,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1458,7 +1401,6 @@
     }
   },
   {
-    "__docId__": 57,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1483,7 +1425,6 @@
     "generator": false
   },
   {
-    "__docId__": 58,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1501,7 +1442,6 @@
     }
   },
   {
-    "__docId__": 59,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1514,7 +1454,6 @@
     "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\nimport {ComplexDriver} from './ComplexDriver';\nimport {ScopeDriver} from './ScopeDriver';\nimport {FsDriver} from './FsDriver';\nimport {HttpDriver} from './HttpDriver';\n\nexport class KernelDriver extends AbstractDriver {\n  /**\n   * @param {Kernel|*} kernel\n   * @param {String} scopeKey\n   * @param {String} configFile\n   */\n  constructor(kernel, scopeKey = KernelDriver.SCOPE_KEY, configFile = KernelDriver.DEFAULT_CONFIG_FILE) {\n    super();\n\n    this._kernel = kernel;\n    this._scopeKey = scopeKey;\n    this._configFile = configFile;\n  }\n\n  /**\n   * @returns {String|*}\n   */\n  get scopeKey() {\n    return this._scopeKey;\n  }\n\n  /**\n   * @returns {String|*}\n   */\n  get configFile() {\n    return this._configFile;\n  }\n\n  /**\n   * @returns {Kernel|*}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @param {String} scopeKey\n   * @param {String} configFile\n   * @private\n   */\n  _load(scopeKey = null, configFile = null) {\n    this._scopeKey = scopeKey || this._scopeKey;\n    this._configFile = configFile || this._configFile;\n\n    new ComplexDriver()\n      .inherit(this)\n      .add((new ScopeDriver(this._scopeKey)).setScope(this._globalScope))\n      .add(this._kernel.isBackend ? new FsDriver(this._configFile) : new HttpDriver(this._configFile))\n      .load();\n  }\n\n  /**\n   * @returns {Object}\n   * @private\n   */\n  get _globalScope() {\n    return this._kernel.isBackend ? global : window || {};\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SCOPE_KEY() {\n    return '__DEEP_CFG__';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEFAULT_CONFIG_FILE() {\n    return '_config.json';\n  }\n}\n"
   },
   {
-    "__docId__": 60,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1534,7 +1473,6 @@
     ]
   },
   {
-    "__docId__": 61,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1580,7 +1518,6 @@
     "generator": false
   },
   {
-    "__docId__": 62,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1598,7 +1535,6 @@
     }
   },
   {
-    "__docId__": 63,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1616,7 +1552,6 @@
     }
   },
   {
-    "__docId__": 64,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1634,7 +1569,6 @@
     }
   },
   {
-    "__docId__": 65,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1667,7 +1601,6 @@
     "generator": false
   },
   {
-    "__docId__": 66,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1700,7 +1633,6 @@
     "generator": false
   },
   {
-    "__docId__": 67,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1733,7 +1665,6 @@
     "generator": false
   },
   {
-    "__docId__": 68,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1768,7 +1699,6 @@
     "generator": false
   },
   {
-    "__docId__": 69,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1786,7 +1716,6 @@
     }
   },
   {
-    "__docId__": 70,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1804,7 +1733,6 @@
     }
   },
   {
-    "__docId__": 71,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1836,7 +1764,6 @@
     "generator": false
   },
   {
-    "__docId__": 72,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1868,7 +1795,6 @@
     "generator": false
   },
   {
-    "__docId__": 73,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -1900,7 +1826,6 @@
     "generator": false
   },
   {
-    "__docId__": 74,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1913,7 +1838,6 @@
     "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {AbstractDriver} from './AbstractDriver';\n\nexport class ScopeDriver extends AbstractDriver {\n  /**\n   * @param {String} key\n   */\n  constructor(key) {\n    super();\n\n    this._scope = global || {};\n    this._key = key;\n  }\n\n  /**\n   * @returns {Object|*}\n   */\n  get scope() {\n    return this._scope;\n  }\n\n  /**\n   * @param {Object} scope\n   * @returns {ScopeDriver}\n   */\n  setScope(scope) {\n    this._scope = scope;\n\n    return this;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get key() {\n    return this._key;\n  }\n\n  /**\n   * @param {String} key\n   * @returns {ScopeDriver}\n   */\n  setKey(key) {\n    this._key = key;\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @private\n   */\n  _load(key = null) {\n    this._key = key || this._key;\n\n    this._scope.hasOwnProperty(this._key) ?\n      this.loaded(this._scope[this._key]) :\n      this.fail(`Unable to load configuration from scope: No such key '${this._key}' exists`);\n  }\n}\n"
   },
   {
-    "__docId__": 75,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1933,7 +1857,6 @@
     ]
   },
   {
-    "__docId__": 76,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1958,7 +1881,6 @@
     "generator": false
   },
   {
-    "__docId__": 77,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1976,7 +1898,6 @@
     }
   },
   {
-    "__docId__": 78,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1994,7 +1915,6 @@
     }
   },
   {
-    "__docId__": 79,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2027,7 +1947,6 @@
     "generator": false
   },
   {
-    "__docId__": 80,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2066,7 +1985,6 @@
     "generator": false
   },
   {
-    "__docId__": 81,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2084,7 +2002,6 @@
     }
   },
   {
-    "__docId__": 82,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2116,7 +2033,6 @@
     "generator": false
   },
   {
-    "__docId__": 83,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2155,7 +2071,6 @@
     "generator": false
   },
   {
-    "__docId__": 84,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2173,7 +2088,6 @@
     }
   },
   {
-    "__docId__": 85,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2198,7 +2112,6 @@
     "generator": false
   },
   {
-    "__docId__": 86,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2216,7 +2129,6 @@
     }
   },
   {
-    "__docId__": 87,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2229,7 +2141,6 @@
     "content": "/**\n * Created by AlexanderC on 3/7/16.\n */\n\n'use strict';\n\nimport {KernelDriver} from './Driver/KernelDriver';\nimport {AsyncConfig} from './Driver/AsyncConfig';\n\nexport class Loader {\n  /**\n   * @param {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*} driver\n   */\n  constructor(driver = null) {\n    this._driver = driver;\n  }\n\n  /**\n   * @param {Kernel|*} kernel\n   */\n  static asyncConfigLoader(kernel) {\n    return new Loader(new AsyncConfig(kernel));\n  }\n\n  /**\n   * @param {Kernel|*} kernel\n   */\n  static kernelLoader(kernel) {\n    return new Loader(new KernelDriver(kernel));\n  }\n\n  /**\n   * @returns {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*}\n   */\n  get driver() {\n    return this._driver;\n  }\n\n  /**\n   * @param {AbstractDriver|FsDriver|HttpDriver|KernelDriver|ComplexDriver|*} driver\n   * @returns {Loader}\n   */\n  setDriver(driver) {\n    this._driver = driver;\n\n    return this;\n  }\n\n  /**\n   * @param {Function} onLoaded\n   * @param {Function} onFail\n   */\n  load(onLoaded = () => {}, onFail = () => {}) {\n    onLoaded && this._driver.onLoadedCb(onLoaded);\n    onFail && this._driver.onFailCb(onFail);\n\n    this._driver.load();\n  }\n}\n"
   },
   {
-    "__docId__": 88,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2246,7 +2157,6 @@
     "interface": false
   },
   {
-    "__docId__": 89,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2276,7 +2186,6 @@
     "generator": false
   },
   {
-    "__docId__": 90,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2294,7 +2203,6 @@
     }
   },
   {
-    "__docId__": 91,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2325,7 +2233,6 @@
     "generator": false
   },
   {
-    "__docId__": 92,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -2356,7 +2263,6 @@
     "generator": false
   },
   {
-    "__docId__": 93,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2393,7 +2299,6 @@
     "generator": false
   },
   {
-    "__docId__": 94,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2437,7 +2342,6 @@
     "generator": false
   },
   {
-    "__docId__": 95,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2455,7 +2359,6 @@
     }
   },
   {
-    "__docId__": 96,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2490,7 +2393,6 @@
     "generator": false
   },
   {
-    "__docId__": 97,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2503,7 +2405,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {Kernel} from './Kernel';\nimport {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException';\n\n/**\n * @todo - rename it to AbstractService (ContainerAware doesn't make sense anymore)\n *\n * Container aware instance\n */\nexport class ContainerAware extends MicroserviceInjectable {\n  constructor() {\n    super();\n\n    this._kernel = null;\n    this._localBackend = false;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get localBackend() {\n    return this._localBackend;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set localBackend(state) {\n    this._localBackend = state;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get name() {\n    return this.constructor.name.toLowerCase();\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get service() {\n    return this;\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    // @todo: override in child service\n    callback();\n  }\n\n  /**\n   * @param {Object|String} microservice\n   * @returns {Injectable}\n   */\n  bind(microservice) {\n\n    // @todo: find more smart way of doing this...\n    if (typeof microservice === 'string') {\n      microservice = this.kernel.microservice(microservice);\n    }\n\n    return super.bind(microservice);\n  }\n\n  /**\n   * @param {String} identifier (e.g. @microservice_identifier:resource[:action])\n   * @returns {String}\n   *\n   * @private\n   */\n  _resolveIdentifier(identifier) {\n    let regExp = /^@\\s*([^:]+)\\s*:\\s*([^\\s]+)\\s*$/;\n\n    if (typeof identifier === 'string' && regExp.test(identifier)) {\n      let parts = identifier.match(regExp);\n\n      this.bind(parts[1]); // microservice identifier\n\n      return parts[2]; // resource identifier\n    } else {\n      throw new InvalidDeepIdentifierException(identifier);\n    }\n  }\n\n  /**\n   * @returns {DI|null}\n   */\n  get container() {\n    return this._kernel ? this._kernel.container : null;\n  }\n\n  /**\n   * @param {Kernel} kernel\n   */\n  set kernel(kernel) {\n    this._kernel = kernel;\n  }\n\n  /**\n   * @returns {Kernel}\n   */\n  get kernel() {\n    return this._kernel;\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this.container.get(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 98,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2525,7 +2426,6 @@
     ]
   },
   {
-    "__docId__": 99,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2540,7 +2440,6 @@
     "generator": false
   },
   {
-    "__docId__": 100,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2558,7 +2457,6 @@
     }
   },
   {
-    "__docId__": 101,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2576,7 +2474,6 @@
     }
   },
   {
-    "__docId__": 102,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2608,7 +2505,6 @@
     "generator": false
   },
   {
-    "__docId__": 103,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2638,7 +2534,6 @@
     "generator": false
   },
   {
-    "__docId__": 104,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2656,7 +2551,6 @@
     }
   },
   {
-    "__docId__": 105,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2688,7 +2582,6 @@
     "generator": false
   },
   {
-    "__docId__": 106,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2720,7 +2613,6 @@
     "generator": false
   },
   {
-    "__docId__": 107,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2755,7 +2647,6 @@
     "generator": false
   },
   {
-    "__docId__": 108,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2795,7 +2686,6 @@
     "generator": false
   },
   {
-    "__docId__": 109,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2834,7 +2724,6 @@
     "generator": false
   },
   {
-    "__docId__": 110,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2867,7 +2756,6 @@
     "generator": false
   },
   {
-    "__docId__": 111,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -2897,7 +2785,6 @@
     "generator": false
   },
   {
-    "__docId__": 112,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2915,7 +2802,6 @@
     }
   },
   {
-    "__docId__": 113,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2947,7 +2833,6 @@
     "generator": false
   },
   {
-    "__docId__": 114,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2986,7 +2871,6 @@
     "generator": false
   },
   {
-    "__docId__": 115,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2999,7 +2883,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any kernel exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 116,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3018,7 +2901,6 @@
     ]
   },
   {
-    "__docId__": 117,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3043,7 +2925,6 @@
     "generator": false
   },
   {
-    "__docId__": 118,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3056,7 +2937,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when trying to parse an invalid deep identifier\n */\nexport class InvalidDeepIdentifierException extends Exception {\n  /**\n   * @param {String} identifier\n   */\n  constructor(identifier) {\n    super(`Invalid deep identifier \"${identifier}\". It should conform to the following format: @microservice_identifier:resource_identifier.`);\n  }\n}\n"
   },
   {
-    "__docId__": 119,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3075,7 +2955,6 @@
     ]
   },
   {
-    "__docId__": 120,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3100,7 +2979,6 @@
     "generator": false
   },
   {
-    "__docId__": 121,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3113,7 +2991,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when missing requested microservice\n */\nexport class MissingMicroserviceException extends Exception {\n  /**\n   * @param {String} microserviceIdentifier\n   */\n  constructor(microserviceIdentifier) {\n    super(`Missing microservice ${microserviceIdentifier} in Kernel container`);\n  }\n}\n"
   },
   {
-    "__docId__": 122,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3132,7 +3009,6 @@
     ]
   },
   {
-    "__docId__": 123,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3157,7 +3033,6 @@
     "generator": false
   },
   {
-    "__docId__": 124,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -3170,7 +3045,6 @@
     "content": "/**\n * Created by mgoria on 5/26/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport DI from 'deep-di';\nimport {Exception} from './Exception/Exception';\nimport {Instance as Microservice} from './Microservice/Instance';\nimport {MissingMicroserviceException} from './Exception/MissingMicroserviceException';\nimport {Injectable as MicroserviceInjectable} from './Microservice/Injectable';\nimport {ContainerAware} from './ContainerAware';\nimport WaitUntil from 'wait-until';\nimport util from 'util';\nimport {Loader as ConfigLoader} from './Config/Loader';\nimport {AsyncConfig} from './Config/Driver/AsyncConfig';\n\n/**\n * Deep application kernel\n */\nexport class Kernel {\n  /**\n   * @param {Array} deepServices\n   * @param {String} context\n   */\n  constructor(deepServices, context) {\n    if (Kernel.ALL_CONTEXTS.indexOf(context) === -1) {\n      throw new Exception(`Undefined context \"${context}\"`);\n    }\n\n    this._config = {};\n    this._services = deepServices;\n    this._context = context;\n    this._runtimeContext = {};\n    this._env = null;\n    this._container = new DI();\n    this._isLoaded = false;\n\n    this._asyncConfigCache = null;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLoaded() {\n    return this._isLoaded;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get runtimeContext() {\n    return this._runtimeContext;\n  }\n\n  /**\n   * @param {Object} runtimeContext\n   */\n  set runtimeContext(runtimeContext) {\n    this._runtimeContext = runtimeContext;\n  }\n\n  /**\n   * @returns {Microservice|*}\n   */\n  get rootMicroservice() {\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.isRoot) {\n        return microservice;\n      }\n    }\n\n    // this should never happen...\n    throw new MissingMicroserviceException('ROOT');\n  }\n\n  /**\n   * @param {String|null} identifier\n   * @returns {Microservice|*}\n   */\n  microservice(identifier = null) {\n    if (!identifier) {\n      identifier = this._config.microserviceIdentifier;\n    }\n\n    for (let microserviceKey in this.microservices) {\n      if (!this.microservices.hasOwnProperty(microserviceKey)) {\n        continue;\n      }\n\n      let microservice = this.microservices[microserviceKey];\n\n      if (microservice.identifier === identifier) {\n        return microservice;\n      }\n    }\n\n    throw new MissingMicroserviceException(identifier);\n  }\n\n  /**\n   * @param {Function} cb\n   */\n  loadAsyncConfig(cb) {\n    if (this._asyncConfigCache) {\n      cb(this._asyncConfigCache);\n\n      return this;\n    }\n\n    let cache = this.get('cache').system;\n    let cacheKey = Kernel.ASYNC_CONFIG_CACHE_KEY;\n\n    cache.has(cacheKey, (error, exists) => {\n      this._logErrorIfExistsAndNotProd(error);\n\n      if (exists) {\n        cache.get(cacheKey, (error, rawConfig) => {\n          this._logErrorIfExistsAndNotProd(error);\n\n          if (rawConfig) {\n            try {\n              this._asyncConfigCache = JSON.parse(rawConfig);\n\n              cb(this._asyncConfigCache);\n\n              return;\n            } catch (error) {\n              this._logErrorIfExistsAndNotProd(error);\n            }\n          }\n\n          this._loadAsyncConfig(cache, cacheKey, cb);\n        });\n\n        return;\n      }\n\n      this._loadAsyncConfig(cache, cacheKey, cb);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {Cache|*} cache\n   * @param {String} cacheKey\n   * @param {Function} cb\n   * @private\n   */\n  _loadAsyncConfig(cache, cacheKey, cb) {\n    ConfigLoader\n      .asyncConfigLoader(this)\n      .load((config) => {\n        cache.set(cacheKey, JSON.stringify(config), 0, (error) => {\n          this._logErrorIfExistsAndNotProd(error);\n\n          this._asyncConfigCache = config;\n\n          cb(config);\n        });\n      }, (error) => {\n        this._logErrorIfExistsAndNotProd(error);\n\n        cb(null);\n      });\n  }\n\n  /**\n   * @todo: get rid of this?\n   *\n   * @param {Error|String|*} error\n   * @private\n   */\n  _logErrorIfExistsAndNotProd(error) {\n    if (error && this.env !== Kernel.PROD_ENVIRONMENT) {\n      console.error(error);\n    }\n  }\n\n  /**\n   * @param {Function} callback\n   * @returns {Kernel}\n   *\n   * @todo: put config file name into a constant?\n   */\n  bootstrap(callback) {\n    let rumEvent = {\n      service: 'deep-kernel',\n      resourceType: 'Lambda',\n      eventName: 'KernelLoad',\n      time: new Date().getTime(),\n    };\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      if (this.isBackend) {\n        rumEvent.eventName = 'KernelLoadFromCache';\n        rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n        rumEvent.payload = this.config;\n\n        this.get('log').rumLog(rumEvent);\n      }\n\n      callback(this);\n\n      return this;\n    }\n\n    ConfigLoader\n      .kernelLoader(this)\n      .load((config) => {\n        this.load(config, (kernel) => {\n          if (this.isBackend) {\n            // Log event 'start' time\n            rumEvent.resourceId = this.runtimeContext.invokedFunctionArn;\n\n            this.get('log').rumLog(rumEvent);\n\n            // log event 'stop' time\n            let event = util._extend({}, rumEvent);\n            event.payload = kernel.config;\n            event.time = new Date().getTime();\n\n            this.get('log').rumLog(event);\n          }\n\n          callback(kernel);\n        });\n      }, (error) => {\n        throw new Exception(`Error loading kernel: ${error}`);\n      });\n\n    return this;\n  }\n\n  /**\n   * Loads all Kernel dependencies\n   *\n   * @param {Object} config\n   * @param {Function} callback\n   *\n   * @returns {Kernel}\n   */\n  load(config, callback) {\n\n    // @todo: remove AWS changes the way the things run\n    // This is used because of AWS Lambda\n    // context sharing after a cold start\n    if (this._isLoaded) {\n      callback(this);\n      return this;\n    }\n\n    let originalCallback = callback;\n\n    callback = (kernel) => {\n      this._isLoaded = true;\n\n      originalCallback(kernel);\n    };\n\n    this._config = config;\n\n    this._buildContainer(callback);\n\n    return this;\n  }\n\n  /**\n   * @param {*} args\n   * @returns {*}\n   */\n  get(...args) {\n    return this._container.get(...args);\n  }\n\n  /**\n   * @param {Array} args\n   * @returns {Boolean}\n   */\n  has(...args) {\n    return this._container.has(...args);\n  }\n\n  /**\n   * @returns {Array}\n   */\n  get services() {\n    return this._services;\n  }\n\n  /**\n   * @returns {DI}\n   */\n  get container() {\n    return this._container;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isRumEnabled() {\n    return this.has('log') && this.get('log').isRumEnabled();\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isFrontend() {\n    return this._context === Kernel.FRONTEND_CONTEXT;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isLocalhost() {\n    return this.isFrontend && [\n        'localhost', '127.0.0.1',\n        '0.0.0.0', '::1',\n      ].indexOf(window.location.hostname) !== -1;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isBackend() {\n    return this._context === Kernel.BACKEND_CONTEXT;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get buildId() {\n    return this._config.deployId || '';\n  }\n\n  /**\n   * @returns {String}\n   */\n  get context() {\n    return this._context;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get env() {\n    return this._env;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get config() {\n\n    // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options\n    return this._config;\n  }\n\n  /**\n   * @returns {Microservice[]}\n   */\n  get microservices() {\n    return this._container.get(Kernel.MICROSERVICES);\n  }\n\n  /**\n   * Loads all parameters and services into DI container\n   *\n   * @param {Function} callback\n   */\n  _buildContainer(callback) {\n    this._env = this._config.env;\n\n    this._container.addParameter(\n      Kernel.KERNEL,\n      this\n    );\n\n    this._container.addParameter(\n      Kernel.CONTEXT,\n      {\n        environment: this._env,\n        isFrontend: this.isFrontend,\n        isBackend: this.isBackend,\n      }\n    );\n\n    this._container.addParameter(\n      Kernel.MICROSERVICES,\n      Microservice.createVector(this._config)\n    );\n\n    this._container.addParameter(\n      Kernel.CONFIG,\n      this._config\n    );\n\n    let bootingServices = 0;\n\n    for (let serviceKey in this._services) {\n      if (!this._services.hasOwnProperty(serviceKey)) {\n        continue;\n      }\n\n      let serviceInstance = new this._services[serviceKey]();\n\n      bootingServices++;\n\n      serviceInstance.kernel = this;\n      serviceInstance.localBackend = Core.IS_DEV_SERVER;\n      serviceInstance.boot(this, () => {\n        bootingServices--;\n      });\n\n      this._container.addService(\n        serviceInstance.name,\n        Kernel._createProxyIfNeeded(serviceInstance)\n      );\n    }\n\n    WaitUntil()\n      .interval(10)\n      .times(999999) // @todo: get rid of magic here...\n      .condition((cb) => {\n        process.nextTick(() => {\n          cb(bootingServices <= 0);\n        });\n      }).done(() => {\n        callback(this);\n      });\n  }\n\n  /**\n   * @param {ContainerAware|Object} serviceObj\n   * @returns {ContainerAware|Proxy|Object}\n   * @private\n   */\n  static _createProxyIfNeeded(serviceObj) {\n    if (serviceObj === serviceObj.service) {\n      return serviceObj;\n    } else if(!serviceObj.hasOwnProperty('apply')) {\n      return serviceObj.service;\n    }\n\n    let proxy = new Proxy(serviceObj, serviceObj.service);\n\n    proxy.__proto__ = this.__proto__;\n    proxy.constructor.prototype = this.constructor.prototype;\n\n    return proxy;\n  }\n\n  /**\n   * @returns {MicroserviceInjectable}\n   */\n  static get MicroserviceInjectable() {\n    return MicroserviceInjectable;\n  }\n\n  /**\n   * @returns {ContainerAware}\n   */\n  static get ContainerAware() {\n    return ContainerAware;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_BOOTSTRAP_VECTOR() {\n    return 'deep_frontend_bootstrap_vector';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONFIG() {\n    return 'deep_config';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get KERNEL() {\n    return 'deep_kernel';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get CONTEXT() {\n    return 'deep_context';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get MICROSERVICES() {\n    return 'deep_microservices';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get FRONTEND_CONTEXT() {\n    return 'frontend-ctx';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get BACKEND_CONTEXT() {\n    return 'backend-ctx';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_CONTEXTS() {\n    return [\n      Kernel.FRONTEND_CONTEXT,\n      Kernel.BACKEND_CONTEXT,\n    ];\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get PROD_ENVIRONMENT() {\n    return 'prod';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get STAGE_ENVIRONMENT() {\n    return 'stage';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get TEST_ENVIRONMENT() {\n    return 'test';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get DEV_ENVIRONMENT() {\n    return 'dev';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASYNC_CONFIG_FILE(){\n    return AsyncConfig.DEFAULT_CONFIG_FILE;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get ASYNC_CONFIG_CACHE_KEY() {\n    return 'asyncConfig';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get ALL_ENVIRONMENTS() {\n    return [\n      Kernel.PROD_ENVIRONMENT,\n      Kernel.STAGE_ENVIRONMENT,\n      Kernel.TEST_ENVIRONMENT,\n      Kernel.DEV_ENVIRONMENT,\n    ];\n  }\n}\n"
   },
   {
-    "__docId__": 125,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -3186,7 +3060,6 @@
     "interface": false
   },
   {
-    "__docId__": 126,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -3221,7 +3094,6 @@
     "generator": false
   },
   {
-    "__docId__": 127,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3239,7 +3111,6 @@
     }
   },
   {
-    "__docId__": 128,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3257,7 +3128,6 @@
     }
   },
   {
-    "__docId__": 129,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3275,7 +3145,6 @@
     }
   },
   {
-    "__docId__": 130,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3293,7 +3162,6 @@
     }
   },
   {
-    "__docId__": 131,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3311,7 +3179,6 @@
     }
   },
   {
-    "__docId__": 132,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3329,7 +3196,6 @@
     }
   },
   {
-    "__docId__": 133,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3347,7 +3213,6 @@
     }
   },
   {
-    "__docId__": 134,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3365,7 +3230,6 @@
     }
   },
   {
-    "__docId__": 135,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3397,7 +3261,6 @@
     "generator": false
   },
   {
-    "__docId__": 136,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3429,7 +3292,6 @@
     "generator": false
   },
   {
-    "__docId__": 137,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -3459,7 +3321,6 @@
     "generator": false
   },
   {
-    "__docId__": 138,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3477,7 +3338,6 @@
     }
   },
   {
-    "__docId__": 139,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3510,7 +3370,6 @@
     "generator": false
   },
   {
-    "__docId__": 140,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3551,7 +3410,6 @@
     "generator": false
   },
   {
-    "__docId__": 141,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3581,7 +3439,6 @@
     "generator": false
   },
   {
-    "__docId__": 142,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3599,7 +3456,6 @@
     }
   },
   {
-    "__docId__": 143,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3645,7 +3501,6 @@
     "generator": false
   },
   {
-    "__docId__": 144,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3663,7 +3518,6 @@
     }
   },
   {
-    "__docId__": 145,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3696,7 +3550,6 @@
     "generator": false
   },
   {
-    "__docId__": 146,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3735,7 +3588,6 @@
     "generator": false
   },
   {
-    "__docId__": 147,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3784,7 +3636,6 @@
     "generator": false
   },
   {
-    "__docId__": 148,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3802,7 +3653,6 @@
     }
   },
   {
-    "__docId__": 149,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -3820,7 +3670,6 @@
     }
   },
   {
-    "__docId__": 150,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3859,7 +3708,6 @@
     "generator": false
   },
   {
-    "__docId__": 151,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -3898,7 +3746,6 @@
     "generator": false
   },
   {
-    "__docId__": 152,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3930,7 +3777,6 @@
     "generator": false
   },
   {
-    "__docId__": 153,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3962,7 +3808,6 @@
     "generator": false
   },
   {
-    "__docId__": 154,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -3994,7 +3839,6 @@
     "generator": false
   },
   {
-    "__docId__": 155,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4026,7 +3870,6 @@
     "generator": false
   },
   {
-    "__docId__": 156,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4058,7 +3901,6 @@
     "generator": false
   },
   {
-    "__docId__": 157,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4090,7 +3932,6 @@
     "generator": false
   },
   {
-    "__docId__": 158,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4122,7 +3963,6 @@
     "generator": false
   },
   {
-    "__docId__": 159,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4154,7 +3994,6 @@
     "generator": false
   },
   {
-    "__docId__": 160,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4186,7 +4025,6 @@
     "generator": false
   },
   {
-    "__docId__": 161,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4218,7 +4056,6 @@
     "generator": false
   },
   {
-    "__docId__": 162,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -4250,7 +4087,6 @@
     "generator": false
   },
   {
-    "__docId__": 163,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -4275,7 +4111,6 @@
     "generator": false
   },
   {
-    "__docId__": 164,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4293,7 +4128,6 @@
     }
   },
   {
-    "__docId__": 165,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -4335,7 +4169,6 @@
     "generator": false
   },
   {
-    "__docId__": 166,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4367,7 +4200,6 @@
     "generator": false
   },
   {
-    "__docId__": 167,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4399,7 +4231,6 @@
     "generator": false
   },
   {
-    "__docId__": 168,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4431,7 +4262,6 @@
     "generator": false
   },
   {
-    "__docId__": 169,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4463,7 +4293,6 @@
     "generator": false
   },
   {
-    "__docId__": 170,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4495,7 +4324,6 @@
     "generator": false
   },
   {
-    "__docId__": 171,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4527,7 +4355,6 @@
     "generator": false
   },
   {
-    "__docId__": 172,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4559,7 +4386,6 @@
     "generator": false
   },
   {
-    "__docId__": 173,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4591,7 +4417,6 @@
     "generator": false
   },
   {
-    "__docId__": 174,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4623,7 +4448,6 @@
     "generator": false
   },
   {
-    "__docId__": 175,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4655,7 +4479,6 @@
     "generator": false
   },
   {
-    "__docId__": 176,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4687,7 +4510,6 @@
     "generator": false
   },
   {
-    "__docId__": 177,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4719,7 +4541,6 @@
     "generator": false
   },
   {
-    "__docId__": 178,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4751,7 +4572,6 @@
     "generator": false
   },
   {
-    "__docId__": 179,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4783,7 +4603,6 @@
     "generator": false
   },
   {
-    "__docId__": 180,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4815,7 +4634,6 @@
     "generator": false
   },
   {
-    "__docId__": 181,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4847,7 +4665,6 @@
     "generator": false
   },
   {
-    "__docId__": 182,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -4879,7 +4696,6 @@
     "generator": false
   },
   {
-    "__docId__": 183,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -4892,7 +4708,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from '../../Exception/Exception';\n\n/**\n * Thrown when no working microservice set\n */\nexport class MissingWorkingMicroserviceException extends Exception {\n  constructor() {\n    super('Missing working microservice from Kernel.MicroserviceInjectable');\n  }\n}\n"
   },
   {
-    "__docId__": 184,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -4911,7 +4726,6 @@
     ]
   },
   {
-    "__docId__": 185,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -4926,7 +4740,6 @@
     "generator": false
   },
   {
-    "__docId__": 186,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -4936,10 +4749,9 @@
     "access": null,
     "description": null,
     "lineNumber": 5,
-    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Instance} from './Instance';\nimport Core from 'deep-core';\nimport {MissingWorkingMicroserviceException} from './Exception/MissingWorkingMicroserviceException';\n\n/**\n * Microservice injectable object\n */\nexport class Injectable {\n  constructor() {\n    this._microservice = null;\n  }\n\n  /**\n   * @param {Instance} microservice\n   * @returns {Injectable}\n   */\n  bind(microservice) {\n    this.microservice = microservice;\n\n    return this;\n  }\n\n  /**\n   * @returns {Instance}\n   */\n  get microservice() {\n    if (this._microservice === null) {\n      throw new MissingWorkingMicroserviceException();\n    }\n\n    return this._microservice;\n  }\n\n  /**\n   * @param {Instance} instance\n   */\n  set microservice(instance) {\n    if (!(instance instanceof Instance)) {\n      throw new Core.Exception.InvalidArgumentException(microservice, 'Microservice');\n    }\n\n    this._microservice = instance;\n  }\n}\n"
+    "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport {Instance} from './Instance';\nimport Core from 'deep-core';\nimport {MissingWorkingMicroserviceException} from './Exception/MissingWorkingMicroserviceException';\n\n/**\n * Microservice injectable object\n */\nexport class Injectable {\n  constructor() {\n    this._microservice = null;\n  }\n\n  /**\n   * @param {Instance} microservice\n   * @returns {Injectable}\n   */\n  bind(microservice) {\n    this.microservice = microservice;\n\n    return this;\n  }\n\n  /**\n   * @returns {Instance}\n   */\n  get microservice() {\n    if (this._microservice === null) {\n      throw new MissingWorkingMicroserviceException();\n    }\n\n    return this._microservice;\n  }\n\n  /**\n   * @param {Instance} instance\n   */\n  set microservice(instance) {\n    if (!(instance instanceof Instance)) {\n      throw new Core.Exception.InvalidArgumentException(instance, 'Microservice');\n    }\n\n    this._microservice = instance;\n  }\n}\n"
   },
   {
-    "__docId__": 187,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -4955,7 +4767,6 @@
     "interface": false
   },
   {
-    "__docId__": 188,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -4970,7 +4781,6 @@
     "generator": false
   },
   {
-    "__docId__": 189,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -4988,7 +4798,6 @@
     }
   },
   {
-    "__docId__": 190,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5027,7 +4836,6 @@
     "generator": false
   },
   {
-    "__docId__": 191,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5045,7 +4853,6 @@
     }
   },
   {
-    "__docId__": 192,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -5077,7 +4884,6 @@
     "generator": false
   },
   {
-    "__docId__": 193,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -5107,7 +4913,6 @@
     "generator": false
   },
   {
-    "__docId__": 194,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5125,7 +4930,6 @@
     }
   },
   {
-    "__docId__": 195,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5138,7 +4942,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\nimport {Injectable} from './Injectable';\n\n/**\n * Microservice instance class\n */\nexport class Instance {\n  /**\n   * @param {String} identifier\n   * @param {Object} rawResources\n   * @param {Object} parameters\n   */\n  constructor(identifier, rawResources, parameters = {}) {\n    this._isRoot = false;\n    this._rawResources = rawResources;\n    this._identifier = identifier;\n    this._parameters = parameters;\n  }\n\n  /**\n   * @param {Object} globalConfig\n   * @returns {Instance[]}\n   */\n  static createVector(globalConfig) {\n    let vector = [];\n\n    for (let identifier in globalConfig.microservices) {\n      if (!globalConfig.microservices.hasOwnProperty(identifier)) {\n        continue;\n      }\n\n      let microservice = globalConfig.microservices[identifier];\n\n      let microserviceObject = new Instance(\n        identifier,\n        microservice.resources,\n        microservice.parameters || {}\n      );\n\n      microserviceObject.isRoot = microservice.isRoot;\n\n      vector.push(microserviceObject);\n    }\n\n    return vector;\n  }\n\n  /**\n   * @param {Object} objectInstance\n   * @return {Object}\n   */\n  inject(objectInstance) {\n    if (!(objectInstance instanceof Injectable)) {\n      throw new Core.Exception.InvalidArgumentException(objectInstance, 'deep-kernel.Injectable');\n    }\n\n    objectInstance.microservice = this;\n\n    return objectInstance;\n  }\n\n  /**\n   * @returns {String}\n   */\n  toString() {\n    return this._identifier;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get parameters() {\n    return this._parameters;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get rawResources() {\n    return this._rawResources;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get identifier() {\n    return this._identifier;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set isRoot(state) {\n    this._isRoot = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get isRoot() {\n    return this._isRoot;\n  }\n}\n"
   },
   {
-    "__docId__": 196,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -5154,7 +4957,6 @@
     "interface": false
   },
   {
-    "__docId__": 197,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -5199,7 +5001,6 @@
     "generator": false
   },
   {
-    "__docId__": 198,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5217,7 +5018,6 @@
     }
   },
   {
-    "__docId__": 199,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5235,7 +5035,6 @@
     }
   },
   {
-    "__docId__": 200,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5253,7 +5052,6 @@
     }
   },
   {
-    "__docId__": 201,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5271,7 +5069,6 @@
     }
   },
   {
-    "__docId__": 202,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -5310,7 +5107,6 @@
     "generator": false
   },
   {
-    "__docId__": 203,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5343,7 +5139,6 @@
     "generator": false
   },
   {
-    "__docId__": 204,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -5371,7 +5166,6 @@
     "generator": false
   },
   {
-    "__docId__": 205,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -5403,7 +5197,6 @@
     "generator": false
   },
   {
-    "__docId__": 206,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -5435,7 +5228,6 @@
     "generator": false
   },
   {
-    "__docId__": 207,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -5467,7 +5259,6 @@
     "generator": false
   },
   {
-    "__docId__": 208,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -5497,7 +5288,6 @@
     "generator": false
   },
   {
-    "__docId__": 209,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -5515,7 +5305,6 @@
     }
   },
   {
-    "__docId__": 210,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -5547,7 +5336,6 @@
     "generator": false
   },
   {
-    "__docId__": 211,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -5560,7 +5348,6 @@
     "content": "/**\n * Created by AlexanderC on 5/22/15.\n *\n * Bootstrap file loaded by npm as main\n */\n\n'use strict';\n\nimport {Kernel} from './Kernel';\n\nlet exports = module.exports = Kernel;\n"
   },
   {
-    "__docId__": 212,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -5581,7 +5368,6 @@
     }
   },
   {
-    "__docId__": 214,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5594,7 +5380,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 215,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5607,7 +5392,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 216,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5620,7 +5404,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 217,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5633,7 +5416,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 218,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5646,7 +5428,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 219,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5659,7 +5440,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 220,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5672,7 +5452,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 221,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5685,7 +5464,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 222,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5698,7 +5476,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 223,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5711,7 +5488,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 224,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5724,7 +5500,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 225,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5737,7 +5512,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 226,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5750,7 +5524,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 227,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5763,7 +5536,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 228,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5776,7 +5548,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 229,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5789,7 +5560,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 230,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5802,7 +5572,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 231,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5815,7 +5584,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 232,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5828,7 +5596,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 233,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5841,7 +5608,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 234,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5854,7 +5620,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 235,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5867,7 +5632,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 236,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5880,7 +5644,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 237,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5893,7 +5656,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 238,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5906,7 +5668,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 239,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5919,7 +5680,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 240,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5932,7 +5692,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 241,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5945,7 +5704,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 242,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5958,7 +5716,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 243,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5971,7 +5728,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 244,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5984,7 +5740,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 245,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -5997,7 +5752,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 246,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6010,7 +5764,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 247,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6023,7 +5776,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 248,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6036,7 +5788,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 249,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6049,7 +5800,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 250,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6062,7 +5812,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 251,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6075,7 +5824,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 252,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6088,7 +5836,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 253,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6101,7 +5848,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 254,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6114,7 +5860,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 255,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6127,7 +5872,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 256,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6140,7 +5884,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 257,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6153,7 +5896,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 258,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6166,7 +5908,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 259,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6179,7 +5920,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 260,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6192,7 +5932,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 262,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6205,7 +5944,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 263,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6218,7 +5956,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 264,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6231,7 +5968,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 265,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6244,7 +5980,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 266,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6257,7 +5992,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 267,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6270,7 +6004,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 268,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -6278,19 +6011,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 269,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true

@@ -1,6 +1,5 @@
 [
   {
-    "__docId__": 0,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -13,7 +12,6 @@
     "content": "/**\n * Created by AlexanderC on 6/10/15.\n */\n\n'use strict';\n\nimport Core from 'deep-core';\n\n/**\n * Thrown when any exception occurs\n */\nexport class Exception extends Core.Exception.Exception {\n  /**\n   * @param {Array} args\n   */\n  constructor(...args) {\n    super(...args);\n  }\n}\n"
   },
   {
-    "__docId__": 1,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -32,7 +30,6 @@
     ]
   },
   {
-    "__docId__": 2,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -57,7 +54,6 @@
     "generator": false
   },
   {
-    "__docId__": 3,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -70,7 +66,6 @@
     "content": "/**\n * Created by mgoria on 6/10/15.\n */\n\n'use strict';\n\nimport {Exception} from './Exception';\n\n/**\n * Thrown when unknown FS folder is requested\n */\nexport class UnknownFolderException extends Exception {\n  /**\n   * @param {String} folderName\n   * @param {Array} folders\n   */\n  constructor(folderName, folders) {\n    super(`Unknown folder \"${folderName}\". Defined folders are \"${folders.join(', ')}\"`);\n  }\n}\n"
   },
   {
-    "__docId__": 4,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -89,7 +84,6 @@
     ]
   },
   {
-    "__docId__": 5,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -124,7 +118,6 @@
     "generator": false
   },
   {
-    "__docId__": 6,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -137,7 +130,6 @@
     "content": "/**\n * Created by mgoria on 5/28/15.\n */\n\n'use strict';\n\nimport S3FS from 's3fs';\nimport Kernel from 'deep-kernel';\nimport {UnknownFolderException} from './Exception/UnknownFolderException';\nimport {Exception} from './Exception/Exception';\nimport OS from 'os';\nimport Path from 'path';\nimport {Registry} from './Registry';\nimport {S3FsRumProxy} from './S3FsRumProxy';\n\n/**\n * Deep FS implementation\n */\nexport class FS extends Kernel.ContainerAware {\n  /**\n   * Defines all class private properties\n   *\n   * @param {String} tmpFsBucket\n   * @param {String} publicFsBucket\n   * @param {String} systemFsBucket\n   * @param {String} sharedFsBucket\n   */\n  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null, sharedFsBucket = null) {\n    super();\n\n    this._mountedFolders = {};\n    this._buckets = {};\n\n    this._buckets[FS.TMP] = tmpFsBucket;\n    this._buckets[FS.PUBLIC] = publicFsBucket;\n    this._buckets[FS.SYSTEM] = systemFsBucket;\n    this._buckets[FS.SHARED] = sharedFsBucket;\n\n    this._registry = null;\n  }\n\n  /**\n   * @returns {Registry}\n   * @constructor\n   */\n  static get RegistryInstance() {\n    return Registry;\n  }\n\n  /**\n   * @returns {Registry}\n   */\n  get registry() {\n    if (!this._registry) {\n      this._registry = Registry.createFromFS(this.system);\n    }\n\n    return this._registry;\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get TMP() {\n    return 'temp';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get PUBLIC() {\n    return 'public';\n  }\n\n  /**\n   * @returns {string}\n   */\n  static get SYSTEM() {\n    return 'system';\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get SHARED() {\n    return 'shared';\n  }\n\n  /**\n   * @returns {Array}\n   */\n  static get FOLDERS() {\n    return [\n      FS.TMP,\n      FS.SYSTEM,\n      FS.SHARED,\n      FS.PUBLIC,\n    ];\n  }\n\n  /**\n   * Booting a certain service\n   *\n   * @param {Kernel} kernel\n   * @param {Function} callback\n   */\n  boot(kernel, callback) {\n    let bucketsConfig = kernel.config.buckets;\n\n    for (let i in FS.FOLDERS) {\n      if (!FS.FOLDERS.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let folder = FS.FOLDERS[i];\n\n      switch (folder) {\n        case FS.TMP:\n        case FS.SYSTEM:\n          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}/${kernel.microservice().identifier}`;\n          break;\n        case FS.SHARED:\n          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}`;\n          break;\n        default:\n          this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;\n      }\n    }\n\n    callback();\n  }\n\n  /**\n   * Returns mounted file system folder (tmp, public or system)\n   *\n   * @param {String} name\n   * @param {String} msIdentifier\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  getFolder(name, msIdentifier = null) {\n    if (FS.FOLDERS.indexOf(name) === -1) {\n      throw new UnknownFolderException(name, FS.FOLDERS);\n    }\n\n    let realName = null;\n\n    if (name === FS.SHARED) {\n      if (!msIdentifier) {\n        throw new Exception(`You must provide a microservice identifier for the shared fs`);\n      }\n\n      // validate msIdentifier\n      msIdentifier = this.kernel.microservice(msIdentifier).identifier;\n\n      realName = `${name}.${msIdentifier}`;\n    }\n\n    if (typeof this._mountedFolders[realName || name] === 'undefined') {\n      if (this._localBackend) {\n        let rootFolder = FS._getTmpDir(this._buckets[name]);\n        let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;\n\n        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;\n      } else if (name === FS.SHARED) {\n        let s3Fs = this._mountedFolders[name];\n\n        if (typeof s3Fs === 'undefined') {\n          s3Fs = new S3FS(this._buckets[name], {});\n\n          if (this.kernel && this.kernel.isRumEnabled) {\n            s3Fs = new S3FsRumProxy(s3Fs, this.kernel.get('log')).proxy();\n          }\n\n          this._mountedFolders[name] = s3Fs;\n        }\n\n        this._mountedFolders[realName] = s3Fs.clone(msIdentifier);\n      } else {\n        let s3Fs = new S3FS(this._buckets[name], {});\n\n        if (this.kernel && this.kernel.isRumEnabled) {\n          s3Fs = new S3FsRumProxy(s3Fs, this.kernel.get('log')).proxy();\n        }\n\n        this._mountedFolders[name] = s3Fs;\n      }\n    }\n\n    return this._mountedFolders[realName || name];\n  }\n\n  /**\n   * @param {String} subpath\n   * @returns {String}\n   * @private\n   */\n  static _getTmpDir(subpath) {\n    let dir = Path.join(OS.tmpdir(), subpath);\n\n    require('fs-extra').mkdirpSync(dir);\n\n    return dir;\n  }\n\n  /**\n   * Returns mounted shared folder\n   *\n   * @param {Microservice|String|*} microservice\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  shared(microservice = null) {\n    microservice = microservice || this.kernel.microservice();\n\n    let msIdentifier = typeof microservice === 'string' ? microservice : microservice.identifier;\n\n    return this.getFolder(FS.SHARED, msIdentifier);\n  }\n\n  /**\n   * Returns mounted tmp folder\n   *\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  get tmp() {\n    return this.getFolder(FS.TMP);\n  }\n\n  /**\n   * Returns mounted public folder\n   *\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  get public() {\n    return this.getFolder(FS.PUBLIC);\n  }\n\n  /**\n   * Returns mounted sys folder\n   *\n   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}\n   */\n  get system() {\n    return this.getFolder(FS.SYSTEM);\n  }\n}\n"
   },
   {
-    "__docId__": 7,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -156,7 +148,6 @@
     ]
   },
   {
-    "__docId__": 8,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -211,7 +202,6 @@
     "generator": false
   },
   {
-    "__docId__": 9,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -229,7 +219,6 @@
     }
   },
   {
-    "__docId__": 10,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -247,7 +236,6 @@
     }
   },
   {
-    "__docId__": 11,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -265,7 +253,6 @@
     }
   },
   {
-    "__docId__": 12,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -301,7 +288,6 @@
     "generator": false
   },
   {
-    "__docId__": 13,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -333,7 +319,6 @@
     "generator": false
   },
   {
-    "__docId__": 14,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -351,7 +336,6 @@
     }
   },
   {
-    "__docId__": 15,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -383,7 +367,6 @@
     "generator": false
   },
   {
-    "__docId__": 16,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -415,7 +398,6 @@
     "generator": false
   },
   {
-    "__docId__": 17,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -447,7 +429,6 @@
     "generator": false
   },
   {
-    "__docId__": 18,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -479,7 +460,6 @@
     "generator": false
   },
   {
-    "__docId__": 19,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -511,7 +491,6 @@
     "generator": false
   },
   {
-    "__docId__": 20,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -546,7 +525,6 @@
     "generator": false
   },
   {
-    "__docId__": 21,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -600,7 +578,6 @@
     "generator": false
   },
   {
-    "__docId__": 22,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -639,7 +616,6 @@
     "generator": false
   },
   {
-    "__docId__": 23,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -685,7 +661,6 @@
     "generator": false
   },
   {
-    "__docId__": 24,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -722,7 +697,6 @@
     "generator": false
   },
   {
-    "__docId__": 25,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -759,7 +733,6 @@
     "generator": false
   },
   {
-    "__docId__": 26,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -796,7 +769,6 @@
     "generator": false
   },
   {
-    "__docId__": 27,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -809,7 +781,6 @@
     "content": "/**\n * Created by AlexanderC on 10/27/15.\n */\n\n'use strict';\n\nimport path from 'path';\nimport relativeFs from 'relative-fs';\nimport fse from 'fs-extra';\nimport fs from 'fs';\nimport {_extend as extend} from 'util';\nimport es6Promise from 'es6-promise';\n\n// Fix missing Promise\nes6Promise.polyfill();\n\nexport class S3FSRelativeFSExtender {\n  /**\n   * @param {Object|String} relativeFsPath\n   */\n  constructor(relativeFsPath) {\n    let relativeFsObject = relativeFsPath;\n\n    if (typeof relativeFsObject !== 'object') {\n      relativeFsObject = relativeFs.relativeTo(relativeFsPath);\n      relativeFsObject._rootFolder = relativeFsPath;\n    } else if(!relativeFsObject.hasOwnProperty('_rootFolder')) {\n      throw new Error('Missing _rootFolder property from RelativeFS object');\n    }\n\n    this._relativeFsObject = relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFs() {\n    return this._relativeFsObject;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  get relativeFsExtended() {\n    return extend(this._relativeFsObject, this.EXTEND_OBJECT);\n  }\n\n  /**\n   * @returns {String}\n   */\n  get cwd() {\n    return path.normalize(this._relativeFsObject._rootFolder || process.cwd());\n  }\n\n  /**\n   * @returns {{getPath: Function, clone: Function, copyFile: Function, create: Function, destroy: Function, headObject: Function, listContents: Function, readdirp: Function, mkdirp: Function, rmdirp: Function}}\n   * @constructor\n   */\n  get EXTEND_OBJECT() {\n    let extendObject = {\n      bucket: 'relative_fs',\n      path: '',\n      s3: {}, // @todo: mock `AWS.S3()`\n\n      /**\n       * @param {String} pathStr\n       * @returns {String}\n       *\n       * @todo: return some fake bucket name? or the prefix?\n       */\n      getPath: (pathStr = '') => {\n        return path.join(this.cwd, pathStr);\n      },\n\n      /**\n       * @param {String} pathStr\n       * @returns {Object}\n       */\n      clone: (pathStr) => {\n        let newCwd = path.join(this.cwd, pathStr);\n\n        return new S3FSRelativeFSExtender(newCwd).relativeFsExtended;\n      },\n\n      /**\n       * @param {String} sourcePath\n       * @param {String} destinationPath\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      copyFile: (sourcePath, destinationPath, callback = null) => {\n        let absSourcePath = path.join(this.cwd, sourcePath);\n        let absDestinationPath = path.join(this.cwd, destinationPath);\n\n        if (callback) {\n          fse.copy(absSourcePath, absDestinationPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.copy(absSourcePath, absDestinationPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {Object} options\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      create: (options, callback = null) => {\n        let error = new Error(`You do not have rights for this operation on bucket ${options.Bucket}`);\n\n        if (callback) {\n          callback(error);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          reject(error);\n        });\n      },\n\n      /**\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      destroy: (callback = null) => {\n        let error = new Error(`You do not have rights for this operation`);\n\n        if (callback) {\n          fse.remove(this.cwd, () => {\n            callback(error);\n          });\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(this.cwd, (nativeError) => {\n            if (nativeError) {\n              reject(nativeError);\n              return;\n            }\n\n            reject(error);\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      headObject: (pathStr, callback = null) => {\n        let responseObj = {\n          AcceptRanges: '',\n          Restore: '',\n          LastModified: new Date().getTime(),\n          ContentLength: 0,\n          ETag: '55ad340609f4b302',\n          MissingMeta: 0,\n          VersionId: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n        };\n\n        if (callback) {\n          callback(responseObj);\n          return;\n        }\n\n        return new Promise((resolve) => {\n          resolve(responseObj);\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {String} marker\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      listContents: (pathStr, marker, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        let globResponseObj = {\n          Marker: marker,\n          IsTruncated: false,\n          Contents: [],\n          Name: this.cwd,\n          Prefix: pathStr,\n          Delimiter: '/',\n          MaxKeys: 1000000000,\n          CommonPrefixes: [],\n          EncodingType: 'url',\n        };\n\n        let responseObj = {\n          Key: null,\n          LastModified: new Date().getTime(),\n          Size: 0,\n          ETag: '55ad340609f4b302',\n          StorageClass: 'REDUCED_REDUNDANCY',\n          Owner: {\n            DisplayName: 's3fs',\n            ID: '55ad340609f4b302',\n          },\n        };\n\n        if (callback) {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));\n            })\n            .on('end', () => {\n              callback(globResponseObj);\n            });\n\n          return;\n        }\n\n        return new Promise((resolve) => {\n          fse.walk(absPath)\n            .on('data', (item) => {\n              globResponseObj.Contents.push(extend(responseObj, {Key: item.path.substr(this.cwd.length)}));\n            })\n            .on('end', () => {\n              resolve(globResponseObj);\n            });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      readdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          try {\n            callback(null, S3FSRelativeFSExtender._readdirp(absPath, this.cwd));\n          } catch(error) {\n            callback(error, null);\n          }\n\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          try {\n            resolve(S3FSRelativeFSExtender._readdirp(absPath, this.cwd));\n          } catch(error) {\n            reject(error);\n          }\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      mkdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.mkdirp(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.mkdirp(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      },\n\n      /**\n       * @param {String} pathStr\n       * @param {Function|null} callback\n       * @returns {Promise|undefined}\n       */\n      rmdirp: (pathStr, callback = null) => {\n        let absPath = path.join(this.cwd, pathStr);\n\n        if (callback) {\n          fse.remove(absPath, callback);\n          return;\n        }\n\n        return new Promise((resolve, reject) => {\n          fse.remove(absPath, (error) => {\n            if (error) {\n              reject(error);\n              return;\n            }\n\n            resolve();\n          });\n        });\n      }\n    };\n\n    extendObject.copyDir = extendObject.copyFile;\n    extendObject.delete = extendObject.create;\n    extendObject.putBucketLifecycle = extendObject.create;\n\n    return extendObject;\n  }\n\n  /**\n   * @param {String} dir\n   * @param {String} basePath\n   * @returns {String[]}\n   * @private\n   */\n  static _readdirp(dir, basePath = null) {\n    let _files = [];\n\n    let files = fs.readdirSync(dir);\n\n    for (let i in files) {\n      if (!files.hasOwnProperty(i)) {\n        continue;\n      }\n\n      let file = path.join(dir, files[i]);\n\n      _files.push(file);\n\n      if (fs.statSync(file).isDirectory()) {\n        _files = _files.concat(\n          S3FSRelativeFSExtender._readdirp(file)\n        );\n      }\n    }\n\n    return basePath\n      ? _files.map((file) => file.substr(basePath.length))\n      : _files;\n  }\n}\n"
   },
   {
-    "__docId__": 28,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -826,7 +797,6 @@
     "interface": false
   },
   {
-    "__docId__": 29,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -852,7 +822,6 @@
     "generator": false
   },
   {
-    "__docId__": 30,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -870,7 +839,6 @@
     }
   },
   {
-    "__docId__": 31,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -902,7 +870,6 @@
     "generator": false
   },
   {
-    "__docId__": 32,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -934,7 +901,6 @@
     "generator": false
   },
   {
-    "__docId__": 33,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -966,7 +932,6 @@
     "generator": false
   },
   {
-    "__docId__": 34,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1002,7 +967,6 @@
     "generator": false
   },
   {
-    "__docId__": 35,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1051,7 +1015,6 @@
     "generator": false
   },
   {
-    "__docId__": 36,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -1064,7 +1027,6 @@
     "content": "/**\n * Created by AlexanderC on 1/21/16.\n */\n\n'use strict';\n\nimport util from 'util';\n\nexport class Registry {\n  /**\n   * @param {AWS.S3} s3\n   * @param {String} bucket\n   * @param {String} registryFile\n   */\n  constructor(s3, bucket, registryFile = Registry.REGISTRY_FILE) {\n    this._s3 = s3;\n    this._bucket = bucket;\n    this._registryFile = registryFile;\n\n    this._registry = null;\n    this._lastModified = null;\n    this._ensureFresh = Registry.ENSURE_FRESH;\n  }\n\n  /**\n   * @param {FS|*} fs\n   * @param {String} registryFile\n   */\n  static createFromFS(fs, registryFile = Registry.REGISTRY_FILE) {\n    return new Registry(\n      fs.s3,\n      fs.bucket,\n      fs.getPath(registryFile)\n    );\n  }\n\n  /**\n   * @param {Function} cb\n   * @returns {Registry}\n   */\n  keys(cb) {\n    this._ensureLoaded((error) => {\n      if (error) {\n        cb(error, null);\n        return;\n      }\n\n      cb(null, Object.keys(this._registry));\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} cb\n   * @returns {Registry}\n   */\n  read(key, cb) {\n    this._ensureLoaded((error) => {\n      if (error) {\n        cb(error, null);\n        return;\n      }\n\n      if (this._registry.hasOwnProperty(key)) {\n        cb(null, this._registry[key]);\n        return;\n      }\n\n      cb(new Error(`Missing registry entry '${key}'`), null);\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} cb\n   * @returns {Registry}\n   */\n  exists(key, cb) {\n    this._ensureLoaded((error) => {\n      if (error) {\n        cb(error, null);\n        return;\n      }\n\n      cb(null, this._registry.hasOwnProperty(key));\n    });\n\n    return this;\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} data\n   * @param {Function} cb\n   * @returns {Registry}\n   */\n  write(key, data, cb) {\n    this._ensureLoaded((error) => {\n      if (error) {\n        cb(error);\n        return;\n      }\n\n      let hadKey = this._registry.hasOwnProperty(key);\n      let oldValue = this._registry[key];\n\n      this._registry[key] = data;\n\n      this._persist((error) => {\n        if (error) {\n          if (hadKey) {\n            this._registry[key] = oldValue;\n          } else {\n            delete this._registry[key];\n          }\n        }\n\n        cb(error);\n      });\n    });\n\n    return this;\n  }\n\n  /**\n   * @returns {Registry}\n   */\n  refresh(cb) {\n    this._readS3Object(\n      this._registryFile,\n      (error, rawRegistry, lastModified) => {\n        if (error && error.code !== 'NoSuchKey') {\n          cb(error);\n          return;\n        }\n\n        if (rawRegistry) {\n          try {\n            this._registry = Registry._decodeRegistry(rawRegistry);\n            this._lastModified = lastModified;\n          } catch (error) {\n            cb(error);\n            return;\n          }\n        }\n\n        cb(null);\n      },\n      this._lastModified\n    );\n\n    return this;\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _persist(cb) {\n    this._writeS3Object(\n      this._registryFile,\n      Registry._encodeRegistry(this._registry),\n      cb\n    );\n  }\n\n  /**\n   * @param {Function} cb\n   * @private\n   */\n  _ensureLoaded(cb) {\n    if (this._registry === null || this._ensureFresh) {\n      this.refresh((error) => {\n        this._registry = this._registry || {};\n\n        cb(error);\n      });\n    } else {\n      cb(null);\n    }\n  }\n\n  /**\n   * @param {String} rawRegistry\n   * @returns {Object}\n   * @private\n   */\n  static _decodeRegistry(rawRegistry) {\n    let registry = {};\n    let registryObj = JSON.parse(rawRegistry);\n\n    for (let key in registryObj) {\n      if (!registryObj.hasOwnProperty(key)) {\n        continue;\n      }\n\n      registry[key] = Registry._decodeValue(registryObj[key]);\n    }\n\n    return registry;\n  }\n\n  /**\n   * @param {Object} registry\n   * @returns {String}\n   * @private\n   */\n  static _encodeRegistry(registry) {\n    let registryObj = {};\n\n    for (let key in registry) {\n      if (!registry.hasOwnProperty(key)) {\n        continue;\n      }\n\n      registryObj[key] = Registry._encodeValue(registry[key]);\n    }\n\n    return JSON.stringify(registryObj);\n  }\n\n  /**\n   * @param {String} key\n   * @param {Function} cb\n   * @param {Date|null} lastModified\n   * @private\n   */\n  _readS3Object(key, cb, lastModified = null) {\n    let payload = {\n      Bucket: this._bucket,\n      Key: key,\n    };\n\n    if (lastModified) {\n      payload.IfModifiedSince = lastModified;\n    }\n\n    this._s3.getObject(payload, (error, data) => {\n      if (error) {\n\n        // when the object is not modified\n        if (lastModified && error.code === 'NotModified') {\n          cb(null, null, null);\n          return;\n        }\n\n        cb(error, null, null);\n        return;\n      }\n\n      let result = null;\n      let resultLastModified = lastModified;\n\n      if (data && data.Body) {\n        result = data.Body.toString();\n\n        resultLastModified = typeof data.LastModified === 'string' ?\n          new Date(data.LastModified) :\n          data.LastModified;\n      }\n\n      cb(null, result, resultLastModified);\n    });\n  }\n\n  /**\n   * @param {String} key\n   * @param {*} content\n   * @param {Function} cb\n   * @private\n   */\n  _writeS3Object(key, content, cb) {\n    let payload = {\n      Bucket: this._bucket,\n      Key: key,\n      Body: content.toString(),\n    };\n\n    this._s3.putObject(payload, (error) => {\n      cb(error);\n    });\n  }\n\n  /**\n   * @param {*} value\n   * @returns {{t: string, v: *}}\n   * @private\n   */\n  static _encodeValue(value) {\n    let type = 'plain';\n    let val = value;\n\n    if (util.isArray(value)) {\n      type = 'arr';\n      val = JSON.stringify(value);\n    } else if(Buffer.isBuffer(value)) {\n      val = value.toString();\n    } else if(Registry.isObject(value)) {\n      type = 'obj';\n      val = JSON.stringify(value);\n    }\n\n    return {\n      t: type,\n      v: val,\n    };\n  }\n\n  /**\n   * @param {*} obj\n   * @returns {boolean}\n   */\n  static isObject(obj) {\n    return obj != null && typeof obj === 'object' && !Array.isArray(obj);\n  }\n\n  /**\n   * @param {Object} valueObj\n   * @returns {*}\n   * @private\n   */\n  static _decodeValue(valueObj) {\n    let value = null;\n\n    switch (valueObj.t) {\n      case 'arr':\n      case 'obj':\n        value = JSON.parse(valueObj.v);\n        break;\n      default: value = valueObj.v;\n    }\n\n    return value;\n  }\n\n  /**\n   * @param {Boolean} state\n   */\n  set ensureFresh(state) {\n    this._ensureFresh = state;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  get ensureFresh() {\n    return this._ensureFresh;\n  }\n\n  /**\n   * @returns {Date}\n   */\n  get lastModified() {\n    return this._lastModified;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get registryFile() {\n    return this._registryFile;\n  }\n\n  /**\n   * @returns {String}\n   */\n  get bucket() {\n    return this._bucket;\n  }\n\n  /**\n   * @returns {AWS.S3}\n   */\n  get s3() {\n    return this._s3;\n  }\n\n  /**\n   * @returns {Boolean}\n   */\n  static get ENSURE_FRESH() {\n    return true;\n  }\n\n  /**\n   * @returns {String}\n   */\n  static get REGISTRY_FILE() {\n    return '__deep_registry__';\n  }\n}\n"
   },
   {
-    "__docId__": 37,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -1081,7 +1043,6 @@
     "interface": false
   },
   {
-    "__docId__": 38,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -1126,7 +1087,6 @@
     "generator": false
   },
   {
-    "__docId__": 39,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1144,7 +1104,6 @@
     }
   },
   {
-    "__docId__": 40,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1162,7 +1121,6 @@
     }
   },
   {
-    "__docId__": 41,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1180,7 +1138,6 @@
     }
   },
   {
-    "__docId__": 42,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1198,7 +1155,6 @@
     }
   },
   {
-    "__docId__": 43,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1216,7 +1172,6 @@
     }
   },
   {
-    "__docId__": 44,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1234,7 +1189,6 @@
     }
   },
   {
-    "__docId__": 45,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1275,7 +1229,6 @@
     "generator": false
   },
   {
-    "__docId__": 46,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1314,7 +1267,6 @@
     "generator": false
   },
   {
-    "__docId__": 47,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1363,7 +1315,6 @@
     "generator": false
   },
   {
-    "__docId__": 48,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1412,7 +1363,6 @@
     "generator": false
   },
   {
-    "__docId__": 49,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1471,7 +1421,6 @@
     "generator": false
   },
   {
-    "__docId__": 50,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1506,7 +1455,6 @@
     "generator": false
   },
   {
-    "__docId__": 51,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1524,7 +1472,6 @@
     }
   },
   {
-    "__docId__": 52,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1542,7 +1489,6 @@
     }
   },
   {
-    "__docId__": 53,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1567,7 +1513,6 @@
     "generator": false
   },
   {
-    "__docId__": 54,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1592,7 +1537,6 @@
     "generator": false
   },
   {
-    "__docId__": 55,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1610,7 +1554,6 @@
     }
   },
   {
-    "__docId__": 56,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1649,7 +1592,6 @@
     "generator": false
   },
   {
-    "__docId__": 57,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1688,7 +1630,6 @@
     "generator": false
   },
   {
-    "__docId__": 58,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1734,7 +1675,6 @@
     "generator": false
   },
   {
-    "__docId__": 59,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1779,7 +1719,6 @@
     "generator": false
   },
   {
-    "__docId__": 60,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1818,7 +1757,6 @@
     "generator": false
   },
   {
-    "__docId__": 61,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1857,7 +1795,6 @@
     "generator": false
   },
   {
-    "__docId__": 62,
     "kind": "method",
     "static": true,
     "variation": null,
@@ -1896,7 +1833,6 @@
     "generator": false
   },
   {
-    "__docId__": 63,
     "kind": "set",
     "static": false,
     "variation": null,
@@ -1926,7 +1862,6 @@
     "generator": false
   },
   {
-    "__docId__": 64,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -1944,7 +1879,6 @@
     }
   },
   {
-    "__docId__": 65,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -1976,7 +1910,6 @@
     "generator": false
   },
   {
-    "__docId__": 66,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2008,7 +1941,6 @@
     "generator": false
   },
   {
-    "__docId__": 67,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2040,7 +1972,6 @@
     "generator": false
   },
   {
-    "__docId__": 68,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2072,7 +2003,6 @@
     "generator": false
   },
   {
-    "__docId__": 69,
     "kind": "get",
     "static": false,
     "variation": null,
@@ -2104,7 +2034,6 @@
     "generator": false
   },
   {
-    "__docId__": 70,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2136,7 +2065,6 @@
     "generator": false
   },
   {
-    "__docId__": 71,
     "kind": "get",
     "static": true,
     "variation": null,
@@ -2168,7 +2096,6 @@
     "generator": false
   },
   {
-    "__docId__": 72,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2181,7 +2108,6 @@
     "content": "/**\n * Created by mgoria on 2/3/16.\n */\n\n'use strict';\n\nimport util from 'util';\n\n/**\n * Proxy S3FS library\n */\nexport class S3FsRumProxy {\n  /**\n   * @param {Object} originalInstance\n   * @param {Object} logService\n   */\n  constructor(originalInstance, logService) {\n    this._originalInstance = originalInstance;\n    this._logService = logService;\n  }\n\n  /**\n   * @returns {Object}\n   */\n  proxy() {\n    let proxy = {};\n\n    for (let property in this._originalInstance) {\n      if (typeof this._originalInstance[property] === 'function') {\n        let originalFunction = this._originalInstance[property];\n\n        proxy[property] = (...args) => {\n          let originalCallback = null;\n\n          // seeking the callback function through the arguments and proxy it\n          args.forEach((arg, index) => {\n            if (typeof arg === 'function') {\n              originalCallback = arg;\n\n              args[index] = (...cbArgs) => {\n                this._logRumEvent({\n                  eventName: property,\n                  payload: {args: cbArgs},\n                });\n\n                return originalCallback.call(this._originalInstance, ...cbArgs);\n              };\n            }\n          });\n\n          // proxy only async methods (that have a callback through args)\n          if (null !== originalCallback) {\n            this._logRumEvent({\n              eventName: property,\n              payload: {args: args},\n            });\n          }\n\n          return originalFunction.call(this._originalInstance, ...args);\n        };\n      } else {\n        proxy[property] = this._originalInstance[property];\n      }\n    }\n\n    return proxy;\n  }\n\n  /**\n   * @param {Object} customData\n   */\n  _logRumEvent(customData) {\n    let event = util._extend(customData, {\n      service: 'deep-fs',\n      resourceType: 'S3',\n      resourceId: this._originalInstance.bucket,\n    });\n\n    this._logService.rumLog(event);\n  }\n}"
   },
   {
-    "__docId__": 73,
     "kind": "class",
     "static": true,
     "variation": null,
@@ -2197,7 +2123,6 @@
     "interface": false
   },
   {
-    "__docId__": 74,
     "kind": "constructor",
     "static": false,
     "variation": null,
@@ -2232,7 +2157,6 @@
     "generator": false
   },
   {
-    "__docId__": 75,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2250,7 +2174,6 @@
     }
   },
   {
-    "__docId__": 76,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -2268,7 +2191,6 @@
     }
   },
   {
-    "__docId__": 77,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2296,7 +2218,6 @@
     "generator": false
   },
   {
-    "__docId__": 78,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -2321,7 +2242,6 @@
     "generator": false
   },
   {
-    "__docId__": 79,
     "kind": "file",
     "static": true,
     "variation": null,
@@ -2334,7 +2254,6 @@
     "content": "/**\n * Created by mgoria on 5/28/2015\n */\n\n'use strict';\n\nimport {FS} from './FS';\n\nlet exports = module.exports = FS;\n"
   },
   {
-    "__docId__": 80,
     "kind": "variable",
     "static": true,
     "variation": null,
@@ -2355,7 +2274,6 @@
     }
   },
   {
-    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2368,7 +2286,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2381,7 +2298,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 84,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2394,7 +2310,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 85,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2407,7 +2322,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 86,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2420,7 +2334,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 87,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2433,7 +2346,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 88,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2446,7 +2358,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 89,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2459,7 +2370,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 90,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2472,7 +2382,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 91,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2485,7 +2394,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 92,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2498,7 +2406,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 93,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2511,7 +2418,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 94,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2524,7 +2430,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 95,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2537,7 +2442,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 96,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2550,7 +2454,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 97,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2563,7 +2466,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 98,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2576,7 +2478,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 99,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2589,7 +2490,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 100,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2602,7 +2502,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 101,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2615,7 +2514,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 102,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2628,7 +2526,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 103,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2641,7 +2538,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 104,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2654,7 +2550,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 105,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2667,7 +2562,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 106,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2680,7 +2574,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 107,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2693,7 +2586,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 108,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2706,7 +2598,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 109,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2719,7 +2610,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 110,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2732,7 +2622,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 111,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2745,7 +2634,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 112,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2758,7 +2646,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 113,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2771,7 +2658,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 114,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2784,7 +2670,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 115,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2797,7 +2682,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 116,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2810,7 +2694,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 117,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2823,7 +2706,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 118,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2836,7 +2718,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 119,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2849,7 +2730,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 120,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2862,7 +2742,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 121,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2875,7 +2754,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 122,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2888,7 +2766,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 123,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2901,7 +2778,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 124,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2914,7 +2790,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 125,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2927,7 +2802,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 126,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2940,7 +2814,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 127,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2953,7 +2826,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 128,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2966,7 +2838,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 130,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2979,7 +2850,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 131,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2992,7 +2862,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 132,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3005,7 +2874,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 133,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3018,7 +2886,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 134,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3031,7 +2898,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 135,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3044,7 +2910,6 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 136,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -3052,19 +2917,6 @@
     "externalLink": "https://developer.mozilla.org/en/docs/Web/API/XMLHttpRequest",
     "memberof": "BuiltinExternal/WebAPIExternal.js",
     "longname": "BuiltinExternal/WebAPIExternal.js~XMLHttpRequest",
-    "access": null,
-    "description": null,
-    "builtinExternal": true
-  },
-  {
-    "__docId__": 137,
-    "kind": "external",
-    "static": true,
-    "variation": null,
-    "name": "AudioContext",
-    "externalLink": "https://developer.mozilla.org/en/docs/Web/API/AudioContext",
-    "memberof": "BuiltinExternal/WebAPIExternal.js",
-    "longname": "BuiltinExternal/WebAPIExternal.js~AudioContext",
     "access": null,
     "description": null,
     "builtinExternal": true
