@@ -26,12 +26,20 @@ export class LocalRequest extends Request {
    */
   _send(callback = () => {}) {
     let actionType = this._action.type;
+    let securityService = this._action.resource.security;
 
     if (actionType === Action.LAMBDA) {
       let data = {
         lambda: this._action.source.original,
         payload: this.payload,
         method: this._method,
+        context: {
+          identity: {
+            cognitoIdentityPoolId: securityService.token ? securityService.token.identityPoolId : null,
+            cognitoIdentityId: securityService.token ? securityService.token.identityId : null,
+            isAnonymous: securityService.token ? securityService.token.isAnonymous : true,
+          },
+        },
       };
 
       if (typeof window === 'undefined') {
