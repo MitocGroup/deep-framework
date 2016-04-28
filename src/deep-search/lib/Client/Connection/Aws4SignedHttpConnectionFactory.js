@@ -33,7 +33,7 @@ export class Aws4SignedHttpConnectionFactory {
        * @returns {Object}
        */
       makeReqParams(params) {
-        let signParams = Object.assign(params, {service: 'es', host: this.host});
+        let signParams = Object.assign(params, {service: 'es', host: this.host.host});
         let aws4Signature = connectionFactory._createAws4Signature(signParams);
 
         params = super.makeReqParams(params);
