@@ -89,9 +89,7 @@ export class LambdaResponse extends Response {
     if (this._rawError) {
       this._error = this._rawError;
     } else if (!this._request.async) {
-      if (!responsePayload) {
-        this._error = new Error('There is no error nor payload in Lambda response');
-      } else if (responsePayload.hasOwnProperty('errorMessage')) {
+      if (responsePayload && responsePayload.hasOwnProperty('errorMessage')) {
         this._error = LambdaResponse.getPayloadError(responsePayload);
       }
     } else if (this._statusCode !== 202) { // check for failed async invocation
