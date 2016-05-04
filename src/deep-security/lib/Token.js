@@ -19,6 +19,20 @@ import util from 'util';
  */
 export class Token {
   /**
+   * @returns {number}
+   */
+  static get MAX_RETRIES() {
+    return 3;
+  }
+
+  /**
+   * @returns {number}
+   */
+  static get RETRIES_INTERVAL_MS() {
+    return 200;
+  }
+
+  /**
    * @param {String} identityPoolId
    */
   constructor(identityPoolId) {
@@ -209,16 +223,39 @@ export class Token {
         return;
       }
 
-      // @todo - save credentials in background not to affect page load time
+      callback(null, credentials);
+
+      // save credentials in background not to affect page load time
+      this._saveCredentials(credentials);
+    });
+  }
+
+  /**
+   * @param {Object} credentials
+   * @private
+   */
+  _saveCredentials(credentials) {
+    let retriesCount = 0;
+
+    var saveCredentialsFunc = () => {
+      if (!this._credsManager) {
+        return;
+      }
+
       this._credsManager.saveCredentials(credentials, (error, record) => {
         if (error) {
-          callback(error, null);
-          return;
-        }
+          retriesCount++;
 
-        callback(null, credentials);
+          if (retriesCount <= Token.MAX_RETRIES) {
+            setTimeout(saveCredentialsFunc, Token.RETRIES_INTERVAL_MS * retriesCount);
+          } else {
+            throw error;
+          }
+        }
       });
-    });
+    };
+
+    saveCredentialsFunc();
   }
 
   /**
