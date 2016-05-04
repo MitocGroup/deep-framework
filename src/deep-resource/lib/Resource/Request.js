@@ -444,7 +444,7 @@ export class Request {
       let result = this._validate();
 
       if (result.error) {
-        decoratedCallback(this._createValidationErrorResponse(result.error));
+        return decoratedCallback(this._createValidationErrorResponse(result.error));
       }
     }
 
