@@ -147,6 +147,7 @@ export class Token {
         cb(error, credentials);
       });
 
+      this._waitingForCredsCallbacks = [];
       this._loadingInProgress = false;
     };
 
