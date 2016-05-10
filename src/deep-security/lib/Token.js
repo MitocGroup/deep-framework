@@ -47,6 +47,8 @@ export class Token {
     this._identityProvider = null;
     this._userProvider = null;
     this._logService = null;
+    this._loadingInProgress = false;
+    this._waitingForCredsCallbacks = [];
 
     this._credsManager = new CredentialsManager(identityPoolId);
 
@@ -116,6 +118,13 @@ export class Token {
    * @param {Function} callback
    */
   loadCredentials(callback = () => {}) {
+    if (this._loadingInProgress) {
+      this._waitingForCredsCallbacks.push(callback);
+      return;
+    }
+
+    this._loadingInProgress = true;
+
     let event = {
       service: 'deep-security',
       resourceType: 'Cognito',
@@ -128,13 +137,18 @@ export class Token {
     let proxyCallback = (error, credentials) => {
       // log event only after credentials are loaded to get identityId
       this._logService.rumLog(event);
-
       event = util._extend({}, event);
       event.payload = {error: error, credentials: {}}; // avoid logging user credentials
-
       this._logService.rumLog(event);
 
       callback(error, credentials);
+
+      this._waitingForCredsCallbacks.forEach((cb) => {
+        cb(error, credentials);
+      });
+
+      this._waitingForCredsCallbacks = [];
+      this._loadingInProgress = false;
     };
 
     // avoid refreshing or loading credentials for each request
