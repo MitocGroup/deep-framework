@@ -1,11 +1,11 @@
 'use strict';
 
 import chai from 'chai';
+import Kernel from 'deep-kernel';
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai';
 import {Asset} from '../lib/Asset';
 import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance';
-import Kernel from 'deep-kernel';
 import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
@@ -59,6 +59,45 @@ suite('Asset', () => {
   test('Check locate() method returns valid string for !isRoot', () => {
     let expectedResult = 'hello.world.example/bootstrap.js';
     let actualResult = assetService.locate('@hello.world.example:bootstrap.js');
+    chai.expect(actualResult).to.be.equal(expectedResult);
+  });
+
+  test('Check locate() method returns absolute url', () => {
+    global.window = {
+      location: {
+        origin: 'http://example.com',
+      },
+    };
+
+    let expectedResult = 'http://example.com/hello.world.example/bootstrap.js';
+    let actualResult = assetService.locateAbsolute('@hello.world.example:bootstrap.js');
+    chai.expect(actualResult).to.be.equal(expectedResult);
+
+    delete global.window;
+  });
+
+  test('Check locate() method returns absolute url IE case (no window.location.origin)', () => {
+    global.window = {
+      location: {
+        protocol: 'http',
+        hostname: 'example.com',
+        port: 8000,
+      },
+    };
+
+    let expectedResult = 'http://example.com:8000/hello.world.example/bootstrap.js';
+    let actualResult = assetService.locateAbsolute('@hello.world.example:bootstrap.js');
+    chai.expect(actualResult).to.be.equal(expectedResult);
+
+    delete global.window;
+  });
+
+  test(`Check locate() method returns asset without the buildId being injected`, () => {
+    assetService._buildId = buildId;
+    assetService.injectBuildId = true;
+
+    let expectedResult = `hello.world.example/bootstrap.js`;
+    let actualResult = assetService.locate('@hello.world.example:bootstrap.js', '', true);
     chai.expect(actualResult).to.be.equal(expectedResult);
   });
 
