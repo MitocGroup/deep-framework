@@ -4,8 +4,8 @@
 
 'use strict';
 
-import Kernel  from 'deep-kernel'
-import Path  from 'path'
+import Kernel from 'deep-kernel';
+import Path from 'path';
 
 /**
  * @temp Asset class definition

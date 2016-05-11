@@ -1,12 +1,12 @@
 'use strict';
 
-import chai  from 'chai'
-import Kernel  from 'deep-kernel'
-import sinon  from 'sinon'
-import sinonChai  from 'sinon-chai'
-import { Asset } from '../lib/Asset'
-import { Instance } from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance'
-import KernelFactory  from './common/KernelFactory'
+import chai from 'chai';
+import Kernel from 'deep-kernel';
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai';
+import {Asset} from '../lib/Asset';
+import {Instance} from '../node_modules/deep-kernel/lib.compiled/Microservice/Instance';
+import KernelFactory from './common/KernelFactory';
 
 chai.use(sinonChai);
 
