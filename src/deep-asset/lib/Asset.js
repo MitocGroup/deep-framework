@@ -73,18 +73,41 @@ export class Asset extends Kernel.ContainerAware {
    * @param {String} suffix
    * @returns {String}
    */
-  locate(assetIdentifier, suffix = '') {
+  locate(assetIdentifier, suffix = '', skipVersioning = false) {
     let path = this._resolveIdentifier(assetIdentifier);
 
     let basePath = this.microservice.isRoot
       ? Path.join(path)
       : Path.join(this.microservice.toString(), path);
 
-    let internalSuffix = this._injectBuildId && this._buildId
+    let internalSuffix = (this._injectBuildId && this._buildId && !skipVersioning)
       ? `?_v=${this._buildId}`
       : '';
 
     return `${basePath}${suffix}${internalSuffix}`;
+  }
+
+  /**
+   * @param {String} assetIdentifier (e.g. @microservice_identifier:asset_path)
+   * @param {String} suffix
+   * @returns {String}
+   */
+  locateAbsolute(...args) {
+    return Asset._baseUrl + Path.join('/', this.locate(...args));
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get _baseUrl() {
+    if (!window || !window.location) {
+      return '';
+    }
+
+    let loc = window.location;
+
+    return loc.origin ||
+      `${loc.protocol}://${loc.hostname}${loc.port ? ':' + loc.port: ''}`;
   }
 
   /**
