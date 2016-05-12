@@ -7,6 +7,7 @@ cache:
   directories:
     - $(npm root -g)
     - node_modules
+    - $(npm config get prefix)/bin
 
 branches:
   only:
@@ -16,14 +17,14 @@ branches:
     - test
 
 before_install:
-  - npm install -g babel-cli@6.*.*
-  - npm install -g deepify
-  - npm install -g browserify@11.2.0
-  - npm install -g mocha@2.3.4
-  - npm install -g istanbul@0.3.21
-  - npm install -g istanbul-combine@0.3.0
-  - npm install -g isparta@3.1.0
-  - npm install -g codacy-coverage@1.1.3
+  - (npm list -g babel-cli --depth=0 || npm install -g babel-cli@6.x.x)
+  - (npm list -g deepify --depth=0 || npm install -g deepify)
+  - (npm list -g browserify --depth=0 || npm install -g browserify@11.2.x)
+  - (npm list -g mocha --depth=0 || npm install -g mocha@2.3.x)
+  - (npm list -g istanbul --depth=0 || npm install -g istanbul@0.3.x)
+  - (npm list -g istanbul-combine --depth=0 || npm install -g istanbul-combine@0.3.0)
+  - (npm list -g isparta --depth=0 || npm install -g isparta@3.1.x)
+  - (npm list -g codacy-coverage --depth=0 || npm install -g codacy-coverage@1.1.x)
   - npm install -g src/deep-kernel
   - npm install -g src/deep-core
   - npm install -g src/deep-validation
