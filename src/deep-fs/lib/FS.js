@@ -160,7 +160,7 @@ export class FS extends Kernel.ContainerAware {
         let rootFolder = FS._getTmpDir(this._buckets[name]);
         let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;
 
-        this._mountedFolders[name] = new SimulatedS3FS(rootFolder).relativeFsExtended;
+        this._mountedFolders[realName || name] = new SimulatedS3FS(rootFolder).relativeFsExtended;
       } else if (name === FS.SHARED) {
         let s3Fs = this._mountedFolders[name];
 
