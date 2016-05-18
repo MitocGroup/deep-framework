@@ -7,6 +7,7 @@ cache:
   directories:
     - $(npm root -g)
     - node_modules
+    - $(npm config get prefix)/bin
 
 branches:
   only:
@@ -16,14 +17,14 @@ branches:
     - test
 
 before_install:
-  - npm install -g babel-cli@6.*.*
-  - npm install -g deepify
-  - npm install -g browserify@11.2.0
-  - npm install -g mocha@2.3.4
-  - npm install -g istanbul@0.3.21
-  - npm install -g istanbul-combine@0.3.0
-  - npm install -g isparta@3.1.0
-  - npm install -g codacy-coverage@1.1.3
+  - (npm list -g babel-cli --depth=0 || npm install -g babel-cli@6.x.x)
+  - (npm list -g deepify@$(npm show deepify version) --depth=0 || npm install -g deepify)
+  - (npm list -g browserify --depth=0 || npm install -g browserify@11.2.x)
+  - (npm list -g mocha --depth=0 || npm install -g mocha@2.3.x)
+  - (npm list -g istanbul --depth=0 || npm install -g istanbul@0.3.x)
+  - (npm list -g istanbul-combine --depth=0 || npm install -g istanbul-combine@0.3.0)
+  - (npm list -g isparta --depth=0 || npm install -g isparta@3.1.x)
+  - (npm list -g codacy-coverage --depth=0 || npm install -g codacy-coverage@1.1.x)
   - npm install -g src/deep-kernel
   - npm install -g src/deep-core
   - npm install -g src/deep-validation
@@ -43,3 +44,7 @@ env:
     - secure: dOXusGiSaTXZsouFbZpv9lSWnUb+iYSJdf7bcjqT5ihUMMHv8X2RDpiFxsL4n/ymEmkTGeMZY3bJhNdViD8S3mN8FMzTGexa/GCqVZvIu+iITI9rYq5XTPRUAP2AOxOa0yccPVr3eJLJ1dx6WA4vsmjpwliLIyJMBwmw4c/Z6CRHX7XNNTsJ60uGrs7LvP1K53avzTO0lRdF0eboOeiAPBM/u9KRRulsOs3v6ktZ3qPqNeMswk71bMafnKrzctl0tcFBk+XowlF6cCs3uRZ0Kj46jQnfXpaNravB2T0snpwFTFnqJqf+3Dux9L7vqhox22wc1vWoaSFqiEvtZ3fKrYwrJaf2Xdsprv9m0SNSCYzRBqrHOWzE9ZDnzY+Om9H6pSnQe1VBDRXkVO7Di1nN/ev4IOnhwizB1iN0dZnMMgvakg/icRhRNKvDIIKRHnjV0l4Mfz4dOi9t3NZhLFl+eUIuti6qbKpedLObUutfVaIK28P627UjCuos1TtZRxRsB0MJEFB6yaMruiIlU1LGksCbbGmQjpi5D8yA5EOWtf1Jtesh8AYn6PNJ6amcCC8KlBo4dKaDAIbjOcYgikoE4cFbcxFj0EZpfMLADcntaOzhvzDwkrNURAEZxja7iNtitLXYIqaKrto4EYAllGH2AhK8kPKnAGyhkgNTStj9Y94=
     # CODACY_PROJECT_TOKEN=[secured]
     - secure: uL+FsLuZMvKjeyJ0onwII8hFWuiY3eO9TUigvpz/dDaSrrRF82NBZS5aNJp5uemRPJRnAn03yeigY8qio19ZYYpuWS71/pzsF85cAfVo/BuXAQw8hOV4ZoralHur0dxicj7u4dMPp/Q09sVEdDxZKNpCbObhEyeQWuwcZYAqWE14WDJUKK6M1Rgb+OQNvF0q42KMz4a0sHPzCQxNjFJtbbOWvpJenwgGLmOv5MvMnyDqEyQdWTJdHAsNPdpf4q7Xu+IwZHTL8QKnXBxLAay7Zz1c21o2m7Bjvzhfg1jicz8XXmcUPhMapXbwKdgC9phg4VetawIUzG4kaJf1sVyhyTd+yaGf0/lQpKPOQH8oKq6L6hJj2ge7VXfGCICvXoiNQbLZBh5yGqv//lT6HjNTHg8TYSCSjMCYdaV+6Kcs4ayT+ainmEr5PIObN24uihkl6F1GCZUNhvoJY1luZ4rGjwdEvSMCX/6F5vjg6bNQd2REWM9NdJtS9LOfpsOK93Q7WhdwnM9JNUHMBsMXihPrq1nNlZ3hdxuRDEKEehRIy16xXBgp18yXvJn5AoPGHnVH81dX1CbQg7slQ6zuDlH8nUxBWzamZvvupwu3vrjC7Qf406ylUZQn4duR+55GdyQDHk5gskrXN8Hp8brJ3W+i0DfQOiFvOz89imJozhwcg54=
+
+notifications:
+  slack:
+    secure: cN8TZn5j/LCfT487qOwpVeo/V0SEcAON2ke6p2qdm6ug2VEdCdr+bKEzr7a6GMHY/oIUZOxS7xXKF205pj8clIY/xTVb+VC2mfLX3ZkhNwtrxaBam4qYOLeg1iz2MJRDVmVlNrTYDJiVB9Ve8d+8xqm2PMTtQhHtNoOaDy1pWH8dlHo4mxyDYn6l+qofYfXHWl9VwkEy4ULqck0/n4Ms31f6Y7HPWRAb/ZW8NrqO6XU9x779rm0Xl2OnBTliHXxyh+1DuwCKRau8hTA6D9wjcnO/ZIyBPYkzAbsKAakjP3JPH8qNI30erU00r/efzroa33Bb4rYXgeEZxkm6kNAeSxe3OH678GhZ1XsnQq+70dXLAbNelVPPfRbhX8Evkc3zaOESk/WJ+wT5tX9McaLpCDJKglIRS7TvAEuFjIH4LLG+3d2asTGsKVOb85f4O4BPuSOeTKsgTbFoQyXmRuOkkLUDpNzyhfoRWmzyhPxfx4nhRuqVgxLz9mJKJLcSWw6OITxxLxW4jRhvG1pm129uYz5eQ7V24ug2BJUeYmEuBl/HSs2IltNcU72jL3KiJ4AsVmpE05Z24+M5QdSwh+L/ceU26iRYeyEP69v0NdE7hHky/iCokrsRR/tBd0fF/kd04OTlCphQU4m2A0LSbTLVSr2CgS0wPQpKU4ik+DHhyf0=
