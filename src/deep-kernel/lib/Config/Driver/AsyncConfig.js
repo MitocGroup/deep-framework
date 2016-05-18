@@ -48,16 +48,16 @@ export class AsyncConfig extends AbstractDriver {
    * @private
    */
   _loadFromFS() {
-    let driver = new FsDriver(this._configFile)
-      .inherit(this)
-      .load();
+    let driver = new FsDriver(this._configFile).inherit(this);
 
-    if (this._kernel.container.localBackend) {
+    if (!this._kernel.container.localBackend) {
       let sharedFs = this._kernel.get('fs')
         .shared(this._kernel.rootMicroservice.identifier);
 
       driver.setFs(sharedFs);
     }
+
+    driver.load();
   }
 
   /**
