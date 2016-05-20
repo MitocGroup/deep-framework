@@ -69,12 +69,12 @@ export class Exception extends Extendable(Error) {
 
 // Fixes babel@6 issue: https://phabricator.babeljs.io/T3083
 function Extendable(errorClass){
-  function Extendable(){
+  function ExtendableClass(){
     errorClass.apply(this, arguments);
   }
 
-  Extendable.prototype = Object.create(errorClass.prototype);
-  Object.setPrototypeOf(Extendable, errorClass);
+  ExtendableClass.prototype = Object.create(errorClass.prototype);
+  Object.setPrototypeOf(ExtendableClass, errorClass);
 
-  return Extendable;
+  return ExtendableClass;
 }
