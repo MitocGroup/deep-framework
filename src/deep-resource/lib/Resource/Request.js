@@ -47,6 +47,7 @@ export class Request {
     this._publicCached = false;
 
     this._async = false;
+    this._xhrAsync = true; // it's passed to httpOptions.xhrAsync option of AWS Service
     this._native = false;
 
     this._validationSchemaName = null;
@@ -109,6 +110,13 @@ export class Request {
 
   /**
    * @returns {Boolean}
+   */
+  get xhrAsync() {
+    return this._xhrAsync;
+  }
+
+  /**
+   * @returns {Boolean}
    *
    * @todo: remove this?
    */
@@ -144,6 +152,17 @@ export class Request {
 
     this._native = true;
     this._async = true;
+
+    return this;
+  }
+
+  /**
+   * @param {Boolean} flag
+   *
+   * @returns {Request}
+   */
+  httpXhrAsync(flag) {
+    this._xhrAsync = !!flag;
 
     return this;
   }
@@ -623,6 +642,9 @@ export class Request {
 
     let options = {
       region: this._action.region,
+      httpOptions: {
+        xhrAsync: this.xhrAsync // @todo - add it to HTTP calls as well
+      },
     };
 
     let invocationParameters = {
