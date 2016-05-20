@@ -18,7 +18,7 @@ if [ -d 'lib/' ] && [ "$OSTYPE" != "msys" ] && [ "$OSTYPE" != "win32" ] && [ "$O
     done;
 
     node `which isparta` cover --include ${COMPILE_DIR}/lib/**/*.js _mocha -- ${COMPILE_DIR}/test/**/*.spec.js \
-        --reporter spec --ui tdd --timeout 4s
+        --reporter spec --ui tdd --timeout 100s
 elif [ "$OSTYPE" == "win32" ] || [ "$OSTYPE" == "win64" ]; then
     echo "You should have installed and configured http://git-scm.com/ and run all bash command by using git-bash.exe"
 elif [ -d 'lib/' ]; then

@@ -16,10 +16,10 @@ sed -e "s@${SEARCH_VALUE}@${REPLACE_VALUE}@g" ${COVERAGE_PATH}"/lcov.info" > ${C
 
 ### Upload Coverage info to Codacy ###
 
-cat ${COVERAGE_PATH}"/coverage.info" | codacy-coverage --debug
-
-### Cleanup! ###
-
-__CMD='rm -rf ./coverage'
-
-subpath_run_cmd ${__SRC_PATH} "$__CMD"
+#cat ${COVERAGE_PATH}"/coverage.info" | codacy-coverage --debug
+#
+#### Cleanup! ###
+#
+#__CMD='rm -rf ./coverage'
+#
+#subpath_run_cmd ${__SRC_PATH} "$__CMD"
