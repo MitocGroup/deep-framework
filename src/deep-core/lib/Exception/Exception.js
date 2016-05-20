@@ -7,7 +7,7 @@
 /**
  * Base exception
  */
-export class Exception extends Error {
+export class Exception extends Extendable(Error) {
   /**
    * @returns {String}
    */
@@ -65,4 +65,16 @@ export class Exception extends Error {
   get code() {
     return this._code;
   }
+}
+
+// Fixes babel@6 issue: https://phabricator.babeljs.io/T3083
+function Extendable(errorClass){
+  function Extendable(){
+    errorClass.apply(this, arguments);
+  }
+
+  Extendable.prototype = Object.create(errorClass.prototype);
+  Object.setPrototypeOf(Extendable, errorClass);
+
+  return Extendable;
 }
