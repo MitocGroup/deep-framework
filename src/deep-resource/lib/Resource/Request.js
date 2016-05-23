@@ -162,6 +162,10 @@ export class Request {
    * @returns {Request}
    */
   httpXhrAsync(flag) {
+    if (!this.isLambda) {
+      throw new Exception('XHR sync requests are supported only for calls to lambda functions.', 400);
+    }
+
     this._xhrAsync = !!flag;
 
     return this;
@@ -643,7 +647,7 @@ export class Request {
     let options = {
       region: this._action.region,
       httpOptions: {
-        xhrAsync: this.xhrAsync // @todo - add it to HTTP calls as well
+        xhrAsync: this.xhrAsync
       },
     };
 
