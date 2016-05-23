@@ -123,7 +123,7 @@ export class DB extends Kernel.ContainerAware {
       }
 
       callback();
-    });
+    }, this._localBackend);
 
     return this;
   }
