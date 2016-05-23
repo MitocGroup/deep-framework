@@ -50,7 +50,7 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "bash node-bin/_test.sh",
+    "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core"
@@ -62,7 +62,8 @@
   "devDependencies": {
     "chai": "^3.2.x",
     "sinon": "^1.17.x",
-    "sinon-chai": "^2.8.x"
+    "sinon-chai": "^2.8.x",
+    "babel-istanbul": "^0.8.x"
   },
   "preferGlobal": false,
   "analyze": true
