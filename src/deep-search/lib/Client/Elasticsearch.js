@@ -15,17 +15,22 @@ import {Aws4SignedHttpConnectionFactory} from './Connection/Aws4SignedHttpConnec
 export class Elasticsearch {
   /**
    * @param {String} host
+   * @param {Boolean} useAws4Signature
    * @param {Function|null} decorator
    */
-  constructor(host, decorator = null) {
+  constructor(host, decorator = null, useAws4Signature = true) {
     this._host = host;
     this._decorator = decorator;
 
-    this._esClient = new elasticsearch.Client({
-      host: this._host,
-      apiVersion: Elasticsearch.API_VERSION,
-      connectionClass: new Aws4SignedHttpConnectionFactory().create()
-    });
+    let clientOpts = {};
+    clientOpts.host = this._host;
+    clientOpts.apiVersion = Elasticsearch.API_VERSION;
+
+    if (useAws4Signature) {
+      clientOpts.connectionClass = new Aws4SignedHttpConnectionFactory().create();
+    }
+
+    this._esClient = new elasticsearch.Client(clientOpts);
 
     this._proxy(this, this._esClient, this._decorator);
   }
