@@ -189,7 +189,8 @@ suite('Kernel', () => {
   });
 
   //@todo - to be updated
-  //test('Check microservice() method throws "MissingMicroserviceException" exception for invalid identifier', () => {
+  //test('Check microservice() method throws "MissingMicroserviceException" exception for invalid identifier',
+  //  () => {
   //  let error = null;
   //  try {
   //    backendKernelInstance.microservice('test');
@@ -198,7 +199,9 @@ suite('Kernel', () => {
   //  }
   //
   //  chai.expect(error).to.be.not.equal(null);
-  //  chai.assert.instanceOf(error, MissingMicroserviceException, 'error is an instance of MissingMicroserviceException');
+  //  chai.assert.instanceOf(
+  //    error, MissingMicroserviceException, 'error is an instance of MissingMicroserviceException'
+  //  );
   //});
 
   test('Check microservice() method without args', () => {

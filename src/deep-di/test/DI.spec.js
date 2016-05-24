@@ -47,7 +47,8 @@ suite('DI', () => {
   //  chai.expect(error).to.be.an.instanceof(MissingServiceException);
   //});
   //
-  //test('Check addService method throws "Core.Exception.InvalidArgumentException" exception for invalid service', () => {
+  //test('Check addService method throws "Core.Exception.InvalidArgumentException" exception for invalid service',
+  // () => {
   //  let error = null;
   //  try {
   //    di.addService('serviceName', 'invalidService');
