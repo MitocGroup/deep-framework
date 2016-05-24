@@ -2,24 +2,30 @@
 
 source $(dirname $0)/_head.sh
 
-### Merge Coverage results ###
-
-COVERAGE_PATH=${__SCRIPT_PATH}"/../coverage"
-
-istanbul-combine -d ${COVERAGE_PATH} -r lcov -p both \
+##############################
+### Merge Coverage Results ###
+##############################
+istanbul-combine -d ${__COVERAGE_PATH} -r lcovonly -p both \
   ${__SRC_PATH}/*/coverage/*.json
 
-SEARCH_VALUE="/compile"
-REPLACE_VALUE=""
-
-sed -e "s@${SEARCH_VALUE}@${REPLACE_VALUE}@g" ${COVERAGE_PATH}"/lcov.info" > ${COVERAGE_PATH}"/coverage.info"
-
+######################################
 ### Upload Coverage info to Codacy ###
+######################################
+cat ${__COVERAGE_PATH}"/lcov.info" | codacy-coverage --debug
 
-#cat ${COVERAGE_PATH}"/coverage.info" | codacy-coverage --debug
-#
-#### Cleanup! ###
-#
-#__CMD='rm -rf ./coverage'
-#
-#subpath_run_cmd ${__SRC_PATH} "$__CMD"
+#####################################################################
+### Log top 20 file paths to be able see paths format from travis ###
+#####################################################################
+head -n 20 ${__COVERAGE_PATH}"/lcov.info"
+
+#############################################
+### Cleanup! Remove all generated reports ###
+#############################################
+__CMD='rm -rf ./coverage'
+subpath_run_cmd ${__SRC_PATH} "$__CMD"
+
+###########################
+### Remove final report ###
+###########################
+cd ${__COVERAGE_PATH}
+rm -rf ${__COVERAGE_PATH}

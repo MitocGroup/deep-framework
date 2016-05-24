@@ -2,8 +2,8 @@
   "name": "deep",
   "version": "0.0.1",
   "scripts": {
-    "install": "if [ -f '.travis.yml' ]; then test/bin/install.sh; else bin/install.sh; fi",
-    "test": "if [ -f '.travis.yml' ]; then test/bin/test.sh; else bin/test.sh; fi",
+    "install": "if [ -f '.travis.yml' ]; then test/bin/install.sh ${TEST_SUITE}; else bin/install.sh ${TEST_SUITE}; fi",
+    "test": "if [ -f '.travis.yml' ]; then test/bin/test.sh ${TEST_SUITE}; else bin/test.sh ${TEST_SUITE}; fi",
     "coverage": "if [ -f '.travis.yml' ]; then test/bin/coverage.sh; else bin/coverage.sh; fi",
     "generate-missing-tests": "if [ -f '.travis.yml' ]; then test/bin/generate_missing_tests.sh; else bin/generate_missing_tests.sh; fi"
   }

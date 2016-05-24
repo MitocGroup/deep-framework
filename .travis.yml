@@ -18,12 +18,13 @@ branches:
 
 before_install:
   - (npm list -g babel-cli --depth=0 || npm install -g babel-cli@6.x.x)
+  - (npm list -g babel-polyfill --depth=0 || npm install -g babel-polyfill)
+  - (npm list -g babel-preset-es2015 --depth=0 || npm install -g babel-preset-es2015)
   - (npm list -g deepify@$(npm show deepify version) --depth=0 || npm install -g deepify)
   - (npm list -g browserify --depth=0 || npm install -g browserify@11.2.x)
-  - (npm list -g mocha --depth=0 || npm install -g mocha@2.3.x)
-  - (npm list -g istanbul --depth=0 || npm install -g istanbul@0.3.x)
+  - (npm list -g mocha --depth=0 || npm install -g mocha@2.4.x)
+  - (npm list -g istanbul@^1.0.0-alpha --depth=0 || npm install -g istanbul@^1.0.0-alpha)
   - (npm list -g istanbul-combine --depth=0 || npm install -g istanbul-combine@0.3.0)
-  - (npm list -g isparta --depth=0 || npm install -g isparta@3.1.x)
   - (npm list -g codacy-coverage --depth=0 || npm install -g codacy-coverage@1.1.x)
   - npm install -g src/deep-kernel
   - npm install -g src/deep-core
@@ -38,6 +39,17 @@ before_install:
 after_success:
   - npm run coverage
 
+########################################################################
+#TODO - uncomment out when travis will have shared storage between jobs
+#https://github.com/travis-ci/travis-ci/issues/6054
+#env:
+#  matrix:
+#    - TEST_SUITE=deep-asset,deep-cache,deep-search
+#    - TEST_SUITE=deep-db,deep-di,deep-notification
+#    - TEST_SUITE=deep-fs,deep-kernel,deep-log,deep-core
+#    - TEST_SUITE=deep-framework
+#    - TEST_SUITE=deep-security,deep-validation,deep-event,deep-resource
+########################################################################
 env:
   global:
     # JSPM_GITHUB_AUTH_TOKEN=[secured]
