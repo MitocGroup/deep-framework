@@ -6,7 +6,7 @@
 
 import Core from 'deep-core';
 import elasticsearch from 'elasticsearch';
-import {Aws4SignedHttpConnectionFactory} from './Connection/Aws4SignedHttpConnectionFactory';
+import {Aws4SignedHttpConnection} from './Connection/Aws4SignedHttpConnection';
 
 /**
  * Elasticsearch client
@@ -27,7 +27,7 @@ export class Elasticsearch {
     clientOpts.apiVersion = Elasticsearch.API_VERSION;
 
     if (useAws4Signature) {
-      clientOpts.connectionClass = new Aws4SignedHttpConnectionFactory().create();
+      clientOpts.connectionClass = Aws4SignedHttpConnection.create();
     }
 
     this._esClient = new elasticsearch.Client(clientOpts);
