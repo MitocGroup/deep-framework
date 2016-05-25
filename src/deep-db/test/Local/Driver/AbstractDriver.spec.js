@@ -63,22 +63,21 @@ suite('Local/Driver/AbstractDriver', () => {
     chai.expect(spyCallback).to.not.have.been.calledWith();
   });
 
-  //@todo - to be updated
-  //test(
-  //  'Check start() method creates ServerAlreadyRunningException in callback when _running=true',
-  //  () => {
-  //    let spyCallback = sinon.spy();
-  //
-  //    abstractDriver.start(spyCallback);
-  //
-  //    chai.expect(spyCallback).to.have.been.threw;
-  //    chai.assert.instanceOf(
-  //      spyCallback.args[0][0],
-  //      ServerAlreadyRunningException,
-  //      'error is an instance of ServerAlreadyRunningException'
-  //    );
-  //  }
-  //);
+  test(
+    'Check start() method creates ServerAlreadyRunningException in callback when _running=true',
+    () => {
+      let spyCallback = sinon.spy();
+
+      abstractDriver.start(spyCallback);
+
+      chai.expect(spyCallback).to.have.been.threw;
+      chai.assert.instanceOf(
+        spyCallback.args[0][0],
+        ServerAlreadyRunningException,
+        'error is an instance of ServerAlreadyRunningException'
+      );
+    }
+  );
 
   test('Check restart() method restarts driver', () => {
 
@@ -125,18 +124,17 @@ suite('Local/Driver/AbstractDriver', () => {
     }
   );
 
-  //@todo - to be updated
-  //test('Check ServerTtsExceededException can be thrown', () => {
-  //  let error = null;
-  //
-  //  try {
-  //    abstractDriver.throwServerTtsExceededException('driver', 1);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(
-  //    error, ServerTtsExceededException, 'error is an instance of ServerTtsExceededException'
-  //  );
-  //});
+  test('Check ServerTtsExceededException can be thrown', () => {
+    let error = null;
+
+    try {
+      abstractDriver.throwServerTtsExceededException('driver', 1);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, ServerTtsExceededException, 'error is an instance of ServerTtsExceededException'
+    );
+  });
 });

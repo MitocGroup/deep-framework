@@ -155,25 +155,24 @@ suite('AWS/Lambda/Runtime', () => {
     chai.expect(_runtime.calleeConfig).to.eql(calleeConfig);
   });
 
-  //@todo - to be updated
-  //test('Check _fillUserContext throws InvalidCognitoIdentityException', () => {
-  //  let error = null;
-  //  let _runtime = new RuntimeMock(backendKernelInstance);
-  //  let _context = Object.assign(context, {
-  //    identity: {
-  //      cognitoIdentityPoolId: 'test cognitoIdentityPoolId',
-  //      cognitoIdentityId: 'test cognitoIdentityId',
-  //    }
-  //  });
-  //
-  //  _runtime.run(event, _context);
-  //
-  //  try {
-  //    _runtime._fillUserContext();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.an.instanceof(InvalidCognitoIdentityException);
-  //});
+  test('Check _fillUserContext throws InvalidCognitoIdentityException', () => {
+    let error = null;
+    let _runtime = new RuntimeMock(backendKernelInstance);
+    let _context = Object.assign(context, {
+      identity: {
+        cognitoIdentityPoolId: 'test cognitoIdentityPoolId',
+        cognitoIdentityId: 'test cognitoIdentityId',
+      }
+    });
+
+    _runtime.run(event, _context);
+
+    try {
+      _runtime._fillUserContext();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.an.instanceof(InvalidCognitoIdentityException);
+  });
 });

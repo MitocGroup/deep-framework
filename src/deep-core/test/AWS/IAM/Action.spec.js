@@ -33,17 +33,16 @@ suite('AWS/IAM/Action', () => {
     chai.expect(action.service).to.be.equal(validServiceName);
   });
 
-  //@todo - to be updated
-  //test(`Check service setter throws exception for invalid value: ${invalidServiceName}`, () => {
-  //  let error = null;
-  //  try {
-  //    action.service = invalidServiceName;
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.an.instanceof(InvalidArgumentException);
-  //});
+  test(`Check service setter throws exception for invalid value: ${invalidServiceName}`, () => {
+    let error = null;
+    try {
+      action.service = invalidServiceName;
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.an.instanceof(InvalidArgumentException);
+  });
 
   test(`Check exract() method returns: ${validServiceName}:${actionName}`, () => {
     chai.expect(action.extract()).to.be.equal(`${validServiceName}:${actionName}`);

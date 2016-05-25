@@ -69,7 +69,7 @@ suite('AWS/Lambda/Response', () => {
       key: 'test context',
       succeed: (data)=> {
         return data;
-      }
+      },
     };
 
     response.send();
@@ -78,31 +78,31 @@ suite('AWS/Lambda/Response', () => {
     chai.expect(response, 'is an instance of Response').to.be.an.instanceOf(Response);
   });
 
-  //@todo - to be updated
-  //test('Check send throws MissingRuntimeContextException', () => {
-  //  let response = new Response({}, data);
+  test('Check send throws MissingRuntimeContextException', () => {
+    let response = new Response({}, data);
+    let error = null;
+
+    try {
+      response.send();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.an.instanceOf(MissingRuntimeContextException);
+  });
+
+  //@todo - to be re-worked
+  //test('Check send throws ContextAlreadySentException', () => {
   //  let error = null;
   //
   //  try {
   //    response.send();
-  //  } catch(e) {
+  //  } catch (e) {
   //    error = e;
   //  }
   //
-  //  chai.expect(error).to.be.an.instanceOf(MissingRuntimeContextException);
+  //  chai.expect(error).to.be.an.instanceOf(ContextAlreadySentException);
   //});
-
-  // test('Check send throws ContextAlreadySentException', () => {
-  //   let error = null;
-  //
-  //   try {
-  //     response.send();
-  //   } catch(e) {
-  //     error = e;
-  //   }
-  //
-  //   chai.expect(error).to.be.an.instanceOf(ContextAlreadySentException);
-  // });
 
   test('Check VALIDATION_SCHEMAS_DIR', () => {
     chai.expect(Runtime.VALIDATION_SCHEMAS_DIR).to.be.equal('__deep_validation_schemas__');

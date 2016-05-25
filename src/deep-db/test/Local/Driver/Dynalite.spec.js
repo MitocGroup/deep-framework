@@ -46,7 +46,6 @@ suite('Local/Driver/Dynalite', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly(null);
   });
 
-  //@todo - to be updated
   //test('Check _start() throws "FailedToStartServerException" in cb', () => {
   //  let spyCallback = sinon.spy();
   //

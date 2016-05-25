@@ -50,18 +50,17 @@ suite('AWS/IAM/Statement', () => {
     chai.expect(Statement.ALLOW).to.be.equal('Allow');
   });
 
-  //@todo - to be updated
-  //test(`Check effect setter throws exception for invalid value: ${invalidEffect}`, () => {
-  //  let error = null;
-  //  try {
-  //    statement.effect = invalidEffect;
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.expect(error).to.be.an.instanceof(InvalidArgumentException);
-  //});
+  test(`Check effect setter throws exception for invalid value: ${invalidEffect}`, () => {
+    let error = null;
+    try {
+      statement.effect = invalidEffect;
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.expect(error).to.be.an.instanceof(InvalidArgumentException);
+  });
 
   test(`Check effect setter sets value: ${Statement.DENY}`, () => {
     let error = null;

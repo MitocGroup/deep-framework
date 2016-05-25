@@ -406,6 +406,8 @@ export class Kernel {
       this._config
     );
 
+    this._container.localBackend = Core.IS_DEV_SERVER;
+
     let bootingServices = 0;
 
     for (let serviceKey in this._services) {

@@ -14,6 +14,7 @@ import Core from 'deep-core';
 export class DI {
   constructor() {
     this._bottle = new Bottle();
+    this._localBackend = false;
   }
 
   /**
@@ -87,5 +88,19 @@ export class DI {
    */
   has(key) {
     return this._bottle.container.hasOwnProperty(key);
+  }
+
+  /**
+   * @param {Boolean} localBackend
+   */
+  set localBackend(localBackend) {
+    this._localBackend = localBackend;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get localBackend() {
+    return this._localBackend;
   }
 }

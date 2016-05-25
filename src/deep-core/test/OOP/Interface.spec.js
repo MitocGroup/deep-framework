@@ -26,18 +26,17 @@ class NestedInterface extends FailTest {
 
 suite('OOP/Interface', () => {
 
-  //@todo - to be updated
-  //test('Missing "method_tbd" method', () => {
-  //  var error = null;
-  //
-  //  try {
-  //    new FailTest();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.an.instanceOf(MethodsNotImplementedException);
-  //});
+  test('Missing "method_tbd" method', () => {
+    var error = null;
+
+    try {
+      new FailTest();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.an.instanceOf(MethodsNotImplementedException);
+  });
 
   test('Implement "method_tbd" in a nested object', () => {
     let obj = new NestedInterface();
