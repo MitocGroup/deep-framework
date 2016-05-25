@@ -27,7 +27,7 @@ export class Elasticsearch {
     clientOpts.apiVersion = Elasticsearch.API_VERSION;
 
     if (useAws4Signature) {
-      clientOpts.connectionClass = Aws4SignedHttpConnection.create();
+      clientOpts.connectionClass = Aws4SignedHttpConnection.createPrototype();
     }
 
     this._esClient = new elasticsearch.Client(clientOpts);

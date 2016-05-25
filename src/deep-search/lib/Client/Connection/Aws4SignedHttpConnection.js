@@ -56,9 +56,9 @@ export class Aws4SignedHttpConnection extends HttpConnection {
 
   /**
    * @param {{accessKeyId: String, secretAccessKey: String}|null} awsCredentials
-   * @returns {Aws4SignedHttpConnection}
+   * @returns {Aws4SignedHttpConnection.prototype}
    */
-  static create(awsCredentials = null) {
+  static createPrototype(awsCredentials = null) {
     return Aws4SignedHttpConnection.bind(null, awsCredentials);
   }
 }
