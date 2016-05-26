@@ -47,7 +47,7 @@ suite('Search', function () {
 
   test('Check _createClient() passes "UnknownSearchDomainException" exception in callback', () => {
 
-    let invalidDomainName = 'invalid.domainName'
+    let invalidDomainName = 'invalid.domainName';
     let spyCallback = sinon.spy();
 
     search._createClient(invalidDomainName, spyCallback);
