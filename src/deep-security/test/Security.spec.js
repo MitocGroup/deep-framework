@@ -80,7 +80,7 @@ suite('Security', function () {
     chai.expect(securityFrontend._userProviderEndpoint).to.be.eql(userProviderEndpoint);
   });
 
-  test('Check warmupBackendLogin() throws "Exception" for frontend', function () {
+  test('Check warmupBackendLogin() throws "Exception" for frontend', () => {
     let error = null;
 
     try {

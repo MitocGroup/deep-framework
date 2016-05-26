@@ -69,7 +69,7 @@ suite('AWS/Lambda/Response', () => {
       key: 'test context',
       succeed: (data)=> {
         return data;
-      }
+      },
     };
 
     response.send();
@@ -84,24 +84,25 @@ suite('AWS/Lambda/Response', () => {
 
     try {
       response.send();
-    } catch(e) {
+    } catch (e) {
       error = e;
     }
 
     chai.expect(error).to.be.an.instanceOf(MissingRuntimeContextException);
   });
 
-  // test('Check send throws ContextAlreadySentException', () => {
-  //   let error = null;
+  //@todo - to be re-worked
+  //test('Check send throws ContextAlreadySentException', () => {
+  //  let error = null;
   //
-  //   try {
-  //     response.send();
-  //   } catch(e) {
-  //     error = e;
-  //   }
+  //  try {
+  //    response.send();
+  //  } catch (e) {
+  //    error = e;
+  //  }
   //
-  //   chai.expect(error).to.be.an.instanceOf(ContextAlreadySentException);
-  // });
+  //  chai.expect(error).to.be.an.instanceOf(ContextAlreadySentException);
+  //});
 
   test('Check VALIDATION_SCHEMAS_DIR', () => {
     chai.expect(Runtime.VALIDATION_SCHEMAS_DIR).to.be.equal('__deep_validation_schemas__');

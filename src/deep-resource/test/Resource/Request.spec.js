@@ -691,38 +691,39 @@ suite('Resource/Request', () => {
     chai.expect(actualResult).to.equal('del');
   });
 
-  test('Check _send()', () => {
-    let spyCallback = sinon.spy();
-    let modelName = 'ConfigurationModel';
-    let testModelSchema = {
-      Configuration: 'string',
-      Status: 'number',
-    };
-    let inputObject = {
-      Configuration: 'test configuration',
-      Status: 'should be number here',
-    };
-
-    //arrange
-    request._action.resource.validation.setSchemaRaw(modelName, testModelSchema);
-    request._payload =  inputObject;
-    request.validationSchemaName = modelName;
-
-    //act
-    let actualResult = request._send(spyCallback);
-
-    //assert
-    chai.assert.instanceOf(actualResult, Request, 'is an instance of Request');
-
-    let spyCallbackArgs = spyCallback.args[0];
-
-    chai.assert.instanceOf(
-      spyCallbackArgs[0],
-      LambdaResponse,
-      'error is an instance of LambdaResponse'
-    );
-    chai.expect(spyCallbackArgs[1]).to.equal(undefined);
-  });
+  //@todo - to be re-worked
+  //test('Check _send()', () => {
+  //  let spyCallback = sinon.spy();
+  //  let modelName = 'ConfigurationModel';
+  //  let testModelSchema = {
+  //    Configuration: 'string',
+  //    Status: 'number',
+  //  };
+  //  let inputObject = {
+  //    Configuration: 'test configuration',
+  //    Status: 'should be number here',
+  //  };
+  //
+  //  //arrange
+  //  request._action.resource.validation.setSchemaRaw(modelName, testModelSchema);
+  //  request._payload =  inputObject;
+  //  request.validationSchemaName = modelName;
+  //
+  //  //act
+  //  let actualResult = request._send(spyCallback);
+  //
+  //  //assert
+  //  chai.assert.instanceOf(actualResult, Request, 'is an instance of Request');
+  //
+  //  let spyCallbackArgs = spyCallback.args[0];
+  //
+  //  chai.assert.instanceOf(
+  //    spyCallbackArgs[0],
+  //    LambdaResponse,
+  //    'error is an instance of LambdaResponse'
+  //  );
+  //  chai.expect(spyCallbackArgs[1]).to.equal(undefined);
+  //});
 
   test('Check _createAws4SignedRequest() throws NotAuthenticatedException ', () => {
     let spyCallback = sinon.spy();

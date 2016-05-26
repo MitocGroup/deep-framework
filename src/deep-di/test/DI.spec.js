@@ -29,6 +29,7 @@ suite('DI', () => {
     chai.expect(DI).to.be.an('function');
   });
 
+
   test('Check constructor sets _bottle', () => {
     chai.assert.instanceOf(di._bottle, Bottle, 'this._bottle is an instance of Bottle');
   });
@@ -45,7 +46,8 @@ suite('DI', () => {
     chai.expect(error).to.be.an.instanceof(MissingServiceException);
   });
 
-  test('Check addService method throws "Core.Exception.InvalidArgumentException" exception for invalid service', () => {
+  test('Check addService method throws "Core.Exception.InvalidArgumentException" exception for invalid service',
+   () => {
     let error = null;
     try {
       di.addService('serviceName', 'invalidService');

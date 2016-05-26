@@ -137,13 +137,13 @@ suite('Resource/Instance', () => {
 
       let error = null;
       let testAction = 'find';
-      
+
       try {
         instance.action(testAction);
       } catch (e) {
         error = e;
       }
-      
+
       chai.assert.instanceOf(
         error, MissingActionException, 'error is an instance of MissingActionException'
       );

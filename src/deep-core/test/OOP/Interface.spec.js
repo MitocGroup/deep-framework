@@ -25,6 +25,7 @@ class NestedInterface extends FailTest {
 }
 
 suite('OOP/Interface', () => {
+
   test('Missing "method_tbd" method', () => {
     var error = null;
 

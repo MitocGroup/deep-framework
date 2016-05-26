@@ -46,14 +46,14 @@ suite('Local/Driver/Dynalite', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly(null);
   });
 
-  test('Check _start() throws "FailedToStartServerException" in cb', () => {
-    let spyCallback = sinon.spy();
-
-    dynalite._server.setMode(1, ['listen']);
-    dynalite._start(spyCallback);
-
-    chai.expect(spyCallback.args[0][0].constructor.name).to.equal('FailedToStartServerException');
-  });
+  //test('Check _start() throws "FailedToStartServerException" in cb', () => {
+  //  let spyCallback = sinon.spy();
+  //
+  //  dynalite._server.setMode(1, ['listen']);
+  //  dynalite._start(spyCallback);
+  //
+  //  chai.expect(spyCallback.args[0][0].constructor.name).to.equal('FailedToStartServerException');
+  //});
 
   test('Check stop() method stops server', () => {
     let spyCallback = sinon.spy();

@@ -100,7 +100,7 @@ suite('IdentityProvider', () => {
     );
   });
 
-  test('Check config() throws "MissingLoginProviderException" for missing provider', () => {
+  test('Check config() returns valid provider', () => {
     let actualResult = identityProvider.config('graph.facebook.com');
 
     chai.expect(actualResult).to.eql(providers['graph.facebook.com']);
