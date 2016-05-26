@@ -48,58 +48,57 @@ suite('IdentityProvider', () => {
     chai.expect(identityProvider.tokenExpirationTime).to.be.eql(identityMetadata.tokenExpirationTime);
   });
 
-  //@todo - to be updated
-  //test('Check constructor throws "MissingLoginProviderException" for missing provider', () => {
-  //  let error = null;
-  //
-  //  try {
-  //    identityProvider = new IdentityProvider(providers, 'missing_provider', identityMetadata);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(
-  //    error, MissingLoginProviderException, 'error is an instance of MissingLoginProviderException'
-  //  );
-  //});
-  //
-  //test('Check constructor throws "IdentityProviderMismatchException"', () => {
-  //  let error = null;
-  //  let identityMetadata = {
-  //    access_token: 'test_userToken',
-  //    tokenExpirationTime: date,
-  //    user_id: 'test_userId',
-  //    provider: 'invalid provider',
-  //  };
-  //
-  //  try {
-  //    identityProvider = new IdentityProvider(providers, 'amazon', identityMetadata);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(
-  //    error, IdentityProviderMismatchException, 'error is an instance of IdentityProviderMismatchException'
-  //  );
-  //});
-  //
-  //test('Check constructor throws "InvalidProviderIdentityException"', () => {
-  //  let error = null;
-  //  let identityMetadata = {
-  //    tokenExpirationTime: date,
-  //    user_id: 'test_userId',
-  //  };
-  //
-  //  try {
-  //    identityProvider = new IdentityProvider(providers, 'amazon', identityMetadata);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(
-  //    error, InvalidProviderIdentityException, 'error is an instance of InvalidProviderIdentityException'
-  //  );
-  //});
+  test('Check constructor throws "MissingLoginProviderException" for missing provider', () => {
+    let error = null;
+
+    try {
+      identityProvider = new IdentityProvider(providers, 'missing_provider', identityMetadata);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, MissingLoginProviderException, 'error is an instance of MissingLoginProviderException'
+    );
+  });
+
+  test('Check constructor throws "IdentityProviderMismatchException"', () => {
+    let error = null;
+    let identityMetadata = {
+      access_token: 'test_userToken',
+      tokenExpirationTime: date,
+      user_id: 'test_userId',
+      provider: 'invalid provider',
+    };
+
+    try {
+      identityProvider = new IdentityProvider(providers, 'amazon', identityMetadata);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, IdentityProviderMismatchException, 'error is an instance of IdentityProviderMismatchException'
+    );
+  });
+
+  test('Check constructor throws "InvalidProviderIdentityException"', () => {
+    let error = null;
+    let identityMetadata = {
+      tokenExpirationTime: date,
+      user_id: 'test_userId',
+    };
+
+    try {
+      identityProvider = new IdentityProvider(providers, 'amazon', identityMetadata);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, InvalidProviderIdentityException, 'error is an instance of InvalidProviderIdentityException'
+    );
+  });
 
   test('Check config() returns valid provider', () => {
     let actualResult = identityProvider.config('graph.facebook.com');
@@ -107,20 +106,19 @@ suite('IdentityProvider', () => {
     chai.expect(actualResult).to.eql(providers['graph.facebook.com']);
   });
 
-  //@todo - to be updated
-  //test('Check config() throws "MissingLoginProviderException" for missing provider', () => {
-  //  let error = null;
-  //
-  //  try {
-  //    identityProvider.config('missing_provider');
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(
-  //    error, MissingLoginProviderException, 'error is an instance of MissingLoginProviderException'
-  //  );
-  //});
+  test('Check config() throws "MissingLoginProviderException" for missing provider', () => {
+    let error = null;
+
+    try {
+      identityProvider.config('missing_provider');
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(
+      error, MissingLoginProviderException, 'error is an instance of MissingLoginProviderException'
+    );
+  });
 
   test('Check isTokenValid() returns true', () => {
     chai.expect(identityProvider.isTokenValid()).to.be.equal(true);

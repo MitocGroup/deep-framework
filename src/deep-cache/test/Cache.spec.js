@@ -93,18 +93,17 @@ suite('Cache', () => {
     }
   );
 
-  //@todo - need to be updated
-  //test('Check createDriver() throws exception', () => {
-  //  let error = null;
-  //
-  //  try {
-  //    Cache.createDriver(negativeDriverName);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.an.instanceof(Exception);
-  //});
+  test('Check createDriver() throws exception', () => {
+    let error = null;
+
+    try {
+      Cache.createDriver(negativeDriverName);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.an.instanceof(Exception);
+  });
 
   test('Check boot() method boots a certain service and executes callback',
     () => {

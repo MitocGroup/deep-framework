@@ -121,23 +121,22 @@ suite('Resource/LocalRequest', () => {
     delete global.window;
   });
 
-  //@todo - to be updated
-  //test('Check _send() throws "MissingLocalLambdaExecWrapperException" for !window',
-  //  function () {
-  //    let error = null;
-  //    let spyCallback = sinon.spy();
-  //
-  //    httpMock.setMode(HttpMock.DATA_MODE, ['end']);
-  //
-  //    try {
-  //      localRequest._send(spyCallback);
-  //    } catch (e) {
-  //      error = e;
-  //    }
-  //
-  //    chai.expect(error.constructor.name).to.equal('MissingLocalLambdaExecWrapperException');
-  //  }
-  //);
+  test('Check _send() throws "MissingLocalLambdaExecWrapperException" for !window',
+    function () {
+      let error = null;
+      let spyCallback = sinon.spy();
+
+      httpMock.setMode(HttpMock.DATA_MODE, ['end']);
+
+      try {
+        localRequest._send(spyCallback);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error.constructor.name).to.equal('MissingLocalLambdaExecWrapperException');
+    }
+  );
 
   test('Check _send() method for acctionType!="lambda"', () => {
     let spyCallback = sinon.spy();

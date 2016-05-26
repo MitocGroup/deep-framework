@@ -64,19 +64,18 @@ suite('ContainerAware', () => {
     chai.expect(spyCallback).to.have.been.calledWith();
   });
 
-  //@todo - to be updated
-  //test('Check _resolveIdentifier() throws InvalidDeepIdentifierException ' +
-  //  'for invalid identifier', () => {
-  //  let error = null;
-  //  try {
-  //    containerAware._resolveIdentifier('invalid.identifier:resource');
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(error, InvalidDeepIdentifierException,
-  //    'error is an instance of InvalidDeepIdentifierException');
-  //});
+  test('Check _resolveIdentifier() throws InvalidDeepIdentifierException ' +
+    'for invalid identifier', () => {
+    let error = null;
+    try {
+      containerAware._resolveIdentifier('invalid.identifier:resource');
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(error, InvalidDeepIdentifierException,
+      'error is an instance of InvalidDeepIdentifierException');
+  });
 
   test('Check bind(microservice) method when microservice is not a string',
     () => {

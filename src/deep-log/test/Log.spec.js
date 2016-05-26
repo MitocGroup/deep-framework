@@ -87,22 +87,21 @@ suite('Log', () => {
     chai.expect(Log.LEVELS).to.be.include(Log.DEBUG);
   });
 
-  //@todo - to be updated
-  //test(
-  //  'Check create() method throws "Core.Exception.InvalidArgumentException" for invalid driver type',
-  //  () => {
-  //    let error = null;
-  //    try {
-  //      log.create('test');
-  //    } catch (e) {
-  //      error = e;
-  //    }
-  //
-  //    chai.expect(error).to.be.an.instanceof(
-  //      Core.Exception.InvalidArgumentException
-  //    );
-  //  }
-  //);
+  test(
+    'Check create() method throws "Core.Exception.InvalidArgumentException" for invalid driver type',
+    () => {
+      let error = null;
+      try {
+        log.create('test');
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.an.instanceof(
+        Core.Exception.InvalidArgumentException
+      );
+    }
+  );
 
   test('Check boot() method register service', () => {
     let spyCallback = sinon.spy();
@@ -112,20 +111,19 @@ suite('Log', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly();
   });
 
-  //@todo - to be updated
-  //test('Check register() method throws exception for invalid driver', () => {
-  //    let error = null;
-  //    try {
-  //      log.register({});
-  //    } catch (e) {
-  //      error = e;
-  //    }
-  //
-  //    chai.expect(error).to.be.an.instanceof(
-  //      Core.Exception.InvalidArgumentException
-  //    );
-  //  }
-  //);
+  test('Check register() method throws exception for invalid driver', () => {
+      let error = null;
+      try {
+        log.register({});
+      } catch (e) {
+        error = e;
+      }
+
+      chai.expect(error).to.be.an.instanceof(
+        Core.Exception.InvalidArgumentException
+      );
+    }
+  );
 
   test('Check register() method register driver for console', () => {
       log = new Log();

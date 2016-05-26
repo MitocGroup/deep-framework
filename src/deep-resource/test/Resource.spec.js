@@ -107,55 +107,54 @@ suite('Resource', () => {
     }
   );
 
-  //@todo - to be updated
-  //test(
-  //  'Check get() method throws "InvalidDeepIdentifierException" for invalid microservice identifier',
-  //  () => {
-  //    let error = null;
-  //
-  //    try {
-  //      resource.get(`@invalid_microservice_identifier`);
-  //    } catch (e) {
-  //      error = e;
-  //    }
-  //
-  //    chai.assert.instanceOf(
-  //      error, InvalidDeepIdentifierException, 'error is an instance of InvalidDeepIdentifierException'
-  //    );
-  //  }
-  //);
-  //
-  //test('Check get() method throws "MissingResourceException" exception for invalid resource',
-  //  () => {
-  //    let error = null;
-  //
-  //    try {
-  //      resource.get(`@${microserviceIdentifier}:invalid_resource_name`);
-  //    } catch (e) {
-  //      error = e;
-  //    }
-  //
-  //    chai.assert.instanceOf(
-  //      error, MissingResourceException, 'error is an instance of MissingResourceException'
-  //    );
-  //  }
-  //);
-  //
-  //test('Check get() method throws "MissingResourceException" exception for invalid action',
-  //  () => {
-  //    let error = null;
-  //
-  //    try {
-  //      resource.get(`@${microserviceIdentifier}:${resourceName}:invalidAction`);
-  //    } catch (e) {
-  //      error = e;
-  //    }
-  //
-  //    chai.assert.instanceOf(
-  //      error, MissingActionException, 'error is an instance of MissingActionException'
-  //    );
-  //  }
-  //);
+  test(
+    'Check get() method throws "InvalidDeepIdentifierException" for invalid microservice identifier',
+    () => {
+      let error = null;
+
+      try {
+        resource.get(`@invalid_microservice_identifier`);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.assert.instanceOf(
+        error, InvalidDeepIdentifierException, 'error is an instance of InvalidDeepIdentifierException'
+      );
+    }
+  );
+
+  test('Check get() method throws "MissingResourceException" exception for invalid resource',
+    () => {
+      let error = null;
+
+      try {
+        resource.get(`@${microserviceIdentifier}:invalid_resource_name`);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.assert.instanceOf(
+        error, MissingResourceException, 'error is an instance of MissingResourceException'
+      );
+    }
+  );
+
+  test('Check get() method throws "MissingResourceException" exception for invalid action',
+    () => {
+      let error = null;
+
+      try {
+        resource.get(`@${microserviceIdentifier}:${resourceName}:invalidAction`);
+      } catch (e) {
+        error = e;
+      }
+
+      chai.assert.instanceOf(
+        error, MissingActionException, 'error is an instance of MissingActionException'
+      );
+    }
+  );
 
   test('Check list() getter returns', () => {
     let actualResult = resource.list;

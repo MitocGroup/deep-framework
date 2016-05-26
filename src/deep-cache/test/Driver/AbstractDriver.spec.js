@@ -111,23 +111,22 @@ suite('Driver/AbstractDriver', () => {
     }
   );
 
-  //@todo - need to be updated
-  //test('Check get() method throws exception', () => {
-  //  let error = null;
-  //  let spyCallback = sinon.spy();
-  //
-  //  abstractDriver.enableFailureMode();
-  //
-  //  try {
-  //    abstractDriver.get(testKey, spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  let callbackArgs = spyCallback.args[0];
-  //  chai.expect(spyCallback).to.have.been.threw;
-  //  chai.expect(callbackArgs[0].constructor.name).to.equal('DriverException');
-  //});
+  test('Check get() method throws exception', () => {
+    let error = null;
+    let spyCallback = sinon.spy();
+
+    abstractDriver.enableFailureMode();
+
+    try {
+      abstractDriver.get(testKey, spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    let callbackArgs = spyCallback.args[0];
+    chai.expect(spyCallback).to.have.been.threw;
+    chai.expect(callbackArgs[0].constructor.name).to.equal('DriverException');
+  });
 
   test('Check set() method returns valid AbstractDriver object: ',
     () => {
@@ -159,31 +158,30 @@ suite('Driver/AbstractDriver', () => {
     chai.expect(spyCallback).to.have.been.threw;
   });
 
-  //@todo - need to be updated
-  //test('Check invalidate() method throws exception', () => {
-  //  let error = null;
-  //  let actualResult = null;
-  //  let spyCallback = sinon.spy();
-  //
-  //  abstractDriver.enableFailureMode();
-  //
-  //  try {
-  //    actualResult = abstractDriver.invalidate(testKey, 1, spyCallback);
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.equal(null);
-  //  chai.assert.instanceOf(actualResult, AbstractDriver,
-  //    'result of invalidate() is an instance of AbstractDriver');
-  //  chai.expect(actualResult.buildId).to.be.equal(buildId);
-  //  chai.expect(actualResult.silent).to.be.equal(silent);
-  //  chai.expect(actualResult.namespace).to.be.equal(namespace);
-  //
-  //  let callbackArgs = spyCallback.args[0];
-  //  chai.expect(spyCallback).to.have.been.threw;
-  //  chai.expect(callbackArgs[0].constructor.name).to.equal('DriverException');
-  //});
+  test('Check invalidate() method throws exception', () => {
+    let error = null;
+    let actualResult = null;
+    let spyCallback = sinon.spy();
+
+    abstractDriver.enableFailureMode();
+
+    try {
+      actualResult = abstractDriver.invalidate(testKey, 1, spyCallback);
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.equal(null);
+    chai.assert.instanceOf(actualResult, AbstractDriver,
+      'result of invalidate() is an instance of AbstractDriver');
+    chai.expect(actualResult.buildId).to.be.equal(buildId);
+    chai.expect(actualResult.silent).to.be.equal(silent);
+    chai.expect(actualResult.namespace).to.be.equal(namespace);
+
+    let callbackArgs = spyCallback.args[0];
+    chai.expect(spyCallback).to.have.been.threw;
+    chai.expect(callbackArgs[0].constructor.name).to.equal('DriverException');
+  });
 
   test('Check invalidate() method returns valid AbstractDriver object',
     () => {
@@ -211,23 +209,22 @@ suite('Driver/AbstractDriver', () => {
     );
   });
 
-  //@todo - need to be updated
-  //test('Check flush() method throws exception for invalid _flush value',
-  //  () => {
-  //    let error = null;
-  //    let spyCallback = sinon.spy();
-  //
-  //    abstractDriver.enableFailureMode();
-  //
-  //    try {
-  //      abstractDriver.flush(spyCallback);
-  //    } catch (e) {
-  //      error = e;
-  //    }
-  //
-  //    let callbackArgs = spyCallback.args[0];
-  //    chai.expect(spyCallback).to.have.been.threw;
-  //    chai.expect(callbackArgs[0].constructor.name).to.equal('DriverException');
-  //  }
-  //);
+  test('Check flush() method throws exception for invalid _flush value',
+    () => {
+      let error = null;
+      let spyCallback = sinon.spy();
+
+      abstractDriver.enableFailureMode();
+
+      try {
+        abstractDriver.flush(spyCallback);
+      } catch (e) {
+        error = e;
+      }
+
+      let callbackArgs = spyCallback.args[0];
+      chai.expect(spyCallback).to.have.been.threw;
+      chai.expect(callbackArgs[0].constructor.name).to.equal('DriverException');
+    }
+  );
 });

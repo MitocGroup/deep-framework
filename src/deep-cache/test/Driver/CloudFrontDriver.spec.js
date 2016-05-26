@@ -36,46 +36,43 @@ suite('Driver/CloudFrontDriver', () => {
     chai.expect(cloudFrontDriver._containerAware).to.eql(containerAware);
   });
 
-  //@todo - need to be updated
-  //test('Check set() throws DriverException', () => {
-  //  let spyCallback = sinon.spy();
-  //
-  //  let actualResult = cloudFrontDriver.set('key', 'value', 0, spyCallback);
-  //
-  //  chai.expect(actualResult, 'is an instance of AbstractDriver').to.be.an.instanceOf(AbstractDriver);
-  //  chai.expect(spyCallback).to.have.been.calledWith();
-  //
-  //  let spyCallbackArgs = spyCallback.args[0];
-  //
-  //  chai.expect(spyCallbackArgs[0]).to.be.an.instanceOf(DriverException);
-  //  chai.expect(spyCallbackArgs[1]).to.be.equal(null);
-  //});
+  test('Check set() throws DriverException', () => {
+    let spyCallback = sinon.spy();
 
-  //@todo - need to be updated
-  //test('Check _set() throws MethodNotAvailableException', () => {
-  //  let error = null;
-  //
-  //  try {
-  //    cloudFrontDriver._set();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.an.instanceOf(MethodNotAvailableException);
-  //});
+    let actualResult = cloudFrontDriver.set('key', 'value', 0, spyCallback);
 
-  //@todo - need to be updated
-  //test('Check _invalidate() throws MethodNotAvailableException', () => {
-  //  let error = null;
-  //
-  //  try {
-  //    cloudFrontDriver._invalidate();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.an.instanceOf(MethodNotAvailableException);
-  //});
+    chai.expect(actualResult, 'is an instance of AbstractDriver').to.be.an.instanceOf(AbstractDriver);
+    chai.expect(spyCallback).to.have.been.calledWith();
+
+    let spyCallbackArgs = spyCallback.args[0];
+
+    chai.expect(spyCallbackArgs[0]).to.be.an.instanceOf(DriverException);
+    chai.expect(spyCallbackArgs[1]).to.be.equal(null);
+  });
+
+  test('Check _set() throws MethodNotAvailableException', () => {
+    let error = null;
+
+    try {
+      cloudFrontDriver._set();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.an.instanceOf(MethodNotAvailableException);
+  });
+
+  test('Check _invalidate() throws MethodNotAvailableException', () => {
+    let error = null;
+
+    try {
+      cloudFrontDriver._invalidate();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.an.instanceOf(MethodNotAvailableException);
+  });
 
   //todo - need to rework
   test('Check _microservice()', () => {

@@ -143,18 +143,17 @@ suite('Resource/LambdaResponse', () => {
     chai.expect(LambdaResponse.isValidationError(payload)).to.equal(true);
   });
 
-  //@todo - to be updated
-  //test('Check getPayloadError returns instance of ValidationError', () => {
-  //  let payload = {
-  //    errorType: 'ValidationError',
-  //    errorMessage: 'Should be string',
-  //    validationErrors: 'validationErrors',
-  //  };
-  //
-  //  let actualResult = LambdaResponse.getPayloadError(payload);
-  //
-  //  chai.expect(actualResult, 'is an instance of ValidationError').to.be.an.instanceOf(ValidationError);
-  //});
+  test('Check getPayloadError returns instance of ValidationError', () => {
+    let payload = {
+      errorType: 'ValidationError',
+      errorMessage: 'Should be string',
+      validationErrors: 'validationErrors',
+    };
+
+    let actualResult = LambdaResponse.getPayloadError(payload);
+
+    chai.expect(actualResult, 'is an instance of ValidationError').to.be.an.instanceOf(ValidationError);
+  });
 
   test('Check getPayloadError returns instance of Error', () => {
     let payload = {

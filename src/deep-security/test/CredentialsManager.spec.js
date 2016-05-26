@@ -90,86 +90,85 @@ suite('CredentialsManager', () => {
     chai.expect(callbackArg[1].constructor.name).to.equal('Dataset');
   });
 
-  //@todo - to be updated
-  //test('Check _createOrGetDataset() executes with error', () => {
-  //  let spyCallback = sinon.spy();
-  //
-  //  //set failure mode
-  //  credentialsManager.cognitoSyncClient.setMode(
-  //    CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
-  //  );
-  //
-  //  credentialsManager._createOrGetDataset(spyCallback);
-  //
-  //  let callbackArg = spyCallback.args[0];
-  //
-  //  chai.assert.instanceOf(
-  //    callbackArg[0],
-  //    CreateCognitoDatasetException,
-  //    'callback error argument is an instance of CreateCognitoDatasetException'
-  //  );
-  //  chai.expect(callbackArg[1]).to.equal(null);
-  //});
-  //
-  //test('Check saveCredentials() executes with error in _createOrGetDataset()', () => {
-  //  let spyCallback = sinon.spy();
-  //
-  //  //set failure mode
-  //  credentialsManager.cognitoSyncClient.setMode(
-  //    CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
-  //  );
-  //
-  //  credentialsManager.saveCredentials(credentials, spyCallback);
-  //
-  //  let callbackArg = spyCallback.args[0];
-  //
-  //  chai.assert.instanceOf(
-  //    callbackArg[0],
-  //    CreateCognitoDatasetException,
-  //    'callback error argument is an instance of CreateCognitoDatasetException'
-  //  );
-  //  chai.expect(callbackArg[1]).to.equal(null);
-  //});
-  //
-  //test('Check saveCredentials() executes with error in put()', () => {
-  //  let spyCallback = sinon.spy();
-  //
-  //  //set modes
-  //  credentialsManager.cognitoSyncClient.setMode(
-  //    CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_PUT_DATASET, ['openOrCreateDataset']
-  //  );
-  //
-  //  credentialsManager.saveCredentials(credentials, spyCallback);
-  //
-  //  let callbackArg = spyCallback.args[0];
-  //
-  //  chai.assert.instanceOf(
-  //    callbackArg[0],
-  //    PutCognitoRecordException,
-  //    'callback error argument is an instance of PutCognitoRecordException'
-  //  );
-  //  chai.expect(callbackArg[1]).to.equal(null);
-  //});
-  //
-  //test('Check saveCredentials() executes with error in _synchronizeDataset()', () => {
-  //  let spyCallback = sinon.spy();
-  //
-  //  //set modes
-  //  credentialsManager.cognitoSyncClient.setMode(
-  //    CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']
-  //  );
-  //
-  //  credentialsManager.saveCredentials(credentials, spyCallback);
-  //
-  //  let callbackArg = spyCallback.args[0];
-  //
-  //  chai.assert.instanceOf(
-  //    callbackArg[0],
-  //    SynchronizeCognitoDatasetException,
-  //    'callback error argument is an instance of SynchronizeCognitoDatasetException'
-  //  );
-  //  chai.expect(callbackArg[1]).to.equal(null);
-  //});
+  test('Check _createOrGetDataset() executes with error', () => {
+    let spyCallback = sinon.spy();
+
+    //set failure mode
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
+    );
+
+    credentialsManager._createOrGetDataset(spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.assert.instanceOf(
+      callbackArg[0],
+      CreateCognitoDatasetException,
+      'callback error argument is an instance of CreateCognitoDatasetException'
+    );
+    chai.expect(callbackArg[1]).to.equal(null);
+  });
+
+  test('Check saveCredentials() executes with error in _createOrGetDataset()', () => {
+    let spyCallback = sinon.spy();
+
+    //set failure mode
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
+    );
+
+    credentialsManager.saveCredentials(credentials, spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.assert.instanceOf(
+      callbackArg[0],
+      CreateCognitoDatasetException,
+      'callback error argument is an instance of CreateCognitoDatasetException'
+    );
+    chai.expect(callbackArg[1]).to.equal(null);
+  });
+
+  test('Check saveCredentials() executes with error in put()', () => {
+    let spyCallback = sinon.spy();
+
+    //set modes
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_PUT_DATASET, ['openOrCreateDataset']
+    );
+
+    credentialsManager.saveCredentials(credentials, spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.assert.instanceOf(
+      callbackArg[0],
+      PutCognitoRecordException,
+      'callback error argument is an instance of PutCognitoRecordException'
+    );
+    chai.expect(callbackArg[1]).to.equal(null);
+  });
+
+  test('Check saveCredentials() executes with error in _synchronizeDataset()', () => {
+    let spyCallback = sinon.spy();
+
+    //set modes
+    credentialsManager.cognitoSyncClient.setMode(
+      CognitoSyncClientMock.DATA_MODE_WITH_ERROR_IN_SYNCHRONIZE_DATASET, ['openOrCreateDataset']
+    );
+
+    credentialsManager.saveCredentials(credentials, spyCallback);
+
+    let callbackArg = spyCallback.args[0];
+
+    chai.assert.instanceOf(
+      callbackArg[0],
+      SynchronizeCognitoDatasetException,
+      'callback error argument is an instance of SynchronizeCognitoDatasetException'
+    );
+    chai.expect(callbackArg[1]).to.equal(null);
+  });
 
   test('Check saveCredentials() executes successfully', () => {
     let spyCallback = sinon.spy();
@@ -272,35 +271,34 @@ suite('CredentialsManager', () => {
     chai.expect(spyCallback.args[0][1]).to.eql(expectedResult);
   });
 
-  //@todo - to be updated
-  //test('Check loadFrontendCredentials executes with error in _createOrGetDataset()',
-  //  () => {
-  //    let spyCallback = sinon.spy();
-  //
-  //    let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
-  //      'aws-sdk': cognitoSyncClient,
-  //    });
-  //
-  //    let CredentialsManager = credentialsManagerExport.CredentialsManager;
-  //    let credentialsManager = new CredentialsManager(identityPoolId);
-  //
-  //    //set failure mode openOrCreateDataset
-  //    credentialsManager.cognitoSyncClient.setMode(
-  //      CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
-  //    );
-  //
-  //    credentialsManager.loadFrontendCredentials(spyCallback);
-  //
-  //    let callbackArg = spyCallback.args[0];
-  //
-  //    chai.assert.instanceOf(
-  //      callbackArg[0],
-  //      CreateCognitoDatasetException,
-  //      'callback error argument is an instance of CreateCognitoDatasetException'
-  //    );
-  //    chai.expect(callbackArg[1]).to.equal(null);
-  //  }
-  //);
+  test('Check loadFrontendCredentials executes with error in _createOrGetDataset()',
+    () => {
+      let spyCallback = sinon.spy();
+
+      let credentialsManagerExport = requireProxy('../lib/CredentialsManager', {
+        'aws-sdk': cognitoSyncClient,
+      });
+
+      let CredentialsManager = credentialsManagerExport.CredentialsManager;
+      let credentialsManager = new CredentialsManager(identityPoolId);
+
+      //set failure mode openOrCreateDataset
+      credentialsManager.cognitoSyncClient.setMode(
+        CognitoSyncClientMock.FAILURE_MODE, ['openOrCreateDataset']
+      );
+
+      credentialsManager.loadFrontendCredentials(spyCallback);
+
+      let callbackArg = spyCallback.args[0];
+
+      chai.assert.instanceOf(
+        callbackArg[0],
+        CreateCognitoDatasetException,
+        'callback error argument is an instance of CreateCognitoDatasetException'
+      );
+      chai.expect(callbackArg[1]).to.equal(null);
+    }
+  );
 
   test('Check loadFrontendCredentials executes with error in dataset.get()', () => {
     let spyCallback = sinon.spy();

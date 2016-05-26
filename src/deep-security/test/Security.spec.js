@@ -80,18 +80,17 @@ suite('Security', function () {
     chai.expect(securityFrontend._userProviderEndpoint).to.be.eql(userProviderEndpoint);
   });
 
-  //@todo - to be updated
-  //test('Check warmupBackendLogin() throws "Exception" for frontend', () => {
-  //  let error = null;
-  //
-  //  try {
-  //    securityFrontend.warmupBackendLogin();
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.assert.instanceOf(error, Exception, 'error is an instance of Exception');
-  //});
+  test('Check warmupBackendLogin() throws "Exception" for frontend', () => {
+    let error = null;
+
+    try {
+      securityFrontend.warmupBackendLogin();
+    } catch (e) {
+      error = e;
+    }
+
+    chai.assert.instanceOf(error, Exception, 'error is an instance of Exception');
+  });
 
   test('Check warmupBackendLogin() returns valid instance of Token for !localBackend', function () {
 

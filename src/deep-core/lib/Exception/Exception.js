@@ -68,8 +68,8 @@ export class Exception extends Extendable(Error) {
 }
 
 // Fixes babel@6 issue: https://phabricator.babeljs.io/T3083
-function Extendable(errorClass){
-  function ExtendableClass(){
+function Extendable(errorClass) {
+  function ExtendableClass() {
     errorClass.apply(this, arguments);
   }
 

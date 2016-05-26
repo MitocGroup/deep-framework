@@ -34,31 +34,30 @@ suite('DI', () => {
     chai.assert.instanceOf(di._bottle, Bottle, 'this._bottle is an instance of Bottle');
   });
 
-  ////@todo - to be updated
-  //test('Check get method throws "MissingServiceException" exception for invalid service or parameter', () => {
-  //  let error = null;
-  //  try {
-  //    di.get('invalidValue');
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.expect(error).to.be.an.instanceof(MissingServiceException);
-  //});
-  //
-  //test('Check addService method throws "Core.Exception.InvalidArgumentException" exception for invalid service',
-  // () => {
-  //  let error = null;
-  //  try {
-  //    di.addService('serviceName', 'invalidService');
-  //  } catch (e) {
-  //    error = e;
-  //  }
-  //
-  //  chai.expect(error).to.be.not.equal(null);
-  //  chai.expect(error).to.be.an.instanceof(Core.Exception.InvalidArgumentException);
-  //});
+  test('Check get method throws "MissingServiceException" exception for invalid service or parameter', () => {
+    let error = null;
+    try {
+      di.get('invalidValue');
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.expect(error).to.be.an.instanceof(MissingServiceException);
+  });
+
+  test('Check addService method throws "Core.Exception.InvalidArgumentException" exception for invalid service',
+   () => {
+    let error = null;
+    try {
+      di.addService('serviceName', 'invalidService');
+    } catch (e) {
+      error = e;
+    }
+
+    chai.expect(error).to.be.not.equal(null);
+    chai.expect(error).to.be.an.instanceof(Core.Exception.InvalidArgumentException);
+  });
 
   test('Check addService method adds an instantiated service into container', () => {
     let service = {
