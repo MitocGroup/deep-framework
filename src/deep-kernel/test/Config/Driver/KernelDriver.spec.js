@@ -18,8 +18,7 @@ suite('Config/Driver/KernelDriver', function() {
   let services = {
     Log: Log,
   };
-  let backendKernelDriver;
-  let frontendKernelDriver;
+  let backendKernelDriver, frontendKernelDriver;
 
   test('Class KernelDriver exists in Config/Driver/KernelDriver', () => {
     chai.expect(KernelDriver).to.be.an('function');
