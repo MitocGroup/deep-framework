@@ -35,9 +35,9 @@ suite('DB', () => {
   //      },
   //    },
   //  ];
-  let db = null;
-  let backendKernelInstance = null;
-  let vogelsMock = new VogelsMock();
+  //let db = null;
+  //let backendKernelInstance = null;
+  //let vogelsMock = new VogelsMock();
 
   test('Class DB exists in DB', () => {
     chai.expect(DB).to.be.an('function');

@@ -9,7 +9,6 @@ import {AsyncConfig} from '../../../lib/Config/Driver/AsyncConfig';
 import {Kernel} from '../../../lib/Kernel';
 import {MissingServiceException} from './../../../node_modules/deep-di/lib.compiled/Exception/MissingServiceException';
 import KernelFactory from './../../common/KernelFactory';
-import backendConfig from './../../common/backend-cfg-json';
 import Log from 'deep-log';
 
 suite('Config/Driver/AsyncConfig', function () {

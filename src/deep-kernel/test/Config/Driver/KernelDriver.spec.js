@@ -6,10 +6,8 @@
 
 import chai from 'chai';
 import {KernelDriver} from '../../../lib/Config/Driver/KernelDriver';
-import {ComplexDriver} from '../../../lib/Config/Driver/ComplexDriver';
 import {Kernel} from '../../../lib/Kernel';
 import KernelFactory from './../../common/KernelFactory';
-import backendConfig from './../../common/backend-cfg-json';
 import Log from 'deep-log';
 
 suite('Config/Driver/KernelDriver', function() {
