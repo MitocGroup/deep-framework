@@ -56,7 +56,7 @@ suite('Config/Driver/KernelDriver', function() {
   });
 
   test('Check _globalScope getter returns global object for backend', () => {
-    chai.expect(backendKernelDriver._globalScope).to.contain.any.keys(['GLOBAL','root']);
+    chai.expect(backendKernelDriver._globalScope).to.contain.any.keys(['global']);
   });
 
   test('Check _globalScope getter returns {}', () => {
