@@ -4,17 +4,14 @@
 #
 
 RUN_TESTS() {
- BABEL_RC='.babelrc'
-
- echo '{
-  "presets": [
-    "es2015"
-  ]
-}' > ${BABEL_RC}
+ cp $(dirname $0)/.babelrc .babelrc # @todo: resolve paths in a smarter way
 
   babel-node $(npm root -g)/istanbul/lib/cli.js cover `which _mocha` -- 'test/**/*.spec.js' \
     --reporter spec --ui tdd --recursive --timeout 20s
+
+  rm .babelrc
 }
+
 if [ -d 'lib/' ] && [ "$OSTYPE" != "msys" ] && [ "$OSTYPE" != "win32" ] && [ "$OSTYPE" != "win64" ]; then
 
  #########################################################################
