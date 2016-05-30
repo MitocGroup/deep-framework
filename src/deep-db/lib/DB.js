@@ -113,7 +113,10 @@ export class DB extends Kernel.ContainerAware {
         continue;
       }
 
-      allModelsOptions[modelName] = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);
+      allModelsOptions[modelName] = Utils._extend(
+        DB.DEFAULT_TABLE_OPTIONS,
+        options.hasOwnProperty(modelName) ? options[modelName] : {}
+      );
       allModelNames.push(modelName);
     }
 
