@@ -18,6 +18,33 @@ export class AutoScaleDynamoDB {
     this._kernel = deepKernel;
 
     this._increasedFor = {};
+    this._initMaxSettings();
+  }
+
+  /**
+   * @private
+   */
+  _initMaxSettings() {
+    let maxSettings = {};
+    let tablesNames = this._kernel.config.tablesNames;
+    let modelsSettings = this._kernel.config.modelsSettings
+      .reduce((obj, model) => Object.assign(obj, model), {});
+
+    for (let modelName in tablesNames) {
+      if (!tablesNames.hasOwnProperty(modelName)) {
+        continue;
+      }
+
+      let modelSettings = modelsSettings[modelName];
+      let tableName = tablesNames[modelName];
+
+      maxSettings[tableName] = {
+        read: modelSettings.maxReadCapacity,
+        write: modelSettings.maxWriteCapacity,
+      };
+    }
+
+    this._maxSettings = maxSettings;
   }
 
   /**
@@ -83,8 +110,11 @@ export class AutoScaleDynamoDB {
 
           let increasePayload = {};
           let increaseType = AutoScaleDynamoDB.increaseType(method);
-          increasePayload[increaseType] = Math.ceil(parseInt(info.main[increaseType]) *
-            AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT);
+          increasePayload[increaseType] = this.increaseThroughput(
+            parseInt(info.main[increaseType]),
+            increaseType,
+            table
+          );
 
           throughput.setCapacity(increasePayload, (error) => {
             if (error) {
@@ -168,6 +198,30 @@ export class AutoScaleDynamoDB {
   }
 
   /**
+   * @param {Number} iops
+   * @param {String} type
+   * @param {String} table
+   * @returns {Number}
+   */
+  increaseThroughput(iops, type, table) {
+    let maxIops = this._maxSettings[table][type] || AutoScaleDynamoDB.MAX_THROUGHPUT;
+
+    return Math.min(
+      Math.ceil(iops * AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT),
+      maxIops
+    );
+  }
+
+  /**
+   * @param {String} str
+   * @returns {String}
+   * @private
+   */
+  _ucFirst(str) {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  /**
    * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}
    */
   get dynamoDbDocumentClient() {
@@ -179,6 +233,20 @@ export class AutoScaleDynamoDB {
    */
   get dynamoDb() {
     return this._dynamoDb;
+  }
+
+  /**
+   * @returns {Number|null}
+   */
+  maxRadThroughput(table) {
+    return this._maxReadThroughput;
+  }
+
+  /**
+   * @returns {Number|null}
+   */
+  maxWriteThroughput(table) {
+    return this._maxWriteThroughput;
   }
 
   /**
@@ -203,6 +271,13 @@ export class AutoScaleDynamoDB {
    */
   static get PROVISION_INCREASE_COEFFICIENT() {
     return 1.3;
+  }
+
+  /**
+   * @returns {Number}
+   */
+  static get MAX_THROUGHPUT() {
+    return 40000;
   }
 
   /**
