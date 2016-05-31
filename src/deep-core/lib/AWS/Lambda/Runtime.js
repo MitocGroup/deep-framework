@@ -120,6 +120,11 @@ export class Runtime extends Interface {
 
       this._resolver.registerSucceedCallback(() => {
         let db = this._kernel.get('db');
+        let vogelsDynamoDriver = db.vogelsDynamoDriver;
+
+        if (vogelsDynamoDriver.config.httpOptions.agent) {
+          vogelsDynamoDriver.config.httpOptions.agent.destroy();
+        }
 
         db._fixNodeHttpsIssue();
       });

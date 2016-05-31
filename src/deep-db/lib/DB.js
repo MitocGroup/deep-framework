@@ -204,6 +204,13 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {AWS.DynamoDB}
+   */
+  get vogelsDynamoDriver() {
+    return Vogels.dynamoDriver();
+  }
+
+  /**
    * @param {Function} callback
    * @param {String} driver
    * @param {Number} tts
