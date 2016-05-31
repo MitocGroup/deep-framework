@@ -213,15 +213,6 @@ export class AutoScaleDynamoDB {
   }
 
   /**
-   * @param {String} str
-   * @returns {String}
-   * @private
-   */
-  _ucFirst(str) {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-  }
-
-  /**
    * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}
    */
   get dynamoDbDocumentClient() {
