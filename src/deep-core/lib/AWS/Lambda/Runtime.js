@@ -117,6 +117,12 @@ export class Runtime extends Interface {
 
     if (lambdaCallback) {
       this._resolver = new Resolver(lambdaCallback);
+
+      this._resolver.registerSucceedCallback(() => {
+        let db = this._kernel.get('db');
+
+        db._fixNodeHttpsIssue();
+      })
     }
 
     this._context.waitForEmptyEventLoop();
