@@ -227,20 +227,6 @@ export class AutoScaleDynamoDB {
   }
 
   /**
-   * @returns {Number|null}
-   */
-  maxRadThroughput(table) {
-    return this._maxReadThroughput;
-  }
-
-  /**
-   * @returns {Number|null}
-   */
-  maxWriteThroughput(table) {
-    return this._maxWriteThroughput;
-  }
-
-  /**
    * @returns {String[]}
    */
   static get PROXIED_METHODS() {
