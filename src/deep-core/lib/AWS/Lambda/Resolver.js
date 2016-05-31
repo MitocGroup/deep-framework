@@ -13,12 +13,15 @@ export class Resolver {
    */
   constructor(lambdaCallback) {
     this._lambdaCallback = lambdaCallback;
+    this._onSucceed = [];
   }
 
   /**
    * @param {Object} object
    */
   succeed(object) {
+    this._onSucceed.forEach(cb => cb(object));
+    
     this._lambdaCallback(null, object);
   }
 
@@ -27,5 +30,12 @@ export class Resolver {
    */
   fail(object) {
     this._lambdaCallback(object, null);
+  }
+
+  /**
+   * @param {Function} cb;
+   */
+  registerSucceedCallback(cb) {
+    this._onSucceed.push(cb);
   }
 }
