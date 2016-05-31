@@ -122,7 +122,7 @@ export class Runtime extends Interface {
         let db = this._kernel.get('db');
 
         db._fixNodeHttpsIssue();
-      })
+      });
     }
 
     this._context.waitForEmptyEventLoop();
