@@ -60,7 +60,11 @@ export class DB extends Kernel.ContainerAware {
    */
   get(modelName) {
     if (!this.has(modelName)) {
-      throw new ModelNotFoundException(modelName);
+      modelName = this._lispCase(modelName);
+
+      if (!this.has(modelName)) {
+        throw new ModelNotFoundException(modelName);
+      }
     }
 
     let model = this._models[modelName];
@@ -300,6 +304,18 @@ export class DB extends Kernel.ContainerAware {
       tableName: this._tablesNames[name],
       schema: this._validation.getSchema(name),
     };
+  }
+
+  /**
+   * @param {String} str
+   * @returns {String}
+   * @private
+   */
+  _lispCase(str) {
+    return str
+      .split(/[^a-z0-9\-]+/i)
+      .map(s => s.toLowerCase())
+      .join('-');
   }
 
   /**
