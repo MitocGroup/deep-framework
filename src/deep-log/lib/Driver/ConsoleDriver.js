@@ -81,6 +81,7 @@ export class ConsoleDriver extends AbstractDriver {
 
     // @todo: figure out a better way of dumping context
     if (context) {
+
       // Fixes issue with node env
       let debugMethod = this._console.debug || this._console.log;
       debugMethod.call(ConsoleDriver.nativeConsole, '[DEBUG]', context);
@@ -103,6 +104,11 @@ export class ConsoleDriver extends AbstractDriver {
 
       let method = ConsoleDriver.METHODS_TO_OVERRIDE[i];
 
+      if (!ConsoleDriver._isLogLevelEnabled(method)) {
+        nativeConsole[method] = () => {};
+        continue;
+      }
+
       nativeConsole[method] = (...args) => {
         if (!turnOff) {
           let nativeArgs = args;
@@ -121,6 +127,28 @@ export class ConsoleDriver extends AbstractDriver {
     }
 
     return this;
+  }
+
+  /**
+   * @param {String} method
+   * @returns {Boolean}
+   */
+  static _isLogLevelEnabled(method) {
+    return ConsoleDriver
+      .ERROR_LEVELS_MAPPING[ConsoleDriver.ENV_LOG_LEVEL]
+      .indexOf(method);
+  }
+
+  /**
+   * @returns {Object}
+   */
+  static get ERROR_LEVELS_MAPPING() {
+    return {
+      error: ['error', 'log',],
+      warn: ['warn', 'log', 'error',],
+      info: ['warn', 'log', 'error', 'info',],
+      debug: ['debug', 'warn', 'log', 'info', 'error',],
+    };
   }
 
   /**
@@ -146,6 +174,16 @@ export class ConsoleDriver extends AbstractDriver {
     args.push('\x1b[0m');
 
     return args;
+  }
+
+  /**
+   * @example `export DEEP_LOG_LEVEL=error|warn|debug`
+   * @returns {String}
+   */
+  static get ENV_LOG_LEVEL() {
+    return ((typeof window === 'undefined' ?
+      process.env.DEEP_LOG_LEVEL :
+      window.DEEP_LOG_LEVEL) || 'error').toLowerCase();
   }
 
   /**
