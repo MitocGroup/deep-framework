@@ -144,7 +144,7 @@ export class ConsoleDriver extends AbstractDriver {
    */
   static get ERROR_LEVELS_MAPPING() {
     return {
-      silent: [],
+      silent: ['log'],
       error: ['error', 'log',],
       warn: ['warn', 'log', 'error',],
       info: ['warn', 'log', 'error', 'info',],
