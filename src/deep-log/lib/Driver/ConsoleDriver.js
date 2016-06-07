@@ -178,13 +178,13 @@ export class ConsoleDriver extends AbstractDriver {
   }
 
   /**
-   * @example `export DEEP_LOG_LEVEL=error|warn|debug`
+   * @example `export DEEP_LOG_LEVEL=error|warn|debug|info|silent`
    * @returns {String}
    */
   static get ENV_LOG_LEVEL() {
     return ((typeof window === 'undefined' ?
       process.env.DEEP_LOG_LEVEL :
-      window.DEEP_LOG_LEVEL) || 'error').toLowerCase();
+      window.DEEP_LOG_LEVEL) || 'info').toLowerCase();
   }
 
   /**
