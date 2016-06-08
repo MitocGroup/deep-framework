@@ -85,8 +85,8 @@ export default {
       website: 'deep.dev.public.32f3705a.s3-website-us-west-2.amazonaws.com',
       name: 'deep.dev.public.32f3705a',
     },
-    system: {
-      name: 'deep.dev.system.32f3705a',
+    private: {
+      name: 'deep.dev.private.32f3705a',
     },
   },
   tablesNames: {
