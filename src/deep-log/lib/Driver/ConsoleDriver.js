@@ -109,6 +109,9 @@ export class ConsoleDriver extends AbstractDriver {
         continue;
       }
 
+      // Fixes issue with node env
+      this._console[method] = this._console[method] || this._console.log;
+
       nativeConsole[method] = (...args) => {
         if (!turnOff) {
           let nativeArgs = args;
