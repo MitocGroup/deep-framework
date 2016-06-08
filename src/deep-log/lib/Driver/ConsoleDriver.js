@@ -139,7 +139,7 @@ export class ConsoleDriver extends AbstractDriver {
   static _isLogLevelEnabled(method) {
     return ConsoleDriver
       .ERROR_LEVELS_MAPPING[ConsoleDriver.ENV_LOG_LEVEL]
-      .indexOf(method);
+      .indexOf(method) !== -1;
   }
 
   /**
