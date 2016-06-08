@@ -185,9 +185,14 @@ export class ConsoleDriver extends AbstractDriver {
    * @returns {String}
    */
   static get ENV_LOG_LEVEL() {
-    return ((typeof window === 'undefined' ?
+    let envLevel = typeof window === 'undefined' ?
       process.env.DEEP_LOG_LEVEL :
-      window.DEEP_LOG_LEVEL) || 'info').toLowerCase();
+      window.DEEP_LOG_LEVEL;
+
+    envLevel = envLevel || 'info';
+    envLevel = envLevel === 'undefined' ? 'info' : envLevel; // o_O
+
+    return envLevel.toLowerCase();
   }
 
   /**
