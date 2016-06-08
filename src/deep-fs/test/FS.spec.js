@@ -54,8 +54,8 @@ suite('FS', () => {
     chai.expect(FS.PUBLIC).to.be.equal('public');
   });
 
-  test('Check SYSTEM static getter returns "system"', () => {
-    chai.expect(FS.SYSTEM).to.be.equal('system');
+  test('Check PRIVATE static getter returns "private"', () => {
+    chai.expect(FS.PRIVATE).to.be.equal('private');
   });
 
   test('Check SHARED static getter returns "shared"', () => {
@@ -66,7 +66,7 @@ suite('FS', () => {
     chai.expect(FS.FOLDERS.length).to.be.equal(4);
     chai.expect(FS.FOLDERS).to.be.include(FS.TMP);
     chai.expect(FS.FOLDERS).to.be.include(FS.PUBLIC);
-    chai.expect(FS.FOLDERS).to.be.include(FS.SYSTEM);
+    chai.expect(FS.FOLDERS).to.be.include(FS.PRIVATE);
     chai.expect(FS.FOLDERS).to.be.include(FS.SHARED);
   });
 
@@ -75,12 +75,12 @@ suite('FS', () => {
 
     fs.boot(backendKernelInstance, spyCallback);
 
-    chai.expect(Object.keys(fs._buckets)).to.eql(['temp', 'public', 'system', 'shared']);
+    chai.expect(Object.keys(fs._buckets)).to.eql(['temp', 'public', 'private', 'shared']);
     chai.expect(spyCallback).to.have.been.calledWithExactly();
   });
 
   test('Check shared() getter returns valid mounted shared folder', () => {
-    let bucketName = 'deep.dev.system.32f3705a';
+    let bucketName = 'deep.dev.private.32f3705a';
     let actualResult = fs.shared();
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
@@ -89,7 +89,7 @@ suite('FS', () => {
   });
 
   test('Check tmp() getter returns valid mounted tmp folder', () => {
-    let bucketName = 'deep.dev.system.32f3705a';
+    let bucketName = 'deep.dev.private.32f3705a';
     let actualResult = fs.tmp;
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
@@ -107,13 +107,13 @@ suite('FS', () => {
     chai.expect(actualResult.path).to.equal(path);
   });
 
-  test('Check system() getter returns valid mounted system folder', () => {
-    let bucketName = 'deep.dev.system.32f3705a';
-    let actualResult = fs.system;
+  test('Check private() getter returns valid mounted private folder', () => {
+    let bucketName = 'deep.dev.private.32f3705a';
+    let actualResult = fs.private;
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
     chai.expect(actualResult.bucket).to.equal(bucketName);
-    chai.expect(actualResult.path).to.equal(`system/${path}`);
+    chai.expect(actualResult.path).to.equal(`private/${path}`);
   });
 
   test('Check getFolder() throws "UnknownFolderException" for invalid path',
@@ -131,7 +131,7 @@ suite('FS', () => {
   );
 
   test('Check getFolder() method returns valid value', () => {
-    let bucketName = 'deep.dev.system.32f3705a';
+    let bucketName = 'deep.dev.private.32f3705a';
     let actualResult = fs.getFolder(FS.TMP);
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
