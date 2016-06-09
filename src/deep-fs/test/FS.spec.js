@@ -107,9 +107,9 @@ suite('FS', () => {
     chai.expect(actualResult.path).to.equal(path);
   });
 
-  test('Check private() getter returns valid mounted private folder', () => {
+  test('Check system() getter returns valid mounted system folder', () => {
     let bucketName = 'deep.dev.private.32f3705a';
-    let actualResult = fs.private;
+    let actualResult = fs.system;
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
     chai.expect(actualResult.bucket).to.equal(bucketName);
