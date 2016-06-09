@@ -158,12 +158,13 @@ export class DB extends Kernel.ContainerAware {
       } else {
         this._fixNodeHttpsIssue();
 
-        if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
-          this._initVogelsAutoscale(kernel);
-        }
-
+        // it's important to be loaded before any other decorator
         if (!Vogels.documentClient().hasOwnProperty(EventualConsistency.DEEP_DB_DECORATOR_FLAG)) {
           this._initEventualConsistency(kernel);
+        }
+
+        if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
+          this._initVogelsAutoscale(kernel);
         }
 
         callback();
