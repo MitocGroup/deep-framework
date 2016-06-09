@@ -51,11 +51,12 @@ export class EventualConsistency {
 
   /**
    * @param {String} modelName
+   * @param {String} method
    * @param {Object} payload
    * @param {Function} callback
    * @private
    */
-  _sendPayload(modelName, payload, callback) {
+  _sendPayload(modelName, method, payload, callback) {
     let queuesMapping = this._queuesModelMapping;
 
     if (!queuesMapping.hasOwnProperty(modelName)) {
@@ -63,11 +64,11 @@ export class EventualConsistency {
     }
 
     let params = {
-      MessageBody: JSON.stringify(payload),
-      QueueUrl: this._queueUrl,
+      MessageBody: JSON.stringify({method, payload,}),
+      QueueUrl: queuesMapping[modelName].url,
     };
 
-    this.sqs.sendMessage(params, error => callback(error));
+    this._sqs(modelName).sendMessage(params, error => callback(error));
   }
 
   /**
@@ -147,14 +148,14 @@ export class EventualConsistency {
    */
   _ecExecCb(method, originalMethod) {
     return (payload, originalCb) => {
+      let tableName = EventualConsistency._getTableNameFromPayload(method, payload);
+
       this._originalExec(
         method,
         originalMethod,
         payload,
         originalCb,
         this._isEnabledForTable(tableName) ? () => {
-          let tableName = EventualConsistency._getTableNameFromPayload(method, payload);
-
           if (this._localModel) {
             process.nextTick(() => {
 
@@ -169,6 +170,7 @@ export class EventualConsistency {
 
           this._sendPayload(
             this._modelName(tableName),
+            method,
             payload,
             error => originalCb(error, {Attributes: {},})
           );

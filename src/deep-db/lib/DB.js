@@ -179,6 +179,8 @@ export class DB extends Kernel.ContainerAware {
    * @private
    */
   _fixNodeHttpsIssue() {
+    Vogels.AWS.config.maxRetries = 3;
+
     this._setVogelsDriver(new Vogels.AWS.DynamoDB({
       httpOptions: {
         agent: new https.Agent({
@@ -197,8 +199,6 @@ export class DB extends Kernel.ContainerAware {
    * @private
    */
   _initEventualConsistency(kernel) {
-    Vogels.AWS.config.maxRetries = 3;
-
     Vogels.documentClient(
       new EventualConsistency(
         Vogels.dynamoDriver(),
@@ -215,8 +215,6 @@ export class DB extends Kernel.ContainerAware {
    * @private
    */
   _initVogelsAutoscale(kernel) {
-    Vogels.AWS.config.maxRetries = 3;
-
     Vogels.documentClient(
       new AutoScaleDynamoDB(
         Vogels.dynamoDriver(),
