@@ -14,6 +14,7 @@ import {FailedToCreateTableException} from './Exception/FailedToCreateTableExcep
 import {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';
 import {AbstractDriver} from './Local/Driver/AbstractDriver';
 import {AutoScaleDynamoDB} from './DynamoDB/AutoScaleDynamoDB';
+import {EventualConsistency} from './DynamoDB/EventualConsistency';
 import https from 'https';
 
 /**
@@ -147,9 +148,20 @@ export class DB extends Kernel.ContainerAware {
       this._models = this._rawModelsToVogels(kernel.config.models);
 
       if (this._localBackend) {
-        this._enableLocalDB(callback);
+        this._enableLocalDB(() => {
+          if (!Vogels.documentClient().hasOwnProperty(EventualConsistency.DEEP_DB_DECORATOR_FLAG)) {
+            this._initEventualConsistency(kernel);
+          }
+
+          callback();
+        });
       } else {
         this._fixNodeHttpsIssue();
+
+        // it's important to be loaded before any other decorator
+        if (!Vogels.documentClient().hasOwnProperty(EventualConsistency.DEEP_DB_DECORATOR_FLAG)) {
+          this._initEventualConsistency(kernel);
+        }
 
         if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
           this._initVogelsAutoscale(kernel);
@@ -167,6 +179,8 @@ export class DB extends Kernel.ContainerAware {
    * @private
    */
   _fixNodeHttpsIssue() {
+    Vogels.AWS.config.maxRetries = 3;
+
     this._setVogelsDriver(new Vogels.AWS.DynamoDB({
       httpOptions: {
         agent: new https.Agent({
@@ -184,9 +198,23 @@ export class DB extends Kernel.ContainerAware {
    *
    * @private
    */
-  _initVogelsAutoscale(kernel) {
-    Vogels.AWS.config.maxRetries = 3;
+  _initEventualConsistency(kernel) {
+    Vogels.documentClient(
+      new EventualConsistency(
+        Vogels.dynamoDriver(),
+        Vogels.documentClient(),
+        kernel,
+        this._models
+      ).localMode(this._localBackend).extend()
+    );
+  }
 
+  /**
+   * @param {Kernel} kernel
+   *
+   * @private
+   */
+  _initVogelsAutoscale(kernel) {
     Vogels.documentClient(
       new AutoScaleDynamoDB(
         Vogels.dynamoDriver(),
