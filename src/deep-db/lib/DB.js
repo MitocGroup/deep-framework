@@ -14,6 +14,7 @@ import {FailedToCreateTableException} from './Exception/FailedToCreateTableExcep
 import {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';
 import {AbstractDriver} from './Local/Driver/AbstractDriver';
 import {AutoScaleDynamoDB} from './DynamoDB/AutoScaleDynamoDB';
+import {EventualConsistency} from './DynamoDB/EventualConsistency';
 import https from 'https';
 
 /**
@@ -147,12 +148,22 @@ export class DB extends Kernel.ContainerAware {
       this._models = this._rawModelsToVogels(kernel.config.models);
 
       if (this._localBackend) {
-        this._enableLocalDB(callback);
+        this._enableLocalDB(() => {
+          if (!Vogels.documentClient().hasOwnProperty(EventualConsistency.DEEP_DB_DECORATOR_FLAG)) {
+            this._initEventualConsistency(kernel);
+          }
+
+          callback();
+        });
       } else {
         this._fixNodeHttpsIssue();
 
         if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
           this._initVogelsAutoscale(kernel);
+        }
+
+        if (!Vogels.documentClient().hasOwnProperty(EventualConsistency.DEEP_DB_DECORATOR_FLAG)) {
+          this._initEventualConsistency(kernel);
         }
 
         callback();
@@ -177,6 +188,24 @@ export class DB extends Kernel.ContainerAware {
         }),
       },
     }));
+  }
+
+  /**
+   * @param {Kernel} kernel
+   *
+   * @private
+   */
+  _initEventualConsistency(kernel) {
+    Vogels.AWS.config.maxRetries = 3;
+
+    Vogels.documentClient(
+      new EventualConsistency(
+        Vogels.dynamoDriver(),
+        Vogels.documentClient(),
+        kernel,
+        this._models
+      ).localMode(this._localBackend).extend()
+    );
   }
 
   /**
