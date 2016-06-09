@@ -22,10 +22,10 @@ export class FS extends Kernel.ContainerAware {
    *
    * @param {String} tmpFsBucket
    * @param {String} publicFsBucket
-   * @param {String} systemFsBucket
+   * @param {String} privateFsBucket
    * @param {String} sharedFsBucket
    */
-  constructor(tmpFsBucket = null, publicFsBucket = null, systemFsBucket = null, sharedFsBucket = null) {
+  constructor(tmpFsBucket = null, publicFsBucket = null, privateFsBucket = null, sharedFsBucket = null) {
     super();
 
     this._mountedFolders = {};
@@ -33,7 +33,7 @@ export class FS extends Kernel.ContainerAware {
 
     this._buckets[FS.TMP] = tmpFsBucket;
     this._buckets[FS.PUBLIC] = publicFsBucket;
-    this._buckets[FS.SYSTEM] = systemFsBucket;
+    this._buckets[FS.PRIVATE] = privateFsBucket;
     this._buckets[FS.SHARED] = sharedFsBucket;
 
     this._registry = null;
@@ -52,7 +52,7 @@ export class FS extends Kernel.ContainerAware {
    */
   get registry() {
     if (!this._registry) {
-      this._registry = Registry.createFromFS(this.system);
+      this._registry = Registry.createFromFS(this.private);
     }
 
     return this._registry;
@@ -75,8 +75,8 @@ export class FS extends Kernel.ContainerAware {
   /**
    * @returns {string}
    */
-  static get SYSTEM() {
-    return 'system';
+  static get PRIVATE() {
+    return 'private';
   }
 
   /**
@@ -92,7 +92,7 @@ export class FS extends Kernel.ContainerAware {
   static get FOLDERS() {
     return [
       FS.TMP,
-      FS.SYSTEM,
+      FS.PRIVATE,
       FS.SHARED,
       FS.PUBLIC,
     ];
@@ -116,11 +116,11 @@ export class FS extends Kernel.ContainerAware {
 
       switch (folder) {
         case FS.TMP:
-        case FS.SYSTEM:
-          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}/${kernel.microservice().identifier}`;
+        case FS.PRIVATE:
+          this._buckets[folder] = `${bucketsConfig[FS.PRIVATE].name}/${folder}/${kernel.microservice().identifier}`;
           break;
         case FS.SHARED:
-          this._buckets[folder] = `${bucketsConfig[FS.SYSTEM].name}/${folder}`;
+          this._buckets[folder] = `${bucketsConfig[FS.PRIVATE].name}/${folder}`;
           break;
         default:
           this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
@@ -131,7 +131,7 @@ export class FS extends Kernel.ContainerAware {
   }
 
   /**
-   * Returns mounted file system folder (tmp, public or system)
+   * Returns mounted file private folder (tmp, public or private)
    *
    * @param {String} name
    * @param {String} msIdentifier
@@ -235,11 +235,11 @@ export class FS extends Kernel.ContainerAware {
   }
 
   /**
-   * Returns mounted sys folder
+   * Returns mounted system folder
    *
    * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
   get system() {
-    return this.getFolder(FS.SYSTEM);
+    return this.getFolder(FS.PRIVATE);
   }
 }

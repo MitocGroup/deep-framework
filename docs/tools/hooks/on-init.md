@@ -1,7 +1,7 @@
 On web app init hook
 ====================
 
-"On init hook" is triggered when an web app is initialized (`deepify` `server/deploy/init-backend`).
+"On init hook" is triggered when an web app is initialized (`deepify` `server/deploy/compile dev`).
 
 > The `Microservice` object is injected in the hook context
 
