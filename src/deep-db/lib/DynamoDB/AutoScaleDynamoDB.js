@@ -18,6 +18,33 @@ export class AutoScaleDynamoDB {
     this._kernel = deepKernel;
 
     this._increasedFor = {};
+    this._initMaxSettings();
+  }
+
+  /**
+   * @private
+   */
+  _initMaxSettings() {
+    let maxSettings = {};
+    let tablesNames = this._kernel.config.tablesNames;
+    let modelsSettings = this._kernel.config.modelsSettings
+      .reduce((obj, model) => Object.assign(obj, model), {});
+
+    for (let modelName in tablesNames) {
+      if (!tablesNames.hasOwnProperty(modelName)) {
+        continue;
+      }
+
+      let modelSettings = modelsSettings[modelName];
+      let tableName = tablesNames[modelName];
+
+      maxSettings[tableName] = {
+        read: modelSettings.maxReadCapacity,
+        write: modelSettings.maxWriteCapacity,
+      };
+    }
+
+    this._maxSettings = maxSettings;
   }
 
   /**
@@ -83,8 +110,11 @@ export class AutoScaleDynamoDB {
 
           let increasePayload = {};
           let increaseType = AutoScaleDynamoDB.increaseType(method);
-          increasePayload[increaseType] = Math.ceil(parseInt(info.main[increaseType]) *
-            AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT);
+          increasePayload[increaseType] = this.increaseThroughput(
+            parseInt(info.main[increaseType]),
+            increaseType,
+            table
+          );
 
           throughput.setCapacity(increasePayload, (error) => {
             if (error) {
@@ -168,6 +198,21 @@ export class AutoScaleDynamoDB {
   }
 
   /**
+   * @param {Number} iops
+   * @param {String} type
+   * @param {String} table
+   * @returns {Number}
+   */
+  increaseThroughput(iops, type, table) {
+    let maxIops = this._maxSettings[table][type] || AutoScaleDynamoDB.MAX_THROUGHPUT;
+
+    return Math.min(
+      Math.ceil(iops * AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT),
+      maxIops
+    );
+  }
+
+  /**
    * @returns {AWS.DynamoDB|AWS.DynamoDB.DocumentClient|*}
    */
   get dynamoDbDocumentClient() {
@@ -206,10 +251,17 @@ export class AutoScaleDynamoDB {
   }
 
   /**
+   * @returns {Number}
+   */
+  static get MAX_THROUGHPUT() {
+    return 40000;
+  }
+
+  /**
    * @returns {String}
    */
   static get DEEP_DB_DECORATOR_FLAG() {
-    return '__deep_db_decorator__';
+    return '__deep_db_as_decorator__';
   }
 
   /**

@@ -117,6 +117,17 @@ export class Runtime extends Interface {
 
     if (lambdaCallback) {
       this._resolver = new Resolver(lambdaCallback);
+
+      this._resolver.registerSucceedCallback(() => {
+        let db = this._kernel.get('db');
+        let vogelsDynamoDriver = db.vogelsDynamoDriver;
+
+        if (vogelsDynamoDriver.config.httpOptions.agent) {
+          vogelsDynamoDriver.config.httpOptions.agent.destroy();
+        }
+
+        db._fixNodeHttpsIssue();
+      });
     }
 
     this._context.waitForEmptyEventLoop();

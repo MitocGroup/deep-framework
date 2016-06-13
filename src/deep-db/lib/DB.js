@@ -14,6 +14,7 @@ import {FailedToCreateTableException} from './Exception/FailedToCreateTableExcep
 import {FailedToCreateTablesException} from './Exception/FailedToCreateTablesException';
 import {AbstractDriver} from './Local/Driver/AbstractDriver';
 import {AutoScaleDynamoDB} from './DynamoDB/AutoScaleDynamoDB';
+import {EventualConsistency} from './DynamoDB/EventualConsistency';
 import https from 'https';
 
 /**
@@ -60,7 +61,11 @@ export class DB extends Kernel.ContainerAware {
    */
   get(modelName) {
     if (!this.has(modelName)) {
-      throw new ModelNotFoundException(modelName);
+      modelName = this._lispCase(modelName);
+
+      if (!this.has(modelName)) {
+        throw new ModelNotFoundException(modelName);
+      }
     }
 
     let model = this._models[modelName];
@@ -113,7 +118,10 @@ export class DB extends Kernel.ContainerAware {
         continue;
       }
 
-      allModelsOptions[modelName] = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);
+      allModelsOptions[modelName] = Utils._extend(
+        DB.DEFAULT_TABLE_OPTIONS,
+        options.hasOwnProperty(modelName) ? options[modelName] : {}
+      );
       allModelNames.push(modelName);
     }
 
@@ -140,9 +148,20 @@ export class DB extends Kernel.ContainerAware {
       this._models = this._rawModelsToVogels(kernel.config.models);
 
       if (this._localBackend) {
-        this._enableLocalDB(callback);
+        this._enableLocalDB(() => {
+          if (!Vogels.documentClient().hasOwnProperty(EventualConsistency.DEEP_DB_DECORATOR_FLAG)) {
+            this._initEventualConsistency(kernel);
+          }
+
+          callback();
+        });
       } else {
         this._fixNodeHttpsIssue();
+
+        // it's important to be loaded before any other decorator
+        if (!Vogels.documentClient().hasOwnProperty(EventualConsistency.DEEP_DB_DECORATOR_FLAG)) {
+          this._initEventualConsistency(kernel);
+        }
 
         if (!Vogels.documentClient().hasOwnProperty(AutoScaleDynamoDB.DEEP_DB_DECORATOR_FLAG)) {
           this._initVogelsAutoscale(kernel);
@@ -160,6 +179,8 @@ export class DB extends Kernel.ContainerAware {
    * @private
    */
   _fixNodeHttpsIssue() {
+    Vogels.AWS.config.maxRetries = 3;
+
     this._setVogelsDriver(new Vogels.AWS.DynamoDB({
       httpOptions: {
         agent: new https.Agent({
@@ -177,9 +198,23 @@ export class DB extends Kernel.ContainerAware {
    *
    * @private
    */
-  _initVogelsAutoscale(kernel) {
-    Vogels.AWS.config.maxRetries = 3;
+  _initEventualConsistency(kernel) {
+    Vogels.documentClient(
+      new EventualConsistency(
+        Vogels.dynamoDriver(),
+        Vogels.documentClient(),
+        kernel,
+        this._models
+      ).localMode(this._localBackend).extend()
+    );
+  }
 
+  /**
+   * @param {Kernel} kernel
+   *
+   * @private
+   */
+  _initVogelsAutoscale(kernel) {
     Vogels.documentClient(
       new AutoScaleDynamoDB(
         Vogels.dynamoDriver(),
@@ -198,6 +233,13 @@ export class DB extends Kernel.ContainerAware {
     Vogels.dynamoDriver(driver);
 
     return this;
+  }
+
+  /**
+   * @returns {AWS.DynamoDB}
+   */
+  get vogelsDynamoDriver() {
+    return Vogels.dynamoDriver();
   }
 
   /**
@@ -290,6 +332,19 @@ export class DB extends Kernel.ContainerAware {
       tableName: this._tablesNames[name],
       schema: this._validation.getSchema(name),
     };
+  }
+
+  /**
+   * @param {String} str
+   * @returns {String}
+   * @private
+   */
+  _lispCase(str) {
+    return str
+      .replace(/([a-z])([A-Z])/g, '$1-$2')
+      .split(/[^a-z0-9\-]+/i)
+      .join('-')
+      .toLowerCase();
   }
 
   /**
