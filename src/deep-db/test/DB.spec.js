@@ -38,20 +38,24 @@ suite('DB', () => {
   //let db = null;
   //let backendKernelInstance = null;
   //let vogelsMock = new VogelsMock();
-  //
+
   test('Class DB exists in DB', () => {
     chai.expect(DB).to.be.an('function');
   });
-  //
+
   //test('Load Kernels by using Kernel.load()', (done) => {
   //  let callback = (backendKernel) => {
+  //    backendKernelInstance = backendKernel;
+  //    db = backendKernel.get('db');
+  //
   //    chai.assert.instanceOf(
   //      backendKernel, Kernel, 'backendKernel is an instance of Kernel'
   //    );
+  //    chai.assert.instanceOf(
+  //      db, DB, 'db is an instance of DB'
+  //    );
   //
-  //    backendKernelInstance = backendKernel;
-  //
-  //    // complete the async
+  //    //complete the async
   //    done();
   //  };
   //
@@ -71,7 +75,7 @@ suite('DB', () => {
   //    callback
   //  );
   //});
-  //
+
   //test('Check getting db from Kernel instance', () => {
   //  db = backendKernelInstance.get('db');
   //
@@ -116,14 +120,14 @@ suite('DB', () => {
   //  );
   //});
   //
-  //test('Check LOCAL_DB_PORT static method returns integer and more than 0 value', () => {
-  //  chai.expect(DB.LOCAL_DB_PORT).to.be.above(0);
-  //});
-  //
-  //test('Check DEFAULT_TABLE_OPTIONS static method returns { readCapacity: 1, writeCapacity: 1 }', () => {
-  //  chai.expect(DB.DEFAULT_TABLE_OPTIONS.readCapacity).to.be.above(0);
-  //  chai.expect(DB.DEFAULT_TABLE_OPTIONS.writeCapacity).to.be.above(0);
-  //});
+  test('Check LOCAL_DB_PORT static method returns integer and more than 0 value', () => {
+    chai.expect(DB.LOCAL_DB_PORT).to.be.above(0);
+  });
+
+  test('Check DEFAULT_TABLE_OPTIONS static method returns { readCapacity: 1, writeCapacity: 1 }', () => {
+    chai.expect(DB.DEFAULT_TABLE_OPTIONS.readCapacity).to.be.above(0);
+    chai.expect(DB.DEFAULT_TABLE_OPTIONS.writeCapacity).to.be.above(0);
+  });
   //
   //test('Check _rawModelsToVogels() w/o arguments returns {}', () => {
   //  chai.expect(db._rawModelsToVogels()).to.eql({});

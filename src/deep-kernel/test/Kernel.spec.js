@@ -7,6 +7,7 @@ import {Kernel} from '../lib/Kernel';
 import {Instance} from '../lib/Microservice/Instance';
 import {Exception} from '../lib/Exception/Exception';
 import {MissingMicroserviceException} from '../lib/Exception/MissingMicroserviceException';
+import {AsyncConfig} from '../lib/Config/Driver/AsyncConfig';
 import KernelFactory from './common/KernelFactory';
 import backendConfig from './common/backend-cfg-json';
 import frontendConfig from './common/frontent-cfg-json';
@@ -92,6 +93,38 @@ suite('Kernel', () => {
     chai.assert.instanceOf(frontendKernelInstance.container, DI, 'kernel is an instance of DI');
   });
 
+  test('Check runtimeContext getter/setter', () => {
+    chai.assert.instanceOf(backendKernelInstance.runtimeContext, Object, 'runtimeContext is an instance of Object');
+    chai.assert.instanceOf(frontendKernelInstance.runtimeContext, Object, 'runtimeContext is an instance of Object');
+
+    let backendRuntimeContext = backendKernelInstance.runtimeContext;
+    let frontendRuntimeContext = frontendKernelInstance.runtimeContext;
+
+    let inputBackendRuntimeContext = { backendRuntimeContextKey: 'backendRuntimeContextValue' };
+    let inputFrontendRuntimeContext = { frontendRuntimeContextKey: 'frontendRuntimeContextValue' };
+
+    backendKernelInstance.runtimeContext = inputBackendRuntimeContext;
+    frontendKernelInstance.runtimeContext = inputFrontendRuntimeContext;
+
+    chai.expect(backendKernelInstance.runtimeContext).to.be.eql(inputBackendRuntimeContext);
+    chai.expect(frontendKernelInstance.runtimeContext).to.be.eql(inputFrontendRuntimeContext);
+
+    backendRuntimeContext.runtimeContext = backendRuntimeContext;
+    frontendRuntimeContext.runtimeContext = frontendRuntimeContext;
+  });
+
+  test('Check rootMicroservice() getter', () => {
+    let actualResult = frontendKernelInstance.rootMicroservice;
+
+    chai.assert.instanceOf(actualResult, Instance, 'returns an instance of Microservice');
+    chai.expect(actualResult.isRoot).to.be.equal(true);
+
+  });
+
+  test('Check MissingMicroserviceException exist', () => {
+
+  });
+
   test('Check isBackend getter returns false', () => {
     chai.expect(backendKernelInstance.isBackend).to.be.equal(true);
     chai.expect(frontendKernelInstance.isBackend).to.be.equal(false);
@@ -142,6 +175,39 @@ suite('Kernel', () => {
 
   test('Check ContainerAware static getter return ContainerAware class', () => {
     chai.expect(typeof Kernel.ContainerAware).to.be.equal('function');
+  });
+
+  test('Check PROD_ENVIRONMENT static getter returns value "prod"', () => {
+    chai.expect(Kernel.PROD_ENVIRONMENT).to.be.equal('prod');
+  });
+
+  test('Check STAGE_ENVIRONMENT static getter returns value "stage"', () => {
+    chai.expect(Kernel.STAGE_ENVIRONMENT).to.be.equal('stage');
+  });
+
+  test('Check TEST_ENVIRONMENT static getter returns value "test"', () => {
+    chai.expect(Kernel.TEST_ENVIRONMENT).to.be.equal('test');
+  });
+
+  test('Check DEV_ENVIRONMENT static getter returns value "dev"', () => {
+    chai.expect(Kernel.DEV_ENVIRONMENT).to.be.equal('dev');
+  });
+
+  test('Check ASYNC_CONFIG_FILE static getter returns valid value', () => {
+    chai.expect(Kernel.ASYNC_CONFIG_FILE).to.be.equal(AsyncConfig.DEFAULT_CONFIG_FILE);
+  });
+
+  test('Check ASYNC_CONFIG_CACHE_KEY static getter returns "asyncConfig"', () => {
+    chai.expect(Kernel.ASYNC_CONFIG_CACHE_KEY).to.be.equal('asyncConfig');
+  });
+
+  test('Check ALL_ENVIRONMENTS static getter returns valid array"', () => {
+    chai.expect(Kernel.ALL_ENVIRONMENTS).to.have.members([
+      Kernel.PROD_ENVIRONMENT,
+      Kernel.STAGE_ENVIRONMENT,
+      Kernel.TEST_ENVIRONMENT,
+      Kernel.DEV_ENVIRONMENT,
+    ]);
   });
 
   test('Check load() _isLoaded=true', () => {
@@ -205,5 +271,15 @@ suite('Kernel', () => {
   test('Check microservice() method without args', () => {
     let actualResult = backendKernelInstance.microservice();
     chai.assert.instanceOf(actualResult, Instance, 'result is an instance of Microservice');
+  });
+
+  test('Check isLocalhost() getter return false', () => {
+    let actualResult = backendKernelInstance.isLocalhost;
+    chai.expect(actualResult).to.be.equal(false);
+  });
+
+  test('Check isRumEnabled() getter return null', () => {
+    let actualResult = backendKernelInstance.isRumEnabled;
+    chai.expect(actualResult).to.be.eql(null);
   });
 });
