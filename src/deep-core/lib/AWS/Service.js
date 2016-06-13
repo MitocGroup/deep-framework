@@ -109,6 +109,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get CLOUD_WATCH() {
+    return 'cloudwatch';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get CLOUD_WATCH_LOGS() {
     return 'logs';
   }
@@ -197,6 +204,7 @@ export class Service {
       Service.EC2,
       Service.ELASTIC_SEARCH,
       Service.CLOUD_WATCH_EVENTS,
+      Service.CLOUD_WATCH,
     ];
   }
 }
