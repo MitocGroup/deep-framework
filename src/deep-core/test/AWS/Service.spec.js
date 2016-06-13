@@ -127,6 +127,7 @@ suite('AWS/Service', () => {
     chai.expect(Service.list()).to.be.include(Service.SIMPLE_QUEUE_SERVICE);
     chai.expect(Service.list()).to.be.include(Service.EC2);
     chai.expect(Service.list()).to.be.include(Service.ELASTIC_SEARCH);
+    chai.expect(Service.list()).to.be.include(Service.CLOUD_WATCH);
   });
 
   test('Check exists() static method returns true if Service exists', () => {
