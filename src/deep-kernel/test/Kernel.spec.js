@@ -248,8 +248,8 @@ suite('Kernel', () => {
   //  backendKernelFromFile.loadFromFile('./test/common/backend-cfg.json', callback);
   //});
 
-  test('Check microservice() method return microservice for "hello.world.example"', () => {
-    let actualResult = backendKernelInstance.microservice('hello.world.example');
+  test('Check microservice() method return microservice for "deep-hello-world"', () => {
+    let actualResult = backendKernelInstance.microservice('deep-hello-world');
     chai.assert.instanceOf(actualResult, Instance, 'result is an instance of Microservice');
   });
 

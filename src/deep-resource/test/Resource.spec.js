@@ -20,11 +20,11 @@ import KernelFactory from './common/KernelFactory';
 chai.use(sinonChai);
 
 suite('Resource', () => {
-  let microserviceIdentifier = 'hello.world.example';
+  let microserviceIdentifier = 'deep-hello-world';
   let microserviceInstance = null;
   let resource = null;
-  let resourceName = 'sample';
-  let actionName = 'say-hello';
+  let resourceName = 'say-hello';
+  let actionName = 'create-msg';
   let backendKernelInstance = null;
 
   test('Class Resource exists in Resource', () => {
@@ -63,7 +63,7 @@ suite('Resource', () => {
 
   test('Check constructor sets _resources', () => {
     chai.expect(Object.keys(resource._resources)).to.be.eql(
-      ['hello.world.example', 'deep.ng.root']
+      ['deep-hello-world', 'deep-root-vanilla']
     );
   });
 
@@ -89,7 +89,7 @@ suite('Resource', () => {
         actualResult, ResourceInstance, 'result is an instance of ResourceInstance');
       chai.expect(actualResult.name).to.be.equal(resourceName);
       chai.expect(Object.keys(actualResult._rawActions)).to.be.eql(
-        ['say-hello', 'say-bye', 'say-test']
+        ['create-msg', 'create-fs', 'create-db']
       );
     }
   );
@@ -159,9 +159,13 @@ suite('Resource', () => {
   test('Check list() getter returns', () => {
     let actualResult = resource.list;
     let expectedResult = {
-      'deep.ng.root': [],
-      'hello.world.example': [
-        'sample',
+      'deep-root-vanilla': [
+        'async-config',
+        'scheduler',
+        'ddb-eventual-consistency',
+      ],
+      'deep-hello-world': [
+        'say-hello',
       ],
     };
     chai.expect(actualResult).to.be.eql(expectedResult);
@@ -174,7 +178,7 @@ suite('Resource', () => {
 
     chai.expect(spyCallback).to.have.been.calledWithExactly();
     chai.assert.instanceOf(
-      resource._resources[microserviceIdentifier].sample,
+      resource._resources[microserviceIdentifier]['say-hello'],
       ResourceInstance,
       'item is an instance of ResourceInstance'
     );
@@ -186,7 +190,7 @@ suite('Resource', () => {
 
   test('Check getActionConfig returns an object', () => {
     //sourceId from config
-    let sourceId = 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayBye64232f3705a';
+    let sourceId = 'arn:aws:lambda:::function:deep-hello-world-say-hello-create-msg';
 
     chai.expect(resource.getActionConfig(sourceId)).to.be.an('object');
   });
