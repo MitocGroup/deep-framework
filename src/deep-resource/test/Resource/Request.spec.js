@@ -39,9 +39,9 @@ suite('Resource/Request', () => {
   let resource = null;
   let externalRequest = null;
   let security = null;
-  let microserviceIdentifier = 'hello.world.example';
-  let resourceName = 'sample';
-  let actionName = 'say-hello';
+  let microserviceIdentifier = 'deep-hello-world';
+  let resourceName = 'say-hello';
+  let actionName = 'create-msg';
   let payload = '{"body":"bodyData","id":"string_here"}';
   let source = {
     api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',

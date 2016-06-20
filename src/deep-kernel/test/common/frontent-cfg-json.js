@@ -1,76 +1,197 @@
 export default {
-  "env": "dev",
-  "deployId": "65ab34689468924b655ae66fcdf31eae",
-  "awsRegion": "us-west-2",
-  "models": [
+  env: 'dev',
+  deployId: 'a44dd54d',
+  awsRegion: 'us-west-2',
+  models: [
     {
-      "Name": {
-        "Name": "string",
-        "Id": "timeUUID"
-      }
-    }
-  ],
-  "identityPoolId": "us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef",
-  "identityProviders": {
-    "www.amazon.com": "amzn1.application.5g5k2jb86379368kjh5b23kj5hb"
-  },
-  "microservices": {
-    "hello.world.example": {
-      "isRoot": false,
-      "parameters": {},
-      "resources": {
-        "sample": {
-          "say-hello": {
-            "type": "lambda",
-            "methods": [
-              "POST"
-            ],
-            "forceUserIdentity": true,
-            "region": "us-west-2",
-            "source": {
-              "api": "https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello",
-              "original": "arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayHello64232f3705a"
-            }
-          },
-          "say-bye": {
-            "type": "lambda",
-            "methods": [
-              "GET"
-            ],
-            "forceUserIdentity": true,
-            "region": "us-west-2",
-            "source": {
-              "api": "https://6jh99kuklk.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-bye",
-              "original": "arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayBye64232f3705a"
-            }
-          },
-          "say-test": {
-            "type": "external",
-            "methods": [
-              "GET"
-            ],
-            "forceUserIdentity": true,
-            "region": "us-west-2",
-            "source": {
-              "api": "https://6jh99kuklk.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-test",
-              "original": "http://petstore.swagger.io/v2/store/inventory"
-            }
-          }
-        }
-      }
+      name: {
+        Name: 'string',
+      },
     },
-    "deep.ng.root": {
-      "isRoot": true,
-      "parameters": {},
-      "resources": {}
-    }
+  ],
+  identityPoolId: 'us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xx0123456789',
+  identityProviders: '',
+  microservices: {
+    'deep-hello-world': {
+      isRoot: false,
+      parameters: {},
+      resources: {
+        'say-hello': {
+          'create-msg': {
+            type: 'lambda',
+            methods: [
+              'POST',
+            ],
+            forceUserIdentity: true,
+            validationSchema: 'name-data',
+            apiCache: {
+              enabled: false,
+              ttl: -1,
+            },
+            region: 'us-west-2',
+            scope: 'public',
+            source: {
+              api: '/deep-hello-world/say-hello/create-msg',
+              original: 'arn:aws:lambda:::function:deep-hello-world-say-hello-create-msg',
+              _localPath: './src/deep-hello-world/backend/src/say-hello/create-msg/bootstrap.js',
+            },
+          },
+          'create-fs': {
+            type: 'lambda',
+            methods: [
+              'POST',
+            ],
+            forceUserIdentity: true,
+            validationSchema: 'name-data',
+            apiCache: {
+              enabled: false,
+              ttl: -1,
+            },
+            region: 'us-west-2',
+            scope: 'public',
+            source: {
+              api: '/deep-hello-world/say-hello/create-fs',
+              original: 'arn:aws:lambda:::function:deep-hello-world-say-hello-create-fs',
+              _localPath: './src/deep-hello-world/backend/src/say-hello/create-fs/bootstrap.js',
+            },
+          },
+          'create-db': {
+            type: 'lambda',
+            methods: [
+              'POST',
+            ],
+            forceUserIdentity: true,
+            validationSchema: 'name-data',
+            apiCache: {
+              enabled: false,
+              ttl: -1,
+            },
+            region: 'us-west-2',
+            scope: 'public',
+            source: {
+              api: '/deep-hello-world/say-hello/create-db',
+              original: 'arn:aws:lambda:::function:deep-hello-world-say-hello-create-db',
+              _localPath: './src/deep-hello-world/backend/src/say-hello/create-db/bootstrap.js',
+            },
+          },
+        },
+      },
+    },
+    'deep-root-vanilla': {
+      isRoot: true,
+      parameters: {},
+      resources: {
+        'async-config': {
+          dump: {
+            type: 'lambda',
+            methods: [
+              'GET',
+            ],
+            forceUserIdentity: false,
+            apiCache: {
+              enabled: false,
+              ttl: -1,
+            },
+            region: 'us-west-2',
+            scope: 'private',
+            source: {
+              api: null,
+              original: 'arn:aws:lambda:::function:deep-root-vanilla-async-config-dump',
+              _localPath: './src/deep-root-vanilla/backend/src/async-config/dump/bootstrap.js',
+            },
+          },
+        },
+        scheduler: {
+          rule: {
+            type: 'lambda',
+            methods: [
+              'GET',
+            ],
+            forceUserIdentity: false,
+            apiCache: {
+              enabled: false,
+              ttl: -1,
+            },
+            region: 'us-west-2',
+            scope: 'private',
+            source: {
+              api: null,
+              original: 'arn:aws:lambda:::function:deep-root-vanilla-scheduler-rule',
+              _localPath: './src/deep-root-vanilla/backend/src/scheduler/rule/bootstrap.js',
+            },
+          },
+        },
+        'ddb-eventual-consistency': {
+          'listen-queues': {
+            type: 'lambda',
+            methods: [
+              'GET',
+            ],
+            forceUserIdentity: false,
+            apiCache: {
+              enabled: false,
+              ttl: -1,
+            },
+            region: 'us-west-2',
+            scope: 'private',
+            source: {
+              api: null,
+              original: 'arn:aws:lambda:::function:deep-root-vanilla-ddb-eventual-consistency-listen-queues',
+              _localPath: './src/deep-root-vanilla/backend/src/ddb-eventual-consistency/listen-queues/bootstrap.js',
+            },
+          },
+          'pool-queue': {
+            type: 'lambda',
+            methods: [
+              'GET',
+            ],
+            forceUserIdentity: false,
+            apiCache: {
+              enabled: false,
+              ttl: -1,
+            },
+            region: 'us-west-2',
+            scope: 'private',
+            source: {
+              api: null,
+              original: 'arn:aws:lambda:::function:deep-root-vanilla-ddb-eventual-consistency-pool-queue',
+              _localPath: './src/deep-root-vanilla/backend/src/ddb-eventual-consistency/pool-queue/bootstrap.js',
+            },
+          },
+        },
+      },
+    },
   },
-  "globals": {
-    "userProviderEndpoint": "@deep.auth:user-retrieve",
-    "security": {
-      "identityProviders": {
-        "www.amazon.com": "amzn1.application.3b5k2jb65432352gfd5b23kj5hb"
-      }
-    }
-  }
-}
+  globals: {
+    favicon: '@deep-root-vanilla:img/favicon.ico',
+    pageLoader: {
+      src: '@deep-root-vanilla:img/loader.gif',
+      alt: 'Loading...',
+    },
+    engine: {
+      ngRewrite: '/',
+    },
+  },
+  searchDomains: {},
+  validationSchemas: [
+    'name-data',
+  ],
+  modelsSettings: [
+    {
+      name: {
+        readCapacity: 1,
+        writeCapacity: 1,
+        maxReadCapacity: 10000,
+        maxWriteCapacity: 10000
+      },
+    },
+  ],
+  forceUserIdentity: false,
+  microserviceIdentifier: 'deep-hello-world',
+  awsAccountId: 123456789123,
+  appIdentifier: 'gfhfgdhfghgjgh7687687fghgfhgf',
+  timestamp: 1465996738254,
+  cacheDsn: '',
+  name: 'deep-hello-world-say-hello-create-db',
+  path: './src/deep-hello-world/backend/src/say-hello/create-db/bootstrap.js',
+};
