@@ -21,16 +21,16 @@ export class IdentityProvider {
     let domainRegexp;
 
     switch(providerName) {
-      case 'amazon':
+      case IdentityProvider.AMAZON_PROVIDER:
         domainRegexp = /^www\.amazon\.com$/;
         break;
-      case 'facebook':
+      case IdentityProvider.FACEBOOK_PROVIDER:
         domainRegexp = /^graph\.facebook\.com$/;
         break;
-      case 'google':
+      case IdentityProvider.GOOGLE_PROVIDER:
         domainRegexp = /^accounts\.google\.com$/;
         break;
-      case 'auth0':
+      case IdentityProvider.AUTH0_PROVIDER:
         domainRegexp = /^.+\.auth0\.com$/;
         break;
     }
@@ -68,15 +68,49 @@ export class IdentityProvider {
       throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);
     }
 
-    if (!identityMetadata.access_token || !identityMetadata.tokenExpirationTime) {
+    this._providers = providers;
+    this._name = providerDomain;
+    this._fillFromIdentityMetadata(providerName, identityMetadata);
+  }
+
+  /**
+   * @todo: Implement other identity providers
+   * @param {String} providerName
+   * @param {Object} identityMetadata
+   * @returns {*}
+   * @private
+   */
+  _fillFromIdentityMetadata(providerName, identityMetadata) {
+    let token = null;
+    let expireTime = null;
+    let userId = null;
+
+    switch(providerName) {
+      case IdentityProvider.FACEBOOK_PROVIDER:
+        token = identityMetadata.accessToken;
+        expireTime = Date.now() + identityMetadata.expiresIn * 1000;
+        userId = identityMetadata.userID;
+        break;
+
+      case IdentityProvider.AMAZON_PROVIDER:
+      case IdentityProvider.AUTH0_PROVIDER:
+        token = identityMetadata.access_token;
+        expireTime = Date.now() + (identityMetadata.expires_in || 3600) * 1000;
+        break;
+
+      default:
+        token = identityMetadata.access_token;
+        expireTime = identityMetadata.tokenExpirationTime;
+        userId = identityMetadata.user_id;
+    }
+
+    if (!(token && expireTime)) {
       throw new InvalidProviderIdentityException(providerName);
     }
 
-    this._providers = providers;
-    this._name = providerDomain;
-    this._userToken = identityMetadata.access_token;
-    this._tokenExpTime = new Date(identityMetadata.tokenExpirationTime);
-    this._userId = identityMetadata.user_id || null;
+    this._userToken = token;
+    this._tokenExpTime = new Date(expireTime);
+    this._userId = userId || null;
   }
 
   /**
@@ -135,5 +169,33 @@ export class IdentityProvider {
     }
 
     return this.providers[name];
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get FACEBOOK_PROVIDER() {
+    return 'facebook';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get AMAZON_PROVIDER() {
+    return 'amazon'
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get GOOGLE_PROVIDER() {
+    return 'google';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get AUTH0_PROVIDER() {
+    return 'auth0';
   }
 }
