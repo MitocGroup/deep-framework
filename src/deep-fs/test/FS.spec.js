@@ -18,7 +18,7 @@ chai.use(sinonChai);
 suite('FS', () => {
   let fs = null;
   let backendKernelInstance = null;
-  let path = 'hello.world.example/';
+  let path = 'deep-hello-world/';
 
   test('Class FS exists in FS', () => {
     chai.expect(FS).to.be.an('function');
@@ -80,7 +80,7 @@ suite('FS', () => {
   });
 
   test('Check shared() getter returns valid mounted shared folder', () => {
-    let bucketName = 'deep.dev.private.32f3705a';
+    let bucketName = 'fdgfd56765gfhjgj768768ghjjhgjhg898-private';
     let actualResult = fs.shared();
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
@@ -89,7 +89,7 @@ suite('FS', () => {
   });
 
   test('Check tmp() getter returns valid mounted tmp folder', () => {
-    let bucketName = 'deep.dev.private.32f3705a';
+    let bucketName = 'fdgfd56765gfhjgj768768ghjjhgjhg898-private';
     let actualResult = fs.tmp;
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
@@ -98,7 +98,7 @@ suite('FS', () => {
   });
 
   test('Check public() getter returns valid mounted public folder', () => {
-    let bucketName = 'deep.dev.public.32f3705a';
+    let bucketName = 'fdgfd56765gfhjgj768768ghjjhgjhg898-public';
 
     let actualResult = fs.public;
 
@@ -108,7 +108,7 @@ suite('FS', () => {
   });
 
   test('Check system() getter returns valid mounted system folder', () => {
-    let bucketName = 'deep.dev.private.32f3705a';
+    let bucketName = 'fdgfd56765gfhjgj768768ghjjhgjhg898-private';
     let actualResult = fs.system;
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
@@ -131,7 +131,7 @@ suite('FS', () => {
   );
 
   test('Check getFolder() method returns valid value', () => {
-    let bucketName = 'deep.dev.private.32f3705a';
+    let bucketName = 'fdgfd56765gfhjgj768768ghjjhgjhg898-private';
     let actualResult = fs.getFolder(FS.TMP);
 
     chai.assert.instanceOf(actualResult, S3FS, 'result is an instance of S3FS');
