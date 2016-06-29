@@ -183,7 +183,7 @@ export class IdentityProvider {
    * @returns {String}
    */
   static get AMAZON_PROVIDER() {
-    return 'amazon'
+    return 'amazon';
   }
 
   /**
