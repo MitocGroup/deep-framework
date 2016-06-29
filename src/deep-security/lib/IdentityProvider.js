@@ -68,50 +68,50 @@ export class IdentityProvider {
       throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);
     }
 
+    let normalizedMetadata = this._normalizeIdentityMetadata(providerName, identityMetadata);
+
+    this._userToken = normalizedMetadata.token;
+    this._tokenExpTime = new Date(normalizedMetadata.expireTime);
+    this._userId = normalizedMetadata.userId;
     this._providers = providers;
     this._name = providerDomain;
-    this._fillFromIdentityMetadata(providerName, identityMetadata);
   }
 
   /**
    * @todo: Implement other identity providers
    * @param {String} providerName
    * @param {Object} identityMetadata
-   * @returns {*}
+   * @returns {{token: String, userId: String, expireTime: Number}}
    * @private
    */
-  _fillFromIdentityMetadata(providerName, identityMetadata) {
+  _normalizeIdentityMetadata(providerName, identityMetadata) {
     let token = null;
-    let expireTime = null;
+    let expiresIn  = null;
     let userId = null;
 
     switch(providerName) {
       case IdentityProvider.FACEBOOK_PROVIDER:
         token = identityMetadata.accessToken;
-        expireTime = Date.now() + identityMetadata.expiresIn * 1000;
+        expiresIn = identityMetadata.expiresIn;
         userId = identityMetadata.userID;
         break;
 
       case IdentityProvider.AMAZON_PROVIDER:
       case IdentityProvider.AUTH0_PROVIDER:
         token = identityMetadata.access_token;
-        expireTime = Date.now() + (identityMetadata.expires_in || 3600) * 1000;
         userId = identityMetadata.user_id;
+        expiresIn = identityMetadata.expires_in || 3600;
         break;
-
-      default:
-        token = identityMetadata.access_token;
-        expireTime = identityMetadata.tokenExpirationTime;
-        userId = identityMetadata.user_id;
     }
 
-    if (!(token && expireTime)) {
+    if (!(token && expiresIn)) {
       throw new InvalidProviderIdentityException(providerName);
     }
 
-    this._userToken = token;
-    this._tokenExpTime = new Date(expireTime);
-    this._userId = userId || null;
+    let expireTime = Date.now() + expiresIn * 1000;
+    userId = userId || null;
+
+    return {token, userId, expireTime};
   }
 
   /**
