@@ -96,6 +96,7 @@ export class IdentityProvider {
       case IdentityProvider.AUTH0_PROVIDER:
         token = identityMetadata.access_token;
         expireTime = Date.now() + (identityMetadata.expires_in || 3600) * 1000;
+        userId = identityMetadata.user_id;
         break;
 
       default:
