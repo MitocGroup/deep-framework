@@ -60,6 +60,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get COGNITO_IDENTITY_PROVIDER() {
+    return 'cognito-idp';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get COGNITO_SYNC() {
     return 'cognito-sync';
   }
@@ -189,6 +196,7 @@ export class Service {
       Service.DYNAMO_DB,
       Service.SIMPLE_NOTIFICATION_SERVICE,
       Service.COGNITO_IDENTITY,
+      Service.COGNITO_IDENTITY_PROVIDER,
       Service.COGNITO_SYNC,
       Service.ELASTIC_CACHE,
       Service.IDENTITY_AND_ACCESS_MANAGEMENT,
