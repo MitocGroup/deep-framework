@@ -240,7 +240,7 @@ export class AutoScaleDynamoDB {
    * @returns {Number}
    */
   static get MAX_INCREASE_NUM_PER_TABLE() {
-    return 3;
+    return 5;
   }
 
   /**
