@@ -33,6 +33,9 @@ export class IdentityProvider {
       case IdentityProvider.AUTH0_PROVIDER:
         domainRegexp = /^.+\.auth0\.com$/;
         break;
+      case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
+        domainRegexp = /^cognito\-idp\.[\w\d\-]+\.amazonaws\.com\/[\w\d\-]+$/;
+        break;
     }
 
     if (!domainRegexp) {
@@ -96,6 +99,7 @@ export class IdentityProvider {
         userId = identityMetadata.userID;
         break;
 
+      case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
       case IdentityProvider.AMAZON_PROVIDER:
       case IdentityProvider.AUTH0_PROVIDER:
         token = identityMetadata.access_token;
@@ -170,6 +174,13 @@ export class IdentityProvider {
     }
 
     return this.providers[name];
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get COGNITO_USER_POOL_PROVIDER() {
+    return 'cognito-user-pool';
   }
 
   /**
