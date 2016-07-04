@@ -14,14 +14,15 @@ import Log from 'deep-log';
 import KernelFactory from '../common/KernelFactory';
 
 suite('Resource/Action', () => {
-  let actionName = 'say-hello';
-  let resourceName = 'sample';
+  let resourceName = 'say-hello';
+  let actionName = 'create-msg';
   let actionType = 'lambda';
   let actionMethods = ['POST'];
-  let microserviceIdentifier = 'hello.world.example';
+  let microserviceIdentifier = 'deep-hello-world';
   let actionSource = {
-    api: 'https://1zf47jpvxd.execute-api.us-west-2.amazonaws.com/dev/hello-world-example/sample/say-hello',
-    original: 'arn:aws:lambda:us-west-2:389615756922:function:DeepDevSampleSayHello64232f3705a',
+    api: '/deep-hello-world/say-hello/create-msg',
+    original: 'arn:aws:lambda:::function:deep-hello-world-say-hello-create-msg',
+    _localPath: './src/deep-hello-world/backend/src/say-hello/create-msg/bootstrap.js',
   };
   let actionRegion = 'us-west-2';
   let action = null;
@@ -90,11 +91,11 @@ suite('Resource/Action', () => {
     chai.expect(action.region).to.be.equal(actionRegion);
   });
 
-  test('Check apiCacheEnabled getter returns false' , () => {
+  test('Check apiCacheEnabled getter returns false', () => {
     chai.expect(action.apiCacheEnabled).to.be.equal(false);
   });
 
-  test('Check apiCacheTtl getter returns number' , () => {
+  test('Check apiCacheTtl getter returns number', () => {
     chai.expect(Number.isInteger(action.apiCacheTtl)).to.be.equal(true);
   });
 

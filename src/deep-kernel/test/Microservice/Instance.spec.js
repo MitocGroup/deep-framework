@@ -7,7 +7,7 @@ import Core from 'deep-core';
 import backendConfig from '../common/backend-cfg-json';
 
 suite('Microservice/Instance', () => {
-  let identifier = 'hello.world.example';
+  let identifier = 'deep-hello-world';
   let rawResources = backendConfig.microservices[identifier].resources;
   let instance = new Instance(identifier, rawResources);
 

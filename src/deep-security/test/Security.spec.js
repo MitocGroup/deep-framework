@@ -15,7 +15,7 @@ import {DeepResourceServiceMock} from './Mock/DeepResourceServiceMock';
 
 chai.use(sinonChai);
 
-suite('Security', function () {
+suite('Security', () => {
   let resourceName = 'sample';
   let deepResourceServiceMock = new DeepResourceServiceMock();
   let lambdaContext = {
@@ -24,7 +24,7 @@ suite('Security', function () {
       cognitoIdentityId: 'us-east-1:b5487645-61bd-4c3b-dd54-5cba66070e7c',
     },
   };
-  let identityPoolId = 'us-east-1:44hgf876-a2v2-465a-877v-12fd264525ef';
+  let identityPoolId = 'us-east-1:xxxxxxxx-xxxx-xxxx-xxxx-xx0123456789';
   let identityProviders = {'www.amazon.com': 'amzn1.application.3b5k2jb65432352gfd5b23kj5hb'};
   let userProviderEndpoint = '@deep.auth:user-retrieve';
   let userProvider = new UserProvider(resourceName, deepResourceServiceMock);
@@ -61,23 +61,22 @@ suite('Security', function () {
   });
 
 
-  test('Class Security exists in Security', function () {
+  test('Class Security exists in Security', () => {
     chai.expect(Security).to.be.an('function');
   });
 
-  test('Check constructor sets token=null', function () {
+  test('Check constructor sets token=null', () => {
     chai.expect(securityBackend.token).to.be.eql(null);
     chai.expect(securityFrontend.token).to.be.eql(null);
   });
 
-  test('Check constructor sets identityPoolId', function () {
+  test('Check constructor sets identityPoolId', () => {
     chai.expect(securityBackend.identityPoolId).to.be.eql(identityPoolId);
     chai.expect(securityFrontend.identityPoolId).to.be.eql(identityPoolId);
   });
 
-  test('Check constructor sets _userProviderEndpoint', () => {
-    chai.expect(securityBackend._userProviderEndpoint).to.be.eql(userProviderEndpoint);
-    chai.expect(securityFrontend._userProviderEndpoint).to.be.eql(userProviderEndpoint);
+  test('Check constructor sets _userProviderEndpoint to null', () => {
+    chai.expect(securityBackend._userProviderEndpoint).to.be.equal(null);
   });
 
   test('Check warmupBackendLogin() throws "Exception" for frontend', () => {
@@ -92,7 +91,7 @@ suite('Security', function () {
     chai.assert.instanceOf(error, Exception, 'error is an instance of Exception');
   });
 
-  test('Check warmupBackendLogin() returns valid instance of Token for !localBackend', function () {
+  test('Check warmupBackendLogin() returns valid instance of Token for !localBackend', () => {
 
     //hack for failing during this.container.get('resource')
     securityBackend._userProvider = userProvider;
@@ -104,7 +103,7 @@ suite('Security', function () {
     chai.expect(actualResult._userProvider).to.eql(userProvider);
   });
 
-  test('Check warmupBackendLogin() returns valid instance of LocalToken for localBackend', function () {
+  test('Check warmupBackendLogin() returns valid instance of LocalToken for localBackend', () => {
 
     //hack for failing during this.container.get('resource')
     securityBackend.localBackend = true;
@@ -148,29 +147,25 @@ suite('Security', function () {
     chai.expect(actualResult._userProvider).to.eql(userProvider);
   });
 
-  test('Check boot() method for backend boots security data and runs callback', function () {
+  test('Check boot() method for backend boots security data and runs callback', () => {
     let spyBackendCallback = sinon.spy();
 
     securityBackend.boot(backendKernelInstance, spyBackendCallback);
 
     chai.expect(spyBackendCallback).to.have.been.calledWithExactly();
     chai.expect(securityBackend.identityPoolId).to.be.equal(identityPoolId);
-    chai.expect(securityBackend._identityProviders).to.be.eql(identityProviders);
-    chai.expect(securityBackend._userProviderEndpoint).to.be.equal(userProviderEndpoint);
   });
 
-  test('Check boot() method for frontend boots security data and runs callback', function () {
+  test('Check boot() method for frontend boots security data and runs callback', () => {
     let spyFrontendCallback = sinon.spy();
 
     securityBackend.boot(backendKernelInstance, spyFrontendCallback);
 
     chai.expect(spyFrontendCallback).to.have.been.calledWithExactly();
     chai.expect(securityFrontend.identityPoolId).to.be.equal(identityPoolId);
-    chai.expect(securityFrontend._identityProviders).to.be.eql(identityProviders);
-    chai.expect(securityFrontend._userProviderEndpoint).to.be.equal(userProviderEndpoint);
   });
 
-  test('Check logout()', function () {
+  test('Check logout()', () => {
     let actualResult = securityBackend.logout();
 
     chai.expect(securityBackend.token).to.equal(null);

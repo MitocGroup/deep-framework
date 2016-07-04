@@ -103,7 +103,7 @@ suite('ContainerAware', () => {
     });
 
   test('Check _resolveIdentifier() method for string', () => {
-    chai.expect(containerAware._resolveIdentifier('@hello.world.example:sample')).to.eql('sample');
+    chai.expect(containerAware._resolveIdentifier('@deep-hello-world:sample')).to.eql('sample');
   });
 
   test('Check get() method returns valid array', () => {
