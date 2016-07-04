@@ -15,9 +15,9 @@ suite('IdentityProvider', () => {
   date.setDate(date.getDate() + 1);
 
   let identityMetadata = {
-    access_token: 'test_userToken',
-    tokenExpirationTime: date,
-    user_id: 'test_userId',
+    accessToken: 'test_userToken',
+    expiresIn: 3600,
+    userID: 'test_userId',
   };
   let providers = {
     'www.amazon.com': {
@@ -125,13 +125,10 @@ suite('IdentityProvider', () => {
   });
 
   test('Check isTokenValid() returns false for tokenExpirationTime', () => {
-    let date = new Date();
-    date.setDate(date.getDate() - 1);
-
     let identityMetadata = {
-      access_token: 'test_userToken',
-      tokenExpirationTime: date,
-      user_id: 'test_userId',
+      accessToken: 'test_userToken',
+      expiresIn: -3600,
+      userID: 'test_userId',
     };
 
     identityProvider = new IdentityProvider(providers, providerName, identityMetadata);
