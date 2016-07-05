@@ -90,6 +90,7 @@ export class IdentityProvider {
   _normalizeIdentityMetadata(providerName, identityMetadata) {
     let token = null;
     let expiresIn  = null;
+    let expireTime = null;
     let userId = null;
 
     switch(providerName) {
@@ -100,6 +101,11 @@ export class IdentityProvider {
         break;
 
       case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
+        let jwtTokenInstance = identityMetadata.getIdToken();
+        token = jwtTokenInstance.getJwtToken();
+        expireTime = jwtTokenInstance.getExpiration().unix() * 1000;
+        break;
+
       case IdentityProvider.AMAZON_PROVIDER:
       case IdentityProvider.AUTH0_PROVIDER:
         token = identityMetadata.access_token;
@@ -108,12 +114,15 @@ export class IdentityProvider {
         break;
     }
 
-    if (!(token && expiresIn)) {
+    userId = userId || null;
+    expireTime = expireTime ||
+      (expiresIn ?
+        (Date.now() + expiresIn * 1000) :
+        null);
+
+    if (!(token && expireTime)) {
       throw new InvalidProviderIdentityException(providerName);
     }
-
-    let expireTime = Date.now() + expiresIn * 1000;
-    userId = userId || null;
 
     return {token, userId, expireTime};
   }
