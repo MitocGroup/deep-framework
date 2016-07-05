@@ -33,6 +33,9 @@ export class IdentityProvider {
       case IdentityProvider.AUTH0_PROVIDER:
         domainRegexp = /^.+\.auth0\.com$/;
         break;
+      case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
+        domainRegexp = /^cognito\-idp\.[\w\d\-]+\.amazonaws\.com\/[\w\d\-]+$/;
+        break;
     }
 
     if (!domainRegexp) {
@@ -87,6 +90,7 @@ export class IdentityProvider {
   _normalizeIdentityMetadata(providerName, identityMetadata) {
     let token = null;
     let expiresIn  = null;
+    let expireTime = null;
     let userId = null;
 
     switch(providerName) {
@@ -94,6 +98,12 @@ export class IdentityProvider {
         token = identityMetadata.accessToken;
         expiresIn = identityMetadata.expiresIn;
         userId = identityMetadata.userID;
+        break;
+
+      case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
+        let jwtTokenInstance = identityMetadata.getIdToken();
+        token = jwtTokenInstance.getJwtToken();
+        expireTime = jwtTokenInstance.getExpiration().unix() * 1000;
         break;
 
       case IdentityProvider.AMAZON_PROVIDER:
@@ -104,12 +114,15 @@ export class IdentityProvider {
         break;
     }
 
-    if (!(token && expiresIn)) {
+    userId = userId || null;
+    expireTime = expireTime ||
+      (expiresIn ?
+        (Date.now() + expiresIn * 1000) :
+        null);
+
+    if (!(token && expireTime)) {
       throw new InvalidProviderIdentityException(providerName);
     }
-
-    let expireTime = Date.now() + expiresIn * 1000;
-    userId = userId || null;
 
     return {token, userId, expireTime};
   }
@@ -170,6 +183,13 @@ export class IdentityProvider {
     }
 
     return this.providers[name];
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get COGNITO_USER_POOL_PROVIDER() {
+    return 'cognito-user-pool';
   }
 
   /**
