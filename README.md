@@ -6,7 +6,7 @@ DEEP Framework
 [![Codacy Badge](https://api.codacy.com/project/badge/coverage/823d04a90c4a4fc888e62817e3e820be)](https://www.codacy.com/app/MitocGroup/deep-framework)
 [![API Docs](http://docs.deep.mg/badge.svg)](http://docs.deep.mg)
 
-DEEP Framework is a full-stack web framework for building cloud-native web applications.
+DEEP Framework is a Full-Stack JavaScript Framework for building cloud-native web applications.
 
 > This framework is a core component of a larger ecosystem, called
 [Digital Enterprise End-to-end Platform](https://github.com/MitocGroup/deep-framework/blob/master/docs/index.md).
