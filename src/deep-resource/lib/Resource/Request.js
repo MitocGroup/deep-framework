@@ -445,6 +445,7 @@ export class Request {
       eventId: this.customId,
       requestId: this.customId,
       payload: this.payload,
+      time: Date.now(),
     };
 
     let decoratedCallback = (response) => {
