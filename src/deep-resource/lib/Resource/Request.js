@@ -445,6 +445,7 @@ export class Request {
       eventId: this.customId,
       requestId: this.customId,
       payload: this.payload,
+      duration: Date.now(),
     };
 
     let decoratedCallback = (response) => {
@@ -456,6 +457,7 @@ export class Request {
 
       let responseEvent = util._extend({}, requestEvent);
       responseEvent.payload = response;
+      responseEvent.duration = Date.now() - requestEvent.duration;
 
       logService.rumLog(requestEvent);
       logService.rumLog(responseEvent);
