@@ -49,7 +49,7 @@ export class CredentialsManager {
    * @param {Object} credentials
    * @param {Function} callback
    */
-  saveCredentials(credentials, callback) {
+  saveCredentials(role, credentials, callback) {
     this._createOrGetDataset((error, dataset) => {
       if (error) {
         callback(error, null);
@@ -79,8 +79,9 @@ export class CredentialsManager {
   /**
    * @param {String} identityId
    * @param {Function} callback
+   * @param {Object|null} role
    */
-  loadBackendCredentials(identityId, callback) {
+  loadBackendCredentials(role, identityId, callback) {
     let cognitosync = new AWS.CognitoSync();
 
     let params = {
@@ -96,8 +97,10 @@ export class CredentialsManager {
       }
 
       let creds = null;
+      let roleRecord = this.roleRecord(role);
+
       data.Records.forEach((record) => {
-        if (record.Key === CredentialsManager.RECORD_NAME) {
+        if (record.Key === roleRecord) {
           creds = this._decodeCredentials(record.Value);
           return creds;
         }
@@ -109,15 +112,18 @@ export class CredentialsManager {
 
   /**
    * @param {Function} callback
+   * @param {Object|null} role
    */
-  loadFrontendCredentials(callback) {
+  loadFrontendCredentials(role, callback) {
     this._createOrGetDataset((error, dataset) => {
       if (error) {
         callback(error, null);
         return;
       }
 
-      dataset.get(CredentialsManager.RECORD_NAME, (error, data) => {
+      let recordName = this.roleRecord(role);
+
+      dataset.get(recordName, (error, data) => {
         if (error) {
           callback(error, null);
           return;
@@ -193,6 +199,16 @@ export class CredentialsManager {
         return cb(true);
       }
     });
+  }
+
+  /**
+   * @param {Object} role
+   * @returns {*}
+   */
+  roleRecord(role) {
+    return role && role.Id ?
+      `${CredentialsManager.RECORD_NAME}-${role.Id}` :
+      CredentialsManager.RECORD_NAME;
   }
 
   /**

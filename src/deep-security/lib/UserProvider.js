@@ -23,12 +23,13 @@ export class UserProvider {
   loadUserByIdentityId(id, callback) {
     let retrieveUserResource = this._deepResource.get(this._retrieveUserResource);
 
-    retrieveUserResource.request({Id: id}).send(function(response) {
+    retrieveUserResource.request({Id: id}).send(response => {
       if (response.error) {
-        throw new LoadUserException(id, response.error);
+        callback(new LoadUserException(id, response.error), null);
+        return;
       }
 
-      return callback(response.data);
+      return callback(null, response.data);
     });
   }
 }

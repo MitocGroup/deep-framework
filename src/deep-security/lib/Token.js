@@ -46,6 +46,7 @@ export class Token {
 
     this._identityProvider = null;
     this._userProvider = null;
+    this._roleResolver = null;
     this._logService = null;
     this._loadingInProgress = false;
     this._waitingForCredsCallbacks = [];
@@ -115,9 +116,23 @@ export class Token {
   }
 
   /**
+   * @param {RoleResolver} roleResolver
+   */
+  set roleResolver(roleResolver) {
+    this._roleResolver = roleResolver;
+  }
+
+  /**
+   * @param {Object} user
+   */
+  set user(user) {
+    this._user = user;
+  }
+
+  /**
    * @param {Function} callback
    */
-  loadCredentials(callback = () => {}) {
+  loadCredentials(callback = () => {}, context = Token.BASE_CONTEXT) {
     if (this._loadingInProgress) {
       this._waitingForCredsCallbacks.push(callback);
       return;
@@ -157,23 +172,33 @@ export class Token {
       return;
     }
 
-    if (this.lambdaContext) {
-      this._backendLoadCredentials(proxyCallback);
-    } else {
-      this._frontendLoadCredentials(proxyCallback);
-    }
+    this._roleResolver
+      .resolve(context)
+      .then(role => {
+        if (this.lambdaContext) {
+          this._backendLoadCredentials(proxyCallback, role);
+        } else {
+          this._frontendLoadCredentials(proxyCallback, role);
+        }
+      })
+      .catch(error => {
+        setImmediate(() => {
+          throw new Exception(`Error while loading credentials: "${error}"`);
+        });
+      });
   }
 
   /**
    * @param {Function} callback
+   * @param {Object|null} role
    * @private
    */
-  _backendLoadCredentials(callback) {
+  _backendLoadCredentials(callback, role = null) {
     if (!this.lambdaContext) {
       throw new Exception('Call to _backendLoadCredentials method is not allowed from frontend context.');
     }
 
-    this._credsManager.loadBackendCredentials(this.identityId, (error, credentials) => {
+    this._credsManager.loadBackendCredentials(this.identityId, role, (error, credentials) => {
       if (error) {
         callback(error, null);
         return;
@@ -185,16 +210,17 @@ export class Token {
 
   /**
    * @param {Function} callback
+   * @param {Object|null} role
    * @private
    */
-  _frontendLoadCredentials(callback) {
+  _frontendLoadCredentials(callback, role = null) {
     this._credentials = this._createCognitoIdentityCredentials();
 
     // set AWS credentials before loading credentials from cache coz amazon-cognito-js uses them
     AWS.config.credentials = this._credentials;
 
     // trying to load old credentials from cache or CognitoSync
-    this._credsManager.loadFrontendCredentials((error, credentials) => {
+    this._credsManager.loadFrontendCredentials(role, (error, credentials) => {
       if (!error && credentials && this.validCredentials(credentials)) {
         callback(null, AWS.config.credentials = this._credentials = credentials);
       } else {
@@ -405,7 +431,12 @@ export class Token {
     }
 
     if (!this._user) {
-      this._userProvider.loadUserByIdentityId(this.identityId, (user) => {
+      this._userProvider.loadUserByIdentityId(this.identityId, (error, user) => {
+        if (error) {
+          callback(error, null);
+          return;
+        }
+
         this._user = user;
 
         callback(this._user);
@@ -507,5 +538,12 @@ export class Token {
 
     this._credentials = null;
     this._credsManager = null;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get BASE_CONTEXT() {
+    return 'base';
   }
 }

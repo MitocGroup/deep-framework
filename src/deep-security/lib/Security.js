@@ -11,6 +11,7 @@ import {LocalToken} from './LocalToken';
 import {UserProvider} from './UserProvider';
 import {IdentityProvider} from './IdentityProvider';
 import {LocalIdentityProvider} from './LocalIdentityProvider';
+import {RoleResolver} from './RoleResolver';
 import util from 'util';
 import crypto from 'crypto';
 
@@ -33,6 +34,7 @@ export class Security extends Kernel.ContainerAware {
     this._token = null;
     this._userProvider = null;
     this._userProviderEndpoint = null;
+    this._roleResolver = new RoleResolver();
   }
 
   /**
@@ -94,6 +96,7 @@ export class Security extends Kernel.ContainerAware {
     let identityProvider = new IdentityProviderImplementation(this._identityProviders, providerName, identityMetadata);
     this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);
 
+    this._token.roleResolver = this._roleResolver; 
     this._token.userProvider = this.userProvider;
     this._token.logService = this.kernel.get('log');
 
