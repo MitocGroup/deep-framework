@@ -26,8 +26,6 @@ export class RoleProvider {
 
     return new Promise((resolve, reject) => {
       retrieveRolesRequest.request().send(response => {
-        console.log(`response from ${this._retrieveRoleResource}`, response);
-
         if (response.error) {
           return reject(response.error);
         }
