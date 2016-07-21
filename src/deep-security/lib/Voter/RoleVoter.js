@@ -12,6 +12,8 @@ export class RoleVoter extends VoterInterface {
    * @param {Object} role
    */
   constructor(role) {
+    super();
+
     this._role = role;
   }
 
@@ -31,7 +33,7 @@ export class RoleVoter extends VoterInterface {
         return true;
       }
     }
-    
+
     return false;
   }
 

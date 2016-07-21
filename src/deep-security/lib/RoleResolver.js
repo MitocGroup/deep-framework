@@ -9,9 +9,11 @@ import {RoleVoter} from './Voter/RoleVoter';
 export class RoleResolver {
   /**
    * @param {RoleProvider} roleProvider
+   * @param {Token} token
    */
-  constructor(roleProvider) {
+  constructor(roleProvider, token) {
     this._roleProvider = roleProvider;
+    this._token = token;
     this._voters = null;
   }
 
@@ -36,7 +38,7 @@ export class RoleResolver {
             return voter.role;
           }
         }
-  
+
         return null;
     });
   }
@@ -48,12 +50,25 @@ export class RoleResolver {
     if (this._voters !== null) {
       return Promise.resolve(this._voters);
     }
-    
+
     return this._roleProvider
       .getRoles()
       .then(roles => {
-        this._voters = roles.map(r => new RoleVoter(r));
-        return this._voters;
+        return new Promise((resolve, reject) => {
+          this._token.getUser((error, user) => {
+            if (error) {
+              return reject(error);
+            }
+
+            let userRoles = user && user.Roles ? user.Roles : [];
+
+            this._voters = roles
+              .filter(r => userRoles.indexOf(r.Id) !== -1)
+              .map(r => new RoleVoter(r));
+
+            resolve(this._voters);
+          });
+        });
       });
   }
 }

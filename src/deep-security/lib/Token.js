@@ -40,7 +40,8 @@ export class Token {
 
     this._lambdaContext = null;
     this._user = null;
-    this._credentials = null;
+    this._credentials = null; // stores cognito user credentials
+    this._credentialsSet = {};
     this._identityMetadata = null;
     this._tokenExpiredCallback = null;
 
@@ -51,6 +52,7 @@ export class Token {
     this._loadingInProgress = false;
     this._waitingForCredsCallbacks = [];
 
+    this._sts = new AWS.STS();
     this._credsManager = new CredentialsManager(identityPoolId);
 
     this._setupAwsCognitoConfig();
@@ -131,13 +133,15 @@ export class Token {
 
   /**
    * @param {Function} callback
+   * @param {String|null} context
    */
-  loadCredentials(callback = () => {}, context = Token.BASE_CONTEXT) {
+  loadCredentials(callback = () => {}, context = null) {
     if (this._loadingInProgress) {
       this._waitingForCredsCallbacks.push(callback);
       return;
     }
 
+    AWS.config.credentials = this.credentials; // setup coginto user credentials, to be able to retrieve cognitoIdentityId
     this._loadingInProgress = true;
 
     let event = {
@@ -166,26 +170,50 @@ export class Token {
       this._loadingInProgress = false;
     };
 
-    // avoid refreshing or loading credentials for each request
-    if (this.validCredentials(this.credentials)) {
-      proxyCallback(null, this.credentials);
-      return;
-    }
-
-    this._roleResolver
-      .resolve(context)
-      .then(role => {
-        if (this.lambdaContext) {
-          this._backendLoadCredentials(proxyCallback, role);
-        } else {
-          this._frontendLoadCredentials(proxyCallback, role);
+    this
+      ._loadCognitoUserCredentials() // roleResolver needs the user to be logged in
+      .then(credentials => {
+        if (!context) {
+          return proxyCallback(null, credentials);
         }
+
+        return this._roleResolver
+          .resolve(context)
+          .then(role => {
+            if (this.lambdaContext) {
+              this._backendLoadCredentials(proxyCallback, role);
+            } else {
+              this._frontendLoadCredentials(proxyCallback, role);
+            }
+          });
       })
       .catch(error => {
-        setImmediate(() => {
-          throw new Exception(`Error while loading credentials: "${error}"`);
+        proxyCallback(null, error);
+      });
+  }
+
+  /**
+   * @returns {Promise}
+   * @private
+   */
+  _loadCognitoUserCredentials() {
+    if (this.validCredentials(this.credentials)) {
+      return Promise.resolve(this.credentials);
+    } else {
+      return new Promise((resolve, reject) => {
+        let loadMethod = this.lambdaContext ?
+          this._backendLoadCredentials :
+          this._frontendLoadCredentials;
+
+        loadMethod.call(this, (error, credentials) => {
+          if (error) {
+            return reject(error);
+          }
+
+          resolve(credentials);
         });
       });
+    }
   }
 
   /**
@@ -204,7 +232,13 @@ export class Token {
         return;
       }
 
-      callback(null, this._credentials = credentials);
+      if (role) {
+        this._credentialsSet[this.roleSessionKey(role)] = credentials;
+      } else {
+        this._credentials = credentials; // cognito credentials should be stored separated from all other credentials
+      }
+
+      callback(null, credentials);
     });
   }
 
@@ -214,27 +248,31 @@ export class Token {
    * @private
    */
   _frontendLoadCredentials(callback, role = null) {
-    this._credentials = this._createCognitoIdentityCredentials();
-
-    // set AWS credentials before loading credentials from cache coz amazon-cognito-js uses them
-    AWS.config.credentials = this._credentials;
-
     // trying to load old credentials from cache or CognitoSync
     this._credsManager.loadFrontendCredentials(role, (error, credentials) => {
       if (!error && credentials && this.validCredentials(credentials)) {
-        callback(null, AWS.config.credentials = this._credentials = credentials);
+        if (role) {
+          this._credentialsSet[this.roleSessionKey(role)] = credentials;
+        } else {
+          this._credentials = credentials; // cognito credentials should be stored separated from all other credentials
+        }
+
+        AWS.config.credentials = credentials;
+
+        callback(null, credentials);
       } else {
-        this._refreshCredentials(this._credentials, callback);
+        this._refreshCredentials(this.credentials, role, callback);
       }
     });
   }
 
   /**
    * @param {AWS.CognitoIdentityCredentials} credentials
+   * @param {Object} role
    * @param {Function} callback
    * @private
    */
-  _refreshCredentials(credentials, callback) {
+  _refreshCredentials(credentials, role, callback) {
     if (!(credentials instanceof AWS.CognitoIdentityCredentials)) {
       let error = new AuthException(
         'Invalid credentials instance. Passed credentials must be an instance of AWS.CognitoIdentityCredentials.'
@@ -257,24 +295,76 @@ export class Token {
       return;
     }
 
-    credentials.refresh((error) => {
-      if (error) {
-        callback(new AuthException(error), null);
-        return;
-      }
+    let refreshCredentialsPromise = role ?
+      this._stsRefreshCredentials(role) :
+      this._cognitoRefreshCredentials(credentials);
 
-      callback(null, credentials);
+    refreshCredentialsPromise
+      .then(credentials => {
+        // save credentials in background in order to not affect page load time
+        this._saveCredentials(role, credentials);
 
-      // save credentials in background not to affect page load time
-      this._saveCredentials(credentials);
-    });
+        callback(null, credentials);
+      })
+      .catch(error => callback(error, null));
+  }
+
+  /**
+   * @param {Object} role
+   * @returns {Promise}
+   * @private
+   */
+  _stsRefreshCredentials(role) {
+    if (!(role && role.IamRole)) {
+      let error = new AuthException(`Invalid role instance. Role must be linked to an IAM role`);
+
+      return Promise.reject(error);
+    }
+
+    let iamRole = role.IamRole;
+    let params = {
+      RoleArn: iamRole.Arn,
+      RoleSessionName: this.roleSessionKey(role),
+      WebIdentityToken: this.identityProvider.userToken,
+      ProviderId: this.identityProvider.name,
+    };
+
+    return this._sts
+      .assumeRoleWithWebIdentity(params)
+      .promise()
+      .then(data => {
+        let credentials = data.Credentials;
+
+        AWS.config.credentials = credentials;
+        this._credentialsSet[this.roleSessionKey(role)] = credentials;
+
+        return credentials;
+      });
   }
 
   /**
    * @param {Object} credentials
+   * @returns {Promise}
    * @private
    */
-  _saveCredentials(credentials) {
+  _cognitoRefreshCredentials(credentials) {
+    return new Promise((resolve, reject) => {
+      credentials.refresh((error) => {
+        if (error) {
+          return reject(new AuthException(error));
+        }
+
+        resolve(credentials);
+      });
+    });
+  }
+
+  /**
+   * @param {Object} role
+   * @param {Object} credentials
+   * @private
+   */
+  _saveCredentials(role, credentials) {
     let retriesCount = 0;
 
     var saveCredentialsFunc = () => {
@@ -282,7 +372,7 @@ export class Token {
         return;
       }
 
-      this._credsManager.saveCredentials(credentials, (error, record) => {
+      this._credsManager.saveCredentials(role, credentials, (error, record) => {
         if (error) {
           retriesCount++;
 
@@ -341,13 +431,14 @@ export class Token {
    */
   get identityId() {
     let identityId = null;
+    let credentials = this.credentials;
 
-    if (this.credentials) {
-      if (this.credentials.identityId) {
-        identityId = this.credentials.identityId;
-      } else if (this.credentials.params && this.credentials.params.IdentityId) {
+    if (credentials) {
+      if (credentials.identityId) {
+        identityId = credentials.identityId;
+      } else if (credentials.params && credentials.params.IdentityId) {
         // load IdentityId from localStorage cache
-        identityId = this.credentials.params.IdentityId;
+        identityId = credentials.params.IdentityId;
       } else if (this._credsManager.identityId) {
         identityId = this._credsManager.identityId;
       }
@@ -359,9 +450,13 @@ export class Token {
   }
 
   /**
-   * @returns {Object}
+   * @returns {AWS.CognitoIdentityCredentials}
    */
   get credentials() {
+    if (!this._credentials) {
+      this._credentials = this._createCognitoIdentityCredentials();
+    }
+
     return this._credentials;
   }
 
@@ -439,13 +534,13 @@ export class Token {
 
         this._user = user;
 
-        callback(this._user);
+        callback(null, this._user);
       });
 
       return;
     }
 
-    callback(this._user);
+    callback(null, this._user);
   }
 
   /**
@@ -458,6 +553,7 @@ export class Token {
   /**
    * @param {String} identityPoolId
    * @param {IdentityProvider} identityProvider
+   * @returns {Token}
    */
   static createFromIdentityProvider(identityPoolId, identityProvider) {
     let token = new this(identityPoolId);
@@ -469,6 +565,7 @@ export class Token {
   /**
    * @param {String} identityPoolId
    * @param {Object} lambdaContext
+   * @returns {Token}
    */
   static createFromLambdaContext(identityPoolId, lambdaContext) {
     let token = new this(identityPoolId);
@@ -526,24 +623,29 @@ export class Token {
   }
 
   /**
-   * Removes identity credentials related cached stuff
+   * @param {Object|null} role
+   * @returns {*}
    */
-  destroy() {
-    if (!(this._credentials instanceof AWS.CognitoIdentityCredentials)) {
-      this._credentials = this._createCognitoIdentityCredentials();
-    }
-
-    this._credsManager.deleteCredentials();
-    this._credentials.clearCachedId();
-
-    this._credentials = null;
-    this._credsManager = null;
+  roleSessionKey(role) {
+    return this._credsManager.roleRecord(role);
   }
 
   /**
-   * @returns {String}
+   * Removes identity credentials related cached stuff
    */
-  static get BASE_CONTEXT() {
-    return 'base';
+  destroy() {
+    this._credsManager.deleteCredentials();
+    this._roleResolver.invalidateCache();
+
+    this.credentials.clearCachedId();
+    for (let key in this._credentialsSet) {
+      if (this._credentialsSet.hasOwnProperty(key)) {
+        this._credentialsSet[key].clearCachedId();
+      }
+    }
+
+    this._credentials = null;
+    this._credentialsSet = {};
+    this._credsManager = null;
   }
 }

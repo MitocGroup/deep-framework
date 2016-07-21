@@ -46,6 +46,7 @@ export class CredentialsManager {
   }
 
   /**
+   * @param {Object|null} role
    * @param {Object} credentials
    * @param {Function} callback
    */
@@ -81,7 +82,7 @@ export class CredentialsManager {
    * @param {Function} callback
    * @param {Object|null} role
    */
-  loadBackendCredentials(role, identityId, callback) {
+  loadBackendCredentials(identityId, role, callback) {
     let cognitosync = new AWS.CognitoSync();
 
     let params = {

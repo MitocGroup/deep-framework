@@ -6,26 +6,28 @@
 
 export class RoleProvider {
   /**
-   * @param {String} retrieveUserResource
+   * @param {String} retrieveRoleResource
    * @param {Object} deepResourceService
    */
-  constructor(deepResourceService, retrieveUserResource = null) {
-    this._retrieveUserResource = retrieveUserResource;
+  constructor(deepResourceService, retrieveRoleResource = null) {
+    this._retrieveRoleResource = retrieveRoleResource;
     this._deepResource = deepResourceService;
-  }  
+  }
 
   /**
    * @returns {Promise}
    */
   getRoles() {
-    if (!this._retrieveUserResource) {
+    if (!this._retrieveRoleResource) {
       return Promise.resolve([]);
     }
-    
-    let retrieveRolesRequest = this._deepResource.get(this._retrieveUserResource);
+
+    let retrieveRolesRequest = this._deepResource.get(this._retrieveRoleResource);
 
     return new Promise((resolve, reject) => {
-      retrieveRolesRequest.send(response => {
+      retrieveRolesRequest.request().send(response => {
+        console.log(`response from ${this._retrieveRoleResource}`, response);
+
         if (response.error) {
           return reject(response.error);
         }
