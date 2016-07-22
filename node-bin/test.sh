@@ -4,41 +4,45 @@
 #
 
 RUN_TESTS() {
- cp $(dirname $0)/.babelrc .babelrc # @todo: resolve paths in a smarter way
+  if ls /test/**/*.spec.js 1> /dev/null 2>&1; then
+    cp $(dirname $0)/.babelrc .babelrc # @todo: resolve paths in a smarter way
 
-  babel-node $(npm root -g)/istanbul/lib/cli.js cover `which _mocha` -- 'test/**/*.spec.js' \
-    --reporter spec --ui tdd --recursive --timeout 20s
+    babel-node $(npm root -g)/istanbul/lib/cli.js cover `which _mocha` -- 'test/**/*.spec.js' \
+      --reporter spec --ui tdd --recursive --timeout 20s
 
-  RESULT_CODE=$?
+    RESULT_CODE=$?
 
-  rm .babelrc
+    rm .babelrc
 
-  exit $RESULT_CODE
+    exit $RESULT_CODE
+  else
+    echo "Tests do not exist"
+  fi
 }
 
 if [ -d 'lib/' ] && [ "$OSTYPE" != "msys" ] && [ "$OSTYPE" != "win32" ] && [ "$OSTYPE" != "win64" ]; then
 
- #########################################################################
- ### Run with babel-node to support ES6 tests and have coverage in ES6 ###
- #########################################################################
- RUN_TESTS
+  #########################################################################
+  ### Run with babel-node to support ES6 tests and have coverage in ES6 ###
+  #########################################################################
+  RUN_TESTS
 elif [ "$OSTYPE" == "win32" ] || [ "$OSTYPE" == "win64" ]; then
 
- #################################################
- ### Skip running on Windows from command line ###
- #################################################
- echo "You should have installed and configured http://git-scm.com/ and run all bash command by using git-bash.exe"
+  #################################################
+  ### Skip running on Windows from command line ###
+  #################################################
+  echo "You should have installed and configured http://git-scm.com/ and run all bash command by using git-bash.exe"
 elif [ -d 'lib/' ]; then
 
- #########################################
- ### Running from git-bash on Windows  ###
- #########################################
- echo "Running from git-bash with gathering coverage"
- RUN_TESTS
+  #########################################
+  ### Running from git-bash on Windows  ###
+  #########################################
+  echo "Running from git-bash with gathering coverage"
+  RUN_TESTS
 else
 
- ##################################################
- ### Skip running if `lib` folder doesn't exist ###
- ##################################################
- echo "Skipping testing..."
+  ##################################################
+  ### Skip running if `lib` folder doesn't exist ###
+  ##################################################
+  echo "Skipping testing..."
 fi
