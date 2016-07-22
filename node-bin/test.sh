@@ -3,8 +3,10 @@
 # Created by vcernomschi on 24/05/2016
 #
 
+__TEST_PREFIX=$1
+
 RUN_TESTS() {
-  if ls /test/**/*.spec.js 1> /dev/null 2>&1; then
+  if test -n "$(find $__TEST_PREFIX/test -maxdepth 4 -name '*.spec.js' -print -quit)"; then
     cp $(dirname $0)/.babelrc .babelrc # @todo: resolve paths in a smarter way
 
     babel-node $(npm root -g)/istanbul/lib/cli.js cover `which _mocha` -- 'test/**/*.spec.js' \
