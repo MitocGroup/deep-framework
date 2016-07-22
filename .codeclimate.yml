@@ -1,0 +1,43 @@
+---
+engines:
+  csslint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+        javascript:
+          mass_threshold: 650
+    exclude_paths:
+      - "**/tests"
+  eslint:
+    enabled: true
+    channel: "eslint-2"
+  fixme:
+    enabled: true
+ratings:
+  paths:
+  - "**.css"
+  - "**.inc"
+  - "**.js"
+  - "**.jsx"
+  - "**.es6"
+  - "**.module"
+exclude_paths:
+  - "**/bin/"
+  - "**/hooks/"
+  - "**/scripts/"
+  - "**/browser/"
+  - "**/docs-api/"
+  - "**/test/"
+  - "**/tests/"
+  - "**/tmp/"
+  - "**/vendor/"
+  - "**/coverage"
+  - "**/dist"
+  - "**/node_modules"
+  - "**/packages"
+  - ".idea/"
+  - "**.spec.js"
+  - "**.min.js"
+  - "**.min.css"

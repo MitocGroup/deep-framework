@@ -1,33 +1,37 @@
 #!/usr/bin/env bash
+#
+# Created by vcernomschi on 15/07/2016
+#
 
-files=$(git diff --cached --name-only --diff-filter=ACM | egrep "^lib/(.)+/lib/(.)+\.js$|^microservice/(.)+/Backend/src/(.)+\.es6$|^src/(.)+/lib/(.)+\.js$")
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".es6\|.js$")
 
-if [ "$files" = "" ]; then
-    exit 0
+if [[ "$STAGED_FILES" = "" ]]; then
+  exit 0
 fi
 
-pass=true
+PASS=true
 
-echo -e "\nValidating JavaScript:\n"
+echo -e "\nValidating Javascript:\n"
 
-for file in ${files}; do
-    output=$(jscs ${file} --config=./.jscs.json)
+for FILE in $STAGED_FILES
+do
+  eslint "$FILE"
 
-    jscs_run_result=$(echo $?)
-
-    if [ ${jscs_run_result} -eq 0 ]; then
-        echo -e "\t\033[32mJSCS Passed: ${file}\033[0m"
-    else
-        echo -e "\t\033[31mJSCS Failed: ${file}\033[0m"
-        pass=false
-    fi
+  if [[ "$?" == 0 ]]; then
+    echo -e "\t\033[32mESLint Passed: $FILE\033[0m"
+  else
+    echo -e "\t\033[41mESLint Failed: $FILE\033[0m"
+    PASS=false
+  fi
 done
 
 echo -e "\nJavaScript validation complete\n"
 
-if ! $pass; then
-    echo -e "\033[41mCOMMIT FAILED:\033[0m Your commit contains files that should pass JSCS but do not. Please fix the JSCS errors and try again.\n"
-    exit 1
+if ! $PASS; then
+  echo -e "\033[41mCOMMIT FAILED:\033[0m Your commit contains files that should pass ESLint but do not. Please fix the ESLint errors and try again.\n"
+  exit 1
 else
-    echo -e "\033[42mCOMMIT SUCCEEDED\033[0m\n"
+  echo -e "\033[42mCOMMIT SUCCEEDED\033[0m\n"
 fi
+
+exit $?

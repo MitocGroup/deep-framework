@@ -8,6 +8,6 @@ import {Exception} from '../../Exception/Exception';
 
 export class MissingCacheImplementationException extends Exception {
   constructor() {
-    super(`Missing cache implementation in Request object`);
+    super('Missing cache implementation in Request object');
   }
 }

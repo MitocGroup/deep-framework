@@ -8,6 +8,23 @@ import Joi from 'joi';
 
 let UUID_REGEXP = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
 
+/**
+ * Fixes weird joi exception!
+ *
+ * @param {Object} proto
+ * @returns {Object}
+ * @private
+ */
+function _joiVector(proto) {
+  let arr = Joi.array();
+
+  if (arr.includes) {
+    return arr.includes(proto);
+  }
+
+  return arr.items(proto);
+}
+
 export default (typeof window !== 'undefined' ? {
   types: {
     uuid: function() {
@@ -31,20 +48,3 @@ export default (typeof window !== 'undefined' ? {
     },
   },
 } : require('vogels'));
-
-/**
- * Fixes weird joi exception!
- *
- * @param {Object} proto
- * @returns {Object}
- * @private
- */
-function _joiVector(proto) {
-  let arr = Joi.array();
-
-  if (arr.includes) {
-    return arr.includes(proto);
-  }
-
-  return arr.items(proto);
-}

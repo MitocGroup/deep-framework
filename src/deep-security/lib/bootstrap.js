@@ -8,4 +8,4 @@
 
 import {Security} from './Security';
 
-let exports = module.exports = Security;
+module.exports = Security;
