@@ -22,6 +22,7 @@ export class AbstractFsDriver extends AbstractDriver {
 
   /**
    * @param {String} key
+   * @returns {String}
    * @private
    */
   _buildKey(key) {

@@ -17,6 +17,7 @@ export class Loader {
 
   /**
    * @param {Kernel|*} kernel
+   * @returns {Loader}
    */
   static asyncConfigLoader(kernel) {
     return new Loader(new AsyncConfig(kernel));
@@ -24,6 +25,7 @@ export class Loader {
 
   /**
    * @param {Kernel|*} kernel
+   * @returns {Loader}
    */
   static kernelLoader(kernel) {
     return new Loader(new KernelDriver(kernel));

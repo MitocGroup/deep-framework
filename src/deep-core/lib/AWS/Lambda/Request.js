@@ -55,7 +55,7 @@ export class Request {
    *
    * @returns {String|Object|null}
    */
-  getParam(name, defaultValue = undefined) {
+  getParam(name, defaultValue) {
     return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;
   }
 }

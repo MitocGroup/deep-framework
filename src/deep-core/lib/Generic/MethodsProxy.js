@@ -2,6 +2,9 @@
  * Created by AlexanderC on 11/10/15.
  */
 
+//https://github.com/eslint/eslint/issues/5150
+/*eslint no-return-assign: 0*/
+
 'use strict';
 
 /**
@@ -71,9 +74,10 @@ export class MethodsProxy {
     return this._target;
   }
 
-  /**
+   /**
    * @param {String} handler
    * @param {Object[]} explProps
+   * @returns {Object|*}
    */
   proxyProperties(handler, ...explProps) {
     let propList = Object.keys(handler).concat(explProps);

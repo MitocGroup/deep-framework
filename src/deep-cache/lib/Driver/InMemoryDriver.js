@@ -68,7 +68,6 @@ export class InMemoryDriver extends AbstractDriver {
    * @param {*} value
    * @param {Number} ttl
    * @param {Function} callback
-   * @returns {Boolean}
    */
   _set(key, value, ttl = 0, callback = () => {}) {
     this._storage[key] = [value, ttl <= 0 ? false : (InMemoryDriver._now + ttl)];
@@ -97,7 +96,6 @@ export class InMemoryDriver extends AbstractDriver {
 
   /**
    * @param {Function} callback
-   * @returns {AbstractDriver}
    */
   _flush(callback = () => {}) {
     this._storage = {};

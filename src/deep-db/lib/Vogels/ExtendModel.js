@@ -363,8 +363,8 @@ export class ExtendModel {
 
   /**
    * Injects the specified methods or all
-   *
    * @param {Array} methods
+   * @returns {Object|*}
    */
   inject(methods = null) {
     let predefinedMethods = this.methods;

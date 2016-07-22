@@ -58,7 +58,7 @@ export class Context {
    * @param {*} defaultValue
    * @returns {*}
    */
-  getOption(option, defaultValue = undefined) {
+  getOption(option, defaultValue) {
     return this._lambdaContext.hasOwnProperty(option) ? this._lambdaContext[option] : defaultValue;
   }
 

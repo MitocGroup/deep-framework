@@ -12,8 +12,6 @@ import {MissingUserContextException} from './Exception/MissingUserContextExcepti
 import {Context} from './Context';
 import {Sandbox} from '../../Runtime/Sandbox';
 import {Resolver} from './Resolver';
-import path from 'path';
-import fs from 'fs';
 
 /**
  * Lambda runtime context
@@ -168,7 +166,6 @@ export class Runtime extends Interface {
    * @private
    */
   _runValidate(validationSchema) {
-    let validation = this._kernel.get('validation');
     let validationSchemaName = validationSchema;
 
     if (typeof validationSchema !== 'string') {
@@ -198,6 +195,7 @@ export class Runtime extends Interface {
 
   /**
    * @param {String|Error|*} error
+   * @returns {ErrorResponse}
    */
   createError(error) {
     return new ErrorResponse(this, error);
@@ -205,6 +203,7 @@ export class Runtime extends Interface {
 
   /**
    * @param {Object} data
+   * @returns {Response}
    */
   createResponse(data) {
     return new Response(this, data);
