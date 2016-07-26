@@ -26,6 +26,16 @@ export default class CoverageComparator {
   }
 
   /**
+   * @param srcpath
+   * @returns {String[]|*}
+   */
+  static getDirectories(srcpath) {
+    return fs.readdirSync(srcpath).filter(function (file) {
+      return fs.statSync(path.join(srcpath, file)).isDirectory();
+    });
+  }
+
+  /**
    * @returns {String}
    * @constructor
    */
@@ -62,7 +72,7 @@ export default class CoverageComparator {
    * @constructor
    */
   static get S3_COVERAGE_DIR() {
-     return path.join(__dirname, `../../coverages/aws/${CoverageComparator.REPORT_PREFIX}`);
+    return path.join(__dirname, `../../coverages/aws/${CoverageComparator.REPORT_PREFIX}`);
   }
 
   /**
@@ -157,42 +167,31 @@ export default class CoverageComparator {
   }
 
   /**
-   * Return frontend coverage report folder if exists or current directory
-   * @param {String} srcPath
-   * @returns {String}
-   */
-  static getCoverageDirectory(srcPath) {
-
-    if (CoverageComparator.accessSync(srcPath)) {
-      return fs.readdirSync(srcPath).filter((file) => {
-        return CoverageComparator.accessSync(path.join(srcPath, file, 'coverage-final.json'));
-      })[0];
-    }
-
-    return './';
-  }
-
-  /**
    *
    */
   static gatherReports() {
+    let modulePaths = CoverageComparator.getDirectories(
+      path.join(__dirname, '../../../src')
+    );
 
-    let coveragePath = path.join(__dirname, '../../../src/coverage/coverage.raw.json');
+    for (let modulePath of modulePaths) {
+      let coveragePath = path.join(__dirname, '../../../src', modulePath, 'coverage/coverage.raw.json');
 
-    if (CoverageComparator.accessSync(coveragePath)) {
+      if (CoverageComparator.accessSync(coveragePath)) {
+        let coverageDestPath = path.join(
+          CoverageComparator.LOCAL_COVERAGES_PATH,
+          process.env['TRAVIS_REPO_SLUG'],
+          process.env['TRAVIS_BRANCH'],
+          'src',
+          modulePath,
+          'coverage/coverage.json'
+        );
 
-      let coverageDestPath = path.join(
-        CoverageComparator.LOCAL_COVERAGES_PATH,
-        process.env['TRAVIS_REPO_SLUG'],
-        process.env['TRAVIS_BRANCH'],
-        'src',
-        'coverage/coverage.json'
-      );
-      fsExtra.ensureFileSync(coverageDestPath);
-      fsExtra.copySync(coveragePath, coverageDestPath, {
-        clobber: true,
-      });
+        fsExtra.ensureFileSync(coverageDestPath);
+        fsExtra.copySync(coveragePath, coverageDestPath, {
+          clobber: true,
+        });
+      }
     }
-
   }
 }
