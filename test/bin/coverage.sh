@@ -4,7 +4,8 @@ source $(dirname $0)/_head.sh
 
 
 if [ $(IS_ENV_VARS_AVAILABLE) == "1" ]; then
-	################################################################
+
+  ################################################################
   ### Update paths to have src/* file in coverage report       ###
   ### https://github.com/codacy/node-codacy-coverage/issues/26 ###
   ################################################################
