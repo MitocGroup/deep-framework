@@ -4,7 +4,7 @@
 ### Initializing global variables ###
 #####################################
 __SCRIPT_PATH=$(cd $(dirname $0); pwd -P)
-__COVERAGE_PATH=${__SCRIPT_PATH}"/../coverage"
+__COVERAGE_PATH="${__SCRIPT_PATH}/../coverages/local/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/summary-report"
 __ROOT_PATH="${__SCRIPT_PATH}/../../"
 __SRC_PATH="${__SCRIPT_PATH}/../../src/"
 
