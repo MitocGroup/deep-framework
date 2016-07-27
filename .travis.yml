@@ -26,6 +26,7 @@ before_install:
   - (npm list -g browserify --depth=0 || npm install -g browserify@11.2.x)
   - (npm list -g mocha@2.5.x --depth=0 || npm install -g mocha@2.5.x)
   - (npm list -g istanbul@^1.0.0-alpha --depth=0 || npm install -g istanbul@^1.0.0-alpha)
+  - (npm list -g codeclimate-test-reporter --depth=0 || npm install -g codeclimate-test-reporter)
   - (if [ ! -d "node_modules/istanbul-combine" ]; then npm install istanbul-combine@0.3.x; fi)
   - (if [ ! -d "node_modules/fs-extra" ]; then npm install fs-extra@0.x.x; fi)
   - (if [ ! -d "node_modules/github" ]; then npm install github; fi)
