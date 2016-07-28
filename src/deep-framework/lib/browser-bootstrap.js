@@ -2,6 +2,8 @@
  * Created by AlexanderC on 5/22/15.
  */
 
+/*eslint no-unused-vars: 0*/
+
 'use strict';
 
 import {Framework} from './Framework';

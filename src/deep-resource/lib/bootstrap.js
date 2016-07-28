@@ -8,4 +8,4 @@
 
 import {Resource} from './Resource';
 
-let exports = module.exports = Resource;
+module.exports = Resource;

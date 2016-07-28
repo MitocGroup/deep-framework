@@ -33,6 +33,15 @@ suite('IdentityProvider', () => {
       data: {},
     },
   };
+  let checkExperationDate = (checkDate, expiresIn, approxTimeMs = 2000) => {
+    let fromDate = new Date();
+    let toDate = new Date();
+
+    fromDate.setMilliseconds(fromDate.getMilliseconds() + expiresIn * 1000 - approxTimeMs);
+    toDate.setMilliseconds(toDate.getMilliseconds() + expiresIn * 1000 + approxTimeMs);
+
+    return (checkDate <= toDate && checkDate >= fromDate);
+  };
 
   test('Class IdentityProvider exists in IdentityProvider', () => {
     chai.expect(IdentityProvider).to.be.an('function');
@@ -43,9 +52,14 @@ suite('IdentityProvider', () => {
 
     chai.expect(identityProvider.providers).to.be.eql(providers);
     chai.expect(identityProvider.name).to.be.eql('graph.facebook.com');
-    chai.expect(identityProvider.userToken).to.be.eql(identityMetadata.access_token);
-    chai.expect(identityProvider.userId).to.be.eql(identityMetadata.user_id);
-    chai.expect(identityProvider.tokenExpirationTime).to.be.eql(identityMetadata.tokenExpirationTime);
+    chai.expect(identityProvider.userToken).to.be.eql(identityMetadata.accessToken);
+    chai.expect(identityProvider.userId).to.be.eql(identityMetadata.userID);
+  });
+
+  test('Check tokenExpirationTime is valid with 5 sec approximation', () => {
+    chai.expect(
+      checkExperationDate(identityProvider.tokenExpirationTime, identityMetadata.expiresIn, 4000)
+    ).to.equal(true);
   });
 
   test('Check constructor throws "MissingLoginProviderException" for missing provider', () => {
@@ -65,9 +79,9 @@ suite('IdentityProvider', () => {
   test('Check constructor throws "IdentityProviderMismatchException"', () => {
     let error = null;
     let identityMetadata = {
-      access_token: 'test_userToken',
+      accessToken: 'test_userToken',
       tokenExpirationTime: date,
-      user_id: 'test_userId',
+      userID: 'test_userId',
       provider: 'invalid provider',
     };
 

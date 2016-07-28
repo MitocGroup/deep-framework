@@ -5,7 +5,6 @@
 'use strict';
 
 import {MethodsNotImplementedException} from '../Exception/MethodsNotImplementedException';
-import {InvalidArgumentException} from '../Exception/InvalidArgumentException';
 
 /**
  * Interface implementation

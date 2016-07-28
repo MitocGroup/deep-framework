@@ -7,16 +7,17 @@
 import {IdentityProvider} from './IdentityProvider';
 
 export class LocalIdentityProvider extends IdentityProvider {
+
   /**
-   * @param args
+   * @param {Array} args
    */
   constructor(...args) {
     super(...args);
   }
 
   /**
-   * @param providerName
-   * @param providers
+   * @param {String} providerName
+   * @param {Object} providers
    * @returns {*}
    */
   getProviderDomain(providerName, providers) {

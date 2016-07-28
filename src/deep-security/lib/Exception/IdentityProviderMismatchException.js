@@ -12,6 +12,7 @@ import {Exception} from './Exception';
 export class IdentityProviderMismatchException extends Exception {
   /**
    * @param {String} providerName
+   * @param {String} identityMetadataProvider
    */
   constructor(providerName, identityMetadataProvider) {
     super(`Provider "${providerName}" does not match with identityMetadataProvider "${identityMetadataProvider}".`);

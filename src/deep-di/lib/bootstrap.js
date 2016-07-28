@@ -8,4 +8,4 @@
 
 import {DI} from './DI';
 
-let exports = module.exports = DI;
+module.exports = DI;

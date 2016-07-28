@@ -4,8 +4,17 @@
 
 'use strict';
 
-// Fixes babel@6 issue: https://phabricator.babeljs.io/T3083
+/**
+ * Fixes babel@6 issue: https://phabricator.babeljs.io/T3083
+ * @param {*} errorClass
+ * @returns {ExtendableClass}
+ * @constructor
+ */
 function Extendable(errorClass) {
+
+  /**
+   * @constructor
+   */
   function ExtendableClass() {
     errorClass.apply(this, arguments);
   }

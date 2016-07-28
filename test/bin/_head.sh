@@ -4,9 +4,12 @@
 ### Initializing global variables ###
 #####################################
 __SCRIPT_PATH=$(cd $(dirname $0); pwd -P)
-__COVERAGE_PATH=${__SCRIPT_PATH}"/../coverage"
+__COVERAGE_PATH="${__SCRIPT_PATH}/../coverages/local/${TRAVIS_REPO_SLUG}/${TRAVIS_BRANCH}/summary-report"
 __ROOT_PATH="${__SCRIPT_PATH}/../../"
 __SRC_PATH="${__SCRIPT_PATH}/../../src/"
+
+__UPPER_CASE_TRAVIS_BRANCH=`echo "$TRAVIS_BRANCH" | tr '[:lower:]' '[:upper:]'`
+__CODECLIMATE_TOKEN_NAME="CODECLIMATE_REPO_TOKEN_${__UPPER_CASE_TRAVIS_BRANCH}"
 
 #######################################################################################
 ### Executes frontend/backend commands for subpaths with/without parallelizing mode ###
@@ -78,4 +81,40 @@ function eval_or_exit() {
   else
     echo "[SUCCEED] $1"
   fi
+}
+
+#############################################################################
+### Checks if all environment variables available for validating coverage ###
+### Arguments:                                                            ###
+###   None                                                                ###
+### Returns:                                                              ###
+###   0 or 1                                                              ###
+#############################################################################
+IS_ENV_VARS_AVAILABLE () {
+  if [ -z $GITHUB_OAUTH_TOKEN ] || [ -z $AWS_ACCESS_KEY_ID ] || [ -z AWS_SECRET_ACCESS_KEY ] || \
+    [ -z $S3_BUCKET_NAME ] || [ -z $AWS_DEFAULT_REGION ]; then
+    echo 0;
+
+    return;
+  fi
+
+  echo 1;
+}
+
+#################################################################
+### Checks if codeclimate token available for specific branch ###
+### Arguments:                                                ###
+###   None                                                    ###
+### Returns:                                                  ###
+###   0 or 1                                                  ###
+#################################################################
+IS_CODECLIMATE_TOKEN_AVAILABLE () {
+
+  if [ -z `printenv $__CODECLIMATE_TOKEN_NAME` ]; then
+    echo 0;
+
+    return;
+  fi
+
+  echo 1;
 }

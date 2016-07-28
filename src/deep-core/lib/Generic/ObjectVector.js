@@ -16,6 +16,7 @@ export class ObjectVector {
   /**
    * Add new instances to collection
    * @param {Object[]|*} instances
+   * @returns {ObjectVector}
    */
   add(...instances) {
     for (let i in instances) {

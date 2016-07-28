@@ -26,7 +26,7 @@ export class FsDriver extends AbstractDriver {
   }
 
   /**
-   * @returns {fs|s3fs*}
+   * @returns {fs|s3fs|*}
    */
   get fs() {
     return this._fs;

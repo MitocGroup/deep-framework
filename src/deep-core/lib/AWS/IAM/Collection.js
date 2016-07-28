@@ -2,6 +2,8 @@
  * Created by AlexanderC on 5/27/15.
  */
 
+/*eslint no-proto: 0 */
+
 'use strict';
 
 import {Extractable} from './Extractable';

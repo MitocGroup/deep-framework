@@ -4,7 +4,9 @@
   "scripts": {
     "install": "if [ -f '.travis.yml' ]; then test/bin/install.sh ${TEST_SUITE}; else bin/install.sh ${TEST_SUITE}; fi",
     "test": "if [ -f '.travis.yml' ]; then test/bin/test.sh ${TEST_SUITE}; else bin/test.sh ${TEST_SUITE}; fi",
+    "posttest": "npm run prepare-coverage",
     "coverage": "if [ -f '.travis.yml' ]; then test/bin/coverage.sh; else bin/coverage.sh; fi",
+    "prepare-coverage": "if [ -f '.travis.yml' ]; then test/bin/prepare-coverage.sh; else bin/prepare-coverage.sh; fi",
     "generate-missing-tests": "if [ -f '.travis.yml' ]; then test/bin/generate_missing_tests.sh; else bin/generate_missing_tests.sh; fi"
   }
 }

@@ -2,6 +2,8 @@
  * Created by AlexanderC on 5/25/15.
  */
 
+/*eslint no-undefined: 0*/
+
 'use strict';
 
 import qs from 'qs';

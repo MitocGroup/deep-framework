@@ -70,7 +70,7 @@ export class DI {
 
   /**
    * Returns a service / parameter from container
-   *
+   * @param {String} key
    * @returns {Object}
    */
   get(key) {
@@ -83,7 +83,7 @@ export class DI {
 
   /**
    * Checks if service / parameter exists in container
-   *
+   * @param {String} key
    * @returns {Boolean}
    */
   has(key) {
