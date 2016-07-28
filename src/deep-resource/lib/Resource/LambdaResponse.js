@@ -187,7 +187,7 @@ export class LambdaResponse extends Response {
       try {
         payload = JSON.parse(payload);
       } catch(e) {
-        console.log('Unable to parse: ', e);
+        console.debug('Unable to parse: ', e);
       }
     }
 
@@ -218,7 +218,7 @@ export class LambdaResponse extends Response {
             value: payload.errorType,
           });
         } catch (e) {
-          console.log('Unable to define property: ', e);
+          console.debug('Unable to define property: ', e);
         }
       }
 
@@ -227,7 +227,7 @@ export class LambdaResponse extends Response {
           value: payload.errorStack,
         });
       } catch (e) {
-        console.log('Unable to define property: ', e);
+        console.debug('Unable to define property: ', e);
       }
 
       return error;
