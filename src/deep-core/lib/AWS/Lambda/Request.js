@@ -2,6 +2,8 @@
  * Created by AlexanderC on 5/25/15.
  */
 
+/*eslint no-undefined: 0*/
+
 'use strict';
 
 import qs from 'qs';
@@ -55,7 +57,7 @@ export class Request {
    *
    * @returns {String|Object|null}
    */
-  getParam(name, defaultValue) {
+  getParam(name, defaultValue = undefined) {
     return this._data.hasOwnProperty(name) ? this._data[name] : defaultValue;
   }
 }

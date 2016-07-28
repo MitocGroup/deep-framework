@@ -2,6 +2,8 @@
  * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.
  */
 
+/*eslint no-undefined: 0*/
+
 'use strict';
 
 export class Context {
@@ -58,7 +60,7 @@ export class Context {
    * @param {*} defaultValue
    * @returns {*}
    */
-  getOption(option, defaultValue) {
+  getOption(option, defaultValue = undefined) {
     return this._lambdaContext.hasOwnProperty(option) ? this._lambdaContext[option] : defaultValue;
   }
 
