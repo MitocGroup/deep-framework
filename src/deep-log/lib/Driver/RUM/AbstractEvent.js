@@ -155,7 +155,7 @@ export class AbstractEvent extends Core.OOP.Interface {
 
       event.requestId = runtimeContext.awsRequestId;
       event.identityId = runtimeContext.identity && runtimeContext.identity.cognitoIdentityId ?
-        runtimeContext.identity.cognitoIdentityId : '';
+        runtimeContext.identity.cognitoIdentityId : 'private';
     } else {
       event.context = AbstractEvent.FRONTEND_CONTEXT;
       event.memoryUsage = window.performance && window.performance.memory ? window.performance.memory : {};
