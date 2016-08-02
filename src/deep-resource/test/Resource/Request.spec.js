@@ -569,7 +569,14 @@ suite('Resource/Request', () => {
     let spyCallback = sinon.spy();
     let testAction = {
       _name: 'testAction',
-      resource: 'resource name',
+      resource: {
+        name: 'resource-name',
+        microservice: {
+          identifier: {
+            'microservice-identifier'
+          }
+        }
+      },
     };
     let testRequest = new Request(testAction, payload, method);
 
@@ -591,8 +598,13 @@ suite('Resource/Request', () => {
     let testAction = {
       _name: 'testAction',
       resource: {
-        security: 'insuffcient value',
-      }
+        name: 'resource-name',
+        microservice: {
+          identifier: {
+            'microservice-identifier'
+          }
+        }
+      },
     };
     let testRequest = new Request(testAction, payload, method);
 
@@ -614,11 +626,16 @@ suite('Resource/Request', () => {
     let testAction = {
       _name: 'testAction',
       resource: {
+        name: 'resource-name',
+        microservice: {
+          identifier: {
+            'microservice-identifier'
+          },
+        },
         security: {
           token: {
             loadCredentials: (callback) => {
               callback('mock error on loadCredentials', null);
-              return;
             },
           },
         },
@@ -641,6 +658,12 @@ suite('Resource/Request', () => {
     let testAction = {
       _name: 'testAction',
       resource: {
+        name: 'resource-name',
+        microservice: {
+          identifier: {
+            'microservice-identifier'
+          },
+        },
         security: {
           token: 'test',
         },
@@ -731,6 +754,12 @@ suite('Resource/Request', () => {
     let testAction = {
       _name: 'testAction',
       resource: {
+        name: 'resource-name',
+        microservice: {
+          identifier: {
+            'microservice-identifier'
+          },
+        },
         security: 'insufficient value',
       },
       apiCacheEnabled: true,
