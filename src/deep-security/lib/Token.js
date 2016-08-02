@@ -321,6 +321,7 @@ export class Token {
 
   /**
    * @param {Object} tokenSnapshot
+   * @returns {Token}
    * @private
    */
   _fillFromTokenSnapshot(tokenSnapshot) {
@@ -332,6 +333,7 @@ export class Token {
 
   /**
    * @param {AWS.CognitoIdentityCredentials} credentials
+   * @returns {Promise}
    * @private
    */
   _refreshCredentials(credentials) {
@@ -408,6 +410,7 @@ export class Token {
   }
 
   /**
+   * @param {Object} role
    * @returns {CognitoIdentityCredentials}
    * @private
    */
@@ -675,6 +678,7 @@ export class Token {
 
   /**
    * @param {String} identityPoolId
+   * @returns {Token}
    */
   static create(identityPoolId) {
     return new this(identityPoolId);

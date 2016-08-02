@@ -2,6 +2,8 @@
  * Created by mgoria on 11/6/15.
  */
 
+/* eslint-disable no-unused-vars */
+
 'use strict';
 
 import AWS from 'aws-sdk';

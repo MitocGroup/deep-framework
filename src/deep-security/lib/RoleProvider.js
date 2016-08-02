@@ -6,8 +6,8 @@
 
 export class RoleProvider {
   /**
-   * @param {String} retrieveRoleResource
    * @param {Object} deepResourceService
+   * @param {String} retrieveRoleResource
    */
   constructor(deepResourceService, retrieveRoleResource = null) {
     this._retrieveRoleResource = retrieveRoleResource;
