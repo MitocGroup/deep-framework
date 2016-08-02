@@ -154,8 +154,10 @@ export class AbstractEvent extends Core.OOP.Interface {
       event.environment = {}; // @todo - find a way to get Lambda container info (id, OS, etc)
 
       event.requestId = runtimeContext.awsRequestId;
+      
+      // identity context is not passed if lambda is called directly by another lambda not through API Gateway
       event.identityId = runtimeContext.identity && runtimeContext.identity.cognitoIdentityId ?
-        runtimeContext.identity.cognitoIdentityId : '';
+        runtimeContext.identity.cognitoIdentityId : 'system';
     } else {
       event.context = AbstractEvent.FRONTEND_CONTEXT;
       event.memoryUsage = window.performance && window.performance.memory ? window.performance.memory : {};
