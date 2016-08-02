@@ -460,6 +460,7 @@ export class Request {
 
       let responseEvent = util._extend({}, requestEvent);
       responseEvent.payload = response;
+      responseEvent.time = Date.now();
 
       logService.rumLog(requestEvent);
       logService.rumLog(responseEvent);
