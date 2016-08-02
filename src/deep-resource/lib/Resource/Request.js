@@ -288,8 +288,6 @@ export class Request {
   securityContext(securityContext) {
     this._securityContext = securityContext;
 
-    console.log('Setting the securityContext to ', securityContext);
-
     return this;
   }
 
