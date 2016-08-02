@@ -597,6 +597,7 @@ suite('Resource/Request', () => {
       _name: 'testAction',
       resource: {
         name: 'resource-name',
+        security: 'insufficient value',
         microservice: {
           identifier: 'microservice-identifier'
         }
