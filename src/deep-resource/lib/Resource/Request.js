@@ -56,6 +56,7 @@ export class Request {
     this._returnLogs = false;
 
     this._withUserCredentials = true;
+    this._securityContext = this._buildSecurityContext();
   }
 
   /**
@@ -278,6 +279,18 @@ export class Request {
 
     // @todo: do we really have to force it?
     this.cache(Request.TTL_DEFAULT);
+  }
+
+  /**
+   * @param {String|null} securityContext
+   * @returns {Request}
+   */
+  securityContext(securityContext) {
+    this._securityContext = securityContext;
+
+    console.log('Setting the securityContext to ', securityContext);
+
+    return this;
   }
 
   /**
@@ -723,7 +736,7 @@ export class Request {
     let parsedUrl = urlParse(url, qs);
     let apiHost = parsedUrl.hostname;
     let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';
-    
+
     let opsToSign = {
       service: Core.AWS.Service.API_GATEWAY_EXECUTE,
       region: this.getEndpointHostRegion(apiHost),
@@ -829,7 +842,7 @@ export class Request {
       }
 
       callback(null, credentials);
-    });
+    }, this._securityContext);
 
     return this;
   }
@@ -843,6 +856,17 @@ export class Request {
 
     // @todo - expose API region into config provision section
     return regionParts ? regionParts[1] : this._action.region; // use action region as fallback
+  }
+
+  /**
+   * @return {String}
+   */
+  _buildSecurityContext() {
+    let action = this._action;
+    let resource = action.resource;
+    let microservice = resource.microservice;
+
+    return `${microservice.identifier}:${resource.name}:${action.name}`;
   }
 
   /**

@@ -8,12 +8,10 @@ import {RoleVoter} from './Voter/RoleVoter';
 
 export class RoleResolver {
   /**
-   * @param {RoleProvider} roleProvider
-   * @param {Token} token
+   * @param {Security} security
    */
-  constructor(roleProvider, token) {
-    this._roleProvider = roleProvider;
-    this._token = token;
+  constructor(security) {
+    this._security = security;
     this._voters = null;
   }
 
@@ -31,7 +29,7 @@ export class RoleResolver {
    */
   resolve(context) {
     return this
-      .getVoters()
+      .getContextVoters()
       .then(voters => {
         for (let voter of voters) {
           if (voter.vote(context)) {
@@ -46,25 +44,27 @@ export class RoleResolver {
   /**
    * @returns {Promise}
    */
-  getVoters() {
+  getContextVoters() {
     if (this._voters !== null) {
       return Promise.resolve(this._voters);
     }
 
-    return this._roleProvider
+    let roleProvider = this._security.roleProvider;
+    let token = this._security.token;
+
+    return roleProvider
       .getRoles()
       .then(roles => {
         return new Promise((resolve, reject) => {
-          this._token.getUser((error, user) => {
+          token.getUser((error, user) => {
             if (error) {
               return reject(error);
             }
 
             let userRoles = user && user.Roles ? user.Roles : [];
+            let userRolesObjs = this._voters = roles.filter(r => userRoles.indexOf(r.Id) !== -1);
 
-            this._voters = roles
-              .filter(r => userRoles.indexOf(r.Id) !== -1)
-              .map(r => new RoleVoter(r));
+            this._voters = userRolesObjs.map(r => new RoleVoter(r));
 
             resolve(this._voters);
           });

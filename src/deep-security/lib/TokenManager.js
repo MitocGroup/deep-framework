@@ -10,7 +10,7 @@ import {CreateCognitoDatasetException} from './Exception/CreateCognitoDatasetExc
 import {PutCognitoRecordException} from './Exception/PutCognitoRecordException';
 import {SynchronizeCognitoDatasetException} from './Exception/SynchronizeCognitoDatasetException';
 
-export class CredentialsManager {
+export class TokenManager {
   /**
    * @returns {String}
    */
@@ -44,101 +44,89 @@ export class CredentialsManager {
 
     return this._cognitoSyncClient;
   }
-  
-  saveToken() {
-    
-  }
 
   /**
-   * @param {Object|null} role
-   * @param {Object} credentials
-   * @param {Function} callback
+   * @param {Token} token
+   * @returns {Promise}
    */
-  saveCredentials(role, credentials, callback) {
-    this._createOrGetDataset((error, dataset) => {
-      if (error) {
-        callback(error, null);
-        return;
-      }
-
-      let recordName = this.roleRecord(role);
-
-      dataset.put(recordName, this._encodeCredentials(credentials), (error/*, record*/) => {
-        if (error) {
-          callback(new PutCognitoRecordException(
-            CredentialsManager.DATASET_NAME, CredentialsManager.RECORD_NAME, error
-          ), null);
-          return;
-        }
-
-        this._synchronizeDataset(dataset, (error, savedRecords) => {
+  saveToken(token) {
+    return new Promise(
+      (resolve, reject) => {
+        this._createOrGetDataset((error, dataset) => {
           if (error) {
-            callback(new SynchronizeCognitoDatasetException(dataset, error), null);
-            return;
+            return reject(error);
           }
 
-          callback(null, savedRecords);
+          dataset.put(TokenManager.RECORD_NAME, this._encodeToken(token), (error/*, record*/) => {
+            if (error) {
+              return reject(new PutCognitoRecordException(
+                TokenManager.DATASET_NAME, TokenManager.RECORD_NAME, error
+              ));
+            }
+
+            this._synchronizeDataset(dataset, (error, savedRecords) => {
+              if (error) {
+                return reject(new SynchronizeCognitoDatasetException(dataset, error));
+              }
+
+              resolve(savedRecords);
+            });
+          });
         });
-      });
-    });
+      }
+    );
   }
 
   /**
    * @param {String} identityId
-   * @param {Function} callback
-   * @param {Object|null} role
+   * @returns {Promise}
    */
-  loadBackendCredentials(identityId, role, callback) {
+  loadBackendToken(identityId) {
     let cognitosync = new AWS.CognitoSync();
-
     let params = {
-      DatasetName: CredentialsManager.DATASET_NAME,
+      DatasetName: TokenManager.DATASET_NAME,
       IdentityId: identityId,
       IdentityPoolId: this._identityPoolId,
     };
 
-    cognitosync.listRecords(params, (error, data) => {
-      if (error) {
-        callback(error, null);
-        return;
-      }
+    return cognitosync
+      .listRecords(params)
+      .promise()
+      .then(data => {
+        let token = null;
 
-      let creds = null;
-      let roleRecord = this.roleRecord(role);
+        data.Records.forEach(record => {
+          if (record.Key === TokenManager.RECORD_NAME) {
+            token = this._decodeToken(record.Value);
+            return token;
+          }
+        });
 
-      data.Records.forEach((record) => {
-        if (record.Key === roleRecord) {
-          creds = this._decodeCredentials(record.Value);
-          return creds;
-        }
+        return token;
       });
-
-      callback(null, creds);
-    });
   }
 
   /**
-   * @param {Function} callback
-   * @param {Object|null} role
+   * @returns {Promise}
    */
-  loadFrontendCredentials(role, callback) {
-    this._createOrGetDataset((error, dataset) => {
-      if (error) {
-        callback(error, null);
-        return;
+  loadFrontendToken() {
+    return new Promise(
+      (resolve, reject) => {
+        this._createOrGetDataset((error, dataset) => {
+          if (error) {
+            return reject(error);
+          }
+
+          dataset.get(TokenManager.RECORD_NAME, (error, rawToken) => {
+            if (error) {
+              return reject(error);
+            }
+            
+            resolve(this._decodeToken(rawToken));
+          });
+        });
       }
-
-      let recordName = this.roleRecord(role);
-
-      dataset.get(recordName, (error, data) => {
-        if (error) {
-          callback(error, null);
-          return;
-        }
-
-        callback(null, this._decodeCredentials(data));
-      });
-    });
+    );
   }
 
   /**
@@ -149,11 +137,11 @@ export class CredentialsManager {
   }
 
   /**
-   * Deletes cached credentials from local storage
+   * Deletes cached Token from local storage
    *
-   * @returns {CredentialsManager}
+   * @returns {TokenManager}
    */
-  deleteCredentials() {
+  deleteToken() {
     this.cognitoSyncClient.wipeData();
 
     return this;
@@ -164,9 +152,9 @@ export class CredentialsManager {
    * @private
    */
   _createOrGetDataset(callback) {
-    this.cognitoSyncClient.openOrCreateDataset(CredentialsManager.DATASET_NAME, (error, dataset) => {
+    this.cognitoSyncClient.openOrCreateDataset(TokenManager.DATASET_NAME, (error, dataset) => {
       if (error) {
-        callback(new CreateCognitoDatasetException(CredentialsManager.DATASET_NAME, error), null);
+        callback(new CreateCognitoDatasetException(TokenManager.DATASET_NAME, error), null);
         return;
       }
 
@@ -209,35 +197,43 @@ export class CredentialsManager {
   }
 
   /**
-   * @param {Object} role
-   * @returns {*}
-   */
-  roleRecord(role) {
-    let suffix = role ? role.Id : 'default';
-
-    return `${CredentialsManager.RECORD_NAME}-${suffix}`;
-  }
-
-  /**
    * @todo: implement an encoding method
    *
-   * @param {Object} credentials
+   * @param {Token} token
    * @returns {String}
    */
-  _encodeCredentials(credentials) {
-    // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore
-    credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');
-
-    return JSON.stringify(
-      credentials,
-      ['expired', 'expireTime', 'accessKeyId', 'secretAccessKey', 'sessionToken']
-    );
+  _encodeToken(token) {
+    return JSON.stringify(token.toJSON());
   }
 
   /**
    * @todo: implement a decoding method
    *
-   * @param {String} credentials
+   * @param {String} rawToken
+   * @returns {Object}
+   */
+  _decodeToken(rawToken) {
+    if (rawToken && typeof rawToken === 'string') {
+      let tokenObj = JSON.parse(rawToken);
+
+      tokenObj.credentials = this._decodeCredentials(tokenObj.credentials);
+
+      for (let key in tokenObj.rolesCredentials) {
+        if (tokenObj.rolesCredentials.hasOwnProperty(key)) {
+          tokenObj.rolesCredentials[key] = this._decodeCredentials(tokenObj.rolesCredentials[key]);
+        }
+      }
+
+      return tokenObj;
+    }
+
+    return null;
+  }
+
+  /**
+   * @todo: implement a decoding method
+   *
+   * @param {String|Object} credentials
    * @returns {Object}
    */
   _decodeCredentials(credentials) {

@@ -41,7 +41,7 @@ export class BaseVoter extends VoterInterface {
    */
   static createFromAction(actionIdentifier) {
     let actionsParts = actionIdentifier.split(':');
-    let escapePart = part => part ?
+    let escapePart = part => part && part !== '*' ?
       part.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') :
       '[a-zA-Z\\d+\\-_\\.]+';
 

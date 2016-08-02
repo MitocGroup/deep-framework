@@ -63,7 +63,7 @@ export class Security extends Kernel.ContainerAware {
    */
   get roleResolver() {
     if (!this._roleResolver) {
-      this._roleResolver = new RoleResolver(this.roleProvider, this.token);
+      this._roleResolver = new RoleResolver(this);
     }
 
     return this._roleResolver;
@@ -122,8 +122,9 @@ export class Security extends Kernel.ContainerAware {
     let identityProvider = new IdentityProviderImplementation(this._identityProviders, providerName, identityMetadata);
     this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);
 
-    this._token.roleResolver = this.roleResolver; 
+    this._token.roleResolver = this.roleResolver;
     this._token.userProvider = this.userProvider;
+    this._token.cacheService = this._cacheService;
     this._token.logService = this.kernel.get('log');
 
     let event = {
@@ -156,8 +157,9 @@ export class Security extends Kernel.ContainerAware {
 
     this._token = TokenImplementation.create(this.identityPoolId);
 
-    this._token.roleResolver = this.roleResolver;
     this._token.userProvider = this.userProvider;
+    this._token.roleResolver = this.roleResolver;
+    this._token.cacheService = this._cacheService;
     this._token.logService = this.kernel.get('log');
 
     let event = {
@@ -267,5 +269,13 @@ export class Security extends Kernel.ContainerAware {
    */
   get _resourceService() {
     return this.container.get('resource');
+  }
+
+  /**
+   * @returns {Cache|LocalStorageDriver}
+   * @private
+   */
+  get _cacheService() {
+    return this.container.get('cache');
   }
 }
