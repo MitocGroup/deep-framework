@@ -572,10 +572,8 @@ suite('Resource/Request', () => {
       resource: {
         name: 'resource-name',
         microservice: {
-          identifier: {
-            'microservice-identifier'
-          }
-        }
+          identifier: 'microservice-identifier'
+        },
       },
     };
     let testRequest = new Request(testAction, payload, method);
@@ -600,9 +598,7 @@ suite('Resource/Request', () => {
       resource: {
         name: 'resource-name',
         microservice: {
-          identifier: {
-            'microservice-identifier'
-          }
+          identifier: 'microservice-identifier'
         }
       },
     };
@@ -628,9 +624,7 @@ suite('Resource/Request', () => {
       resource: {
         name: 'resource-name',
         microservice: {
-          identifier: {
-            'microservice-identifier'
-          },
+          identifier: 'microservice-identifier',
         },
         security: {
           token: {
@@ -660,9 +654,7 @@ suite('Resource/Request', () => {
       resource: {
         name: 'resource-name',
         microservice: {
-          identifier: {
-            'microservice-identifier'
-          },
+          identifier: 'microservice-identifier',
         },
         security: {
           token: 'test',
@@ -756,9 +748,7 @@ suite('Resource/Request', () => {
       resource: {
         name: 'resource-name',
         microservice: {
-          identifier: {
-            'microservice-identifier'
-          },
+          identifier: 'microservice-identifier',
         },
         security: 'insufficient value',
       },
