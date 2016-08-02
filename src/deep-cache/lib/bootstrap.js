@@ -8,4 +8,4 @@
 
 import {Cache} from './Cache';
 
-let exports = module.exports = Cache;
+module.exports = Cache;

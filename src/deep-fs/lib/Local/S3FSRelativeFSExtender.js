@@ -132,7 +132,7 @@ export class S3FSRelativeFSExtender {
        * @returns {Promise|undefined}
        */
       destroy: (callback = null) => {
-        let error = new Error(`You do not have rights for this operation`);
+        let error = new Error('You do not have rights for this operation');
 
         if (callback) {
           fse.remove(this.cwd, () => {

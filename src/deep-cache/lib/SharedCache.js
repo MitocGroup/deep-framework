@@ -2,6 +2,8 @@
  * Created by CCristi <ccovali@mitocgroup.com> on 12/10/15.
  */
 
+/*eslint handle-callback-err: 0*/
+
 'use strict';
 
 import Core from 'deep-core';
@@ -52,6 +54,7 @@ export class SharedCache {
 
   /**
    * @param {Object} payload
+   * @return {String}
    * @private
    */
   static _stringifyPayload(payload) {

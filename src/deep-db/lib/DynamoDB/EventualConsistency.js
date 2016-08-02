@@ -31,6 +31,7 @@ export class EventualConsistency {
   }
 
   /**
+   * @param {String} modelName
    * @returns {AWS.SQS|*}
    */
   _sqs(modelName) {
@@ -54,6 +55,7 @@ export class EventualConsistency {
    * @param {String} method
    * @param {Object} payload
    * @param {Function} callback
+   * @returns {*}
    * @private
    */
   _sendPayload(modelName, method, payload, callback) {

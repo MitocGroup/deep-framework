@@ -205,7 +205,7 @@ export class Instance {
   }
 
   /**
-   * @param actionName
+   * @param {String} actionName
    * @returns {Action}
    */
   action(actionName) {
@@ -219,6 +219,7 @@ export class Instance {
   /**
    * @param {String} actionName
    * @param {*} args
+   * @returns {Action}
    */
   request(actionName, ...args) {
     return this.action(actionName).request(...args);

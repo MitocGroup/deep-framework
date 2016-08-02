@@ -83,7 +83,7 @@ export class AutoScaleDynamoDB {
         let table = AutoScaleDynamoDB._getTableNameFromPayload(method, payload);
 
         if (!table) {
-          logger.warn(`Unable to find table name in payload while increasing throughput`);
+          logger.warn('Unable to find table name in payload while increasing throughput');
           originalCb(originalError, data);
           return;
         } else if (this._increasedFor[table] &&

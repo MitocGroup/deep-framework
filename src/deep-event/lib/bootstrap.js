@@ -6,4 +6,4 @@
 
 'use strict';
 
-let exports = module.exports = {};
+module.exports = {};

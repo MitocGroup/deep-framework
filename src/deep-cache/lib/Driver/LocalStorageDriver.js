@@ -46,7 +46,6 @@ export class LocalStorageDriver extends AbstractDriver {
    * @param {*} value
    * @param {Number} ttl
    * @param {Function} callback
-   * @returns {Boolean}
    */
   _set(key, value, ttl = 0, callback = () => {}) {
     let exd = ttl > 0 ? LocalStorageDriver._now + ttl : null;
@@ -93,7 +92,6 @@ export class LocalStorageDriver extends AbstractDriver {
 
   /**
    * @param {Function} callback
-   * @returns {AbstractDriver}
    */
   _flush(callback = () => {}) {
     LocalStorage.clear();

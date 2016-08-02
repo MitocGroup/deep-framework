@@ -10,7 +10,6 @@ import {ValidationSchemaNotFoundException} from './Exception/ValidationSchemaNot
 import {InvalidJoiSchemaException} from './Exception/InvalidJoiSchemaException';
 import Joi from 'joi';
 import {ObjectValidationFailedException} from './Exception/ObjectValidationFailedException';
-import {Exception} from './Exception/Exception';
 import path from 'path';
 import Core from 'deep-core';
 

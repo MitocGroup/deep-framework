@@ -146,7 +146,7 @@ export class FS extends Kernel.ContainerAware {
 
     if (name === FS.SHARED) {
       if (!msIdentifier) {
-        throw new Exception(`You must provide a microservice identifier for the shared fs`);
+        throw new Exception('You must provide a microservice identifier for the shared fs');
       }
 
       // validate msIdentifier

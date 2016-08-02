@@ -2,6 +2,8 @@
  * Created by AlexanderC on 6/10/15.
  */
 
+/*eslint max-len: 0*/
+
 'use strict';
 
 import {Exception} from './Exception';

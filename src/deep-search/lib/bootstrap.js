@@ -8,4 +8,4 @@
 
 import {Search} from './Search';
 
-let exports = module.exports = Search;
+module.exports = Search;

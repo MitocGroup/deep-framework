@@ -8,4 +8,4 @@
 
 import {Validation} from './Validation';
 
-let exports = module.exports = Validation;
+module.exports = Validation;

@@ -146,8 +146,8 @@ export class Log extends Kernel.ContainerAware {
   /**
    * @param {String} msg
    * @param {String} level
-   * @param {*} context
-   * @returns Log
+   * @param {Object} context
+   * @returns {Log}
    */
   log(msg, level = Log.INFO, context = {}) {
     let driversArr = this.drivers.iterator;
@@ -196,6 +196,7 @@ export class Log extends Kernel.ContainerAware {
 
   /**
    * Flushes RUM batch messages
+   * @param {Function} callback
    */
   rumFlush(callback) {
     let driver = this.rumDriver();
@@ -240,7 +241,8 @@ export class Log extends Kernel.ContainerAware {
   }
 
   /**
-   * @param {*} args
+   * @param {Array} args
+   * @returns {Object}
    */
   error(...args) {
     return this.err(...args);
@@ -266,6 +268,7 @@ export class Log extends Kernel.ContainerAware {
 
   /**
    * @param {*} args
+   * @returns {*}
    */
   warning(...args) {
     return this.warn(...args);
@@ -282,6 +285,7 @@ export class Log extends Kernel.ContainerAware {
 
   /**
    * @param {*} args
+   * @returns {*}
    */
   emergency(...args) {
     return this.emerg(...args);
@@ -298,6 +302,7 @@ export class Log extends Kernel.ContainerAware {
 
   /**
    * @param {*} args
+   * @returns {*}
    */
   critical(...args) {
     return this.crit(...args);

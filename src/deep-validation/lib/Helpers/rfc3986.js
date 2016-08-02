@@ -2,6 +2,8 @@
  * Created by AlexanderC on 12/8/15.
  */
 
+/*eslint no-useless-concat: 0 */
+
 'use strict';
 
 let internals = {
@@ -73,7 +75,8 @@ internals.generate = function () {
    *            / "2" %x30-34 DIGIT     ; 200-249
    *            / "25" %x30-35          ; 250-255
    */
-  const decOctect = '(?:' + zeroPad + zeroPad + digitOnly + or + zeroPad + '[1-9]' + digitOnly + or + '1' + digitOnly + digitOnly + or + '2' + '[0-4]' + digitOnly + or + '25' + '[0-5])';
+  const decOctect = '(?:' + zeroPad + zeroPad + digitOnly + or + zeroPad + '[1-9]' + digitOnly +
+    or + '1' + digitOnly + digitOnly + or + '2' + '[0-4]' + digitOnly + or + '25' + '[0-5])';
 
   /**
    * IPv4address = dec-octet "." dec-octet "." dec-octet "." dec-octet
@@ -104,7 +107,8 @@ internals.generate = function () {
   const IPv6NoneHex = '(?:' + h16 + ':){0,4}' + h16 + '::' + ls32;
   const IPv6NoneHex2 = '(?:' + h16 + ':){0,5}' + h16 + '::' + h16;
   const IPv6NoneHex3 = '(?:' + h16 + ':){0,6}' + h16 + '::';
-  internals.rfc3986.IPv6address = '(?:' + IPv6SixHex + or + IPv6FiveHex + or + IPv6FourHex + or + IPv6ThreeHex + or + IPv6TwoHex + or + IPv6OneHex + or + IPv6NoneHex + or + IPv6NoneHex2 + or + IPv6NoneHex3 + ')';
+  internals.rfc3986.IPv6address = '(?:' + IPv6SixHex + or + IPv6FiveHex + or + IPv6FourHex + or + IPv6ThreeHex +
+    or + IPv6TwoHex + or + IPv6OneHex + or + IPv6NoneHex + or + IPv6NoneHex2 + or + IPv6NoneHex3 + ')';
 
   /**
    * IPvFuture = "v" 1*HEXDIG "." 1*( unreserved / sub-delims / ":" )

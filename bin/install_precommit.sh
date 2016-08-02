@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
+#
+# Created by vcernomschi on 10/06/2015
+#
 
-source $(dirname $0)/_head.sh
-jscs=`which jscs`
+path=$(cd $(dirname $0); pwd -P)
+npm=`which npm`
+eslint=`which eslint`
 
-if [ -z ${jscs} ]; then
-    assure_npm
-
-    ${npm} -g install jscs
+if [ -z ${eslint} ]; then
+    ${npm} -g install eslint
 fi
 
 if [ -f ${path}/../.git/hooks/pre-commit ]; then

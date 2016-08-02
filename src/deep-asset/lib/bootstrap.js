@@ -6,4 +6,4 @@
 
 import {Asset} from './Asset';
 
-let exports = module.exports = Asset;
+module.exports = Asset;

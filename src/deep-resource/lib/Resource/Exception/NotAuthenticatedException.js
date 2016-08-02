@@ -9,7 +9,7 @@ import {Exception} from '../../Exception/Exception';
 export class NotAuthenticatedException extends Exception {
   constructor() {
     super(
-      `Missing authentication token! You may want to authenticate the user first(ex. security.anonymousLogin()).`
+      'Missing authentication token! You may want to authenticate the user first(ex. security.anonymousLogin()).'
     );
   }
 }

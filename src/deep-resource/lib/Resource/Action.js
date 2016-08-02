@@ -55,6 +55,7 @@ export class Action {
   /**
    * @param {Object} payload
    * @param {String} method
+   * @returns {LocalRequest|Request}
    */
   request(payload = {}, method = null) {
     method = method || (this._methods.length > 0 ? this._methods[0] : Action.HTTP_VERBS[0]);

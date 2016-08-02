@@ -140,7 +140,7 @@ export class RumSqsDriver extends AbstractDriver {
 
   /**
    * @param {AbstractEvent} event
-   * @param callback
+   * @param {Function} callback
    * @private
    */
   _sendMessage(event, callback) {
@@ -160,7 +160,7 @@ export class RumSqsDriver extends AbstractDriver {
 
   /**
    * @param {Array} messages
-   * @param callback
+   * @param {Function} callback
    * @private
    */
   _sendMessageBatch(messages, callback) {

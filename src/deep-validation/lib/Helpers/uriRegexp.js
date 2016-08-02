@@ -20,6 +20,6 @@ export default {
     /**
      * URI = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
      */
-    return new RegExp('^' + scheme + ':' + RFC3986.hierPart + '(?:\\?' + RFC3986.query + ')?' + '(?:#' + RFC3986.fragment + ')?$');
+    return new RegExp(`^${scheme}:${RFC3986.hierPart}(?:\\?${RFC3986.query})?(?:#${RFC3986.fragment})?$`);
   },
 };

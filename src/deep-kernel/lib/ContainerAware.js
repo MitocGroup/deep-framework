@@ -5,7 +5,6 @@
 'use strict';
 
 import {Injectable as MicroserviceInjectable} from './Microservice/Injectable';
-import {Kernel} from './Kernel';
 import {InvalidDeepIdentifierException} from './Exception/InvalidDeepIdentifierException';
 
 /**

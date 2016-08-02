@@ -289,7 +289,7 @@ export class Token {
 
     let credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
 
-    credentials.toJSON = function() {
+    credentials.toJSON = () => {
       return {
         expired: credentials.expired,
         expireTime: credentials.expireTime,
@@ -297,7 +297,7 @@ export class Token {
         secretAccessKey: credentials.secretAccessKey,
         sessionToken: credentials.sessionToken,
       };
-    }.bind(credentials);
+    };
 
     return credentials;
   }
@@ -419,6 +419,7 @@ export class Token {
 
   /**
    * @param {String} identityPoolId
+   * @returns {Token}
    */
   static create(identityPoolId) {
     return new this(identityPoolId);
@@ -427,6 +428,7 @@ export class Token {
   /**
    * @param {String} identityPoolId
    * @param {IdentityProvider} identityProvider
+   * @returns {Token}
    */
   static createFromIdentityProvider(identityPoolId, identityProvider) {
     let token = new this(identityPoolId);
@@ -438,6 +440,7 @@ export class Token {
   /**
    * @param {String} identityPoolId
    * @param {Object} lambdaContext
+   * @returns {Token}
    */
   static createFromLambdaContext(identityPoolId, lambdaContext) {
     let token = new this(identityPoolId);

@@ -6,4 +6,4 @@
 
 import {FS} from './FS';
 
-let exports = module.exports = FS;
+module.exports = FS;
