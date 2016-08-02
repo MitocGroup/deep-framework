@@ -6,7 +6,7 @@
 
 import {Framework} from './Framework';
 
-let exports = module.exports = new Framework({
+module.exports = new Framework({
   Asset: 'deep-asset',
   Cache: 'deep-cache',
   DB: 'deep-db',

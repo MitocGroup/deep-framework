@@ -151,10 +151,10 @@ export class LambdaResponse extends Response {
       }
     } else {
       errorObj = errorObj || {
-          errorMessage: 'Unknown error occurred.',
-          errorStack: (new Error('Unknown error occurred.')).stack,
-          errorType: 'UnknownError',
-        };
+        errorMessage: 'Unknown error occurred.',
+        errorStack: (new Error('Unknown error occurred.')).stack,
+        errorType: 'UnknownError',
+      };
     }
 
     return errorObj;
@@ -186,7 +186,9 @@ export class LambdaResponse extends Response {
     if (typeof rawPayload === 'string') {
       try {
         payload = JSON.parse(payload);
-      } catch(e) {}
+      } catch(e) {
+        console.debug('Unable to parse: ', e);
+      }
     }
 
     return payload;
@@ -215,14 +217,18 @@ export class LambdaResponse extends Response {
           Object.defineProperty(error, 'name', {
             value: payload.errorType,
           });
-        } catch (e) {   }
+        } catch (e) {
+          console.debug('Unable to define property: ', e);
+        }
       }
 
       try {
         Object.defineProperty(error, 'stack', {
           value: payload.errorStack,
         });
-      } catch (e) {   }
+      } catch (e) {
+        console.debug('Unable to define property: ', e);
+      }
 
       return error;
     }

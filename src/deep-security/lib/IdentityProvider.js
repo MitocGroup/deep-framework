@@ -39,8 +39,8 @@ export class IdentityProvider {
   }
 
   /**
-   * @param providerName
-   * @param providers
+   * @param {String} providerName
+   * @param {Object} providers
    * @returns {*}
    */
   getProviderDomain(providerName, providers) {

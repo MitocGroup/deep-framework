@@ -8,4 +8,4 @@
 
 import {Log} from './Log';
 
-let exports = module.exports = Log;
+module.exports = Log;

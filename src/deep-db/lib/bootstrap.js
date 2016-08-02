@@ -8,4 +8,4 @@
 
 import {DB} from './DB';
 
-let exports = module.exports = DB;
+module.exports = DB;

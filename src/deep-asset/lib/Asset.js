@@ -71,7 +71,8 @@ export class Asset extends Kernel.ContainerAware {
   /**
    * @param {String} assetIdentifier (e.g. @microservice_identifier:asset_path)
    * @param {String} suffix
-   * @returns {String}
+   * @param {Boolean} skipVersioning
+   * @returns {*}
    */
   locate(assetIdentifier, suffix = '', skipVersioning = false) {
     let path = this._resolveIdentifier(assetIdentifier);

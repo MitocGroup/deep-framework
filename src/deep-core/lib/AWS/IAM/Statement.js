@@ -2,6 +2,8 @@
  * Created by AlexanderC on 5/27/15.
  */
 
+/*eslint no-eq-null: 0, eqeqeq:0 */
+
 'use strict';
 
 import {Resource} from './Resource';

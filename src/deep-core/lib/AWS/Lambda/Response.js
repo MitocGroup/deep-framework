@@ -5,7 +5,6 @@
 'use strict';
 
 import {MissingRuntimeContextException} from './Exception/MissingRuntimeContextException';
-import {ContextAlreadySentException} from './Exception/ContextAlreadySentException';
 
 /**
  * Response sent to the lambda context

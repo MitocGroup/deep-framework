@@ -145,7 +145,6 @@ export class RedisDriver extends AbstractDriver {
    * @param {*} value
    * @param {Number} ttl
    * @param {Function} callback
-   * @returns {Boolean}
    */
   _set(key, value, ttl = 0, callback = () => {}) {
     this.clientWait((error, client) => {
@@ -192,7 +191,6 @@ export class RedisDriver extends AbstractDriver {
 
   /**
    * @param {Function} callback
-   * @returns {AbstractDriver}
    */
   _flush(callback = () => {}) {
     this.clientWait((error, client) => {

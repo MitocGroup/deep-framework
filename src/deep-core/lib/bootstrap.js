@@ -17,19 +17,23 @@ import {UniversalRequire as GenericUniversalRequire} from './Generic/UniversalRe
 import {ObjectVector as GenericObjectVector} from './Generic/ObjectVector';
 import {MethodsProxy as GenericMethodsProxy} from './Generic/MethodsProxy';
 import {Exception as ExceptionException} from './Exception/Exception';
-import {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from './Exception/MethodsNotImplementedException';
+import {MethodsNotImplementedException as ExceptionMethodsNotImplementedException} from
+  './Exception/MethodsNotImplementedException';
 import {InvalidArgumentException as ExceptionInvalidArgumentException} from './Exception/InvalidArgumentException';
-import {DatabaseOperationException as ExceptionDatabaseOperationException} from './Exception/DatabaseOperationException';
+import {DatabaseOperationException as ExceptionDatabaseOperationException}
+  from './Exception/DatabaseOperationException';
+import {ResourceNotFoundException as ExceptionResourceNotFoundException} from './Exception/ResourceNotFoundException';
 import {Sandbox as RuntimeSandbox} from './Runtime/Sandbox';
 import {Helper as HttpHelper} from './HTTP/Helper';
 
-let exports = module.exports = {
+module.exports = {
   IS_DEV_SERVER: global.__DEEP_DEV_SERVER || false,
   Exception: {
     Exception: ExceptionException,
     InvalidArgumentException: ExceptionInvalidArgumentException,
     MethodsNotImplementedException: ExceptionMethodsNotImplementedException,
     DatabaseOperationException: ExceptionDatabaseOperationException,
+    ResourceNotFoundException: ExceptionResourceNotFoundException,
   },
   HTTP: {
     Helper: HttpHelper,

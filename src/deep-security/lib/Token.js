@@ -427,6 +427,27 @@ export class Token {
       }
     }
 
+    let credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+
+    credentials.toJSON = () => {
+      return {
+        expired: credentials.expired,
+        expireTime: credentials.expireTime,
+        accessKeyId: credentials.accessKeyId,
+        secretAccessKey: credentials.secretAccessKey,
+        sessionToken: credentials.sessionToken,
+      };
+    };
+
+    return credentials;
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @returns {String}
+   */
+  static getRegionFromIdentityPoolId(identityPoolId) {
+    return identityPoolId.split(':')[0];
     return new AWS.CognitoIdentityCredentials(cognitoParams);
   }
 
@@ -552,6 +573,39 @@ export class Token {
       return;
     }
 
+    callback(this._user);
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @returns {Token}
+   */
+  static create(identityPoolId) {
+    return new this(identityPoolId);
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @param {IdentityProvider} identityProvider
+   * @returns {Token}
+   */
+  static createFromIdentityProvider(identityPoolId, identityProvider) {
+    let token = new this(identityPoolId);
+    token.identityProvider = identityProvider;
+
+    return token;
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @param {Object} lambdaContext
+   * @returns {Token}
+   */
+  static createFromLambdaContext(identityPoolId, lambdaContext) {
+    let token = new this(identityPoolId);
+    token.lambdaContext = lambdaContext;
+
+    return token;
     callback(null, this._user);
   }
 

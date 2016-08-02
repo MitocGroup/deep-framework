@@ -16,6 +16,7 @@ export class EventFactory {
   /**
    * @param {Object} kernel
    * @param {Object} rawData
+   * @returns {EventClass}
    */
   static create(kernel, rawData) {
     let EventClass = null;

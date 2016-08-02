@@ -13,10 +13,11 @@ import {Aws4SignedHttpConnection} from './Connection/Aws4SignedHttpConnection';
  * @see https://www.elastic.co/guide/en/elasticsearch/client/javascript-api/current/index.html
  */
 export class Elasticsearch {
+
   /**
    * @param {String} host
-   * @param {Boolean} useAws4Signature
    * @param {Function|null} decorator
+   * @param {Boolean} useAws4Signature
    */
   constructor(host, decorator = null, useAws4Signature = true) {
     this._host = host;
@@ -40,8 +41,6 @@ export class Elasticsearch {
    * @param {elasticsearch} handler
    * @param {Function} decorator
    * @param {Array} methods
-   *
-   * @returns {Object}
    * @private
    */
   _proxy(target, handler, decorator, methods = Elasticsearch.API_METHODS) {

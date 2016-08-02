@@ -2,6 +2,9 @@
  * Created by AlexanderC on 1/21/16.
  */
 
+//need for backward compatibility with node v0.10.x
+/*eslint no-eq-null: 0, eqeqeq: 0*/
+
 'use strict';
 
 import util from 'util';
@@ -25,6 +28,7 @@ export class Registry {
   /**
    * @param {FS|*} fs
    * @param {String} registryFile
+   * @returns {Registry}
    */
   static createFromFS(fs, registryFile = Registry.REGISTRY_FILE) {
     return new Registry(
@@ -127,6 +131,7 @@ export class Registry {
   }
 
   /**
+   * @param {Function} cb
    * @returns {Registry}
    */
   refresh(cb) {

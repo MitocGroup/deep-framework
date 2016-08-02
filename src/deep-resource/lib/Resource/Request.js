@@ -371,7 +371,9 @@ export class Request {
   }
 
   /**
+   *
    * @param {Function} callback
+   * @returns {Request}
    */
   invalidateCache(callback = () => {}) {
     if (!this.isCached) {
@@ -408,6 +410,7 @@ export class Request {
 
   /**
    * @param {Function} callback
+   * @returns {Request}
    */
   send(callback = () => {}) {
     let cache = this.cacheImpl;
@@ -549,6 +552,8 @@ export class Request {
       }
 
       callback(error, result);
+
+      return;
     });
   }
 
@@ -559,6 +564,11 @@ export class Request {
    */
   _loadResponseFromCache(driver, key, callback) {
     driver.has(key, (err, has) => {
+      if(err) {
+        callback(new CachedRequestException(`Error to check if has in cache key ${key}`));
+        return;
+      }
+
       if (has) {
         let logService = this.action.resource.log;
 
@@ -610,7 +620,7 @@ export class Request {
   }
 
   /**
-   * @param validationError
+   * @param {Error} validationError
    *
    * @returns {LambdaResponse}
    * @private
@@ -819,6 +829,7 @@ export class Request {
   }
 
   /**
+   * @param {Function} callback
    * @returns {Request}
    * @private
    */

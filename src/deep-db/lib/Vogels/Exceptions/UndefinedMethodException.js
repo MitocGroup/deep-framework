@@ -11,8 +11,8 @@ import {Exception} from './Exception';
  */
 export class UndefinedMethodException extends Exception {
   /**
-   * @param name
-   * @param availableMethods
+   * @param {String} name
+   * @param {String[]} availableMethods
    */
   constructor(name, availableMethods) {
     super(`Method: ${name} does not exist. Available methods:${availableMethods}).`);

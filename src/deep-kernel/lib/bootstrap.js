@@ -8,4 +8,4 @@
 
 import {Kernel} from './Kernel';
 
-let exports = module.exports = Kernel;
+module.exports = Kernel;
