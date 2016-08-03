@@ -4,8 +4,7 @@
 
 'use strict';
 
-import UndefinedMethodException from './Exceptions/UndefinedMethodException';
-import util from 'util';
+import {UndefinedMethodException} from './Exceptions/UndefinedMethodException';
 
 /**
  * Extends standard Vogels models
@@ -87,106 +86,55 @@ export class ExtendModel {
 
     return {
       findAll: function(cb) {
-        _this._logRumEvent({ eventName: 'findAll' });
-
-        return _this.model.scan().loadAll().exec((error, model) => {
-          _this._extendedCallback('findAll', error, model, cb);
-        });
+        return _this.model.scan().loadAll().exec(cb);
       },
 
       findAllPaginated: function(startKey, limit, cb) {
-        _this._logRumEvent({
-          eventName: 'findAllPaginated',
-          payload: {startKey, limit},
-        });
-
         return _this.model
           .scan()
           .startKey(startKey)
           .limit(limit)
-          .exec((error, model) => {
-            _this._extendedCallback('findAllPaginated', error, model, cb);
-          });
+          .exec(cb);
       },
 
       findOneById: function(id, cb) {
-        _this._logRumEvent({
-          eventName: 'findOneById',
-          payload: {id},
-        });
-
-        return _this.model.get(id, (error, model) => {
-          _this._extendedCallback('findOneById', error, model, cb);
-        });
+        return _this.model.get(id, cb);
       },
 
       findOneBy: function(fieldName, value, cb) {
-        _this._logRumEvent({
-          eventName: 'findOneBy',
-          payload: {fieldName, value},
-        });
-
         return _this.model
           .scan()
           .where(fieldName).equals(value)
           .limit(1)
-          .exec((error, model) => {
-            _this._extendedCallback('findOneBy', error, model, cb);
-          });
+          .exec(cb);
       },
 
       findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {
-        _this._logRumEvent({
-          eventName: 'findBy',
-          payload: {fieldName, value, limit},
-        });
-
         return _this.model
           .scan()
           .where(fieldName).equals(value)
           .limit(limit)
-          .exec((error, model) => {
-            _this._extendedCallback('findBy', error, model, cb);
-          });
+          .exec(cb);
       },
 
       findAllBy: function(fieldName, value, cb) {
-        _this._logRumEvent({
-          eventName: 'findAllBy',
-          payload: {fieldName, value},
-        });
-
         return _this.model
           .scan()
           .where(fieldName).equals(value)
           .loadAll()
-          .exec((error, model) => {
-            _this._extendedCallback('findAllBy', error, model, cb);
-          });
+          .exec(cb);
       },
 
       findAllByPaginated: function(fieldName, value, startKey, limit, cb) {
-        _this._logRumEvent({
-          eventName: 'findAllByPaginated',
-          payload: {fieldName, value, startKey, limit},
-        });
-
         return _this.model
           .scan()
           .where(fieldName).equals(value)
           .startKey(startKey)
           .limit(limit)
-          .exec((error, model) => {
-            _this._extendedCallback('findAllByPaginated', error, model, cb);
-          });
+          .exec(cb);
       },
 
       findMatching: function(params, cb, limit = ExtendModel.DEFAULT_LIMIT) {
-        _this._logRumEvent({
-          eventName: 'findMatching',
-          payload: {params, limit},
-        });
-
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
@@ -195,17 +143,10 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .limit(limit)
-          .exec((error, model) => {
-            _this._extendedCallback('findMatching', error, model, cb);
-          });
+          .exec(cb);
       },
 
       findOneMatching: function(params, cb) {
-        _this._logRumEvent({
-          eventName: 'findOneMatching',
-          payload: {params},
-        });
-
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
@@ -214,17 +155,10 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .limit(1)
-          .exec((error, model) => {
-            _this._extendedCallback('findMatching', error, model, cb);
-          });
+          .exec(cb);
       },
 
       findAllMatching: function(params, cb) {
-        _this._logRumEvent({
-          eventName: 'findAllMatching',
-          payload: {params},
-        });
-
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
@@ -233,17 +167,10 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .loadAll()
-          .exec((error, model) => {
-            _this._extendedCallback('findAllMatching', error, model, cb);
-          });
+          .exec(cb);
       },
 
       findAllMatchingPaginated: function(params, startKey, limit, cb) {
-        _this._logRumEvent({
-          eventName: 'findAllMatchingPaginated',
-          payload: {params, startKey, limit},
-        });
-
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
@@ -253,50 +180,22 @@ export class ExtendModel {
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .startKey(startKey)
           .limit(limit)
-          .exec((error, model) => {
-            _this._extendedCallback('findAllMatchingPaginated', error, model, cb);
-          });
+          .exec(cb);
       },
 
       deleteById: function(id, cb) {
-        _this._logRumEvent({
-          eventName: 'deleteById',
-          payload: {id},
-        });
-
-        return _this.model.destroy(id, (error, model) => {
-          _this._extendedCallback('deleteById', error, model, cb);
-        });
+        return _this.model.destroy(id, cb);
       },
 
       deleteByIdConditional: function(id, condition, cb) {
-        _this._logRumEvent({
-          eventName: 'deleteByIdConditional',
-          payload: {id, condition},
-        });
-
-        return _this.model.destroy(id, condition, (error, model) => {
-          _this._extendedCallback('deleteByIdConditional', error, model, cb);
-        });
+        return _this.model.destroy(id, condition, cb);
       },
 
       createItem: function(data, cb) {
-        _this._logRumEvent({
-          eventName: 'createItem',
-          payload: {data},
-        });
-
-        return _this.model.create(data, (error, model) => {
-          _this._extendedCallback('createItem', error, model, cb);
-        });
+        return _this.model.create(data, cb);
       },
 
       createUniqueOnFields: function(fields, data, cb) {
-        _this._logRumEvent({
-          eventName: 'createUniqueOnFields',
-          payload: {fields, data},
-        });
-
         let scanCb = function(err, data) {
           if (err) {
             return cb(err, data);
@@ -328,35 +227,17 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
           .limit(1)
-          .exec((error, model) => {
-            _this._extendedCallback('createItem', error, model, scanCb);
-          });
+          .exec(scanCb);
       },
 
       updateItem: function(id, data, cb) {
-        _this._logRumEvent({
-          eventName: 'updateItem',
-          payload: {id, data},
-        });
-
-        data.Id = id;
-
-        return _this.model.update(data, (error, model) => {
-          _this._extendedCallback('updateItem', error, model, cb);
-        });
+        return _this.model.update(data, cb);
       },
 
       updateItemConditional: function(id, data, condition, cb) {
-        _this._logRumEvent({
-          eventName: 'updateItemConditional',
-          payload: {id, data, condition},
-        });
-
         data.Id = id;
 
-        return _this.model.update(data, condition, (error, model) => {
-          _this._extendedCallback('updateItemConditional', error, model, cb);
-        });
+        return _this.model.update(data, condition, cb);
       },
     };
   }
@@ -383,7 +264,7 @@ export class ExtendModel {
         throw new UndefinedMethodException(methodName, predefinedMethodsNames);
       }
 
-      this._model[methodName] = predefinedMethods[methodName];
+      this._model[methodName] = this._applyRumDecorator(methodName, predefinedMethods[methodName]);
     }
 
     return this._model;
@@ -399,7 +280,7 @@ export class ExtendModel {
       return false;
     }
 
-    let event = util._extend(customData, {
+    let event = Object.assign(customData, {
       service: 'deep-db',
       resourceType: 'DynamoDB',
       resourceId: this.model.tableName(),
@@ -432,5 +313,66 @@ export class ExtendModel {
     });
 
     cb(error, model);
+  }
+
+  /**
+   * @param {String} eventName
+   * @param {Function} method
+   * @returns {Function}
+   * @private
+   */
+  _applyRumDecorator(eventName, method) {
+    return (...args) => {
+      if (!this.model.logService) {
+        return method(...args);
+      }
+
+      let cbIndex = null;
+
+      for (let index in args) {
+        if (args.hasOwnProperty(index) && typeof args[index] === 'function') {
+          cbIndex = index;
+        }
+      }
+
+      if (cbIndex === null) {
+        return method(...args);
+      }
+
+      let startOpEvent = {
+        eventName: eventName,
+        time: Date.now(),
+        eventId: ExtendModel.buildEventId(eventName),
+      };
+
+      this._logRumEvent(startOpEvent);
+
+      let originalCb = args[cbIndex];
+
+      args[cbIndex] = (...args) => {
+        let endOpEvent = Object.assign({}, startOpEvent);
+        endOpEvent.time = Date.now();
+
+        this._logRumEvent(endOpEvent);
+
+        originalCb(...args);
+      };
+    };
+  }
+
+  /**
+   * @param {String} eventName
+   * @returns {String}
+   */
+  static buildEventId(eventName) {
+    var md5sum = crypto.createHash('md5');
+
+    md5sum.update(JSON.stringify({
+      namespace: 'DB|Vogels|ExtendModel',
+      name: eventName,
+      time: Date.now()
+    }));
+
+    return md5sum.digest('hex');
   }
 }
