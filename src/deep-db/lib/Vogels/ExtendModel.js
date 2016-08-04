@@ -5,6 +5,7 @@
 'use strict';
 
 import {UndefinedMethodException} from './Exceptions/UndefinedMethodException';
+import crypto from 'crypto';
 
 /**
  * Extends standard Vogels models
@@ -264,7 +265,7 @@ export class ExtendModel {
         throw new UndefinedMethodException(methodName, predefinedMethodsNames);
       }
 
-      this._model[methodName] = this._applyRumDecorator(methodName, predefinedMethods[methodName]);
+      this._model[methodName] = this._applyRumDecorator(predefinedMethods[methodName], methodName);
     }
 
     return this._model;
@@ -292,36 +293,12 @@ export class ExtendModel {
   }
 
   /**
-   * @param {String} methodName
-   * @param {Object} error
-   * @param {Object} model
-   * @param {Function} cb
-   * @private
-   */
-  _extendedCallback(methodName, error, model, cb) {
-    let data = null;
-    if (model) {
-      data = model.Items ? model : model.get();
-    }
-
-    this._logRumEvent({
-      eventName: methodName,
-      payload: {
-        error: error,
-        data: data,
-      }
-    });
-
-    cb(error, model);
-  }
-
-  /**
-   * @param {String} eventName
    * @param {Function} method
+   * @param {String} eventName
    * @returns {Function}
    * @private
    */
-  _applyRumDecorator(eventName, method) {
+  _applyRumDecorator(method, eventName) {
     return (...args) => {
       if (!this.model.logService) {
         return method(...args);
@@ -357,6 +334,8 @@ export class ExtendModel {
 
         originalCb(...args);
       };
+
+      return method(...args);
     };
   }
 
