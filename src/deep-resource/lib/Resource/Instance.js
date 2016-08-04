@@ -25,6 +25,7 @@ export class Instance {
     this._cache = null;
     this._security = null;
     this._validation = null;
+    this._kernel = null;
     this._log = null;
 
     this._fillActions();
@@ -194,6 +195,20 @@ export class Instance {
    */
   get actions() {
     return this._actions;
+  }
+
+  /**
+   * @param {Kernel} kernel
+   */
+  set kernel(kernel) {
+    this._kernel = kernel;
+  }
+
+  /**
+   * @returns {Kernel}
+   */
+  get kernel() {
+    return this._kernel;
   }
 
   /**

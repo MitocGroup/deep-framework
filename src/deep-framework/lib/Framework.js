@@ -47,6 +47,8 @@ export class Framework {
   LambdaHandler(Handler) {
     return {
       handler: (event, context, callback) => {
+        this._fillFrameworkContextFromEvent(context, event);
+
         this.KernelFromLambdaContext(context).bootstrap((deepKernel) => {
           new Handler(deepKernel).run(event, context, callback);
         });
@@ -152,6 +154,37 @@ export class Framework {
    */
   _createKernel() {
     return new Kernel(this._services, this._context);
+  }
+
+  /**
+   * @param {Object} context
+   * @param {Object} event
+   */
+  _fillFrameworkContextFromEvent(context, event) {
+    context[Framework.FRAMEWORK_NAMESPACE_KEY] = {};
+    context.getDeepFrameworkOption = function(option) {
+      return this[Framework.FRAMEWORK_NAMESPACE_KEY][option];
+    };
+
+    [Framework.MAIN_REQUEST_ID].forEach(option => {
+      if (event.hasOwnProperty(option)) {
+        context[Framework.FRAMEWORK_NAMESPACE_KEY][option] = event[option];
+      }
+    });
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get FRAMEWORK_NAMESPACE_KEY() {
+    return 'deepFramework';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get MAIN_REQUEST_ID() {
+    return 'mainRequestId';
   }
 
   /**
