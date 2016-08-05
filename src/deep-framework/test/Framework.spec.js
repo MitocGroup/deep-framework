@@ -97,7 +97,8 @@ suite('Framework', () => {
   test('Check KernelFromLambdaContext for lambdaContext w/o identity, cognitoIdentityPoolId, cognitoIdentityId',
     () => {
       let lambdaContext = {};
-      let actualResult = framework.KernelFromLambdaContext(lambdaContext);
+      let lambdaEvent = {};
+      let actualResult = framework.KernelFromLambdaContext(lambdaContext, lambdaEvent);
 
       chai.expect(actualResult, 'is an instance of Kernel').to.be.an.instanceOf(Kernel);
       chai.expect(
@@ -114,7 +115,8 @@ suite('Framework', () => {
           cognitoIdentityId: 'test cognitoIdentityId',
         },
       };
-      let actualResult = framework.KernelFromLambdaContext(lambdaContext);
+      let lambdaEvent = {};
+      let actualResult = framework.KernelFromLambdaContext(lambdaContext, lambdaEvent);
 
       chai.expect(actualResult, 'is an instance of Kernel').to.be.an.instanceOf(Kernel);
       chai.expect(
