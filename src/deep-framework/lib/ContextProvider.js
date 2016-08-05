@@ -17,16 +17,14 @@ export class ContextProvider {
    * @returns {ContextProvider}
    */
   fillContextWithEventData(event) {
-    let context = this.context;
-
-    context[ContextProvider.FRAMEWORK_NAMESPACE_KEY] = {};
-    context.getDeepFrameworkOption = function(option) {
+    this._context[ContextProvider.FRAMEWORK_NAMESPACE_KEY] = {};
+    this._context.getDeepFrameworkOption = function(option) {
       return this[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option];
     };
 
     [ContextProvider.MAIN_REQUEST_ID].forEach(option => {
       if (event.hasOwnProperty(option)) {
-        context[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option] = event[option];
+        this._context[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option] = event[option];
       }
     });
 
