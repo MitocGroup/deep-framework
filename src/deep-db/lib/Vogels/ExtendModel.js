@@ -232,6 +232,8 @@ export class ExtendModel {
       },
 
       updateItem: function(id, data, cb) {
+        data.Id = id;
+
         return _this.model.update(data, cb);
       },
 
@@ -239,6 +241,10 @@ export class ExtendModel {
         data.Id = id;
 
         return _this.model.update(data, condition, cb);
+      },
+
+      getItems: function(...args) {
+        return _this.model.getItems(...args);
       },
     };
   }

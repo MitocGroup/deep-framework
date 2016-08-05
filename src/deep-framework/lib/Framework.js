@@ -6,6 +6,7 @@
 
 import Kernel from 'deep-kernel';
 import DeepCore from 'deep-core';
+import {ContextProvider} from './ContextProvider';
 
 export class Framework {
   /**
@@ -47,7 +48,7 @@ export class Framework {
   LambdaHandler(Handler) {
     return {
       handler: (event, context, callback) => {
-        this.KernelFromLambdaContext(context).bootstrap((deepKernel) => {
+        this.KernelFromLambdaContext(context, event).bootstrap((deepKernel) => {
           new Handler(deepKernel).run(event, context, callback);
         });
       },
@@ -59,6 +60,7 @@ export class Framework {
    * @todo: improve it
    *
    * @param {Object} lambdaContext
+   * @param {Object} lambdaEvent
    * @returns {Kernel}
    *
    * @sample:
@@ -71,7 +73,7 @@ export class Framework {
    * KernelFromLambdaContext
    * ```
    */
-  KernelFromLambdaContext(lambdaContext) {
+  KernelFromLambdaContext(lambdaContext, lambdaEvent) {
     let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
 
     if (lambdaContext.hasOwnProperty('identity') &&
@@ -82,8 +84,12 @@ export class Framework {
     }
 
     let kernel = this._kernelCached(identityId);
+    let contextProvider = new ContextProvider(lambdaContext);
+    
+    contextProvider.fillContextWithEventData(lambdaEvent);
 
-    kernel.runtimeContext = lambdaContext;
+    kernel.runtimeContext = lambdaContext; // @todo: remove "runtimeContext" on next major release
+    kernel.contextProvider = contextProvider;  
 
     return kernel;
   }

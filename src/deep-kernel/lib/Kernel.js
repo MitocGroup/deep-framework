@@ -35,6 +35,7 @@ export class Kernel {
     this._services = deepServices;
     this._context = context;
     this._runtimeContext = {};
+    this._contextProvider = null;
     this._env = null;
     this._container = new DI();
     this._isLoaded = false;
@@ -61,6 +62,20 @@ export class Kernel {
    */
   set runtimeContext(runtimeContext) {
     this._runtimeContext = runtimeContext;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get contextProvider() {
+    return this._contextProvider;
+  }
+
+  /**
+   * @param {Object} contextProvider
+   */
+  set contextProvider(contextProvider) {
+    this._contextProvider = contextProvider;
   }
 
   /**
