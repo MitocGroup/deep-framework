@@ -509,7 +509,7 @@ export class Request {
    */
   _fillPayloadWithSystemData() {
     let resource = this.action.resource;
-    let runtimeContext = resource.kernel.runtimeContext;
+    let runtimeContext = resource.backendContext.runtimeContext;
 
     if (!resource.isBackend || !resource.log.isRumEnabled()) {
       return this;

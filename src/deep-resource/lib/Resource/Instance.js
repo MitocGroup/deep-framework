@@ -25,7 +25,7 @@ export class Instance {
     this._cache = null;
     this._security = null;
     this._validation = null;
-    this._kernel = null;
+    this._backendContext = null;
     this._log = null;
 
     this._fillActions();
@@ -198,17 +198,17 @@ export class Instance {
   }
 
   /**
-   * @param {Kernel} kernel
+   * @param {Object} backendContext
    */
-  set kernel(kernel) {
-    this._kernel = kernel;
+  set backendContext(backendContext) {
+    this._backendContext = backendContext;
   }
 
   /**
-   * @returns {Kernel}
+   * @returns {Object}
    */
-  get kernel() {
-    return this._kernel;
+  get backendContext() {
+    return this._backendContext;
   }
 
   /**

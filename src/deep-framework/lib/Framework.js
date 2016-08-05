@@ -6,6 +6,7 @@
 
 import Kernel from 'deep-kernel';
 import DeepCore from 'deep-core';
+import {BackendContext} from './BackendContext';
 
 export class Framework {
   /**
@@ -47,9 +48,10 @@ export class Framework {
   LambdaHandler(Handler) {
     return {
       handler: (event, context, callback) => {
-        this._fillFrameworkContextFromEvent(context, event);
+        let backendContext = new BackendContext(context);
+        backendContext.fillWithEventData(event);
 
-        this.KernelFromLambdaContext(context).bootstrap((deepKernel) => {
+        this.KernelFromBackendContext(backendContext).bootstrap((deepKernel) => {
           new Handler(deepKernel).run(event, context, callback);
         });
       },
@@ -60,21 +62,22 @@ export class Framework {
    *
    * @todo: improve it
    *
-   * @param {Object} lambdaContext
+   * @param {BackendContext} backendContext
    * @returns {Kernel}
    *
    * @sample:
    * ```
    * exports.handler = function (event, context) {
-   *   DeepFramework.KernelFromLambdaContext(context).loadFromFile("_config.json", function (deepKernel) {
+   *   DeepFramework.KernelFromBackendContext(context).loadFromFile("_config.json", function (deepKernel) {
    *     new Handler(deepKernel).run(event, context);
    *   });
    * };
-   * KernelFromLambdaContext
+   * KernelFromBackendContext
    * ```
    */
-  KernelFromLambdaContext(lambdaContext) {
+  KernelFromBackendContext(backendContext) {
     let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
+    let lambdaContext = backendContext.runtimeContext;
 
     if (lambdaContext.hasOwnProperty('identity') &&
       lambdaContext.identity.hasOwnProperty('cognitoIdentityPoolId') &&
@@ -85,7 +88,8 @@ export class Framework {
 
     let kernel = this._kernelCached(identityId);
 
-    kernel.runtimeContext = lambdaContext;
+    kernel.runtimeContext = lambdaContext; // @todo: remove "runtimeContext" on next major release
+    kernel.backendContext = backendContext;
 
     return kernel;
   }
@@ -154,37 +158,6 @@ export class Framework {
    */
   _createKernel() {
     return new Kernel(this._services, this._context);
-  }
-
-  /**
-   * @param {Object} context
-   * @param {Object} event
-   */
-  _fillFrameworkContextFromEvent(context, event) {
-    context[Framework.FRAMEWORK_NAMESPACE_KEY] = {};
-    context.getDeepFrameworkOption = function(option) {
-      return this[Framework.FRAMEWORK_NAMESPACE_KEY][option];
-    };
-
-    [Framework.MAIN_REQUEST_ID].forEach(option => {
-      if (event.hasOwnProperty(option)) {
-        context[Framework.FRAMEWORK_NAMESPACE_KEY][option] = event[option];
-      }
-    });
-  }
-
-  /**
-   * @returns {String}
-   */
-  static get FRAMEWORK_NAMESPACE_KEY() {
-    return 'deepFramework';
-  }
-
-  /**
-   * @returns {String}
-   */
-  static get MAIN_REQUEST_ID() {
-    return 'mainRequestId';
   }
 
   /**
