@@ -149,6 +149,7 @@ export class AbstractEvent extends Core.OOP.Interface {
     if (this._kernel.isBackend) {
       let runtimeContext = this._kernel.runtimeContext;
 
+      event.mainRequestId = runtimeContext.getDeepFrameworkOption('mainRequestId') || runtimeContext.awsRequestId;
       event.context = AbstractEvent.BACKEND_CONTEXT;
       event.memoryUsage = process.memoryUsage();
       event.environment = {}; // @todo - find a way to get Lambda container info (id, OS, etc)
