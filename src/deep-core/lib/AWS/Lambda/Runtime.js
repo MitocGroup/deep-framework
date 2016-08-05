@@ -135,7 +135,6 @@ export class Runtime extends Interface {
       resourceType: 'Lambda',
       resourceId: this._context.invokedFunctionArn,
       eventName: 'Run',
-      payload: event,
     });
 
     new Sandbox(() => {
