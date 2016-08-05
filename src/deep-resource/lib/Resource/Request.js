@@ -514,7 +514,9 @@ export class Request {
       return this;
     }
 
-    this._payload.mainRequestId = resource.contextProvider.context.getDeepFrameworkOption('mainRequestId') ||
+    let runtimeContext = resource.contextProvider.context;
+
+    this._payload.mainRequestId = runtimeContext.getDeepFrameworkOption('mainRequestId') ||
       runtimeContext.awsRequestId;
 
     return this;
