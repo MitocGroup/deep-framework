@@ -6,7 +6,6 @@
 
 import Kernel from 'deep-kernel';
 import DeepCore from 'deep-core';
-import {BackendContext} from './BackendContext';
 import {ContextProvider} from './ContextProvider';
 
 export class Framework {
