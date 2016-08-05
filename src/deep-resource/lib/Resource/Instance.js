@@ -25,7 +25,7 @@ export class Instance {
     this._cache = null;
     this._security = null;
     this._validation = null;
-    this._backendContext = null;
+    this._contextProvider = null;
     this._log = null;
 
     this._fillActions();
@@ -198,17 +198,17 @@ export class Instance {
   }
 
   /**
-   * @param {Object} backendContext
+   * @param {ContextProvider} contextProvider
    */
-  set backendContext(backendContext) {
-    this._backendContext = backendContext;
+  set contextProvider(contextProvider) {
+    this._contextProvider = contextProvider;
   }
 
   /**
-   * @returns {Object}
+   * @returns {ContextProvider}
    */
-  get backendContext() {
-    return this._backendContext;
+  get contextProvider() {
+    return this._contextProvider;
   }
 
   /**

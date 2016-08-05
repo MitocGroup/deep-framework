@@ -7,6 +7,7 @@
 import Kernel from 'deep-kernel';
 import DeepCore from 'deep-core';
 import {BackendContext} from './BackendContext';
+import {ContextProvider} from './ContextProvider';
 
 export class Framework {
   /**
@@ -48,10 +49,7 @@ export class Framework {
   LambdaHandler(Handler) {
     return {
       handler: (event, context, callback) => {
-        let backendContext = new BackendContext(context);
-        backendContext.fillWithEventData(event);
-
-        this.KernelFromBackendContext(backendContext).bootstrap((deepKernel) => {
+        this.KernelFromLambdaContext(context, event).bootstrap((deepKernel) => {
           new Handler(deepKernel).run(event, context, callback);
         });
       },
@@ -62,22 +60,22 @@ export class Framework {
    *
    * @todo: improve it
    *
-   * @param {BackendContext} backendContext
+   * @param {Object} lambdaContext
+   * @param {Object} lambdaEvent
    * @returns {Kernel}
    *
    * @sample:
    * ```
    * exports.handler = function (event, context) {
-   *   DeepFramework.KernelFromBackendContext(context).loadFromFile("_config.json", function (deepKernel) {
+   *   DeepFramework.KernelFromLambdaContext(context).loadFromFile("_config.json", function (deepKernel) {
    *     new Handler(deepKernel).run(event, context);
    *   });
    * };
-   * KernelFromBackendContext
+   * KernelFromLambdaContext
    * ```
    */
-  KernelFromBackendContext(backendContext) {
+  KernelFromLambdaContext(lambdaContext, lambdaEvent) {
     let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
-    let lambdaContext = backendContext.runtimeContext;
 
     if (lambdaContext.hasOwnProperty('identity') &&
       lambdaContext.identity.hasOwnProperty('cognitoIdentityPoolId') &&
@@ -87,9 +85,12 @@ export class Framework {
     }
 
     let kernel = this._kernelCached(identityId);
+    let contextProvider = new ContextProvider(lambdaContext);
+    
+    contextProvider.fillContextWithEventData(lambdaEvent);
 
     kernel.runtimeContext = lambdaContext; // @todo: remove "runtimeContext" on next major release
-    kernel.backendContext = backendContext;
+    kernel.contextProvider = contextProvider;  
 
     return kernel;
   }

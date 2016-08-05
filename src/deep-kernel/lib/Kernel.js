@@ -35,7 +35,7 @@ export class Kernel {
     this._services = deepServices;
     this._context = context;
     this._runtimeContext = {};
-    this._backendContext = {};
+    this._contextProvider = null;
     this._env = null;
     this._container = new DI();
     this._isLoaded = false;
@@ -67,15 +67,15 @@ export class Kernel {
   /**
    * @returns {Object}
    */
-  get backendContext() {
-    return this._backendContext;
+  get contextProvider() {
+    return this._contextProvider;
   }
 
   /**
-   * @param {Object} backendContext
+   * @param {Object} contextProvider
    */
-  set backendContext(backendContext) {
-    this._backendContext = backendContext;
+  set contextProvider(contextProvider) {
+    this._contextProvider = contextProvider;
   }
 
   /**

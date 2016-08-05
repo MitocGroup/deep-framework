@@ -72,7 +72,7 @@ export class Resource extends Kernel.ContainerAware {
     resource.security = this.container.get('security');
     resource.validation = this.container.get('validation');
     resource.log = this.container.get('log');
-    resource.backendContext = this.kernel.backendContext;
+    resource.contextProvider = this.kernel.contextProvider;
 
     return actionIdentifier ? resource.action(actionIdentifier) : resource;
   }

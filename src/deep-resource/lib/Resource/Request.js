@@ -509,13 +509,12 @@ export class Request {
    */
   _fillPayloadWithSystemData() {
     let resource = this.action.resource;
-    let runtimeContext = resource.backendContext.runtimeContext;
 
     if (!resource.isBackend || !resource.log.isRumEnabled()) {
       return this;
     }
 
-    this._payload.mainRequestId = runtimeContext.getDeepFrameworkOption('mainRequestId') ||
+    this._payload.mainRequestId = resource.contextProvider.context.getDeepFrameworkOption('mainRequestId') ||
       runtimeContext.awsRequestId;
 
     return this;
