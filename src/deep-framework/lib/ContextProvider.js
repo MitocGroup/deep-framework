@@ -37,7 +37,7 @@ export class ContextProvider {
    * @returns {Object}
    */
   get context() {
-    return this._kernel.runtimeContext;
+    return this._context;
   }
 
   /**
