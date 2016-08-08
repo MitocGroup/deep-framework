@@ -467,10 +467,11 @@ export class Request {
         this._saveResponseToCache(response);
       }
 
-      requestEvent.requestId = response.requestId;
+      requestEvent.requestId = requestEvent.mainRequestId = response.requestId;
 
       let responseEvent = util._extend({}, requestEvent);
       responseEvent.payload = response;
+      responseEvent.time = Date.now();
 
       logService.rumLog(requestEvent);
       logService.rumLog(responseEvent);
@@ -485,6 +486,8 @@ export class Request {
         return decoratedCallback(this._createValidationErrorResponse(result.error));
       }
     }
+
+    this._fillPayloadWithSystemData();
 
     if (!this._native) {
       return this._sendThroughApi(decoratedCallback);
@@ -507,6 +510,25 @@ export class Request {
         break;
       default: throw new Exception(`Request of type ${this._action.type} is not implemented`);
     }
+
+    return this;
+  }
+
+  /**
+   * @returns {Request}
+   * @private
+   */
+  _fillPayloadWithSystemData() {
+    let resource = this.action.resource;
+
+    if (!resource.isBackend || !resource.log.isRumEnabled()) {
+      return this;
+    }
+
+    let runtimeContext = resource.contextProvider.context;
+
+    this._payload.mainRequestId = runtimeContext.getDeepFrameworkOption('mainRequestId') ||
+      runtimeContext.awsRequestId;
 
     return this;
   }
@@ -601,7 +623,6 @@ export class Request {
       callback(new CachedRequestException(`Missing key ${key}`), null);
     });
   }
-
 
   /**
    * @returns {Object}

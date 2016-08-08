@@ -25,6 +25,7 @@ export class Instance {
     this._cache = null;
     this._security = null;
     this._validation = null;
+    this._contextProvider = null;
     this._log = null;
 
     this._fillActions();
@@ -194,6 +195,20 @@ export class Instance {
    */
   get actions() {
     return this._actions;
+  }
+
+  /**
+   * @param {ContextProvider} contextProvider
+   */
+  set contextProvider(contextProvider) {
+    this._contextProvider = contextProvider;
+  }
+
+  /**
+   * @returns {ContextProvider}
+   */
+  get contextProvider() {
+    return this._contextProvider;
   }
 
   /**
