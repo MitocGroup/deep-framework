@@ -174,18 +174,18 @@ export class Token {
 
   /**
    * @param {Function} callback
-   * @param {String|null} securityContext
+   * @param {String|null} authScope
    */
-  loadCredentials(callback = () => {}, securityContext = null) {
-    let contextKey = securityContext ? securityContext.toString() : 'default';
+  loadCredentials(callback = () => {}, authScope = null) {
+    let auth = authScope ? authScope.toString() : 'default';
 
-    if (this._loadingInProgressSet[contextKey]) {
-      this._waitingForCredsCallbacksSet[contextKey] = this._waitingForCredsCallbacksSet[contextKey] || [];
-      this._waitingForCredsCallbacksSet[contextKey].push(callback);
+    if (this._loadingInProgressSet[auth]) {
+      this._waitingForCredsCallbacksSet[auth] = this._waitingForCredsCallbacksSet[auth] || [];
+      this._waitingForCredsCallbacksSet[auth].push(callback);
       return;
     }
 
-    this._loadingInProgressSet[contextKey] = true;
+    this._loadingInProgressSet[auth] = true;
 
     let event = {
       service: 'deep-security',
@@ -205,14 +205,14 @@ export class Token {
 
       callback(error, credentials);
 
-      let waitingCallbacks = this._waitingForCredsCallbacksSet[contextKey] || [];
+      let waitingCallbacks = this._waitingForCredsCallbacksSet[auth] || [];
 
       waitingCallbacks.forEach((cb) => {
         cb(error, credentials);
       });
 
-      this._waitingForCredsCallbacksSet[contextKey] = [];
-      this._loadingInProgressSet[contextKey] = false;
+      this._waitingForCredsCallbacksSet[auth] = [];
+      this._loadingInProgressSet[auth] = false;
     };
 
     this
@@ -227,12 +227,12 @@ export class Token {
         return this._loadCognitoUserDefaultCredentials();
       })
       .then(defaultCredentials => {
-        if (!securityContext) {
+        if (!authScope) {
           return defaultCredentials;
         }
 
         return this._roleResolver
-          .resolve(securityContext)
+          .resolve(authScope)
           .then(role => {
             let credentials = this.getCredentials(role);
 
