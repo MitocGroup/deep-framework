@@ -184,6 +184,10 @@ export class ExtendModel {
           .exec(cb);
       },
 
+      findItems: function(...args) {
+        return _this.model.getItems(...args);
+      },
+
       deleteById: function(id, cb) {
         return _this.model.destroy(id, cb);
       },
@@ -241,10 +245,6 @@ export class ExtendModel {
         data.Id = id;
 
         return _this.model.update(data, condition, cb);
-      },
-
-      getItems: function(...args) {
-        return _this.model.getItems(...args);
       },
     };
   }

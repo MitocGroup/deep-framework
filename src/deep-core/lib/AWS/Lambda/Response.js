@@ -49,7 +49,6 @@ export class Response {
       resourceType: 'Lambda',
       resourceId: this.runtime.context.invokedFunctionArn,
       eventName: 'Run',
-      payload: this.data,
     });
 
     // flush RUM batched messages if any
