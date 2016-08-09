@@ -1,5 +1,5 @@
 Setup your deepify github access token
-===============================================
+======================================
 
 `deepify install` command uses be default anonymous github credentials.
 If you want to setup your github access token in order to install private github microservices and have a higher github API rate limit,
