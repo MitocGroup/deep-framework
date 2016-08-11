@@ -458,7 +458,6 @@ export class Request {
       eventName: this.method,
       eventId: this.customId,
       requestId: this.customId,
-      payload: this.payload,
       time: Date.now(),
     };
 
@@ -553,7 +552,6 @@ export class Request {
       resourceId: cacheKey,
       eventName: 'set',
       requestId: response.requestId,
-      payload: {response,},
     };
 
     logService.rumLog(event);

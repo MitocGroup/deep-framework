@@ -68,7 +68,7 @@ suite('Vogels/ExtendModel', () => {
       'findBy', 'findAllBy', 'findAllByPaginated', 'findMatching', 'findOneMatching',
       'findAllMatching', 'findAllMatchingPaginated', 'deleteById',
       'deleteByIdConditional', 'createItem', 'createUniqueOnFields',
-      'updateItem', 'updateItemConditional', 'getItems'];
+      'updateItem', 'updateItemConditional', 'findItems'];
     chai.expect(methods.length).to.be.eql(expectedMethodNames.length);
 
     //check all items is fucntions
