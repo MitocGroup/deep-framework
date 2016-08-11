@@ -5,14 +5,14 @@
 'use strict';
 
 import AWS from 'aws-sdk';
+import util from 'util';
 import {AuthException} from './Exception/AuthException';
 import {IdentityProviderTokenExpiredException} from './Exception/IdentityProviderTokenExpiredException';
 import {DescribeIdentityException} from './Exception/DescribeIdentityException';
-import {CredentialsManager} from './CredentialsManager';
 import {Exception} from './Exception/Exception';
 import {Exception as CoreException} from 'deep-core';
 import {Security} from './Security';
-import util from 'util';
+import {TokenManager} from './TokenManager';
 
 /**
  * Security token holds details about logged user
@@ -40,17 +40,20 @@ export class Token {
 
     this._lambdaContext = null;
     this._user = null;
-    this._credentials = null;
+    this._credentials = null; // stores cognito user (un)authenticated credentials
+    this._rolesCredentials = {};
     this._identityMetadata = null;
     this._tokenExpiredCallback = null;
 
     this._identityProvider = null;
     this._userProvider = null;
+    this._roleResolver = null;
     this._logService = null;
-    this._loadingInProgress = false;
-    this._waitingForCredsCallbacks = [];
+    this._cacheService = null;
+    this._loadingInProgressSet = {}; // @todo: rethink this functionality
+    this._waitingForCredsCallbacksSet = {}; // @todo: rethink this functionality
 
-    this._credsManager = new CredentialsManager(identityPoolId);
+    this._tokenManager = new TokenManager(identityPoolId);
 
     this._setupAwsCognitoConfig();
   }
@@ -94,6 +97,13 @@ export class Token {
   }
 
   /**
+   * @param {Cache|LocalStorageDriver} cacheService
+   */
+  set cacheService(cacheService) {
+    this._cacheService = cacheService;
+  }
+
+  /**
    * @returns {Object}
    */
   get lambdaContext() {
@@ -115,15 +125,81 @@ export class Token {
   }
 
   /**
-   * @param {Function} callback
+   * @param {RoleResolver} roleResolver
    */
-  loadCredentials(callback = () => {}) {
-    if (this._loadingInProgress) {
-      this._waitingForCredsCallbacks.push(callback);
+  set roleResolver(roleResolver) {
+    this._roleResolver = roleResolver;
+  }
+
+  /**
+   * @param {Object} user
+   */
+  set user(user) {
+    this._user = user;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get user() {
+    return this._user;
+  }
+
+  /**
+   * @returns {Promise<IdentityProvider>}
+   * @private
+   */
+  _tryLoadIdentityProvider() {
+    if (this._identityProvider) {
+      return Promise.resolve(this._identityProvider);
+    }
+
+    return new Promise(resolve => {
+      this._cacheService.get(Token.IDENTITY_PROVIDER_CACHE_KEY, (error, rawProvider) => {
+        if (error || !rawProvider) {
+          return resolve(null);
+        }
+
+        let providerObj = JSON.parse(rawProvider);
+
+        providerObj.tokenExpirationTime = new Date(providerObj.tokenExpirationTime);
+        providerObj.isTokenValid = function() { // do not use arrow function, `this` context should not be overwritten
+          return this.tokenExpirationTime > new Date();
+        };
+
+        resolve(providerObj);
+      });
+    });
+  }
+
+  /**
+   * Example: token.isAllowed('deep-security:role:create').then(boolean => {});
+   * 
+   * @param {String} authScope
+   * @returns {Promise}
+   */
+  isAllowed(authScope) {
+    return this._roleResolver
+      .resolve(authScope)
+      .then(role => {
+        return !!role;
+      });
+  }
+
+  /**
+   * @param {Function} callback
+   * @param {String|null} authScope
+   */
+  loadCredentials(callback = () => {}, authScope = null) {
+    let scopeKey = authScope ? authScope.toString() : 'default';
+
+    if (this._loadingInProgressSet[scopeKey]) {
+      this._waitingForCredsCallbacksSet[scopeKey] = this._waitingForCredsCallbacksSet[scopeKey] || [];
+      this._waitingForCredsCallbacksSet[scopeKey].push(callback);
       return;
     }
 
-    this._loadingInProgress = true;
+    this._loadingInProgressSet[scopeKey] = true;
 
     let event = {
       service: 'deep-security',
@@ -143,78 +219,144 @@ export class Token {
 
       callback(error, credentials);
 
-      this._waitingForCredsCallbacks.forEach((cb) => {
+      let waitingCallbacks = this._waitingForCredsCallbacksSet[scopeKey] || [];
+
+      waitingCallbacks.forEach((cb) => {
         cb(error, credentials);
       });
 
-      this._waitingForCredsCallbacks = [];
-      this._loadingInProgress = false;
+      this._waitingForCredsCallbacksSet[scopeKey] = [];
+      this._loadingInProgressSet[scopeKey] = false;
     };
 
-    // avoid refreshing or loading credentials for each request
-    if (this.validCredentials(this.credentials)) {
-      proxyCallback(null, this.credentials);
-      return;
-    }
+    this
+      ._tryLoadIdentityProvider()
+      .then(identityProvider => {
+        this._identityProvider = identityProvider;
 
-    if (this.lambdaContext) {
-      this._backendLoadCredentials(proxyCallback);
-    } else {
-      this._frontendLoadCredentials(proxyCallback);
-    }
+        // roleResolver needs default user to be logged in
+        return this._loadCognitoUserDefaultCredentials();
+      })
+      .then(defaultCredentials => {
+        if (!authScope) {
+          return defaultCredentials;
+        }
+
+        return this._roleResolver
+          .resolve(authScope)
+          .then(role => {
+            let credentials = this.getCredentials(role);
+
+            if (this.validCredentials(credentials)) {
+              return credentials;
+            }
+
+            return this.lambdaContext ?
+              this._backendLoadCredentials(role) :
+              this._frontendLoadCredentials(role);
+          });
+      })
+      .then(credentials => proxyCallback(null, credentials))
+      .catch(error => proxyCallback(error, null));
   }
 
   /**
-   * @param {Function} callback
+   * @returns {Promise}
    * @private
    */
-  _backendLoadCredentials(callback) {
+  _loadCognitoUserDefaultCredentials() {
+    return this.validCredentials(this.credentials) ?
+      Promise.resolve(this.credentials) :
+      this.lambdaContext ?
+        this._backendLoadCredentials() :
+        this._frontendLoadCredentials();
+  }
+
+  /**
+   * @param {Object|null} role
+   * @returns {Promise<AWS.CognitoIdentityCredentials>}
+   * @private
+   */
+  _backendLoadCredentials(role = null) {
     if (!this.lambdaContext) {
       throw new Exception('Call to _backendLoadCredentials method is not allowed from frontend context.');
     }
 
-    this._credsManager.loadBackendCredentials(this.identityId, (error, credentials) => {
-      if (error) {
-        callback(error, null);
-        return;
-      }
+    return this._tokenManager
+      .loadBackendToken(this.identityId)
+      .then(oldToken => {
+        this._fillFromTokenSnapshot(oldToken);
 
-      callback(null, this._credentials = credentials);
-    });
+        return this.getCredentials(role);
+      });
   }
 
   /**
-   * @param {Function} callback
+   * @param {Object|null} role
+   * @returns {Promise<AWS.CognitoIdentityCredentials>}
    * @private
    */
-  _frontendLoadCredentials(callback) {
-    this._credentials = this._createCognitoIdentityCredentials();
-
+  _frontendLoadCredentials(role = null) {
     // set AWS credentials before loading credentials from cache coz amazon-cognito-js uses them
-    AWS.config.credentials = this._credentials;
+    AWS.config.credentials = this.credentials;
 
-    // trying to load old credentials from cache or CognitoSync
-    this._credsManager.loadFrontendCredentials((error, credentials) => {
-      if (!error && credentials && this.validCredentials(credentials)) {
-        callback(null, AWS.config.credentials = this._credentials = credentials);
-      } else {
-        this._refreshCredentials(this._credentials, callback);
-      }
-    });
+    // trying to load old token from cache or CognitoSync
+    return this._tokenManager
+      .loadFrontendToken()
+      .then(oldToken => {
+        if (!oldToken) {
+          return Promise.reject(new AuthException('Missing old token snapshot'));
+        }
+
+        this._fillFromTokenSnapshot(oldToken);
+        let credentials = this.getCredentials(role);
+
+        if (!this.validCredentials(credentials)) {
+          return Promise.reject(new AuthException('Invalid or expired token credentials'));
+        }
+
+        return credentials;
+      })
+      .catch(() => {
+        let credentials = this.getCredentials(role) || this._createCognitoIdentityCredentials(role);
+
+        return this._refreshCredentials(credentials);
+      })
+      .then(credentials => {
+        // amazon-cognito-js sets credentials to `undefined` while saving them (tokenManager.identityId returns null)
+        setTimeout(() => {
+          this._saveCredentials(credentials, role);
+          this._saveToken();
+        }, 0);
+
+        return credentials;
+      });
+  }
+
+  /**
+   * @param {Object} tokenSnapshot
+   * @returns {Token}
+   * @private
+   */
+  _fillFromTokenSnapshot(tokenSnapshot) {
+    this._credentials = tokenSnapshot.credentials;
+    this._rolesCredentials = tokenSnapshot.rolesCredentials;
+
+    return this;
   }
 
   /**
    * @param {AWS.CognitoIdentityCredentials} credentials
-   * @param {Function} callback
+   * @returns {Promise}
    * @private
    */
-  _refreshCredentials(credentials, callback) {
-    if (!(credentials instanceof AWS.CognitoIdentityCredentials)) {
+  _refreshCredentials(credentials) {
+    if (!(credentials instanceof AWS.CognitoIdentityCredentials || credentials instanceof AWS.Credentials)) {
       let error = new AuthException(
         'Invalid credentials instance. Passed credentials must be an instance of AWS.CognitoIdentityCredentials.'
       );
-      callback(error, null);
-      return;
+
+      return Promise.reject(error);
     }
 
     if (this.identityProvider && !this.identityProvider.isTokenValid()) {
@@ -227,56 +369,66 @@ export class Token {
         this.identityProvider.tokenExpirationTime
       );
 
-      callback(error, null);
-      return;
+      return Promise.reject(error);
     }
 
-    credentials.refresh((error) => {
-      if (error) {
-        callback(new AuthException(error), null);
-        return;
-      }
-
-      callback(null, credentials);
-
-      // save credentials in background not to affect page load time
-      this._saveCredentials(credentials);
-    });
-  }
-
-  /**
-   * @param {Object} credentials
-   * @private
-   */
-  _saveCredentials(credentials) {
-    let retriesCount = 0;
-
-    var saveCredentialsFunc = () => {
-      if (!this._credsManager) {
-        return;
-      }
-
-      this._credsManager.saveCredentials(credentials, (error, record) => {
-        if (error) {
-          retriesCount++;
-
-          if (retriesCount <= Token.MAX_RETRIES) {
-            setTimeout(saveCredentialsFunc, Token.RETRIES_INTERVAL_MS * retriesCount);
-          } else {
-            throw error;
+    return new Promise(
+      (resolve, reject) => {
+        credentials.refresh((error) => {
+          if (error) {
+            return reject(new AuthException(error));
           }
-        }
-      });
-    };
 
-    saveCredentialsFunc();
+          return resolve(credentials);
+        });
+      }
+    );
   }
 
   /**
-   * @returns {AWS.CognitoIdentityCredentials}
+   * @param {CognitoIdentityCredentials} credentials
+   * @param {Object} role
+   * @returns {Token}
    * @private
    */
-  _createCognitoIdentityCredentials() {
+  _saveCredentials(credentials, role = null) {
+    if (role) {
+      this._rolesCredentials[this.roleSessionKey(role)] = credentials;
+    } else {
+      this._credentials = credentials;
+    }
+
+    return this;
+  }
+
+  /**
+   * @returns {Promise}
+   * @private
+   */
+  _saveToken() {
+    if (this._identityProvider) {
+      let identityProviderObj = {
+        name: this._identityProvider.name,
+        userToken: this._identityProvider.userToken,
+        tokenExpirationTime: this._identityProvider.tokenExpirationTime,
+        userId: this._identityProvider.userId,
+      };
+
+      this._cacheService.set(
+        Token.IDENTITY_PROVIDER_CACHE_KEY,
+        JSON.stringify(identityProviderObj)
+      );
+    }
+
+    return this._tokenManager.saveToken(this);
+  }
+
+  /**
+   * @param {Object} role
+   * @returns {CognitoIdentityCredentials}
+   * @private
+   */
+  _createCognitoIdentityCredentials(role = null) {
     let cognitoParams = {
       IdentityPoolId: this._identityPoolId,
     };
@@ -285,29 +437,14 @@ export class Token {
       cognitoParams.Logins = {};
       cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
       cognitoParams.LoginId = this.identityProvider.userId;
+
+      if (role) {
+        cognitoParams.RoleArn = role.IamRole.Arn;
+        cognitoParams.RoleSessionName = this.roleSessionKey(role);
+      }
     }
 
-    let credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
-
-    credentials.toJSON = () => {
-      return {
-        expired: credentials.expired,
-        expireTime: credentials.expireTime,
-        accessKeyId: credentials.accessKeyId,
-        secretAccessKey: credentials.secretAccessKey,
-        sessionToken: credentials.sessionToken,
-      };
-    };
-
-    return credentials;
-  }
-
-  /**
-   * @param {String} identityPoolId
-   * @returns {String}
-   */
-  static getRegionFromIdentityPoolId(identityPoolId) {
-    return identityPoolId.split(':')[0];
+    return new AWS.CognitoIdentityCredentials(cognitoParams);
   }
 
   /**
@@ -315,27 +452,32 @@ export class Token {
    */
   get identityId() {
     let identityId = null;
+    let credentials = this.credentials;
 
-    if (this.credentials) {
-      if (this.credentials.identityId) {
-        identityId = this.credentials.identityId;
-      } else if (this.credentials.params && this.credentials.params.IdentityId) {
-        // load IdentityId from localStorage cache
-        identityId = this.credentials.params.IdentityId;
-      } else if (this._credsManager.identityId) {
-        identityId = this._credsManager.identityId;
-      }
-    } else if (this.lambdaContext) {
+    if (this.lambdaContext) {
       identityId = this.lambdaContext.identity.cognitoIdentityId;
+    } else if (credentials) {
+      if (credentials.identityId) {
+        identityId = credentials.identityId;
+      } else if (credentials.params && credentials.params.IdentityId) {
+        // load IdentityId from localStorage cache
+        identityId = credentials.params.IdentityId;
+      } else if (this._tokenManager.identityId) {
+        identityId = this._tokenManager.identityId;
+      }
     }
 
     return identityId;
   }
 
   /**
-   * @returns {Object}
+   * @returns {AWS.CognitoIdentityCredentials}
    */
   get credentials() {
+    if (!this._credentials) {
+      this._credentials = this._createCognitoIdentityCredentials();
+    }
+
     return this._credentials;
   }
 
@@ -345,6 +487,14 @@ export class Token {
    */
   validCredentials(credentials) {
     return credentials && this.getCredentialsExpireDateTime(credentials) > new Date();
+  }
+
+  /**
+   * @param {Object|null} role
+   * @returns {AWS.CognitoIdentityCredentials}
+   */
+  getCredentials(role = null) {
+    return role ? this._rolesCredentials[this.roleSessionKey(role)] : this.credentials;
   }
 
   /**
@@ -385,12 +535,25 @@ export class Token {
    * @param {Function} callback
    */
   getUser(callback) {
+    // @todo: backward compatibility hook, remove on next major release
+    let argsHandler = (error, user) => {
+      if (callback.length === 1) {
+        if (error) {
+          throw error;
+        }
+
+        return callback(user);
+      }
+
+      callback(error, user);
+    };
+
     if (this.lambdaContext) {
       this._describeIdentity(this.identityId, () => {
-        this._loadUser(callback);
+        this._loadUser(argsHandler);
       });
     } else {
-      this._loadUser(callback);
+      this._loadUser(argsHandler);
     }
   }
 
@@ -405,48 +568,21 @@ export class Token {
     }
 
     if (!this._user) {
-      this._userProvider.loadUserByIdentityId(this.identityId, (user) => {
+      this._userProvider.loadUserByIdentityId(this.identityId, (error, user) => {
+        if (error) {
+          callback(error, null);
+          return;
+        }
+
         this._user = user;
 
-        callback(this._user);
+        callback(null, this._user);
       });
 
       return;
     }
 
-    callback(this._user);
-  }
-
-  /**
-   * @param {String} identityPoolId
-   * @returns {Token}
-   */
-  static create(identityPoolId) {
-    return new this(identityPoolId);
-  }
-
-  /**
-   * @param {String} identityPoolId
-   * @param {IdentityProvider} identityProvider
-   * @returns {Token}
-   */
-  static createFromIdentityProvider(identityPoolId, identityProvider) {
-    let token = new this(identityPoolId);
-    token.identityProvider = identityProvider;
-
-    return token;
-  }
-
-  /**
-   * @param {String} identityPoolId
-   * @param {Object} lambdaContext
-   * @returns {Token}
-   */
-  static createFromLambdaContext(identityPoolId, lambdaContext) {
-    let token = new this(identityPoolId);
-    token.lambdaContext = lambdaContext;
-
-    return token;
+    callback(null, this._user);
   }
 
   /**
@@ -498,17 +634,117 @@ export class Token {
   }
 
   /**
+   * @param {Object|null} role
+   * @returns {*}
+   */
+  roleSessionKey(role) {
+    let suffix = role ? role.Id : 'default';
+
+    return `${TokenManager.RECORD_NAME}-${suffix}`;
+  }
+
+  /**
    * Removes identity credentials related cached stuff
    */
   destroy() {
+    this._tokenManager.deleteToken();
+    this._roleResolver.invalidateCache();
+
     if (!(this._credentials instanceof AWS.CognitoIdentityCredentials)) {
       this._credentials = this._createCognitoIdentityCredentials();
     }
 
-    this._credsManager.deleteCredentials();
     this._credentials.clearCachedId();
 
+    for (let key in this._rolesCredentials) {
+      if (this._rolesCredentials.hasOwnProperty(key) &&
+        this._rolesCredentials[key] instanceof AWS.CognitoIdentityCredentials) {
+        this._rolesCredentials[key].clearCachedId();
+      }
+    }
+
     this._credentials = null;
-    this._credsManager = null;
+    this._rolesCredentials = {};
+    this._tokenManager = null;
+  }
+
+  /**
+   * @returns {Object}
+   */
+  toJSON() {
+    let jsonToken = {
+      credentials: this._credentials && this._extractCredentials(this._credentials),
+      rolesCredentials: {},
+    };
+
+    for (let key in this._rolesCredentials) {
+      if (this._rolesCredentials.hasOwnProperty(key)) {
+        jsonToken.rolesCredentials[key] = this._extractCredentials(this._rolesCredentials[key]);
+      }
+    }
+
+    return jsonToken;
+  }
+
+  /**
+   * @param {AWS.CognitoIdentityCredentials} credentials
+   * @returns {Object}
+   * @private
+   */
+  _extractCredentials(credentials) {
+    return {
+      expired: credentials.expired,
+      expireTime: credentials.expireTime,
+      accessKeyId: credentials.accessKeyId,
+      secretAccessKey: credentials.secretAccessKey,
+      sessionToken: credentials.sessionToken,
+    };
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @returns {String}
+   */
+  static getRegionFromIdentityPoolId(identityPoolId) {
+    return identityPoolId.split(':')[0];
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @returns {Token}
+   */
+  static create(identityPoolId) {
+    return new this(identityPoolId);
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @param {IdentityProvider} identityProvider
+   * @returns {Token}
+   */
+  static createFromIdentityProvider(identityPoolId, identityProvider) {
+    let token = new this(identityPoolId);
+    token.identityProvider = identityProvider;
+
+    return token;
+  }
+
+  /**
+   * @param {String} identityPoolId
+   * @param {Object} lambdaContext
+   * @returns {Token}
+   */
+  static createFromLambdaContext(identityPoolId, lambdaContext) {
+    let token = new this(identityPoolId);
+    token.lambdaContext = lambdaContext;
+
+    return token;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get IDENTITY_PROVIDER_CACHE_KEY() {
+    return '__deep_framework|security|token|identity-provider';
   }
 }

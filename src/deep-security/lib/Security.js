@@ -11,6 +11,8 @@ import {LocalToken} from './LocalToken';
 import {UserProvider} from './UserProvider';
 import {IdentityProvider} from './IdentityProvider';
 import {LocalIdentityProvider} from './LocalIdentityProvider';
+import {RoleResolver} from './RoleResolver';
+import {RoleProvider} from './RoleProvider';
 import util from 'util';
 import crypto from 'crypto';
 
@@ -33,6 +35,9 @@ export class Security extends Kernel.ContainerAware {
     this._token = null;
     this._userProvider = null;
     this._userProviderEndpoint = null;
+    this._roleProviderEndpoint = null;
+    this._roleResolver = null;
+    this._roleProvider = null;
   }
 
   /**
@@ -47,10 +52,32 @@ export class Security extends Kernel.ContainerAware {
    */
   get userProvider() {
     if (!this._userProvider) {
-      this._userProvider = new UserProvider(this._userProviderEndpoint, this.container.get('resource'));
+      this._userProvider = new UserProvider(this._userProviderEndpoint, this._resourceService);
     }
 
     return this._userProvider;
+  }
+
+  /**
+   * @returns {RoleResolver}
+   */
+  get roleResolver() {
+    if (!this._roleResolver) {
+      this._roleResolver = new RoleResolver(this.roleProvider);
+    }
+
+    return this._roleResolver;
+  }
+
+  /**
+   * @returns {RoleProvider}
+   */
+  get roleProvider() {
+    if (!this._roleProvider) {
+      this._roleProvider = new RoleProvider(this._resourceService, this._roleProviderEndpoint);
+    }
+
+    return this._roleProvider;
   }
 
   /**
@@ -65,6 +92,7 @@ export class Security extends Kernel.ContainerAware {
     this._identityPoolId = kernel.config.identityPoolId;
     this._identityProviders = kernel.config.identityProviders || {};
     this._userProviderEndpoint = globals.userProviderEndpoint || null;
+    this._roleProviderEndpoint = globals.roleProviderEndpoint || null;
 
     callback();
   }
@@ -94,7 +122,9 @@ export class Security extends Kernel.ContainerAware {
     let identityProvider = new IdentityProviderImplementation(this._identityProviders, providerName, identityMetadata);
     this._token = TokenImplementation.createFromIdentityProvider(this._identityPoolId, identityProvider);
 
+    this._token.roleResolver = this.roleResolver;
     this._token.userProvider = this.userProvider;
+    this._token.cacheService = this._cacheService;
     this._token.logService = this.kernel.get('log');
 
     let event = {
@@ -128,6 +158,8 @@ export class Security extends Kernel.ContainerAware {
     this._token = TokenImplementation.create(this.identityPoolId);
 
     this._token.userProvider = this.userProvider;
+    this._token.roleResolver = this.roleResolver;
+    this._token.cacheService = this._cacheService;
     this._token.logService = this.kernel.get('log');
 
     let event = {
@@ -165,6 +197,8 @@ export class Security extends Kernel.ContainerAware {
 
     this._token.userProvider = this.userProvider;
     this._token.logService = this.kernel.get('log');
+    this._token.roleResolver = this.roleResolver;
+    this._token.cacheService = this._cacheService;
 
     return this._token;
   }
@@ -230,5 +264,20 @@ export class Security extends Kernel.ContainerAware {
     md5sum.update(str);
 
     return md5sum.digest('hex');
+  }
+
+  /**
+   * @returns {Object}
+   */
+  get _resourceService() {
+    return this.container.get('resource');
+  }
+
+  /**
+   * @returns {Cache|LocalStorageDriver}
+   * @private
+   */
+  get _cacheService() {
+    return this.container.get('cache');
   }
 }

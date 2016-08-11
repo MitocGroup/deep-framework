@@ -13,6 +13,32 @@ import {InvalidProviderIdentityException} from './Exception/InvalidProviderIdent
  */
 export class IdentityProvider {
   /**
+   * @param {Object} providers
+   * @param {String} providerName
+   * @param {Object} identityMetadata
+   */
+  constructor(providers, providerName, identityMetadata) {
+    let providerDomain = this.getProviderDomain(providerName, providers);
+
+    if (!providerDomain) {
+      throw new MissingLoginProviderException(providerName);
+    }
+
+    if (identityMetadata.provider && identityMetadata.provider !== providerName) {
+      throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);
+    }
+
+    let normalizedMetadata = this._normalizeIdentityMetadata(providerName, identityMetadata);
+
+    this._metadata = identityMetadata;
+    this._userToken = normalizedMetadata.token;
+    this._tokenExpTime = new Date(normalizedMetadata.expireTime);
+    this._userId = normalizedMetadata.userId;
+    this._providers = providers;
+    this._name = providerDomain;
+  }
+
+  /**
    * @param {String} providerName
    * @param {Object} providers
    * @returns {*}
@@ -56,31 +82,6 @@ export class IdentityProvider {
   }
 
   /**
-   * @param {Object} providers
-   * @param {String} providerName
-   * @param {Object} identityMetadata
-   */
-  constructor(providers, providerName, identityMetadata) {
-    let providerDomain = this.getProviderDomain(providerName, providers);
-
-    if (!providerDomain) {
-      throw new MissingLoginProviderException(providerName);
-    }
-
-    if (identityMetadata.provider && identityMetadata.provider !== providerName) {
-      throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);
-    }
-
-    let normalizedMetadata = this._normalizeIdentityMetadata(providerName, identityMetadata);
-
-    this._userToken = normalizedMetadata.token;
-    this._tokenExpTime = new Date(normalizedMetadata.expireTime);
-    this._userId = normalizedMetadata.userId;
-    this._providers = providers;
-    this._name = providerDomain;
-  }
-
-  /**
    * @todo: Implement other identity providers
    * @param {String} providerName
    * @param {Object} identityMetadata
@@ -101,9 +102,9 @@ export class IdentityProvider {
         break;
 
       case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
-        let jwtTokenInstance = identityMetadata.getIdToken();
-        token = jwtTokenInstance.getJwtToken();
-        expireTime = jwtTokenInstance.getExpiration().unix() * 1000;
+        let idTokenInstance = identityMetadata.getSignInUserSession().getIdToken();
+        token = idTokenInstance.getJwtToken();
+        expireTime = idTokenInstance.getExpiration() * 1000;
         break;
 
       case IdentityProvider.AMAZON_PROVIDER:
