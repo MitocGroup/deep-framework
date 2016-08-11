@@ -56,6 +56,7 @@ export class Request {
     this._returnLogs = false;
 
     this._withUserCredentials = true;
+    this._authScope = this._buildAuthScope();
   }
 
   /**
@@ -278,6 +279,16 @@ export class Request {
 
     // @todo: do we really have to force it?
     this.cache(Request.TTL_DEFAULT);
+  }
+
+  /**
+   * @param {String|null} authScope
+   * @returns {Request}
+   */
+  authScope(authScope) {
+    this._authScope = authScope;
+
+    return this;
   }
 
   /**
@@ -752,7 +763,7 @@ export class Request {
     let parsedUrl = urlParse(url, qs);
     let apiHost = parsedUrl.hostname;
     let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';
-    
+
     let opsToSign = {
       service: Core.AWS.Service.API_GATEWAY_EXECUTE,
       region: this.getEndpointHostRegion(apiHost),
@@ -859,7 +870,7 @@ export class Request {
       }
 
       callback(null, credentials);
-    });
+    }, this._authScope);
 
     return this;
   }
@@ -873,6 +884,17 @@ export class Request {
 
     // @todo - expose API region into config provision section
     return regionParts ? regionParts[1] : this._action.region; // use action region as fallback
+  }
+
+  /**
+   * @return {String}
+   */
+  _buildAuthScope() {
+    let action = this._action;
+    let resource = action.resource;
+    let microservice = resource.microservice;
+
+    return `${microservice.identifier}:${resource.name}:${action.name}`;
   }
 
   /**
