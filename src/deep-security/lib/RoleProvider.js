@@ -25,8 +25,8 @@ export class RoleProvider {
     let retrieveRolesRequest = this._deepResource.get(this._retrieveRoleResource);
 
     return new Promise((resolve, reject) => {
-      // securityContext(null) forces deep-resource to use cognito default credentials
-      retrieveRolesRequest.request({}).securityContext(null).send(response => {
+      // authScope(null) forces deep-resource to use cognito default credentials
+      retrieveRolesRequest.request({}).authScope(null).send(response => {
         if (response.error) {
           return reject(response.error);
         }

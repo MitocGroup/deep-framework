@@ -104,7 +104,7 @@ export class IdentityProvider {
       case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
         let idTokenInstance = identityMetadata.getSignInUserSession().getIdToken();
         token = idTokenInstance.getJwtToken();
-        expireTime = idTokenInstance.getExpiration().unix() * 1000;
+        expireTime = idTokenInstance.getExpiration() * 1000;
         break;
 
       case IdentityProvider.AMAZON_PROVIDER:

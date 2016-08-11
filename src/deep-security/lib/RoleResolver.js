@@ -49,9 +49,7 @@ export class RoleResolver {
       return Promise.resolve(this._voters);
     }
 
-    let roleProvider = this._security.roleProvider;
-
-    return roleProvider
+    return this._roleProvider
       .getRoles()
       .then(roles => {
         this._voters = roles.map(r => new RoleVoter(r));

@@ -56,7 +56,7 @@ export class Request {
     this._returnLogs = false;
 
     this._withUserCredentials = true;
-    this._securityContext = this._buildSecurityContext();
+    this._authScope = this._buildAuthScope();
   }
 
   /**
@@ -282,11 +282,11 @@ export class Request {
   }
 
   /**
-   * @param {String|null} securityContext
+   * @param {String|null} authScope
    * @returns {Request}
    */
-  securityContext(securityContext) {
-    this._securityContext = securityContext;
+  authScope(authScope) {
+    this._authScope = authScope;
 
     return this;
   }
@@ -872,7 +872,7 @@ export class Request {
       }
 
       callback(null, credentials);
-    }, this._securityContext);
+    }, this._authScope);
 
     return this;
   }
@@ -891,7 +891,7 @@ export class Request {
   /**
    * @return {String}
    */
-  _buildSecurityContext() {
+  _buildAuthScope() {
     let action = this._action;
     let resource = action.resource;
     let microservice = resource.microservice;

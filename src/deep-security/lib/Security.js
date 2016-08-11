@@ -63,7 +63,7 @@ export class Security extends Kernel.ContainerAware {
    */
   get roleResolver() {
     if (!this._roleResolver) {
-      this._roleResolver = new RoleResolver(this);
+      this._roleResolver = new RoleResolver(this.roleProvider);
     }
 
     return this._roleResolver;
@@ -197,6 +197,8 @@ export class Security extends Kernel.ContainerAware {
 
     this._token.userProvider = this.userProvider;
     this._token.logService = this.kernel.get('log');
+    this._token.roleResolver = this.roleResolver;
+    this._token.cacheService = this._cacheService;
 
     return this._token;
   }

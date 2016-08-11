@@ -235,22 +235,19 @@ export class TokenManager {
   /**
    * @todo: implement a decoding method
    *
-   * @param {String|Object} credentials
+   * @param {Object} credentials
    * @returns {Object}
    */
   _decodeCredentials(credentials) {
-    if (credentials && typeof credentials === 'string') {
-      credentials = JSON.parse(credentials);
-      let expireTime = credentials.expireTime;
+    let expireTime = credentials.expireTime;
 
-      credentials = new AWS.Credentials(credentials);
+    credentials = new AWS.Credentials(credentials);
 
-      // restore expireTime because AWS.Credentials resets it to null
-      credentials.expireTime = expireTime;
+    // restore expireTime because AWS.Credentials resets it to null
+    credentials.expireTime = expireTime;
 
-      // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore
-      credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');
-    }
+    // set secretAccessKey property enumerable:true to allow storing it into Cognito datastore
+    credentials = this._makeKeyEnumerable(credentials, 'secretAccessKey');
 
     return credentials;
   }
