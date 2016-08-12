@@ -190,8 +190,7 @@ export class Token {
    * @param {Function} callback
    * @param {String|null} authScope
    */
-  loadCredentials(callback = () => {
-  }, authScope = null) {
+  loadCredentials(callback = () => {}, authScope = null) {
     let scopeKey = authScope ? authScope.toString() : 'default';
 
     if (this._loadingInProgressSet[scopeKey]) {
