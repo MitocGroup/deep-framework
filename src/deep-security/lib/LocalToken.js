@@ -49,7 +49,20 @@ export class LocalToken extends Token {
    * @param {Function} callback
    */
   getUser(callback) {
-    this._loadUser(callback);
+    // @todo: backward compatibility hook, remove on next major release
+    let argsHandler = (error, user) => {
+      if (callback.length === 1) {
+        if (error) {
+          throw error;
+        }
+
+        return callback(user);
+      }
+
+      callback(error, user);
+    };
+
+    this._loadUser(argsHandler);
   }
 
   /**
