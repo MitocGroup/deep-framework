@@ -163,7 +163,7 @@ export class Token {
         let providerObj = JSON.parse(rawProvider);
 
         providerObj.tokenExpirationTime = new Date(providerObj.tokenExpirationTime);
-        providerObj.isTokenValid = function() { // do not use arrow function, `this` context should not be overwritten
+        providerObj.isTokenValid = function () { // do not use arrow function, `this` context should not be overwritten
           return this.tokenExpirationTime > new Date();
         };
 
@@ -174,7 +174,7 @@ export class Token {
 
   /**
    * Example: token.isAllowed('deep-security:role:create').then(boolean => {});
-   * 
+   *
    * @param {String} authScope
    * @returns {Promise}
    */
@@ -309,6 +309,8 @@ export class Token {
         }
 
         this._fillFromTokenSnapshot(oldToken);
+        AWS.config.credentials = this.credentials;
+
         let credentials = this.getCredentials(role);
 
         if (!this.validCredentials(credentials)) {
@@ -444,7 +446,20 @@ export class Token {
       }
     }
 
-    return new AWS.CognitoIdentityCredentials(cognitoParams);
+    let credentials = new AWS.CognitoIdentityCredentials(cognitoParams);
+
+    // do not replace with arrow function, `this` context should not be overwritten
+    credentials.toJSON = function () {
+      return {
+        expired: this.expired,
+        expireTime: this.expireTime,
+        accessKeyId: this.accessKeyId,
+        secretAccessKey: this.secretAccessKey,
+        sessionToken: this.sessionToken,
+      };
+    };
+
+    return credentials;
   }
 
   /**
@@ -672,32 +687,9 @@ export class Token {
    * @returns {Object}
    */
   toJSON() {
-    let jsonToken = {
-      credentials: this._credentials && this._extractCredentials(this._credentials),
-      rolesCredentials: {},
-    };
-
-    for (let key in this._rolesCredentials) {
-      if (this._rolesCredentials.hasOwnProperty(key)) {
-        jsonToken.rolesCredentials[key] = this._extractCredentials(this._rolesCredentials[key]);
-      }
-    }
-
-    return jsonToken;
-  }
-
-  /**
-   * @param {AWS.CognitoIdentityCredentials} credentials
-   * @returns {Object}
-   * @private
-   */
-  _extractCredentials(credentials) {
     return {
-      expired: credentials.expired,
-      expireTime: credentials.expireTime,
-      accessKeyId: credentials.accessKeyId,
-      secretAccessKey: credentials.secretAccessKey,
-      sessionToken: credentials.sessionToken,
+      credentials: this._credentials,
+      rolesCredentials: this._rolesCredentials,
     };
   }
 
