@@ -37,6 +37,7 @@ export class FrameworkEvent extends AbstractEvent {
    */
   getValidationSchema() {
     return Joi.object().keys({
+      depthLevel: Joi.number().integer().optional(),
       eventLevel: Joi.string().required().allow([AbstractEvent.FRAMEWORK_EVENT_LEVEL]),
       service: Joi.string().required().allow(AbstractEvent.SERVICES),
       resourceType: Joi.string().required().allow(AbstractEvent.RESOURCE_TYPES),
