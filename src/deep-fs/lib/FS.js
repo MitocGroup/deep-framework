@@ -1,3 +1,4 @@
+
 /**
  * Created by mgoria on 5/28/15.
  */
@@ -236,10 +237,19 @@ export class FS extends Kernel.ContainerAware {
 
   /**
    * Returns mounted system folder
-   *
+   * Leave this for backward compatibility
    * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
   get system() {
+    return this.getFolder(FS.PRIVATE);
+  }
+
+  /**
+   * Returns mounted system folder
+   *
+   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
+   */
+  get private() {
     return this.getFolder(FS.PRIVATE);
   }
 }
