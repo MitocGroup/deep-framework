@@ -236,7 +236,7 @@ export class FS extends Kernel.ContainerAware {
 
   /**
    * Returns mounted system folder
-   * Leave this for backward compatibility
+   * @deprecated
    * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
   get system() {
