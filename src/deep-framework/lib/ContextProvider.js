@@ -22,7 +22,7 @@ export class ContextProvider {
       return this[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option];
     };
 
-    [ContextProvider.MAIN_REQUEST_ID].forEach(option => {
+    [ContextProvider.MAIN_REQUEST_ID, ContextProvider.LAMBDA_DEPTH_LEVEL].forEach(option => {
       if (event.hasOwnProperty(option)) {
         this._context[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option] = event[option];
       }
@@ -50,5 +50,12 @@ export class ContextProvider {
    */
   static get MAIN_REQUEST_ID() {
     return 'mainRequestId';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get LAMBDA_DEPTH_LEVEL() {
+    return 'lambdaDepthLevel';
   }
 }
