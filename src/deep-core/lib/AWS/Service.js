@@ -32,6 +32,13 @@ export class Service {
   /**
    * @returns {String}
    */
+  static get SIMPLE_EMAIL_SERVICE() {
+    return 'ses';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get SIMPLE_STORAGE_SERVICE() {
     return 's3';
   }
@@ -213,6 +220,7 @@ export class Service {
       Service.ELASTIC_SEARCH,
       Service.CLOUD_WATCH_EVENTS,
       Service.CLOUD_WATCH,
+      Service.SIMPLE_EMAIL_SERVICE,
     ];
   }
 }
