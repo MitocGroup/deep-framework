@@ -665,6 +665,7 @@ export class Token {
   destroy() {
     this._tokenManager.deleteToken();
     this._roleResolver.invalidateCache();
+    this._cacheService.invalidate(Token.IDENTITY_PROVIDER_CACHE_KEY);
 
     if (!(this._credentials instanceof AWS.CognitoIdentityCredentials)) {
       this._credentials = this._createCognitoIdentityCredentials();
