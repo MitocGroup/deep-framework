@@ -490,7 +490,7 @@ export class Token {
    * @returns {AWS.CognitoIdentityCredentials}
    */
   get credentials() {
-    if (!this._credentials) {
+    if (!this.validCredentials(this._credentials)) {
       this._credentials = this._createCognitoIdentityCredentials();
     }
 
