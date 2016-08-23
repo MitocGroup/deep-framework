@@ -236,10 +236,19 @@ export class FS extends Kernel.ContainerAware {
 
   /**
    * Returns mounted system folder
-   *
+   * @deprecated
    * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
    */
   get system() {
+    return this.getFolder(FS.PRIVATE);
+  }
+
+  /**
+   * Returns mounted system folder
+   *
+   * @returns {fs|s3fs|S3FS|S3FsRumProxy|SimulatedS3FS|*}
+   */
+  get private() {
     return this.getFolder(FS.PRIVATE);
   }
 }

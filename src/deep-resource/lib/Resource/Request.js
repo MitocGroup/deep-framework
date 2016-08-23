@@ -526,6 +526,7 @@ export class Request {
 
     let runtimeContext = resource.contextProvider.context;
 
+    this._payload.lambdaDepthLevel = (runtimeContext.getDeepFrameworkOption('lambdaDepthLevel') || 0) + 1;
     this._payload.mainRequestId = runtimeContext.getDeepFrameworkOption('mainRequestId') ||
       runtimeContext.awsRequestId;
 

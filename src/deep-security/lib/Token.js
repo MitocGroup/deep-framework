@@ -167,7 +167,7 @@ export class Token {
           return this.tokenExpirationTime > new Date();
         };
 
-        resolve(providerObj);
+        resolve(providerObj.isTokenValid() ? providerObj : null);
       });
     });
   }
@@ -418,7 +418,8 @@ export class Token {
 
       this._cacheService.set(
         Token.IDENTITY_PROVIDER_CACHE_KEY,
-        JSON.stringify(identityProviderObj)
+        JSON.stringify(identityProviderObj),
+        parseInt((identityProviderObj.tokenExpirationTime.getTime() - Date.now()) / 1000)
       );
     }
 
@@ -489,7 +490,7 @@ export class Token {
    * @returns {AWS.CognitoIdentityCredentials}
    */
   get credentials() {
-    if (!this._credentials) {
+    if (!this.validCredentials(this._credentials)) {
       this._credentials = this._createCognitoIdentityCredentials();
     }
 
@@ -664,6 +665,7 @@ export class Token {
   destroy() {
     this._tokenManager.deleteToken();
     this._roleResolver.invalidateCache();
+    this._cacheService.invalidate(Token.IDENTITY_PROVIDER_CACHE_KEY);
 
     if (!(this._credentials instanceof AWS.CognitoIdentityCredentials)) {
       this._credentials = this._createCognitoIdentityCredentials();
