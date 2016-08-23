@@ -108,6 +108,11 @@ export class IdentityProvider {
         break;
 
       case IdentityProvider.AMAZON_PROVIDER:
+        expireTime = identityMetadata.tokenExpirationTime;
+        token = identityMetadata.access_token;
+        userId = identityMetadata.user_id;
+        break;
+
       case IdentityProvider.AUTH0_PROVIDER:
         token = identityMetadata.access_token;
         userId = identityMetadata.user_id;
