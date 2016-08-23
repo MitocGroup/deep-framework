@@ -167,7 +167,7 @@ export class Token {
           return this.tokenExpirationTime > new Date();
         };
 
-        resolve(providerObj);
+        resolve(providerObj.isTokenValid() ? providerObj : null);
       });
     });
   }
@@ -418,7 +418,8 @@ export class Token {
 
       this._cacheService.set(
         Token.IDENTITY_PROVIDER_CACHE_KEY,
-        JSON.stringify(identityProviderObj)
+        JSON.stringify(identityProviderObj),
+        parseInt((identityProviderObj.tokenExpirationTime.getTime() - Date.now()) / 1000)
       );
     }
 
