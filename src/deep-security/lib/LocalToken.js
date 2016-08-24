@@ -24,7 +24,7 @@ export class LocalToken extends Token {
 
     // fake local credentials
     this._credentials = {
-
+      expireTime: Date.now() + 86400000,
       // use provider user id or a fake userId instead of cognito identity id for local backend
       identityId: this.identityProvider ?
         this.identityProvider.userId :
