@@ -352,4 +352,38 @@ export class S3FSRelativeFSExtender {
       ? _files.map((file) => file.substr(basePath.length))
       : _files;
   }
+
+  /**
+   * @param {String} dir
+   * @returns {S3FSRelativeFSExtender}
+   */
+  addReadonlyDirectory(dir) {
+    S3FSRelativeFSExtender.READ_METHODS.forEach(method => {
+      let originalMethod = this._relativeFsObject[method];
+
+      this._relativeFsObject[method] = (...args) => {
+        let originalPath = args.shift();
+        let originalCb = args.pop();
+
+        originalMethod(originalPath, ...args, (error, data) => {
+          if (error && error.code === 'ENOENT') {
+            let absPath = path.join(dir, originalPath);
+
+            return fs[method](absPath, ...args, originalCb);
+          }
+          
+          originalCb(error, data);
+        })
+      }
+    });
+    
+    return this;
+  }
+
+  /**
+   * @returns {String[]}
+   */
+  static get READ_METHODS() {
+    return ['readFile'];
+  }
 }
