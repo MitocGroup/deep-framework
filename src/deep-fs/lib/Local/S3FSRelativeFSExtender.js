@@ -371,7 +371,7 @@ export class S3FSRelativeFSExtender {
 
             return fs[method](absPath, ...args, originalCb);
           }
-          
+
           originalCb(error, data);
         })
       }
