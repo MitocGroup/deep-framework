@@ -87,12 +87,12 @@ export class ExtendModel {
 
     return {
       findAll: function(cb) {
-        return _this.model.scan().loadAll().exec(cb);
+        return _this.model.query().loadAll().exec(cb);
       },
 
       findAllPaginated: function(startKey, limit, cb) {
         return _this.model
-          .scan()
+          .query()
           .startKey(startKey)
           .limit(limit)
           .exec(cb);
@@ -104,7 +104,7 @@ export class ExtendModel {
 
       findOneBy: function(fieldName, value, cb) {
         return _this.model
-          .scan()
+          .query()
           .where(fieldName).equals(value)
           .limit(1)
           .exec(cb);
@@ -112,7 +112,7 @@ export class ExtendModel {
 
       findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {
         return _this.model
-          .scan()
+          .query()
           .where(fieldName).equals(value)
           .limit(limit)
           .exec(cb);
@@ -120,7 +120,7 @@ export class ExtendModel {
 
       findAllBy: function(fieldName, value, cb) {
         return _this.model
-          .scan()
+          .query()
           .where(fieldName).equals(value)
           .loadAll()
           .exec(cb);
@@ -128,7 +128,7 @@ export class ExtendModel {
 
       findAllByPaginated: function(fieldName, value, startKey, limit, cb) {
         return _this.model
-          .scan()
+          .query()
           .where(fieldName).equals(value)
           .startKey(startKey)
           .limit(limit)
@@ -139,7 +139,7 @@ export class ExtendModel {
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
-          .scan()
+          .query()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -151,7 +151,7 @@ export class ExtendModel {
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
-          .scan()
+          .query()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -163,7 +163,7 @@ export class ExtendModel {
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
-          .scan()
+          .query()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -175,7 +175,7 @@ export class ExtendModel {
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
-          .scan()
+          .query()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -227,7 +227,7 @@ export class ExtendModel {
         scanParams = ExtendModel.buildScanParameters(scanParams);
 
         return _this.model
-          .scan()
+          .query()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
