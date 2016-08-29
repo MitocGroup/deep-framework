@@ -311,6 +311,32 @@ export class S3FSRelativeFSExtender {
             resolve();
           });
         });
+      },
+
+      /**
+       * @param {String} pathStr
+       * @param {String} content
+       * @param {Function} callback
+       * @returns {Promise|undefined}
+       */
+      writeFile: (pathStr, content, callback) => {
+        let absPath = path.join(this.cwd, pathStr);
+
+        if (callback) {
+          fse.outputFile(absPath, content, callback);
+          return;
+        }
+
+        return new Promise((resolve, reject) => {
+          fse.outputFile(absPath, content, error => {
+            if (error) {
+              reject(error);
+              return;
+            }
+
+            resolve();
+          });
+        });
       }
     };
 
