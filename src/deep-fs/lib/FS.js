@@ -36,6 +36,7 @@ export class FS extends Kernel.ContainerAware {
     this._buckets[FS.PRIVATE] = privateFsBucket;
     this._buckets[FS.SHARED] = sharedFsBucket;
 
+    this._sourcePath = null;
     this._registry = null;
   }
 
@@ -122,6 +123,12 @@ export class FS extends Kernel.ContainerAware {
         case FS.SHARED:
           this._buckets[folder] = `${bucketsConfig[FS.PRIVATE].name}/${folder}`;
           break;
+        case FS.PUBLIC:
+          let publicBucketObj = bucketsConfig[folder];
+
+          this._buckets[folder] = `${publicBucketObj.name}/${kernel.microservice().identifier}`;
+          this._sourcePath = publicBucketObj.sourcePath;
+          break;
         default:
           this._buckets[folder] = `${bucketsConfig[folder].name}/${kernel.microservice().identifier}`;
       }
@@ -160,7 +167,13 @@ export class FS extends Kernel.ContainerAware {
         let rootFolder = FS._getTmpDir(this._buckets[name]);
         let SimulatedS3FS = require('./Local/S3FSRelativeFSExtender').S3FSRelativeFSExtender;
 
-        this._mountedFolders[realName || name] = new SimulatedS3FS(rootFolder).relativeFsExtended;
+        let simulatedS3FS = new SimulatedS3FS(rootFolder); // relativeFsExtended
+
+        if (name === FS.PUBLIC && this._sourcePath) {
+          simulatedS3FS.addReadonlyDirectory(this._sourcePath);
+        }
+
+        this._mountedFolders[realName || name] = simulatedS3FS.relativeFsExtended;
       } else if (name === FS.SHARED) {
         let s3Fs = this._mountedFolders[name];
 

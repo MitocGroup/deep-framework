@@ -311,6 +311,32 @@ export class S3FSRelativeFSExtender {
             resolve();
           });
         });
+      },
+
+      /**
+       * @param {String} pathStr
+       * @param {String} content
+       * @param {Function} callback
+       * @returns {Promise|undefined}
+       */
+      writeFile: (pathStr, content, callback) => {
+        let absPath = path.join(this.cwd, pathStr);
+
+        if (callback) {
+          fse.outputFile(absPath, content, callback);
+          return;
+        }
+
+        return new Promise((resolve, reject) => {
+          fse.outputFile(absPath, content, error => {
+            if (error) {
+              reject(error);
+              return;
+            }
+
+            resolve();
+          });
+        });
       }
     };
 
@@ -351,5 +377,39 @@ export class S3FSRelativeFSExtender {
     return basePath
       ? _files.map((file) => file.substr(basePath.length))
       : _files;
+  }
+
+  /**
+   * @param {String} dir
+   * @returns {S3FSRelativeFSExtender}
+   */
+  addReadonlyDirectory(dir) {
+    S3FSRelativeFSExtender.READ_METHODS.forEach(method => {
+      let originalMethod = this._relativeFsObject[method];
+
+      this._relativeFsObject[method] = (...args) => {
+        let originalPath = args.shift();
+        let originalCb = args.pop();
+
+        originalMethod(originalPath, ...args, (error, data) => {
+          if (error && error.code === 'ENOENT') {
+            let absPath = path.join(dir, originalPath);
+
+            return fs[method](absPath, ...args, originalCb);
+          }
+
+          originalCb(error, data);
+        })
+      }
+    });
+    
+    return this;
+  }
+
+  /**
+   * @returns {String[]}
+   */
+  static get READ_METHODS() {
+    return ['readFile'];
   }
 }
