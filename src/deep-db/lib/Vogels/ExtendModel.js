@@ -106,7 +106,6 @@ export class ExtendModel {
         return _this.model
           .scan()
           .where(fieldName).equals(value)
-          .limit(1)
           .exec(cb);
       },
 
