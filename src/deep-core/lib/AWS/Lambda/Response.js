@@ -39,7 +39,7 @@ export class Response {
   send() {
     if (!this._runtime.context) {
       throw new MissingRuntimeContextException();
-    // @TODO: Figure out why lambda container caches _runtime.contextSent
+    // @todo: Figure out why lambda container caches _runtime.contextSent
     // } else if (this.contextSent) {
     //   throw new ContextAlreadySentException();
     }
