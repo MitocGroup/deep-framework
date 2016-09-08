@@ -6,9 +6,14 @@
 path=$(cd $(dirname $0); pwd -P)
 npm=`which npm`
 eslint=`which eslint`
+tslint=`which tslint`
 
 if [ -z ${eslint} ]; then
     ${npm} -g install eslint
+fi
+
+if [ -z ${tslint} ]; then
+    ${npm} -g install tslint
 fi
 
 if [ -f ${path}/../.git/hooks/pre-commit ]; then

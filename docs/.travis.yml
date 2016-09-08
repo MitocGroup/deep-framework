@@ -1,7 +1,71 @@
+sudo: false
+node_js:
+  - '4.3'
+  - '5.11'
+  - '6.5'
+
+cache:
+  directories:
+    - $(npm root -g)
+    - node_modules
+    - $(npm config get prefix)/bin
+
+before_install:
+  - (npm list -g babel-cli --depth=0 || npm install -g babel-cli@6.x.x)
+  - (npm list -g babel-polyfill --depth=0 || npm install -g babel-polyfill)
+  - (if [ ! -d "node_modules/babel-preset-es2015" ]; then npm install babel-preset-es2015; fi)
+  - (npm list -g deepify@$(npm show deepify version) --depth=0 || npm install -g deepify)
+  - (npm list -g browserify --depth=0 || npm install -g browserify@11.2.x)
+  - (npm list -g mocha@2.5.x --depth=0 || npm install -g mocha@2.5.x)
+  - (npm list -g istanbul@^1.0.0-alpha --depth=0 || npm install -g istanbul@^1.0.0-alpha)
+  - (npm list -g codeclimate-test-reporter --depth=0 || npm install -g codeclimate-test-reporter)
+  - (if [ ! -d "node_modules/istanbul-combine" ]; then npm install istanbul-combine@0.3.x; fi)
+  - (if [ ! -d "node_modules/fs-extra" ]; then npm install fs-extra@0.x.x; fi)
+  - (if [ ! -d "node_modules/github" ]; then npm install github; fi)
+  - (if [ ! -d "node_modules/aws-sdk" ]; then npm install aws-sdk; fi)
+  - (if [ ! -d "node_modules/s3" ]; then npm install s3; fi)
+  - npm install -g src/deep-kernel
+  - npm install -g src/deep-core
+  - npm install -g src/deep-validation
+  - npm install -g src/deep-di
+  - npm install -g src/deep-cache
+  - npm install -g src/deep-security
+  - npm install -g src/deep-log
+  - test/bin/prepare_to_test.sh
+  - cp test/package.json .
+
+after_success:
+  - npm run coverage
+
+########################################################################
+#todo - uncomment out when travis will have shared storage between jobs
+#https://github.com/travis-ci/travis-ci/issues/6054
+#env:
+#  matrix:
+#    - TEST_SUITE=deep-asset,deep-cache,deep-search
+#    - TEST_SUITE=deep-db,deep-di,deep-notification
+#    - TEST_SUITE=deep-fs,deep-kernel,deep-log,deep-core
+#    - TEST_SUITE=deep-framework
+#    - TEST_SUITE=deep-security,deep-validation,deep-event,deep-resource
+########################################################################
 env:
   global:
     # JSPM_GITHUB_AUTH_TOKEN=[secured]
     - secure: dOXusGiSaTXZsouFbZpv9lSWnUb+iYSJdf7bcjqT5ihUMMHv8X2RDpiFxsL4n/ymEmkTGeMZY3bJhNdViD8S3mN8FMzTGexa/GCqVZvIu+iITI9rYq5XTPRUAP2AOxOa0yccPVr3eJLJ1dx6WA4vsmjpwliLIyJMBwmw4c/Z6CRHX7XNNTsJ60uGrs7LvP1K53avzTO0lRdF0eboOeiAPBM/u9KRRulsOs3v6ktZ3qPqNeMswk71bMafnKrzctl0tcFBk+XowlF6cCs3uRZ0Kj46jQnfXpaNravB2T0snpwFTFnqJqf+3Dux9L7vqhox22wc1vWoaSFqiEvtZ3fKrYwrJaf2Xdsprv9m0SNSCYzRBqrHOWzE9ZDnzY+Om9H6pSnQe1VBDRXkVO7Di1nN/ev4IOnhwizB1iN0dZnMMgvakg/icRhRNKvDIIKRHnjV0l4Mfz4dOi9t3NZhLFl+eUIuti6qbKpedLObUutfVaIK28P627UjCuos1TtZRxRsB0MJEFB6yaMruiIlU1LGksCbbGmQjpi5D8yA5EOWtf1Jtesh8AYn6PNJ6amcCC8KlBo4dKaDAIbjOcYgikoE4cFbcxFj0EZpfMLADcntaOzhvzDwkrNURAEZxja7iNtitLXYIqaKrto4EYAllGH2AhK8kPKnAGyhkgNTStj9Y94=
-    # CODACY_PROJECT_TOKEN=[secured]
-    - secure: uL+FsLuZMvKjeyJ0onwII8hFWuiY3eO9TUigvpz/dDaSrrRF82NBZS5aNJp5uemRPJRnAn03yeigY8qio19ZYYpuWS71/pzsF85cAfVo/BuXAQw8hOV4ZoralHur0dxicj7u4dMPp/Q09sVEdDxZKNpCbObhEyeQWuwcZYAqWE14WDJUKK6M1Rgb+OQNvF0q42KMz4a0sHPzCQxNjFJtbbOWvpJenwgGLmOv5MvMnyDqEyQdWTJdHAsNPdpf4q7Xu+IwZHTL8QKnXBxLAay7Zz1c21o2m7Bjvzhfg1jicz8XXmcUPhMapXbwKdgC9phg4VetawIUzG4kaJf1sVyhyTd+yaGf0/lQpKPOQH8oKq6L6hJj2ge7VXfGCICvXoiNQbLZBh5yGqv//lT6HjNTHg8TYSCSjMCYdaV+6Kcs4ayT+ainmEr5PIObN24uihkl6F1GCZUNhvoJY1luZ4rGjwdEvSMCX/6F5vjg6bNQd2REWM9NdJtS9LOfpsOK93Q7WhdwnM9JNUHMBsMXihPrq1nNlZ3hdxuRDEKEehRIy16xXBgp18yXvJn5AoPGHnVH81dX1CbQg7slQ6zuDlH8nUxBWzamZvvupwu3vrjC7Qf406ylUZQn4duR+55GdyQDHk5gskrXN8Hp8brJ3W+i0DfQOiFvOz89imJozhwcg54=
-
+    # S3_BUCKET_NAME=[secured]
+    - secure: XplxUkphtxVAao4YBRJoL8TsrrtmnGey4Q4CU4pJMjbCI6eyhQdp9r1Q1Kpt3vtSRNgKtcAIb1GJQNQsNSGbkUf/NCNLvIikAcEIAL4g7RWadBYZ/BjlzMdmjMM+Gr86/PBN/M7FAoTxJkEjOuc03PguStWaKECA6mhAdlM9EFYS0+8B7tOEoErcQ0+K9X8fbgsl8fIGrZIzVAPt/U5N7F47diLfukboR5dRrC577rmF8AJlum5aVXXDSru+Y5amQ7A5l4LMzgSEWCcCrAF9nudaN/2vdxCSonA/6eoL3ygAOXQ2zp1StfC3UV+5w6bLWRpjnFdacMb+uWGbyfW2wigb+Hxratml/wuTJi38PceffOJ2jvQb8TR8fJXghAKm8i/oBerp8ADDZQZrbfnp5Gj48qQv/qWxlE27jsnXKzrwYdjRkM3B1/c94X/lyPT5NGyzGM8JgUnQWZtYLEtl4I6avqOtmevf6B5xq+X7RomCxXfCu2f/l0f74WPiJACF9WFM+c0ZGxofORMRds6df+7uYy9AF8gF3yGlonXbRYqPNKacNQSwALQarHb0IIl+XGG9R+aQzQYVqN4/vKkaCxwu9pqChmZDGgTkQl8+fHxje5n4xnLu5p1Q4ZIfRm8VF35JqiEllsej0vB74o9eRXNTa80RZCDXNe4tOYH1Hr4=
+    # AWS_DEFAULT_REGION=[secured]
+    - secure: qzOLlFf/AJsbup3cFZXmyEBomHIsXBvSWCIiNHJqT6fUZhPX6HeJzdqlA2Z+xCv+vJxAGOB1zBA1LiQTvp7UzXMdjdBFv07FlP/FkzWG9L1sd5BwX/R2Wwj7QF+0JwKsTs5StQpiwlSXISGT+qF3pmuavzzhLOdf3AxMsaFVzA6uUVWcR/xJ4VSzo+2zVm12y9oR0oNKZ99r0x/2d7D3qdcbMAvz/N4tRVjMAlr8ySDNlMTCpY0BUB0HjU8QVax57CLPvwY4HDQmhUklWgOV+rBOs6JToNGOZViBi1A0+H9EJPyKjAsU/VWIyGOEbStot9K/tB3Xu4YOP1CpMl+AMVnJ/p26Ajtyw0IaBgU6w8aAeBw57LArcyPEG40Pl4nDcB86AO5WUUcC3pwdQMoprbJYlgoR6DRFMjx17VhQH43Noq4fvKww3omKz+rOaBsRf8aq7JpyX/bqx/0irYiX/j4sbIadmD4x+e1m6c3yfO5/ywvtD0jPUh57kdUut3nVejyZP6jjLGwx+OlRAYsBkn1DhHBq4U13AaMXpp6sj7IwP2klBYpiHkGcxKr/IuP9s4/onVYu58oQccH2R2JmLseRGyPW0BvgDEUjdw1E3X8IHzCkCV2vQpQ3SnLekQFMYUUVHIU+YqoMkqx72aqmqCK40zfxiXuYWUju6ORKt6k=
+    # GITHUB_OAUTH_TOKEN=[secured]
+    - secure: bjwCfJAhfHFy5iEobEj7RxxKsVhSeKUQzikvttuT7Zg1PWFO62k4pWBHjA5aure96Pa2tI2p8s+e4LYguIiTAMDBbIdOEVT9Aw+0dVEX7LAt/n8irsrxcgWK76e282OrjW58JILWXPKedKpw1FIcLQm3E0IIORbvJbsPqn1yx2dAeiErjGidmdgwvadnYn8tmFmg6p0g8SkQaA2R+s70VyXuNgLqsxs8Pufe1aczByhsop7I3NLwP2eorx38Y56vTIZ4Mvcs+wyUjSMOx1CsQVvKxUZ2tmcrJ/Tn/kRIn8nLPvHT0fGNMfchYEEUlq/YL4pZSEagQhmmjuyAoEK2I6xsh/fucG3YCYugmhsGC0yf54gUqq6nzTMvekIC9iZKxQXI9uQu+LVvtcBnXhKYYKCtR/nYCOYlp6iSkekrm45RZSp3x3MP++6yXrVifnE1VXro4C9ajZqnQqiWuH0Tp1wJvOJE2uamZRyypjA7tLkG+ahaZtGrbB5UUykiQBFd7ozlCRfg7bfl2HVqh668lBYJd2NobnwF8kYph+VOWtLiTJrN2kukTRkFH6EUPQ4d3DGTT96JIJ3BEbYwRnngJ7Ra95S8IWwT4ZAED0Htl8iiVbLet4/lGEytJEuhUeLAzJZUmCYu9S42Fq70JZ27PTE7YUubdF3MLMNi1/o4JvE=
+    # AWS_ACCESS_KEY_ID=[secured]
+    - secure: bcXAhikZIondYLoQKCM/In21OheqgYfiSA8uEwV6+NI6/e4F0wFhdVlmo6d7ZOnwX+IYeFj3IxDsJYWj8L/x1fdMR7UZb+BvrogcBK3SPlGC1kPrfITA6vWfOiM3Hzplxs85pUyWN1TYKqtCpqXf7wfTs74OKl7Pfy9BsIXpaoVtqkJhw7KsZRxm27Jfe1XD1ef5bABVe0f9MxZWdc9EZ4VzgEAQiPIZfc8wqtlI0yF4NSYdsJ1FQJwSmOiY36r2odbbwFbIEfm1uLDzRhpPcPCsvL7TZQBHAFhnbUGOGB1J56I76Joge78c2O3H5AtqLvHUGtEP7mqeFqD793sqMJYHNmFltRZGJ1YA8bsGe+sJjXuZcDl2ZlwtwW7bnP+9qWzx4EVqB5+TUSvGSWGzWgEGyC7KVXSymYvzn4oo/C0IMbGvjW413sF6ErjtFZG9/U31nPA8HaxL5u1erAJg27dvA5OO+aRggF0GfsObNkCWcWD91Dugm1uo8cYXkvVUQrTrFalO6HyOxGR+FBzaKkQrgjTptuc09J3x0hpfGppFQSim0Rh1VNmn7EQQc/FuEAf8TzfsyAeuJHFPXU8Y7RiFON8dHvnsG0JBTYcLIkvujcdkgYYO9kOjdw+1KQYykrX7Hu1ldOKSnU8a9X/DKG1Yqv+Vyd72CX/20JriN8w=
+    # AWS_SECRET_ACCESS_KEY=[secured]
+    - secure: DbsEdY87d2F4Y376GmefEuds/0RZurcAWi2bW7Tj1Ys1w7UavrBiSMJr41i6YPHhXYFUb9iHsVjsp5hHITKjkL7EkcqF8Y6FfIBRozGfbgLtb3Lpzwwz1DblN2bEtOzcVTB4HgST9x5vfPdeXmT1y93g8GoxXElBWoXLq3s1s4tz9i5EOdbL7pexMEKJG6R0tPiqzQRmZXqtja1tXU5T3S8r77jEc3ZV2M6NKAfKE7wnjzuKLscdM2ecLlDwuBzwoDD0BHljMckoC5BxymDHYAVcxEVr3R6eNzaNQWqDGZwEtb2XI6Q+LZofEB3rTTAhrpS4Ltcmv59y0LbypcKAzMLY0U1bvlChY2CdXF0vlCGPsUX/dHcpciMRU9pisodIOBnebf0iSEuid/ziW89qt3vJbWkK2xoXqfqBIj4qkY+lRk4+iehyMHcQfQ0C1SL5tuztXrK2oS1RUHCWQbwxgf6GYMfEQRSi37oO7lJo6su5J6EERkBnm1e5JEp6DKQ6CTdyYNrAax8zd4dijzeMSiafidpKofnjgiimKaN+sOBoZsV5cuyX2xXIj6v+gZGcez7nhSky8lBFQWPUeOFAQWvQsrYMlrJF8wr7Q7+38EXFU+WmGxCnHZNb0exV15Qcp986iXMHrTAh4/DwZ95cUVPp5/QtmSztPPGA5o1ceLg=
+    # CODECLIMATE_REPO_TOKEN_DEV=[secured]
+    - secure: d1o58eFI5wCiCOhs+mqSZ7oBch/2GRhZOUSdnKZtMWmXOAX+XPqr8HyUL1O5x1jfST8JTdRyE6b7hIdPJJC12Wds/FZULcHkrmqouJeDMM40P4SmgcoQhYW0NPfnutlIY6r77+/FIqOwo0WESBn/d6dKiDHd/3p9yb/sFQN0uhMBXRK6ld4o+8ziEd1h0vsjjb2W8/mmn+y1baS7/1sJeNvad5QBHLV6ki0MhrocI51iFe/P0nAJWE47lCuOS/yeP94pQ3zdfwK+JJ9kBoTW37Ou01XlYuyhSqsLvEOBstz8mg99yPr10LDZ3UHaA9TligoAVSV712MORIK7vtKRvG+It2T030VgFLGKJQKNiOMa1j6YGitCzCuTYD31wTvKbw65CPaDv285YaM1+sDZfGEp6uSkh8GC3s4fQyJ0Mp/QRxw/BbDflAmqemBuyf5YJ1e3V379FLhrqaLnGsoe0hHTfFrCmMV+opcr90BPBhqZkqO9joGpZhEM3VocNEVxrLzgLUJoka9lBBACv1wV7x5jHuj+lkSsbCFckrhibZv+LQOE+SOhsiloVqRVAovxpiRlJIWYPn5ho9nEOPxDXHOl/I24CD27RSjFAEuYRVNA0N1d6rj0FrRrna02lqfvPt2I7sWYsOzoqsDsUrkYzVs97YSMcS4gRilh1JXqDjA=
+    # CODECLIMATE_REPO_TOKEN_MASTER=[secured]
+    - secure: l2NbwnzWbsNv6ndcjBNnpdvbZjA/tOAYzeAYxR8wmQFT9xH5nbYV35e64rwO5HD3TwXlu7a1/cbr+m8nmwL58terVOJXYkx8sEP+9/PEJwFx5+7Wmlfcl+O0HH1EUZBnseLHZl/4xvxvVUZhion29bkMKa42O0S6sf3RiuDS+PbtAYgob6OIFRLPtDKrTk3dzOQX0NdZ1WsN44e/w3ghesXf17NialtMXbgn1iBLOpQ0e+k66DarSILqiGl8uB9iVvgZ101b8wZGJeKN5ACesuADCjJ9tzUM3PQG9SbkunwLQj0sqasYyIV0lZagQIW6fnrw+sP94J4Edpa7vEf9yT+JApRlwBggR8yjxFWliaYfZk32wkj3OdaY+cWEynoTSuWczwPIk6NxjtsCYMt9IMRWafs//TKm0aTF49VqQgDig81xNmlVS6Yg8xzZev+zl5IPAoAh5lmvYM8InfkiwGYxPM6UyYrcqI6+oVNMswnPMElZd7UxClFK/9Iz4PSBkuc7WeJY8DSe6qLx/08UKEhqu3+xGhLXjBtbvIuwXEvPc/E+fuR6Gm+7l575H5QptZUXIExE9AsVtmJxSogP3QE0ChUuwGUOLvpTr3lrWwA1V5b/iLI9aYwnGkRPNFZhjXp2pn8EIevHCl3R92tuQT5+VnG//cyzP3lw64yO0o8=
+notifications:
+  slack:
+    secure: p5qRyHtn17dfyfue7ZKu1GCr2a+H3Kl8CzxAuSKOQl2eC9ojUfpEwnx12fSJevUM1Hb4bkiu3jyl+UDSKvCchtk/cDvKk/2FERH0Go9J+euLf+3I5HZkVGUI1tks7mGK07lyQmsNrMzWpHt006VkMWNLOdoVzECAIuFuxvufRbWKdXYr2LPPwYkrLxcTTSQ9kwv7EpFySH03zOv+xRPswuAQ0yez6tt1NSu7QwdHW8NCPOm4PK/dnvUT/RPMwpP8IMXG55RDkFW/kOqhh0NjJCtEYNW45vZw24fV8sZKl3BhDAQbKFA2l4ehKaz1mpw97hYIfSFxXPJWxsdkl8sUg4Sfw6BQwazK1+Vd55F6mjLzqQQgVJRpc2h2GVvpr26Mq7k3Myr8BEaYyYsFo/iPVGLPBSQDthG1qOwzG86QSb5zaLdkleLS6OY489x+Zd39tBYmMOvFIBQDf0fe5WJUM8zcnWRue6gNc/8gaiFGXwWAUcwXQlW0DHwONy0y/GfnsKA0PXjHANkzi5jhlhmxWVfy9xiL6zxG6n8kWUxgakPBVieu9VKw9nd9sgmjJAySeTH8D4+6WpPnaTojryZ8cBx6ZUsVVL5cLroQ8ZopIu2tM4rp45GLDDVnr1DuyVW9KOY/tGXEhmXu4HAJs4zoaTHuj4VZe9o7+iFPfzXCPg4=
