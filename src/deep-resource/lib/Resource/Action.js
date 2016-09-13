@@ -22,8 +22,9 @@ export class Action {
    * @param {Boolean} forceUserIdentity
    * @param {Object} apiCache
    * @param {String} scope
+   * @param {Object} api
    */
-  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope) {
+  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope, api) {
     this._resource = resource;
     this._name = name;
     this._type = type;
@@ -34,6 +35,9 @@ export class Action {
     this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;
     this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
     this._scope = scope;
+    // setup AWS_IAM as default auth type for back compatibility
+    this._apiAuthType = api && api.hasOwnProperty('authorization') ? api.authorization : 'AWS_IAM';
+    this._apiKeyRequired = api && api.hasOwnProperty('keyRequired') ? api.keyRequired : false;
 
     this._validationSchemaName = null;
   }
@@ -167,6 +171,20 @@ export class Action {
    */
   get scope() {
     return this._scope;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get apiAuthType() {
+    return this._apiAuthType;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get apiKeyRequired() {
+    return this._apiKeyRequired;
   }
 
   /**

@@ -57,6 +57,8 @@ export class Request {
 
     this._withUserCredentials = true;
     this._authScope = this._buildAuthScope();
+
+    this._apiKey = null;
   }
 
   /**
@@ -287,6 +289,16 @@ export class Request {
    */
   authScope(authScope) {
     this._authScope = authScope;
+
+    return this;
+  }
+
+  /**
+   * @param {String} key
+   * @returns {Request}
+   */
+  apiKey(key) {
+    this._apiKey = key;
 
     return this;
   }
@@ -661,6 +673,8 @@ export class Request {
    */
   _sendThroughApi(callback = () => {}) {
     let endpoint = this._action.source.api;
+
+    // @todo: check for API key required option to send this._apiKey as well
 
     this._createAws4SignedRequest(endpoint, this.method, this.payload, (error, signedRequest) => {
       if (error) {
