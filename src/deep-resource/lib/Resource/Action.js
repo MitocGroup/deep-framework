@@ -24,7 +24,9 @@ export class Action {
    * @param {String} scope
    * @param {Object} api
    */
-  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope, api) {
+  constructor(
+    resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope, api
+  ) {
     this._resource = resource;
     this._name = name;
     this._type = type;
@@ -36,8 +38,12 @@ export class Action {
     this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
     this._scope = scope;
     // setup AWS_IAM as default auth type for back compatibility
-    this._apiAuthType = api && api.hasOwnProperty('authorization') ? api.authorization : Action.API_AWS_IAM_AUTH;
-    this._apiKeyRequired = api && api.hasOwnProperty('keyRequired') ? api.keyRequired : false;
+    this._apiAuthType = api && api.hasOwnProperty('authorization') ?
+      api.authorization :
+      Action.API_AWS_IAM_AUTH;
+    this._apiKeyRequired = api && api.hasOwnProperty('keyRequired') ?
+      api.keyRequired :
+      false;
 
     this._validationSchemaName = null;
   }
