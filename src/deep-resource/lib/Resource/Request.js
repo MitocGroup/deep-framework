@@ -834,7 +834,7 @@ export class Request {
       host: apiHost,
       method: httpMethod,
       path: apiPath,
-      headers: headers,
+      headers: util._extend({}, headers), // clone headers object not to be changed by aws4.sign method
     };
 
     httpMethod = httpMethod.toLowerCase();
