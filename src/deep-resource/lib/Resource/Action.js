@@ -36,7 +36,7 @@ export class Action {
     this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
     this._scope = scope;
     // setup AWS_IAM as default auth type for back compatibility
-    this._apiAuthType = api && api.hasOwnProperty('authorization') ? api.authorization : 'AWS_IAM';
+    this._apiAuthType = api && api.hasOwnProperty('authorization') ? api.authorization : Action.API_AWS_IAM_AUTH;
     this._apiKeyRequired = api && api.hasOwnProperty('keyRequired') ? api.keyRequired : false;
 
     this._validationSchemaName = null;
@@ -220,5 +220,19 @@ export class Action {
    */
   static get DEEP_CACHE_QS_PARAM() {
     return '_deepQsHash';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get API_AWS_IAM_AUTH() {
+    return 'AWS_IAM';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get API_NONE_AUTH() {
+    return 'NONE';
   }
 }
