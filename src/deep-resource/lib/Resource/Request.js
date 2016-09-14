@@ -322,7 +322,11 @@ export class Request {
   static _stringifyResponse(response) {
     return JSON.stringify({
       _class: response.constructor.name,
-      data: response.rawData,
+      data: {
+        body: response.rawData.body,
+        status: response.rawData.status,
+        headers: response.rawData.headers
+      },
       error: response.rawError,
       headers: response.headers,
     });

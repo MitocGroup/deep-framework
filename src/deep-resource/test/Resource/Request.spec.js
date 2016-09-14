@@ -289,7 +289,7 @@ suite('Resource/Request', () => {
 
   test('Check _stringifyResponse() method', () => {
     let requestData = 'responseTest';
-    let rawData = {Payload: '{"dataKey":"testResponseValue"}', StatusCode: 201};
+    let rawData = {body: '{"dataKey":"testResponseValue"}', status: 201, headers: {}};
     let rawError = null;
 
     let response = new Response(requestData, rawData, rawError);
