@@ -763,7 +763,7 @@ suite('Resource/Request', () => {
     };
 
     try {
-      testRequest._createAws4SignedRequest(url, 'DELETE', payload, spyCallback);
+      testRequest._createAws4SignedRequest(url, 'DELETE', payload, {}, spyCallback);
     } catch (e) {
       error = e;
     }
