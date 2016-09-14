@@ -1,14 +1,12 @@
 eslintConfig:
   root: true
-
 ecmaFeatures:
   modules: true
   jsx: true
-  arrowFunctions: true,
-  blockBindings: true,
-  classes: true,
-  defaultParams: true,
-
+  arrowFunctions: true
+  blockBindings: true
+  classes: true
+  defaultParams: true
 env:
   amd: true
   browser: true
@@ -17,14 +15,12 @@ env:
   node: true
   jasmine: true
   mocha: true
-
 parserOptions:
   sourceType: module
-
-# http://eslint.org/docs/rules/
 rules:
-  # Possible Errors
-  comma-dangle: [0, never]
+  comma-dangle:
+    - 0
+    - never
   no-cond-assign: 2
   no-console: 0
   no-constant-condition: 2
@@ -40,7 +36,9 @@ rules:
   no-extra-parens: 0
   no-extra-semi: 2
   no-func-assign: 2
-  no-inner-declarations: [2, functions]
+  no-inner-declarations:
+    - 2
+    - functions
   no-invalid-regexp: 2
   no-irregular-whitespace: 2
   no-negated-in-lhs: 2
@@ -50,14 +48,17 @@ rules:
   no-unexpected-multiline: 2
   no-unreachable: 2
   use-isnan: 2
-  valid-jsdoc: [2, {requireParamDescription: false, requireReturn: false, requireReturnDescription: false}]
+  valid-jsdoc:
+    - 2
+    - requireParamDescription: false
+      requireReturn: false
+      requireReturnDescription: false
   valid-typeof: 2
-
-  # Best Practices
   accessor-pairs: 2
   block-scoped-var: 0
-  # no even warning due to codeclimate shows it as error
-  complexity: [0, 18]
+  complexity:
+    - 0
+    - 18
   consistent-return: 0
   curly: 2
   default-case: 0
@@ -67,7 +68,6 @@ rules:
   guard-for-in: 2
   no-alert: 2
   no-caller: 2
-  # no even warning due to codeclimate shows it as error
   no-case-declarations: 0
   no-div-regex: 2
   no-else-return: 0
@@ -85,7 +85,6 @@ rules:
   no-iterator: 2
   no-labels: 0
   no-lone-blocks: 2
-  # no even warning due to codeclimate shows it as error
   no-loop-func: 0
   no-magic-number: 0
   no-multi-spaces: 0
@@ -103,25 +102,22 @@ rules:
   no-self-compare: 2
   no-sequences: 0
   no-throw-literal: 0
-  # no even warning due to codeclimate shows it as error
   no-unused-expressions: 0
   no-useless-call: 2
   no-useless-concat: 2
   no-void: 2
   no-warning-comments: 0
   no-with: 2
-  # no even warning due to codeclimate shows it as error
-  radix: [0, "always"]
+  radix:
+    - 0
+    - always
   vars-on-top: 0
   wrap-iife: 2
   yoda: 0
-
-  # Strict
-  strict: [0, global]
-
-  # Variables
+  strict:
+    - 0
+    - global
   init-declarations: 0
-  # no even warning due to codeclimate shows it as error
   no-catch-shadow: 0
   no-delete-var: 2
   no-label-var: 2
@@ -130,11 +126,10 @@ rules:
   no-undef-init: 2
   no-undef: 2
   no-undefined: 2
-  no-unused-vars: [2, {args: "none"}]
+  no-unused-vars:
+    - 2
+    - args: none
   no-use-before-define: 2
-
-  # Node.js and CommonJS
-  # no even warning due to codeclimate shows it as error
   callback-return: 0
   global-require: 0
   handle-callback-err: 2
@@ -144,12 +139,12 @@ rules:
   no-process-exit: 0
   no-restricted-modules: 0
   no-sync: 0
-
-  # Stylistic Issues
   array-bracket-spacing: 0
   block-spacing: 0
   brace-style: 0
-  camelcase: [0, {properties: "never"}]
+  camelcase:
+    - 0
+    - properties: never
   comma-spacing: 0
   comma-style: 0
   computed-property-spacing: 0
@@ -159,17 +154,30 @@ rules:
   func-style: 0
   id-length: 0
   id-match: 0
-  indent: [2, 2, { SwitchCase: 1 }]
+  indent:
+    - 2
+    - 2
+    - SwitchCase: 1
   jsx-quotes: 0
   key-spacing: 0
   linebreak-style: 0
   lines-around-comment: 0
-  max-depth: [2, 7]
-  max-len: [2, 120, 2, {ignoreComments: true}]
+  max-depth:
+    - 2
+    - 7
+  max-len:
+    - 2
+    - 120
+    - 2
+    - ignoreComments: true
   max-nested-callbacks: 0
   max-params: 0
-  max-statements: [2, 50]
-  new-cap: [2, {capIsNew: false}]
+  max-statements:
+    - 2
+    - 50
+  new-cap:
+    - 2
+    - capIsNew: false
   new-parens: 0
   newline-after-var: 0
   no-array-constructor: 0
@@ -195,7 +203,10 @@ rules:
   operator-linebreak: 0
   padded-blocks: 0
   quote-props: 0
-  quotes: [2, single, {allowTemplateLiterals: true}]
+  quotes:
+    - 2
+    - single
+    - allowTemplateLiterals: true
   require-jsdoc: 2
   semi-spacing: 0
   semi: 0
@@ -210,8 +221,6 @@ rules:
   space-unary-ops: 0
   spaced-comment: 0
   wrap-regex: 0
-
-  # ECMAScript 6
   arrow-body-style: 0
   arrow-parens: 0
   arrow-spacing: 0
@@ -230,7 +239,7 @@ rules:
   prefer-spread: 0
   prefer-template: 0
   require-yield: 0
-
 globals:
   DeepFramework: true
+  Stripe: true
   angular: true

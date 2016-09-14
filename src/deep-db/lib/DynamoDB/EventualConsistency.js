@@ -161,7 +161,7 @@ export class EventualConsistency {
           if (this._localModel) {
             process.nextTick(() => {
 
-              //TODO: remove this log?
+              //todo: remove this log?
               console.log(`DynamoDB EC->${method}(`, JSON.stringify(payload), ')');
 
               this._dynamoDbDocumentClient[originalMethod](extend({}, payload), () => {});

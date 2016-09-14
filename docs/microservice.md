@@ -109,6 +109,10 @@ Resources file (`resources.json`)
                 "memory": 512, // max. amount of RAM allocated to a lambda (default 128, max. 1536) 
                 "timeout": 30, // timeout Lambda runs within, (max. 5 minutes)
                 "runtime": "nodejs" // Lambda runtime engine (default nodejs)
+            },
+            "api": { // API Gateway configuration options
+                "authorization": "AWS_IAM", // api endpoint authorization type (supported: `NONE`, `AWS_IAM`)
+                "keyRequired": false // setup the endpoint to require an api key (supported: `true`, `false`)
             }
         },
         "other-action": {
