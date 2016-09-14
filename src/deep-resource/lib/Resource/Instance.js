@@ -81,7 +81,8 @@ export class Instance {
         actionMetadata.region,
         actionMetadata.forceUserIdentity,
         actionMetadata.apiCache,
-        actionMetadata.scope
+        actionMetadata.scope,
+        actionMetadata.api
       );
 
       if (actionMetadata.validationSchema) {
