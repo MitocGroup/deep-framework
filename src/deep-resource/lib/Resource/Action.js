@@ -24,9 +24,7 @@ export class Action {
    * @param {String} scope
    * @param {Object} api
    */
-  constructor(
-    resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope, api
-  ) {
+  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope, api) {
     this._resource = resource;
     this._name = name;
     this._type = type;
