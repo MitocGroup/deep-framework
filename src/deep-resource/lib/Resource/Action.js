@@ -22,8 +22,9 @@ export class Action {
    * @param {Boolean} forceUserIdentity
    * @param {Object} apiCache
    * @param {String} scope
+   * @param {Object} api
    */
-  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope) {
+  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope, api) {
     this._resource = resource;
     this._name = name;
     this._type = type;
@@ -34,6 +35,13 @@ export class Action {
     this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;
     this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
     this._scope = scope;
+    // setup AWS_IAM as default auth type for back compatibility
+    this._apiAuthType = api && api.hasOwnProperty('authorization') ?
+      api.authorization :
+      Action.API_AWS_IAM_AUTH;
+    this._apiKeyRequired = api && api.hasOwnProperty('keyRequired') ?
+      api.keyRequired :
+      false;
 
     this._validationSchemaName = null;
   }
@@ -172,6 +180,20 @@ export class Action {
   /**
    * @returns {String}
    */
+  get apiAuthType() {
+    return this._apiAuthType;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get apiKeyRequired() {
+    return this._apiKeyRequired;
+  }
+
+  /**
+   * @returns {String}
+   */
   get fullName() {
     return `@${this._resource.microservice.identifier}:${this._resource.name}:${this._name}`;
   }
@@ -202,5 +224,19 @@ export class Action {
    */
   static get DEEP_CACHE_QS_PARAM() {
     return '_deepQsHash';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get API_AWS_IAM_AUTH() {
+    return 'AWS_IAM';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get API_NONE_AUTH() {
+    return 'NONE';
   }
 }
