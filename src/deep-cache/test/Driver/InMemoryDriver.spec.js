@@ -60,7 +60,7 @@ suite('Driver/InMemoryDriver', () => {
       chai.expect(spyCallback).to.have.been.calledWith(null);
 
       //check value from args passed to callback
-      chai.expect(spyCallback.args[0][1][0]).to.be.eql(testValue);
+      chai.expect(spyCallback.args[0][1]).to.be.eql(testValue);
     }
   );
 

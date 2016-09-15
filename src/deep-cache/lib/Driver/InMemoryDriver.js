@@ -34,12 +34,13 @@ export class InMemoryDriver extends AbstractDriver {
   /**
    * @param {String} key
    * @param {Function} callback
+   * @returns {Function}
    */
   _has(key, callback = () => {}) {
-    if (!this._storage.hasOwnProperty(key) || this._storage[key][1] === false) {
-      callback(null, false);
-
-      return;
+    if (!this._storage.hasOwnProperty(key)) {
+      return callback(null, false);
+    } else if (this._storage[key][1] === false) {
+      return callback(null, true);
     }
 
     let timedOut = this._storage[key][1] < InMemoryDriver._now;
@@ -47,20 +48,33 @@ export class InMemoryDriver extends AbstractDriver {
     if (timedOut) {
       this._invalidate(key);
 
-      callback(null, false);
-
-      return;
+      return callback(null, false);
     }
 
-    callback(null, true);
+    return callback(null, true);
   }
 
   /**
    * @param {String} key
    * @param {Function} callback
+   * @returns {Function}
    */
   _get(key, callback = () => {}) {
-    callback(null, this._storage[key]);
+    if (!this._storage.hasOwnProperty(key)) {
+      return callback(null, null);
+    } else if (this._storage[key][1] === false) {
+      return callback(null, this._storage[key][0]);
+    }
+
+    let timedOut = this._storage[key][1] < InMemoryDriver._now;
+
+    if (timedOut) {
+      this._invalidate(key);
+
+      return callback(null, null);
+    }
+
+    return callback(null, this._storage[key][0]);
   }
 
   /**

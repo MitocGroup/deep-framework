@@ -57,6 +57,8 @@ export class Request {
 
     this._withUserCredentials = true;
     this._authScope = this._buildAuthScope();
+
+    this._apiKey = null;
   }
 
   /**
@@ -292,6 +294,16 @@ export class Request {
   }
 
   /**
+   * @param {String} key
+   * @returns {Request}
+   */
+  apiKey(key) {
+    this._apiKey = key;
+
+    return this;
+  }
+
+  /**
    * @returns {String}
    * @private
    */
@@ -322,7 +334,11 @@ export class Request {
   static _stringifyResponse(response) {
     return JSON.stringify({
       _class: response.constructor.name,
-      data: response.rawData,
+      data: {
+        body: response.rawData.body,
+        status: response.rawData.status,
+        headers: response.rawData.headers
+      },
       error: response.rawError,
       headers: response.headers,
     });
@@ -660,18 +676,42 @@ export class Request {
    * @private
    */
   _sendThroughApi(callback = () => {}) {
-    let endpoint = this._action.source.api;
+    let endpoint = this.action.source.api;
+    let headers = {};
 
-    this._createAws4SignedRequest(endpoint, this.method, this.payload, (error, signedRequest) => {
-      if (error) {
-        callback(new SuperagentResponse(this, null, error));
-        return;
-      }
-
-      signedRequest.end((error, response) => {
+    let sendRequestFunc = (request) => {
+      request.end((error, response) => {
         callback(new SuperagentResponse(this, response, error));
       });
-    });
+    };
+
+    // make sure apiKey is set for endpoints that requires it
+    if (this.action.apiKeyRequired) {
+      if (!this._apiKey) {
+        callback(new SuperagentResponse(
+          this, null, new Error('Missing required api key parameter.')
+        ));
+
+        return this;
+      }
+
+      headers = {'x-api-key': this._apiKey};
+    }
+
+    if (this.action.apiAuthType === Action.API_AWS_IAM_AUTH) {
+      this._createAws4SignedRequest(endpoint, this.method, this.payload, headers, (error, signedRequest) => {
+        if (error) {
+          callback(new SuperagentResponse(this, null, error));
+          return this;
+        }
+
+        sendRequestFunc(signedRequest);
+      });
+    } else {
+      sendRequestFunc(
+        this._createBasicHttpRequest(endpoint, this.method, this.payload, headers)
+      )
+    }
 
     return this;
   }
@@ -739,13 +779,35 @@ export class Request {
   }
 
   /**
+   * @param {String} url
+   * @param {String} method
+   * @param {*} payload
+   * @param {*} headers
+   * @returns {*}
+   * @private
+   */
+  _createBasicHttpRequest(url, method = this.method, payload = this.payload, headers = {}) {
+    let request = Http[Request._httpRealMethod(method)](url, payload);
+
+    for (let headerName in headers) {
+      if (!headers.hasOwnProperty(headerName)) {
+        continue;
+      }
+
+      request.set(headerName, headers[headerName]);
+    }
+
+    return request;
+  }
+
+  /**
    * @param {Function} callback
    * @returns {Request}
    * @private
    */
   _sendExternal(callback = () => {}) {
-    Http[Request._httpRealMethod(this._method)](this._action.source.original)
-      .send(this.payload)
+    this._createBasicHttpRequest(this._action.source.original)
+      .send()
       .end((error, response) => {
         callback(new SuperagentResponse(this, response, error));
       });
@@ -757,13 +819,18 @@ export class Request {
    * @param {String} url
    * @param {String} httpMethod
    * @param {Object} payload
+   * @param {Object} headers
    * @param {Function} callback
    * @private
    */
-  _createAws4SignedRequest(url, httpMethod, payload, callback) {
+  _createAws4SignedRequest(url, httpMethod, payload, headers, callback) {
     let parsedUrl = urlParse(url, qs);
     let apiHost = parsedUrl.hostname;
     let apiPath = parsedUrl.pathname ? parsedUrl.pathname : '/';
+
+    headers = util._extend(headers, {
+      'Content-Type': 'application/json; charset=UTF-8',
+    });
 
     let opsToSign = {
       service: Core.AWS.Service.API_GATEWAY_EXECUTE,
@@ -771,9 +838,7 @@ export class Request {
       host: apiHost,
       method: httpMethod,
       path: apiPath,
-      headers: {
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
+      headers: util._extend({}, headers), // clone headers object not to be changed by aws4.sign method
     };
 
     httpMethod = httpMethod.toLowerCase();
@@ -815,12 +880,12 @@ export class Request {
       }
 
       let signature = aws4.sign(opsToSign, credentials);
+      let request = this._createBasicHttpRequest(url, httpMethod, payload, headers);
 
-      let request = Http[Request._httpRealMethod(httpMethod)](url, payload)
-        .set('Content-Type', 'application/json; charset=UTF-8')
-        .set('X-Amz-Date', signature.headers['X-Amz-Date'])
-        .set('X-Amz-Security-Token', signature.headers['X-Amz-Security-Token'])
-        .set('Authorization', signature.headers.Authorization);
+      // Adding aws4 required headers
+      ['X-Amz-Date', 'X-Amz-Security-Token', 'Authorization'].forEach(header => {
+        request.set(header, signature.headers[header]);
+      });
 
       if (this.action.resource.isBackend && signature.headers.hasOwnProperty('Content-Length')) {
         request.set('Content-Length', signature.headers['Content-Length']);

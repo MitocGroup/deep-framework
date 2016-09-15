@@ -423,7 +423,7 @@ export class Token {
       );
     }
 
-    return this._tokenManager.saveToken(this);
+    return this._tokenManager ? this._tokenManager.saveToken(this) : Promise.resolve(true);
   }
 
   /**

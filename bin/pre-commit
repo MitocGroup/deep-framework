@@ -3,9 +3,10 @@
 # Created by vcernomschi on 15/07/2016
 #
 
-STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".es6\|.js$")
+STAGED_JS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".es6\|.js$")
+STAGED_TS_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep ".ts$")
 
-if [[ "$STAGED_FILES" = "" ]]; then
+if [[ "$STAGED_JS_FILES" = "" ]] && [[ "$STAGED_TS_FILES" = "" ]]; then
   exit 0
 fi
 
@@ -13,22 +14,38 @@ PASS=true
 
 echo -e "\nValidating Javascript:\n"
 
-for FILE in $STAGED_FILES
+for JS_FILE in $STAGED_JS_FILES
 do
-  eslint "$FILE"
+  eslint "$JS_FILE"
 
   if [[ "$?" == 0 ]]; then
-    echo -e "\t\033[32mESLint Passed: $FILE\033[0m"
+    echo -e "\t\033[32mESLint Passed: $JS_FILE\033[0m"
   else
-    echo -e "\t\033[41mESLint Failed: $FILE\033[0m"
+    echo -e "\t\033[41mESLint Failed: $JS_FILE\033[0m"
     PASS=false
   fi
 done
 
 echo -e "\nJavaScript validation complete\n"
 
+echo -e "\nValidating Typescript:\n"
+
+for TS_FILE in $STAGED_TS_FILES
+do
+  eslint "$TS_FILE"
+
+  if [[ "$?" == 0 ]]; then
+    echo -e "\t\033[32mESLint Passed: $TS_FILE\033[0m"
+  else
+    echo -e "\t\033[41mESLint Failed: $TS_FILE\033[0m"
+    PASS=false
+  fi
+done
+
+echo -e "\nTypeScript validation complete\n"
+
 if ! $PASS; then
-  echo -e "\033[41mCOMMIT FAILED:\033[0m Your commit contains files that should pass ESLint but do not. Please fix the ESLint errors and try again.\n"
+  echo -e "\033[41mCOMMIT FAILED:\033[0m Your commit contains files that should pass ESLint/TSLint but do not. Please fix the ESLint/TSLint errors and try again.\n"
   exit 1
 else
   echo -e "\033[42mCOMMIT SUCCEEDED\033[0m\n"
