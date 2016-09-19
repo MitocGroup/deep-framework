@@ -32,7 +32,7 @@ echo -e "\nValidating Typescript:\n"
 
 for TS_FILE in $STAGED_TS_FILES
 do
-  eslint "$TS_FILE"
+  tslint "$TS_FILE"
 
   if [[ "$?" == 0 ]]; then
     echo -e "\t\033[32mESLint Passed: $TS_FILE\033[0m"
