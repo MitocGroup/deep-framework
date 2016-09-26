@@ -20,6 +20,18 @@ export class Resource extends Kernel.ContainerAware {
 
     this._resources = resources;
     this._actionsConfig = {};
+
+    this._baseUrl = null;
+  }
+
+  /**
+   * @param {String} url
+   * @returns {Resource}
+   */
+  baseUrl(url) {
+    this._baseUrl = url;
+
+    return this;
   }
 
   /**
@@ -73,6 +85,7 @@ export class Resource extends Kernel.ContainerAware {
     resource.validation = this.container.get('validation');
     resource.log = this.container.get('log');
     resource.contextProvider = this.kernel.contextProvider;
+    resource.baseUrl = this._baseUrl;
 
     return actionIdentifier ? resource.action(actionIdentifier) : resource;
   }

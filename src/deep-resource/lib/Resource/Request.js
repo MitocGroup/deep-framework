@@ -59,6 +59,29 @@ export class Request {
     this._authScope = this._buildAuthScope();
 
     this._apiKey = null;
+
+    this._baseUrl = null;
+  }
+
+  /**
+   * @param {String} url
+   * @returns {LocalRequest}
+   */
+  baseUrl(url) {
+    this._baseUrl = url;
+
+    return this;
+  }
+
+  /**
+   * @returns {String|null}
+   */
+  get baseUrl() {
+    if (!this._baseUrl) {
+      this._baseUrl = this._action.baseUrl;
+    }
+
+    return this._baseUrl;
   }
 
   /**

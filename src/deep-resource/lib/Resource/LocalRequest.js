@@ -11,6 +11,7 @@ import {Action} from './Action';
 import Http from 'superagent';
 import {MissingLocalLambdaExecWrapperException} from './Exception/MissingLocalLambdaExecWrapperException';
 import {MissingLambdaLocalPathException} from './Exception/MissingLambdaLocalPathException';
+import urlParse from 'url-parse';
 
 /**
  * Resource request instance
@@ -18,6 +19,24 @@ import {MissingLambdaLocalPathException} from './Exception/MissingLambdaLocalPat
 export class LocalRequest extends Request {
   constructor(...args) {
     super(...args);
+  }
+
+  /**
+   * @returns {String}
+   * @private
+   */
+  _buildEndpointUrl() {
+    let endpoint = this._async ? LocalRequest.LOCAL_LAMBDA_ASYNC_ENDPOINT :  LocalRequest.LOCAL_LAMBDA_ENDPOINT;
+
+    if (this.baseUrl) {
+      let urlParts = urlParse(this.baseUrl);
+      let protocol = urlParts.protocol || 'http:';
+      let baseUrl = `${protocol}//${urlParts.host}`;
+
+      endpoint = baseUrl + endpoint;
+    }
+
+    return endpoint;
   }
 
   /**
@@ -67,7 +86,7 @@ export class LocalRequest extends Request {
           callback(new LambdaResponse(this, error ? null : resultData, error));
         });
       } else {
-        Http.post(this._async ? LocalRequest.LOCAL_LAMBDA_ASYNC_ENDPOINT :  LocalRequest.LOCAL_LAMBDA_ENDPOINT)
+        Http.post(this._buildEndpointUrl())
           .send(data)
           .end((error, response) => {
             callback(new SuperagentResponse(this, response, error));

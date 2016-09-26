@@ -44,6 +44,21 @@ export class Action {
       false;
 
     this._validationSchemaName = null;
+    this._baseUrl = null;
+  }
+
+  /**
+   * @param {String|null} url
+   */
+  set baseUrl(url) {
+    this._baseUrl = url;
+  }
+
+  /**
+   * @returns {String|null}
+   */
+  get baseUrl() {
+    return this._baseUrl;
   }
 
   /**
