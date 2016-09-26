@@ -27,8 +27,16 @@ export class Instance {
     this._validation = null;
     this._contextProvider = null;
     this._log = null;
+    this._baseUrl = null;
 
     this._fillActions();
+  }
+
+  /**
+   * @param {String} url
+   */
+  set baseUrl(url) {
+    this._baseUrl = url;
   }
 
   /**
@@ -88,6 +96,8 @@ export class Instance {
       if (actionMetadata.validationSchema) {
         actionInstance.validationSchemaName = actionMetadata.validationSchema;
       }
+
+      actionInstance.baseUrl = this._baseUrl;
 
       this._actions[actionName] = actionInstance;
     }
@@ -229,7 +239,11 @@ export class Instance {
       throw new MissingActionException(this.name, actionName);
     }
 
-    return this.actions[actionName];
+    var action = this.actions[actionName];
+
+    action.baseUrl = this._baseUrl;
+
+    return action;
   }
 
   /**
