@@ -19,18 +19,6 @@ import urlParse from 'url-parse';
 export class LocalRequest extends Request {
   constructor(...args) {
     super(...args);
-
-    this._baseUrl = null;
-  }
-
-  /**
-   * @param {String} url
-   * @returns {LocalRequest}
-   */
-  baseUrl(url) {
-    this._baseUrl = url;
-
-    return this;
   }
 
   /**
@@ -40,8 +28,8 @@ export class LocalRequest extends Request {
   _buildEndpointUrl() {
     let endpoint = this._async ? LocalRequest.LOCAL_LAMBDA_ASYNC_ENDPOINT :  LocalRequest.LOCAL_LAMBDA_ENDPOINT;
 
-    if (this._baseUrl) {
-      let urlParts = urlParse(this._baseUrl);
+    if (this.baseUrl) {
+      let urlParts = urlParse(this.baseUrl);
       let protocol = urlParts.protocol || 'http:';
       let baseUrl = `${protocol}//${urlParts.host}`;
 
