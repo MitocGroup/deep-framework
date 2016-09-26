@@ -239,7 +239,11 @@ export class Instance {
       throw new MissingActionException(this.name, actionName);
     }
 
-    return this.actions[actionName];
+    var action = this.actions[actionName];
+
+    action.baseUrl = this._baseUrl;
+
+    return action;
   }
 
   /**
