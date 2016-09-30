@@ -24,12 +24,14 @@ export class DB extends Kernel.ContainerAware {
   /**
    * @param {Array} models
    * @param {Object} tablesNames
+   * @param {Boolean} forcePartitionField
    */
-  constructor(models = [], tablesNames = {}) {
+  constructor(models = [], tablesNames = {}, forcePartitionField = false) {
     super();
 
     this._tablesNames = tablesNames;
-    this._validation = new Validation(models);
+    this._validation = new Validation(models, forcePartitionField);
+    this._forcePartitionField = forcePartitionField;
     this._models = this._rawModelsToVogels(models);
   }
 
@@ -321,17 +323,51 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
+   * @param {String} partitionKey
+   * @returns {DB}
+   */
+  setDynamoDBPartitionKey(partitionKey) {
+    for (let modelName in this._models) {
+      if (!this._models.hasOwnProperty(modelName) || modelName === DB.PARTITION_TABLE) {
+        continue;
+      }
+      
+      let modelInstance = this._models[modelName];
+
+      modelInstance[ExtendModel.PARTITION_KEY] = partitionKey;
+    }
+
+    return this;
+  }
+
+  /**
    * @param {String} name
    * @returns {Object}
    * @private
    */
   _wrapModelSchema(name) {
-    return {
-      hashKey: 'Id',
+    let schema = {
       timestamps: true,
       tableName: this._tablesNames[name],
       schema: this._validation.getSchema(name),
     };
+
+    if (this._usePartitionField && name !== DB.PARTITION_TABLE) {
+      schema.hashKey = ExtendModel.PARTITION_FIELD;
+      schema.rangeKey = 'Id';
+    } else {
+      schema.hashKey = 'Id';
+    }
+
+    return schema;
+  }
+
+  /**
+   * @returns {Boolean}
+   * @private
+   */
+  get _usePartitionField() {
+    return this._forcePartitionField || (this.kernel && this.kernel.accountMicroservice);
   }
 
   /**
@@ -345,6 +381,21 @@ export class DB extends Kernel.ContainerAware {
       .split(/[^a-z0-9\-]+/i)
       .join('-')
       .toLowerCase();
+  }
+
+  /**
+   * @returns {*}
+   * @private
+   */
+  get _security() {
+    return this.container.get('security');
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get PARTITION_TABLE() {
+    return 'Account';
   }
 
   /**

@@ -16,6 +16,26 @@ export class ExtendModel {
    */
   constructor(model) {
     this._model = model;
+
+    this._registerQueryWrappers();
+  }
+
+  /**
+   * @returns {ExtendModel}
+   * @private
+   */
+  _registerQueryWrappers() {
+    this._model.deepQuery = function() {
+      return this.hasOwnProperty(ExtendModel.PARTITION_KEY) ?
+        this.query(this[ExtendModel.PARTITION_KEY]) :
+        this.scan();
+    };
+
+    this._model.anonymousQuery = function() {
+      return this.query(ExtendModel.ANONYMOUS_PARTITION);
+    };
+
+    return this;
   }
 
   /**
@@ -87,31 +107,33 @@ export class ExtendModel {
 
     return {
       findAll: function(cb) {
-        return _this.model.scan().loadAll().exec(cb);
+        return _this.model.deepQuery().loadAll().exec(cb);
       },
 
       findAllPaginated: function(startKey, limit, cb) {
         return _this.model
-          .scan()
+          .deepQuery()
           .startKey(startKey)
           .limit(limit)
           .exec(cb);
       },
 
       findOneById: function(id, cb) {
-        return _this.model.get(id, cb);
+        return _this.model.hasOwnProperty(ExtendModel.PARTITION_KEY) ?
+          _this.model.get(_this.model[ExtendModel.PARTITION_KEY], id, cb) :
+          _this.model.get(id, cb);
       },
 
       findOneBy: function(fieldName, value, cb) {
         return _this.model
-          .scan()
+          .deepQuery()
           .where(fieldName).equals(value)
           .exec(cb);
       },
 
       findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {
         return _this.model
-          .scan()
+          .deepQuery()
           .where(fieldName).equals(value)
           .limit(limit)
           .exec(cb);
@@ -119,7 +141,7 @@ export class ExtendModel {
 
       findAllBy: function(fieldName, value, cb) {
         return _this.model
-          .scan()
+          .deepQuery()
           .where(fieldName).equals(value)
           .loadAll()
           .exec(cb);
@@ -127,7 +149,7 @@ export class ExtendModel {
 
       findAllByPaginated: function(fieldName, value, startKey, limit, cb) {
         return _this.model
-          .scan()
+          .deepQuery()
           .where(fieldName).equals(value)
           .startKey(startKey)
           .limit(limit)
@@ -138,7 +160,7 @@ export class ExtendModel {
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
-          .scan()
+          .deepQuery()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -150,7 +172,7 @@ export class ExtendModel {
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
-          .scan()
+          .deepQuery()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -162,7 +184,7 @@ export class ExtendModel {
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
-          .scan()
+          .deepQuery()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -174,7 +196,7 @@ export class ExtendModel {
         let scanParams = ExtendModel.buildScanParameters(params);
 
         return _this.model
-          .scan()
+          .deepQuery()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -184,11 +206,37 @@ export class ExtendModel {
       },
 
       findItems: function(...args) {
+        if (_this.model.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
+          let ids = args.shift();
+          let composedIds = ids.map(id => {
+            let idObj = {};
+
+            idObj[ExtendModel.PARTITION_FIELD] = _this.model[ExtendModel.PARTITION_KEY];
+            idObj.Id = id;
+
+            return idObj;
+          });
+
+          // concat with anonymous partition search
+          composedIds = composedIds.concat(ids.map(id => {
+            let idObj = {};
+
+            idObj[ExtendModel.PARTITION_FIELD] = ExtendModel.ANONYMOUS_PARTITION;
+            idObj.Id = id;
+
+            return idObj;
+          }));
+          
+          args.unshift(composedIds);
+        }
+
         return _this.model.getItems(...args);
       },
 
       deleteById: function(id, cb) {
-        return _this.model.destroy(id, cb);
+        return _this.model[ExtendModel.PARTITION_KEY] ?
+          _this.model.destroy(_this.model[ExtendModel.PARTITION_KEY], id, cb) :
+          _this.model.destroy(id, cb);
       },
 
       deleteByIdConditional: function(id, condition, cb) {
@@ -196,6 +244,10 @@ export class ExtendModel {
       },
 
       createItem: function(data, cb) {
+        if (_this.model.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
+          data[ExtendModel.PARTITION_FIELD] = _this.model[ExtendModel.PARTITION_KEY];
+        }
+
         return _this.model.create(data, cb);
       },
 
@@ -226,7 +278,7 @@ export class ExtendModel {
         scanParams = ExtendModel.buildScanParameters(scanParams);
 
         return _this.model
-          .scan()
+          .deepQuery()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames)
@@ -237,11 +289,19 @@ export class ExtendModel {
       updateItem: function(id, data, cb) {
         data.Id = id;
 
+        if (_this.model.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
+          data[ExtendModel.PARTITION_FIELD] = _this.model[ExtendModel.PARTITION_KEY];
+        }
+
         return _this.model.update(data, cb);
       },
 
       updateItemConditional: function(id, data, condition, cb) {
         data.Id = id;
+
+        if (_this.model.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
+          data[ExtendModel.PARTITION_FIELD] = _this.model[ExtendModel.PARTITION_KEY];
+        }
 
         return _this.model.update(data, condition, cb);
       },
@@ -358,5 +418,26 @@ export class ExtendModel {
     }));
 
     return md5sum.digest('hex');
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get PARTITION_FIELD() {
+    return 'AccountId';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get PARTITION_KEY() {
+    return 'deepPartitionKey';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ANONYMOUS_PARTITION() {
+    return 'anonymous';
   }
 }
