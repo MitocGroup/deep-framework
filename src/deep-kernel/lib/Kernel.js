@@ -99,6 +99,26 @@ export class Kernel {
   }
 
   /**
+   * @todo: add advanced criteria for account microservice
+   * @returns {Microservice|null}
+   */
+  get accountMicroservice() {
+    for (let microserviceKey in this.microservices) {
+      if (!this.microservices.hasOwnProperty(microserviceKey)) {
+        continue;
+      }
+
+      let microservice = this.microservices[microserviceKey];
+
+      if (microservice.identifier === Kernel.ACCOUNT_MICROSERVICE_IDENTIFIER) {
+        return microservice;
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * @param {String|null} identifier
    * @returns {Microservice|*}
    */
@@ -595,6 +615,13 @@ export class Kernel {
    */
   static get ASYNC_CONFIG_CACHE_KEY() {
     return 'asyncConfig';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ACCOUNT_MICROSERVICE_IDENTIFIER() {
+    return 'deep-account';
   }
 
   /**
