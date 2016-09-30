@@ -21,7 +21,8 @@ export class UserProvider {
    */
   loadUserByIdentityId(id, callback) {
     if (!this._retrieveUserResource) {
-      return callback(null, null);
+      callback(null, null);
+      return;
     }
     
     let retrieveUserResource = this._deepResource.get(this._retrieveUserResource);

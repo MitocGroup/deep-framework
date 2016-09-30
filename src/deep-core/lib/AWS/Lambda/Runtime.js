@@ -326,6 +326,7 @@ export class Runtime extends Interface {
    * Retrieves logged user id from lambda context
    *
    * @private
+   * @returns {Promise}
    */
   _fillUserContext() {
     if (this._context &&
