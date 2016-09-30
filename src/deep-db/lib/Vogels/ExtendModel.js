@@ -218,14 +218,16 @@ export class ExtendModel {
           });
 
           // concat with anonymous partition search
-          composedIds = composedIds.concat(ids.map(id => {
-            let idObj = {};
+          if (_this.model[ExtendModel.PARTITION_KEY] !== ExtendModel.ANONYMOUS_PARTITION) {
+            composedIds = composedIds.concat(ids.map(id => {
+              let idObj = {};
 
-            idObj[ExtendModel.PARTITION_FIELD] = ExtendModel.ANONYMOUS_PARTITION;
-            idObj.Id = id;
+              idObj[ExtendModel.PARTITION_FIELD] = ExtendModel.ANONYMOUS_PARTITION;
+              idObj.Id = id;
 
-            return idObj;
-          }));
+              return idObj;
+            }));
+          }
           
           args.unshift(composedIds);
         }
