@@ -145,6 +145,8 @@ export class DB extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
+    this._validation.kernel = kernel;
+
     this._validation.boot(kernel, () => {
       this._tablesNames = kernel.config.tablesNames;
       this._models = this._rawModelsToVogels(kernel.config.models);

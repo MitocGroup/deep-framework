@@ -197,7 +197,7 @@ export class Token {
             return reject(error);
           }
 
-          if (!user || user.ActiveAccount) {
+          if (!user || !user.ActiveAccount) {
             return resolve(null);
           }
 
