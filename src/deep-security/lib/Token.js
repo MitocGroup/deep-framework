@@ -187,6 +187,33 @@ export class Token {
   }
 
   /**
+   * @returns {Promise}
+   */
+  loadLambdaCredentials() {
+    return new Promise(
+      (resolve, reject) => {
+        this.getUser((error, user) => {
+          if (error) {
+            return reject(error);
+          }
+
+          if (!user || !user.ActiveAccount) {
+            return resolve(null);
+          }
+
+          let credentials = this._createCognitoIdentityCredentials(user.ActiveAccount.BackendRole);
+
+          return this._refreshCredentials(credentials).then(credentials => {
+            AWS.config.credentials = credentials;
+
+            resolve(credentials);
+          });
+        });
+      }
+    );
+  }
+
+  /**
    * @param {Function} callback
    * @param {String|null} authScope
    */
@@ -428,7 +455,7 @@ export class Token {
 
   /**
    * @param {Object} role
-   * @returns {CognitoIdentityCredentials}
+   * @returns {AWS.CognitoIdentityCredentials}
    * @private
    */
   _createCognitoIdentityCredentials(role = null) {

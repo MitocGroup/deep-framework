@@ -184,7 +184,7 @@ export class Security extends Kernel.ContainerAware {
 
   /**
    * @param {Object} lambdaContext
-   * @returns {Token}
+   * @returns {Promise}
    */
   warmupBackendLogin(lambdaContext) {
     if (this.kernel.isFrontend) {
@@ -200,7 +200,9 @@ export class Security extends Kernel.ContainerAware {
     this._token.roleResolver = this.roleResolver;
     this._token.cacheService = this._cacheService;
 
-    return this._token;
+    return this.kernel.config.forceUserIdentity && this.kernel.accountMicroservice ?
+      this._token.loadLambdaCredentials() :
+      Promise.resolve(this._token);
   }
 
   /**

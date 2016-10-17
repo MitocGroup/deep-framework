@@ -117,7 +117,7 @@ export class Runtime extends Interface {
       this._resolver = new Resolver(lambdaCallback);
 
       this._resolver.registerSucceedCallback(() => {
-        let db = this._kernel.get('db');
+        let db = this.dbService;
         let vogelsDynamoDriver = db.vogelsDynamoDriver;
 
         if (vogelsDynamoDriver.config.httpOptions.agent) {
@@ -138,19 +138,21 @@ export class Runtime extends Interface {
     });
 
     new Sandbox(() => {
-      this._fillUserContext();
+      this._fillUserContext().then(() => {
+        if (!this._loggedUserId && this._forceUserIdentity) {
+          throw new MissingUserContextException();
+        }
 
-      if (!this._loggedUserId && this._forceUserIdentity) {
-        throw new MissingUserContextException();
-      }
+        this._initDBPartitionKey();
 
-      let validationSchema = this.validationSchema;
+        let validationSchema = this.validationSchema;
 
-      if (validationSchema) {
-        this._runValidate(validationSchema);
-      } else {
-        this.handle(this._request);
-      }
+        if (validationSchema) {
+          this._runValidate(validationSchema);
+        } else {
+          this.handle(this._request);
+        }
+      }).catch(e => this.createError(e).send());
     })
       .fail((error) => {
         this.createError(error).send();
@@ -276,6 +278,13 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @returns {DB}
+   */
+  get dbService() {
+    return this.kernel.get('db');
+  }
+
+  /**
    * @returns {Object}
    */
   get logService() {
@@ -292,9 +301,32 @@ export class Runtime extends Interface {
   }
 
   /**
+   * @returns {Runtime}
+   * @private
+   */
+  _initDBPartitionKey() {
+    if (!this.kernel.accountMicroservice) {
+      return this;
+    }
+
+    let db = this.dbService;
+    let user = this.securityService.token.user;
+    let partitionKey = Runtime.DB_ANONYMOUS_PARTITION;
+
+    if (user && user.ActiveAccount) {
+      partitionKey = user.ActiveAccount.Id;
+    }
+
+    db.setDynamoDBPartitionKey(partitionKey);
+
+    return this;
+  }
+
+  /**
    * Retrieves logged user id from lambda context
    *
    * @private
+   * @returns {Promise}
    */
   _fillUserContext() {
     if (this._context &&
@@ -305,15 +337,24 @@ export class Runtime extends Interface {
       let identityPoolId = this._context.identity.cognitoIdentityPoolId;
 
       if (this.securityService.identityPoolId !== identityPoolId) {
-        throw new InvalidCognitoIdentityException(identityPoolId);
+        return Promise.reject(new InvalidCognitoIdentityException(identityPoolId));
       }
 
       // inject lambda context into security service
-      // and instantiate security token without loading credentials
-      this.securityService.warmupBackendLogin(this._context);
-
-      this._loggedUserId = this._context.identity.cognitoIdentityId;
+      // and instantiate security token without loading user credentials
+      return this.securityService.warmupBackendLogin(this._context).then(() => {
+        this._loggedUserId = this._context.identity.cognitoIdentityId;
+      });
     }
+
+    return Promise.resolve(null);
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DB_ANONYMOUS_PARTITION() {
+    return 'anonymous';
   }
 
   /**

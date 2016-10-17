@@ -19,10 +19,12 @@ import Core from 'deep-core';
 export class Validation extends Kernel.ContainerAware {
   /**
    * @param {Array} models
+   * @param {Boolean} forcePartitionField
    */
-  constructor(models = []) {
+  constructor(models = [], forcePartitionField = false) {
     super();
 
+    this._forcePartitionField = forcePartitionField;
     this._schemas = this._rawModelsToSchemas(models);
   }
 
@@ -253,10 +255,31 @@ export class Validation extends Kernel.ContainerAware {
         schema.Id = schema.Id || 'timeUUID';
 
         modelsSchema[schemaName] = Validation.normalizeSchema(schema);
+
+        if (!schema.AccountId && this._usePartitionField && schemaName !== Validation.DB_PARTITION_TABLE) {
+          modelsSchema[schemaName] = modelsSchema[schemaName].keys({
+            AccountId: Joi.string().default('anonymous'),
+          });
+        }
       }
     }
 
     return modelsSchema;
+  }
+
+  /**
+   * @returns {Boolean}
+   * @private
+   */
+  get _usePartitionField() {
+    return this._forcePartitionField || (this.kernel && this.kernel.accountMicroservice);
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DB_PARTITION_TABLE() {
+    return 'Account';
   }
 
   /**
