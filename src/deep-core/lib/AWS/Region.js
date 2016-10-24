@@ -74,6 +74,13 @@ export class Region {
   /**
    * @returns {String}
    */
+  static get US_EAST_OHIO() {
+    return 'us-east-2';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get US_WEST_N_CALIFORNIA() {
     return 'us-west-1';
   }
@@ -107,6 +114,7 @@ export class Region {
       Region.EU_IRELAND,
       Region.SOUTH_AMERICA_SAO_PAULO,
       Region.US_EAST_N_VIRGINIA,
+      Region.US_EAST_OHIO,
       Region.US_WEST_N_CALIFORNIA,
       Region.US_WEST_OREGON,
     ];
