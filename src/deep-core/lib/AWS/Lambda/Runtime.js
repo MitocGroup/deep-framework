@@ -306,7 +306,7 @@ export class Runtime extends Interface {
    * @private
    */
   _initDBPartitionKey() {
-    if (!this.kernel.accountMicroservice) {
+    if (!this.kernel.accountMicroservice || !this.forceUserIdentity) {
       return this;
     }
 
