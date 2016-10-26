@@ -12,6 +12,7 @@ import {MissingUserContextException} from './Exception/MissingUserContextExcepti
 import {Context} from './Context';
 import {Sandbox} from '../../Runtime/Sandbox';
 import {Resolver} from './Resolver';
+import AWS from 'aws-sdk';
 
 /**
  * Lambda runtime context
@@ -305,7 +306,7 @@ export class Runtime extends Interface {
    * @private
    */
   _initDBPartitionKey() {
-    if (!this.kernel.accountMicroservice) {
+    if (!this.kernel.accountMicroservice || !this.forceUserIdentity) {
       return this;
     }
 
@@ -342,7 +343,12 @@ export class Runtime extends Interface {
 
       // inject lambda context into security service
       // and instantiate security token without loading user credentials
-      return this.securityService.warmupBackendLogin(this._context).then(() => {
+      return this.securityService.warmupBackendLogin(this._context).then(credentials => {
+        let dbService = this.dbService;
+
+        AWS.config.credentials = credentials;
+        dbService.overwriteCredentials(credentials);
+
         this._loggedUserId = this._context.identity.cognitoIdentityId;
       });
     }
