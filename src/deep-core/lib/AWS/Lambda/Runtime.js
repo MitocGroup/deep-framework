@@ -347,7 +347,7 @@ export class Runtime extends Interface {
         let dbService = this.dbService;
 
         AWS.config.credentials = credentials;
-        dbService.overwriteCredentials(credentials);
+        credentials && dbService.overwriteCredentials(credentials);
 
         this._loggedUserId = this._context.identity.cognitoIdentityId;
       });
