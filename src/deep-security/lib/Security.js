@@ -15,6 +15,7 @@ import {RoleResolver} from './RoleResolver';
 import {RoleProvider} from './RoleProvider';
 import util from 'util';
 import crypto from 'crypto';
+import AWS from 'aws-sdk';
 
 /**
  * Deep Security implementation
@@ -156,7 +157,7 @@ export class Security extends Kernel.ContainerAware {
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 
     this._token = TokenImplementation.create(this.identityPoolId);
-
+    
     this._token.userProvider = this.userProvider;
     this._token.roleResolver = this.roleResolver;
     this._token.cacheService = this._cacheService;
@@ -191,6 +192,9 @@ export class Security extends Kernel.ContainerAware {
       throw new Exception('Call to warmupBackendLogin method is not allowed from frontend context.');
     }
 
+    // store lambda default credentials, in order to be able to switch from an account to another
+    AWS.config.systemCredentials = AWS.config.systemCredentials || AWS.config.credentials;
+
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 
     this._token = TokenImplementation.createFromLambdaContext(this._identityPoolId, lambdaContext);
@@ -202,7 +206,7 @@ export class Security extends Kernel.ContainerAware {
 
     return this.kernel.config.forceUserIdentity && this.kernel.accountMicroservice ?
       this._token.loadLambdaCredentials() :
-      Promise.resolve(this._token);
+      Promise.resolve(AWS.config.systemCredentials);
   }
 
   /**

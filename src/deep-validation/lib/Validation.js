@@ -256,7 +256,7 @@ export class Validation extends Kernel.ContainerAware {
 
         modelsSchema[schemaName] = Validation.normalizeSchema(schema);
 
-        if (!schema.AccountId && this._usePartitionField && schemaName !== Validation.DB_PARTITION_TABLE) {
+        if (!schema.AccountId && this._usePartitionField && !this.isSystemModel(schemaName)) {
           modelsSchema[schemaName] = modelsSchema[schemaName].keys({
             AccountId: Joi.string().default('anonymous'),
           });
@@ -276,10 +276,21 @@ export class Validation extends Kernel.ContainerAware {
   }
 
   /**
-   * @returns {String}
+   * @param {String} modelName
+   * @returns {Boolean}
    */
-  static get DB_PARTITION_TABLE() {
-    return 'Account';
+  isSystemModel(modelName) {
+    return Validation.SYSTEM_MODELS.indexOf(modelName) !== -1;
+  }
+
+  /**
+   * @returns {String[]}
+   */
+  static get SYSTEM_MODELS() {
+    return [
+      'Account',
+      'User',
+    ];
   }
 
   /**

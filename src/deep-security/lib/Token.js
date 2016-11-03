@@ -54,6 +54,7 @@ export class Token {
     this._waitingForCredsCallbacksSet = {}; // @todo: rethink this functionality
 
     this._tokenManager = new TokenManager(identityPoolId);
+    this._sts = new AWS.STS();
 
     this._setupAwsCognitoConfig();
   }
@@ -192,21 +193,52 @@ export class Token {
   loadLambdaCredentials() {
     return new Promise(
       (resolve, reject) => {
-        this.getUser((error, user) => {
-          if (error) {
+        this._cacheService.get('credentialsCache', (error, credentialsCache) => {
+          if (error && error.name !== 'MissingCacheException') {
             return reject(error);
           }
 
-          if (!user || !user.ActiveAccount) {
-            return resolve(null);
-          }
+          credentialsCache = credentialsCache || {default: AWS.config.systemCredentials,};
 
-          let credentials = this._createCognitoIdentityCredentials(user.ActiveAccount.BackendRole);
+          this._sts.config.credentials = credentialsCache.default;
 
-          return this._refreshCredentials(credentials).then(credentials => {
-            AWS.config.credentials = credentials;
+          this.getUser((error, user) => {
+            if (error) {
+              return reject(error);
+            }
 
-            resolve(credentials);
+            if (!user || !user.ActiveAccount) {
+              return resolve(credentialsCache.default);
+            }
+
+            let awsRole = user.ActiveAccount.BackendRole;
+
+            if (credentialsCache.hasOwnProperty(awsRole.Arn)) {
+              return resolve(credentialsCache[awsRole.Arn]);
+            }
+
+            let stsParams = {
+              RoleArn: awsRole.Arn,
+              RoleSessionName: `backend-role-${awsRole.Name}`
+            };
+
+            this._sts.assumeRole(stsParams)
+              .promise()
+              .then(response => {
+                let credentialsObj = response.Credentials;
+
+                credentialsCache[awsRole.Arn] = new AWS.Credentials({
+                  accessKeyId: credentialsObj.AccessKeyId,
+                  secretAccessKey: credentialsObj.SecretAccessKey,
+                  sessionToken: credentialsObj.SessionToken,
+                });
+
+                // save backend credentials asynchronously
+                this._cacheService.set('credentialsCache', credentialsCache);
+
+                return resolve(credentialsCache[awsRole.Arn]);
+              })
+              .catch(reject);
           });
         });
       }
@@ -639,7 +671,9 @@ export class Token {
       return;
     }
 
-    let cognitoIdentity = new AWS.CognitoIdentity();
+    let cognitoIdentity = new AWS.CognitoIdentity({
+      credentials: AWS.config.systemCredentials,
+    });
 
     cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) => {
       if (error) {
