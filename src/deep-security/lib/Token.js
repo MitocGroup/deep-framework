@@ -384,6 +384,9 @@ export class Token {
         return this._refreshCredentials(credentials);
       })
       .then(credentials => {
+        this.credentials.params.IdentityId = this.credentials.params.IdentityId ||
+          this._tokenManager.identityId;
+
         // amazon-cognito-js sets credentials to `undefined` while saving them (tokenManager.identityId returns null)
         setTimeout(() => {
           this._saveCredentials(credentials, role);
