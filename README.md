@@ -107,14 +107,14 @@ Looking for web applications that use (or are similar to) deep-framework?
 
 - Hello World: https://hello.deep.mg | https://github.com/MitocGroup/deep-microservices-helloworld
 - Todo App: https://todo.deep.mg | https://github.com/MitocGroup/deep-microservices-todo-app
-- Enterprise Software Marketplace: https://www.deep.mg
+- AdTechMedia: https://www.adtechmedia.io | https://github.com/AdTechMedia/adtechmedia-website
 
 
 ## Sponsors
 
 This repository is being sponsored by:
 - [Mitoc Group](https://www.mitocgroup.com)
-- [DEEP Marketplace](https://www.deep.mg)
+- [AdTechMedia](https://www.adtechmedia.io)
 
 This code can be used under MIT license:
 > See [LICENSE](https://github.com/MitocGroup/deep-framework/blob/master/LICENSE) for more details.
