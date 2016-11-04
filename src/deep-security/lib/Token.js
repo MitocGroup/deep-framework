@@ -384,6 +384,7 @@ export class Token {
         return this._refreshCredentials(credentials);
       })
       .then(credentials => {
+        this.credentials.params = this.credentials.params || {};
         this.credentials.params.IdentityId = this.credentials.params.IdentityId ||
           this._tokenManager.identityId;
 
