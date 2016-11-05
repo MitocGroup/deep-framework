@@ -94,7 +94,7 @@ Having questions related to deep-framework?
 
 - Ask questions: https://stackoverflow.com/questions/tagged/deep-framework
 - Chat with us: https://gitter.im/MitocGroup/deep-framework
-- Send an email: feedback@deep.mg
+- Send an email: feedback@mitocgroup.com
 
 Interested in contributing to deep-framework?
 
