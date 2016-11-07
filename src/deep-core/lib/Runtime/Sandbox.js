@@ -5,6 +5,7 @@
 'use strict';
 
 import domain from 'domain';
+import process from 'process';
 
 export class Sandbox {
   /**
@@ -39,6 +40,8 @@ export class Sandbox {
     };
 
     execDomain.once('error', failCb);
+    // domain "unhandledRejection" are throw in global scope
+    process.on('unhandledRejection', failCb);
 
     try {
       execDomain.run(this._func, ...args);
