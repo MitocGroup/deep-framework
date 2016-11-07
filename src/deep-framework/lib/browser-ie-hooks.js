@@ -1,7 +1,9 @@
 'use strict';
 
-if (Function.prototype.name === undefined) {
-  if (Object.defineProperty === undefined) {
+/* eslint no-extend-native:0 */
+
+if (!Function.prototype.name) {
+  if (!Object.defineProperty) {
     console.error('Cannot define "Function.prototype.name" getter');
   } else {
     Object.defineProperty(Function.prototype, 'name', {
