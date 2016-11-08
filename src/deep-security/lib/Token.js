@@ -628,7 +628,7 @@ export class Token {
     };
 
     if (this.lambdaContext) {
-      this._describeIdentity(this.identityId, () => {
+      this._describeIdentity(this.identityId).then(() => {
         this._loadUser(argsHandler);
       });
     } else {
@@ -666,28 +666,28 @@ export class Token {
 
   /**
    * @param {String} identityId
-   * @param {Function} callback
+   * @returns {Promise}
    * @private
    */
-  _describeIdentity(identityId, callback) {
+  _describeIdentity(identityId) {
     if (this._identityMetadata) {
-      callback(this._identityMetadata);
-      return;
+      return Promise.resolve(this._identityMetadata);
     }
 
     let cognitoIdentity = new AWS.CognitoIdentity({
       credentials: AWS.config.systemCredentials,
     });
 
-    cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) => {
-      if (error) {
+    return cognitoIdentity.describeIdentity({IdentityId: identityId})
+      .promise()
+      .then(data => {
+        this._identityMetadata = data;
+        
+        return data;
+      })
+      .catch(error => {
         throw new DescribeIdentityException(identityId, error);
-      }
-
-      this._identityMetadata = data;
-
-      callback(this._identityMetadata);
-    });
+      });
   }
 
   /**

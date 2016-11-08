@@ -81,7 +81,11 @@ export class SuperagentResponse extends Response {
             try {
               errorObj = JSON.parse(errorObj);
             } catch(e) {
-              console.log('Unable to parse error: ', e);
+              errorObj = {
+                errorMessage: errorObj,
+                errorStack: (new Error('Internal error occurred.')).stack,
+                errorType: 'InternalError',
+              };
             }
           } else {
             errorObj = errorObj || {
