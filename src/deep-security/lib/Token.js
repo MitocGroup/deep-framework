@@ -280,12 +280,12 @@ export class Token {
 
       let waitingCallbacks = this._waitingForCredsCallbacksSet[scopeKey] || [];
 
+      this._waitingForCredsCallbacksSet[scopeKey] = [];
+      this._loadingInProgressSet[scopeKey] = false;
+
       waitingCallbacks.forEach((cb) => {
         cb(error, credentials);
       });
-
-      this._waitingForCredsCallbacksSet[scopeKey] = [];
-      this._loadingInProgressSet[scopeKey] = false;
     };
 
     this
@@ -384,6 +384,10 @@ export class Token {
         return this._refreshCredentials(credentials);
       })
       .then(credentials => {
+        this.credentials.params = this.credentials.params || {};
+        this.credentials.params.IdentityId = this.credentials.params.IdentityId ||
+          this._tokenManager.identityId;
+
         // amazon-cognito-js sets credentials to `undefined` while saving them (tokenManager.identityId returns null)
         setTimeout(() => {
           this._saveCredentials(credentials, role);
@@ -482,7 +486,9 @@ export class Token {
       );
     }
 
-    return this._tokenManager ? this._tokenManager.saveToken(this) : Promise.resolve(true);
+    return this._tokenManager && this.validCredentials(this._credentials)
+      ? this._tokenManager.saveToken(this)
+      : Promise.resolve(true);
   }
 
   /**
@@ -624,7 +630,7 @@ export class Token {
     };
 
     if (this.lambdaContext) {
-      this._describeIdentity(this.identityId, () => {
+      this._describeIdentity(this.identityId).then(() => {
         this._loadUser(argsHandler);
       });
     } else {
@@ -662,28 +668,28 @@ export class Token {
 
   /**
    * @param {String} identityId
-   * @param {Function} callback
+   * @returns {Promise}
    * @private
    */
-  _describeIdentity(identityId, callback) {
+  _describeIdentity(identityId) {
     if (this._identityMetadata) {
-      callback(this._identityMetadata);
-      return;
+      return Promise.resolve(this._identityMetadata);
     }
 
     let cognitoIdentity = new AWS.CognitoIdentity({
       credentials: AWS.config.systemCredentials,
     });
 
-    cognitoIdentity.describeIdentity({IdentityId: identityId}, (error, data) => {
-      if (error) {
+    return cognitoIdentity.describeIdentity({IdentityId: identityId})
+      .promise()
+      .then(data => {
+        this._identityMetadata = data;
+        
+        return data;
+      })
+      .catch(error => {
         throw new DescribeIdentityException(identityId, error);
-      }
-
-      this._identityMetadata = data;
-
-      callback(this._identityMetadata);
-    });
+      });
   }
 
   /**
@@ -724,6 +730,16 @@ export class Token {
    * Removes identity credentials related cached stuff
    */
   destroy() {
+    for (let scopeKey in this._loadingInProgressSet) {
+      if (this._loadingInProgressSet.hasOwnProperty(scopeKey) && this._loadingInProgressSet[scopeKey]) {
+        this.loadCredentials(() => {
+          this.destroy();
+        }, scopeKey);
+
+        return;
+      }
+    }
+
     this._tokenManager.deleteToken();
     this._roleResolver.invalidateCache();
     this._cacheService.invalidate(Token.IDENTITY_PROVIDER_CACHE_KEY);

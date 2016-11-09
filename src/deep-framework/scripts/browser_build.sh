@@ -86,7 +86,7 @@ echo '/** Built on '$(date) > ${__FW}
 "${npm}" ls --long=false --global=false --depth=0 --production=true | sed 's/ \/.*//' | grep deep- >> ${__FW}
 echo '*/' >> ${__FW}
 
-AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -d ${browserify_require} lib.compiled/browser-framework.js > ${__FW}.es6;
+AWS_SERVICES="$DEEP_AWS_SERVICES" ${browserify} -i process -d ${browserify_require} lib.compiled/browser-framework.js > ${__FW}.es6;
 deepify compile es6 ${__FW}.es6 --source --es5 | uglifyjs | sed -e 's/^"use strict";//' >> ${__FW}
 rm -f ${__FW}.es6
 

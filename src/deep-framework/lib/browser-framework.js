@@ -12,5 +12,9 @@ if (typeof window !== 'undefined') {
     '0.0.0.0', '::1',
   ].indexOf(window.location.hostname) !== -1;
 
+  if (/MSIE|Trident/.test(window.navigator.userAgent)) {
+    require('./browser-ie-hooks'); 
+  }
+
   window.DeepFramework = window.DeepFramework || require('./browser-bootstrap');
 }
