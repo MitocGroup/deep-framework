@@ -280,12 +280,12 @@ export class Token {
 
       let waitingCallbacks = this._waitingForCredsCallbacksSet[scopeKey] || [];
 
+      this._waitingForCredsCallbacksSet[scopeKey] = [];
+      this._loadingInProgressSet[scopeKey] = false;
+
       waitingCallbacks.forEach((cb) => {
         cb(error, credentials);
       });
-
-      this._waitingForCredsCallbacksSet[scopeKey] = [];
-      this._loadingInProgressSet[scopeKey] = false;
     };
 
     this
@@ -486,7 +486,9 @@ export class Token {
       );
     }
 
-    return this._tokenManager ? this._tokenManager.saveToken(this) : Promise.resolve(true);
+    return this._tokenManager && this.validCredentials(this._credentials)
+      ? this._tokenManager.saveToken(this)
+      : Promise.resolve(true);
   }
 
   /**
@@ -728,6 +730,16 @@ export class Token {
    * Removes identity credentials related cached stuff
    */
   destroy() {
+    for (let scopeKey in this._loadingInProgressSet) {
+      if (this._loadingInProgressSet.hasOwnProperty(scopeKey) && this._loadingInProgressSet[scopeKey]) {
+        this.loadCredentials(() => {
+          this.destroy();
+        }, scopeKey);
+
+        return;
+      }
+    }
+
     this._tokenManager.deleteToken();
     this._roleResolver.invalidateCache();
     this._cacheService.invalidate(Token.IDENTITY_PROVIDER_CACHE_KEY);
