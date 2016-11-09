@@ -31,6 +31,7 @@ export class Sandbox {
 
     let failCb = (error) => {
       try {
+        process.removeListener('unhandledRejection', failCb);
         execDomain.exit();
       } catch (e) {/* silent fail */}
 
