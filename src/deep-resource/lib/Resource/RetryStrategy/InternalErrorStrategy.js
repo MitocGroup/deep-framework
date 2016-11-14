@@ -15,7 +15,7 @@ export class InternalErrorStrategy extends AbstractStrategy {
   /**
    * @returns {Boolean}
    */
-  onResult() {
+  onSuccess() {
     return false;
   }
 

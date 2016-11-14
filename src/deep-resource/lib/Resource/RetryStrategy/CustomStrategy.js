@@ -22,15 +22,15 @@ export class CustomStrategy extends AbstractStrategy {
    * @param {Response} response
    * @returns {*}
    */
-  onError(response) {
-    return this._onErrorCb(response)
+  onSuccess(response) {
+    return this._onSuccessCb(response);
   }
 
   /**
    * @param {Response} response
    * @returns {*}
    */
-  onSuccess(response) {
-    return this._onSuccessCb(response);
+  onError(response) {
+    return this._onErrorCb(response)
   }
 }
