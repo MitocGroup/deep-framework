@@ -9,6 +9,7 @@ import {LambdaResponse} from './LambdaResponse';
 import {Response} from './Response';
 import {Exception} from '../Exception/Exception';
 import {Action} from './Action';
+import {RetryManager} from './RetryManager';
 import Http from 'superagent';
 import AWS from 'aws-sdk';
 import {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';
@@ -61,6 +62,8 @@ export class Request {
     this._apiKey = null;
 
     this._baseUrl = null;
+
+    this._retryManager = new RetryManager(['internal-error']);
   }
 
   /**
@@ -276,6 +279,25 @@ export class Request {
   }
 
   /**
+   * @param {Number} count
+   * @returns {Request}
+   */
+  retry(count) {
+    this._retryManager.count = count;
+    return this;
+  }
+
+  /**
+   * @param {Function|String} strategy
+   * @param {Object[]} args 
+   * @returns {Request}
+   */
+  addRetryStrategy(strategy, ...args) {
+    this._retryManager.addStrategy(strategy, ...args);
+    return this;
+  }
+
+  /**
    * @returns {Number}
    */
   get cacheTtl() {
@@ -456,7 +478,7 @@ export class Request {
     if (!this.isCached || this._async || (this.cacheTtl === Request.TTL_INVALIDATE)) {
       return this._send(callback);
     }
-    
+
     this._loadResponseFromCache(cache, cacheKey, (error, response) => {
       if (!error) {
         callback(response);
@@ -501,6 +523,10 @@ export class Request {
     };
 
     let decoratedCallback = (response) => {
+      if (this._retryManager.isRetryable(response)) {
+        return this._send();
+      }
+
       if (this.method.toUpperCase() === 'GET') {
         this._saveResponseToCache(response);
       }
