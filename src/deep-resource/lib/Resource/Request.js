@@ -61,6 +61,7 @@ export class Request {
     this._apiKey = null;
 
     this._baseUrl = null;
+    this._retryCount = 0;
   }
 
   /**
@@ -276,6 +277,14 @@ export class Request {
   }
 
   /**
+   * @param {Number} count
+   */
+  retry(count) {
+    this._retryCount = count;
+    return this;
+  }
+
+  /**
    * @returns {Number}
    */
   get cacheTtl() {
@@ -456,7 +465,7 @@ export class Request {
     if (!this.isCached || this._async || (this.cacheTtl === Request.TTL_INVALIDATE)) {
       return this._send(callback);
     }
-    
+
     this._loadResponseFromCache(cache, cacheKey, (error, response) => {
       if (!error) {
         callback(response);
@@ -501,6 +510,10 @@ export class Request {
     };
 
     let decoratedCallback = (response) => {
+      if (response.isError && --this._retryCount > 0) {
+        return this._send();
+      }
+
       if (this.method.toUpperCase() === 'GET') {
         this._saveResponseToCache(response);
       }
