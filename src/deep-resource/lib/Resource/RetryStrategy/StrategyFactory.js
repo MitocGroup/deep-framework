@@ -5,23 +5,25 @@
 'use strict';
 
 import {CustomStrategy} from './CustomStrategy';
+import Core from 'deep-core';
 
 export class StrategyFactory {
   /**
    * @param {String|Function} strategy
+   * @param {Object[]} args
    * @returns {AbstractStrategy}
    */
-  static create(strategy = 'internal-error') {
+  static create(strategy = 'internal-error', ...args) {
     if (typeof strategy === 'string') {
       const strategyFullName = `${StrategyFactory._pascalCase(strategy)}Strategy`;
-      const StrategyInstance = require(`./${strategyFullName}`)[strategyFullName];
+      const StrategyProto = require(`./${strategyFullName}`)[strategyFullName];
 
-      return new StrategyInstance();
+      return new StrategyProto(...args);
     } else if (typeof strategy === 'function') {
-      return new CustomStrategy(strategy);
+      return new CustomStrategy(strategy, ...args);
     }
 
-    throw new Error('Strategy must be a "string" or a "function"');
+    throw new Core.Exception.InvalidArgumentException(strategy, 'string|function');
   }
 
   /**

@@ -26,6 +26,7 @@ import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import {SourceNotAvailableException} from './Exception/SourceNotAvailableException';
 import crypto from 'crypto';
 import util from 'util';
+import {ComplexStrategy} from './RetryStrategy/ComplexStrategy';
 
 /**
  * Action request instance
@@ -63,8 +64,16 @@ export class Request {
 
     this._baseUrl = null;
 
-    this._retryCount = 0;
-    this._retryStrategy = RetryStrategyFactory.create();
+    this._retryStrategy = new ComplexStrategy();
+
+    this._fillRetryStrategies();
+  }
+
+  /**
+   * @private
+   */
+  _fillRetryStrategies() {
+    this.addRetryStrategy('internal-error');
   }
 
   /**
@@ -283,7 +292,7 @@ export class Request {
    * @param {Number} count
    */
   retry(count) {
-    this._retryCount = count;
+    this._retryStrategy.count = count;
     return this;
   }
 
@@ -291,8 +300,8 @@ export class Request {
    * @param {Function|String} strategy
    * @returns {Request}
    */
-  retryStrategy(strategy) {
-    this._retryStrategy = RetryStrategyFactory.create(strategy);
+  addRetryStrategy(strategy) {
+    this._retryStrategy.addStrategy(strategy);
     return this;
   }
 
@@ -522,7 +531,7 @@ export class Request {
     };
 
     let decoratedCallback = (response) => {
-      if (this._retryStrategy.decide(response) && --this._retryCount > 0) {
+      if (this._retryStrategy.decide(response)) {
         return this._send();
       }
 
