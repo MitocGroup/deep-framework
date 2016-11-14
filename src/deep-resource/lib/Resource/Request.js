@@ -9,6 +9,7 @@ import {LambdaResponse} from './LambdaResponse';
 import {Response} from './Response';
 import {Exception} from '../Exception/Exception';
 import {Action} from './Action';
+import {StrategyFactory as RetryStrategyFactory} from './RetryStrategy/StrategyFactory';
 import Http from 'superagent';
 import AWS from 'aws-sdk';
 import {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';
@@ -63,7 +64,7 @@ export class Request {
     this._baseUrl = null;
 
     this._retryCount = 0;
-    this._retryStrategy = Request.INTERNAL_ERROR_STRATEGY;
+    this._retryStrategy = RetryStrategyFactory.create();
   }
 
   /**
@@ -287,11 +288,11 @@ export class Request {
   }
 
   /**
-   * @param {Function} strategyCb
+   * @param {Function|String} strategy
    * @returns {Request}
    */
-  retryStrategy(strategyCb) {
-    this._retryStrategy = strategyCb;
+  retryStrategy(strategy) {
+    this._retryStrategy = RetryStrategyFactory.create(strategy);
     return this;
   }
 
@@ -521,7 +522,7 @@ export class Request {
     };
 
     let decoratedCallback = (response) => {
-      if (response.isError &&  this._retryStrategy(response) && --this._retryCount > 0) {
+      if (this._retryStrategy.decide(response) && --this._retryCount > 0) {
         return this._send();
       }
 
@@ -1051,13 +1052,5 @@ export class Request {
    */
   static get TTL_FOREVER() {
     return 0;
-  }
-
-  /**
-   * @param {SuperagentResponse} response
-   * @returns {Boolean}
-   */
-  static INTERNAL_ERROR_STRATEGY(response) {
-    return response.statusCode >= 500;
   }
 }
