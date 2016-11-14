@@ -9,7 +9,7 @@ import {LambdaResponse} from './LambdaResponse';
 import {Response} from './Response';
 import {Exception} from '../Exception/Exception';
 import {Action} from './Action';
-import {StrategyFactory as RetryStrategyFactory} from './RetryStrategy/StrategyFactory';
+import {RetryManager} from './RetryManager';
 import Http from 'superagent';
 import AWS from 'aws-sdk';
 import {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';
@@ -26,7 +26,6 @@ import {LoadCredentialsException} from './Exception/LoadCredentialsException';
 import {SourceNotAvailableException} from './Exception/SourceNotAvailableException';
 import crypto from 'crypto';
 import util from 'util';
-import {ComplexStrategy} from './RetryStrategy/ComplexStrategy';
 
 /**
  * Action request instance
@@ -64,16 +63,7 @@ export class Request {
 
     this._baseUrl = null;
 
-    this._retryStrategy = new ComplexStrategy();
-
-    this._fillRetryStrategies();
-  }
-
-  /**
-   * @private
-   */
-  _fillRetryStrategies() {
-    this.addRetryStrategy('internal-error');
+    this._retryManager = new RetryManager(['internal-error']);
   }
 
   /**
@@ -292,7 +282,7 @@ export class Request {
    * @param {Number} count
    */
   retry(count) {
-    this._retryStrategy.count = count;
+    this._retryManager.count = count;
     return this;
   }
 
@@ -301,7 +291,7 @@ export class Request {
    * @returns {Request}
    */
   addRetryStrategy(strategy) {
-    this._retryStrategy.addStrategy(strategy);
+    this._retryManager.addStrategy(strategy);
     return this;
   }
 
@@ -531,7 +521,7 @@ export class Request {
     };
 
     let decoratedCallback = (response) => {
-      if (this._retryStrategy.decide(response)) {
+      if (this._retryManager.decide(response)) {
         return this._send();
       }
 

@@ -9,8 +9,6 @@ import Core from 'deep-core';
 export class AbstractStrategy extends Core.OOP.Interface {
   constructor() {
     super(['onSuccess', 'onError']);
-
-    this._count = 0;
   }
 
   /**
@@ -18,20 +16,6 @@ export class AbstractStrategy extends Core.OOP.Interface {
    * @returns {Boolean}
    */
   decide(response) {
-    return this[response.isError ? 'onError' : 'onSuccess'](response) && --this._count > 0;
-  }
-
-  /**
-   * @param {Number} count
-   */
-  set count(count) {
-    this._count = count;
-  }
-
-  /**
-   * @returns {Number}
-   */
-  get count() {
-    return this._count;
+    return this[response.isError ? 'onError' : 'onSuccess'](response);
   }
 }
