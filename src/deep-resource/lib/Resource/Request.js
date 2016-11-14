@@ -280,6 +280,7 @@ export class Request {
 
   /**
    * @param {Number} count
+   * @returns {Request}
    */
   retry(count) {
     this._retryManager.count = count;
@@ -521,7 +522,7 @@ export class Request {
     };
 
     let decoratedCallback = (response) => {
-      if (this._retryManager.decide(response)) {
+      if (this._retryManager.isRetryable(response)) {
         return this._send();
       }
 

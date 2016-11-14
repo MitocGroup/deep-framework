@@ -6,6 +6,7 @@
 
 import {CustomStrategy} from './CustomStrategy';
 import Core from 'deep-core';
+import './InternalErrorStrategy'; // browserify fix
 
 export class StrategyFactory {
   /**
