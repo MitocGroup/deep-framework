@@ -17,10 +17,11 @@ export class RetryManager {
 
   /**
    * @param {String|Function} strategy
+   * @param {Object[]} args
    * @returns {RetryManager}
    */
-  addStrategy(strategy) {
-    this._strategies.push(RetryStrategyFactory.create(strategy));
+  addStrategy(strategy, ...args) {
+    this._strategies.push(RetryStrategyFactory.create(strategy, ...args));
     return this;
   }
 

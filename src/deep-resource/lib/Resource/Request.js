@@ -289,10 +289,11 @@ export class Request {
 
   /**
    * @param {Function|String} strategy
+   * @param {Object[]} args 
    * @returns {Request}
    */
-  addRetryStrategy(strategy) {
-    this._retryManager.addStrategy(strategy);
+  addRetryStrategy(strategy, ...args) {
+    this._retryManager.addStrategy(strategy, ...args);
     return this;
   }
 
