@@ -61,7 +61,9 @@ export class Request {
     this._apiKey = null;
 
     this._baseUrl = null;
+
     this._retryCount = 0;
+    this._retryStrategy = Request.INTERNAL_ERROR_STRATEGY;
   }
 
   /**
@@ -281,6 +283,15 @@ export class Request {
    */
   retry(count) {
     this._retryCount = count;
+    return this;
+  }
+
+  /**
+   * @param {Function} strategyCb
+   * @returns {Request}
+   */
+  retryStrategy(strategyCb) {
+    this._retryStrategy = strategyCb;
     return this;
   }
 
@@ -510,7 +521,7 @@ export class Request {
     };
 
     let decoratedCallback = (response) => {
-      if (response.isError && --this._retryCount > 0) {
+      if (response.isError &&  this._retryStrategy(response) && --this._retryCount > 0) {
         return this._send();
       }
 
@@ -1040,5 +1051,13 @@ export class Request {
    */
   static get TTL_FOREVER() {
     return 0;
+  }
+
+  /**
+   * @param {SuperagentResponse} response
+   * @returns {Boolean}
+   */
+  static INTERNAL_ERROR_STRATEGY(response) {
+    return response.statusCode >= 500;
   }
 }
