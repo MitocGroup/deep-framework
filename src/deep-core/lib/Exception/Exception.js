@@ -20,7 +20,7 @@ function Extendable(errorClass) {
   }
 
   ExtendableClass.prototype = Object.create(errorClass.prototype);
-  Object.setPrototypeOf(ExtendableClass, errorClass);
+  Object.setPrototypeOf ? Object.setPrototypeOf(ExtendableClass, errorClass) : ExtendableClass.__proto__ = errorClass;
 
   return ExtendableClass;
 }
