@@ -4,6 +4,8 @@
 
 'use strict';
 
+/* eslint no-proto:0 */
+
 /**
  * Fixes babel@6 issue: https://phabricator.babeljs.io/T3083
  * @param {*} errorClass
@@ -20,7 +22,7 @@ function Extendable(errorClass) {
   }
 
   ExtendableClass.prototype = Object.create(errorClass.prototype);
-  Object.setPrototypeOf(ExtendableClass, errorClass);
+  Object.setPrototypeOf ? Object.setPrototypeOf(ExtendableClass, errorClass) : ExtendableClass.__proto__ = errorClass;
 
   return ExtendableClass;
 }
