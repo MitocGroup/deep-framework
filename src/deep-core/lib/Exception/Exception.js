@@ -4,6 +4,8 @@
 
 'use strict';
 
+/* eslint no-proto:0 */
+
 /**
  * Fixes babel@6 issue: https://phabricator.babeljs.io/T3083
  * @param {*} errorClass
