@@ -26,6 +26,7 @@ export class AutoScaleDynamoDB {
    */
   _initMaxSettings() {
     let maxSettings = {};
+    let minSettings = {};
     let tablesNames = this._kernel.config.tablesNames;
     let modelsSettings = this._kernel.config.modelsSettings
       .reduce((obj, model) => Object.assign(obj, model), {});
@@ -35,8 +36,14 @@ export class AutoScaleDynamoDB {
         continue;
       }
 
+
       let modelSettings = modelsSettings[modelName];
       let tableName = tablesNames[modelName];
+
+      minSettings[tableName] = {
+        read: modelSettings.readCapacity,
+        write: modelSettings.writeCapacity,
+      };
 
       maxSettings[tableName] = {
         read: modelSettings.maxReadCapacity,
@@ -44,7 +51,7 @@ export class AutoScaleDynamoDB {
       };
     }
 
-    this._modelSettings = modelsSettings;
+    this._minSettings = minSettings;
     this._maxSettings = maxSettings;
   }
 
@@ -208,7 +215,7 @@ export class AutoScaleDynamoDB {
     let maxIops = this._maxSettings[table][type] || AutoScaleDynamoDB.MAX_THROUGHPUT;
 
     return Math.max(
-      this._modelSettings[table][`${type}Capacity`],
+      this._minSettings[table][type],
       Math.min(
         Math.ceil(iops * AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT),
         maxIops,
