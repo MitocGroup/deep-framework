@@ -18,13 +18,13 @@ export class AutoScaleDynamoDB {
     this._kernel = deepKernel;
 
     this._increasedFor = {};
-    this._initMaxSettings();
+    this._initModelSettings();
   }
 
   /**
    * @private
    */
-  _initMaxSettings() {
+  _initModelSettings() {
     let maxSettings = {};
     let minSettings = {};
     let tablesNames = this._kernel.config.tablesNames;
@@ -35,7 +35,6 @@ export class AutoScaleDynamoDB {
       if (!tablesNames.hasOwnProperty(modelName)) {
         continue;
       }
-
 
       let modelSettings = modelsSettings[modelName];
       let tableName = tablesNames[modelName];
