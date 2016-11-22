@@ -217,7 +217,7 @@ export class AutoScaleDynamoDB {
       this._minSettings[table][type],
       Math.min(
         Math.ceil(iops * AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT),
-        maxIops,
+        maxIops
       )
     );
   }
