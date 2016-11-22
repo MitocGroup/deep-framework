@@ -44,6 +44,7 @@ export class AutoScaleDynamoDB {
       };
     }
 
+    this._modelSettings = modelsSettings;
     this._maxSettings = maxSettings;
   }
 
@@ -206,9 +207,12 @@ export class AutoScaleDynamoDB {
   increaseThroughput(iops, type, table) {
     let maxIops = this._maxSettings[table][type] || AutoScaleDynamoDB.MAX_THROUGHPUT;
 
-    return Math.min(
-      Math.ceil(iops * AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT),
-      maxIops
+    return Math.max(
+      this._modelSettings[table][`${type}Capacity`],
+      Math.min(
+        Math.ceil(iops * AutoScaleDynamoDB.PROVISION_INCREASE_COEFFICIENT),
+        maxIops,
+      )
     );
   }
 
