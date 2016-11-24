@@ -245,7 +245,9 @@ export class TokenManager {
         }
 
         return tokenObj;
-      } catch(e) {}
+      } catch(e) {
+        return null;
+      }
     }
 
     return null;

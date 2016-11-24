@@ -246,6 +246,7 @@ export class Token {
   /**
    * @param {Function} callback
    * @param {String|null} authScope
+   * @returns {Promise}
    */
   loadCredentials(callback = () => {}, authScope = null) {
     let scopeKey = authScope ? authScope.toString() : 'default';
@@ -519,6 +520,7 @@ export class Token {
 
   /**
    * Removes identity credentials related cached stuff
+   * @returns {Promise}
    */
   destroy() {
     return Promise.all(
