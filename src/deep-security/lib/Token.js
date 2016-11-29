@@ -274,7 +274,10 @@ export class Token {
 
       delete this._credsPromises[scopeKey];
 
-      callback(error, credentials);
+      // run callback async, to avoid catching sync errors
+      setTimeout(() => {
+        callback(error, credentials);
+      }, 0);
     };
 
     if (!this._credsPromises.hasOwnProperty(scopeKey)) {
@@ -305,9 +308,6 @@ export class Token {
         })
         .then(credentials => {
           if (!this.lambdaContext) {
-            credentials.params = credentials.params || {};
-            credentials.params.IdentityId = credentials.params.IdentityId || this._tokenManager.identityId;
-
             return this._saveToken().then(() => credentials).catch(() => Promise.resolve(credentials));
           }
 

@@ -96,9 +96,7 @@ export class CredentialsManager {
         this.systemCredentials = credentials;
       }
 
-      return this._refreshCredentials(credentials).then(() => {
-        return credentials;
-      });
+      return this._refreshCredentials(credentials);
     }
 
     return Promise.resolve(credentials);
