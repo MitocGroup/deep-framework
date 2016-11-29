@@ -31,7 +31,6 @@ export class Sandbox {
 
     let failCb = (error) => {
       try {
-        process.removeListener('unhandledRejection', failCb);
         execDomain.exit();
       } catch (e) {/* silent fail */}
 
@@ -41,7 +40,11 @@ export class Sandbox {
     };
 
     execDomain.once('error', failCb);
-    // domain "unhandledRejection" are throw in global scope
+
+    // lambda predefined listeners forces "Process exited ..." error
+    process.removeAllListeners('uncaughtException');
+    process.removeAllListeners('unhandledRejection');
+    process.on('uncaughtException', failCb);
     process.on('unhandledRejection', failCb);
 
     try {
