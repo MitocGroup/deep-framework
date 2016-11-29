@@ -186,6 +186,10 @@ export class DB extends Kernel.ContainerAware {
     Vogels.AWS.config.maxRetries = 3;
 
     this._setVogelsDriver(new Vogels.AWS.DynamoDB({
+      maxRetries: 8,
+      retryDelayOptions: {
+        base: 100,
+      },
       httpOptions: {
         agent: new https.Agent({
           rejectUnauthorized: true,
