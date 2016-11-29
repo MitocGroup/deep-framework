@@ -263,6 +263,7 @@ export class Token {
     let proxyCallback = (error, credentials) => {
       if (error instanceof IdentityProviderTokenExpiredException && typeof this._tokenExpiredCallback === 'function') {
         this._tokenExpiredCallback(this.identityProvider);
+        this._identityProvider = null;
       }
 
       // log event only after credentials are loaded to get identityId
