@@ -34,6 +34,8 @@ export class TokenManager {
   constructor(identityPoolId, cognitoSyncClient = null) {
     this._identityPoolId = identityPoolId;
     this._cognitoSyncClient = cognitoSyncClient;
+    this._lastSyncedEntry = null;
+    this._syncInProgress = false;
   }
 
   /**
@@ -59,6 +61,15 @@ export class TokenManager {
             return reject(error);
           }
 
+          let encodedToken = this._encodeToken(token);
+
+          if (this._lastSyncedEntry === encodedToken || this._syncInProgress) {
+            return resolve();
+          }
+
+          this._syncInProgress = true;
+          this._lastSyncedEntry = encodedToken;
+
           dataset.put(TokenManager.RECORD_NAME, this._encodeToken(token), (error/*, record*/) => {
             if (error) {
               return reject(new PutCognitoRecordException(
@@ -67,6 +78,8 @@ export class TokenManager {
             }
 
             this._synchronizeDataset(dataset, (error, savedRecords) => {
+              this._syncInProgress = false;
+              
               if (error) {
                 return reject(new SynchronizeCognitoDatasetException(dataset, error));
               }
@@ -216,17 +229,25 @@ export class TokenManager {
    */
   _decodeToken(rawToken) {
     if (rawToken && typeof rawToken === 'string') {
-      let tokenObj = JSON.parse(rawToken);
+      try {
+        let tokenObj = JSON.parse(rawToken);
 
-      tokenObj.credentials = this._decodeCredentials(tokenObj.credentials);
+        tokenObj.credentials = this._decodeCredentials(tokenObj.credentials);
+        tokenObj.credentials.params = {
+          IdentityId: tokenObj.identityId,
+          IdentityPoolId: this._identityPoolId,
+        };
 
-      for (let key in tokenObj.rolesCredentials) {
-        if (tokenObj.rolesCredentials.hasOwnProperty(key)) {
-          tokenObj.rolesCredentials[key] = this._decodeCredentials(tokenObj.rolesCredentials[key]);
+        for (let key in tokenObj.rolesCredentials) {
+          if (tokenObj.rolesCredentials.hasOwnProperty(key)) {
+            tokenObj.rolesCredentials[key] = this._decodeCredentials(tokenObj.rolesCredentials[key]);
+          }
         }
-      }
 
-      return tokenObj;
+        return tokenObj;
+      } catch(e) {
+        return null;
+      }
     }
 
     return null;

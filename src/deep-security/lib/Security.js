@@ -157,7 +157,7 @@ export class Security extends Kernel.ContainerAware {
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 
     this._token = TokenImplementation.create(this.identityPoolId);
-    
+
     this._token.userProvider = this.userProvider;
     this._token.roleResolver = this.roleResolver;
     this._token.cacheService = this._cacheService;
@@ -212,7 +212,7 @@ export class Security extends Kernel.ContainerAware {
   /**
    * Destroys user session
    *
-   * @returns {Security}
+   * @returns {Promise}
    */
   logout() {
     this._logRumEvent({
@@ -220,12 +220,13 @@ export class Security extends Kernel.ContainerAware {
     });
 
     if (this._token) {
-      this._token.destroy();
+      return this._token.destroy().then(() => {
+        this._token = null;
+        return this;
+      });
     }
 
-    this._token = null;
-
-    return this;
+    return Promise.resolve(this);
   }
 
   /**
