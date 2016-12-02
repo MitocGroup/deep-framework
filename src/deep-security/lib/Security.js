@@ -192,8 +192,10 @@ export class Security extends Kernel.ContainerAware {
       throw new Exception('Call to warmupBackendLogin method is not allowed from frontend context.');
     }
 
-    // store lambda default credentials, in order to be able to switch from an account to another
-    AWS.config.systemCredentials = AWS.config.systemCredentials || AWS.config.credentials;
+    if (AWS.config.credentials instanceof AWS.EnvironmentCredentials) {
+      // store lambda default credentials, in order to be able to switch from an account to another
+      AWS.config.systemCredentials = AWS.config.credentials;
+    }
 
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 
@@ -221,6 +223,7 @@ export class Security extends Kernel.ContainerAware {
 
     if (this._token) {
       return this._token.destroy().then(() => {
+        this._roleProvider.invalidateCache();
         this._token = null;
         return this;
       });

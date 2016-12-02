@@ -12,15 +12,6 @@ export class RoleResolver {
    */
   constructor(roleProvider) {
     this._roleProvider = roleProvider;
-    this._voters = null;
-  }
-
-  /**
-   * @returns {RoleResolver}
-   */
-  invalidateCache() {
-    this._voters = null;
-    return this;
   }
 
   /**
@@ -45,16 +36,8 @@ export class RoleResolver {
    * @returns {Promise}
    */
   getContextVoters() {
-    if (this._voters !== null) {
-      return Promise.resolve(this._voters);
-    }
-
     return this._roleProvider
       .getRoles()
-      .then(roles => {
-        this._voters = roles.map(r => new RoleVoter(r));
-
-        return this._voters;
-      });
+      .then(roles => roles.map(r => new RoleVoter(r)));
   }
 }

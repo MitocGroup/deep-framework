@@ -211,7 +211,9 @@ export class Token {
 
             let awsRole = user.ActiveAccount.BackendRole;
 
-            if (credentialsCache.hasOwnProperty(awsRole.Arn)) {
+            if (credentialsCache.hasOwnProperty(awsRole.Arn) &&
+              this._credentialsManager.validCredentials(credentialsCache[awsRole.Arn])) {
+
               return resolve(credentialsCache[awsRole.Arn]);
             }
 
@@ -225,11 +227,15 @@ export class Token {
               .then(response => {
                 let credentialsObj = response.Credentials;
 
-                credentialsCache[awsRole.Arn] = new AWS.Credentials({
+                let credentials = new AWS.Credentials({
                   accessKeyId: credentialsObj.AccessKeyId,
                   secretAccessKey: credentialsObj.SecretAccessKey,
                   sessionToken: credentialsObj.SessionToken,
                 });
+
+                credentials.expireTime = credentialsObj.Expiration;
+
+                credentialsCache[awsRole.Arn] = credentials;
 
                 // save backend credentials asynchronously
                 this._cacheService.set('credentialsCache', credentialsCache);
@@ -435,7 +441,7 @@ export class Token {
     if (this.lambdaContext) {
       this._describeIdentity(this.identityId).then(() => {
         this._loadUser(argsHandler);
-      });
+      }).catch(argsHandler);
     } else {
       this._loadUser(argsHandler);
     }
@@ -529,7 +535,6 @@ export class Token {
     ).catch(e => Promise.resolve(null)).then(() => { // clear cache, even on credentials load error
       this._credentialsManager.clearCache();
       this._tokenManager.deleteToken();
-      this._roleResolver.invalidateCache();
       this._cacheService.invalidate(Token.IDENTITY_PROVIDER_CACHE_KEY);
       this._credsPromises = {};
       this._identityProvider = null;
