@@ -311,7 +311,7 @@ export class Runtime extends Interface {
     }
 
     let db = this.dbService;
-    let user = this.securityService.token.user;
+    let user = this.securityService.token && this.securityService.token.user;
     let partitionKey = Runtime.DB_ANONYMOUS_PARTITION;
 
     if (user && user.ActiveAccount) {

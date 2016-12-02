@@ -12,6 +12,7 @@ export class RoleProvider {
   constructor(deepResourceService, retrieveRoleResource = null) {
     this._retrieveRoleResource = retrieveRoleResource;
     this._deepResource = deepResourceService;
+    this._getRolesPromise = null;
   }
 
   /**
@@ -22,17 +23,28 @@ export class RoleProvider {
       return Promise.resolve([]);
     }
 
-    let retrieveRolesRequest = this._deepResource.get(this._retrieveRoleResource);
+    if (!this._getRolesPromise) {
+      this._getRolesPromise = new Promise((resolve, reject) => {
+        let retrieveRolesRequest = this._deepResource.get(this._retrieveRoleResource);
+        // authScope(null) forces deep-resource to use cognito default credentials
+        retrieveRolesRequest.request({}).authScope(null).send(response => {
+          if (response.error) {
+            return reject(response.error);
+          }
 
-    return new Promise((resolve, reject) => {
-      // authScope(null) forces deep-resource to use cognito default credentials
-      retrieveRolesRequest.request({}).authScope(null).send(response => {
-        if (response.error) {
-          return reject(response.error);
-        }
-
-        resolve(response.data);
+          resolve(response.data);
+        });
       });
-    });
+    }
+
+    return this._getRolesPromise;
+  }
+
+  /**
+   * @returns {RoleProvider}
+   */
+  invalidateCache() {
+    this._getRolesPromise = null;
+    return this;
   }
 }
