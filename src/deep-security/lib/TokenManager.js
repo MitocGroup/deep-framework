@@ -97,7 +97,10 @@ export class TokenManager {
    * @returns {Promise}
    */
   loadBackendToken(identityId) {
-    let cognitosync = new AWS.CognitoSync();
+    let cognitosync = new AWS.CognitoSync({
+      credentials: AWS.config.systemCredentials,
+    });
+
     let params = {
       DatasetName: TokenManager.DATASET_NAME,
       IdentityId: identityId,
