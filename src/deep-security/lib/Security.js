@@ -5,6 +5,7 @@
 'use strict';
 
 import Kernel from 'deep-kernel';
+import Core from 'deep-core';
 import {Exception} from './Exception/Exception';
 import {Token} from './Token';
 import {LocalToken} from './LocalToken';
@@ -194,7 +195,7 @@ export class Security extends Kernel.ContainerAware {
 
     if (AWS.config.credentials instanceof AWS.EnvironmentCredentials) {
       // store lambda default credentials, in order to be able to switch from an account to another
-      AWS.config.systemCredentials = AWS.config.credentials;
+      Core.AWS.ENV_CREDENTIALS = AWS.config.credentials;
     }
 
     let TokenImplementation = this._localBackend ? LocalToken : Token;
@@ -208,7 +209,7 @@ export class Security extends Kernel.ContainerAware {
 
     return this.kernel.config.forceUserIdentity && this.kernel.accountMicroservice ?
       this._token.loadLambdaCredentials() :
-      Promise.resolve(AWS.config.systemCredentials);
+      Promise.resolve(Core.AWS.ENV_CREDENTIALS);
   }
 
   /**

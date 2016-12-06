@@ -7,6 +7,7 @@
 'use strict';
 
 import AWS from 'aws-sdk';
+import Core from 'deep-core';
 import CognitoSyncManager from 'amazon-cognito-js';
 import {CreateCognitoDatasetException} from './Exception/CreateCognitoDatasetException';
 import {PutCognitoRecordException} from './Exception/PutCognitoRecordException';
@@ -97,7 +98,10 @@ export class TokenManager {
    * @returns {Promise}
    */
   loadBackendToken(identityId) {
-    let cognitosync = new AWS.CognitoSync();
+    let cognitosync = new AWS.CognitoSync({
+      credentials: Core.AWS.ENV_CREDENTIALS,
+    });
+
     let params = {
       DatasetName: TokenManager.DATASET_NAME,
       IdentityId: identityId,

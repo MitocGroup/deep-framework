@@ -5,6 +5,7 @@
 'use strict';
 
 import AWS from 'aws-sdk';
+import Core from 'deep-core';
 import util from 'util';
 import {IdentityProviderTokenExpiredException} from './Exception/IdentityProviderTokenExpiredException';
 import {DescribeIdentityException} from './Exception/DescribeIdentityException';
@@ -196,7 +197,7 @@ export class Token {
             return reject(error);
           }
 
-          credentialsCache = credentialsCache || {default: AWS.config.systemCredentials,};
+          credentialsCache = credentialsCache || {default: Core.AWS.ENV_CREDENTIALS,};
 
           this._sts.config.credentials = credentialsCache.default;
 
@@ -486,7 +487,7 @@ export class Token {
     }
 
     let cognitoIdentity = new AWS.CognitoIdentity({
-      credentials: AWS.config.systemCredentials,
+      credentials: Core.AWS.ENV_CREDENTIALS,
     });
 
     return cognitoIdentity.describeIdentity({IdentityId: identityId})
