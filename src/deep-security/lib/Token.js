@@ -90,6 +90,13 @@ export class Token {
   }
 
   /**
+   * @returns {String}
+   */
+  get identityPoolId() {
+    return this._identityPoolId;
+  }
+
+  /**
    * @param {IdentityProvider} provider
    */
   set identityProvider(provider) {
