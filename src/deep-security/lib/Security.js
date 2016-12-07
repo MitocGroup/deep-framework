@@ -5,6 +5,7 @@
 'use strict';
 
 import Kernel from 'deep-kernel';
+import Core from 'deep-core';
 import {Exception} from './Exception/Exception';
 import {Token} from './Token';
 import {LocalToken} from './LocalToken';
@@ -192,8 +193,10 @@ export class Security extends Kernel.ContainerAware {
       throw new Exception('Call to warmupBackendLogin method is not allowed from frontend context.');
     }
 
-    // store lambda default credentials, in order to be able to switch from an account to another
-    AWS.config.systemCredentials = AWS.config.systemCredentials || AWS.config.credentials;
+    if (AWS.config.credentials instanceof AWS.EnvironmentCredentials) {
+      // store lambda default credentials, in order to be able to switch from an account to another
+      Core.AWS.ENV_CREDENTIALS = AWS.config.credentials;
+    }
 
     let TokenImplementation = this._localBackend ? LocalToken : Token;
 
@@ -206,7 +209,7 @@ export class Security extends Kernel.ContainerAware {
 
     return this.kernel.config.forceUserIdentity && this.kernel.accountMicroservice ?
       this._token.loadLambdaCredentials() :
-      Promise.resolve(AWS.config.systemCredentials);
+      Promise.resolve(Core.AWS.ENV_CREDENTIALS);
   }
 
   /**
@@ -221,6 +224,7 @@ export class Security extends Kernel.ContainerAware {
 
     if (this._token) {
       return this._token.destroy().then(() => {
+        this._roleProvider.invalidateCache();
         this._token = null;
         return this;
       });
