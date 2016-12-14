@@ -177,6 +177,19 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
+   * @inheritDoc
+   */
+  cleanup() {
+    let vogelsDynamoDriver = this.vogelsDynamoDriver;
+
+    if (vogelsDynamoDriver.config.httpOptions.agent) {
+      vogelsDynamoDriver.config.httpOptions.agent.destroy();
+    }
+
+    this._fixNodeHttpsIssue();
+  }
+
+  /**
    * NetworkingError: write EPROTO
    *
    * @see https://github.com/aws/aws-sdk-js/issues/862
@@ -256,7 +269,9 @@ export class DB extends Kernel.ContainerAware {
    */
   overwriteCredentials(credentials) {
     let dynamoDriver = Vogels.dynamoDriver();
+    let docClient = Vogels.documentClient();
 
+    docClient.service.config.credentials = credentials;
     dynamoDriver.config.credentials = credentials;
 
     return this;

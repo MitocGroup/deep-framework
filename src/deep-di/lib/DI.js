@@ -103,4 +103,8 @@ export class DI {
   get localBackend() {
     return this._localBackend;
   }
+  
+  cleanup() {
+    
+  }
 }
