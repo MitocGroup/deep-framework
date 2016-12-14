@@ -100,6 +100,17 @@ export class Security extends Kernel.ContainerAware {
   }
 
   /**
+   * @inheritDoc
+   */
+  cleanup() {
+    this.roleProvider.invalidateCache();
+
+    if (this._token) {
+      this._token.user = null;
+    }
+  }
+
+  /**
    * @returns {null|Token}
    */
   get token() {
