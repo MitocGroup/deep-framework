@@ -291,9 +291,7 @@ export class Kernel {
     for (let serviceName of serviceNames) {
       let serviceInstance = this.get(serviceName.toLowerCase());
 
-      this._resolver.registerSucceedCallback(
-        serviceInstance.cleanup.bind(serviceInstance)
-      );
+      serviceInstance.cleanup();
     }
 
     return this;
