@@ -283,6 +283,23 @@ export class Kernel {
   }
 
   /**
+   * @returns {Kernel}
+   */
+  kernelCleanup() {
+    let serviceNames = Object.keys(this.services);
+
+    for (let serviceName of serviceNames) {
+      let serviceInstance = this.get(serviceName.toLowerCase());
+
+      this._resolver.registerSucceedCallback(
+        serviceInstance.cleanup.bind(serviceInstance)
+      );
+    }
+
+    return this;
+  }
+
+  /**
    * Loads all Kernel dependencies
    *
    * @param {Object} config

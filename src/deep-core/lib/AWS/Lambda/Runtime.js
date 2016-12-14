@@ -117,15 +117,9 @@ export class Runtime extends Interface {
     if (lambdaCallback) {
       this._resolver = new Resolver(lambdaCallback);
 
-      let serviceNames = Object.keys(this.kernel.services);
-
-      for (let serviceName of serviceNames) {
-        let serviceInstance = this.kernel.get(serviceName.toLowerCase());
-
-        this._resolver.registerSucceedCallback(
-          serviceInstance.cleanup.bind(serviceInstance)
-        );
-      }
+      this._resolver.registerSucceedCallback(
+        this.kernel.kernelCleanup.bind(this.kernel)
+      );
     }
 
     this._context.waitForEmptyEventLoop();
