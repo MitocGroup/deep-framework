@@ -60,6 +60,13 @@ export class ContainerAware extends MicroserviceInjectable {
   }
 
   /**
+   * Cleanup a certain service
+   */
+  cleanup() {
+    // @todo: override in child service
+  }
+
+  /**
    * @param {Object|String} microservice
    * @returns {Injectable}
    */
