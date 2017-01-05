@@ -25,10 +25,17 @@ export class ExtendModel {
    * @private
    */
   _registerQueryWrappers() {
-    this._model.deepQuery = function() {
-      return this.hasOwnProperty(ExtendModel.PARTITION_KEY) ?
-        this.query(this[ExtendModel.PARTITION_KEY]) :
-        this.scan();
+    this._model.deepQuery = function(requestStrategy = ExtendModel.QUERY_STRATEGY) {
+      if (this.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
+        switch (requestStrategy) {
+          case ExtendModel.SCAN_STRATEGY:
+            return this.scan().where(ExtendModel.PARTITION_FIELD).equals(this[ExtendModel.PARTITION_KEY]);
+          case ExtendModel.QUERY_STRATEGY:
+            return this.query(this[ExtendModel.PARTITION_KEY]);
+        }
+      } else {
+        return this.scan();
+      }
     };
 
     this._model.anonymousQuery = function() {
@@ -126,14 +133,14 @@ export class ExtendModel {
 
       findOneBy: function(fieldName, value, cb) {
         return _this.model
-          .deepQuery()
+          .deepQuery(ExtendModel.SCAN_STRATEGY)
           .where(fieldName).equals(value)
           .exec(cb);
       },
 
       findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {
         return _this.model
-          .deepQuery()
+          .deepQuery(ExtendModel.SCAN_STRATEGY)
           .where(fieldName).equals(value)
           .limit(limit)
           .exec(cb);
@@ -441,5 +448,19 @@ export class ExtendModel {
    */
   static get ANONYMOUS_PARTITION() {
     return 'anonymous';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SCAN_STRATEGY() {
+    return 'scan';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get QUERY_STRATEGY() {
+    return 'query';
   }
 }
