@@ -30,10 +30,8 @@ export class ExtendModel {
         switch (requestStrategy) {
           case ExtendModel.SCAN_STRATEGY:
             return this.scan().where(ExtendModel.PARTITION_FIELD).equals(this[ExtendModel.PARTITION_KEY]);
-            break;
           case ExtendModel.QUERY_STRATEGY:
             return this.query(this[ExtendModel.PARTITION_KEY]);
-            break;
         }
       } else {
         return this.scan();
