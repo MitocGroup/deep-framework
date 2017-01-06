@@ -59,7 +59,7 @@ export class RoleVoter extends VoterInterface {
     return statements
       .filter(s => s.Effect === VoterInterface.DENY)
       .reduce((voters, statement) => {
-        return voters.concat(BaseVoter.createFromAction(statement));
+        return voters.concat(statement.Action.map(BaseVoter.createFromAction));
       }, []);
   }
 
