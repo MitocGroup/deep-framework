@@ -25,13 +25,42 @@ export class ExtendModel {
    * @private
    */
   _registerQueryWrappers() {
+    this._model.setPartition = function(partion) {
+      this[ExtendModel.PARTITION_KEY] = partion;
+    };
+
+    this._model.getPartition = function() {
+      if (this.hasOwnProperty(ExtendModel.ONE_TIME_PARTITION_KEY)) {
+        let partition = this[ExtendModel.ONE_TIME_PARTITION_KEY];
+
+        delete this[ExtendModel.ONE_TIME_PARTITION_KEY];
+
+        return partition;
+      } else if (this.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
+        return this[ExtendModel.PARTITION_KEY];
+      }
+
+      return null;
+    };
+
+    this._model.hasPartition = function() {
+      return this.hasOwnProperty(ExtendModel.ONE_TIME_PARTITION_KEY) ||
+          this.hasOwnProperty(ExtendModel.PARTITION_KEY);
+    };
+
+    this._model.useAnonymous = function() {
+      this[ExtendModel.ONE_TIME_PARTITION_KEY] = ExtendModel.ANONYMOUS_PARTITION;
+
+      return this;
+    };
+
     this._model.deepQuery = function(requestStrategy = ExtendModel.QUERY_STRATEGY) {
-      if (this.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
+      if (this.hasPartition()) {
         switch (requestStrategy) {
           case ExtendModel.SCAN_STRATEGY:
-            return this.scan().where(ExtendModel.PARTITION_FIELD).equals(this[ExtendModel.PARTITION_KEY]);
+            return this.scan().where(ExtendModel.PARTITION_FIELD).equals(this.getPartition());
           case ExtendModel.QUERY_STRATEGY:
-            return this.query(this[ExtendModel.PARTITION_KEY]);
+            return this.query(this.getPartition());
         }
       } else {
         return this.scan();
@@ -113,6 +142,8 @@ export class ExtendModel {
     let _this = this;
 
     return {
+
+
       findAll: function(cb) {
         return _this.model.deepQuery().loadAll().exec(cb);
       },
@@ -126,8 +157,8 @@ export class ExtendModel {
       },
 
       findOneById: function(id, cb) {
-        return _this.model.hasOwnProperty(ExtendModel.PARTITION_KEY) ?
-          _this.model.get(_this.model[ExtendModel.PARTITION_KEY], id, cb) :
+        return _this.model.hasPartition() ?
+          _this.model.get(this.getPartition(), id, cb) :
           _this.model.get(id, cb);
       },
 
@@ -213,19 +244,20 @@ export class ExtendModel {
       },
 
       findItems: function(...args) {
-        if (_this.model.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
+        if (_this.model.hasPartition()) {
+          let partition = _this.model.getPartition();
           let ids = args.shift();
           let composedIds = ids.map(id => {
             let idObj = {};
 
-            idObj[ExtendModel.PARTITION_FIELD] = _this.model[ExtendModel.PARTITION_KEY];
+            idObj[ExtendModel.PARTITION_FIELD] = partition;
             idObj.Id = id;
 
             return idObj;
           });
 
           // concat with anonymous partition search
-          if (_this.model[ExtendModel.PARTITION_KEY] !== ExtendModel.ANONYMOUS_PARTITION) {
+          if (partition !== ExtendModel.ANONYMOUS_PARTITION) {
             composedIds = composedIds.concat(ids.map(id => {
               let idObj = {};
 
@@ -243,8 +275,8 @@ export class ExtendModel {
       },
 
       deleteById: function(id, cb) {
-        return _this.model[ExtendModel.PARTITION_KEY] ?
-          _this.model.destroy(_this.model[ExtendModel.PARTITION_KEY], id, cb) :
+        return _this.model.hasPartition() ?
+          _this.model.destroy(_this.model.getPartition(), id, cb) :
           _this.model.destroy(id, cb);
       },
 
@@ -253,8 +285,8 @@ export class ExtendModel {
       },
 
       createItem: function(data, cb) {
-        if (_this.model.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
-          data[ExtendModel.PARTITION_FIELD] = _this.model[ExtendModel.PARTITION_KEY];
+        if (_this.model.hasPartition()) {
+          data[ExtendModel.PARTITION_FIELD] = _this.model.getPartition();
         }
 
         return _this.model.create(data, cb);
@@ -298,8 +330,8 @@ export class ExtendModel {
       updateItem: function(id, data, cb) {
         data.Id = id;
 
-        if (_this.model.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
-          data[ExtendModel.PARTITION_FIELD] = _this.model[ExtendModel.PARTITION_KEY];
+        if (_this.model.hasPartition()) {
+          data[ExtendModel.PARTITION_FIELD] = _this.model.getPartition();
         }
 
         return _this.model.update(data, cb);
@@ -308,8 +340,8 @@ export class ExtendModel {
       updateItemConditional: function(id, data, condition, cb) {
         data.Id = id;
 
-        if (_this.model.hasOwnProperty(ExtendModel.PARTITION_KEY)) {
-          data[ExtendModel.PARTITION_FIELD] = _this.model[ExtendModel.PARTITION_KEY];
+        if (_this.model.hasPartition()) {
+          data[ExtendModel.PARTITION_FIELD] = _this.model.getPartition();
         }
 
         return _this.model.update(data, condition, cb);
@@ -434,6 +466,13 @@ export class ExtendModel {
    */
   static get PARTITION_FIELD() {
     return 'AccountId';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get ONE_TIME_PARTITION_KEY() {
+    return 'oneTimeDeepPartitionKey';
   }
 
   /**
