@@ -93,7 +93,7 @@ command checks every 30 seconds if it's disabled and when successful, removes it
 Having questions related to deep-framework?
 
 - Ask questions: https://stackoverflow.com/questions/tagged/deep-framework
-- Chat with us: https://gitter.im/MitocGroup/deep-framework
+- Chat with us: https://mitocgroup.slack.com/messages/general
 - Send an email: feedback@mitocgroup.com
 
 Interested in contributing to deep-framework?
@@ -106,7 +106,7 @@ Interested in contributing to deep-framework?
 Looking for web applications that use (or are similar to) deep-framework?
 
 - Hello World: https://hello.deep.mg | https://github.com/MitocGroup/deep-microservices-helloworld
-- Todo App: https://todo.deep.mg | https://github.com/MitocGroup/deep-microservices-todo-app
+- Todo App: https://todo.deep.mg | https://github.com/MitocGroup/deep-microservices-todomvc
 - AdTechMedia: https://www.adtechmedia.io | https://github.com/AdTechMedia/adtechmedia-website
 
 
