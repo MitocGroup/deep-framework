@@ -367,7 +367,7 @@ export class DB extends Kernel.ContainerAware {
       
       let modelInstance = this._models[modelName];
 
-      modelInstance[ExtendModel.PARTITION_KEY] = partitionKey;
+      modelInstance.setPartition(partitionKey);
     }
 
     return this;
