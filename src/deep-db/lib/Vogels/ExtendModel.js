@@ -158,7 +158,7 @@ export class ExtendModel {
 
       findOneById: function(id, cb) {
         return _this.model.hasPartition() ?
-          _this.model.get(this.getPartition(), id, cb) :
+          _this.model.get(_this.model.getPartition(), id, cb) :
           _this.model.get(id, cb);
       },
 
