@@ -60,6 +60,13 @@ export class Region {
   /**
    * @returns {String}
    */
+  static get EU_LONDON() {
+    return 'eu-west-2';
+  }
+
+  /**
+   * @returns {String}
+   */
   static get SOUTH_AMERICA_SAO_PAULO() {
     return 'sa-east-1';
   }
@@ -112,6 +119,7 @@ export class Region {
       Region.ASIA_PACIFIC_SINGAPORE,
       Region.EU_FRANKFURT,
       Region.EU_IRELAND,
+      Region.EU_LONDON,
       Region.SOUTH_AMERICA_SAO_PAULO,
       Region.US_EAST_N_VIRGINIA,
       Region.US_EAST_OHIO,
