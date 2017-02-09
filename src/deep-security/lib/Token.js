@@ -266,7 +266,7 @@ export class Token {
     return this._sts.assumeRole(stsParams)
       .promise()
       .catch(e => {
-        if (_retryCount++ < TokenManager.MAX_RETRIES) {
+        if (_retryCount++ < Token.MAX_RETRIES) {
           console.warn(`Retrying "sts:assumeRole" with params: ${JSON.stringify(stsParams)}`);
 
           return new Promise((resolve, reject) => {
