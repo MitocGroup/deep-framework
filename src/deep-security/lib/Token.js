@@ -230,8 +230,7 @@ export class Token {
               RoleSessionName: `backend-role-${awsRole.Name}`
             };
 
-            this._sts.assumeRole(stsParams)
-              .promise()
+            this._stsAssumeRole(stsParams)
               .then(response => {
                 let credentialsObj = response.Credentials;
 
@@ -255,6 +254,35 @@ export class Token {
         });
       }
     );
+  }
+
+  /**
+   * @param {Object} stsParams
+   * @param {Number} _retryCount
+   * @returns {Promise}
+   * @private
+   */
+  _stsAssumeRole(stsParams, _retryCount = 0) {
+    return this._sts.assumeRole(stsParams)
+      .promise()
+      .catch(e => {
+        if (_retryCount++ < TokenManager.MAX_RETRIES) {
+          console.warn(`Retrying "sts:assumeRole" with params: ${JSON.stringify(stsParams)}`);
+
+          return new Promise((resolve, reject) => {
+            setTimeout(
+              () => {
+                this._stsAssumeRole(stsParams, _retryCount)
+                  .then(resolve)
+                  .catch(reject);
+              },
+              Math.pow(2, _retryCount) * 1000
+            );
+          })
+        }
+
+        throw e;
+      });
   }
 
   /**
