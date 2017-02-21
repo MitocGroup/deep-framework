@@ -74,19 +74,19 @@ export class Framework {
    * ```
    */
   KernelFromLambdaContext(lambdaContext, lambdaEvent) {
+    let contextProvider = new ContextProvider(lambdaContext)
+      .fillContextWithEventData(lambdaEvent);
+
     let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
 
     if (lambdaContext.hasOwnProperty('identity') &&
-      lambdaContext.identity.hasOwnProperty('cognitoIdentityPoolId') &&
-      lambdaContext.identity.hasOwnProperty('cognitoIdentityId')) {
+      lambdaContext.identity.cognitoIdentityPoolId &&
+      lambdaContext.identity.cognitoIdentityId) {
 
       identityId = lambdaContext.identity.cognitoIdentityId;
     }
 
     let kernel = this._kernelCached(identityId);
-    let contextProvider = new ContextProvider(lambdaContext);
-    
-    contextProvider.fillContextWithEventData(lambdaEvent);
 
     kernel.runtimeContext = lambdaContext; // @todo: remove "runtimeContext" on next major release
     kernel.contextProvider = contextProvider;  
