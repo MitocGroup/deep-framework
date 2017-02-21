@@ -28,6 +28,14 @@ export class ContextProvider {
       }
     });
 
+    // moving _deep_auth_context_ from event to lambda context
+    if (event.hasOwnProperty(ContextProvider.DEEP_AUTH_CONTEXT_KEY) &&
+      !this._context.hasOwnProperty('identity')) {
+      this._context.identity = event[ContextProvider.DEEP_AUTH_CONTEXT_KEY];
+
+      delete event[ContextProvider.DEEP_AUTH_CONTEXT_KEY];
+    }
+
     return this;
   }
 
@@ -57,5 +65,12 @@ export class ContextProvider {
    */
   static get LAMBDA_DEPTH_LEVEL() {
     return 'lambdaDepthLevel';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEEP_AUTH_CONTEXT_KEY() {
+    return '_deep_auth_context_';
   }
 }
