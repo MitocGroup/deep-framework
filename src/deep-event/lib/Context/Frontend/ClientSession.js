@@ -4,12 +4,17 @@
 
 'use strict';
 
-import 'clientjs';
+let ClientJS = function() {};
+
+if (typeof window !== 'undefined') {
+  require('clientjs');
+  ClientJS = window.ClientJS;
+}
 
 const singletonInstance = Symbol();
 const singletonEnforcer = Symbol();
 
-export class ClientSession extends window.ClientJS {
+export class ClientSession extends ClientJS {
   
   /**
    * @param {Symbol} enforcer

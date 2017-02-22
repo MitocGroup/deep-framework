@@ -7,6 +7,8 @@
 import Kernel from 'deep-kernel';
 import {ConsoleDriver} from './Driver/ConsoleDriver';
 import {KinesisDriver} from './Driver/KinesisDriver';
+import {BackendContext} from './Context/BackendContext';
+import {FrontendContext} from './Context/FrontendContext';
 
 /**
  * Event manager
@@ -67,10 +69,11 @@ export class Event extends Kernel.ContainerAware {
   boot(kernel, callback) {
     const kinesisStreamArn = kernel.config
       .globals.kinesisEventStream;
-      
-    const contextName = kernel.isFrontend ? 'Frontend' : 'Backend';
-    const context = require(`./Context/${contextName}Context`)
-      [`${contextName}Context`].fromKernel(kernel);
+    const context = (
+      kernel.isFrontend 
+        ? FrontendContext 
+        : BackendContext
+    ).fromKernel(kernel);
 
     if (kernel.env !== Kernel.PROD_ENVIRONMENT || !kinesisStreamArn) {
       this._driver = new ConsoleDriver(context);
