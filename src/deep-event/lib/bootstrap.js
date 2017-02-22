@@ -6,4 +6,6 @@
 
 'use strict';
 
-module.exports = {};
+import {Event} from './Event';
+
+module.exports = Event;
