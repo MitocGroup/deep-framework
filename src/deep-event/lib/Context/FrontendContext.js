@@ -4,17 +4,17 @@
 
 'use strict';
 
-import {AbstractContext} from './AbstractContext';
+import {BackendContext} from './BackendContext';
 import {ClientSession} from './Frontend/ClientSession';
 
-export class FrontendContext extends AbstractContext {
+export class FrontendContext extends BackendContext {
   /**
    * @param {Kernel|*} kernel
    *
    * @returns {AbstractContext|*}
    */
   static fromKernel(kernel) {
-    return new FrontendContext(kernel.runtimeContext)
+    return super.fromKernel(kernel)
       .addObj(FrontendContext.clientData)
       .addObj(FrontendContext.envData);
   }

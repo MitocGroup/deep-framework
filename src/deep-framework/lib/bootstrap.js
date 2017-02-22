@@ -16,7 +16,7 @@ module.exports = new Framework({
   Log: 'deep-log',
   Validation: 'deep-validation',
   Search: 'deep-search',
+  Event: 'deep-event',
 
   //Notification: 'deep-notification',
-  //Event: 'deep-event',
 }, Framework.BACKEND_CONTEXT);

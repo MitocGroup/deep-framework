@@ -38,6 +38,27 @@ export class Event extends Kernel.ContainerAware {
   }
 
   /**
+   * @param {String} kinesisStreamArn
+   *
+   * @returns {Event|*}
+   */
+  ensureKinesisDriver(kinesisStreamArn = null) {
+    if (this._driver && this._driver instanceof KinesisDriver) {
+      return this;
+    }
+    
+    kinesisStreamArn = kinesisStreamArn 
+      || this.kernel.config.globals.kinesisEventStream;
+      
+    this._driver = new KinesisDriver(
+      kinesisStreamArn, 
+      this._driver.context
+    );
+    
+    return this;
+  }
+
+  /**
    * Booting a certain service
    *
    * @param {Kernel} kernel
