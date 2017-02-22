@@ -6,6 +6,7 @@
 
 import {AbstractDriver} from './AbstractDriver';
 import {UUID} from './Kinesis/UUID';
+import AWS from 'aws-sdk';
 
 export class KinesisDriver extends AbstractDriver {
   /**

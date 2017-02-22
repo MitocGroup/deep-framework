@@ -16,8 +16,6 @@ export class AbstractContext {
   
   /**
    * @param {Kernel|*} kernel
-   *
-   * @returns {AbstractContext|*}
    */
   static fromKernel(kernel) {
     throw new Error('Context.fromKernel() not implemented!');
