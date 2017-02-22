@@ -49,11 +49,14 @@
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile",
-    "pretest": "npm link deep-kernel deep-core babel-preset-es2015"
+    "pretest": "npm link deep-kernel babel-preset-es2015"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
-    "deep-core": "^1.x.x"
+    "clientjs": "MitocGroup/clientjs#v1.0.0-rc.1"
+  },
+  "optionalDependencies": {
+    "aws-sdk": "^2.2.x"
   },
   "devDependencies": {
     "chai": "^3.5.x",
