@@ -324,9 +324,9 @@ export class Runtime extends Interface {
    */
   _fillUserContext() {
     if (this._context &&
-      this._context.has('identity') &&
-      this._context.identity.hasOwnProperty('cognitoIdentityPoolId') &&
-      this._context.identity.hasOwnProperty('cognitoIdentityId')
+      this._context.identity &&
+      this._context.identity.cognitoIdentityPoolId &&
+      this._context.identity.cognitoIdentityId
     ) {
       let identityPoolId = this._context.identity.cognitoIdentityPoolId;
 

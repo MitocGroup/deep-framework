@@ -44,7 +44,13 @@ export class TokenManager {
    */
   get cognitoSyncClient() {
     if (!this._cognitoSyncClient) {
-      this._cognitoSyncClient = new AWS.CognitoSyncManager();
+      let options = {};
+
+      if (!this._isLocalStorageAvailable()) {
+        options.DataStore = AWS.CognitoSyncManager.StoreInMemory;
+      }
+
+      this._cognitoSyncClient = new AWS.CognitoSyncManager(options);
     }
 
     return this._cognitoSyncClient;
@@ -291,5 +297,24 @@ export class TokenManager {
     });
 
     return obj;
+  }
+
+  /**
+   * @returns {Boolean}
+   * @private
+   */
+  _isLocalStorageAvailable() {
+    try {
+      if (window && window.localStorage) {
+        window.localStorage.setItem('key', 'value');
+        window.localStorage.removeItem('key');
+
+        return true;
+      }
+
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 }
