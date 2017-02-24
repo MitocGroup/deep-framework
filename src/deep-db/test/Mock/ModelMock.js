@@ -3,7 +3,6 @@
 export class ModelMock {
   constructor() {
     this._methodsBehavior = new Map();
-    this._deepQuery = null;
 
     this.setMode(ModelMock.NO_RESULT_MODE);
   }
