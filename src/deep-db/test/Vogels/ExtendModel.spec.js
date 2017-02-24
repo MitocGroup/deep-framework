@@ -77,6 +77,54 @@ suite('Vogels/ExtendModel', () => {
       chai.expect(typeof actualResult[methodName]).to.be.equal('function');
     }
   });
+  
+  test('Check method._findUntilLimit() passes one/multi/offset call', () => {
+    let resultSegments = require('./scan.segments.js');
+    let segmentKeys = Object.keys(resultSegments);
+    let query = (new function() {
+      let startKey = segmentKeys[0];
+      
+      return {
+        limit() {
+          return this;
+        },
+        startKey(key) {
+          startKey = key || startKey;
+          return this;
+        },
+        exec(cb) {
+          console.debug('Model._findUntilLimit() :: SEG#{' + startKey + '}');
+          cb(null, resultSegments[startKey]);
+        },
+      };
+    });
+    
+    let spyOneCallback = sinon.spy();
+    mockedExtendModel.methods._findUntilLimitCb(spyOneCallback, query, 1);
+    chai.expect(spyOneCallback).to.have.been.calledWithExactly(null, {
+      ScannedCount: 3,
+      Count: 1,
+      Items: [ 'a1' ],
+    });
+    
+    let spyManyCallback = sinon.spy();
+    mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, query, 7);
+    chai.expect(spyManyCallback).to.have.been.calledWithExactly(null, {
+      ScannedCount: 9,
+      Count: 7,
+      Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
+    });
+    
+    let spyAllOffsetCallback = sinon.spy();
+    mockedExtendModel.methods._findUntilLimitCb(
+      spyAllOffsetCallback, query, 1, 0, [], segmentKeys[segmentKeys.length - 3]
+    );
+    chai.expect(spyAllOffsetCallback).to.have.been.calledWithExactly(null, {
+      ScannedCount: 6,
+      Count: 6,
+      Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
+    });
+  });
 
   test('Check method.findAll() exist and can be called', () => {
     let spyCallback = sinon.spy();

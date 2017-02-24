@@ -142,18 +142,64 @@ export class ExtendModel {
     let _this = this;
 
     return {
-
+      _findUntilLimitCb(cb, ...args) {
+        this._findUntilLimit(...args)
+          .then(result => cb(null, result))
+          .catch(error => cb(error, null));
+      },
+      
+      // Fixes DynamoDB limit behavior
+      _findUntilLimit(query, limit, _scannedCount = 0, _accumulator = [], _lastKey = null) {
+        return new Promise((resolve, reject) => {
+          query
+            .limit(limit * 100) // It should be quite enough
+            .startKey(_lastKey)
+            .exec((error, result) => {
+              if (error) {
+                return reject(error);
+              }
+              
+              _accumulator = _accumulator.concat(result.Items || []);
+              _lastKey = result.LastEvaluatedKey || null;
+              _scannedCount += result.ScannedCount;
+              
+              if (!result || !_lastKey || result.ScannedCount <= 0 || _accumulator.length >= limit) {
+                while (_accumulator.length > limit) {
+                  _accumulator.pop();
+                }
+                
+                const finalResult = {
+                  ScannedCount: _scannedCount,
+                  Count: _accumulator.length,
+                  Items: _accumulator,
+                };
+                
+                if (result.ConsumedCapacity) {
+                  finalResult.ConsumedCapacity = result.ConsumedCapacity;
+                }
+                
+                return resolve(finalResult);
+              }
+              
+              this._findUntilLimit(query, limit, _scannedCount, _accumulator, _lastKey)
+                .then(resolve).catch(reject);
+            });
+        });
+      },
 
       findAll: function(cb) {
         return _this.model.deepQuery().loadAll().exec(cb);
       },
 
       findAllPaginated: function(startKey, limit, cb) {
-        return _this.model
-          .deepQuery()
-          .startKey(startKey)
-          .limit(limit)
-          .exec(cb);
+        return this._findUntilLimitCb(
+          cb, 
+          _this.model.deepQuery(), 
+          limit, 
+          0, 
+          [], 
+          startKey
+        );
       },
 
       findOneById: function(id, cb) {
@@ -163,18 +209,15 @@ export class ExtendModel {
       },
 
       findOneBy: function(fieldName, value, cb) {
-        return _this.model
-          .deepQuery(ExtendModel.SCAN_STRATEGY)
-          .where(fieldName).equals(value)
-          .exec(cb);
+        return this.findBy(fieldName, value, cb, 1);
       },
 
       findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {
-        return _this.model
+        const query = _this.model
           .deepQuery(ExtendModel.SCAN_STRATEGY)
-          .where(fieldName).equals(value)
-          .limit(limit)
-          .exec(cb);
+          .where(fieldName).equals(value);
+        
+        return this._findUntilLimitCb(cb, query, limit);
       },
 
       findAllBy: function(fieldName, value, cb) {
@@ -194,28 +237,20 @@ export class ExtendModel {
           .exec(cb);
       },
 
+      findOneMatching: function(params, cb) {
+        return this.findMatching(params, cb, 1);
+      },
+      
       findMatching: function(params, cb, limit = ExtendModel.DEFAULT_LIMIT) {
         let scanParams = ExtendModel.buildScanParameters(params);
 
-        return _this.model
+        const query = _this.model
           .deepQuery()
           .filterExpression(scanParams.filterExpression)
           .expressionAttributeValues(scanParams.filterExpressionValues)
-          .expressionAttributeNames(scanParams.filterExpressionNames)
-          .limit(limit)
-          .exec(cb);
-      },
-
-      findOneMatching: function(params, cb) {
-        let scanParams = ExtendModel.buildScanParameters(params);
-
-        return _this.model
-          .deepQuery()
-          .filterExpression(scanParams.filterExpression)
-          .expressionAttributeValues(scanParams.filterExpressionValues)
-          .expressionAttributeNames(scanParams.filterExpressionNames)
-          .limit(1)
-          .exec(cb);
+          .expressionAttributeNames(scanParams.filterExpressionNames);
+          
+        return this._findUntilLimitCb(cb, query, limit);
       },
 
       findAllMatching: function(params, cb) {
