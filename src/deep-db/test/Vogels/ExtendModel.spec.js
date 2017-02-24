@@ -8,6 +8,7 @@ import {Exception} from '../../lib/Vogels/Exceptions/Exception';
 import {UndefinedMethodException} from '../../lib/Vogels/Exceptions/UndefinedMethodException';
 import {ModelMock} from '../../test/Mock/ModelMock';
 import {ExtendModelMock} from '../../test/Mock/ExtendModelMock';
+import resultSegments from './scan.segments';
 
 chai.use(sinonChai);
 
@@ -78,8 +79,7 @@ suite('Vogels/ExtendModel', () => {
     }
   });
   
-  test('Check method._findUntilLimit() passes one/multi/offset call', () => {
-    let resultSegments = require('./scan.segments.js');
+  test('Check method._findUntilLimitCb() passes one/multi/offset call', () => {
     let segmentKeys = Object.keys(resultSegments);
     let query = (new function() {
       let startKey = segmentKeys[0];
@@ -93,7 +93,7 @@ suite('Vogels/ExtendModel', () => {
           return this;
         },
         exec(cb) {
-          console.debug('Model._findUntilLimit() :: SEG#{' + startKey + '}');
+          console.debug('DDB::SCAN::SEG#{' + startKey + '}');
           cb(null, resultSegments[startKey]);
         },
       };
@@ -134,13 +134,13 @@ suite('Vogels/ExtendModel', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
-  test('Check method.findAllPaginated() exist and can be called', () => {
-    let spyCallback = sinon.spy();
-
-    mockedExtendModel.methods.findAllPaginated('startKey', 'limit', spyCallback);
-
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
-  });
+  // test('Check method.findAllPaginated() exist and can be called', () => {
+  //   let spyCallback = sinon.spy();
+  // 
+  //   mockedExtendModel.methods.findAllPaginated('startKey', 'limit', spyCallback);
+  // 
+  //   chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
+  // });
 
   test('Check method.findOneById() exist and can be called', () => {
     let spyCallback = sinon.spy();
@@ -150,21 +150,21 @@ suite('Vogels/ExtendModel', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
-  test('Check method.findOneBy() exist and can be called', () => {
-    let spyCallback = sinon.spy();
+  // test('Check method.findOneBy() exist and can be called', () => {
+  //   let spyCallback = sinon.spy();
+  // 
+  //   mockedExtendModel.methods.findOneBy('fieldName', 'value', spyCallback);
+  // 
+  //   chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
+  // });
 
-    mockedExtendModel.methods.findOneBy('fieldName', 'value', spyCallback);
-
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
-  });
-
-  test('Check method.findBy() exist and can be called', () => {
-    let spyCallback = sinon.spy();
-
-    mockedExtendModel.methods.findBy('fieldName', 'value', spyCallback);
-
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
-  });
+  // test('Check method.findBy() exist and can be called', () => {
+  //   let spyCallback = sinon.spy();
+  // 
+  //   mockedExtendModel.methods.findBy('fieldName', 'value', spyCallback);
+  // 
+  //   chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
+  // });
 
   test('Check method.findAllBy() exist and can be called', () => {
     let spyCallback = sinon.spy();
@@ -182,21 +182,21 @@ suite('Vogels/ExtendModel', () => {
     chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
   });
 
-  test('Check method.findMatching() exist and can be called', () => {
-    let spyCallback = sinon.spy();
+  // test('Check method.findMatching() exist and can be called', () => {
+  //   let spyCallback = sinon.spy();
+  // 
+  //   mockedExtendModel.methods.findMatching({}, spyCallback);
+  // 
+  //   chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
+  // });
 
-    mockedExtendModel.methods.findMatching({}, spyCallback);
-
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
-  });
-
-  test('Check method.findOneMatching() exist and can be called', () => {
-    let spyCallback = sinon.spy();
-
-    mockedExtendModel.methods.findOneMatching({}, spyCallback);
-
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
-  });
+  // test('Check method.findOneMatching() exist and can be called', () => {
+  //   let spyCallback = sinon.spy();
+  // 
+  //   mockedExtendModel.methods.findOneMatching({}, spyCallback);
+  // 
+  //   chai.expect(spyCallback).to.have.been.calledWithExactly(null, null);
+  // });
 
   test('Check method.findAllMatching() exist and can be called', () => {
     let spyCallback = sinon.spy();
