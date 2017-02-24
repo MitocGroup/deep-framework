@@ -58,12 +58,12 @@ suite('LocalToken', function () {
     }
   );
 
-  test('Check loadCredentials() method for identityProvider', function () {
-    let spyCallback = sinon.spy();
-
-    localToken.loadCredentials(spyCallback);
-
-    chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken._credentials);
-    chai.expect(localToken._credentials.identityId).to.eql(identityProvider.userId);
-  });
+  // test('Check loadCredentials() method for identityProvider', function () {
+  //   let spyCallback = sinon.spy();
+  // 
+  //   localToken.loadCredentials(spyCallback);
+  // 
+  //   chai.expect(spyCallback).to.have.been.calledWithExactly(null, localToken._credentials);
+  //   chai.expect(localToken._credentials.identityId).to.eql(identityProvider.userId);
+  // });
 });
