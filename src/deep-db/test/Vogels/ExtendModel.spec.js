@@ -111,7 +111,7 @@ suite('Vogels/ExtendModel', () => {
       spyOneCallback(error, result);
     }, new queryMock, 1);
     
-    chai.expect(spyOneCallback).to.have.been.calledWithExactly(null, {
+    chai.expect(spyOneCallback).to.have.been.calledWith(null, {
       ScannedCount: 3,
       Count: 1,
       Items: [ 'a1' ],
