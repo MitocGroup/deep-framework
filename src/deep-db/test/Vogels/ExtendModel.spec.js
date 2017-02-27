@@ -93,37 +93,45 @@ suite('Vogels/ExtendModel', () => {
           return this;
         },
         exec(cb) {
-          console.debug('DDB::SCAN::SEG#{' + startKey + '}');
+          process.stdout.write('\nDDB::SCAN::SEG#{' + startKey + '}\n');
           cb(null, resultSegments[startKey]);
         },
       };
     });
     
-    let spyOneCallback = sinon.spy();
-    mockedExtendModel.methods._findUntilLimitCb(spyOneCallback, query, 1);
-    chai.expect(spyOneCallback).to.have.been.calledWithExactly(null, {
+    let findOneResult;
+    let findManyLimitResult;
+    let findAllOffsetResult;
+    
+    mockedExtendModel.methods._findUntilLimitCb((error, result) => {
+      findOneResult = [ error, result ];
+    }, query, 1);
+    mockedExtendModel.methods._findUntilLimitCb((error, result) => {
+      findManyLimitResult = [ error, result ];
+    }, query, 7);
+    mockedExtendModel.methods._findUntilLimitCb(
+      (error, result) => {
+        findAllOffsetResult = [ error, result ];
+      }, 
+      query, 1, 0, [], 
+      segmentKeys[segmentKeys.length - 3]
+    );
+    
+    chai.expect(findOneResult).to.be.equal([null, {
       ScannedCount: 3,
       Count: 1,
       Items: [ 'a1' ],
-    });
-    
-    let spyManyCallback = sinon.spy();
-    mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, query, 7);
-    chai.expect(spyManyCallback).to.have.been.calledWithExactly(null, {
+    }]);
+    chai.expect(findManyLimitResult).to.be.equal([null, {
       ScannedCount: 9,
       Count: 7,
       Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
-    });
-    
-    let spyAllOffsetCallback = sinon.spy();
-    mockedExtendModel.methods._findUntilLimitCb(
-      spyAllOffsetCallback, query, 1, 0, [], segmentKeys[segmentKeys.length - 3]
-    );
-    chai.expect(spyAllOffsetCallback).to.have.been.calledWithExactly(null, {
+    }]);
+    chai.expect(findAllOffsetResult).to.be.equal([null, {
       ScannedCount: 6,
       Count: 6,
       Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
-    });
+    }]);
   });
 
   test('Check method.findAll() exist and can be called', () => {
