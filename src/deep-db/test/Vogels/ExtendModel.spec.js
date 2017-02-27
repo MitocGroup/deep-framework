@@ -134,8 +134,6 @@ suite('Vogels/ExtendModel', () => {
     
     mockedExtendModel.methods._findUntilLimitCb(
       (error, result) => {
-        console.log('result', JSON.stringify(result));//@todo remove
-        
         chai.expect(error).to.be.null;
         chai.expect(result).to.deep.equal({
           ScannedCount: 6,
