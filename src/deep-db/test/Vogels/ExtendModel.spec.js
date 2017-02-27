@@ -101,7 +101,7 @@ suite('Vogels/ExtendModel', () => {
     });
     
     let spyOneCallback = sinon.spy();
-    chai.expect(spyOneCallback).to.have.been.calledWith(null, {
+    chai.expect(spyOneCallback).to.have.been.calledWithMatch(null, {
       ScannedCount: 3,
       Count: 1,
       Items: [ 'a1' ],
@@ -110,7 +110,7 @@ suite('Vogels/ExtendModel', () => {
     
     
     let spyManyCallback = sinon.spy();
-    chai.expect(spyManyCallback).to.have.been.calledWith(null, {
+    chai.expect(spyManyCallback).to.have.been.calledWithMatch(null, {
       ScannedCount: 9,
       Count: 7,
       Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
@@ -118,7 +118,7 @@ suite('Vogels/ExtendModel', () => {
     mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, query, 7);
     
     let spyAllOffsetCallback = sinon.spy();
-    chai.expect(spyAllOffsetCallback).to.have.been.calledWith(null, {
+    chai.expect(spyAllOffsetCallback).to.have.been.calledWithMatch(null, {
       ScannedCount: 6,
       Count: 6,
       Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
