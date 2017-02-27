@@ -102,49 +102,49 @@ suite('Vogels/ExtendModel', () => {
     };
   });
   
-  test('Check method._findUntilLimit[Cb]() passes findOne* call', () => {
-    let spyOneCallback = sinon.spy();
-    
+  test('Check method._findUntilLimit[Cb]() passes findOne* call', (callback) => {
     mockedExtendModel.methods._findUntilLimitCb((error, result) => {
-      process.stdout.write(error + " - " + JSON.stringify(result) + '\n');//@todo remove
+      chai.expect(error).to.be.null;
+      chai.expect(result).to.deep.equal({
+        ScannedCount: 3,
+        Count: 1,
+        Items: [ 'a1' ],
+      });
       
-      spyOneCallback(error, result);
+      callback();
     }, new queryMock, 1);
-    
-    chai.expect(spyOneCallback).to.have.been.calledWith(null, {
-      ScannedCount: 3,
-      Count: 1,
-      Items: [ 'a1' ],
-    });
   });
   
-  test('Check method._findUntilLimit[Cb]() passes findBy* call', () => {
-    let spyManyCallback = sinon.spy();
-    
-    mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, new queryMock, 7);
-    
-    chai.expect(spyManyCallback).to.have.been.calledWithMatch(null, {
-      ScannedCount: 9,
-      Count: 7,
-      Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
-    });
+  test('Check method._findUntilLimit[Cb]() passes findBy* call', (callback) => {
+    mockedExtendModel.methods._findUntilLimitCb((error, result) => {
+      chai.expect(error).to.be.null;
+      chai.expect(result).to.deep.equal({
+        ScannedCount: 9,
+        Count: 7,
+        Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
+      });
+      
+      callback();
+    }, new queryMock, 7);
   });
   
-  test('Check method._findUntilLimit[Cb]() passes findBy*Paginated call', () => {
-    let spyAllOffsetCallback = sinon.spy();
+  test('Check method._findUntilLimit[Cb]() passes findBy*Paginated call', (callback) => {
     let query = new queryMock;
     let segmentKeys = query.segmentKeys();
     
     mockedExtendModel.methods._findUntilLimitCb(
-      spyAllOffsetCallback, query, 1, 0, [], 
+      (error, result) => {
+        chai.expect(error).to.be.null;
+        chai.expect(result).to.deep.equal({
+          ScannedCount: 6,
+          Count: 6,
+          Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
+        });
+        
+        callback();
+      }, query, 1, 0, [], 
       segmentKeys[segmentKeys.length - 3]
     );
-    
-    chai.expect(spyAllOffsetCallback).to.have.been.calledWithMatch(null, {
-      ScannedCount: 6,
-      Count: 6,
-      Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
-    });
   });
 
   test('Check method.findAll() exist and can be called', () => {
