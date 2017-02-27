@@ -107,7 +107,7 @@ suite('Vogels/ExtendModel', () => {
     
     mockedExtendModel.methods._findUntilLimitCb(spyOneCallback, new queryMock, 1);
     
-    chai.expect(spyOneCallback).to.have.been.calledWithExactly(null, {
+    spyOneCallback.should.have.been.calledWithExactly(null, {
       ScannedCount: 3,
       Count: 1,
       Items: [ 'a1' ],
@@ -119,7 +119,7 @@ suite('Vogels/ExtendModel', () => {
     
     mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, new queryMock, 7);
     
-    chai.expect(spyManyCallback).to.have.been.calledWithMatch(null, {
+    spyManyCallback.should.have.been.calledWithExactly(null, {
       ScannedCount: 9,
       Count: 7,
       Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
@@ -136,7 +136,7 @@ suite('Vogels/ExtendModel', () => {
       segmentKeys[segmentKeys.length - 3]
     );
     
-    chai.expect(spyAllOffsetCallback).to.have.been.calledWithMatch(null, {
+    spyAllOffsetCallback.should.have.been.calledWithExactly(null, {
       ScannedCount: 6,
       Count: 6,
       Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
