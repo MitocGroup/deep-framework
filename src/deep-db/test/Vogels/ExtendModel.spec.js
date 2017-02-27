@@ -79,15 +79,11 @@ suite('Vogels/ExtendModel', () => {
   });
   
   // @todo move to a separate file
-  const queryMock = (new function() {
+  const queryMock = (function() {
     let segmentKeys = Object.keys(resultSegments);
     let startKey = segmentKeys[0];
     
     return {
-      reset() {
-        startKey = segmentKeys[0];
-        return this;
-      },
       segmentKeys() {
         return segmentKeys;
       },
@@ -109,7 +105,7 @@ suite('Vogels/ExtendModel', () => {
   test('Check method._findUntilLimit[Cb]() passes findOne* call', () => {
     let spyOneCallback = sinon.spy();
     
-    mockedExtendModel.methods._findUntilLimitCb(spyOneCallback, query, 1);
+    mockedExtendModel.methods._findUntilLimitCb(spyOneCallback, new queryMock, 1);
     
     chai.expect(spyOneCallback).to.have.been.calledWithExactly(null, {
       ScannedCount: 3,
@@ -121,7 +117,7 @@ suite('Vogels/ExtendModel', () => {
   test('Check method._findUntilLimit[Cb]() passes findBy* call', () => {
     let spyManyCallback = sinon.spy();
     
-    mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, query, 7);
+    mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, new queryMock, 7);
     
     chai.expect(spyManyCallback).to.have.been.calledWithMatch(null, {
       ScannedCount: 9,
@@ -132,9 +128,12 @@ suite('Vogels/ExtendModel', () => {
   
   test('Check method._findUntilLimit[Cb]() passes findBy*Paginated call', () => {
     let spyAllOffsetCallback = sinon.spy();
+    let query = new queryMock;
+    let segmentKeys = query.segmentKeys();
     
     mockedExtendModel.methods._findUntilLimitCb(
-      spyAllOffsetCallback, query, 1, 0, [], segmentKeys[segmentKeys.length - 3]
+      spyAllOffsetCallback, query, 1, 0, [], 
+      segmentKeys[segmentKeys.length - 3]
     );
     
     chai.expect(spyAllOffsetCallback).to.have.been.calledWithMatch(null, {
