@@ -144,7 +144,7 @@ suite('Vogels/ExtendModel', () => {
         });
         
         done();
-      }, query, 999, 0, [], segmentKeys[segmentKeys.length - 3]
+      }, query, 999, 0, [], segmentKeys[segmentKeys.length - 2]
     );
   });
 
