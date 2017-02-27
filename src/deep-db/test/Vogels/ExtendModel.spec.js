@@ -102,7 +102,7 @@ suite('Vogels/ExtendModel', () => {
     };
   });
   
-  test('Check method._findUntilLimit[Cb]() passes findOne* call', (callback) => {
+  test('Check method._findUntilLimit[Cb]() passes findOne* call', (done) => {
     mockedExtendModel.methods._findUntilLimitCb((error, result) => {
       chai.expect(error).to.be.null;
       chai.expect(result).to.deep.equal({
@@ -111,11 +111,11 @@ suite('Vogels/ExtendModel', () => {
         Items: [ 'a1' ],
       });
       
-      callback();
+      done();
     }, new queryMock, 1);
   });
   
-  test('Check method._findUntilLimit[Cb]() passes findBy* call', (callback) => {
+  test('Check method._findUntilLimit[Cb]() passes findBy* call', (done) => {
     mockedExtendModel.methods._findUntilLimitCb((error, result) => {
       chai.expect(error).to.be.null;
       chai.expect(result).to.deep.equal({
@@ -124,11 +124,11 @@ suite('Vogels/ExtendModel', () => {
         Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
       });
       
-      callback();
+      done();
     }, new queryMock, 7);
   });
   
-  test('Check method._findUntilLimit[Cb]() passes findBy*Paginated call', (callback) => {
+  test('Check method._findUntilLimit[Cb]() passes findBy*Paginated call', (done) => {
     let query = new queryMock;
     let segmentKeys = query.segmentKeys();
     
@@ -141,9 +141,8 @@ suite('Vogels/ExtendModel', () => {
           Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
         });
         
-        callback();
-      }, query, 1, 0, [], 
-      segmentKeys[segmentKeys.length - 3]
+        done();
+      }, query, 999, 0, [], segmentKeys[segmentKeys.length - 3]
     );
   });
 
