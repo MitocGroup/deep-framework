@@ -101,39 +101,31 @@ suite('Vogels/ExtendModel', () => {
     });
     
     let spyOneCallback = sinon.spy();
-    mockedExtendModel.methods._findUntilLimitCb((error, result) => {
-      process.stdout.write(
-        'spyOneCallback(' +
-        'ERROR=' + ((error && error.message) || '<NULL>') +
-        'result=' + ((result && JSON.stringify(result)) || '<NULL>') + 
-        ')\n'
-      );
-      
-      spyOneCallback(error, result);
-    }, query, 1);
     chai.expect(spyOneCallback).to.have.been.calledWith(null, {
       ScannedCount: 3,
       Count: 1,
       Items: [ 'a1' ],
     });
+    mockedExtendModel.methods._findUntilLimitCb(spyOneCallback, query, 1);
+    
     
     let spyManyCallback = sinon.spy();
-    mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, query, 7);
     chai.expect(spyManyCallback).to.have.been.calledWith(null, {
       ScannedCount: 9,
       Count: 7,
       Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
     });
+    mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, query, 7);
     
     let spyAllOffsetCallback = sinon.spy();
-    mockedExtendModel.methods._findUntilLimitCb(
-      spyAllOffsetCallback, query, 1, 0, [], segmentKeys[segmentKeys.length - 3]
-    );
     chai.expect(spyAllOffsetCallback).to.have.been.calledWith(null, {
       ScannedCount: 6,
       Count: 6,
       Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
     });
+    mockedExtendModel.methods._findUntilLimitCb(
+      spyAllOffsetCallback, query, 1, 0, [], segmentKeys[segmentKeys.length - 3]
+    );
   });
 
   test('Check method.findAll() exist and can be called', () => {
