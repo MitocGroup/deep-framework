@@ -149,10 +149,11 @@ export class ExtendModel {
       },
       
       // Fixes DynamoDB limit behavior
+      // @ref http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/QueryAndScan.html#ScanQueryLimit
       _findUntilLimit(query, limit, _scannedCount = 0, _accumulator = [], _lastKey = null) {
         return new Promise((resolve, reject) => {
           query
-            .limit(limit * 100) // It should be quite enough
+            .limit(limit * 100) // DDB native limit (#ExclusiveStartKey)
             .startKey(_lastKey)
             .exec((error, result) => {
               if (error) {
@@ -177,6 +178,8 @@ export class ExtendModel {
                 if (result.ConsumedCapacity) {
                   finalResult.ConsumedCapacity = result.ConsumedCapacity;
                 }
+                
+                process.stdout.write('FINAL RESULT --> ' + JSON.stringify(finalResult));//@todo remove
                 
                 return resolve(finalResult);
               }
