@@ -179,8 +179,6 @@ export class ExtendModel {
                   finalResult.ConsumedCapacity = result.ConsumedCapacity;
                 }
                 
-                process.stdout.write('FINAL RESULT --> ' + JSON.stringify(finalResult));//@todo remove
-                
                 return resolve(finalResult);
               }
               

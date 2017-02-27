@@ -94,20 +94,23 @@ suite('Vogels/ExtendModel', () => {
         },
         exec(cb) {
           const result = resultSegments[startKey];
-          
-          process.stdout.write(
-            '\nDDB::SCAN::SEG#{' + startKey + '}-->' + 
-            JSON.stringify(result) + 
-            '\n'
-          );
+
           cb(null, result);
         },
       };
     });
     
-    
     let spyOneCallback = sinon.spy();
-    mockedExtendModel.methods._findUntilLimitCb(spyOneCallback, query, 1);
+    mockedExtendModel.methods._findUntilLimitCb((error, result) => {
+      process.stdout.write(
+        'spyOneCallback(' +
+        'ERROR=' + ((error && error.message) || '<NULL>') +
+        'result=' + ((result && JSON.stringify(result)) || '<NULL>') + 
+        ')\n'
+      );
+      
+      spyOneCallback(error, result);
+    }, query, 1);
     chai.expect(spyOneCallback).to.have.been.calledWith(null, {
       ScannedCount: 3,
       Count: 1,
