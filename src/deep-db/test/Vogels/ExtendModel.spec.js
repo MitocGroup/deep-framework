@@ -108,7 +108,7 @@ suite('Vogels/ExtendModel', () => {
     
     let spyOneCallback = sinon.spy();
     mockedExtendModel.methods._findUntilLimitCb(spyOneCallback, query, 1);
-    chai.expect(spyOneCallback).to.have.been.calledWithExactly(null, {
+    chai.expect(spyOneCallback).to.have.been.calledWith(null, {
       ScannedCount: 3,
       Count: 1,
       Items: [ 'a1' ],
@@ -116,7 +116,7 @@ suite('Vogels/ExtendModel', () => {
     
     let spyManyCallback = sinon.spy();
     mockedExtendModel.methods._findUntilLimitCb(spyManyCallback, query, 7);
-    chai.expect(spyManyCallback).to.have.been.calledWithExactly(null, {
+    chai.expect(spyManyCallback).to.have.been.calledWith(null, {
       ScannedCount: 9,
       Count: 7,
       Items: [ 'a1', 'a2', 'a3', 'b1', 'b2', 'b3', 'c1' ],
@@ -126,7 +126,7 @@ suite('Vogels/ExtendModel', () => {
     mockedExtendModel.methods._findUntilLimitCb(
       spyAllOffsetCallback, query, 1, 0, [], segmentKeys[segmentKeys.length - 3]
     );
-    chai.expect(spyAllOffsetCallback).to.have.been.calledWithExactly(null, {
+    chai.expect(spyAllOffsetCallback).to.have.been.calledWith(null, {
       ScannedCount: 6,
       Count: 6,
       Items: [ 'c1', 'c2', 'c3', 'd1', 'd2', 'd3' ],
