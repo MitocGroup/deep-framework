@@ -55,7 +55,6 @@ suite('AWS/Region', () => {
   });
 
   test('Check list() static method returns array of regions', () => {
-    chai.expect(Region.list().length).to.be.equal(11);
     chai.expect(Region.list()).to.be.include(Region.ANY);
     chai.expect(Region.list()).to.be.include(Region.ASIA_PACIFIC_TOKYO);
     chai.expect(Region.list()).to.be.include(Region.ASIA_PACIFIC_SEOUL);
@@ -67,10 +66,11 @@ suite('AWS/Region', () => {
     chai.expect(Region.list()).to.be.include(Region.US_EAST_N_VIRGINIA);
     chai.expect(Region.list()).to.be.include(Region.US_WEST_N_CALIFORNIA);
     chai.expect(Region.list()).to.be.include(Region.US_WEST_OREGON);
+    chai.expect(Region.list()).to.be.include(Region.EU_LONDON);
+    chai.expect(Region.list()).to.be.include(Region.US_EAST_OHIO);
   });
 
   test('Check all() static method returns array of region alias', () => {
-    chai.expect(Region.all().length).to.be.equal(11);
     chai.expect(Region.all()).to.be.include(Region.ANY);
     chai.expect(Region.all()).to.be.include(Region.ASIA_PACIFIC_TOKYO);
     chai.expect(Region.all()).to.be.include(Region.ASIA_PACIFIC_SEOUL);
@@ -82,6 +82,8 @@ suite('AWS/Region', () => {
     chai.expect(Region.all()).to.be.include(Region.US_EAST_N_VIRGINIA);
     chai.expect(Region.all()).to.be.include(Region.US_WEST_N_CALIFORNIA);
     chai.expect(Region.all()).to.be.include(Region.US_WEST_OREGON);
+    chai.expect(Region.list()).to.be.include(Region.EU_LONDON);
+    chai.expect(Region.list()).to.be.include(Region.US_EAST_OHIO);
   });
 
   test('Check exists() static method returns true if region exists', () => {

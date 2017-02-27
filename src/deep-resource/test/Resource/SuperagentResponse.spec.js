@@ -151,19 +151,19 @@ suite('Resource/SuperagentResponse', () => {
     }
   );
 
-  test('Check constructor calls _parseLambda() for typeof data==="string" with errorMessage as string',
-    () => {
-      let _rawData = {
-        body: '{"bodyObj":"Test body value","errorMessage":"Out of memory"}'
-      };
-      let _rawError = null;
-
-      superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
-
-      chai.expect(superagentResponse.data).to.be.eql(null);
-      chai.expect(superagentResponse.error).to.be.equal(null);
-    }
-  );
+  // test('Check constructor calls _parseLambda() for typeof data==="string" with errorMessage as string',
+  //   () => {
+  //     let _rawData = {
+  //       body: '{"bodyObj":"Test body value","errorMessage":"Out of memory"}'
+  //     };
+  //     let _rawError = null;
+  // 
+  //     superagentResponse = new SuperagentResponse(request, _rawData, _rawError);
+  // 
+  //     chai.expect(superagentResponse.data).to.be.eql(null);
+  //     chai.expect(superagentResponse.error).to.be.equal(null);
+  //   }
+  // );
 
   test('Check constructor calls _parseLambda() for typeof data==="string" with errorMessage,errorStack,errorType',
     () => {
