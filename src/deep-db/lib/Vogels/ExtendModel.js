@@ -142,10 +142,13 @@ export class ExtendModel {
     let _this = this;
 
     return {
+      
+      // Avoid 3'rd party errors (unhandled rejections) 
+      // by wrapping the callback in a setImmediate
       _findUntilLimitCb(cb, ...args) {
         this._findUntilLimit(...args)
-          .then(result => cb(null, result))
-          .catch(error => cb(error, null));
+          .then(result => setImmediate(() => cb(null, result)))
+          .catch(error => setImmediate(() => cb(error, null)));
       },
       
       // Fixes DynamoDB limit behavior
