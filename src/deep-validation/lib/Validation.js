@@ -20,12 +20,14 @@ export class Validation extends Kernel.ContainerAware {
   /**
    * @param {Array} models
    * @param {Boolean} forcePartitionField
+   * @param {String[]} nonPartitionedModels
    */
-  constructor(models = [], forcePartitionField = false) {
+  constructor(models = [], forcePartitionField = false, nonPartitionedModels = []) {
     super();
 
     this._forcePartitionField = forcePartitionField;
     this._schemas = this._rawModelsToSchemas(models);
+    this._nonPartitionedModels = nonPartitionedModels;
   }
 
   /**
@@ -184,6 +186,7 @@ export class Validation extends Kernel.ContainerAware {
    */
   boot(kernel, callback) {
     this._schemas = this._rawModelsToSchemas(kernel.config.models);
+    this._nonPartitionedModels = kernel.config.nonPartitionedModels || [];
 
     let universalRequire = new Core.Generic.UniversalRequire();
     let remainingSchemas = kernel.config.validationSchemas.length;
@@ -256,7 +259,7 @@ export class Validation extends Kernel.ContainerAware {
 
         modelsSchema[schemaName] = Validation.normalizeSchema(schema);
 
-        if (!schema.AccountId && this._usePartitionField && !this.isSystemModel(schemaName)) {
+        if (!schema.AccountId && this._usePartitionField && this.isPartitionedModel(schemaName)) {
           modelsSchema[schemaName] = modelsSchema[schemaName].keys({
             AccountId: Joi.string().default('anonymous'),
           });
@@ -279,18 +282,8 @@ export class Validation extends Kernel.ContainerAware {
    * @param {String} modelName
    * @returns {Boolean}
    */
-  isSystemModel(modelName) {
-    return Validation.SYSTEM_MODELS.indexOf(modelName) !== -1;
-  }
-
-  /**
-   * @returns {String[]}
-   */
-  static get SYSTEM_MODELS() {
-    return [
-      'Account',
-      'User',
-    ];
+  isPartitionedModel(modelName) {
+    return this._nonPartitionedModels.indexOf(modelName) === -1;
   }
 
   /**
