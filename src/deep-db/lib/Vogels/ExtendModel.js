@@ -155,9 +155,12 @@ export class ExtendModel {
       // @ref http://docs.aws.amazon.com/amazondynamodb/latest/developerguide/QueryAndScan.html#ScanQueryLimit
       _findUntilLimit(query, limit, _scannedCount = 0, _accumulator = [], _lastKey = null) {
         return new Promise((resolve, reject) => {
+          if (_lastKey) {
+            query.startKey(_lastKey);
+          }
+          
           query
             .limit(limit * 100) // DDB native limit (#ExclusiveStartKey)
-            .startKey(_lastKey)
             .exec((error, result) => {
               if (error) {
                 return reject(error);
