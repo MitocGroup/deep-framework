@@ -146,7 +146,7 @@ export class ExtendModel {
       // Avoid 3'rd party errors (unhandled rejections) 
       // by wrapping the callback in a setImmediate
       _findUntilLimitCb(cb, ...args) {
-        this._findUntilLimit(...args)
+        _this.model._findUntilLimit(...args)
           .then(result => setImmediate(() => cb(null, result)))
           .catch(error => setImmediate(() => cb(error, null)));
       },
@@ -185,7 +185,7 @@ export class ExtendModel {
                 return resolve(finalResult);
               }
               
-              this._findUntilLimit(query, limit, _scannedCount, _accumulator, _lastKey)
+              _this.model._findUntilLimit(query, limit, _scannedCount, _accumulator, _lastKey)
                 .then(resolve).catch(reject);
             });
         });
@@ -196,7 +196,7 @@ export class ExtendModel {
       },
 
       findAllPaginated: function(startKey, limit, cb) {
-        return this._findUntilLimitCb(
+        return _this.model._findUntilLimitCb(
           cb, 
           _this.model.deepQuery(), 
           limit, 
@@ -213,7 +213,7 @@ export class ExtendModel {
       },
 
       findOneBy: function(fieldName, value, cb) {
-        return this.findBy(fieldName, value, cb, 1);
+        return _this.model.findBy(fieldName, value, cb, 1);
       },
 
       findBy: function(fieldName, value, cb, limit = ExtendModel.DEFAULT_LIMIT) {
@@ -221,7 +221,7 @@ export class ExtendModel {
           .deepQuery(ExtendModel.SCAN_STRATEGY)
           .where(fieldName).equals(value);
         
-        return this._findUntilLimitCb(cb, query, limit);
+        return _this.model._findUntilLimitCb(cb, query, limit);
       },
 
       findAllBy: function(fieldName, value, cb) {
@@ -242,7 +242,7 @@ export class ExtendModel {
       },
 
       findOneMatching: function(params, cb) {
-        return this.findMatching(params, cb, 1);
+        return _this.model.findMatching(params, cb, 1);
       },
       
       findMatching: function(params, cb, limit = ExtendModel.DEFAULT_LIMIT) {
@@ -254,7 +254,7 @@ export class ExtendModel {
           .expressionAttributeValues(scanParams.filterExpressionValues)
           .expressionAttributeNames(scanParams.filterExpressionNames);
           
-        return this._findUntilLimitCb(cb, query, limit);
+        return _this.model._findUntilLimitCb(cb, query, limit);
       },
 
       findAllMatching: function(params, cb) {
