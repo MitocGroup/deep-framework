@@ -378,7 +378,7 @@ export class DB extends Kernel.ContainerAware {
    * @returns {Boolean}
    */
   isSystemModel(modelName) {
-    return DB.SYSTEM_MODELS.indexOf(modelName) !== -1;
+    return Validation.SYSTEM_MODELS.indexOf(modelName) !== -1;
   }
 
   /**
