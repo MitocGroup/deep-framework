@@ -15,7 +15,7 @@ The AWS Services we are giving access to:
  - [IAM](https://aws.amazon.com/iam/)
  - [SQS](https://aws.amazon.com/sqs/)
  - [ES](https://aws.amazon.com/elasticsearch-service/)
- 
+
 The steps
 =========
 
@@ -33,57 +33,70 @@ The steps
 
 ![Users sidebar item](assets/users-item.png)
 
- - Click the `Create New Users` button
+ - Click on the `Add User` button
 
-![Create New Users button](assets/new-users-button.png)
+![Add User button](assets/add-user-button.png)
 
- - Enter an username in one of the `Enter User Names` text fields
+ - Enter an username into the `User name` text field
 
-![Enter User Names text fields](assets/enter-user-names.png)
+![User Name text field](assets/username-textarea.png)
 
- - Click `Create` at the bottom of the page
+ - Check the `Programmatic access` option in the `Access type` area
 
-![Create button](assets/create-button.png)
+![Access type checkbox](assets/access-type-checkbox.png)
 
- - Click on the `Hide User Security Credentials` spoiler link and SAVE your security credentials
+ - Click on `Next: Permissions` at the bottom of the page
 
-![Credentials spoiler link](assets/credentials-dropdown.png)
+![Create button](assets/next-permissions-button.png)
 
- - Click on the `Close` button TWICE at the bottom of the page
+ - Select the `Attach existing policies directly` option
 
-![Close button](assets/close-credentials-button.png)
+![Attach policy button](assets/attach-policy-button.png)
 
- - Click on your user from the user list
+ - Click on `Create Policy` button
 
-![User list](assets/user-list.png)
+![Create Policy button](assets/create-policy-button.png)
 
- - Go to the `Inline Policies` section and click on the arrow from the right side to open the spoiler
+ - In the new opened tab click on `Connect` button for `Create Your Own Policy` option
 
-![Inline Policies section](assets/inline-policies-section.png)
+![Select button](assets/create-policy-select-button.png)
 
- - Click on the `click here` link inside the `Inline Policies` spoiler
+ - Type a name for the policy in `Policy Name` text field
 
-![click here link](assets/click-here-link.png)
-
- - Select the `Custom Policy` list item and than on the appeared `Select` button
-
-![Custom Policy item](assets/custom-policy-item.png)
+![Policy Name text area](assets/policy-name-textarea.png)
 
  - Copy the content of [secured IAM policy](assets/aws-secure-deep-policy.json) into the `Policy Document` text area
 
 ![Policy Document text area](assets/policy-document-textarea.png)
 
- - Type a name for the policy in `Policy Name` text field
+ - Click on `Create Policy` button
 
-![Policy Name text field](assets/policy-name-text-field.png)
+![Create Policy button](assets/create-policy-button2.png)
 
- - Click on the `Apply Policy` button from the bottom of the page
+ - Switch back to the `Add user` tab and click on `Refresh` button
 
-![Apply Policy button](assets/apply-policy-button.png)
+![Refresh button](assets/refresh-button.png)
+
+ - Select the newly created policy from the list
+
+![Select policy checkbox](assets/policy-checkbox.png)
+
+ - Click on the `Next: Review` button
+
+![Next Review button](assets/next-review-button.png)
+
+ - Click on the `Create user` button at the bottom of the page
+
+![Create user button](assets/create-user-button.png)
+
+ - Click on the `Download .csv` button to save the credentials
+
+![Download button](assets/download-button.png)
 
  - Done!
 
 > Using credentials in the [deploy config](../tools/deploy.md#example-of-deeployjson)
 
-> If your credentials were compromised you can make them inactive by clicking `Make Inactive` link
-> from the `Actions` section in `Access Keys` of the chosen user ![Make Inactive](assets/make-credentials-inactive.png)
+> If your credentials were compromised you can make them inactive by clicking `Make inactive` link
+> from the `Status` section in `Access Keys` of the chosen user ![Make Inactive](assets/make-inactive.png)
+
