@@ -27,7 +27,7 @@ export class Validation extends Kernel.ContainerAware {
 
     this._forcePartitionField = forcePartitionField;
     this._schemas = this._rawModelsToSchemas(models);
-    this._nonPartitionedModels = nonPartitionedModels;
+    this._nonPartitionedModels = nonPartitionedModels || [];
   }
 
   /**
@@ -283,7 +283,7 @@ export class Validation extends Kernel.ContainerAware {
    * @returns {Boolean}
    */
   isPartitionedModel(modelName) {
-    return this._nonPartitionedModels.indexOf(modelName) === -1;
+    return (this._nonPartitionedModels || []).indexOf(modelName) === -1;
   }
 
   /**
