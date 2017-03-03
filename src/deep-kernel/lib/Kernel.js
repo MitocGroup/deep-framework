@@ -415,7 +415,7 @@ export class Kernel {
   /**
    * @returns {Object}
    */
-  get `config`() {
+  get config() {
 
     // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options
     return this._config;
@@ -442,7 +442,7 @@ export class Kernel {
    *
    * @returns {*}
    */
-  getParam(paramPath, defaultValue = null, _paramsObj = null) {
+  getParam(paramPath, defaultValue = null) {
     return this._findParam(
       this._config.globals, 
       paramPath, 
@@ -464,6 +464,8 @@ export class Kernel {
     let result = params;
     
     for (let i = 0; i < paramParts.length; i++) {
+      let param = paramParts[i];
+      
       if (!result || typeof result !== 'object' && !result.hasOwnProperty(param)) {
         return defaultValue;
       }
