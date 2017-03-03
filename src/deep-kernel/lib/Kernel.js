@@ -415,10 +415,63 @@ export class Kernel {
   /**
    * @returns {Object}
    */
-  get config() {
+  get `config`() {
 
     // @todo - create a class DeepConfig or smth, that will hold global config and expose shortcuts to different options
     return this._config;
+  }
+  
+  /**
+   * @param {String} msIdentifier
+   * @param {String} paramPath
+   * @param {*} defaultValue
+   *
+   * @returns {*}
+   */
+  getMsParam(msIdentifier, paramPath, defaultValue = null) {
+    return this._findParam(
+      this._config[msIdentifier].parameters, 
+      paramPath, 
+      defaultValue
+    );
+  }
+  
+  /**
+   * @param {String} paramPath
+   * @param {*} defaultValue
+   *
+   * @returns {*}
+   */
+  getParam(paramPath, defaultValue = null, _paramsObj = null) {
+    return this._findParam(
+      this._config.globals, 
+      paramPath, 
+      defaultValue
+    );
+  }
+  
+  /**
+   * @param {*} params
+   * @param {String} paramPath
+   * @param {*} defaultValue
+   *
+   * @returns {*}
+   *
+   * @private
+   */
+  _findParam(params, paramPath, defaultValue) {
+    let paramParts = paramPath.split('|').map(x => x.trim());
+    let result = params;
+    
+    for (let i = 0; i < paramParts.length; i++) {
+      if (!result || typeof result !== 'object' && !result.hasOwnProperty(param)) {
+        return defaultValue;
+      }
+      
+      result = result[param];
+    }
+    
+    return result;
   }
 
   /**
