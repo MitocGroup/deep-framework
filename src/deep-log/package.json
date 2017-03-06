@@ -1,6 +1,6 @@
 {
   "name": "deep-log",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "description": "DEEP Log Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -52,14 +52,13 @@
   "scripts": {
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
-    "prepare-browserify": "npm install raven-js@1.1.*",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core babel-preset-es2015"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
-    "raven": "^0.7.x",
+    "raven": "^1.1.x",
     "joi": "^5.x.x"
   },
   "optionalDependencies": {
