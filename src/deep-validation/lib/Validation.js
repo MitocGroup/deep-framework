@@ -26,8 +26,9 @@ export class Validation extends Kernel.ContainerAware {
     super();
 
     this._forcePartitionField = forcePartitionField;
-    this._schemas = this._rawModelsToSchemas(models);
     this._nonPartitionedModels = nonPartitionedModels || [];
+
+    this._schemas = this._rawModelsToSchemas(models);
   }
 
   /**
