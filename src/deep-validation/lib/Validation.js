@@ -185,8 +185,8 @@ export class Validation extends Kernel.ContainerAware {
    * @param {Function} callback
    */
   boot(kernel, callback) {
-    this._schemas = this._rawModelsToSchemas(kernel.config.models);
     this._nonPartitionedModels = kernel.config.nonPartitionedModels || [];
+    this._schemas = this._rawModelsToSchemas(kernel.config.models);
 
     let universalRequire = new Core.Generic.UniversalRequire();
     let remainingSchemas = kernel.config.validationSchemas.length;
@@ -283,7 +283,7 @@ export class Validation extends Kernel.ContainerAware {
    * @returns {Boolean}
    */
   isPartitionedModel(modelName) {
-    return (this._nonPartitionedModels || []).indexOf(modelName) === -1;
+    return this._nonPartitionedModels.indexOf(modelName) === -1;
   }
 
   /**
