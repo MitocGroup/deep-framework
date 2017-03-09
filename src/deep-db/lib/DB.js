@@ -25,13 +25,15 @@ export class DB extends Kernel.ContainerAware {
    * @param {Array} models
    * @param {Object} tablesNames
    * @param {Boolean} forcePartitionField
+   * @param {String[]} nonPartitionedModels
    */
-  constructor(models = [], tablesNames = {}, forcePartitionField = false) {
+  constructor(models = [], tablesNames = {}, forcePartitionField = false, nonPartitionedModels = []) {
     super();
 
     this._tablesNames = tablesNames;
-    this._validation = new Validation(models, forcePartitionField);
     this._forcePartitionField = forcePartitionField;
+
+    this._validation = new Validation(models, forcePartitionField, nonPartitionedModels);
     this._models = this._rawModelsToVogels(models);
   }
 
