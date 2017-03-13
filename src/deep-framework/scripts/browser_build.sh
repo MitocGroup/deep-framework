@@ -53,6 +53,10 @@ cd "${path}"/../node_modules/deep-log && \
     "${npm}" run prepare-browserify
 cd "${path}"/../node_modules/deep-cache && \
     "${npm}" run prepare-browserify
+cd "${path}"/../node_modules/deep-resource && \
+    "${npm}" run prepare-browserify    
+    cd "${path}"/../node_modules/deep-search && \
+        "${npm}" run prepare-browserify   
 
 echo "- Installing shared aws-sdk@^2.2.x instance"
 cd "${path}"/../
@@ -61,11 +65,11 @@ cd "${path}"/../
 echo "- Lookup for node modules to require"
 
 # used to require/exclude modules
-NPM_REGEX='(src/deep-framework|.*((deep\-(fs|db|event|notification|search)).*|lsmod|ioredis|vogels|raven(?!-js)).*)$'
+NPM_REGEX='(src/deep-framework|.*((deep\-(fs|db|event|notification|search)).*|lsmod|ioredis|vogels|raven(?!-js)|aws4(?!-browser)).*)$'
 
 # require
 browserify_require=""
-npm_modules=($("${path}"/npm_modules_lookup.js "${path}"/../ "($NPM_REGEX)" 'raven-js:raven'))
+npm_modules=($("${path}"/npm_modules_lookup.js "${path}"/../ "($NPM_REGEX)" 'raven-js:raven,aws4-browser:aws4'))
 for module_entry_point in ${npm_modules[@]}; do
     browserify_require=${browserify_require}' -r '${module_entry_point}' '
 done
