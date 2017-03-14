@@ -127,7 +127,16 @@ export class SuperagentResponse extends Response {
     } else if (this._data && !this._error) {
       this._statusCode = 200;
     } else {
-      this._statusCode = 500;
+      if (this._error && typeof this._error === 'object' 
+        && this._error.crossDomain 
+        && typeof this._error.crossDomain.status === 'undefined') {
+          
+        this._statusCode = 403;
+      } else {
+        this._statusCode = this._error && typeof this._error === 'object'
+          ? (this._error.status || 500)
+          : 500;
+      }
     }
   }
 }
