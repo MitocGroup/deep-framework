@@ -1,6 +1,6 @@
 {
   "name": "deep-log",
-  "version": "1.12.0",
+  "version": "1.12.5",
   "description": "DEEP Log Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -50,9 +50,9 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
+    "prepare-browserify": "npm install raven-js@^1.1.x",
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
-    "prepare-browserify": "npm install raven-js@1.1.*",
     "prepublish": "npm run compile",
     "pretest": "npm link deep-kernel deep-core babel-preset-es2015"
   },

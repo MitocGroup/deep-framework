@@ -330,7 +330,9 @@ export class Runtime extends Interface {
     ) {
       let identityPoolId = this._context.identity.cognitoIdentityPoolId;
 
-      if (this.securityService.identityPoolId !== identityPoolId) {
+      if (this.securityService.identityPoolId !== identityPoolId
+        && !this._kernel.container.localBackend) {
+          
         return Promise.reject(new InvalidCognitoIdentityException(identityPoolId));
       }
 

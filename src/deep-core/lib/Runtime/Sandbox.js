@@ -28,8 +28,15 @@ export class Sandbox {
    */
   run(...args) {
     let execDomain = domain.create();
+    let failCbTriggered = false;
 
     let failCb = (error) => {
+      if (failCbTriggered) {
+        return;
+      }
+      
+      failCbTriggered = true;
+      
       try {
         execDomain.exit();
       } catch (e) {/* silent fail */}
