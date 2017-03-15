@@ -524,7 +524,7 @@ export class Request {
 
     let decoratedCallback = (response) => {
       if (this._retryManager.isRetryable(response)) {
-        return this._send();
+        return this._send(callback);
       }
 
       if (this.method.toUpperCase() === 'GET') {

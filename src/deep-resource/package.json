@@ -1,6 +1,6 @@
 {
   "name": "deep-resource",
-  "version": "1.10.0",
+  "version": "1.12.5",
   "description": "DEEP Resource Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -60,6 +60,7 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
+    "prepare-browserify": "npm install aws4-browser@^1.0.x",
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile",
@@ -68,10 +69,10 @@
   "dependencies": {
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
-    "superagent": "^1.4.x",
-    "aws4": "1.1.x",
-    "url-parse": "^1.0.x",
-    "qs": "^5.2.x"
+    "superagent": "^3.5.x",
+    "aws4": "^1.6.x",
+    "url-parse": "^1.1.x",
+    "qs": "^6.4.x"
   },
   "optionalDependencies": {
     "aws-sdk": "^2.2.x"

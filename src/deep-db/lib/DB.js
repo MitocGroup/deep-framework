@@ -25,13 +25,15 @@ export class DB extends Kernel.ContainerAware {
    * @param {Array} models
    * @param {Object} tablesNames
    * @param {Boolean} forcePartitionField
+   * @param {String[]} nonPartitionedModels
    */
-  constructor(models = [], tablesNames = {}, forcePartitionField = false) {
+  constructor(models = [], tablesNames = {}, forcePartitionField = false, nonPartitionedModels = []) {
     super();
 
     this._tablesNames = tablesNames;
-    this._validation = new Validation(models, forcePartitionField);
     this._forcePartitionField = forcePartitionField;
+
+    this._validation = new Validation(models, forcePartitionField, nonPartitionedModels);
     this._models = this._rawModelsToVogels(models);
   }
 
@@ -361,7 +363,7 @@ export class DB extends Kernel.ContainerAware {
    */
   setDynamoDBPartitionKey(partitionKey) {
     for (let modelName in this._models) {
-      if (!this._models.hasOwnProperty(modelName) || this.isSystemModel(modelName)) {
+      if (!this._models.hasOwnProperty(modelName) || !this.validation.isPartitionedModel(modelName)) {
         continue;
       }
       
@@ -371,14 +373,6 @@ export class DB extends Kernel.ContainerAware {
     }
 
     return this;
-  }
-
-  /**
-   * @param {String} modelName
-   * @returns {Boolean}
-   */
-  isSystemModel(modelName) {
-    return DB.SYSTEM_MODELS.indexOf(modelName) !== -1;
   }
 
   /**
@@ -393,7 +387,7 @@ export class DB extends Kernel.ContainerAware {
       schema: this._validation.getSchema(name),
     };
 
-    if (this._usePartitionField && !this.isSystemModel(name)) {
+    if (this._usePartitionField && this.validation.isPartitionedModel(name)) {
       schema.hashKey = ExtendModel.PARTITION_FIELD;
       schema.rangeKey = 'Id';
     } else {
@@ -430,13 +424,6 @@ export class DB extends Kernel.ContainerAware {
    */
   get _security() {
     return this.container.get('security');
-  }
-
-  /**
-   * @returns {String[]}
-   */
-  static get SYSTEM_MODELS() {
-    return ['Account', 'User'];
   }
 
   /**
