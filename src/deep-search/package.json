@@ -1,6 +1,6 @@
 {
   "name": "deep-search",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "DEEP Search Library",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -47,6 +47,7 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
+    "prepare-browserify": "npm install aws4-browser@^1.0.x",
     "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
     "postinstall": "bash node-bin/cleanup.sh && npm run compile",

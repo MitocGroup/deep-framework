@@ -177,6 +177,13 @@ export class Service {
   }
 
   /**
+   * @returns {String}
+   */
+  static get LAMBDA_EDGE() {
+    return 'edgelambda';
+  }
+
+  /**
    * @param {String} service
    * @returns {String}
    */
@@ -221,6 +228,7 @@ export class Service {
       Service.CLOUD_WATCH_EVENTS,
       Service.CLOUD_WATCH,
       Service.SIMPLE_EMAIL_SERVICE,
+      Service.LAMBDA_EDGE,
     ];
   }
 }
