@@ -10,6 +10,7 @@ if [ -d 'node_modules/elasticsearch/' ]; then
     rm -f node_modules/elasticsearch/src/lib/apis/*.js
 
     # Restoring saved default version
+    # Please ensure es-mocks are up to date!!!
     mv node_modules/elasticsearch/src/lib/apis/default.version node_modules/elasticsearch/src/lib/apis/2_3.js
 
     # Adding custom bootstrapers
