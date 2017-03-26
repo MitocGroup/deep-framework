@@ -91,10 +91,11 @@ function eval_or_exit() {
 ###   0 or 1                                                              ###
 #############################################################################
 IS_ENV_VARS_AVAILABLE () {
-  if [ -z $GITHUB_OAUTH_TOKEN ] || [ -z $AWS_ACCESS_KEY_ID ] || [ -z AWS_SECRET_ACCESS_KEY ] || \
-    [ -z $S3_BUCKET_NAME ] || [ -z $AWS_DEFAULT_REGION ]; then
+  if [ -z $GITHUB_OAUTH_TOKEN ] || \
+    [ -z $AWS_ACCESS_KEY_ID ] || [ -z AWS_SECRET_ACCESS_KEY ] || \
+    [ -z $AWS_DEFAULT_REGION ] || [ -z $AWS_S3_BUCKET ]; \
+  then
     echo 0;
-
     return;
   fi
 
