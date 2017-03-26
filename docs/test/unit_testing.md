@@ -98,7 +98,7 @@ branches:
 before_install:
 - npm install -g jspm
 - if [ -f 'package.json' ]; then echo "package.json already exists"; else cp test/package.json . ; fi 
-- test/bin/setup_npm.sh
+- bin/test/setup_npm.sh
 
 # run codacy and coveralls to analyse code and send coverage reports to them 
 after_success:
