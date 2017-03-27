@@ -60,9 +60,10 @@ export class Elasticsearch {
 
   /**
    * @returns {String}
+   * 
    * @note - If you want to change this version do update deep-search/node-bin/cleanup.sh also
    */
   static get API_VERSION() {
-    return '2.1';
+    return '2.3';
   }
 }
