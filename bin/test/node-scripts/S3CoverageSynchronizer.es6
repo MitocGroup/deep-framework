@@ -30,7 +30,7 @@ export default class S3CoverageSynchronizer {
    * @constructor
    */
   static get BUCKET_NAME() {
-    return process.env.S3_BUCKET_NAME;
+    return process.env.AWS_S3_BUCKET;
   }
 
   /**
