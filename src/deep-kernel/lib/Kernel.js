@@ -429,8 +429,12 @@ export class Kernel {
    * @returns {*}
    */
   getMsParam(msIdentifier, paramPath, defaultValue = null) {
+    if (!this._config.microservices.hasOwnProperty(msIdentifier)) {
+      throw new Error(`Unknown microservice identifier "${msIdentifier}".`);
+    }
+
     return this._findParam(
-      this._config[msIdentifier].parameters, 
+      this._config.microservices[msIdentifier].parameters,
       paramPath, 
       defaultValue
     );
