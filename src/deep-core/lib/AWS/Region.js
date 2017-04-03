@@ -100,6 +100,13 @@ export class Region {
   }
 
   /**
+   * @returns {String}
+   */
+  static get AP_SOUTH_MUMBAI() {
+    return 'ap-south-1';
+  }
+
+  /**
    * @param {String} name
    * @returns {Boolean}
    */
@@ -125,6 +132,7 @@ export class Region {
       Region.US_EAST_OHIO,
       Region.US_WEST_N_CALIFORNIA,
       Region.US_WEST_OREGON,
+      Region.AP_SOUTH_MUMBAI,
     ];
   }
 
