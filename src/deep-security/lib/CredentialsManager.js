@@ -87,30 +87,19 @@ export class CredentialsManager {
     let credentials = role ? this._rolesCredentials[this.roleSessionKey(role)] : this._systemCredentials;
     credentials = credentials || this._createCognitoIdentityCredentials(role);
 
-    if (!this.validCredentials(credentials) && refreshOnExpired) {
-      return this.refreshIdentityProviderIfNeeded().then(() => {
-        credentials = this._createCognitoIdentityCredentials(role);
+    if (!this.validCredentials(credentials) && refreshOnExpired && !this.token.lambdaContext) {
+      credentials = this._createCognitoIdentityCredentials(role);
 
-        if (role) {
-          this._rolesCredentials[this.roleSessionKey(role)] = credentials;
-        } else {
-          this.systemCredentials = credentials;
-        }
+      if (role) {
+        this._rolesCredentials[this.roleSessionKey(role)] = credentials;
+      } else {
+        this.systemCredentials = credentials;
+      }
 
-        return this._refreshCredentials(credentials);
-      });
+      return this._refreshCredentials(credentials);
     }
 
     return Promise.resolve(credentials);
-  }
-
-  /**
-   * @returns {Promise}
-   */
-  refreshIdentityProviderIfNeeded() {
-    return this.identityProvider && !this.identityProvider.isTokenValid()
-      ? this.identityProvider.refresh()
-      : Promise.resolve();
   }
 
   /**

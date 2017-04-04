@@ -7,7 +7,6 @@
 import {MissingLoginProviderException} from './Exception/MissingLoginProviderException';
 import {IdentityProviderMismatchException} from './Exception/IdentityProviderMismatchException';
 import {InvalidProviderIdentityException} from './Exception/InvalidProviderIdentityException';
-import {MissingRefreshTokenException} from './Exception/MissingRefreshTokenException';
 
 /**
  * 3rd Party identity provider (Amazon, Facebook, Google, etc.)
@@ -25,10 +24,7 @@ export class IdentityProvider {
       throw new MissingLoginProviderException(providerName);
     }
 
-    if (identityMetadata.provider
-      && identityMetadata.provider !== providerName
-      && providerName !== IdentityProvider.BACKEND_PROVIDER) {
-
+    if (identityMetadata.provider && identityMetadata.provider !== providerName) {
       throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);
     }
 
@@ -39,28 +35,7 @@ export class IdentityProvider {
     this._tokenExpTime = new Date(normalizedMetadata.expireTime);
     this._userId = normalizedMetadata.userId;
     this._providers = providers;
-    this._refreshToken = normalizedMetadata.refreshToken;
-    this._domain = providerDomain;
-    this._name = providerName;
-  }
-
-  /**
-   * @param {Object} metadata
-   * @returns {IdentityProvider}
-   */
-  static createBackendProvider(metadata) {
-    let provider = new IdentityProvider(null, IdentityProvider.BACKEND_PROVIDER, metadata);
-
-    provider.name = metadata.name;
-
-    return provider;
-  }
-
-  /**
-   * @param {String} name
-   */
-  set name(name) {
-    this._name = name;
+    this._name = providerDomain;
   }
 
   /**
@@ -68,7 +43,7 @@ export class IdentityProvider {
    * @param {Object} providers
    * @returns {*}
    */
-  static getProviderDomain(providerName, providers) {
+  getProviderDomain(providerName, providers) {
     let domainRegexp;
 
     switch(providerName) {
@@ -86,9 +61,6 @@ export class IdentityProvider {
         break;
       case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
         domainRegexp = /^cognito\-idp\.[\w\d\-]+\.amazonaws\.com\/[\w\d\-]+$/;
-        break;
-      case IdentityProvider.BACKEND_PROVIDER:
-        return IdentityProvider.BACKEND_PROVIDER;
         break;
     }
 
@@ -121,7 +93,6 @@ export class IdentityProvider {
     let expiresIn  = null;
     let expireTime = null;
     let userId = null;
-    let refreshToken = null;
 
     switch(providerName) {
       case IdentityProvider.FACEBOOK_PROVIDER:
@@ -131,9 +102,7 @@ export class IdentityProvider {
         break;
 
       case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
-        let userSession = identityMetadata.getSignInUserSession();
-        let idTokenInstance = userSession.getIdToken();
-        refreshToken = userSession.getRefreshToken().getToken();
+        let idTokenInstance = identityMetadata.getSignInUserSession().getIdToken();
         token = idTokenInstance.getJwtToken();
         expireTime = idTokenInstance.getExpiration() * 1000;
         break;
@@ -149,11 +118,6 @@ export class IdentityProvider {
         token = identityMetadata.access_token;
         userId = identityMetadata.user_id;
         break;
-
-      // backend identity provider has the same structure as normalized metadata. see `toJSON` method
-      case IdentityProvider.BACKEND_PROVIDER:
-        return identityMetadata;
-        break;
     }
 
     userId = userId || null;
@@ -166,7 +130,7 @@ export class IdentityProvider {
       throw new InvalidProviderIdentityException(providerName);
     }
 
-    return {token, userId, expireTime, refreshToken};
+    return {token, userId, expireTime};
   }
 
   /**
@@ -186,13 +150,6 @@ export class IdentityProvider {
   /**
    * @returns {String}
    */
-  get domain() {
-    return this._domain;
-  }
-
-  /**
-   * @returns {String}
-   */
   get userToken() {
     return this._userToken;
   }
@@ -205,13 +162,6 @@ export class IdentityProvider {
   }
 
   /**
-   * @returns {String}
-   */
-  get refreshToken() {
-    return this._refreshToken;
-  }
-
-  /**
    * @returns {boolean}
    */
   isTokenValid() {
@@ -220,45 +170,6 @@ export class IdentityProvider {
     }
 
     return false;
-  }
-
-  /**
-   * @param {Object} idpSnapshot
-   * 
-   * @returns {IdentityProvider}
-   */
-  fillFromSnapshot(idpSnapshot) {
-    this._refreshToken = idpSnapshot.refreshToken;
-
-    return this;
-  }
-
-  /**
-   * return normalizedMetadata compatible structure, see `_normalizeIdentityMetadata` method
-   * @returns {{name: *, refreshToken: *}}
-   */
-  toJSON() {
-    return {
-      token: this._userToken,
-      expireTime: this._tokenExpTime,
-      userId: this._userId,
-      refreshToken: this._refreshToken,
-      name: this._name,
-    };
-  }
-
-  /**
-   * @returns {Promise}
-   */
-  refresh() {
-    if (!this._refreshToken) {
-      return Promise.reject(new MissingRefreshTokenException());
-    }
-
-    switch (this._name) {
-      case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
-        
-    }
   }
 
   /**
@@ -313,12 +224,5 @@ export class IdentityProvider {
    */
   static get AUTH0_PROVIDER() {
     return 'auth0';
-  }
-
-  /**
-   * @returns {String}
-   */
-  static get BACKEND_PROVIDER() {
-    return 'backend';
   }
 }
