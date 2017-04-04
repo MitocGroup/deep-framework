@@ -13,6 +13,7 @@ import {Exception as CoreException} from 'deep-core';
 import {Security} from './Security';
 import {TokenManager} from './TokenManager';
 import {CredentialsManager} from './CredentialsManager';
+import {IdentityProvider} from './IdentityProvider';
 
 /**
  * Security token holds details about logged user
@@ -385,6 +386,16 @@ export class Token {
    * @private
    */
   _fillFromTokenSnapshot(tokenSnapshot) {
+    if (tokenSnapshot.identityProvider) {
+      let providerSnapshot = tokenSnapshot.identityProvider;
+
+      if (!this._identityProvider) {
+        this._identityProvider = IdentityProvider.createBackendProvider(providerSnapshot);
+      }
+
+      this._identityProvider.fillFromSnapshot(providerSnapshot);
+    }
+
     if (this._credentialsManager.validCredentials(tokenSnapshot.credentials)) {
       this._credentialsManager.systemCredentials = tokenSnapshot.credentials;
       this._credentialsManager.rolesCredentials = tokenSnapshot.rolesCredentials;
@@ -404,6 +415,7 @@ export class Token {
         userToken: this._identityProvider.userToken,
         tokenExpirationTime: this._identityProvider.tokenExpirationTime,
         userId: this._identityProvider.userId,
+        refreshToken: this._identityProvider.refreshToken,
       };
 
       this._cacheService.set(
@@ -585,6 +597,7 @@ export class Token {
       credentials: this._credentialsManager.systemCredentials,
       rolesCredentials: this._credentialsManager.rolesCredentials,
       identityId: this.identityId,
+      identityProvider: this._identityProvider.toJSON(),
     };
   }
 
