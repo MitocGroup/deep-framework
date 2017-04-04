@@ -57,7 +57,7 @@ export class KernelDriver extends AbstractDriver {
     new ComplexDriver()
       .inherit(this)
       .add((new ScopeDriver(this._scopeKey)).setScope(this._globalScope))
-      .add(this._kernel.isBackend ? new FsDriver(this._configFile) : new HttpDriver(this._configFile))
+      .add(this._kernel.isBackend ? new FsDriver(this._configFile) : new HttpDriver(this._configFile, true))
       .load();
   }
 
