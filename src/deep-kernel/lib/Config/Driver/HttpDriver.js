@@ -9,11 +9,13 @@ import {AbstractDriver} from './AbstractDriver';
 export class HttpDriver extends AbstractDriver {
   /**
    * @param {String} endpoint
+   * @param {Boolean} enforceRoot
    */
-  constructor(endpoint = null) {
+  constructor(endpoint = null, enforceRoot = false) {
     super();
 
     this._endpoint = endpoint;
+    this._enforceRoot = enforceRoot;
   }
 
   /**
@@ -39,6 +41,10 @@ export class HttpDriver extends AbstractDriver {
    */
   _load(endpoint = null) {
     this._endpoint = endpoint || this._endpoint;
+
+    if (this._enforceRoot && !/^http|\//i.test(this._endpoint)) {
+      this._endpoint = `/${this._endpoint}`;
+    }
 
     let client = new XMLHttpRequest();
 
