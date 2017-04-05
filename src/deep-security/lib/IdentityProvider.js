@@ -94,7 +94,6 @@ export class IdentityProvider {
         break;
       case IdentityProvider.SNAPSHOT_PROVIDER:
         return IdentityProvider.SNAPSHOT_PROVIDER;
-        break;
     }
 
     if (!domainRegexp) {
@@ -160,7 +159,6 @@ export class IdentityProvider {
       // backend identity provider has the same structure as normalized metadata. see `toJSON` method
       case IdentityProvider.SNAPSHOT_PROVIDER:
         return identityMetadata;
-        break;
     }
 
     userId = userId || null;
