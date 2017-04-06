@@ -405,7 +405,7 @@ export class Token {
   _saveToken() {
     if (this.identityProvider) {
       this._cacheService.set(
-        this.identity,
+        Token.IDENTITY_PROVIDER_CACHE_KEY,
         JSON.stringify(this._identityProvider.toJSON()),
         parseInt((this.identityProvider.tokenExpirationTime.getTime() - Date.now()) / 1000)
       );
