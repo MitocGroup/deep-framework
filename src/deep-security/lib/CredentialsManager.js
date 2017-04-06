@@ -87,19 +87,30 @@ export class CredentialsManager {
     let credentials = role ? this._rolesCredentials[this.roleSessionKey(role)] : this._systemCredentials;
     credentials = credentials || this._createCognitoIdentityCredentials(role);
 
-    if (!this.validCredentials(credentials) && refreshOnExpired && !this.token.lambdaContext) {
-      credentials = this._createCognitoIdentityCredentials(role);
+    if (!this.validCredentials(credentials) && refreshOnExpired) {
+      return this.refreshIdentityProviderIfNeeded().then(() => {
+        credentials = this._createCognitoIdentityCredentials(role);
 
-      if (role) {
-        this._rolesCredentials[this.roleSessionKey(role)] = credentials;
-      } else {
-        this.systemCredentials = credentials;
-      }
+        if (role) {
+          this._rolesCredentials[this.roleSessionKey(role)] = credentials;
+        } else {
+          this.systemCredentials = credentials;
+        }
 
-      return this._refreshCredentials(credentials);
+        return this._refreshCredentials(credentials);
+      });
     }
 
     return Promise.resolve(credentials);
+  }
+
+  /**
+   * @returns {Promise}
+   */
+  refreshIdentityProviderIfNeeded() {
+    return this.identityProvider && !this.identityProvider.isTokenValid()
+      ? this.identityProvider.refresh()
+      : Promise.resolve();
   }
 
   /**
@@ -118,7 +129,7 @@ export class CredentialsManager {
 
     if (this.identityProvider && !this.identityProvider.isTokenValid()) {
       let error = new IdentityProviderTokenExpiredException(
-        this.identityProvider.name,
+        this.identityProvider.domain,
         this.identityProvider.tokenExpirationTime
       );
 
@@ -160,7 +171,7 @@ export class CredentialsManager {
 
     if (this.identityProvider) {
       cognitoParams.Logins = {};
-      cognitoParams.Logins[this.identityProvider.name] = this.identityProvider.userToken;
+      cognitoParams.Logins[this.identityProvider.domain] = this.identityProvider.userToken;
       cognitoParams.LoginId = this.identityProvider.userId;
 
       if (role) {
