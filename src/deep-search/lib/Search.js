@@ -94,7 +94,9 @@ export class Search extends Kernel.ContainerAware {
         }
 
         if (domainConfig.type === Core.AWS.Service.ELASTIC_SEARCH) {
-          client = new ElasticSearchClient(domainConfig.url, this.clientDecorator, !this.localBackend);
+          client = new ElasticSearchClient(
+            domainConfig.url, this.clientDecorator, !this.localBackend, domainConfig.version
+          );
         }
 
         if (!client) {
