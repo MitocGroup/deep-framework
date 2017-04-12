@@ -4,7 +4,7 @@ deep-search
 Examples
 --------
 
-NOTE. Before accessing search client please make sure you have enabled search in your app (@see [parameters.json](https://github.com/MitocGroup/deep-microservices-root-angular/blob/master/src/DeepRootAngular/parameters.json#L49) file)
+NOTE. Before accessing search client please make sure you have enabled search in your app (@see [parameters.json](https://github.com/MitocGroup/deep-microservices-root-angular/blob/master/src/deep-root-angular/parameters.json#L49) file)
 
 ```javascript
 let deepSearch = DeepFramework.Kernel.get('search');
