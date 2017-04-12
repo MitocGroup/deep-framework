@@ -18,14 +18,15 @@ export class Elasticsearch {
    * @param {String} host
    * @param {Function|null} decorator
    * @param {Boolean} useAws4Signature
+   * @param {String} apiVersion
    */
-  constructor(host, decorator = null, useAws4Signature = true) {
+  constructor(host, decorator = null, useAws4Signature = true, apiVersion = Elasticsearch.API_VERSION) {
     this._host = host;
     this._decorator = decorator;
 
     let clientOpts = {};
     clientOpts.host = this._host;
-    clientOpts.apiVersion = Elasticsearch.API_VERSION;
+    clientOpts.apiVersion = apiVersion;
 
     if (useAws4Signature) {
       clientOpts.connectionClass = Aws4SignedHttpConnection.createPrototype();
