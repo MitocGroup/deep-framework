@@ -9,6 +9,8 @@ export class FrontendUserProvider extends AbstractUserProvider {
    * @param {Object} deepResourceService
    */
   constructor(retrieveUserResource, deepResourceService) {
+    super();
+
     this._retrieveUserResource = retrieveUserResource;
     this._deepResource = deepResourceService;
   }

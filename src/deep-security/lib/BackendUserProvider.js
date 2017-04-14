@@ -7,6 +7,8 @@ export class BackendUserProvider extends AbstractUserProvider {
    * @param {String} userModel
    */
   constructor(userModel) {
+    super();
+
     this._userModel = userModel;
   }
 
