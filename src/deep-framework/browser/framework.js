@@ -7,9 +7,9 @@ var DeepFramework =
 /******/ 	function __webpack_require__(moduleId) {
 /******/
 /******/ 		// Check if module is in cache
-/******/ 		if(installedModules[moduleId])
+/******/ 		if(installedModules[moduleId]) {
 /******/ 			return installedModules[moduleId].exports;
-/******/
+/******/ 		}
 /******/ 		// Create a new module (and put it into the cache)
 /******/ 		var module = installedModules[moduleId] = {
 /******/ 			i: moduleId,
@@ -64,7 +64,7 @@ var DeepFramework =
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 289);
+/******/ 	return __webpack_require__(__webpack_require__.s = 248);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -82,9 +82,9 @@ var DeepFramework =
 
 
 
-var base64 = __webpack_require__(311)
-var ieee754 = __webpack_require__(485)
-var isArray = __webpack_require__(183)
+var base64 = __webpack_require__(312)
+var ieee754 = __webpack_require__(487)
+var isArray = __webpack_require__(184)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -1871,7 +1871,7 @@ function isnan (val) {
 /**
  * The main AWS namespace
  */
-var AWS = { util: __webpack_require__(5) };
+var AWS = { util: __webpack_require__(6) };
 
 /**
  * @api private
@@ -1898,18 +1898,18 @@ AWS.util.update(AWS, {
    * @api private
    */
   Protocol: {
-    Json: __webpack_require__(82),
-    Query: __webpack_require__(135),
+    Json: __webpack_require__(86),
+    Query: __webpack_require__(141),
     Rest: __webpack_require__(60),
-    RestJson: __webpack_require__(136),
-    RestXml: __webpack_require__(137)
+    RestJson: __webpack_require__(142),
+    RestXml: __webpack_require__(143)
   },
 
   /**
    * @api private
    */
   XML: {
-    Builder: __webpack_require__(276),
+    Builder: __webpack_require__(309),
     Parser: null // conditionally set based on environment
   },
 
@@ -1917,22 +1917,22 @@ AWS.util.update(AWS, {
    * @api private
    */
   JSON: {
-    Builder: __webpack_require__(80),
-    Parser: __webpack_require__(81)
+    Builder: __webpack_require__(84),
+    Parser: __webpack_require__(85)
   },
 
   /**
    * @api private
    */
   Model: {
-    Api: __webpack_require__(130),
-    Operation: __webpack_require__(132),
-    Shape: __webpack_require__(41),
-    Paginator: __webpack_require__(133),
-    ResourceWaiter: __webpack_require__(134)
+    Api: __webpack_require__(136),
+    Operation: __webpack_require__(138),
+    Shape: __webpack_require__(45),
+    Paginator: __webpack_require__(139),
+    ResourceWaiter: __webpack_require__(140)
   },
 
-  util: __webpack_require__(5),
+  util: __webpack_require__(6),
 
   /**
    * @api private
@@ -1941,23 +1941,23 @@ AWS.util.update(AWS, {
 });
 
 __webpack_require__(32);
-__webpack_require__(250);
+__webpack_require__(283);
 
-__webpack_require__(127);
-__webpack_require__(128);
-__webpack_require__(253);
-__webpack_require__(254);
-__webpack_require__(251);
-__webpack_require__(252);
+__webpack_require__(133);
+__webpack_require__(134);
+__webpack_require__(286);
+__webpack_require__(287);
+__webpack_require__(284);
+__webpack_require__(285);
 
-__webpack_require__(129);
-__webpack_require__(138);
-__webpack_require__(255);
-__webpack_require__(261);
-__webpack_require__(263);
-__webpack_require__(262);
-__webpack_require__(268);
-__webpack_require__(257);
+__webpack_require__(135);
+__webpack_require__(144);
+__webpack_require__(288);
+__webpack_require__(294);
+__webpack_require__(296);
+__webpack_require__(295);
+__webpack_require__(301);
+__webpack_require__(290);
 
 /**
  * @readonly
@@ -2021,7 +2021,7 @@ if (typeof Object.create === 'function') {
 
 var _Interface = __webpack_require__(94);
 
-var _Runtime = __webpack_require__(355);
+var _Runtime = __webpack_require__(356);
 
 var _Region = __webpack_require__(166);
 
@@ -2029,15 +2029,15 @@ var _Service = __webpack_require__(93);
 
 var _Policy = __webpack_require__(65);
 
-var _Factory = __webpack_require__(347);
+var _Factory = __webpack_require__(348);
 
-var _ObjectStorage = __webpack_require__(360);
+var _ObjectStorage = __webpack_require__(361);
 
-var _UniversalRequire = __webpack_require__(362);
+var _UniversalRequire = __webpack_require__(363);
 
-var _ObjectVector = __webpack_require__(361);
+var _ObjectVector = __webpack_require__(362);
 
-var _MethodsProxy = __webpack_require__(359);
+var _MethodsProxy = __webpack_require__(360);
 
 var _Exception = __webpack_require__(14);
 
@@ -2045,9 +2045,9 @@ var _MethodsNotImplementedException = __webpack_require__(167);
 
 var _InvalidArgumentException = __webpack_require__(35);
 
-var _DatabaseOperationException = __webpack_require__(356);
+var _DatabaseOperationException = __webpack_require__(357);
 
-var _ResourceNotFoundException = __webpack_require__(357);
+var _ResourceNotFoundException = __webpack_require__(358);
 
 var _Sandbox = __webpack_require__(169);
 
@@ -2120,6 +2120,192 @@ module.exports = g;
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports) {
+
+// shim for using process in browser
+var process = module.exports = {};
+
+// cached from whatever global is present so that test runners that stub it
+// don't break things.  But we need to wrap it in a try catch in case it is
+// wrapped in strict mode code which doesn't define any globals.  It's inside a
+// function because try/catches deoptimize in certain engines.
+
+var cachedSetTimeout;
+var cachedClearTimeout;
+
+function defaultSetTimout() {
+    throw new Error('setTimeout has not been defined');
+}
+function defaultClearTimeout () {
+    throw new Error('clearTimeout has not been defined');
+}
+(function () {
+    try {
+        if (typeof setTimeout === 'function') {
+            cachedSetTimeout = setTimeout;
+        } else {
+            cachedSetTimeout = defaultSetTimout;
+        }
+    } catch (e) {
+        cachedSetTimeout = defaultSetTimout;
+    }
+    try {
+        if (typeof clearTimeout === 'function') {
+            cachedClearTimeout = clearTimeout;
+        } else {
+            cachedClearTimeout = defaultClearTimeout;
+        }
+    } catch (e) {
+        cachedClearTimeout = defaultClearTimeout;
+    }
+} ())
+function runTimeout(fun) {
+    if (cachedSetTimeout === setTimeout) {
+        //normal enviroments in sane situations
+        return setTimeout(fun, 0);
+    }
+    // if setTimeout wasn't available but was latter defined
+    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+        cachedSetTimeout = setTimeout;
+        return setTimeout(fun, 0);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedSetTimeout(fun, 0);
+    } catch(e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
+            return cachedSetTimeout.call(null, fun, 0);
+        } catch(e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
+            return cachedSetTimeout.call(this, fun, 0);
+        }
+    }
+
+
+}
+function runClearTimeout(marker) {
+    if (cachedClearTimeout === clearTimeout) {
+        //normal enviroments in sane situations
+        return clearTimeout(marker);
+    }
+    // if clearTimeout wasn't available but was latter defined
+    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+        cachedClearTimeout = clearTimeout;
+        return clearTimeout(marker);
+    }
+    try {
+        // when when somebody has screwed with setTimeout but no I.E. maddness
+        return cachedClearTimeout(marker);
+    } catch (e){
+        try {
+            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
+            return cachedClearTimeout.call(null, marker);
+        } catch (e){
+            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
+            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
+            return cachedClearTimeout.call(this, marker);
+        }
+    }
+
+
+
+}
+var queue = [];
+var draining = false;
+var currentQueue;
+var queueIndex = -1;
+
+function cleanUpNextTick() {
+    if (!draining || !currentQueue) {
+        return;
+    }
+    draining = false;
+    if (currentQueue.length) {
+        queue = currentQueue.concat(queue);
+    } else {
+        queueIndex = -1;
+    }
+    if (queue.length) {
+        drainQueue();
+    }
+}
+
+function drainQueue() {
+    if (draining) {
+        return;
+    }
+    var timeout = runTimeout(cleanUpNextTick);
+    draining = true;
+
+    var len = queue.length;
+    while(len) {
+        currentQueue = queue;
+        queue = [];
+        while (++queueIndex < len) {
+            if (currentQueue) {
+                currentQueue[queueIndex].run();
+            }
+        }
+        queueIndex = -1;
+        len = queue.length;
+    }
+    currentQueue = null;
+    draining = false;
+    runClearTimeout(timeout);
+}
+
+process.nextTick = function (fun) {
+    var args = new Array(arguments.length - 1);
+    if (arguments.length > 1) {
+        for (var i = 1; i < arguments.length; i++) {
+            args[i - 1] = arguments[i];
+        }
+    }
+    queue.push(new Item(fun, args));
+    if (queue.length === 1 && !draining) {
+        runTimeout(drainQueue);
+    }
+};
+
+// v8 likes predictible objects
+function Item(fun, array) {
+    this.fun = fun;
+    this.array = array;
+}
+Item.prototype.run = function () {
+    this.fun.apply(null, this.array);
+};
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+process.version = ''; // empty string to avoid regexp issues
+process.versions = {};
+
+function noop() {}
+
+process.on = noop;
+process.addListener = noop;
+process.once = noop;
+process.off = noop;
+process.removeListener = noop;
+process.removeAllListeners = noop;
+process.emit = noop;
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+};
+
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+process.umask = function() { return 0; };
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/* eslint guard-for-in:0 */
@@ -2933,7 +3119,7 @@ var util = {
    */
   isDualstackAvailable: function isDualstackAvailable(service) {
     if (!service) return false;
-    var metadata = __webpack_require__(242);
+    var metadata = __webpack_require__(275);
     if (typeof service !== 'string') service = service.serviceIdentifier;
     if (typeof service !== 'string' || !metadata.hasOwnProperty(service)) return false;
     return !!metadata[service].dualstackAvailable;
@@ -3002,7 +3188,7 @@ var util = {
    */
   uuid: {
     v4: function uuidV4() {
-      return __webpack_require__(644).v4();
+      return __webpack_require__(646).v4();
     }
   }
 
@@ -3010,193 +3196,7 @@ var util = {
 
 module.exports = util;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-// shim for using process in browser
-var process = module.exports = {};
-
-// cached from whatever global is present so that test runners that stub it
-// don't break things.  But we need to wrap it in a try catch in case it is
-// wrapped in strict mode code which doesn't define any globals.  It's inside a
-// function because try/catches deoptimize in certain engines.
-
-var cachedSetTimeout;
-var cachedClearTimeout;
-
-function defaultSetTimout() {
-    throw new Error('setTimeout has not been defined');
-}
-function defaultClearTimeout () {
-    throw new Error('clearTimeout has not been defined');
-}
-(function () {
-    try {
-        if (typeof setTimeout === 'function') {
-            cachedSetTimeout = setTimeout;
-        } else {
-            cachedSetTimeout = defaultSetTimout;
-        }
-    } catch (e) {
-        cachedSetTimeout = defaultSetTimout;
-    }
-    try {
-        if (typeof clearTimeout === 'function') {
-            cachedClearTimeout = clearTimeout;
-        } else {
-            cachedClearTimeout = defaultClearTimeout;
-        }
-    } catch (e) {
-        cachedClearTimeout = defaultClearTimeout;
-    }
-} ())
-function runTimeout(fun) {
-    if (cachedSetTimeout === setTimeout) {
-        //normal enviroments in sane situations
-        return setTimeout(fun, 0);
-    }
-    // if setTimeout wasn't available but was latter defined
-    if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
-        cachedSetTimeout = setTimeout;
-        return setTimeout(fun, 0);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedSetTimeout(fun, 0);
-    } catch(e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't trust the global object when called normally
-            return cachedSetTimeout.call(null, fun, 0);
-        } catch(e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error
-            return cachedSetTimeout.call(this, fun, 0);
-        }
-    }
-
-
-}
-function runClearTimeout(marker) {
-    if (cachedClearTimeout === clearTimeout) {
-        //normal enviroments in sane situations
-        return clearTimeout(marker);
-    }
-    // if clearTimeout wasn't available but was latter defined
-    if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
-        cachedClearTimeout = clearTimeout;
-        return clearTimeout(marker);
-    }
-    try {
-        // when when somebody has screwed with setTimeout but no I.E. maddness
-        return cachedClearTimeout(marker);
-    } catch (e){
-        try {
-            // When we are in I.E. but the script has been evaled so I.E. doesn't  trust the global object when called normally
-            return cachedClearTimeout.call(null, marker);
-        } catch (e){
-            // same as above but when it's a version of I.E. that must have the global object for 'this', hopfully our context correct otherwise it will throw a global error.
-            // Some versions of I.E. have different rules for clearTimeout vs setTimeout
-            return cachedClearTimeout.call(this, marker);
-        }
-    }
-
-
-
-}
-var queue = [];
-var draining = false;
-var currentQueue;
-var queueIndex = -1;
-
-function cleanUpNextTick() {
-    if (!draining || !currentQueue) {
-        return;
-    }
-    draining = false;
-    if (currentQueue.length) {
-        queue = currentQueue.concat(queue);
-    } else {
-        queueIndex = -1;
-    }
-    if (queue.length) {
-        drainQueue();
-    }
-}
-
-function drainQueue() {
-    if (draining) {
-        return;
-    }
-    var timeout = runTimeout(cleanUpNextTick);
-    draining = true;
-
-    var len = queue.length;
-    while(len) {
-        currentQueue = queue;
-        queue = [];
-        while (++queueIndex < len) {
-            if (currentQueue) {
-                currentQueue[queueIndex].run();
-            }
-        }
-        queueIndex = -1;
-        len = queue.length;
-    }
-    currentQueue = null;
-    draining = false;
-    runClearTimeout(timeout);
-}
-
-process.nextTick = function (fun) {
-    var args = new Array(arguments.length - 1);
-    if (arguments.length > 1) {
-        for (var i = 1; i < arguments.length; i++) {
-            args[i - 1] = arguments[i];
-        }
-    }
-    queue.push(new Item(fun, args));
-    if (queue.length === 1 && !draining) {
-        runTimeout(drainQueue);
-    }
-};
-
-// v8 likes predictible objects
-function Item(fun, array) {
-    this.fun = fun;
-    this.array = array;
-}
-Item.prototype.run = function () {
-    this.fun.apply(null, this.array);
-};
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-process.version = ''; // empty string to avoid regexp issues
-process.versions = {};
-
-function noop() {}
-
-process.on = noop;
-process.addListener = noop;
-process.once = noop;
-process.off = noop;
-process.removeListener = noop;
-process.removeAllListeners = noop;
-process.emit = noop;
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-};
-
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-process.umask = function() { return 0; };
-
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
 /* 7 */
@@ -6691,9 +6691,9 @@ let Exception = exports.Exception = function (_Core$Exception$Excep) {
 /* WEBPACK VAR INJECTION */(function(Buffer, process) {// Load modules
 
 var Crypto = __webpack_require__(23);
-var Path = __webpack_require__(43);
+var Path = __webpack_require__(42);
 var Util = __webpack_require__(19);
-var Escape = __webpack_require__(484);
+var Escape = __webpack_require__(486);
 
 
 // Declare internals
@@ -7682,7 +7682,7 @@ exports.shallow = function (source) {
     return target;
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer, __webpack_require__(5)))
 
 /***/ }),
 /* 10 */
@@ -7693,23 +7693,23 @@ exports.shallow = function (source) {
 
 var elliptic = exports;
 
-elliptic.version = __webpack_require__(477).version;
-elliptic.utils = __webpack_require__(476);
+elliptic.version = __webpack_require__(479).version;
+elliptic.utils = __webpack_require__(478);
 elliptic.rand = __webpack_require__(146);
 elliptic.curve = __webpack_require__(69);
-elliptic.curves = __webpack_require__(468);
+elliptic.curves = __webpack_require__(470);
 
 // Protocols
-elliptic.ec = __webpack_require__(469);
-elliptic.eddsa = __webpack_require__(472);
+elliptic.ec = __webpack_require__(471);
+elliptic.eddsa = __webpack_require__(474);
 
 
 /***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseAssign = __webpack_require__(508),
-    baseCreate = __webpack_require__(509);
+var baseAssign = __webpack_require__(510),
+    baseCreate = __webpack_require__(511);
 
 /**
  * Creates an object that inherits from the `prototype` object. If a
@@ -7811,7 +7811,7 @@ let Exception = exports.Exception = function (_Core$Exception$Excep) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// Load modules
 
-var Path = __webpack_require__(43);
+var Path = __webpack_require__(42);
 var Hoek = __webpack_require__(9);
 var Ref = __webpack_require__(53);
 var Errors = __webpack_require__(15);
@@ -8661,7 +8661,7 @@ let Exception = exports.Exception = function (_Extendable) {
 // Load modules
 
 var Hoek = __webpack_require__(9);
-var Language = __webpack_require__(493);
+var Language = __webpack_require__(495);
 
 
 // Declare internals
@@ -8892,12 +8892,12 @@ module.exports = isObject;
 /* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const AWS = __webpack_require__(246);
+const AWS = __webpack_require__(279);
 
-AWS.Lambda = __webpack_require__(248);
-AWS.CognitoIdentity = __webpack_require__(126);
-AWS.CognitoSync = __webpack_require__(247);
-AWS.SQS = __webpack_require__(249);
+AWS.Lambda = __webpack_require__(281);
+AWS.CognitoIdentity = __webpack_require__(132);
+AWS.CognitoSync = __webpack_require__(280);
+AWS.SQS = __webpack_require__(282);
 
 module.exports = AWS;
 
@@ -9431,7 +9431,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(284);
+exports.isBuffer = __webpack_require__(243);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -9493,13 +9493,13 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)))
 
 /***/ }),
 /* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var freeGlobal = __webpack_require__(198);
+var freeGlobal = __webpack_require__(199);
 
 /** Detect free variable `self`. */
 var freeSelf = typeof self == 'object' && self && self.Object === Object && self;
@@ -9523,7 +9523,7 @@ module.exports = root;
 
 
 
-var _Kernel = __webpack_require__(383);
+var _Kernel = __webpack_require__(384);
 
 module.exports = _Kernel.Kernel;
 
@@ -9566,16 +9566,16 @@ exports.randomBytes = exports.rng = exports.pseudoRandomBytes = exports.prng = _
 exports.createHash = exports.Hash = __webpack_require__(34)
 exports.createHmac = exports.Hmac = __webpack_require__(90)
 
-var hashes = ['sha1', 'sha224', 'sha256', 'sha384', 'sha512', 'md5', 'rmd160'].concat(Object.keys(__webpack_require__(319)))
+var hashes = ['sha1', 'sha224', 'sha256', 'sha384', 'sha512', 'md5', 'rmd160'].concat(Object.keys(__webpack_require__(320)))
 exports.getHashes = function () {
   return hashes
 }
 
-var p = __webpack_require__(211)
+var p = __webpack_require__(212)
 exports.pbkdf2 = p.pbkdf2
 exports.pbkdf2Sync = p.pbkdf2Sync
 
-var aes = __webpack_require__(316)
+var aes = __webpack_require__(317)
 ;[
   'Cipher',
   'createCipher',
@@ -9591,7 +9591,7 @@ var aes = __webpack_require__(316)
   exports[key] = aes[key]
 })
 
-var dh = __webpack_require__(460)
+var dh = __webpack_require__(462)
 ;[
   'DiffieHellmanGroup',
   'createDiffieHellmanGroup',
@@ -9602,7 +9602,7 @@ var dh = __webpack_require__(460)
   exports[key] = dh[key]
 })
 
-var sign = __webpack_require__(320)
+var sign = __webpack_require__(321)
 ;[
   'createSign',
   'Sign',
@@ -9612,9 +9612,9 @@ var sign = __webpack_require__(320)
   exports[key] = sign[key]
 })
 
-exports.createECDH = __webpack_require__(325)
+exports.createECDH = __webpack_require__(326)
 
-var publicEncrypt = __webpack_require__(596)
+var publicEncrypt = __webpack_require__(598)
 
 ;[
   'publicEncrypt',
@@ -9655,7 +9655,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.LogDriverException = undefined;
 
-var _Exception2 = __webpack_require__(399);
+var _Exception2 = __webpack_require__(400);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -9693,11 +9693,11 @@ let LogDriverException = exports.LogDriverException = function (_Exception) {
 
 var hash = exports;
 
-hash.utils = __webpack_require__(482);
-hash.common = __webpack_require__(478);
-hash.sha = __webpack_require__(481);
-hash.ripemd = __webpack_require__(480);
-hash.hmac = __webpack_require__(479);
+hash.utils = __webpack_require__(484);
+hash.common = __webpack_require__(480);
+hash.sha = __webpack_require__(483);
+hash.ripemd = __webpack_require__(482);
+hash.hmac = __webpack_require__(481);
 
 // Proxy hash functions to the main object
 hash.sha1 = hash.sha.sha1;
@@ -9712,14 +9712,14 @@ hash.ripemd160 = hash.ripemd.ripemd160;
 /* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(492);
+module.exports = __webpack_require__(494);
 
 /***/ }),
 /* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsNative = __webpack_require__(519),
-    getValue = __webpack_require__(542);
+var baseIsNative = __webpack_require__(521),
+    getValue = __webpack_require__(544);
 
 /**
  * Gets the native function at `key` of `object`.
@@ -9787,7 +9787,7 @@ var util = __webpack_require__(47);
 util.inherits = __webpack_require__(2);
 /*</replacement>*/
 
-var Readable = __webpack_require__(219);
+var Readable = __webpack_require__(220);
 var Writable = __webpack_require__(121);
 
 util.inherits(Duplex, Readable);
@@ -9861,13 +9861,13 @@ module.exports = AWS.apiLoader;
 /* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(process) {var util = __webpack_require__(5);
+/* WEBPACK VAR INJECTION */(function(process) {var util = __webpack_require__(6);
 
 // browser specific modules
-util.crypto.lib = __webpack_require__(327);
+util.crypto.lib = __webpack_require__(328);
 util.Buffer = __webpack_require__(0).Buffer;
-util.url = __webpack_require__(86);
-util.querystring = __webpack_require__(84);
+util.url = __webpack_require__(83);
+util.querystring = __webpack_require__(81);
 
 var AWS = __webpack_require__(1);
 
@@ -9875,25 +9875,25 @@ var AWS = __webpack_require__(1);
 __webpack_require__(30);
 
 // Load the DOMParser XML parser
-AWS.XML.Parser = __webpack_require__(275);
+AWS.XML.Parser = __webpack_require__(308);
 
 // Load the XHR HttpClient
-__webpack_require__(256);
+__webpack_require__(289);
 
 if (typeof process === 'undefined') {
   process = {
     browser: true
   };
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
 /* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
-var Api = __webpack_require__(130);
-var regionConfig = __webpack_require__(259);
+var Api = __webpack_require__(136);
+var regionConfig = __webpack_require__(292);
 var inherit = AWS.util.inherit;
 var clientCount = 0;
 
@@ -10467,9 +10467,9 @@ module.exports = AWS.Service;
 /* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var Transform = __webpack_require__(85).Transform
+/* WEBPACK VAR INJECTION */(function(Buffer) {var Transform = __webpack_require__(82).Transform
 var inherits = __webpack_require__(2)
-var StringDecoder = __webpack_require__(83).StringDecoder
+var StringDecoder = __webpack_require__(80).StringDecoder
 module.exports = CipherBase
 inherits(CipherBase, Transform)
 function CipherBase (hashMode) {
@@ -10568,8 +10568,8 @@ CipherBase.prototype._toString = function (value, enc, fin) {
 /* WEBPACK VAR INJECTION */(function(Buffer) {
 var inherits = __webpack_require__(2)
 var md5 = __webpack_require__(157)
-var rmd160 = __webpack_require__(617)
-var sha = __webpack_require__(619)
+var rmd160 = __webpack_require__(619)
+var sha = __webpack_require__(621)
 
 var Base = __webpack_require__(33)
 
@@ -12668,7 +12668,7 @@ function loadLocale(name) {
             module && module.exports) {
         try {
             oldLocale = globalLocale._abbr;
-            __webpack_require__(590)("./" + name);
+            __webpack_require__(592)("./" + name);
             // because defineLocale currently also sets the global locale, we
             // want to undo that for lazy loaded locales
             getSetGlobalLocale(oldLocale);
@@ -15519,7 +15519,7 @@ function isObject(val) {
 
   isFunction = __webpack_require__(78);
 
-  isEmpty = __webpack_require__(584);
+  isEmpty = __webpack_require__(586);
 
   XMLElement = null;
 
@@ -15541,13 +15541,13 @@ function isObject(val) {
       this.options = this.parent.options;
       this.stringify = this.parent.stringify;
       if (XMLElement === null) {
-        XMLElement = __webpack_require__(231);
-        XMLCData = __webpack_require__(227);
-        XMLComment = __webpack_require__(228);
-        XMLDeclaration = __webpack_require__(229);
-        XMLDocType = __webpack_require__(230);
-        XMLRaw = __webpack_require__(654);
-        XMLText = __webpack_require__(656);
+        XMLElement = __webpack_require__(232);
+        XMLCData = __webpack_require__(228);
+        XMLComment = __webpack_require__(229);
+        XMLDeclaration = __webpack_require__(230);
+        XMLDocType = __webpack_require__(231);
+        XMLRaw = __webpack_require__(656);
+        XMLText = __webpack_require__(658);
       }
     }
 
@@ -15845,11 +15845,577 @@ function isObject(val) {
 
 /***/ }),
 /* 41 */
+/***/ (function(module, exports) {
+
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+function EventEmitter() {
+  this._events = this._events || {};
+  this._maxListeners = this._maxListeners || undefined;
+}
+module.exports = EventEmitter;
+
+// Backwards-compat with node 0.10.x
+EventEmitter.EventEmitter = EventEmitter;
+
+EventEmitter.prototype._events = undefined;
+EventEmitter.prototype._maxListeners = undefined;
+
+// By default EventEmitters will print a warning if more than 10 listeners are
+// added to it. This is a useful default which helps finding memory leaks.
+EventEmitter.defaultMaxListeners = 10;
+
+// Obviously not all Emitters should be limited to 10. This function allows
+// that to be increased. Set to zero for unlimited.
+EventEmitter.prototype.setMaxListeners = function(n) {
+  if (!isNumber(n) || n < 0 || isNaN(n))
+    throw TypeError('n must be a positive number');
+  this._maxListeners = n;
+  return this;
+};
+
+EventEmitter.prototype.emit = function(type) {
+  var er, handler, len, args, i, listeners;
+
+  if (!this._events)
+    this._events = {};
+
+  // If there is no 'error' event listener then throw.
+  if (type === 'error') {
+    if (!this._events.error ||
+        (isObject(this._events.error) && !this._events.error.length)) {
+      er = arguments[1];
+      if (er instanceof Error) {
+        throw er; // Unhandled 'error' event
+      } else {
+        // At least give some kind of context to the user
+        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
+        err.context = er;
+        throw err;
+      }
+    }
+  }
+
+  handler = this._events[type];
+
+  if (isUndefined(handler))
+    return false;
+
+  if (isFunction(handler)) {
+    switch (arguments.length) {
+      // fast cases
+      case 1:
+        handler.call(this);
+        break;
+      case 2:
+        handler.call(this, arguments[1]);
+        break;
+      case 3:
+        handler.call(this, arguments[1], arguments[2]);
+        break;
+      // slower
+      default:
+        args = Array.prototype.slice.call(arguments, 1);
+        handler.apply(this, args);
+    }
+  } else if (isObject(handler)) {
+    args = Array.prototype.slice.call(arguments, 1);
+    listeners = handler.slice();
+    len = listeners.length;
+    for (i = 0; i < len; i++)
+      listeners[i].apply(this, args);
+  }
+
+  return true;
+};
+
+EventEmitter.prototype.addListener = function(type, listener) {
+  var m;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events)
+    this._events = {};
+
+  // To avoid recursion in the case that type === "newListener"! Before
+  // adding it to the listeners, first emit "newListener".
+  if (this._events.newListener)
+    this.emit('newListener', type,
+              isFunction(listener.listener) ?
+              listener.listener : listener);
+
+  if (!this._events[type])
+    // Optimize the case of one listener. Don't need the extra array object.
+    this._events[type] = listener;
+  else if (isObject(this._events[type]))
+    // If we've already got an array, just append.
+    this._events[type].push(listener);
+  else
+    // Adding the second element, need to change to array.
+    this._events[type] = [this._events[type], listener];
+
+  // Check for listener leak
+  if (isObject(this._events[type]) && !this._events[type].warned) {
+    if (!isUndefined(this._maxListeners)) {
+      m = this._maxListeners;
+    } else {
+      m = EventEmitter.defaultMaxListeners;
+    }
+
+    if (m && m > 0 && this._events[type].length > m) {
+      this._events[type].warned = true;
+      console.error('(node) warning: possible EventEmitter memory ' +
+                    'leak detected. %d listeners added. ' +
+                    'Use emitter.setMaxListeners() to increase limit.',
+                    this._events[type].length);
+      if (typeof console.trace === 'function') {
+        // not supported in IE 10
+        console.trace();
+      }
+    }
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.on = EventEmitter.prototype.addListener;
+
+EventEmitter.prototype.once = function(type, listener) {
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  var fired = false;
+
+  function g() {
+    this.removeListener(type, g);
+
+    if (!fired) {
+      fired = true;
+      listener.apply(this, arguments);
+    }
+  }
+
+  g.listener = listener;
+  this.on(type, g);
+
+  return this;
+};
+
+// emits a 'removeListener' event iff the listener was removed
+EventEmitter.prototype.removeListener = function(type, listener) {
+  var list, position, length, i;
+
+  if (!isFunction(listener))
+    throw TypeError('listener must be a function');
+
+  if (!this._events || !this._events[type])
+    return this;
+
+  list = this._events[type];
+  length = list.length;
+  position = -1;
+
+  if (list === listener ||
+      (isFunction(list.listener) && list.listener === listener)) {
+    delete this._events[type];
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+
+  } else if (isObject(list)) {
+    for (i = length; i-- > 0;) {
+      if (list[i] === listener ||
+          (list[i].listener && list[i].listener === listener)) {
+        position = i;
+        break;
+      }
+    }
+
+    if (position < 0)
+      return this;
+
+    if (list.length === 1) {
+      list.length = 0;
+      delete this._events[type];
+    } else {
+      list.splice(position, 1);
+    }
+
+    if (this._events.removeListener)
+      this.emit('removeListener', type, listener);
+  }
+
+  return this;
+};
+
+EventEmitter.prototype.removeAllListeners = function(type) {
+  var key, listeners;
+
+  if (!this._events)
+    return this;
+
+  // not listening for removeListener, no need to emit
+  if (!this._events.removeListener) {
+    if (arguments.length === 0)
+      this._events = {};
+    else if (this._events[type])
+      delete this._events[type];
+    return this;
+  }
+
+  // emit removeListener for all listeners on all events
+  if (arguments.length === 0) {
+    for (key in this._events) {
+      if (key === 'removeListener') continue;
+      this.removeAllListeners(key);
+    }
+    this.removeAllListeners('removeListener');
+    this._events = {};
+    return this;
+  }
+
+  listeners = this._events[type];
+
+  if (isFunction(listeners)) {
+    this.removeListener(type, listeners);
+  } else if (listeners) {
+    // LIFO order
+    while (listeners.length)
+      this.removeListener(type, listeners[listeners.length - 1]);
+  }
+  delete this._events[type];
+
+  return this;
+};
+
+EventEmitter.prototype.listeners = function(type) {
+  var ret;
+  if (!this._events || !this._events[type])
+    ret = [];
+  else if (isFunction(this._events[type]))
+    ret = [this._events[type]];
+  else
+    ret = this._events[type].slice();
+  return ret;
+};
+
+EventEmitter.prototype.listenerCount = function(type) {
+  if (this._events) {
+    var evlistener = this._events[type];
+
+    if (isFunction(evlistener))
+      return 1;
+    else if (evlistener)
+      return evlistener.length;
+  }
+  return 0;
+};
+
+EventEmitter.listenerCount = function(emitter, type) {
+  return emitter.listenerCount(type);
+};
+
+function isFunction(arg) {
+  return typeof arg === 'function';
+}
+
+function isNumber(arg) {
+  return typeof arg === 'number';
+}
+
+function isObject(arg) {
+  return typeof arg === 'object' && arg !== null;
+}
+
+function isUndefined(arg) {
+  return arg === void 0;
+}
+
+
+/***/ }),
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Collection = __webpack_require__(131);
+/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var util = __webpack_require__(5);
+// resolves . and .. elements in a path array with directory names there
+// must be no slashes, empty elements, or device names (c:\) in the array
+// (so also no leading and trailing slashes - it does not distinguish
+// relative and absolute paths)
+function normalizeArray(parts, allowAboveRoot) {
+  // if the path tries to go above the root, `up` ends up > 0
+  var up = 0;
+  for (var i = parts.length - 1; i >= 0; i--) {
+    var last = parts[i];
+    if (last === '.') {
+      parts.splice(i, 1);
+    } else if (last === '..') {
+      parts.splice(i, 1);
+      up++;
+    } else if (up) {
+      parts.splice(i, 1);
+      up--;
+    }
+  }
+
+  // if the path is allowed to go above the root, restore leading ..s
+  if (allowAboveRoot) {
+    for (; up--; up) {
+      parts.unshift('..');
+    }
+  }
+
+  return parts;
+}
+
+// Split a filename into [root, dir, basename, ext], unix version
+// 'root' is just a slash, or nothing.
+var splitPathRe =
+    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
+var splitPath = function(filename) {
+  return splitPathRe.exec(filename).slice(1);
+};
+
+// path.resolve([from ...], to)
+// posix version
+exports.resolve = function() {
+  var resolvedPath = '',
+      resolvedAbsolute = false;
+
+  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
+    var path = (i >= 0) ? arguments[i] : process.cwd();
+
+    // Skip empty and invalid entries
+    if (typeof path !== 'string') {
+      throw new TypeError('Arguments to path.resolve must be strings');
+    } else if (!path) {
+      continue;
+    }
+
+    resolvedPath = path + '/' + resolvedPath;
+    resolvedAbsolute = path.charAt(0) === '/';
+  }
+
+  // At this point the path should be resolved to a full absolute path, but
+  // handle relative paths to be safe (might happen when process.cwd() fails)
+
+  // Normalize the path
+  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
+    return !!p;
+  }), !resolvedAbsolute).join('/');
+
+  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
+};
+
+// path.normalize(path)
+// posix version
+exports.normalize = function(path) {
+  var isAbsolute = exports.isAbsolute(path),
+      trailingSlash = substr(path, -1) === '/';
+
+  // Normalize the path
+  path = normalizeArray(filter(path.split('/'), function(p) {
+    return !!p;
+  }), !isAbsolute).join('/');
+
+  if (!path && !isAbsolute) {
+    path = '.';
+  }
+  if (path && trailingSlash) {
+    path += '/';
+  }
+
+  return (isAbsolute ? '/' : '') + path;
+};
+
+// posix version
+exports.isAbsolute = function(path) {
+  return path.charAt(0) === '/';
+};
+
+// posix version
+exports.join = function() {
+  var paths = Array.prototype.slice.call(arguments, 0);
+  return exports.normalize(filter(paths, function(p, index) {
+    if (typeof p !== 'string') {
+      throw new TypeError('Arguments to path.join must be strings');
+    }
+    return p;
+  }).join('/'));
+};
+
+
+// path.relative(from, to)
+// posix version
+exports.relative = function(from, to) {
+  from = exports.resolve(from).substr(1);
+  to = exports.resolve(to).substr(1);
+
+  function trim(arr) {
+    var start = 0;
+    for (; start < arr.length; start++) {
+      if (arr[start] !== '') break;
+    }
+
+    var end = arr.length - 1;
+    for (; end >= 0; end--) {
+      if (arr[end] !== '') break;
+    }
+
+    if (start > end) return [];
+    return arr.slice(start, end - start + 1);
+  }
+
+  var fromParts = trim(from.split('/'));
+  var toParts = trim(to.split('/'));
+
+  var length = Math.min(fromParts.length, toParts.length);
+  var samePartsLength = length;
+  for (var i = 0; i < length; i++) {
+    if (fromParts[i] !== toParts[i]) {
+      samePartsLength = i;
+      break;
+    }
+  }
+
+  var outputParts = [];
+  for (var i = samePartsLength; i < fromParts.length; i++) {
+    outputParts.push('..');
+  }
+
+  outputParts = outputParts.concat(toParts.slice(samePartsLength));
+
+  return outputParts.join('/');
+};
+
+exports.sep = '/';
+exports.delimiter = ':';
+
+exports.dirname = function(path) {
+  var result = splitPath(path),
+      root = result[0],
+      dir = result[1];
+
+  if (!root && !dir) {
+    // No dirname whatsoever
+    return '.';
+  }
+
+  if (dir) {
+    // It has a dirname, strip trailing slash
+    dir = dir.substr(0, dir.length - 1);
+  }
+
+  return root + dir;
+};
+
+
+exports.basename = function(path, ext) {
+  var f = splitPath(path)[2];
+  // TODO: make this comparison case-insensitive on windows?
+  if (ext && f.substr(-1 * ext.length) === ext) {
+    f = f.substr(0, f.length - ext.length);
+  }
+  return f;
+};
+
+
+exports.extname = function(path) {
+  return splitPath(path)[3];
+};
+
+function filter (xs, f) {
+    if (xs.filter) return xs.filter(f);
+    var res = [];
+    for (var i = 0; i < xs.length; i++) {
+        if (f(xs[i], i, xs)) res.push(xs[i]);
+    }
+    return res;
+}
+
+// String.prototype.substr - negative index don't work in IE8
+var substr = 'ab'.substr(-1) === 'b'
+    ? function (str, start, len) { return str.substr(start, len) }
+    : function (str, start, len) {
+        if (start < 0) start = str.length + start;
+        return str.substr(start, len);
+    }
+;
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var asn1 = exports;
+
+asn1.bignum = __webpack_require__(7);
+
+asn1.define = __webpack_require__(260).define;
+asn1.base = __webpack_require__(44);
+asn1.constants = __webpack_require__(129);
+asn1.decoders = __webpack_require__(264);
+asn1.encoders = __webpack_require__(266);
+
+
+/***/ }),
+/* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var base = exports;
+
+base.Reporter = __webpack_require__(262).Reporter;
+base.DecoderBuffer = __webpack_require__(128).DecoderBuffer;
+base.EncoderBuffer = __webpack_require__(128).EncoderBuffer;
+base.Node = __webpack_require__(261);
+
+
+/***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Collection = __webpack_require__(137);
+
+var util = __webpack_require__(6);
 
 function property(obj, name, value) {
   if (value !== null && value !== undefined) {
@@ -16197,572 +16763,6 @@ Shape.shapes = {
 };
 
 module.exports = Shape;
-
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports) {
-
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-function EventEmitter() {
-  this._events = this._events || {};
-  this._maxListeners = this._maxListeners || undefined;
-}
-module.exports = EventEmitter;
-
-// Backwards-compat with node 0.10.x
-EventEmitter.EventEmitter = EventEmitter;
-
-EventEmitter.prototype._events = undefined;
-EventEmitter.prototype._maxListeners = undefined;
-
-// By default EventEmitters will print a warning if more than 10 listeners are
-// added to it. This is a useful default which helps finding memory leaks.
-EventEmitter.defaultMaxListeners = 10;
-
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!isNumber(n) || n < 0 || isNaN(n))
-    throw TypeError('n must be a positive number');
-  this._maxListeners = n;
-  return this;
-};
-
-EventEmitter.prototype.emit = function(type) {
-  var er, handler, len, args, i, listeners;
-
-  if (!this._events)
-    this._events = {};
-
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events.error ||
-        (isObject(this._events.error) && !this._events.error.length)) {
-      er = arguments[1];
-      if (er instanceof Error) {
-        throw er; // Unhandled 'error' event
-      } else {
-        // At least give some kind of context to the user
-        var err = new Error('Uncaught, unspecified "error" event. (' + er + ')');
-        err.context = er;
-        throw err;
-      }
-    }
-  }
-
-  handler = this._events[type];
-
-  if (isUndefined(handler))
-    return false;
-
-  if (isFunction(handler)) {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
-    }
-  } else if (isObject(handler)) {
-    args = Array.prototype.slice.call(arguments, 1);
-    listeners = handler.slice();
-    len = listeners.length;
-    for (i = 0; i < len; i++)
-      listeners[i].apply(this, args);
-  }
-
-  return true;
-};
-
-EventEmitter.prototype.addListener = function(type, listener) {
-  var m;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events)
-    this._events = {};
-
-  // To avoid recursion in the case that type === "newListener"! Before
-  // adding it to the listeners, first emit "newListener".
-  if (this._events.newListener)
-    this.emit('newListener', type,
-              isFunction(listener.listener) ?
-              listener.listener : listener);
-
-  if (!this._events[type])
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  else if (isObject(this._events[type]))
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  else
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-
-  // Check for listener leak
-  if (isObject(this._events[type]) && !this._events[type].warned) {
-    if (!isUndefined(this._maxListeners)) {
-      m = this._maxListeners;
-    } else {
-      m = EventEmitter.defaultMaxListeners;
-    }
-
-    if (m && m > 0 && this._events[type].length > m) {
-      this._events[type].warned = true;
-      console.error('(node) warning: possible EventEmitter memory ' +
-                    'leak detected. %d listeners added. ' +
-                    'Use emitter.setMaxListeners() to increase limit.',
-                    this._events[type].length);
-      if (typeof console.trace === 'function') {
-        // not supported in IE 10
-        console.trace();
-      }
-    }
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  var fired = false;
-
-  function g() {
-    this.removeListener(type, g);
-
-    if (!fired) {
-      fired = true;
-      listener.apply(this, arguments);
-    }
-  }
-
-  g.listener = listener;
-  this.on(type, g);
-
-  return this;
-};
-
-// emits a 'removeListener' event iff the listener was removed
-EventEmitter.prototype.removeListener = function(type, listener) {
-  var list, position, length, i;
-
-  if (!isFunction(listener))
-    throw TypeError('listener must be a function');
-
-  if (!this._events || !this._events[type])
-    return this;
-
-  list = this._events[type];
-  length = list.length;
-  position = -1;
-
-  if (list === listener ||
-      (isFunction(list.listener) && list.listener === listener)) {
-    delete this._events[type];
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-
-  } else if (isObject(list)) {
-    for (i = length; i-- > 0;) {
-      if (list[i] === listener ||
-          (list[i].listener && list[i].listener === listener)) {
-        position = i;
-        break;
-      }
-    }
-
-    if (position < 0)
-      return this;
-
-    if (list.length === 1) {
-      list.length = 0;
-      delete this._events[type];
-    } else {
-      list.splice(position, 1);
-    }
-
-    if (this._events.removeListener)
-      this.emit('removeListener', type, listener);
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  var key, listeners;
-
-  if (!this._events)
-    return this;
-
-  // not listening for removeListener, no need to emit
-  if (!this._events.removeListener) {
-    if (arguments.length === 0)
-      this._events = {};
-    else if (this._events[type])
-      delete this._events[type];
-    return this;
-  }
-
-  // emit removeListener for all listeners on all events
-  if (arguments.length === 0) {
-    for (key in this._events) {
-      if (key === 'removeListener') continue;
-      this.removeAllListeners(key);
-    }
-    this.removeAllListeners('removeListener');
-    this._events = {};
-    return this;
-  }
-
-  listeners = this._events[type];
-
-  if (isFunction(listeners)) {
-    this.removeListener(type, listeners);
-  } else if (listeners) {
-    // LIFO order
-    while (listeners.length)
-      this.removeListener(type, listeners[listeners.length - 1]);
-  }
-  delete this._events[type];
-
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  var ret;
-  if (!this._events || !this._events[type])
-    ret = [];
-  else if (isFunction(this._events[type]))
-    ret = [this._events[type]];
-  else
-    ret = this._events[type].slice();
-  return ret;
-};
-
-EventEmitter.prototype.listenerCount = function(type) {
-  if (this._events) {
-    var evlistener = this._events[type];
-
-    if (isFunction(evlistener))
-      return 1;
-    else if (evlistener)
-      return evlistener.length;
-  }
-  return 0;
-};
-
-EventEmitter.listenerCount = function(emitter, type) {
-  return emitter.listenerCount(type);
-};
-
-function isFunction(arg) {
-  return typeof arg === 'function';
-}
-
-function isNumber(arg) {
-  return typeof arg === 'number';
-}
-
-function isObject(arg) {
-  return typeof arg === 'object' && arg !== null;
-}
-
-function isUndefined(arg) {
-  return arg === void 0;
-}
-
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(process) {// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length - 1; i >= 0; i--) {
-    var last = parts[i];
-    if (last === '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Split a filename into [root, dir, basename, ext], unix version
-// 'root' is just a slash, or nothing.
-var splitPathRe =
-    /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/;
-var splitPath = function(filename) {
-  return splitPathRe.exec(filename).slice(1);
-};
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-  var resolvedPath = '',
-      resolvedAbsolute = false;
-
-  for (var i = arguments.length - 1; i >= -1 && !resolvedAbsolute; i--) {
-    var path = (i >= 0) ? arguments[i] : process.cwd();
-
-    // Skip empty and invalid entries
-    if (typeof path !== 'string') {
-      throw new TypeError('Arguments to path.resolve must be strings');
-    } else if (!path) {
-      continue;
-    }
-
-    resolvedPath = path + '/' + resolvedPath;
-    resolvedAbsolute = path.charAt(0) === '/';
-  }
-
-  // At this point the path should be resolved to a full absolute path, but
-  // handle relative paths to be safe (might happen when process.cwd() fails)
-
-  // Normalize the path
-  resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-  var isAbsolute = exports.isAbsolute(path),
-      trailingSlash = substr(path, -1) === '/';
-
-  // Normalize the path
-  path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-
-  return (isAbsolute ? '/' : '') + path;
-};
-
-// posix version
-exports.isAbsolute = function(path) {
-  return path.charAt(0) === '/';
-};
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    if (typeof p !== 'string') {
-      throw new TypeError('Arguments to path.join must be strings');
-    }
-    return p;
-  }).join('/'));
-};
-
-
-// path.relative(from, to)
-// posix version
-exports.relative = function(from, to) {
-  from = exports.resolve(from).substr(1);
-  to = exports.resolve(to).substr(1);
-
-  function trim(arr) {
-    var start = 0;
-    for (; start < arr.length; start++) {
-      if (arr[start] !== '') break;
-    }
-
-    var end = arr.length - 1;
-    for (; end >= 0; end--) {
-      if (arr[end] !== '') break;
-    }
-
-    if (start > end) return [];
-    return arr.slice(start, end - start + 1);
-  }
-
-  var fromParts = trim(from.split('/'));
-  var toParts = trim(to.split('/'));
-
-  var length = Math.min(fromParts.length, toParts.length);
-  var samePartsLength = length;
-  for (var i = 0; i < length; i++) {
-    if (fromParts[i] !== toParts[i]) {
-      samePartsLength = i;
-      break;
-    }
-  }
-
-  var outputParts = [];
-  for (var i = samePartsLength; i < fromParts.length; i++) {
-    outputParts.push('..');
-  }
-
-  outputParts = outputParts.concat(toParts.slice(samePartsLength));
-
-  return outputParts.join('/');
-};
-
-exports.sep = '/';
-exports.delimiter = ':';
-
-exports.dirname = function(path) {
-  var result = splitPath(path),
-      root = result[0],
-      dir = result[1];
-
-  if (!root && !dir) {
-    // No dirname whatsoever
-    return '.';
-  }
-
-  if (dir) {
-    // It has a dirname, strip trailing slash
-    dir = dir.substr(0, dir.length - 1);
-  }
-
-  return root + dir;
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPath(path)[2];
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPath(path)[3];
-};
-
-function filter (xs, f) {
-    if (xs.filter) return xs.filter(f);
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (f(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// String.prototype.substr - negative index don't work in IE8
-var substr = 'ab'.substr(-1) === 'b'
-    ? function (str, start, len) { return str.substr(start, len) }
-    : function (str, start, len) {
-        if (start < 0) start = str.length + start;
-        return str.substr(start, len);
-    }
-;
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var asn1 = exports;
-
-asn1.bignum = __webpack_require__(7);
-
-asn1.define = __webpack_require__(301).define;
-asn1.base = __webpack_require__(45);
-asn1.constants = __webpack_require__(143);
-asn1.decoders = __webpack_require__(305);
-asn1.encoders = __webpack_require__(307);
-
-
-/***/ }),
-/* 45 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var base = exports;
-
-base.Reporter = __webpack_require__(303).Reporter;
-base.DecoderBuffer = __webpack_require__(142).DecoderBuffer;
-base.EncoderBuffer = __webpack_require__(142).EncoderBuffer;
-base.Node = __webpack_require__(302);
 
 
 /***/ }),
@@ -17155,9 +17155,9 @@ var Ref = __webpack_require__(53);
 var internals = {
     any: null,
     date: __webpack_require__(108),
-    string: __webpack_require__(187),
-    number: __webpack_require__(185),
-    boolean: __webpack_require__(184),
+    string: __webpack_require__(188),
+    number: __webpack_require__(186),
+    boolean: __webpack_require__(185),
     alt: null,
     object: null
 };
@@ -17167,7 +17167,7 @@ exports.schema = function (config) {
 
     internals.any = internals.any || new (__webpack_require__(13))();
     internals.alt = internals.alt || __webpack_require__(107);
-    internals.object = internals.object || __webpack_require__(186);
+    internals.object = internals.object || __webpack_require__(187);
 
     if (config &&
         typeof config === 'object') {
@@ -17279,8 +17279,8 @@ exports.push = function (array, ref) {
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(72),
-    getRawTag = __webpack_require__(540),
-    objectToString = __webpack_require__(565);
+    getRawTag = __webpack_require__(542),
+    objectToString = __webpack_require__(567);
 
 /** `Object#toString` result references. */
 var nullTag = '[object Null]',
@@ -17386,8 +17386,8 @@ module.exports = isObjectLike;
 /* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayLikeKeys = __webpack_require__(504),
-    baseKeys = __webpack_require__(193),
+var arrayLikeKeys = __webpack_require__(506),
+    baseKeys = __webpack_require__(194),
     isArrayLike = __webpack_require__(55);
 
 /**
@@ -17467,7 +17467,7 @@ function randomBytes (size, cb) {
   return bytes
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(0).Buffer, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(0).Buffer, __webpack_require__(5)))
 
 /***/ }),
 /* 59 */
@@ -17480,10 +17480,10 @@ var apiLoader = __webpack_require__(30);
 
 apiLoader.services['sts'] = {};
 AWS.STS = Service.defineService('sts', ['2011-06-15']);
-__webpack_require__(266);
+__webpack_require__(299);
 Object.defineProperty(apiLoader.services['sts'], '2011-06-15', {
   get: function get() {
-    var model = __webpack_require__(245);
+    var model = __webpack_require__(278);
     return model;
   },
   enumerable: true,
@@ -17497,7 +17497,7 @@ module.exports = AWS.STS;
 /* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var util = __webpack_require__(5);
+var util = __webpack_require__(6);
 
 function populateMethod(req) {
   req.httpRequest.method = req.service.api.operations[req.operation].httpMethod;
@@ -18063,11 +18063,11 @@ var _deepCore = __webpack_require__(3);
 
 var _deepCore2 = _interopRequireDefault(_deepCore);
 
-var _MissingCacheException = __webpack_require__(338);
+var _MissingCacheException = __webpack_require__(339);
 
-var _NoFlushException = __webpack_require__(339);
+var _NoFlushException = __webpack_require__(340);
 
-var _DriverException = __webpack_require__(336);
+var _DriverException = __webpack_require__(337);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -18494,13 +18494,13 @@ var _deepCore = __webpack_require__(3);
 
 var _deepCore2 = _interopRequireDefault(_deepCore);
 
-var _ConsoleDriver = __webpack_require__(385);
+var _ConsoleDriver = __webpack_require__(386);
 
-var _RavenDriver = __webpack_require__(397);
+var _RavenDriver = __webpack_require__(398);
 
-var _RavenBrowserDriver = __webpack_require__(396);
+var _RavenBrowserDriver = __webpack_require__(397);
 
-var _RumSqsDriver = __webpack_require__(398);
+var _RumSqsDriver = __webpack_require__(399);
 
 var _AbstractDriver = __webpack_require__(51);
 
@@ -19131,10 +19131,10 @@ let Exception = exports.Exception = function (_Core$Exception$Excep) {
 
 var curve = exports;
 
-curve.base = __webpack_require__(464);
-curve.short = __webpack_require__(467);
-curve.mont = __webpack_require__(466);
-curve.edwards = __webpack_require__(465);
+curve.base = __webpack_require__(466);
+curve.short = __webpack_require__(469);
+curve.mont = __webpack_require__(468);
+curve.edwards = __webpack_require__(467);
 
 
 /***/ }),
@@ -19216,11 +19216,11 @@ function EVP_BytesToKey (password, salt, keyLen, ivLen) {
 /* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var listCacheClear = __webpack_require__(551),
-    listCacheDelete = __webpack_require__(552),
-    listCacheGet = __webpack_require__(553),
-    listCacheHas = __webpack_require__(554),
-    listCacheSet = __webpack_require__(555);
+var listCacheClear = __webpack_require__(553),
+    listCacheDelete = __webpack_require__(554),
+    listCacheGet = __webpack_require__(555),
+    listCacheHas = __webpack_require__(556),
+    listCacheSet = __webpack_require__(557);
 
 /**
  * Creates an list cache object.
@@ -19293,7 +19293,7 @@ module.exports = assocIndexOf;
 /* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isKeyable = __webpack_require__(549);
+var isKeyable = __webpack_require__(551);
 
 /**
  * Gets the data for `map`.
@@ -19442,11 +19442,11 @@ module.exports = isFunction;
 /* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var asn1 = __webpack_require__(592)
-var aesid = __webpack_require__(591)
-var fixProc = __webpack_require__(594)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var asn1 = __webpack_require__(594)
+var aesid = __webpack_require__(593)
+var fixProc = __webpack_require__(596)
 var ciphers = __webpack_require__(87)
-var compat = __webpack_require__(211)
+var compat = __webpack_require__(212)
 module.exports = parseKeys
 
 function parseKeys (buffer) {
@@ -19553,211 +19553,6 @@ function decrypt (data, password) {
 
 /***/ }),
 /* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var util = __webpack_require__(5);
-
-function JsonBuilder() { }
-
-JsonBuilder.prototype.build = function(value, shape) {
-  return JSON.stringify(translate(value, shape));
-};
-
-function translate(value, shape) {
-  if (!shape || value === undefined || value === null) return undefined;
-
-  switch (shape.type) {
-    case 'structure': return translateStructure(value, shape);
-    case 'map': return translateMap(value, shape);
-    case 'list': return translateList(value, shape);
-    default: return translateScalar(value, shape);
-  }
-}
-
-function translateStructure(structure, shape) {
-  var struct = {};
-  util.each(structure, function(name, value) {
-    var memberShape = shape.members[name];
-    if (memberShape) {
-      if (memberShape.location !== 'body') return;
-      var locationName = memberShape.isLocationName ? memberShape.name : name;
-      var result = translate(value, memberShape);
-      if (result !== undefined) struct[locationName] = result;
-    }
-  });
-  return struct;
-}
-
-function translateList(list, shape) {
-  var out = [];
-  util.arrayEach(list, function(value) {
-    var result = translate(value, shape.member);
-    if (result !== undefined) out.push(result);
-  });
-  return out;
-}
-
-function translateMap(map, shape) {
-  var out = {};
-  util.each(map, function(key, value) {
-    var result = translate(value, shape.value);
-    if (result !== undefined) out[key] = result;
-  });
-  return out;
-}
-
-function translateScalar(value, shape) {
-  return shape.toWireFormat(value);
-}
-
-module.exports = JsonBuilder;
-
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var util = __webpack_require__(5);
-
-function JsonParser() { }
-
-JsonParser.prototype.parse = function(value, shape) {
-  return translate(JSON.parse(value), shape);
-};
-
-function translate(value, shape) {
-  if (!shape || value === undefined) return undefined;
-
-  switch (shape.type) {
-    case 'structure': return translateStructure(value, shape);
-    case 'map': return translateMap(value, shape);
-    case 'list': return translateList(value, shape);
-    default: return translateScalar(value, shape);
-  }
-}
-
-function translateStructure(structure, shape) {
-  if (structure == null) return undefined;
-
-  var struct = {};
-  var shapeMembers = shape.members;
-  util.each(shapeMembers, function(name, memberShape) {
-    var locationName = memberShape.isLocationName ? memberShape.name : name;
-    if (Object.prototype.hasOwnProperty.call(structure, locationName)) {
-      var value = structure[locationName];
-      var result = translate(value, memberShape);
-      if (result !== undefined) struct[name] = result;
-    }
-  });
-  return struct;
-}
-
-function translateList(list, shape) {
-  if (list == null) return undefined;
-
-  var out = [];
-  util.arrayEach(list, function(value) {
-    var result = translate(value, shape.member);
-    if (result === undefined) out.push(null);
-    else out.push(result);
-  });
-  return out;
-}
-
-function translateMap(map, shape) {
-  if (map == null) return undefined;
-
-  var out = {};
-  util.each(map, function(key, value) {
-    var result = translate(value, shape.value);
-    if (result === undefined) out[key] = null;
-    else out[key] = result;
-  });
-  return out;
-}
-
-function translateScalar(value, shape) {
-  return shape.toType(value);
-}
-
-module.exports = JsonParser;
-
-
-/***/ }),
-/* 82 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var util = __webpack_require__(5);
-var JsonBuilder = __webpack_require__(80);
-var JsonParser = __webpack_require__(81);
-
-function buildRequest(req) {
-  var httpRequest = req.httpRequest;
-  var api = req.service.api;
-  var target = api.targetPrefix + '.' + api.operations[req.operation].name;
-  var version = api.jsonVersion || '1.0';
-  var input = api.operations[req.operation].input;
-  var builder = new JsonBuilder();
-
-  if (version === 1) version = '1.0';
-  httpRequest.body = builder.build(req.params || {}, input);
-  httpRequest.headers['Content-Type'] = 'application/x-amz-json-' + version;
-  httpRequest.headers['X-Amz-Target'] = target;
-}
-
-function extractError(resp) {
-  var error = {};
-  var httpResponse = resp.httpResponse;
-
-  error.code = httpResponse.headers['x-amzn-errortype'] || 'UnknownError';
-  if (typeof error.code === 'string') {
-    error.code = error.code.split(':')[0];
-  }
-
-  if (httpResponse.body.length > 0) {
-    try {
-      var e = JSON.parse(httpResponse.body.toString());
-      if (e.__type || e.code) {
-        error.code = (e.__type || e.code).split('#').pop();
-      }
-      if (error.code === 'RequestEntityTooLarge') {
-        error.message = 'Request body must be less than 1 MB';
-      } else {
-        error.message = (e.message || e.Message || null);
-      }
-    } catch (e) {
-      error.statusCode = httpResponse.statusCode;
-      error.message = httpResponse.statusMessage;
-    }
-  } else {
-    error.statusCode = httpResponse.statusCode;
-    error.message = httpResponse.statusCode.toString();
-  }
-
-  resp.error = util.error(new Error(), error);
-}
-
-function extractData(resp) {
-  var body = resp.httpResponse.body.toString() || '{}';
-  if (resp.request.service.config.convertResponseTypes === false) {
-    resp.data = JSON.parse(body);
-  } else {
-    var operation = resp.request.service.api.operations[resp.request.operation];
-    var shape = operation.output || {};
-    var parser = new JsonParser();
-    resp.data = parser.parse(body, shape);
-  }
-}
-
-module.exports = {
-  buildRequest: buildRequest,
-  extractError: extractError,
-  extractData: extractData
-};
-
-
-/***/ }),
-/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -19984,18 +19779,18 @@ function base64DetectIncompleteChar(buffer) {
 
 
 /***/ }),
-/* 84 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-exports.decode = exports.parse = __webpack_require__(281);
-exports.encode = exports.stringify = __webpack_require__(282);
+exports.decode = exports.parse = __webpack_require__(240);
+exports.encode = exports.stringify = __webpack_require__(241);
 
 
 /***/ }),
-/* 85 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Copyright Joyent, Inc. and other Node contributors.
@@ -20021,15 +19816,15 @@ exports.encode = exports.stringify = __webpack_require__(282);
 
 module.exports = Stream;
 
-var EE = __webpack_require__(42).EventEmitter;
+var EE = __webpack_require__(41).EventEmitter;
 var inherits = __webpack_require__(2);
 
 inherits(Stream, EE);
 Stream.Readable = __webpack_require__(122);
-Stream.Writable = __webpack_require__(612);
-Stream.Duplex = __webpack_require__(607);
-Stream.Transform = __webpack_require__(611);
-Stream.PassThrough = __webpack_require__(610);
+Stream.Writable = __webpack_require__(614);
+Stream.Duplex = __webpack_require__(609);
+Stream.Transform = __webpack_require__(613);
+Stream.PassThrough = __webpack_require__(612);
 
 // Backwards-compat with node 0.4.x
 Stream.Stream = Stream;
@@ -20128,7 +19923,7 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 /***/ }),
-/* 86 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20155,8 +19950,8 @@ Stream.prototype.pipe = function(dest, options) {
 
 
 
-var punycode = __webpack_require__(280);
-var util = __webpack_require__(283);
+var punycode = __webpack_require__(239);
+var util = __webpack_require__(242);
 
 exports.parse = urlParse;
 exports.resolve = urlResolve;
@@ -20231,7 +20026,7 @@ var protocolPattern = /^([a-z0-9.+-]+:)/i,
       'gopher:': true,
       'file:': true
     },
-    querystring = __webpack_require__(84);
+    querystring = __webpack_require__(81);
 
 function urlParse(url, parseQueryString, slashesDenoteHost) {
   if (url && util.isObject(url) && url instanceof Url) return url;
@@ -20867,13 +20662,218 @@ Url.prototype.parseHost = function() {
 
 
 /***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(6);
+
+function JsonBuilder() { }
+
+JsonBuilder.prototype.build = function(value, shape) {
+  return JSON.stringify(translate(value, shape));
+};
+
+function translate(value, shape) {
+  if (!shape || value === undefined || value === null) return undefined;
+
+  switch (shape.type) {
+    case 'structure': return translateStructure(value, shape);
+    case 'map': return translateMap(value, shape);
+    case 'list': return translateList(value, shape);
+    default: return translateScalar(value, shape);
+  }
+}
+
+function translateStructure(structure, shape) {
+  var struct = {};
+  util.each(structure, function(name, value) {
+    var memberShape = shape.members[name];
+    if (memberShape) {
+      if (memberShape.location !== 'body') return;
+      var locationName = memberShape.isLocationName ? memberShape.name : name;
+      var result = translate(value, memberShape);
+      if (result !== undefined) struct[locationName] = result;
+    }
+  });
+  return struct;
+}
+
+function translateList(list, shape) {
+  var out = [];
+  util.arrayEach(list, function(value) {
+    var result = translate(value, shape.member);
+    if (result !== undefined) out.push(result);
+  });
+  return out;
+}
+
+function translateMap(map, shape) {
+  var out = {};
+  util.each(map, function(key, value) {
+    var result = translate(value, shape.value);
+    if (result !== undefined) out[key] = result;
+  });
+  return out;
+}
+
+function translateScalar(value, shape) {
+  return shape.toWireFormat(value);
+}
+
+module.exports = JsonBuilder;
+
+
+/***/ }),
+/* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(6);
+
+function JsonParser() { }
+
+JsonParser.prototype.parse = function(value, shape) {
+  return translate(JSON.parse(value), shape);
+};
+
+function translate(value, shape) {
+  if (!shape || value === undefined) return undefined;
+
+  switch (shape.type) {
+    case 'structure': return translateStructure(value, shape);
+    case 'map': return translateMap(value, shape);
+    case 'list': return translateList(value, shape);
+    default: return translateScalar(value, shape);
+  }
+}
+
+function translateStructure(structure, shape) {
+  if (structure == null) return undefined;
+
+  var struct = {};
+  var shapeMembers = shape.members;
+  util.each(shapeMembers, function(name, memberShape) {
+    var locationName = memberShape.isLocationName ? memberShape.name : name;
+    if (Object.prototype.hasOwnProperty.call(structure, locationName)) {
+      var value = structure[locationName];
+      var result = translate(value, memberShape);
+      if (result !== undefined) struct[name] = result;
+    }
+  });
+  return struct;
+}
+
+function translateList(list, shape) {
+  if (list == null) return undefined;
+
+  var out = [];
+  util.arrayEach(list, function(value) {
+    var result = translate(value, shape.member);
+    if (result === undefined) out.push(null);
+    else out.push(result);
+  });
+  return out;
+}
+
+function translateMap(map, shape) {
+  if (map == null) return undefined;
+
+  var out = {};
+  util.each(map, function(key, value) {
+    var result = translate(value, shape.value);
+    if (result === undefined) out[key] = null;
+    else out[key] = result;
+  });
+  return out;
+}
+
+function translateScalar(value, shape) {
+  return shape.toType(value);
+}
+
+module.exports = JsonParser;
+
+
+/***/ }),
+/* 86 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(6);
+var JsonBuilder = __webpack_require__(84);
+var JsonParser = __webpack_require__(85);
+
+function buildRequest(req) {
+  var httpRequest = req.httpRequest;
+  var api = req.service.api;
+  var target = api.targetPrefix + '.' + api.operations[req.operation].name;
+  var version = api.jsonVersion || '1.0';
+  var input = api.operations[req.operation].input;
+  var builder = new JsonBuilder();
+
+  if (version === 1) version = '1.0';
+  httpRequest.body = builder.build(req.params || {}, input);
+  httpRequest.headers['Content-Type'] = 'application/x-amz-json-' + version;
+  httpRequest.headers['X-Amz-Target'] = target;
+}
+
+function extractError(resp) {
+  var error = {};
+  var httpResponse = resp.httpResponse;
+
+  error.code = httpResponse.headers['x-amzn-errortype'] || 'UnknownError';
+  if (typeof error.code === 'string') {
+    error.code = error.code.split(':')[0];
+  }
+
+  if (httpResponse.body.length > 0) {
+    try {
+      var e = JSON.parse(httpResponse.body.toString());
+      if (e.__type || e.code) {
+        error.code = (e.__type || e.code).split('#').pop();
+      }
+      if (error.code === 'RequestEntityTooLarge') {
+        error.message = 'Request body must be less than 1 MB';
+      } else {
+        error.message = (e.message || e.Message || null);
+      }
+    } catch (e) {
+      error.statusCode = httpResponse.statusCode;
+      error.message = httpResponse.statusMessage;
+    }
+  } else {
+    error.statusCode = httpResponse.statusCode;
+    error.message = httpResponse.statusCode.toString();
+  }
+
+  resp.error = util.error(new Error(), error);
+}
+
+function extractData(resp) {
+  var body = resp.httpResponse.body.toString() || '{}';
+  if (resp.request.service.config.convertResponseTypes === false) {
+    resp.data = JSON.parse(body);
+  } else {
+    var operation = resp.request.service.api.operations[resp.request.operation];
+    var shape = operation.output || {};
+    var parser = new JsonParser();
+    resp.data = parser.parse(body, shape);
+  }
+}
+
+module.exports = {
+  buildRequest: buildRequest,
+  extractError: extractError,
+  extractData: extractData
+};
+
+
+/***/ }),
 /* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var ciphers = __webpack_require__(314)
+var ciphers = __webpack_require__(315)
 exports.createCipher = exports.Cipher = ciphers.createCipher
 exports.createCipheriv = exports.Cipheriv = ciphers.createCipheriv
-var deciphers = __webpack_require__(313)
+var deciphers = __webpack_require__(314)
 exports.createDecipher = exports.Decipher = deciphers.createDecipher
 exports.createDecipheriv = exports.Decipheriv = deciphers.createDecipheriv
 var modes = __webpack_require__(62)
@@ -21055,7 +21055,7 @@ exports.allocUnsafeSlow = function allocUnsafeSlow(size) {
 var createHash = __webpack_require__(34);
 var inherits = __webpack_require__(2)
 
-var Transform = __webpack_require__(85).Transform
+var Transform = __webpack_require__(82).Transform
 
 var ZEROS = new Buffer(128)
 ZEROS.fill(0)
@@ -21695,7 +21695,7 @@ var _deepCore = __webpack_require__(3);
 
 var _deepCore2 = _interopRequireDefault(_deepCore);
 
-var _MissingWorkingMicroserviceException = __webpack_require__(384);
+var _MissingWorkingMicroserviceException = __webpack_require__(385);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21970,7 +21970,7 @@ let AbstractEvent = exports.AbstractEvent = function (_Core$OOP$Interface) {
 
   return AbstractEvent;
 }(_deepCore2.default.OOP.Interface);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
 /* 97 */
@@ -21990,11 +21990,11 @@ exports.Action = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _UnknownMethodException = __webpack_require__(414);
+var _UnknownMethodException = __webpack_require__(415);
 
 var _Request = __webpack_require__(176);
 
-var _LocalRequest = __webpack_require__(417);
+var _LocalRequest = __webpack_require__(418);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -22346,7 +22346,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _Response2 = __webpack_require__(99);
 
-var _ValidationError = __webpack_require__(415);
+var _ValidationError = __webpack_require__(416);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -23052,7 +23052,7 @@ let StrategyFactory = exports.StrategyFactory = function () {
 
       if (typeof strategy === 'string') {
         const strategyFullName = `${StrategyFactory._pascalCase(strategy)}Strategy`;
-        const StrategyProto = __webpack_require__(419)(`./${strategyFullName}`)[strategyFullName];
+        const StrategyProto = __webpack_require__(420)(`./${strategyFullName}`)[strategyFullName];
 
         return new (Function.prototype.bind.apply(StrategyProto, [null].concat(args)))();
       } else if (typeof strategy === 'function') {
@@ -23140,17 +23140,17 @@ exports.IdentityProvider = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _MissingLoginProviderException = __webpack_require__(429);
+var _MissingLoginProviderException = __webpack_require__(431);
 
-var _IdentityProviderMismatchException = __webpack_require__(425);
+var _IdentityProviderMismatchException = __webpack_require__(427);
 
-var _InvalidProviderIdentityException = __webpack_require__(426);
+var _InvalidProviderIdentityException = __webpack_require__(428);
 
-var _MissingIdentityImplementationException = __webpack_require__(428);
+var _MissingIdentityImplementationException = __webpack_require__(430);
 
-var _UserPoolImplementation = __webpack_require__(434);
+var _UserPoolImplementation = __webpack_require__(437);
 
-var _MissingRefreshTokenException = __webpack_require__(430);
+var _MissingRefreshTokenException = __webpack_require__(432);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -23581,11 +23581,11 @@ let IdentityProvider = exports.IdentityProvider = function () {
 "use strict";
 
 
-exports.utils = __webpack_require__(459);
-exports.Cipher = __webpack_require__(456);
-exports.DES = __webpack_require__(457);
-exports.CBC = __webpack_require__(455);
-exports.EDE = __webpack_require__(458);
+exports.utils = __webpack_require__(461);
+exports.Cipher = __webpack_require__(458);
+exports.DES = __webpack_require__(459);
+exports.CBC = __webpack_require__(457);
+exports.EDE = __webpack_require__(460);
 
 
 /***/ }),
@@ -25603,11 +25603,11 @@ module.exports = Map;
 /* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var mapCacheClear = __webpack_require__(556),
-    mapCacheDelete = __webpack_require__(557),
-    mapCacheGet = __webpack_require__(558),
-    mapCacheHas = __webpack_require__(559),
-    mapCacheSet = __webpack_require__(560);
+var mapCacheClear = __webpack_require__(558),
+    mapCacheDelete = __webpack_require__(559),
+    mapCacheGet = __webpack_require__(560),
+    mapCacheHas = __webpack_require__(561),
+    mapCacheSet = __webpack_require__(562);
 
 /**
  * Creates a map cache object to store key-value pairs.
@@ -25755,7 +25755,7 @@ module.exports = identity;
 /* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsArguments = __webpack_require__(516),
+var baseIsArguments = __webpack_require__(518),
     isObjectLike = __webpack_require__(56);
 
 /** Used for built-in method references. */
@@ -25798,7 +25798,7 @@ module.exports = isArguments;
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module) {var root = __webpack_require__(20),
-    stubFalse = __webpack_require__(588);
+    stubFalse = __webpack_require__(590);
 
 /** Detect free variable `exports`. */
 var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -25918,9 +25918,9 @@ module.exports = isSymbol;
 /* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsTypedArray = __webpack_require__(520),
-    baseUnary = __webpack_require__(530),
-    nodeUtil = __webpack_require__(564);
+var baseIsTypedArray = __webpack_require__(522),
+    baseUnary = __webpack_require__(532),
+    nodeUtil = __webpack_require__(566);
 
 /* Node.js helper references. */
 var nodeIsTypedArray = nodeUtil && nodeUtil.isTypedArray;
@@ -25996,7 +25996,7 @@ function nextTick(fn, arg1, arg2, arg3) {
   }
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
 /* 121 */
@@ -26032,12 +26032,12 @@ util.inherits = __webpack_require__(2);
 
 /*<replacement>*/
 var internalUtil = {
-  deprecate: __webpack_require__(643)
+  deprecate: __webpack_require__(645)
 };
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(221);
+var Stream = __webpack_require__(222);
 /*</replacement>*/
 
 var Buffer = __webpack_require__(0).Buffer;
@@ -26547,19 +26547,19 @@ function CorkedRequest(state) {
     }
   };
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(141).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(127).setImmediate))
 
 /***/ }),
 /* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports = module.exports = __webpack_require__(219);
+exports = module.exports = __webpack_require__(220);
 exports.Stream = exports;
 exports.Readable = exports;
 exports.Writable = __webpack_require__(121);
 exports.Duplex = __webpack_require__(29);
-exports.Transform = __webpack_require__(220);
-exports.PassThrough = __webpack_require__(608);
+exports.Transform = __webpack_require__(221);
+exports.PassThrough = __webpack_require__(610);
 
 
 /***/ }),
@@ -26588,9 +26588,9 @@ module.exports = isObject;
 "use strict";
 
 
-var required = __webpack_require__(613)
-  , lolcation = __webpack_require__(642)
-  , qs = __webpack_require__(601)
+var required = __webpack_require__(615)
+  , lolcation = __webpack_require__(644)
+  , qs = __webpack_require__(603)
   , protocolre = /^([a-z][a-z0-9.+-]*:)?(\/\/)?([\S\s]*)/i;
 
 /**
@@ -26955,1492 +26955,6 @@ module.exports = URL;
 
 /***/ }),
 /* 126 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(31);
-var AWS = __webpack_require__(1);
-var Service = __webpack_require__(32);
-var apiLoader = __webpack_require__(30);
-
-apiLoader.services['cognitoidentity'] = {};
-AWS.CognitoIdentity = Service.defineService('cognitoidentity', ['2014-06-30']);
-__webpack_require__(264);
-Object.defineProperty(apiLoader.services['cognitoidentity'], '2014-06-30', {
-  get: function get() {
-    var model = __webpack_require__(235);
-    model.paginators = __webpack_require__(236).pagination;
-    return model;
-  },
-  enumerable: true,
-  configurable: true
-});
-
-module.exports = AWS.CognitoIdentity;
-
-
-/***/ }),
-/* 127 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AWS = __webpack_require__(1);
-
-/**
- * Represents your AWS security credentials, specifically the
- * {accessKeyId}, {secretAccessKey}, and optional {sessionToken}.
- * Creating a `Credentials` object allows you to pass around your
- * security information to configuration and service objects.
- *
- * Note that this class typically does not need to be constructed manually,
- * as the {AWS.Config} and {AWS.Service} classes both accept simple
- * options hashes with the three keys. These structures will be converted
- * into Credentials objects automatically.
- *
- * ## Expiring and Refreshing Credentials
- *
- * Occasionally credentials can expire in the middle of a long-running
- * application. In this case, the SDK will automatically attempt to
- * refresh the credentials from the storage location if the Credentials
- * class implements the {refresh} method.
- *
- * If you are implementing a credential storage location, you
- * will want to create a subclass of the `Credentials` class and
- * override the {refresh} method. This method allows credentials to be
- * retrieved from the backing store, be it a file system, database, or
- * some network storage. The method should reset the credential attributes
- * on the object.
- *
- * @!attribute expired
- *   @return [Boolean] whether the credentials have been expired and
- *     require a refresh. Used in conjunction with {expireTime}.
- * @!attribute expireTime
- *   @return [Date] a time when credentials should be considered expired. Used
- *     in conjunction with {expired}.
- * @!attribute accessKeyId
- *   @return [String] the AWS access key ID
- * @!attribute secretAccessKey
- *   @return [String] the AWS secret access key
- * @!attribute sessionToken
- *   @return [String] an optional AWS session token
- */
-AWS.Credentials = AWS.util.inherit({
-  /**
-   * A credentials object can be created using positional arguments or an options
-   * hash.
-   *
-   * @overload AWS.Credentials(accessKeyId, secretAccessKey, sessionToken=null)
-   *   Creates a Credentials object with a given set of credential information
-   *   as positional arguments.
-   *   @param accessKeyId [String] the AWS access key ID
-   *   @param secretAccessKey [String] the AWS secret access key
-   *   @param sessionToken [String] the optional AWS session token
-   *   @example Create a credentials object with AWS credentials
-   *     var creds = new AWS.Credentials('akid', 'secret', 'session');
-   * @overload AWS.Credentials(options)
-   *   Creates a Credentials object with a given set of credential information
-   *   as an options hash.
-   *   @option options accessKeyId [String] the AWS access key ID
-   *   @option options secretAccessKey [String] the AWS secret access key
-   *   @option options sessionToken [String] the optional AWS session token
-   *   @example Create a credentials object with AWS credentials
-   *     var creds = new AWS.Credentials({
-   *       accessKeyId: 'akid', secretAccessKey: 'secret', sessionToken: 'session'
-   *     });
-   */
-  constructor: function Credentials() {
-    // hide secretAccessKey from being displayed with util.inspect
-    AWS.util.hideProperties(this, ['secretAccessKey']);
-
-    this.expired = false;
-    this.expireTime = null;
-    if (arguments.length === 1 && typeof arguments[0] === 'object') {
-      var creds = arguments[0].credentials || arguments[0];
-      this.accessKeyId = creds.accessKeyId;
-      this.secretAccessKey = creds.secretAccessKey;
-      this.sessionToken = creds.sessionToken;
-    } else {
-      this.accessKeyId = arguments[0];
-      this.secretAccessKey = arguments[1];
-      this.sessionToken = arguments[2];
-    }
-  },
-
-  /**
-   * @return [Integer] the number of seconds before {expireTime} during which
-   *   the credentials will be considered expired.
-   */
-  expiryWindow: 15,
-
-  /**
-   * @return [Boolean] whether the credentials object should call {refresh}
-   * @note Subclasses should override this method to provide custom refresh
-   *   logic.
-   */
-  needsRefresh: function needsRefresh() {
-    var currentTime = AWS.util.date.getDate().getTime();
-    var adjustedTime = new Date(currentTime + this.expiryWindow * 1000);
-
-    if (this.expireTime && adjustedTime > this.expireTime) {
-      return true;
-    } else {
-      return this.expired || !this.accessKeyId || !this.secretAccessKey;
-    }
-  },
-
-  /**
-   * Gets the existing credentials, refreshing them if they are not yet loaded
-   * or have expired. Users should call this method before using {refresh},
-   * as this will not attempt to reload credentials when they are already
-   * loaded into the object.
-   *
-   * @callback callback function(err)
-   *   When this callback is called with no error, it means either credentials
-   *   do not need to be refreshed or refreshed credentials information has
-   *   been loaded into the object (as the `accessKeyId`, `secretAccessKey`,
-   *   and `sessionToken` properties).
-   *   @param err [Error] if an error occurred, this value will be filled
-   */
-  get: function get(callback) {
-    var self = this;
-    if (this.needsRefresh()) {
-      this.refresh(function(err) {
-        if (!err) self.expired = false; // reset expired flag
-        if (callback) callback(err);
-      });
-    } else if (callback) {
-      callback();
-    }
-  },
-
-  /**
-   * @!method  getPromise()
-   *   Returns a 'thenable' promise.
-   *   Gets the existing credentials, refreshing them if they are not yet loaded
-   *   or have expired. Users should call this method before using {refresh},
-   *   as this will not attempt to reload credentials when they are already
-   *   loaded into the object.
-   *
-   *   Two callbacks can be provided to the `then` method on the returned promise.
-   *   The first callback will be called if the promise is fulfilled, and the second
-   *   callback will be called if the promise is rejected.
-   *   @callback fulfilledCallback function()
-   *     Called if the promise is fulfilled. When this callback is called, it
-   *     means either credentials do not need to be refreshed or refreshed
-   *     credentials information has been loaded into the object (as the
-   *     `accessKeyId`, `secretAccessKey`, and `sessionToken` properties).
-   *   @callback rejectedCallback function(err)
-   *     Called if the promise is rejected.
-   *     @param err [Error] if an error occurred, this value will be filled
-   *   @return [Promise] A promise that represents the state of the `get` call.
-   *   @example Calling the `getPromise` method.
-   *     var promise = credProvider.getPromise();
-   *     promise.then(function() { ... }, function(err) { ... });
-   */
-
-  /**
-   * @!method  refreshPromise()
-   *   Returns a 'thenable' promise.
-   *   Refreshes the credentials. Users should call {get} before attempting
-   *   to forcibly refresh credentials.
-   *
-   *   Two callbacks can be provided to the `then` method on the returned promise.
-   *   The first callback will be called if the promise is fulfilled, and the second
-   *   callback will be called if the promise is rejected.
-   *   @callback fulfilledCallback function()
-   *     Called if the promise is fulfilled. When this callback is called, it
-   *     means refreshed credentials information has been loaded into the object
-   *     (as the `accessKeyId`, `secretAccessKey`, and `sessionToken` properties).
-   *   @callback rejectedCallback function(err)
-   *     Called if the promise is rejected.
-   *     @param err [Error] if an error occurred, this value will be filled
-   *   @return [Promise] A promise that represents the state of the `refresh` call.
-   *   @example Calling the `refreshPromise` method.
-   *     var promise = credProvider.refreshPromise();
-   *     promise.then(function() { ... }, function(err) { ... });
-   */
-
-  /**
-   * Refreshes the credentials. Users should call {get} before attempting
-   * to forcibly refresh credentials.
-   *
-   * @callback callback function(err)
-   *   When this callback is called with no error, it means refreshed
-   *   credentials information has been loaded into the object (as the
-   *   `accessKeyId`, `secretAccessKey`, and `sessionToken` properties).
-   *   @param err [Error] if an error occurred, this value will be filled
-   * @note Subclasses should override this class to reset the
-   *   {accessKeyId}, {secretAccessKey} and optional {sessionToken}
-   *   on the credentials object and then call the callback with
-   *   any error information.
-   * @see get
-   */
-  refresh: function refresh(callback) {
-    this.expired = false;
-    callback();
-  }
-});
-
-/**
- * @api private
- */
-AWS.Credentials.addPromisesToClass = function addPromisesToClass(PromiseDependency) {
-  this.prototype.getPromise = AWS.util.promisifyMethod('get', PromiseDependency);
-  this.prototype.refreshPromise = AWS.util.promisifyMethod('refresh', PromiseDependency);
-};
-
-/**
- * @api private
- */
-AWS.Credentials.deletePromisesFromClass = function deletePromisesFromClass() {
-  delete this.prototype.getPromise;
-  delete this.prototype.refreshPromise;
-};
-
-AWS.util.addPromises(AWS.Credentials);
-
-
-/***/ }),
-/* 128 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AWS = __webpack_require__(1);
-
-/**
- * Creates a credential provider chain that searches for AWS credentials
- * in a list of credential providers specified by the {providers} property.
- *
- * By default, the chain will use the {defaultProviders} to resolve credentials.
- * These providers will look in the environment using the
- * {AWS.EnvironmentCredentials} class with the 'AWS' and 'AMAZON' prefixes.
- *
- * ## Setting Providers
- *
- * Each provider in the {providers} list should be a function that returns
- * a {AWS.Credentials} object, or a hardcoded credentials object. The function
- * form allows for delayed execution of the credential construction.
- *
- * ## Resolving Credentials from a Chain
- *
- * Call {resolve} to return the first valid credential object that can be
- * loaded by the provider chain.
- *
- * For example, to resolve a chain with a custom provider that checks a file
- * on disk after the set of {defaultProviders}:
- *
- * ```javascript
- * var diskProvider = new AWS.FileSystemCredentials('./creds.json');
- * var chain = new AWS.CredentialProviderChain();
- * chain.providers.push(diskProvider);
- * chain.resolve();
- * ```
- *
- * The above code will return the `diskProvider` object if the
- * file contains credentials and the `defaultProviders` do not contain
- * any credential settings.
- *
- * @!attribute providers
- *   @return [Array<AWS.Credentials, Function>]
- *     a list of credentials objects or functions that return credentials
- *     objects. If the provider is a function, the function will be
- *     executed lazily when the provider needs to be checked for valid
- *     credentials. By default, this object will be set to the
- *     {defaultProviders}.
- *   @see defaultProviders
- */
-AWS.CredentialProviderChain = AWS.util.inherit(AWS.Credentials, {
-
-  /**
-   * Creates a new CredentialProviderChain with a default set of providers
-   * specified by {defaultProviders}.
-   */
-  constructor: function CredentialProviderChain(providers) {
-    if (providers) {
-      this.providers = providers;
-    } else {
-      this.providers = AWS.CredentialProviderChain.defaultProviders.slice(0);
-    }
-  },
-
-  /**
-   * @!method  resolvePromise()
-   *   Returns a 'thenable' promise.
-   *   Resolves the provider chain by searching for the first set of
-   *   credentials in {providers}.
-   *
-   *   Two callbacks can be provided to the `then` method on the returned promise.
-   *   The first callback will be called if the promise is fulfilled, and the second
-   *   callback will be called if the promise is rejected.
-   *   @callback fulfilledCallback function(credentials)
-   *     Called if the promise is fulfilled and the provider resolves the chain
-   *     to a credentials object
-   *     @param credentials [AWS.Credentials] the credentials object resolved
-   *       by the provider chain.
-   *   @callback rejectedCallback function(error)
-   *     Called if the promise is rejected.
-   *     @param err [Error] the error object returned if no credentials are found.
-   *   @return [Promise] A promise that represents the state of the `resolve` method call.
-   *   @example Calling the `resolvePromise` method.
-   *     var promise = chain.resolvePromise();
-   *     promise.then(function(credentials) { ... }, function(err) { ... });
-   */
-
-  /**
-   * Resolves the provider chain by searching for the first set of
-   * credentials in {providers}.
-   *
-   * @callback callback function(err, credentials)
-   *   Called when the provider resolves the chain to a credentials object
-   *   or null if no credentials can be found.
-   *
-   *   @param err [Error] the error object returned if no credentials are
-   *     found.
-   *   @param credentials [AWS.Credentials] the credentials object resolved
-   *     by the provider chain.
-   * @return [AWS.CredentialProviderChain] the provider, for chaining.
-   */
-  resolve: function resolve(callback) {
-    if (this.providers.length === 0) {
-      callback(new Error('No providers'));
-      return this;
-    }
-
-    var index = 0;
-    var providers = this.providers.slice(0);
-
-    function resolveNext(err, creds) {
-      if ((!err && creds) || index === providers.length) {
-        callback(err, creds);
-        return;
-      }
-
-      var provider = providers[index++];
-      if (typeof provider === 'function') {
-        creds = provider.call();
-      } else {
-        creds = provider;
-      }
-
-      if (creds.get) {
-        creds.get(function(getErr) {
-          resolveNext(getErr, getErr ? null : creds);
-        });
-      } else {
-        resolveNext(null, creds);
-      }
-    }
-
-    resolveNext();
-    return this;
-  }
-});
-
-/**
- * The default set of providers used by a vanilla CredentialProviderChain.
- *
- * In the browser:
- *
- * ```javascript
- * AWS.CredentialProviderChain.defaultProviders = []
- * ```
- *
- * In Node.js:
- *
- * ```javascript
- * AWS.CredentialProviderChain.defaultProviders = [
- *   function () { return new AWS.EnvironmentCredentials('AWS'); },
- *   function () { return new AWS.EnvironmentCredentials('AMAZON'); },
- *   function () { return new AWS.SharedIniFileCredentials(); },
- *   function () {
- *     // if AWS_CONTAINER_CREDENTIALS_RELATIVE_URI is set
- *       return new AWS.ECSCredentials();
- *     // else
- *       return new AWS.EC2MetadataCredentials();
- *   }
- * ]
- * ```
- */
-AWS.CredentialProviderChain.defaultProviders = [];
-
-/**
- * @api private
- */
-AWS.CredentialProviderChain.addPromisesToClass = function addPromisesToClass(PromiseDependency) {
-  this.prototype.resolvePromise = AWS.util.promisifyMethod('resolve', PromiseDependency);
-};
-
-/**
- * @api private
- */
-AWS.CredentialProviderChain.deletePromisesFromClass = function deletePromisesFromClass() {
-  delete this.prototype.resolvePromise;
-};
-
-AWS.util.addPromises(AWS.CredentialProviderChain);
-
-
-/***/ }),
-/* 129 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AWS = __webpack_require__(1);
-var inherit = AWS.util.inherit;
-
-/**
- * The endpoint that a service will talk to, for example,
- * `'https://ec2.ap-southeast-1.amazonaws.com'`. If
- * you need to override an endpoint for a service, you can
- * set the endpoint on a service by passing the endpoint
- * object with the `endpoint` option key:
- *
- * ```javascript
- * var ep = new AWS.Endpoint('awsproxy.example.com');
- * var s3 = new AWS.S3({endpoint: ep});
- * s3.service.endpoint.hostname == 'awsproxy.example.com'
- * ```
- *
- * Note that if you do not specify a protocol, the protocol will
- * be selected based on your current {AWS.config} configuration.
- *
- * @!attribute protocol
- *   @return [String] the protocol (http or https) of the endpoint
- *     URL
- * @!attribute hostname
- *   @return [String] the host portion of the endpoint, e.g.,
- *     example.com
- * @!attribute host
- *   @return [String] the host portion of the endpoint including
- *     the port, e.g., example.com:80
- * @!attribute port
- *   @return [Integer] the port of the endpoint
- * @!attribute href
- *   @return [String] the full URL of the endpoint
- */
-AWS.Endpoint = inherit({
-
-  /**
-   * @overload Endpoint(endpoint)
-   *   Constructs a new endpoint given an endpoint URL. If the
-   *   URL omits a protocol (http or https), the default protocol
-   *   set in the global {AWS.config} will be used.
-   *   @param endpoint [String] the URL to construct an endpoint from
-   */
-  constructor: function Endpoint(endpoint, config) {
-    AWS.util.hideProperties(this, ['slashes', 'auth', 'hash', 'search', 'query']);
-
-    if (typeof endpoint === 'undefined' || endpoint === null) {
-      throw new Error('Invalid endpoint: ' + endpoint);
-    } else if (typeof endpoint !== 'string') {
-      return AWS.util.copy(endpoint);
-    }
-
-    if (!endpoint.match(/^http/)) {
-      var useSSL = config && config.sslEnabled !== undefined ?
-        config.sslEnabled : AWS.config.sslEnabled;
-      endpoint = (useSSL ? 'https' : 'http') + '://' + endpoint;
-    }
-
-    AWS.util.update(this, AWS.util.urlParse(endpoint));
-
-    // Ensure the port property is set as an integer
-    if (this.port) {
-      this.port = parseInt(this.port, 10);
-    } else {
-      this.port = this.protocol === 'https:' ? 443 : 80;
-    }
-  }
-
-});
-
-/**
- * The low level HTTP request object, encapsulating all HTTP header
- * and body data sent by a service request.
- *
- * @!attribute method
- *   @return [String] the HTTP method of the request
- * @!attribute path
- *   @return [String] the path portion of the URI, e.g.,
- *     "/list/?start=5&num=10"
- * @!attribute headers
- *   @return [map<String,String>]
- *     a map of header keys and their respective values
- * @!attribute body
- *   @return [String] the request body payload
- * @!attribute endpoint
- *   @return [AWS.Endpoint] the endpoint for the request
- * @!attribute region
- *   @api private
- *   @return [String] the region, for signing purposes only.
- */
-AWS.HttpRequest = inherit({
-
-  /**
-   * @api private
-   */
-  constructor: function HttpRequest(endpoint, region) {
-    endpoint = new AWS.Endpoint(endpoint);
-    this.method = 'POST';
-    this.path = endpoint.path || '/';
-    this.headers = {};
-    this.body = '';
-    this.endpoint = endpoint;
-    this.region = region;
-    this._userAgent = '';
-    this.setUserAgent();
-  },
-
-  /**
-   * @api private
-   */
-  setUserAgent: function setUserAgent() {
-    this._userAgent = this.headers[this.getUserAgentHeaderName()] = AWS.util.userAgent();
-  },
-
-  getUserAgentHeaderName: function getUserAgentHeaderName() {
-    var prefix = AWS.util.isBrowser() ? 'X-Amz-' : '';
-    return prefix + 'User-Agent';
-  },
-
-  /**
-   * @api private
-   */
-  appendToUserAgent: function appendToUserAgent(agentPartial) {
-    if (typeof agentPartial === 'string' && agentPartial) {
-      this._userAgent += ' ' + agentPartial;
-    }
-    this.headers[this.getUserAgentHeaderName()] = this._userAgent;
-  },
-
-  /**
-   * @api private
-   */
-  getUserAgent: function getUserAgent() {
-    return this._userAgent;
-  },
-
-  /**
-   * @return [String] the part of the {path} excluding the
-   *   query string
-   */
-  pathname: function pathname() {
-    return this.path.split('?', 1)[0];
-  },
-
-  /**
-   * @return [String] the query string portion of the {path}
-   */
-  search: function search() {
-    var query = this.path.split('?', 2)[1];
-    if (query) {
-      query = AWS.util.queryStringParse(query);
-      return AWS.util.queryParamsToString(query);
-    }
-    return '';
-  }
-
-});
-
-/**
- * The low level HTTP response object, encapsulating all HTTP header
- * and body data returned from the request.
- *
- * @!attribute statusCode
- *   @return [Integer] the HTTP status code of the response (e.g., 200, 404)
- * @!attribute headers
- *   @return [map<String,String>]
- *      a map of response header keys and their respective values
- * @!attribute body
- *   @return [String] the response body payload
- * @!attribute [r] streaming
- *   @return [Boolean] whether this response is being streamed at a low-level.
- *     Defaults to `false` (buffered reads). Do not modify this manually, use
- *     {createUnbufferedStream} to convert the stream to unbuffered mode
- *     instead.
- */
-AWS.HttpResponse = inherit({
-
-  /**
-   * @api private
-   */
-  constructor: function HttpResponse() {
-    this.statusCode = undefined;
-    this.headers = {};
-    this.body = undefined;
-    this.streaming = false;
-    this.stream = null;
-  },
-
-  /**
-   * Disables buffering on the HTTP response and returns the stream for reading.
-   * @return [Stream, XMLHttpRequest, null] the underlying stream object.
-   *   Use this object to directly read data off of the stream.
-   * @note This object is only available after the {AWS.Request~httpHeaders}
-   *   event has fired. This method must be called prior to
-   *   {AWS.Request~httpData}.
-   * @example Taking control of a stream
-   *   request.on('httpHeaders', function(statusCode, headers) {
-   *     if (statusCode < 300) {
-   *       if (headers.etag === 'xyz') {
-   *         // pipe the stream, disabling buffering
-   *         var stream = this.response.httpResponse.createUnbufferedStream();
-   *         stream.pipe(process.stdout);
-   *       } else { // abort this request and set a better error message
-   *         this.abort();
-   *         this.response.error = new Error('Invalid ETag');
-   *       }
-   *     }
-   *   }).send(console.log);
-   */
-  createUnbufferedStream: function createUnbufferedStream() {
-    this.streaming = true;
-    return this.stream;
-  }
-});
-
-
-AWS.HttpClient = inherit({});
-
-/**
- * @api private
- */
-AWS.HttpClient.getInstance = function getInstance() {
-  if (this.singleton === undefined) {
-    this.singleton = new this();
-  }
-  return this.singleton;
-};
-
-
-/***/ }),
-/* 130 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Collection = __webpack_require__(131);
-var Operation = __webpack_require__(132);
-var Shape = __webpack_require__(41);
-var Paginator = __webpack_require__(133);
-var ResourceWaiter = __webpack_require__(134);
-
-var util = __webpack_require__(5);
-var property = util.property;
-var memoizedProperty = util.memoizedProperty;
-
-function Api(api, options) {
-  api = api || {};
-  options = options || {};
-  options.api = this;
-
-  api.metadata = api.metadata || {};
-
-  property(this, 'isApi', true, false);
-  property(this, 'apiVersion', api.metadata.apiVersion);
-  property(this, 'endpointPrefix', api.metadata.endpointPrefix);
-  property(this, 'signingName', api.metadata.signingName);
-  property(this, 'globalEndpoint', api.metadata.globalEndpoint);
-  property(this, 'signatureVersion', api.metadata.signatureVersion);
-  property(this, 'jsonVersion', api.metadata.jsonVersion);
-  property(this, 'targetPrefix', api.metadata.targetPrefix);
-  property(this, 'protocol', api.metadata.protocol);
-  property(this, 'timestampFormat', api.metadata.timestampFormat);
-  property(this, 'xmlNamespaceUri', api.metadata.xmlNamespace);
-  property(this, 'abbreviation', api.metadata.serviceAbbreviation);
-  property(this, 'fullName', api.metadata.serviceFullName);
-
-  memoizedProperty(this, 'className', function() {
-    var name = api.metadata.serviceAbbreviation || api.metadata.serviceFullName;
-    if (!name) return null;
-
-    name = name.replace(/^Amazon|AWS\s*|\(.*|\s+|\W+/g, '');
-    if (name === 'ElasticLoadBalancing') name = 'ELB';
-    return name;
-  });
-
-  property(this, 'operations', new Collection(api.operations, options, function(name, operation) {
-    return new Operation(name, operation, options);
-  }, util.string.lowerFirst));
-
-  property(this, 'shapes', new Collection(api.shapes, options, function(name, shape) {
-    return Shape.create(shape, options);
-  }));
-
-  property(this, 'paginators', new Collection(api.paginators, options, function(name, paginator) {
-    return new Paginator(name, paginator, options);
-  }));
-
-  property(this, 'waiters', new Collection(api.waiters, options, function(name, waiter) {
-    return new ResourceWaiter(name, waiter, options);
-  }, util.string.lowerFirst));
-
-  if (options.documentation) {
-    property(this, 'documentation', api.documentation);
-    property(this, 'documentationUrl', api.documentationUrl);
-  }
-}
-
-module.exports = Api;
-
-
-/***/ }),
-/* 131 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var memoizedProperty = __webpack_require__(5).memoizedProperty;
-
-function memoize(name, value, fn, nameTr) {
-  memoizedProperty(this, nameTr(name), function() {
-    return fn(name, value);
-  });
-}
-
-function Collection(iterable, options, fn, nameTr) {
-  nameTr = nameTr || String;
-  var self = this;
-
-  for (var id in iterable) {
-    if (Object.prototype.hasOwnProperty.call(iterable, id)) {
-      memoize.call(self, id, iterable[id], fn, nameTr);
-    }
-  }
-}
-
-module.exports = Collection;
-
-
-/***/ }),
-/* 132 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Shape = __webpack_require__(41);
-
-var util = __webpack_require__(5);
-var property = util.property;
-var memoizedProperty = util.memoizedProperty;
-
-function Operation(name, operation, options) {
-  var self = this;
-  options = options || {};
-
-  property(this, 'name', operation.name || name);
-  property(this, 'api', options.api, false);
-
-  operation.http = operation.http || {};
-  property(this, 'httpMethod', operation.http.method || 'POST');
-  property(this, 'httpPath', operation.http.requestUri || '/');
-  property(this, 'authtype', operation.authtype || '');
-
-  memoizedProperty(this, 'input', function() {
-    if (!operation.input) {
-      return new Shape.create({type: 'structure'}, options);
-    }
-    return Shape.create(operation.input, options);
-  });
-
-  memoizedProperty(this, 'output', function() {
-    if (!operation.output) {
-      return new Shape.create({type: 'structure'}, options);
-    }
-    return Shape.create(operation.output, options);
-  });
-
-  memoizedProperty(this, 'errors', function() {
-    var list = [];
-    if (!operation.errors) return null;
-
-    for (var i = 0; i < operation.errors.length; i++) {
-      list.push(Shape.create(operation.errors[i], options));
-    }
-
-    return list;
-  });
-
-  memoizedProperty(this, 'paginator', function() {
-    return options.api.paginators[name];
-  });
-
-  if (options.documentation) {
-    property(this, 'documentation', operation.documentation);
-    property(this, 'documentationUrl', operation.documentationUrl);
-  }
-
-  // idempotentMembers only tracks top-level input shapes
-  memoizedProperty(this, 'idempotentMembers', function() {
-    var idempotentMembers = [];
-    var input = self.input;
-    var members = input.members;
-    if (!input.members) {
-      return idempotentMembers;
-    }
-    for (var name in members) {
-      if (!members.hasOwnProperty(name)) {
-        continue;
-      }
-      if (members[name].isIdempotent === true) {
-        idempotentMembers.push(name);
-      }
-    }
-    return idempotentMembers;
-  });
-
-}
-
-module.exports = Operation;
-
-
-/***/ }),
-/* 133 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var property = __webpack_require__(5).property;
-
-function Paginator(name, paginator) {
-  property(this, 'inputToken', paginator.input_token);
-  property(this, 'limitKey', paginator.limit_key);
-  property(this, 'moreResults', paginator.more_results);
-  property(this, 'outputToken', paginator.output_token);
-  property(this, 'resultKey', paginator.result_key);
-}
-
-module.exports = Paginator;
-
-
-/***/ }),
-/* 134 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var util = __webpack_require__(5);
-var property = util.property;
-
-function ResourceWaiter(name, waiter, options) {
-  options = options || {};
-  property(this, 'name', name);
-  property(this, 'api', options.api, false);
-
-  if (waiter.operation) {
-    property(this, 'operation', util.string.lowerFirst(waiter.operation));
-  }
-
-  var self = this;
-  var keys = [
-    'type',
-    'description',
-    'delay',
-    'maxAttempts',
-    'acceptors'
-  ];
-
-  keys.forEach(function(key) {
-    var value = waiter[key];
-    if (value) {
-      property(self, key, value);
-    }
-  });
-}
-
-module.exports = ResourceWaiter;
-
-
-/***/ }),
-/* 135 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AWS = __webpack_require__(1);
-var util = __webpack_require__(5);
-var QueryParamSerializer = __webpack_require__(258);
-var Shape = __webpack_require__(41);
-
-function buildRequest(req) {
-  var operation = req.service.api.operations[req.operation];
-  var httpRequest = req.httpRequest;
-  httpRequest.headers['Content-Type'] =
-    'application/x-www-form-urlencoded; charset=utf-8';
-  httpRequest.params = {
-    Version: req.service.api.apiVersion,
-    Action: operation.name
-  };
-
-  // convert the request parameters into a list of query params,
-  // e.g. Deeply.NestedParam.0.Name=value
-  var builder = new QueryParamSerializer();
-  builder.serialize(req.params, operation.input, function(name, value) {
-    httpRequest.params[name] = value;
-  });
-  httpRequest.body = util.queryParamsToString(httpRequest.params);
-}
-
-function extractError(resp) {
-  var data, body = resp.httpResponse.body.toString();
-  if (body.match('<UnknownOperationException')) {
-    data = {
-      Code: 'UnknownOperation',
-      Message: 'Unknown operation ' + resp.request.operation
-    };
-  } else {
-    try {
-      data = new AWS.XML.Parser().parse(body);
-    } catch (e) {
-      data = {
-        Code: resp.httpResponse.statusCode,
-        Message: resp.httpResponse.statusMessage
-      };
-    }
-  }
-
-  if (data.requestId && !resp.requestId) resp.requestId = data.requestId;
-  if (data.Errors) data = data.Errors;
-  if (data.Error) data = data.Error;
-  if (data.Code) {
-    resp.error = util.error(new Error(), {
-      code: data.Code,
-      message: data.Message
-    });
-  } else {
-    resp.error = util.error(new Error(), {
-      code: resp.httpResponse.statusCode,
-      message: null
-    });
-  }
-}
-
-function extractData(resp) {
-  var req = resp.request;
-  var operation = req.service.api.operations[req.operation];
-  var shape = operation.output || {};
-  var origRules = shape;
-
-  if (origRules.resultWrapper) {
-    var tmp = Shape.create({type: 'structure'});
-    tmp.members[origRules.resultWrapper] = shape;
-    tmp.memberNames = [origRules.resultWrapper];
-    util.property(shape, 'name', shape.resultWrapper);
-    shape = tmp;
-  }
-
-  var parser = new AWS.XML.Parser();
-
-  // TODO: Refactor XML Parser to parse RequestId from response.
-  if (shape && shape.members && !shape.members._XAMZRequestId) {
-    var requestIdShape = Shape.create(
-      { type: 'string' },
-      { api: { protocol: 'query' } },
-      'requestId'
-    );
-    shape.members._XAMZRequestId = requestIdShape;
-  }
-
-  var data = parser.parse(resp.httpResponse.body.toString(), shape);
-  resp.requestId = data._XAMZRequestId || data.requestId;
-
-  if (data._XAMZRequestId) delete data._XAMZRequestId;
-
-  if (origRules.resultWrapper) {
-    if (data[origRules.resultWrapper]) {
-      util.update(data, data[origRules.resultWrapper]);
-      delete data[origRules.resultWrapper];
-    }
-  }
-
-  resp.data = data;
-}
-
-module.exports = {
-  buildRequest: buildRequest,
-  extractError: extractError,
-  extractData: extractData
-};
-
-
-/***/ }),
-/* 136 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var util = __webpack_require__(5);
-var Rest = __webpack_require__(60);
-var Json = __webpack_require__(82);
-var JsonBuilder = __webpack_require__(80);
-var JsonParser = __webpack_require__(81);
-
-function populateBody(req) {
-  var builder = new JsonBuilder();
-  var input = req.service.api.operations[req.operation].input;
-
-  if (input.payload) {
-    var params = {};
-    var payloadShape = input.members[input.payload];
-    params = req.params[input.payload];
-    if (params === undefined) return;
-
-    if (payloadShape.type === 'structure') {
-      req.httpRequest.body = builder.build(params, payloadShape);
-    } else { // non-JSON payload
-      req.httpRequest.body = params;
-    }
-  } else {
-    req.httpRequest.body = builder.build(req.params, input);
-  }
-}
-
-function buildRequest(req) {
-  Rest.buildRequest(req);
-
-  // never send body payload on GET/HEAD/DELETE
-  if (['GET', 'HEAD', 'DELETE'].indexOf(req.httpRequest.method) < 0) {
-    populateBody(req);
-  }
-}
-
-function extractError(resp) {
-  Json.extractError(resp);
-}
-
-function extractData(resp) {
-  Rest.extractData(resp);
-
-  var req = resp.request;
-  var rules = req.service.api.operations[req.operation].output || {};
-  if (rules.payload) {
-    var payloadMember = rules.members[rules.payload];
-    var body = resp.httpResponse.body;
-    if (payloadMember.isStreaming) {
-      resp.data[rules.payload] = body;
-    } else if (payloadMember.type === 'structure' || payloadMember.type === 'list') {
-      var parser = new JsonParser();
-      resp.data[rules.payload] = parser.parse(body, payloadMember);
-    } else {
-      resp.data[rules.payload] = body.toString();
-    }
-  } else {
-    var data = resp.data;
-    Json.extractData(resp);
-    resp.data = util.merge(data, resp.data);
-  }
-}
-
-module.exports = {
-  buildRequest: buildRequest,
-  extractError: extractError,
-  extractData: extractData
-};
-
-
-/***/ }),
-/* 137 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AWS = __webpack_require__(1);
-var util = __webpack_require__(5);
-var Rest = __webpack_require__(60);
-
-function populateBody(req) {
-  var input = req.service.api.operations[req.operation].input;
-  var builder = new AWS.XML.Builder();
-  var params = req.params;
-
-  var payload = input.payload;
-  if (payload) {
-    var payloadMember = input.members[payload];
-    params = params[payload];
-    if (params === undefined) return;
-
-    if (payloadMember.type === 'structure') {
-      var rootElement = payloadMember.name;
-      req.httpRequest.body = builder.toXML(params, payloadMember, rootElement, true);
-    } else { // non-xml payload
-      req.httpRequest.body = params;
-    }
-  } else {
-    req.httpRequest.body = builder.toXML(params, input, input.name ||
-      input.shape || util.string.upperFirst(req.operation) + 'Request');
-  }
-}
-
-function buildRequest(req) {
-  Rest.buildRequest(req);
-
-  // never send body payload on GET/HEAD
-  if (['GET', 'HEAD'].indexOf(req.httpRequest.method) < 0) {
-    populateBody(req);
-  }
-}
-
-function extractError(resp) {
-  Rest.extractError(resp);
-
-  var data;
-  try {
-    data = new AWS.XML.Parser().parse(resp.httpResponse.body.toString());
-  } catch (e) {
-    data = {
-      Code: resp.httpResponse.statusCode,
-      Message: resp.httpResponse.statusMessage
-    };
-  }
-
-  if (data.Errors) data = data.Errors;
-  if (data.Error) data = data.Error;
-  if (data.Code) {
-    resp.error = util.error(new Error(), {
-      code: data.Code,
-      message: data.Message
-    });
-  } else {
-    resp.error = util.error(new Error(), {
-      code: resp.httpResponse.statusCode,
-      message: null
-    });
-  }
-}
-
-function extractData(resp) {
-  Rest.extractData(resp);
-
-  var parser;
-  var req = resp.request;
-  var body = resp.httpResponse.body;
-  var operation = req.service.api.operations[req.operation];
-  var output = operation.output;
-
-  var payload = output.payload;
-  if (payload) {
-    var payloadMember = output.members[payload];
-    if (payloadMember.isStreaming) {
-      resp.data[payload] = body;
-    } else if (payloadMember.type === 'structure') {
-      parser = new AWS.XML.Parser();
-      resp.data[payload] = parser.parse(body.toString(), payloadMember);
-    } else {
-      resp.data[payload] = body.toString();
-    }
-  } else if (body.length > 0) {
-    parser = new AWS.XML.Parser();
-    var data = parser.parse(body.toString(), output);
-    util.update(resp.data, data);
-  }
-}
-
-module.exports = {
-  buildRequest: buildRequest,
-  extractError: extractError,
-  extractData: extractData
-};
-
-
-/***/ }),
-/* 138 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AWS = __webpack_require__(1);
-
-/**
- * @api private
- * @!method on(eventName, callback)
- *   Registers an event listener callback for the event given by `eventName`.
- *   Parameters passed to the callback function depend on the individual event
- *   being triggered. See the event documentation for those parameters.
- *
- *   @param eventName [String] the event name to register the listener for
- *   @param callback [Function] the listener callback function
- *   @return [AWS.SequentialExecutor] the same object for chaining
- */
-AWS.SequentialExecutor = AWS.util.inherit({
-
-  constructor: function SequentialExecutor() {
-    this._events = {};
-  },
-
-  /**
-   * @api private
-   */
-  listeners: function listeners(eventName) {
-    return this._events[eventName] ? this._events[eventName].slice(0) : [];
-  },
-
-  on: function on(eventName, listener) {
-    if (this._events[eventName]) {
-      this._events[eventName].push(listener);
-    } else {
-      this._events[eventName] = [listener];
-    }
-    return this;
-  },
-
-  /**
-   * @api private
-   */
-  onAsync: function onAsync(eventName, listener) {
-    listener._isAsync = true;
-    return this.on(eventName, listener);
-  },
-
-  removeListener: function removeListener(eventName, listener) {
-    var listeners = this._events[eventName];
-    if (listeners) {
-      var length = listeners.length;
-      var position = -1;
-      for (var i = 0; i < length; ++i) {
-        if (listeners[i] === listener) {
-          position = i;
-        }
-      }
-      if (position > -1) {
-        listeners.splice(position, 1);
-      }
-    }
-    return this;
-  },
-
-  removeAllListeners: function removeAllListeners(eventName) {
-    if (eventName) {
-      delete this._events[eventName];
-    } else {
-      this._events = {};
-    }
-    return this;
-  },
-
-  /**
-   * @api private
-   */
-  emit: function emit(eventName, eventArgs, doneCallback) {
-    if (!doneCallback) doneCallback = function() { };
-    var listeners = this.listeners(eventName);
-    var count = listeners.length;
-    this.callListeners(listeners, eventArgs, doneCallback);
-    return count > 0;
-  },
-
-  /**
-   * @api private
-   */
-  callListeners: function callListeners(listeners, args, doneCallback, prevError) {
-    var self = this;
-    var error = prevError || null;
-
-    function callNextListener(err) {
-      if (err) {
-        error = AWS.util.error(error || new Error(), err);
-        if (self._haltHandlersOnError) {
-          return doneCallback.call(self, error);
-        }
-      }
-      self.callListeners(listeners, args, doneCallback, error);
-    }
-
-    while (listeners.length > 0) {
-      var listener = listeners.shift();
-      if (listener._isAsync) { // asynchronous listener
-        listener.apply(self, args.concat([callNextListener]));
-        return; // stop here, callNextListener will continue
-      } else { // synchronous listener
-        try {
-          listener.apply(self, args);
-        } catch (err) {
-          error = AWS.util.error(error || new Error(), err);
-        }
-        if (error && self._haltHandlersOnError) {
-          doneCallback.call(self, error);
-          return;
-        }
-      }
-    }
-    doneCallback.call(self, error);
-  },
-
-  /**
-   * Adds or copies a set of listeners from another list of
-   * listeners or SequentialExecutor object.
-   *
-   * @param listeners [map<String,Array<Function>>, AWS.SequentialExecutor]
-   *   a list of events and callbacks, or an event emitter object
-   *   containing listeners to add to this emitter object.
-   * @return [AWS.SequentialExecutor] the emitter object, for chaining.
-   * @example Adding listeners from a map of listeners
-   *   emitter.addListeners({
-   *     event1: [function() { ... }, function() { ... }],
-   *     event2: [function() { ... }]
-   *   });
-   *   emitter.emit('event1'); // emitter has event1
-   *   emitter.emit('event2'); // emitter has event2
-   * @example Adding listeners from another emitter object
-   *   var emitter1 = new AWS.SequentialExecutor();
-   *   emitter1.on('event1', function() { ... });
-   *   emitter1.on('event2', function() { ... });
-   *   var emitter2 = new AWS.SequentialExecutor();
-   *   emitter2.addListeners(emitter1);
-   *   emitter2.emit('event1'); // emitter2 has event1
-   *   emitter2.emit('event2'); // emitter2 has event2
-   */
-  addListeners: function addListeners(listeners) {
-    var self = this;
-
-    // extract listeners if parameter is an SequentialExecutor object
-    if (listeners._events) listeners = listeners._events;
-
-    AWS.util.each(listeners, function(event, callbacks) {
-      if (typeof callbacks === 'function') callbacks = [callbacks];
-      AWS.util.arrayEach(callbacks, function(callback) {
-        self.on(event, callback);
-      });
-    });
-
-    return self;
-  },
-
-  /**
-   * Registers an event with {on} and saves the callback handle function
-   * as a property on the emitter object using a given `name`.
-   *
-   * @param name [String] the property name to set on this object containing
-   *   the callback function handle so that the listener can be removed in
-   *   the future.
-   * @param (see on)
-   * @return (see on)
-   * @example Adding a named listener DATA_CALLBACK
-   *   var listener = function() { doSomething(); };
-   *   emitter.addNamedListener('DATA_CALLBACK', 'data', listener);
-   *
-   *   // the following prints: true
-   *   console.log(emitter.DATA_CALLBACK == listener);
-   */
-  addNamedListener: function addNamedListener(name, eventName, callback) {
-    this[name] = callback;
-    this.addListener(eventName, callback);
-    return this;
-  },
-
-  /**
-   * @api private
-   */
-  addNamedAsyncListener: function addNamedAsyncListener(name, eventName, callback) {
-    callback._isAsync = true;
-    return this.addNamedListener(name, eventName, callback);
-  },
-
-  /**
-   * Helper method to add a set of named listeners using
-   * {addNamedListener}. The callback contains a parameter
-   * with a handle to the `addNamedListener` method.
-   *
-   * @callback callback function(add)
-   *   The callback function is called immediately in order to provide
-   *   the `add` function to the block. This simplifies the addition of
-   *   a large group of named listeners.
-   *   @param add [Function] the {addNamedListener} function to call
-   *     when registering listeners.
-   * @example Adding a set of named listeners
-   *   emitter.addNamedListeners(function(add) {
-   *     add('DATA_CALLBACK', 'data', function() { ... });
-   *     add('OTHER', 'otherEvent', function() { ... });
-   *     add('LAST', 'lastEvent', function() { ... });
-   *   });
-   *
-   *   // these properties are now set:
-   *   emitter.DATA_CALLBACK;
-   *   emitter.OTHER;
-   *   emitter.LAST;
-   */
-  addNamedListeners: function addNamedListeners(callback) {
-    var self = this;
-    callback(
-      function() {
-        self.addNamedListener.apply(self, arguments);
-      },
-      function() {
-        self.addNamedAsyncListener.apply(self, arguments);
-      }
-    );
-    return this;
-  }
-});
-
-/**
- * {on} is the prefered method.
- * @api private
- */
-AWS.SequentialExecutor.prototype.addListener = AWS.SequentialExecutor.prototype.on;
-
-module.exports = AWS.SequentialExecutor;
-
-
-/***/ }),
-/* 139 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var AWS = __webpack_require__(1);
-var inherit = AWS.util.inherit;
-
-/**
- * @api private
- */
-AWS.Signers.V3 = inherit(AWS.Signers.RequestSigner, {
-  addAuthorization: function addAuthorization(credentials, date) {
-
-    var datetime = AWS.util.date.rfc822(date);
-
-    this.request.headers['X-Amz-Date'] = datetime;
-
-    if (credentials.sessionToken) {
-      this.request.headers['x-amz-security-token'] = credentials.sessionToken;
-    }
-
-    this.request.headers['X-Amzn-Authorization'] =
-      this.authorization(credentials, datetime);
-
-  },
-
-  authorization: function authorization(credentials) {
-    return 'AWS3 ' +
-      'AWSAccessKeyId=' + credentials.accessKeyId + ',' +
-      'Algorithm=HmacSHA256,' +
-      'SignedHeaders=' + this.signedHeaders() + ',' +
-      'Signature=' + this.signature(credentials);
-  },
-
-  signedHeaders: function signedHeaders() {
-    var headers = [];
-    AWS.util.arrayEach(this.headersToSign(), function iterator(h) {
-      headers.push(h.toLowerCase());
-    });
-    return headers.sort().join(';');
-  },
-
-  canonicalHeaders: function canonicalHeaders() {
-    var headers = this.request.headers;
-    var parts = [];
-    AWS.util.arrayEach(this.headersToSign(), function iterator(h) {
-      parts.push(h.toLowerCase().trim() + ':' + String(headers[h]).trim());
-    });
-    return parts.sort().join('\n') + '\n';
-  },
-
-  headersToSign: function headersToSign() {
-    var headers = [];
-    AWS.util.each(this.request.headers, function iterator(k) {
-      if (k === 'Host' || k === 'Content-Encoding' || k.match(/^X-Amz/i)) {
-        headers.push(k);
-      }
-    });
-    return headers;
-  },
-
-  signature: function signature(credentials) {
-    return AWS.util.crypto.hmac(credentials.secretAccessKey, this.stringToSign(), 'base64');
-  },
-
-  stringToSign: function stringToSign() {
-    var parts = [];
-    parts.push(this.request.method);
-    parts.push('/');
-    parts.push('');
-    parts.push(this.canonicalHeaders());
-    parts.push(this.request.body);
-    return AWS.util.crypto.sha256(parts.join('\n'));
-  }
-
-});
-
-module.exports = AWS.Signers.V3;
-
-
-/***/ }),
-/* 140 */
 /***/ (function(module, exports) {
 
 exports.createServer =
@@ -28456,7 +26970,7 @@ function () { return true };
 
 
 /***/ }),
-/* 141 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var apply = Function.prototype.apply;
@@ -28509,17 +27023,17 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(618);
+__webpack_require__(620);
 exports.setImmediate = setImmediate;
 exports.clearImmediate = clearImmediate;
 
 
 /***/ }),
-/* 142 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(2);
-var Reporter = __webpack_require__(45).Reporter;
+var Reporter = __webpack_require__(44).Reporter;
 var Buffer = __webpack_require__(0).Buffer;
 
 function DecoderBuffer(base, options) {
@@ -28637,7 +27151,7 @@ EncoderBuffer.prototype.join = function join(out, offset) {
 
 
 /***/ }),
-/* 143 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var constants = exports;
@@ -28658,16 +27172,16 @@ constants._reverse = function reverse(map) {
   return res;
 };
 
-constants.der = __webpack_require__(304);
+constants.der = __webpack_require__(263);
 
 
 /***/ }),
-/* 144 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(2);
 
-var asn1 = __webpack_require__(44);
+var asn1 = __webpack_require__(43);
 var base = asn1.base;
 var bignum = asn1.bignum;
 
@@ -28992,13 +27506,13 @@ function derDecodeLen(buf, primitive, fail) {
 
 
 /***/ }),
-/* 145 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var inherits = __webpack_require__(2);
 var Buffer = __webpack_require__(0).Buffer;
 
-var asn1 = __webpack_require__(44);
+var asn1 = __webpack_require__(43);
 var base = asn1.base;
 
 // Import DER constants
@@ -29293,6 +27807,1492 @@ function encodeTag(tag, primitive, cls, reporter) {
 
 
 /***/ }),
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(31);
+var AWS = __webpack_require__(1);
+var Service = __webpack_require__(32);
+var apiLoader = __webpack_require__(30);
+
+apiLoader.services['cognitoidentity'] = {};
+AWS.CognitoIdentity = Service.defineService('cognitoidentity', ['2014-06-30']);
+__webpack_require__(297);
+Object.defineProperty(apiLoader.services['cognitoidentity'], '2014-06-30', {
+  get: function get() {
+    var model = __webpack_require__(268);
+    model.paginators = __webpack_require__(269).pagination;
+    return model;
+  },
+  enumerable: true,
+  configurable: true
+});
+
+module.exports = AWS.CognitoIdentity;
+
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var AWS = __webpack_require__(1);
+
+/**
+ * Represents your AWS security credentials, specifically the
+ * {accessKeyId}, {secretAccessKey}, and optional {sessionToken}.
+ * Creating a `Credentials` object allows you to pass around your
+ * security information to configuration and service objects.
+ *
+ * Note that this class typically does not need to be constructed manually,
+ * as the {AWS.Config} and {AWS.Service} classes both accept simple
+ * options hashes with the three keys. These structures will be converted
+ * into Credentials objects automatically.
+ *
+ * ## Expiring and Refreshing Credentials
+ *
+ * Occasionally credentials can expire in the middle of a long-running
+ * application. In this case, the SDK will automatically attempt to
+ * refresh the credentials from the storage location if the Credentials
+ * class implements the {refresh} method.
+ *
+ * If you are implementing a credential storage location, you
+ * will want to create a subclass of the `Credentials` class and
+ * override the {refresh} method. This method allows credentials to be
+ * retrieved from the backing store, be it a file system, database, or
+ * some network storage. The method should reset the credential attributes
+ * on the object.
+ *
+ * @!attribute expired
+ *   @return [Boolean] whether the credentials have been expired and
+ *     require a refresh. Used in conjunction with {expireTime}.
+ * @!attribute expireTime
+ *   @return [Date] a time when credentials should be considered expired. Used
+ *     in conjunction with {expired}.
+ * @!attribute accessKeyId
+ *   @return [String] the AWS access key ID
+ * @!attribute secretAccessKey
+ *   @return [String] the AWS secret access key
+ * @!attribute sessionToken
+ *   @return [String] an optional AWS session token
+ */
+AWS.Credentials = AWS.util.inherit({
+  /**
+   * A credentials object can be created using positional arguments or an options
+   * hash.
+   *
+   * @overload AWS.Credentials(accessKeyId, secretAccessKey, sessionToken=null)
+   *   Creates a Credentials object with a given set of credential information
+   *   as positional arguments.
+   *   @param accessKeyId [String] the AWS access key ID
+   *   @param secretAccessKey [String] the AWS secret access key
+   *   @param sessionToken [String] the optional AWS session token
+   *   @example Create a credentials object with AWS credentials
+   *     var creds = new AWS.Credentials('akid', 'secret', 'session');
+   * @overload AWS.Credentials(options)
+   *   Creates a Credentials object with a given set of credential information
+   *   as an options hash.
+   *   @option options accessKeyId [String] the AWS access key ID
+   *   @option options secretAccessKey [String] the AWS secret access key
+   *   @option options sessionToken [String] the optional AWS session token
+   *   @example Create a credentials object with AWS credentials
+   *     var creds = new AWS.Credentials({
+   *       accessKeyId: 'akid', secretAccessKey: 'secret', sessionToken: 'session'
+   *     });
+   */
+  constructor: function Credentials() {
+    // hide secretAccessKey from being displayed with util.inspect
+    AWS.util.hideProperties(this, ['secretAccessKey']);
+
+    this.expired = false;
+    this.expireTime = null;
+    if (arguments.length === 1 && typeof arguments[0] === 'object') {
+      var creds = arguments[0].credentials || arguments[0];
+      this.accessKeyId = creds.accessKeyId;
+      this.secretAccessKey = creds.secretAccessKey;
+      this.sessionToken = creds.sessionToken;
+    } else {
+      this.accessKeyId = arguments[0];
+      this.secretAccessKey = arguments[1];
+      this.sessionToken = arguments[2];
+    }
+  },
+
+  /**
+   * @return [Integer] the number of seconds before {expireTime} during which
+   *   the credentials will be considered expired.
+   */
+  expiryWindow: 15,
+
+  /**
+   * @return [Boolean] whether the credentials object should call {refresh}
+   * @note Subclasses should override this method to provide custom refresh
+   *   logic.
+   */
+  needsRefresh: function needsRefresh() {
+    var currentTime = AWS.util.date.getDate().getTime();
+    var adjustedTime = new Date(currentTime + this.expiryWindow * 1000);
+
+    if (this.expireTime && adjustedTime > this.expireTime) {
+      return true;
+    } else {
+      return this.expired || !this.accessKeyId || !this.secretAccessKey;
+    }
+  },
+
+  /**
+   * Gets the existing credentials, refreshing them if they are not yet loaded
+   * or have expired. Users should call this method before using {refresh},
+   * as this will not attempt to reload credentials when they are already
+   * loaded into the object.
+   *
+   * @callback callback function(err)
+   *   When this callback is called with no error, it means either credentials
+   *   do not need to be refreshed or refreshed credentials information has
+   *   been loaded into the object (as the `accessKeyId`, `secretAccessKey`,
+   *   and `sessionToken` properties).
+   *   @param err [Error] if an error occurred, this value will be filled
+   */
+  get: function get(callback) {
+    var self = this;
+    if (this.needsRefresh()) {
+      this.refresh(function(err) {
+        if (!err) self.expired = false; // reset expired flag
+        if (callback) callback(err);
+      });
+    } else if (callback) {
+      callback();
+    }
+  },
+
+  /**
+   * @!method  getPromise()
+   *   Returns a 'thenable' promise.
+   *   Gets the existing credentials, refreshing them if they are not yet loaded
+   *   or have expired. Users should call this method before using {refresh},
+   *   as this will not attempt to reload credentials when they are already
+   *   loaded into the object.
+   *
+   *   Two callbacks can be provided to the `then` method on the returned promise.
+   *   The first callback will be called if the promise is fulfilled, and the second
+   *   callback will be called if the promise is rejected.
+   *   @callback fulfilledCallback function()
+   *     Called if the promise is fulfilled. When this callback is called, it
+   *     means either credentials do not need to be refreshed or refreshed
+   *     credentials information has been loaded into the object (as the
+   *     `accessKeyId`, `secretAccessKey`, and `sessionToken` properties).
+   *   @callback rejectedCallback function(err)
+   *     Called if the promise is rejected.
+   *     @param err [Error] if an error occurred, this value will be filled
+   *   @return [Promise] A promise that represents the state of the `get` call.
+   *   @example Calling the `getPromise` method.
+   *     var promise = credProvider.getPromise();
+   *     promise.then(function() { ... }, function(err) { ... });
+   */
+
+  /**
+   * @!method  refreshPromise()
+   *   Returns a 'thenable' promise.
+   *   Refreshes the credentials. Users should call {get} before attempting
+   *   to forcibly refresh credentials.
+   *
+   *   Two callbacks can be provided to the `then` method on the returned promise.
+   *   The first callback will be called if the promise is fulfilled, and the second
+   *   callback will be called if the promise is rejected.
+   *   @callback fulfilledCallback function()
+   *     Called if the promise is fulfilled. When this callback is called, it
+   *     means refreshed credentials information has been loaded into the object
+   *     (as the `accessKeyId`, `secretAccessKey`, and `sessionToken` properties).
+   *   @callback rejectedCallback function(err)
+   *     Called if the promise is rejected.
+   *     @param err [Error] if an error occurred, this value will be filled
+   *   @return [Promise] A promise that represents the state of the `refresh` call.
+   *   @example Calling the `refreshPromise` method.
+   *     var promise = credProvider.refreshPromise();
+   *     promise.then(function() { ... }, function(err) { ... });
+   */
+
+  /**
+   * Refreshes the credentials. Users should call {get} before attempting
+   * to forcibly refresh credentials.
+   *
+   * @callback callback function(err)
+   *   When this callback is called with no error, it means refreshed
+   *   credentials information has been loaded into the object (as the
+   *   `accessKeyId`, `secretAccessKey`, and `sessionToken` properties).
+   *   @param err [Error] if an error occurred, this value will be filled
+   * @note Subclasses should override this class to reset the
+   *   {accessKeyId}, {secretAccessKey} and optional {sessionToken}
+   *   on the credentials object and then call the callback with
+   *   any error information.
+   * @see get
+   */
+  refresh: function refresh(callback) {
+    this.expired = false;
+    callback();
+  }
+});
+
+/**
+ * @api private
+ */
+AWS.Credentials.addPromisesToClass = function addPromisesToClass(PromiseDependency) {
+  this.prototype.getPromise = AWS.util.promisifyMethod('get', PromiseDependency);
+  this.prototype.refreshPromise = AWS.util.promisifyMethod('refresh', PromiseDependency);
+};
+
+/**
+ * @api private
+ */
+AWS.Credentials.deletePromisesFromClass = function deletePromisesFromClass() {
+  delete this.prototype.getPromise;
+  delete this.prototype.refreshPromise;
+};
+
+AWS.util.addPromises(AWS.Credentials);
+
+
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var AWS = __webpack_require__(1);
+
+/**
+ * Creates a credential provider chain that searches for AWS credentials
+ * in a list of credential providers specified by the {providers} property.
+ *
+ * By default, the chain will use the {defaultProviders} to resolve credentials.
+ * These providers will look in the environment using the
+ * {AWS.EnvironmentCredentials} class with the 'AWS' and 'AMAZON' prefixes.
+ *
+ * ## Setting Providers
+ *
+ * Each provider in the {providers} list should be a function that returns
+ * a {AWS.Credentials} object, or a hardcoded credentials object. The function
+ * form allows for delayed execution of the credential construction.
+ *
+ * ## Resolving Credentials from a Chain
+ *
+ * Call {resolve} to return the first valid credential object that can be
+ * loaded by the provider chain.
+ *
+ * For example, to resolve a chain with a custom provider that checks a file
+ * on disk after the set of {defaultProviders}:
+ *
+ * ```javascript
+ * var diskProvider = new AWS.FileSystemCredentials('./creds.json');
+ * var chain = new AWS.CredentialProviderChain();
+ * chain.providers.push(diskProvider);
+ * chain.resolve();
+ * ```
+ *
+ * The above code will return the `diskProvider` object if the
+ * file contains credentials and the `defaultProviders` do not contain
+ * any credential settings.
+ *
+ * @!attribute providers
+ *   @return [Array<AWS.Credentials, Function>]
+ *     a list of credentials objects or functions that return credentials
+ *     objects. If the provider is a function, the function will be
+ *     executed lazily when the provider needs to be checked for valid
+ *     credentials. By default, this object will be set to the
+ *     {defaultProviders}.
+ *   @see defaultProviders
+ */
+AWS.CredentialProviderChain = AWS.util.inherit(AWS.Credentials, {
+
+  /**
+   * Creates a new CredentialProviderChain with a default set of providers
+   * specified by {defaultProviders}.
+   */
+  constructor: function CredentialProviderChain(providers) {
+    if (providers) {
+      this.providers = providers;
+    } else {
+      this.providers = AWS.CredentialProviderChain.defaultProviders.slice(0);
+    }
+  },
+
+  /**
+   * @!method  resolvePromise()
+   *   Returns a 'thenable' promise.
+   *   Resolves the provider chain by searching for the first set of
+   *   credentials in {providers}.
+   *
+   *   Two callbacks can be provided to the `then` method on the returned promise.
+   *   The first callback will be called if the promise is fulfilled, and the second
+   *   callback will be called if the promise is rejected.
+   *   @callback fulfilledCallback function(credentials)
+   *     Called if the promise is fulfilled and the provider resolves the chain
+   *     to a credentials object
+   *     @param credentials [AWS.Credentials] the credentials object resolved
+   *       by the provider chain.
+   *   @callback rejectedCallback function(error)
+   *     Called if the promise is rejected.
+   *     @param err [Error] the error object returned if no credentials are found.
+   *   @return [Promise] A promise that represents the state of the `resolve` method call.
+   *   @example Calling the `resolvePromise` method.
+   *     var promise = chain.resolvePromise();
+   *     promise.then(function(credentials) { ... }, function(err) { ... });
+   */
+
+  /**
+   * Resolves the provider chain by searching for the first set of
+   * credentials in {providers}.
+   *
+   * @callback callback function(err, credentials)
+   *   Called when the provider resolves the chain to a credentials object
+   *   or null if no credentials can be found.
+   *
+   *   @param err [Error] the error object returned if no credentials are
+   *     found.
+   *   @param credentials [AWS.Credentials] the credentials object resolved
+   *     by the provider chain.
+   * @return [AWS.CredentialProviderChain] the provider, for chaining.
+   */
+  resolve: function resolve(callback) {
+    if (this.providers.length === 0) {
+      callback(new Error('No providers'));
+      return this;
+    }
+
+    var index = 0;
+    var providers = this.providers.slice(0);
+
+    function resolveNext(err, creds) {
+      if ((!err && creds) || index === providers.length) {
+        callback(err, creds);
+        return;
+      }
+
+      var provider = providers[index++];
+      if (typeof provider === 'function') {
+        creds = provider.call();
+      } else {
+        creds = provider;
+      }
+
+      if (creds.get) {
+        creds.get(function(getErr) {
+          resolveNext(getErr, getErr ? null : creds);
+        });
+      } else {
+        resolveNext(null, creds);
+      }
+    }
+
+    resolveNext();
+    return this;
+  }
+});
+
+/**
+ * The default set of providers used by a vanilla CredentialProviderChain.
+ *
+ * In the browser:
+ *
+ * ```javascript
+ * AWS.CredentialProviderChain.defaultProviders = []
+ * ```
+ *
+ * In Node.js:
+ *
+ * ```javascript
+ * AWS.CredentialProviderChain.defaultProviders = [
+ *   function () { return new AWS.EnvironmentCredentials('AWS'); },
+ *   function () { return new AWS.EnvironmentCredentials('AMAZON'); },
+ *   function () { return new AWS.SharedIniFileCredentials(); },
+ *   function () {
+ *     // if AWS_CONTAINER_CREDENTIALS_RELATIVE_URI is set
+ *       return new AWS.ECSCredentials();
+ *     // else
+ *       return new AWS.EC2MetadataCredentials();
+ *   }
+ * ]
+ * ```
+ */
+AWS.CredentialProviderChain.defaultProviders = [];
+
+/**
+ * @api private
+ */
+AWS.CredentialProviderChain.addPromisesToClass = function addPromisesToClass(PromiseDependency) {
+  this.prototype.resolvePromise = AWS.util.promisifyMethod('resolve', PromiseDependency);
+};
+
+/**
+ * @api private
+ */
+AWS.CredentialProviderChain.deletePromisesFromClass = function deletePromisesFromClass() {
+  delete this.prototype.resolvePromise;
+};
+
+AWS.util.addPromises(AWS.CredentialProviderChain);
+
+
+/***/ }),
+/* 135 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var AWS = __webpack_require__(1);
+var inherit = AWS.util.inherit;
+
+/**
+ * The endpoint that a service will talk to, for example,
+ * `'https://ec2.ap-southeast-1.amazonaws.com'`. If
+ * you need to override an endpoint for a service, you can
+ * set the endpoint on a service by passing the endpoint
+ * object with the `endpoint` option key:
+ *
+ * ```javascript
+ * var ep = new AWS.Endpoint('awsproxy.example.com');
+ * var s3 = new AWS.S3({endpoint: ep});
+ * s3.service.endpoint.hostname == 'awsproxy.example.com'
+ * ```
+ *
+ * Note that if you do not specify a protocol, the protocol will
+ * be selected based on your current {AWS.config} configuration.
+ *
+ * @!attribute protocol
+ *   @return [String] the protocol (http or https) of the endpoint
+ *     URL
+ * @!attribute hostname
+ *   @return [String] the host portion of the endpoint, e.g.,
+ *     example.com
+ * @!attribute host
+ *   @return [String] the host portion of the endpoint including
+ *     the port, e.g., example.com:80
+ * @!attribute port
+ *   @return [Integer] the port of the endpoint
+ * @!attribute href
+ *   @return [String] the full URL of the endpoint
+ */
+AWS.Endpoint = inherit({
+
+  /**
+   * @overload Endpoint(endpoint)
+   *   Constructs a new endpoint given an endpoint URL. If the
+   *   URL omits a protocol (http or https), the default protocol
+   *   set in the global {AWS.config} will be used.
+   *   @param endpoint [String] the URL to construct an endpoint from
+   */
+  constructor: function Endpoint(endpoint, config) {
+    AWS.util.hideProperties(this, ['slashes', 'auth', 'hash', 'search', 'query']);
+
+    if (typeof endpoint === 'undefined' || endpoint === null) {
+      throw new Error('Invalid endpoint: ' + endpoint);
+    } else if (typeof endpoint !== 'string') {
+      return AWS.util.copy(endpoint);
+    }
+
+    if (!endpoint.match(/^http/)) {
+      var useSSL = config && config.sslEnabled !== undefined ?
+        config.sslEnabled : AWS.config.sslEnabled;
+      endpoint = (useSSL ? 'https' : 'http') + '://' + endpoint;
+    }
+
+    AWS.util.update(this, AWS.util.urlParse(endpoint));
+
+    // Ensure the port property is set as an integer
+    if (this.port) {
+      this.port = parseInt(this.port, 10);
+    } else {
+      this.port = this.protocol === 'https:' ? 443 : 80;
+    }
+  }
+
+});
+
+/**
+ * The low level HTTP request object, encapsulating all HTTP header
+ * and body data sent by a service request.
+ *
+ * @!attribute method
+ *   @return [String] the HTTP method of the request
+ * @!attribute path
+ *   @return [String] the path portion of the URI, e.g.,
+ *     "/list/?start=5&num=10"
+ * @!attribute headers
+ *   @return [map<String,String>]
+ *     a map of header keys and their respective values
+ * @!attribute body
+ *   @return [String] the request body payload
+ * @!attribute endpoint
+ *   @return [AWS.Endpoint] the endpoint for the request
+ * @!attribute region
+ *   @api private
+ *   @return [String] the region, for signing purposes only.
+ */
+AWS.HttpRequest = inherit({
+
+  /**
+   * @api private
+   */
+  constructor: function HttpRequest(endpoint, region) {
+    endpoint = new AWS.Endpoint(endpoint);
+    this.method = 'POST';
+    this.path = endpoint.path || '/';
+    this.headers = {};
+    this.body = '';
+    this.endpoint = endpoint;
+    this.region = region;
+    this._userAgent = '';
+    this.setUserAgent();
+  },
+
+  /**
+   * @api private
+   */
+  setUserAgent: function setUserAgent() {
+    this._userAgent = this.headers[this.getUserAgentHeaderName()] = AWS.util.userAgent();
+  },
+
+  getUserAgentHeaderName: function getUserAgentHeaderName() {
+    var prefix = AWS.util.isBrowser() ? 'X-Amz-' : '';
+    return prefix + 'User-Agent';
+  },
+
+  /**
+   * @api private
+   */
+  appendToUserAgent: function appendToUserAgent(agentPartial) {
+    if (typeof agentPartial === 'string' && agentPartial) {
+      this._userAgent += ' ' + agentPartial;
+    }
+    this.headers[this.getUserAgentHeaderName()] = this._userAgent;
+  },
+
+  /**
+   * @api private
+   */
+  getUserAgent: function getUserAgent() {
+    return this._userAgent;
+  },
+
+  /**
+   * @return [String] the part of the {path} excluding the
+   *   query string
+   */
+  pathname: function pathname() {
+    return this.path.split('?', 1)[0];
+  },
+
+  /**
+   * @return [String] the query string portion of the {path}
+   */
+  search: function search() {
+    var query = this.path.split('?', 2)[1];
+    if (query) {
+      query = AWS.util.queryStringParse(query);
+      return AWS.util.queryParamsToString(query);
+    }
+    return '';
+  }
+
+});
+
+/**
+ * The low level HTTP response object, encapsulating all HTTP header
+ * and body data returned from the request.
+ *
+ * @!attribute statusCode
+ *   @return [Integer] the HTTP status code of the response (e.g., 200, 404)
+ * @!attribute headers
+ *   @return [map<String,String>]
+ *      a map of response header keys and their respective values
+ * @!attribute body
+ *   @return [String] the response body payload
+ * @!attribute [r] streaming
+ *   @return [Boolean] whether this response is being streamed at a low-level.
+ *     Defaults to `false` (buffered reads). Do not modify this manually, use
+ *     {createUnbufferedStream} to convert the stream to unbuffered mode
+ *     instead.
+ */
+AWS.HttpResponse = inherit({
+
+  /**
+   * @api private
+   */
+  constructor: function HttpResponse() {
+    this.statusCode = undefined;
+    this.headers = {};
+    this.body = undefined;
+    this.streaming = false;
+    this.stream = null;
+  },
+
+  /**
+   * Disables buffering on the HTTP response and returns the stream for reading.
+   * @return [Stream, XMLHttpRequest, null] the underlying stream object.
+   *   Use this object to directly read data off of the stream.
+   * @note This object is only available after the {AWS.Request~httpHeaders}
+   *   event has fired. This method must be called prior to
+   *   {AWS.Request~httpData}.
+   * @example Taking control of a stream
+   *   request.on('httpHeaders', function(statusCode, headers) {
+   *     if (statusCode < 300) {
+   *       if (headers.etag === 'xyz') {
+   *         // pipe the stream, disabling buffering
+   *         var stream = this.response.httpResponse.createUnbufferedStream();
+   *         stream.pipe(process.stdout);
+   *       } else { // abort this request and set a better error message
+   *         this.abort();
+   *         this.response.error = new Error('Invalid ETag');
+   *       }
+   *     }
+   *   }).send(console.log);
+   */
+  createUnbufferedStream: function createUnbufferedStream() {
+    this.streaming = true;
+    return this.stream;
+  }
+});
+
+
+AWS.HttpClient = inherit({});
+
+/**
+ * @api private
+ */
+AWS.HttpClient.getInstance = function getInstance() {
+  if (this.singleton === undefined) {
+    this.singleton = new this();
+  }
+  return this.singleton;
+};
+
+
+/***/ }),
+/* 136 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Collection = __webpack_require__(137);
+var Operation = __webpack_require__(138);
+var Shape = __webpack_require__(45);
+var Paginator = __webpack_require__(139);
+var ResourceWaiter = __webpack_require__(140);
+
+var util = __webpack_require__(6);
+var property = util.property;
+var memoizedProperty = util.memoizedProperty;
+
+function Api(api, options) {
+  api = api || {};
+  options = options || {};
+  options.api = this;
+
+  api.metadata = api.metadata || {};
+
+  property(this, 'isApi', true, false);
+  property(this, 'apiVersion', api.metadata.apiVersion);
+  property(this, 'endpointPrefix', api.metadata.endpointPrefix);
+  property(this, 'signingName', api.metadata.signingName);
+  property(this, 'globalEndpoint', api.metadata.globalEndpoint);
+  property(this, 'signatureVersion', api.metadata.signatureVersion);
+  property(this, 'jsonVersion', api.metadata.jsonVersion);
+  property(this, 'targetPrefix', api.metadata.targetPrefix);
+  property(this, 'protocol', api.metadata.protocol);
+  property(this, 'timestampFormat', api.metadata.timestampFormat);
+  property(this, 'xmlNamespaceUri', api.metadata.xmlNamespace);
+  property(this, 'abbreviation', api.metadata.serviceAbbreviation);
+  property(this, 'fullName', api.metadata.serviceFullName);
+
+  memoizedProperty(this, 'className', function() {
+    var name = api.metadata.serviceAbbreviation || api.metadata.serviceFullName;
+    if (!name) return null;
+
+    name = name.replace(/^Amazon|AWS\s*|\(.*|\s+|\W+/g, '');
+    if (name === 'ElasticLoadBalancing') name = 'ELB';
+    return name;
+  });
+
+  property(this, 'operations', new Collection(api.operations, options, function(name, operation) {
+    return new Operation(name, operation, options);
+  }, util.string.lowerFirst));
+
+  property(this, 'shapes', new Collection(api.shapes, options, function(name, shape) {
+    return Shape.create(shape, options);
+  }));
+
+  property(this, 'paginators', new Collection(api.paginators, options, function(name, paginator) {
+    return new Paginator(name, paginator, options);
+  }));
+
+  property(this, 'waiters', new Collection(api.waiters, options, function(name, waiter) {
+    return new ResourceWaiter(name, waiter, options);
+  }, util.string.lowerFirst));
+
+  if (options.documentation) {
+    property(this, 'documentation', api.documentation);
+    property(this, 'documentationUrl', api.documentationUrl);
+  }
+}
+
+module.exports = Api;
+
+
+/***/ }),
+/* 137 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var memoizedProperty = __webpack_require__(6).memoizedProperty;
+
+function memoize(name, value, fn, nameTr) {
+  memoizedProperty(this, nameTr(name), function() {
+    return fn(name, value);
+  });
+}
+
+function Collection(iterable, options, fn, nameTr) {
+  nameTr = nameTr || String;
+  var self = this;
+
+  for (var id in iterable) {
+    if (Object.prototype.hasOwnProperty.call(iterable, id)) {
+      memoize.call(self, id, iterable[id], fn, nameTr);
+    }
+  }
+}
+
+module.exports = Collection;
+
+
+/***/ }),
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Shape = __webpack_require__(45);
+
+var util = __webpack_require__(6);
+var property = util.property;
+var memoizedProperty = util.memoizedProperty;
+
+function Operation(name, operation, options) {
+  var self = this;
+  options = options || {};
+
+  property(this, 'name', operation.name || name);
+  property(this, 'api', options.api, false);
+
+  operation.http = operation.http || {};
+  property(this, 'httpMethod', operation.http.method || 'POST');
+  property(this, 'httpPath', operation.http.requestUri || '/');
+  property(this, 'authtype', operation.authtype || '');
+
+  memoizedProperty(this, 'input', function() {
+    if (!operation.input) {
+      return new Shape.create({type: 'structure'}, options);
+    }
+    return Shape.create(operation.input, options);
+  });
+
+  memoizedProperty(this, 'output', function() {
+    if (!operation.output) {
+      return new Shape.create({type: 'structure'}, options);
+    }
+    return Shape.create(operation.output, options);
+  });
+
+  memoizedProperty(this, 'errors', function() {
+    var list = [];
+    if (!operation.errors) return null;
+
+    for (var i = 0; i < operation.errors.length; i++) {
+      list.push(Shape.create(operation.errors[i], options));
+    }
+
+    return list;
+  });
+
+  memoizedProperty(this, 'paginator', function() {
+    return options.api.paginators[name];
+  });
+
+  if (options.documentation) {
+    property(this, 'documentation', operation.documentation);
+    property(this, 'documentationUrl', operation.documentationUrl);
+  }
+
+  // idempotentMembers only tracks top-level input shapes
+  memoizedProperty(this, 'idempotentMembers', function() {
+    var idempotentMembers = [];
+    var input = self.input;
+    var members = input.members;
+    if (!input.members) {
+      return idempotentMembers;
+    }
+    for (var name in members) {
+      if (!members.hasOwnProperty(name)) {
+        continue;
+      }
+      if (members[name].isIdempotent === true) {
+        idempotentMembers.push(name);
+      }
+    }
+    return idempotentMembers;
+  });
+
+}
+
+module.exports = Operation;
+
+
+/***/ }),
+/* 139 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var property = __webpack_require__(6).property;
+
+function Paginator(name, paginator) {
+  property(this, 'inputToken', paginator.input_token);
+  property(this, 'limitKey', paginator.limit_key);
+  property(this, 'moreResults', paginator.more_results);
+  property(this, 'outputToken', paginator.output_token);
+  property(this, 'resultKey', paginator.result_key);
+}
+
+module.exports = Paginator;
+
+
+/***/ }),
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(6);
+var property = util.property;
+
+function ResourceWaiter(name, waiter, options) {
+  options = options || {};
+  property(this, 'name', name);
+  property(this, 'api', options.api, false);
+
+  if (waiter.operation) {
+    property(this, 'operation', util.string.lowerFirst(waiter.operation));
+  }
+
+  var self = this;
+  var keys = [
+    'type',
+    'description',
+    'delay',
+    'maxAttempts',
+    'acceptors'
+  ];
+
+  keys.forEach(function(key) {
+    var value = waiter[key];
+    if (value) {
+      property(self, key, value);
+    }
+  });
+}
+
+module.exports = ResourceWaiter;
+
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var AWS = __webpack_require__(1);
+var util = __webpack_require__(6);
+var QueryParamSerializer = __webpack_require__(291);
+var Shape = __webpack_require__(45);
+
+function buildRequest(req) {
+  var operation = req.service.api.operations[req.operation];
+  var httpRequest = req.httpRequest;
+  httpRequest.headers['Content-Type'] =
+    'application/x-www-form-urlencoded; charset=utf-8';
+  httpRequest.params = {
+    Version: req.service.api.apiVersion,
+    Action: operation.name
+  };
+
+  // convert the request parameters into a list of query params,
+  // e.g. Deeply.NestedParam.0.Name=value
+  var builder = new QueryParamSerializer();
+  builder.serialize(req.params, operation.input, function(name, value) {
+    httpRequest.params[name] = value;
+  });
+  httpRequest.body = util.queryParamsToString(httpRequest.params);
+}
+
+function extractError(resp) {
+  var data, body = resp.httpResponse.body.toString();
+  if (body.match('<UnknownOperationException')) {
+    data = {
+      Code: 'UnknownOperation',
+      Message: 'Unknown operation ' + resp.request.operation
+    };
+  } else {
+    try {
+      data = new AWS.XML.Parser().parse(body);
+    } catch (e) {
+      data = {
+        Code: resp.httpResponse.statusCode,
+        Message: resp.httpResponse.statusMessage
+      };
+    }
+  }
+
+  if (data.requestId && !resp.requestId) resp.requestId = data.requestId;
+  if (data.Errors) data = data.Errors;
+  if (data.Error) data = data.Error;
+  if (data.Code) {
+    resp.error = util.error(new Error(), {
+      code: data.Code,
+      message: data.Message
+    });
+  } else {
+    resp.error = util.error(new Error(), {
+      code: resp.httpResponse.statusCode,
+      message: null
+    });
+  }
+}
+
+function extractData(resp) {
+  var req = resp.request;
+  var operation = req.service.api.operations[req.operation];
+  var shape = operation.output || {};
+  var origRules = shape;
+
+  if (origRules.resultWrapper) {
+    var tmp = Shape.create({type: 'structure'});
+    tmp.members[origRules.resultWrapper] = shape;
+    tmp.memberNames = [origRules.resultWrapper];
+    util.property(shape, 'name', shape.resultWrapper);
+    shape = tmp;
+  }
+
+  var parser = new AWS.XML.Parser();
+
+  // TODO: Refactor XML Parser to parse RequestId from response.
+  if (shape && shape.members && !shape.members._XAMZRequestId) {
+    var requestIdShape = Shape.create(
+      { type: 'string' },
+      { api: { protocol: 'query' } },
+      'requestId'
+    );
+    shape.members._XAMZRequestId = requestIdShape;
+  }
+
+  var data = parser.parse(resp.httpResponse.body.toString(), shape);
+  resp.requestId = data._XAMZRequestId || data.requestId;
+
+  if (data._XAMZRequestId) delete data._XAMZRequestId;
+
+  if (origRules.resultWrapper) {
+    if (data[origRules.resultWrapper]) {
+      util.update(data, data[origRules.resultWrapper]);
+      delete data[origRules.resultWrapper];
+    }
+  }
+
+  resp.data = data;
+}
+
+module.exports = {
+  buildRequest: buildRequest,
+  extractError: extractError,
+  extractData: extractData
+};
+
+
+/***/ }),
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var util = __webpack_require__(6);
+var Rest = __webpack_require__(60);
+var Json = __webpack_require__(86);
+var JsonBuilder = __webpack_require__(84);
+var JsonParser = __webpack_require__(85);
+
+function populateBody(req) {
+  var builder = new JsonBuilder();
+  var input = req.service.api.operations[req.operation].input;
+
+  if (input.payload) {
+    var params = {};
+    var payloadShape = input.members[input.payload];
+    params = req.params[input.payload];
+    if (params === undefined) return;
+
+    if (payloadShape.type === 'structure') {
+      req.httpRequest.body = builder.build(params, payloadShape);
+    } else { // non-JSON payload
+      req.httpRequest.body = params;
+    }
+  } else {
+    req.httpRequest.body = builder.build(req.params, input);
+  }
+}
+
+function buildRequest(req) {
+  Rest.buildRequest(req);
+
+  // never send body payload on GET/HEAD/DELETE
+  if (['GET', 'HEAD', 'DELETE'].indexOf(req.httpRequest.method) < 0) {
+    populateBody(req);
+  }
+}
+
+function extractError(resp) {
+  Json.extractError(resp);
+}
+
+function extractData(resp) {
+  Rest.extractData(resp);
+
+  var req = resp.request;
+  var rules = req.service.api.operations[req.operation].output || {};
+  if (rules.payload) {
+    var payloadMember = rules.members[rules.payload];
+    var body = resp.httpResponse.body;
+    if (payloadMember.isStreaming) {
+      resp.data[rules.payload] = body;
+    } else if (payloadMember.type === 'structure' || payloadMember.type === 'list') {
+      var parser = new JsonParser();
+      resp.data[rules.payload] = parser.parse(body, payloadMember);
+    } else {
+      resp.data[rules.payload] = body.toString();
+    }
+  } else {
+    var data = resp.data;
+    Json.extractData(resp);
+    resp.data = util.merge(data, resp.data);
+  }
+}
+
+module.exports = {
+  buildRequest: buildRequest,
+  extractError: extractError,
+  extractData: extractData
+};
+
+
+/***/ }),
+/* 143 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var AWS = __webpack_require__(1);
+var util = __webpack_require__(6);
+var Rest = __webpack_require__(60);
+
+function populateBody(req) {
+  var input = req.service.api.operations[req.operation].input;
+  var builder = new AWS.XML.Builder();
+  var params = req.params;
+
+  var payload = input.payload;
+  if (payload) {
+    var payloadMember = input.members[payload];
+    params = params[payload];
+    if (params === undefined) return;
+
+    if (payloadMember.type === 'structure') {
+      var rootElement = payloadMember.name;
+      req.httpRequest.body = builder.toXML(params, payloadMember, rootElement, true);
+    } else { // non-xml payload
+      req.httpRequest.body = params;
+    }
+  } else {
+    req.httpRequest.body = builder.toXML(params, input, input.name ||
+      input.shape || util.string.upperFirst(req.operation) + 'Request');
+  }
+}
+
+function buildRequest(req) {
+  Rest.buildRequest(req);
+
+  // never send body payload on GET/HEAD
+  if (['GET', 'HEAD'].indexOf(req.httpRequest.method) < 0) {
+    populateBody(req);
+  }
+}
+
+function extractError(resp) {
+  Rest.extractError(resp);
+
+  var data;
+  try {
+    data = new AWS.XML.Parser().parse(resp.httpResponse.body.toString());
+  } catch (e) {
+    data = {
+      Code: resp.httpResponse.statusCode,
+      Message: resp.httpResponse.statusMessage
+    };
+  }
+
+  if (data.Errors) data = data.Errors;
+  if (data.Error) data = data.Error;
+  if (data.Code) {
+    resp.error = util.error(new Error(), {
+      code: data.Code,
+      message: data.Message
+    });
+  } else {
+    resp.error = util.error(new Error(), {
+      code: resp.httpResponse.statusCode,
+      message: null
+    });
+  }
+}
+
+function extractData(resp) {
+  Rest.extractData(resp);
+
+  var parser;
+  var req = resp.request;
+  var body = resp.httpResponse.body;
+  var operation = req.service.api.operations[req.operation];
+  var output = operation.output;
+
+  var payload = output.payload;
+  if (payload) {
+    var payloadMember = output.members[payload];
+    if (payloadMember.isStreaming) {
+      resp.data[payload] = body;
+    } else if (payloadMember.type === 'structure') {
+      parser = new AWS.XML.Parser();
+      resp.data[payload] = parser.parse(body.toString(), payloadMember);
+    } else {
+      resp.data[payload] = body.toString();
+    }
+  } else if (body.length > 0) {
+    parser = new AWS.XML.Parser();
+    var data = parser.parse(body.toString(), output);
+    util.update(resp.data, data);
+  }
+}
+
+module.exports = {
+  buildRequest: buildRequest,
+  extractError: extractError,
+  extractData: extractData
+};
+
+
+/***/ }),
+/* 144 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var AWS = __webpack_require__(1);
+
+/**
+ * @api private
+ * @!method on(eventName, callback)
+ *   Registers an event listener callback for the event given by `eventName`.
+ *   Parameters passed to the callback function depend on the individual event
+ *   being triggered. See the event documentation for those parameters.
+ *
+ *   @param eventName [String] the event name to register the listener for
+ *   @param callback [Function] the listener callback function
+ *   @return [AWS.SequentialExecutor] the same object for chaining
+ */
+AWS.SequentialExecutor = AWS.util.inherit({
+
+  constructor: function SequentialExecutor() {
+    this._events = {};
+  },
+
+  /**
+   * @api private
+   */
+  listeners: function listeners(eventName) {
+    return this._events[eventName] ? this._events[eventName].slice(0) : [];
+  },
+
+  on: function on(eventName, listener) {
+    if (this._events[eventName]) {
+      this._events[eventName].push(listener);
+    } else {
+      this._events[eventName] = [listener];
+    }
+    return this;
+  },
+
+  /**
+   * @api private
+   */
+  onAsync: function onAsync(eventName, listener) {
+    listener._isAsync = true;
+    return this.on(eventName, listener);
+  },
+
+  removeListener: function removeListener(eventName, listener) {
+    var listeners = this._events[eventName];
+    if (listeners) {
+      var length = listeners.length;
+      var position = -1;
+      for (var i = 0; i < length; ++i) {
+        if (listeners[i] === listener) {
+          position = i;
+        }
+      }
+      if (position > -1) {
+        listeners.splice(position, 1);
+      }
+    }
+    return this;
+  },
+
+  removeAllListeners: function removeAllListeners(eventName) {
+    if (eventName) {
+      delete this._events[eventName];
+    } else {
+      this._events = {};
+    }
+    return this;
+  },
+
+  /**
+   * @api private
+   */
+  emit: function emit(eventName, eventArgs, doneCallback) {
+    if (!doneCallback) doneCallback = function() { };
+    var listeners = this.listeners(eventName);
+    var count = listeners.length;
+    this.callListeners(listeners, eventArgs, doneCallback);
+    return count > 0;
+  },
+
+  /**
+   * @api private
+   */
+  callListeners: function callListeners(listeners, args, doneCallback, prevError) {
+    var self = this;
+    var error = prevError || null;
+
+    function callNextListener(err) {
+      if (err) {
+        error = AWS.util.error(error || new Error(), err);
+        if (self._haltHandlersOnError) {
+          return doneCallback.call(self, error);
+        }
+      }
+      self.callListeners(listeners, args, doneCallback, error);
+    }
+
+    while (listeners.length > 0) {
+      var listener = listeners.shift();
+      if (listener._isAsync) { // asynchronous listener
+        listener.apply(self, args.concat([callNextListener]));
+        return; // stop here, callNextListener will continue
+      } else { // synchronous listener
+        try {
+          listener.apply(self, args);
+        } catch (err) {
+          error = AWS.util.error(error || new Error(), err);
+        }
+        if (error && self._haltHandlersOnError) {
+          doneCallback.call(self, error);
+          return;
+        }
+      }
+    }
+    doneCallback.call(self, error);
+  },
+
+  /**
+   * Adds or copies a set of listeners from another list of
+   * listeners or SequentialExecutor object.
+   *
+   * @param listeners [map<String,Array<Function>>, AWS.SequentialExecutor]
+   *   a list of events and callbacks, or an event emitter object
+   *   containing listeners to add to this emitter object.
+   * @return [AWS.SequentialExecutor] the emitter object, for chaining.
+   * @example Adding listeners from a map of listeners
+   *   emitter.addListeners({
+   *     event1: [function() { ... }, function() { ... }],
+   *     event2: [function() { ... }]
+   *   });
+   *   emitter.emit('event1'); // emitter has event1
+   *   emitter.emit('event2'); // emitter has event2
+   * @example Adding listeners from another emitter object
+   *   var emitter1 = new AWS.SequentialExecutor();
+   *   emitter1.on('event1', function() { ... });
+   *   emitter1.on('event2', function() { ... });
+   *   var emitter2 = new AWS.SequentialExecutor();
+   *   emitter2.addListeners(emitter1);
+   *   emitter2.emit('event1'); // emitter2 has event1
+   *   emitter2.emit('event2'); // emitter2 has event2
+   */
+  addListeners: function addListeners(listeners) {
+    var self = this;
+
+    // extract listeners if parameter is an SequentialExecutor object
+    if (listeners._events) listeners = listeners._events;
+
+    AWS.util.each(listeners, function(event, callbacks) {
+      if (typeof callbacks === 'function') callbacks = [callbacks];
+      AWS.util.arrayEach(callbacks, function(callback) {
+        self.on(event, callback);
+      });
+    });
+
+    return self;
+  },
+
+  /**
+   * Registers an event with {on} and saves the callback handle function
+   * as a property on the emitter object using a given `name`.
+   *
+   * @param name [String] the property name to set on this object containing
+   *   the callback function handle so that the listener can be removed in
+   *   the future.
+   * @param (see on)
+   * @return (see on)
+   * @example Adding a named listener DATA_CALLBACK
+   *   var listener = function() { doSomething(); };
+   *   emitter.addNamedListener('DATA_CALLBACK', 'data', listener);
+   *
+   *   // the following prints: true
+   *   console.log(emitter.DATA_CALLBACK == listener);
+   */
+  addNamedListener: function addNamedListener(name, eventName, callback) {
+    this[name] = callback;
+    this.addListener(eventName, callback);
+    return this;
+  },
+
+  /**
+   * @api private
+   */
+  addNamedAsyncListener: function addNamedAsyncListener(name, eventName, callback) {
+    callback._isAsync = true;
+    return this.addNamedListener(name, eventName, callback);
+  },
+
+  /**
+   * Helper method to add a set of named listeners using
+   * {addNamedListener}. The callback contains a parameter
+   * with a handle to the `addNamedListener` method.
+   *
+   * @callback callback function(add)
+   *   The callback function is called immediately in order to provide
+   *   the `add` function to the block. This simplifies the addition of
+   *   a large group of named listeners.
+   *   @param add [Function] the {addNamedListener} function to call
+   *     when registering listeners.
+   * @example Adding a set of named listeners
+   *   emitter.addNamedListeners(function(add) {
+   *     add('DATA_CALLBACK', 'data', function() { ... });
+   *     add('OTHER', 'otherEvent', function() { ... });
+   *     add('LAST', 'lastEvent', function() { ... });
+   *   });
+   *
+   *   // these properties are now set:
+   *   emitter.DATA_CALLBACK;
+   *   emitter.OTHER;
+   *   emitter.LAST;
+   */
+  addNamedListeners: function addNamedListeners(callback) {
+    var self = this;
+    callback(
+      function() {
+        self.addNamedListener.apply(self, arguments);
+      },
+      function() {
+        self.addNamedAsyncListener.apply(self, arguments);
+      }
+    );
+    return this;
+  }
+});
+
+/**
+ * {on} is the prefered method.
+ * @api private
+ */
+AWS.SequentialExecutor.prototype.addListener = AWS.SequentialExecutor.prototype.on;
+
+module.exports = AWS.SequentialExecutor;
+
+
+/***/ }),
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var AWS = __webpack_require__(1);
+var inherit = AWS.util.inherit;
+
+/**
+ * @api private
+ */
+AWS.Signers.V3 = inherit(AWS.Signers.RequestSigner, {
+  addAuthorization: function addAuthorization(credentials, date) {
+
+    var datetime = AWS.util.date.rfc822(date);
+
+    this.request.headers['X-Amz-Date'] = datetime;
+
+    if (credentials.sessionToken) {
+      this.request.headers['x-amz-security-token'] = credentials.sessionToken;
+    }
+
+    this.request.headers['X-Amzn-Authorization'] =
+      this.authorization(credentials, datetime);
+
+  },
+
+  authorization: function authorization(credentials) {
+    return 'AWS3 ' +
+      'AWSAccessKeyId=' + credentials.accessKeyId + ',' +
+      'Algorithm=HmacSHA256,' +
+      'SignedHeaders=' + this.signedHeaders() + ',' +
+      'Signature=' + this.signature(credentials);
+  },
+
+  signedHeaders: function signedHeaders() {
+    var headers = [];
+    AWS.util.arrayEach(this.headersToSign(), function iterator(h) {
+      headers.push(h.toLowerCase());
+    });
+    return headers.sort().join(';');
+  },
+
+  canonicalHeaders: function canonicalHeaders() {
+    var headers = this.request.headers;
+    var parts = [];
+    AWS.util.arrayEach(this.headersToSign(), function iterator(h) {
+      parts.push(h.toLowerCase().trim() + ':' + String(headers[h]).trim());
+    });
+    return parts.sort().join('\n') + '\n';
+  },
+
+  headersToSign: function headersToSign() {
+    var headers = [];
+    AWS.util.each(this.request.headers, function iterator(k) {
+      if (k === 'Host' || k === 'Content-Encoding' || k.match(/^X-Amz/i)) {
+        headers.push(k);
+      }
+    });
+    return headers;
+  },
+
+  signature: function signature(credentials) {
+    return AWS.util.crypto.hmac(credentials.secretAccessKey, this.stringToSign(), 'base64');
+  },
+
+  stringToSign: function stringToSign() {
+    var parts = [];
+    parts.push(this.request.method);
+    parts.push('/');
+    parts.push('');
+    parts.push(this.canonicalHeaders());
+    parts.push(this.request.body);
+    return AWS.util.crypto.sha256(parts.join('\n'));
+  }
+
+});
+
+module.exports = AWS.Signers.V3;
+
+
+/***/ }),
 /* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -29351,7 +29351,7 @@ if (typeof self === 'object') {
 } else {
   // Node.js or Web worker with no crypto support
   try {
-    var crypto = __webpack_require__(660);
+    var crypto = __webpack_require__(662);
     if (typeof crypto.randomBytes !== 'function')
       throw new Error('Not supported');
 
@@ -29370,7 +29370,7 @@ if (typeof self === 'object') {
 /* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(61)
 var Transform = __webpack_require__(33)
 var inherits = __webpack_require__(2)
-var GHASH = __webpack_require__(315)
+var GHASH = __webpack_require__(316)
 var xor = __webpack_require__(46)
 inherits(StreamCipher, Transform)
 module.exports = StreamCipher
@@ -29843,7 +29843,7 @@ module.exports = {
  * See http://pajhome.org.uk/crypt/md5 for more info.
  */
 
-var helpers = __webpack_require__(326);
+var helpers = __webpack_require__(327);
 
 /*
  * Calculate the MD5 of an array of little-endian words, and a bit length
@@ -30537,7 +30537,7 @@ var _Service = __webpack_require__(93);
 
 var _InvalidArgumentException = __webpack_require__(35);
 
-var _InvalidArnException = __webpack_require__(346);
+var _InvalidArnException = __webpack_require__(347);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -30951,7 +30951,7 @@ exports.Response = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _MissingRuntimeContextException = __webpack_require__(351);
+var _MissingRuntimeContextException = __webpack_require__(352);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -31441,11 +31441,11 @@ exports.Sandbox = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _domain = __webpack_require__(277);
+var _domain = __webpack_require__(236);
 
 var _domain2 = _interopRequireDefault(_domain);
 
-var _process = __webpack_require__(6);
+var _process = __webpack_require__(5);
 
 var _process2 = _interopRequireDefault(_process);
 
@@ -31550,7 +31550,7 @@ let Sandbox = exports.Sandbox = function () {
 
   return Sandbox;
 }();
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(141).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(127).setImmediate))
 
 /***/ }),
 /* 170 */
@@ -31570,7 +31570,7 @@ exports.BackendContext = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _AbstractContext2 = __webpack_require__(368);
+var _AbstractContext2 = __webpack_require__(369);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -31894,7 +31894,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _AbstractDriver2 = __webpack_require__(36);
 
-var _fs = __webpack_require__(279);
+var _fs = __webpack_require__(238);
 
 var _fs2 = _interopRequireDefault(_fs);
 
@@ -32290,9 +32290,9 @@ var _Exception = __webpack_require__(8);
 
 var _Action = __webpack_require__(97);
 
-var _RetryManager = __webpack_require__(418);
+var _RetryManager = __webpack_require__(419);
 
-var _superagent = __webpack_require__(224);
+var _superagent = __webpack_require__(225);
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
@@ -32300,13 +32300,13 @@ var _awsSdk = __webpack_require__(18);
 
 var _awsSdk2 = _interopRequireDefault(_awsSdk);
 
-var _MissingCacheImplementationException = __webpack_require__(408);
+var _MissingCacheImplementationException = __webpack_require__(409);
 
-var _CachedRequestException = __webpack_require__(404);
+var _CachedRequestException = __webpack_require__(405);
 
-var _NotAuthenticatedException = __webpack_require__(412);
+var _NotAuthenticatedException = __webpack_require__(413);
 
-var _aws = __webpack_require__(309);
+var _aws = __webpack_require__(310);
 
 var _aws2 = _interopRequireDefault(_aws);
 
@@ -32314,7 +32314,7 @@ var _urlParse = __webpack_require__(124);
 
 var _urlParse2 = _interopRequireDefault(_urlParse);
 
-var _qs = __webpack_require__(215);
+var _qs = __webpack_require__(216);
 
 var _qs2 = _interopRequireDefault(_qs);
 
@@ -32322,15 +32322,15 @@ var _deepCore = __webpack_require__(3);
 
 var _deepCore2 = _interopRequireDefault(_deepCore);
 
-var _MissingSecurityServiceException = __webpack_require__(411);
+var _MissingSecurityServiceException = __webpack_require__(412);
 
-var _AsyncCallNotAvailableException = __webpack_require__(403);
+var _AsyncCallNotAvailableException = __webpack_require__(404);
 
-var _LambdaParamsCompatibilityException = __webpack_require__(405);
+var _LambdaParamsCompatibilityException = __webpack_require__(406);
 
-var _LoadCredentialsException = __webpack_require__(406);
+var _LoadCredentialsException = __webpack_require__(407);
 
-var _SourceNotAvailableException = __webpack_require__(413);
+var _SourceNotAvailableException = __webpack_require__(414);
 
 var _crypto = __webpack_require__(23);
 
@@ -33758,6 +33758,41 @@ let SuperagentResponse = exports.SuperagentResponse = function (_Response) {
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+let AbstractUserProvider = exports.AbstractUserProvider = function () {
+  function AbstractUserProvider() {
+    _classCallCheck(this, AbstractUserProvider);
+  }
+
+  _createClass(AbstractUserProvider, [{
+    key: 'loadUserByIdentityId',
+
+    /**
+     * @param {String} id
+     * @param {Function} callback
+     */
+    value: function loadUserByIdentityId(id, callback) {
+      throw new Error(`Abstract method not implemented.`);
+    }
+  }]);
+
+  return AbstractUserProvider;
+}();
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
 /**
  * Created by mgoria on 6/17/15.
  */
@@ -33781,19 +33816,21 @@ var _deepCore2 = _interopRequireDefault(_deepCore);
 
 var _Exception = __webpack_require__(12);
 
-var _Token = __webpack_require__(179);
+var _Token = __webpack_require__(180);
 
-var _LocalToken = __webpack_require__(436);
+var _LocalToken = __webpack_require__(439);
 
-var _UserProvider = __webpack_require__(439);
+var _FrontendUserProvider = __webpack_require__(435);
+
+var _BackendUserProvider = __webpack_require__(422);
 
 var _IdentityProvider = __webpack_require__(104);
 
-var _LocalIdentityProvider = __webpack_require__(435);
+var _LocalIdentityProvider = __webpack_require__(438);
 
-var _RoleResolver = __webpack_require__(438);
+var _RoleResolver = __webpack_require__(441);
 
-var _RoleProvider = __webpack_require__(437);
+var _RoleProvider = __webpack_require__(440);
 
 var _util = __webpack_require__(19);
 
@@ -33841,6 +33878,7 @@ let Security = exports.Security = function (_Kernel$ContainerAwar) {
     _this._token = null;
     _this._userProvider = null;
     _this._userProviderEndpoint = null;
+    _this._userModelName = null;
     _this._roleProviderEndpoint = null;
     _this._roleResolver = null;
     _this._roleProvider = null;
@@ -33868,6 +33906,7 @@ let Security = exports.Security = function (_Kernel$ContainerAwar) {
       this._identityPoolId = kernel.config.identityPoolId;
       this._identityProviders = kernel.config.identityProviders || {};
       this._userProviderEndpoint = globals.userProviderEndpoint || null;
+      this._userModelName = globals.userModelName || 'User';
       this._roleProviderEndpoint = globals.roleProviderEndpoint || null;
 
       callback();
@@ -34066,14 +34105,18 @@ let Security = exports.Security = function (_Kernel$ContainerAwar) {
     }
 
     /**
-     * @returns {UserProvider}
+     * @returns {*}
      */
 
   }, {
     key: 'userProvider',
     get: function get() {
       if (!this._userProvider) {
-        this._userProvider = new _UserProvider.UserProvider(this._userProviderEndpoint, this._resourceService);
+        if (this.kernel.isFrontend) {
+          this._userProvider = new _FrontendUserProvider.FrontendUserProvider(this._userProviderEndpoint, this._resourceService);
+        } else {
+          this._userProvider = new _BackendUserProvider.BackendUserProvider(this._userModelName, this.container.get('db'));
+        }
       }
 
       return this._userProvider;
@@ -34160,7 +34203,7 @@ let Security = exports.Security = function (_Kernel$ContainerAwar) {
 }(_deepKernel2.default.ContainerAware);
 
 /***/ }),
-/* 179 */
+/* 180 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34191,13 +34234,13 @@ var _util2 = _interopRequireDefault(_util);
 
 var _IdentityProviderTokenExpiredException = __webpack_require__(103);
 
-var _DescribeIdentityException = __webpack_require__(424);
+var _DescribeIdentityException = __webpack_require__(426);
 
-var _Security = __webpack_require__(178);
+var _Security = __webpack_require__(179);
 
-var _TokenManager = __webpack_require__(180);
+var _TokenManager = __webpack_require__(181);
 
-var _CredentialsManager = __webpack_require__(421);
+var _CredentialsManager = __webpack_require__(423);
 
 var _IdentityProvider = __webpack_require__(104);
 
@@ -34576,9 +34619,11 @@ let Token = exports.Token = function () {
       };
 
       if (this.lambdaContext) {
-        this._describeIdentity(this.identityId).then(() => {
-          this._loadUser(argsHandler);
-        }).catch(argsHandler);
+        this._loadUser(argsHandler);
+
+        // this._describeIdentity(this.identityId).then(() => {
+        //   this._loadUser(argsHandler);
+        // }).catch(argsHandler);
       } else {
         this._loadUser(argsHandler);
       }
@@ -34831,7 +34876,8 @@ let Token = exports.Token = function () {
     key: 'isAnonymous',
     get: function get() {
       if (this.lambdaContext) {
-        return this._identityLogins.length <= 0;
+        // @todo: find a better way instead of describe identity
+        return false; //this._identityLogins.length <= 0;
       } else {
         return !this.identityProvider;
       }
@@ -34913,7 +34959,7 @@ let Token = exports.Token = function () {
 }();
 
 /***/ }),
-/* 180 */
+/* 181 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -34940,15 +34986,15 @@ var _deepCore = __webpack_require__(3);
 
 var _deepCore2 = _interopRequireDefault(_deepCore);
 
-var _amazonCognitoJs = __webpack_require__(290);
+var _amazonCognitoJs = __webpack_require__(249);
 
 var _amazonCognitoJs2 = _interopRequireDefault(_amazonCognitoJs);
 
-var _CreateCognitoDatasetException = __webpack_require__(423);
+var _CreateCognitoDatasetException = __webpack_require__(425);
 
-var _PutCognitoRecordException = __webpack_require__(431);
+var _PutCognitoRecordException = __webpack_require__(433);
 
-var _SynchronizeCognitoDatasetException = __webpack_require__(432);
+var _SynchronizeCognitoDatasetException = __webpack_require__(434);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -35308,7 +35354,7 @@ let TokenManager = exports.TokenManager = function () {
 }();
 
 /***/ }),
-/* 181 */
+/* 182 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -35372,7 +35418,7 @@ let VoterInterface = exports.VoterInterface = function (_Core$OOP$Interface) {
 }(_deepCore2.default.OOP.Interface);
 
 /***/ }),
-/* 182 */
+/* 183 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var randomBytes = __webpack_require__(58);
@@ -35381,7 +35427,7 @@ findPrime.simpleSieve = simpleSieve;
 findPrime.fermatTest = fermatTest;
 var BN = __webpack_require__(7);
 var TWENTYFOUR = new BN(24);
-var MillerRabin = __webpack_require__(204);
+var MillerRabin = __webpack_require__(205);
 var millerRabin = new MillerRabin();
 var ONE = new BN(1);
 var TWO = new BN(2);
@@ -35483,7 +35529,7 @@ function findPrime(bits, gen) {
 
 
 /***/ }),
-/* 183 */
+/* 184 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -35494,7 +35540,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 184 */
+/* 185 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
@@ -35540,7 +35586,7 @@ internals.Boolean.prototype._base = function (value, state, options) {
 module.exports = new internals.Boolean();
 
 /***/ }),
-/* 185 */
+/* 186 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
@@ -35716,13 +35762,13 @@ module.exports = new internals.Number();
 
 
 /***/ }),
-/* 186 */
+/* 187 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
 
 var Hoek = __webpack_require__(9);
-var Topo = __webpack_require__(641);
+var Topo = __webpack_require__(643);
 var Any = __webpack_require__(13);
 var Cast = __webpack_require__(52);
 var Errors = __webpack_require__(15);
@@ -36407,14 +36453,14 @@ module.exports = new internals.Object();
 
 
 /***/ }),
-/* 187 */
+/* 188 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// Load modules
 
-var Net = __webpack_require__(140);
+var Net = __webpack_require__(126);
 var Hoek = __webpack_require__(9);
-var Isemail = __webpack_require__(487);
+var Isemail = __webpack_require__(489);
 var Any = __webpack_require__(13);
 var JoiDate = __webpack_require__(108);
 var Errors = __webpack_require__(15);
@@ -36696,15 +36742,15 @@ module.exports = new internals.String();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 188 */
+/* 189 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ListCache = __webpack_require__(71),
-    stackClear = __webpack_require__(573),
-    stackDelete = __webpack_require__(574),
-    stackGet = __webpack_require__(575),
-    stackHas = __webpack_require__(576),
-    stackSet = __webpack_require__(577);
+    stackClear = __webpack_require__(575),
+    stackDelete = __webpack_require__(576),
+    stackGet = __webpack_require__(577),
+    stackHas = __webpack_require__(578),
+    stackSet = __webpack_require__(579);
 
 /**
  * Creates a stack cache object to store key-value pairs.
@@ -36729,10 +36775,10 @@ module.exports = Stack;
 
 
 /***/ }),
-/* 189 */
+/* 190 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseAssignValue = __webpack_require__(190),
+var baseAssignValue = __webpack_require__(191),
     eq = __webpack_require__(77);
 
 /** Used for built-in method references. */
@@ -36763,10 +36809,10 @@ module.exports = assignValue;
 
 
 /***/ }),
-/* 190 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var defineProperty = __webpack_require__(196);
+var defineProperty = __webpack_require__(197);
 
 /**
  * The base implementation of `assignValue` and `assignMergeValue` without
@@ -36794,10 +36840,10 @@ module.exports = baseAssignValue;
 
 
 /***/ }),
-/* 191 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var castPath = __webpack_require__(194),
+var castPath = __webpack_require__(195),
     toKey = __webpack_require__(76);
 
 /**
@@ -36824,10 +36870,10 @@ module.exports = baseGet;
 
 
 /***/ }),
-/* 192 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsEqualDeep = __webpack_require__(517),
+var baseIsEqualDeep = __webpack_require__(519),
     isObjectLike = __webpack_require__(56);
 
 /**
@@ -36858,11 +36904,11 @@ module.exports = baseIsEqual;
 
 
 /***/ }),
-/* 193 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isPrototype = __webpack_require__(113),
-    nativeKeys = __webpack_require__(563);
+    nativeKeys = __webpack_require__(565);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -36894,13 +36940,13 @@ module.exports = baseKeys;
 
 
 /***/ }),
-/* 194 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArray = __webpack_require__(16),
     isKey = __webpack_require__(112),
-    stringToPath = __webpack_require__(578),
-    toString = __webpack_require__(589);
+    stringToPath = __webpack_require__(580),
+    toString = __webpack_require__(591);
 
 /**
  * Casts `value` to a path array if it's not one.
@@ -36921,11 +36967,11 @@ module.exports = castPath;
 
 
 /***/ }),
-/* 195 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assignValue = __webpack_require__(189),
-    baseAssignValue = __webpack_require__(190);
+var assignValue = __webpack_require__(190),
+    baseAssignValue = __webpack_require__(191);
 
 /**
  * Copies properties of `source` to `object`.
@@ -36967,7 +37013,7 @@ module.exports = copyObject;
 
 
 /***/ }),
-/* 196 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27);
@@ -36984,12 +37030,12 @@ module.exports = defineProperty;
 
 
 /***/ }),
-/* 197 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var SetCache = __webpack_require__(498),
-    arraySome = __webpack_require__(507),
-    cacheHas = __webpack_require__(531);
+var SetCache = __webpack_require__(500),
+    arraySome = __webpack_require__(509),
+    cacheHas = __webpack_require__(533);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -37073,7 +37119,7 @@ module.exports = equalArrays;
 
 
 /***/ }),
-/* 198 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/** Detect free variable `global` from Node.js. */
@@ -37084,16 +37130,16 @@ module.exports = freeGlobal;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 199 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var DataView = __webpack_require__(494),
+var DataView = __webpack_require__(496),
     Map = __webpack_require__(109),
-    Promise = __webpack_require__(496),
-    Set = __webpack_require__(497),
-    WeakMap = __webpack_require__(500),
+    Promise = __webpack_require__(498),
+    Set = __webpack_require__(499),
+    WeakMap = __webpack_require__(502),
     baseGetTag = __webpack_require__(54),
-    toSource = __webpack_require__(203);
+    toSource = __webpack_require__(204);
 
 /** `Object#toString` result references. */
 var mapTag = '[object Map]',
@@ -37148,7 +37194,7 @@ module.exports = getTag;
 
 
 /***/ }),
-/* 200 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var eq = __webpack_require__(77),
@@ -37184,7 +37230,7 @@ module.exports = isIterateeCall;
 
 
 /***/ }),
-/* 201 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(17);
@@ -37205,7 +37251,7 @@ module.exports = isStrictComparable;
 
 
 /***/ }),
-/* 202 */
+/* 203 */
 /***/ (function(module, exports) {
 
 /**
@@ -37231,7 +37277,7 @@ module.exports = matchesStrictComparable;
 
 
 /***/ }),
-/* 203 */
+/* 204 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -37263,7 +37309,7 @@ module.exports = toSource;
 
 
 /***/ }),
-/* 204 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var bn = __webpack_require__(7);
@@ -37382,7 +37428,7 @@ MillerRabin.prototype.getDivisor = function getDivisor(n, k) {
 
 
 /***/ }),
-/* 205 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -37447,7 +37493,7 @@ utils.encode = function encode(arr, enc) {
 
 
 /***/ }),
-/* 206 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37519,7 +37565,7 @@ return enAu;
 
 
 /***/ }),
-/* 207 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37587,7 +37633,7 @@ return enCa;
 
 
 /***/ }),
-/* 208 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37659,7 +37705,7 @@ return enGb;
 
 
 /***/ }),
-/* 209 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37731,7 +37777,7 @@ return enIe;
 
 
 /***/ }),
-/* 210 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 //! moment.js locale configuration
@@ -37803,11 +37849,11 @@ return enNz;
 
 
 /***/ }),
-/* 211 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, Buffer) {var createHmac = __webpack_require__(90)
-var checkParameters = __webpack_require__(595)
+var checkParameters = __webpack_require__(597)
 
 exports.pbkdf2 = function (password, salt, iterations, keylen, digest, callback) {
   if (typeof digest === 'function') {
@@ -37875,10 +37921,10 @@ exports.pbkdf2Sync = function (password, salt, iterations, keylen, digest) {
   return DK
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(0).Buffer))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 212 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(34);
@@ -37900,7 +37946,7 @@ function i2ops(c) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 213 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var bn = __webpack_require__(7);
@@ -37916,7 +37962,7 @@ module.exports = withPublic;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 214 */
+/* 215 */
 /***/ (function(module, exports) {
 
 module.exports = function xor(a, b) {
@@ -37929,13 +37975,13 @@ module.exports = function xor(a, b) {
 };
 
 /***/ }),
-/* 215 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
 
-var Stringify = __webpack_require__(600);
-var Parse = __webpack_require__(599);
+var Stringify = __webpack_require__(602);
+var Parse = __webpack_require__(601);
 
 
 // Declare internals
@@ -37950,7 +37996,7 @@ module.exports = {
 
 
 /***/ }),
-/* 216 */
+/* 217 */
 /***/ (function(module, exports) {
 
 // Load modules
@@ -38146,7 +38192,7 @@ exports.isBuffer = function (obj) {
 
 
 /***/ }),
-/* 217 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38158,7 +38204,7 @@ exports.isBuffer = function (obj) {
 
 
 
-var RavenConstructor = __webpack_require__(604);
+var RavenConstructor = __webpack_require__(606);
 
 // This is to be defensive in environments where window does not exist (see https://github.com/getsentry/raven-js/pull/785)
 var _window = typeof window !== 'undefined' ? window
@@ -38187,7 +38233,7 @@ module.exports = Raven;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 218 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38215,7 +38261,7 @@ module.exports = {
 
 
 /***/ }),
-/* 219 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -38228,7 +38274,7 @@ var processNextTick = __webpack_require__(120);
 /*</replacement>*/
 
 /*<replacement>*/
-var isArray = __webpack_require__(183);
+var isArray = __webpack_require__(184);
 /*</replacement>*/
 
 /*<replacement>*/
@@ -38238,7 +38284,7 @@ var Duplex;
 Readable.ReadableState = ReadableState;
 
 /*<replacement>*/
-var EE = __webpack_require__(42).EventEmitter;
+var EE = __webpack_require__(41).EventEmitter;
 
 var EElistenerCount = function (emitter, type) {
   return emitter.listeners(type).length;
@@ -38246,7 +38292,7 @@ var EElistenerCount = function (emitter, type) {
 /*</replacement>*/
 
 /*<replacement>*/
-var Stream = __webpack_require__(221);
+var Stream = __webpack_require__(222);
 /*</replacement>*/
 
 var Buffer = __webpack_require__(0).Buffer;
@@ -38260,7 +38306,7 @@ util.inherits = __webpack_require__(2);
 /*</replacement>*/
 
 /*<replacement>*/
-var debugUtil = __webpack_require__(662);
+var debugUtil = __webpack_require__(664);
 var debug = void 0;
 if (debugUtil && debugUtil.debuglog) {
   debug = debugUtil.debuglog('stream');
@@ -38269,7 +38315,7 @@ if (debugUtil && debugUtil.debuglog) {
 }
 /*</replacement>*/
 
-var BufferList = __webpack_require__(609);
+var BufferList = __webpack_require__(611);
 var StringDecoder;
 
 util.inherits(Readable, Stream);
@@ -38353,7 +38399,7 @@ function ReadableState(options, stream) {
   this.decoder = null;
   this.encoding = null;
   if (options.encoding) {
-    if (!StringDecoder) StringDecoder = __webpack_require__(83).StringDecoder;
+    if (!StringDecoder) StringDecoder = __webpack_require__(80).StringDecoder;
     this.decoder = new StringDecoder(options.encoding);
     this.encoding = options.encoding;
   }
@@ -38463,7 +38509,7 @@ function needMoreData(state) {
 
 // backwards compatibility.
 Readable.prototype.setEncoding = function (enc) {
-  if (!StringDecoder) StringDecoder = __webpack_require__(83).StringDecoder;
+  if (!StringDecoder) StringDecoder = __webpack_require__(80).StringDecoder;
   this._readableState.decoder = new StringDecoder(enc);
   this._readableState.encoding = enc;
   return this;
@@ -39154,10 +39200,10 @@ function indexOf(xs, x) {
   }
   return -1;
 }
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 220 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -39345,14 +39391,14 @@ function done(stream, er, data) {
 }
 
 /***/ }),
-/* 221 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(42).EventEmitter;
+module.exports = __webpack_require__(41).EventEmitter;
 
 
 /***/ }),
-/* 222 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -39493,7 +39539,7 @@ module.exports = Sha256
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 223 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(2)
@@ -39759,7 +39805,7 @@ module.exports = Sha512
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 224 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -39776,12 +39822,12 @@ if (typeof window !== 'undefined') { // Browser window
   root = this;
 }
 
-var Emitter = __webpack_require__(324);
-var RequestBase = __webpack_require__(637);
+var Emitter = __webpack_require__(325);
+var RequestBase = __webpack_require__(639);
 var isObject = __webpack_require__(123);
-var isFunction = __webpack_require__(636);
-var ResponseBase = __webpack_require__(638);
-var shouldRetry = __webpack_require__(639);
+var isFunction = __webpack_require__(638);
+var ResponseBase = __webpack_require__(640);
+var shouldRetry = __webpack_require__(641);
 
 /**
  * Noop.
@@ -40698,7 +40744,7 @@ request.put = function(url, data, fn){
 
 
 /***/ }),
-/* 225 */
+/* 226 */
 /***/ (function(module, exports) {
 
 /**
@@ -40727,7 +40773,7 @@ module.exports = bytesToUuid;
 
 
 /***/ }),
-/* 226 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {// Unique ID creation requires a high quality random # generator.  In the
@@ -40767,7 +40813,7 @@ module.exports = rng;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 227 */
+/* 228 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -40822,7 +40868,7 @@ module.exports = rng;
 
 
 /***/ }),
-/* 228 */
+/* 229 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -40877,7 +40923,7 @@ module.exports = rng;
 
 
 /***/ }),
-/* 229 */
+/* 230 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -40948,7 +40994,7 @@ module.exports = rng;
 
 
 /***/ }),
-/* 230 */
+/* 231 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -40959,19 +41005,19 @@ module.exports = rng;
 
   isObject = __webpack_require__(17);
 
-  XMLCData = __webpack_require__(227);
+  XMLCData = __webpack_require__(228);
 
-  XMLComment = __webpack_require__(228);
+  XMLComment = __webpack_require__(229);
 
-  XMLDTDAttList = __webpack_require__(650);
+  XMLDTDAttList = __webpack_require__(652);
 
-  XMLDTDEntity = __webpack_require__(652);
+  XMLDTDEntity = __webpack_require__(654);
 
-  XMLDTDElement = __webpack_require__(651);
+  XMLDTDElement = __webpack_require__(653);
 
-  XMLDTDNotation = __webpack_require__(653);
+  XMLDTDNotation = __webpack_require__(655);
 
-  XMLProcessingInstruction = __webpack_require__(232);
+  XMLProcessingInstruction = __webpack_require__(233);
 
   module.exports = XMLDocType = (function() {
     function XMLDocType(parent, pubID, sysID) {
@@ -41142,7 +41188,7 @@ module.exports = rng;
 
 
 /***/ }),
-/* 231 */
+/* 232 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -41157,13 +41203,13 @@ module.exports = rng;
 
   isFunction = __webpack_require__(78);
 
-  every = __webpack_require__(581);
+  every = __webpack_require__(583);
 
   XMLNode = __webpack_require__(40);
 
-  XMLAttribute = __webpack_require__(648);
+  XMLAttribute = __webpack_require__(650);
 
-  XMLProcessingInstruction = __webpack_require__(232);
+  XMLProcessingInstruction = __webpack_require__(233);
 
   module.exports = XMLElement = (function(superClass) {
     extend(XMLElement, superClass);
@@ -41360,7 +41406,7 @@ module.exports = rng;
 
 
 /***/ }),
-/* 232 */
+/* 233 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -41417,7 +41463,7 @@ module.exports = rng;
 
 
 /***/ }),
-/* 233 */
+/* 234 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41429,33 +41475,33 @@ module.exports = rng;
 
 
 
-var _Framework = __webpack_require__(288);
+var _Framework = __webpack_require__(247);
 
-var _deepAsset = __webpack_require__(333);
+var _deepAsset = __webpack_require__(334);
 
 var _deepAsset2 = _interopRequireDefault(_deepAsset);
 
-var _deepCache = __webpack_require__(345);
+var _deepCache = __webpack_require__(346);
 
 var _deepCache2 = _interopRequireDefault(_deepCache);
 
-var _deepSecurity = __webpack_require__(442);
+var _deepSecurity = __webpack_require__(444);
 
 var _deepSecurity2 = _interopRequireDefault(_deepSecurity);
 
-var _deepResource = __webpack_require__(420);
+var _deepResource = __webpack_require__(421);
 
 var _deepResource2 = _interopRequireDefault(_deepResource);
 
-var _deepLog = __webpack_require__(400);
+var _deepLog = __webpack_require__(401);
 
 var _deepLog2 = _interopRequireDefault(_deepLog);
 
-var _deepEvent = __webpack_require__(375);
+var _deepEvent = __webpack_require__(376);
 
 var _deepEvent2 = _interopRequireDefault(_deepEvent);
 
-var _deepValidation = __webpack_require__(454);
+var _deepValidation = __webpack_require__(456);
 
 var _deepValidation2 = _interopRequireDefault(_deepValidation);
 
@@ -41478,7 +41524,7 @@ let _exports = module.exports = new _Framework.Framework({
 }, _Framework.Framework.FRONTEND_CONTEXT);
 
 /***/ }),
-/* 234 */
+/* 235 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -41502,7 +41548,5278 @@ if (!Function.prototype.name) {
 }
 
 /***/ }),
-/* 235 */
+/* 236 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// This file should be ES5 compatible
+/* eslint prefer-spread:0, no-var:0, prefer-reflect:0, no-magic-numbers:0 */
+
+module.exports = (function () {
+	// Import Events
+	var events = __webpack_require__(41)
+
+	// Export Domain
+	var domain = {}
+	domain.createDomain = domain.create = function () {
+		var d = new events.EventEmitter()
+
+		function emitError (e) {
+			d.emit('error', e)
+		}
+
+		d.add = function (emitter) {
+			emitter.on('error', emitError)
+		}
+		d.remove = function (emitter) {
+			emitter.removeListener('error', emitError)
+		}
+		d.bind = function (fn) {
+			return function () {
+				var args = Array.prototype.slice.call(arguments)
+				try {
+					fn.apply(null, args)
+				}
+				catch (err) {
+					emitError(err)
+				}
+			}
+		}
+		d.intercept = function (fn) {
+			return function (err) {
+				if ( err ) {
+					emitError(err)
+				}
+				else {
+					var args = Array.prototype.slice.call(arguments, 1)
+					try {
+						fn.apply(null, args)
+					}
+					catch (err) {
+						emitError(err)
+					}
+				}
+			}
+		}
+		d.run = function (fn) {
+			try {
+				fn()
+			}
+			catch (err) {
+				emitError(err)
+			}
+			return this
+		}
+		d.dispose = function () {
+			this.removeAllListeners()
+			return this
+		}
+		d.enter = d.exit = function () {
+			return this
+		}
+		return d
+	}
+	return domain
+}).call(this)
+
+
+/***/ }),
+/* 237 */
+/***/ (function(module, exports) {
+
+exports.lookup = exports.resolve4 =
+exports.resolve6 = exports.resolveCname =
+exports.resolveMx = exports.resolveNs =
+exports.resolveTxt = exports.resolveSrv =
+exports.resolveNaptr = exports.reverse =
+exports.resolve =
+function () {
+  if (!arguments.length) return;
+
+  var callback = arguments[arguments.length - 1];
+  if (callback && typeof callback === 'function') {
+    callback(null, '0.0.0.0')
+  }
+}
+
+
+
+/***/ }),
+/* 238 */
+/***/ (function(module, exports) {
+
+
+
+/***/ }),
+/* 239 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
+;(function(root) {
+
+	/** Detect free variables */
+	var freeExports = typeof exports == 'object' && exports &&
+		!exports.nodeType && exports;
+	var freeModule = typeof module == 'object' && module &&
+		!module.nodeType && module;
+	var freeGlobal = typeof global == 'object' && global;
+	if (
+		freeGlobal.global === freeGlobal ||
+		freeGlobal.window === freeGlobal ||
+		freeGlobal.self === freeGlobal
+	) {
+		root = freeGlobal;
+	}
+
+	/**
+	 * The `punycode` object.
+	 * @name punycode
+	 * @type Object
+	 */
+	var punycode,
+
+	/** Highest positive signed 32-bit float value */
+	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
+
+	/** Bootstring parameters */
+	base = 36,
+	tMin = 1,
+	tMax = 26,
+	skew = 38,
+	damp = 700,
+	initialBias = 72,
+	initialN = 128, // 0x80
+	delimiter = '-', // '\x2D'
+
+	/** Regular expressions */
+	regexPunycode = /^xn--/,
+	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
+	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
+
+	/** Error messages */
+	errors = {
+		'overflow': 'Overflow: input needs wider integers to process',
+		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
+		'invalid-input': 'Invalid input'
+	},
+
+	/** Convenience shortcuts */
+	baseMinusTMin = base - tMin,
+	floor = Math.floor,
+	stringFromCharCode = String.fromCharCode,
+
+	/** Temporary variable */
+	key;
+
+	/*--------------------------------------------------------------------------*/
+
+	/**
+	 * A generic error utility function.
+	 * @private
+	 * @param {String} type The error type.
+	 * @returns {Error} Throws a `RangeError` with the applicable error message.
+	 */
+	function error(type) {
+		throw new RangeError(errors[type]);
+	}
+
+	/**
+	 * A generic `Array#map` utility function.
+	 * @private
+	 * @param {Array} array The array to iterate over.
+	 * @param {Function} callback The function that gets called for every array
+	 * item.
+	 * @returns {Array} A new array of values returned by the callback function.
+	 */
+	function map(array, fn) {
+		var length = array.length;
+		var result = [];
+		while (length--) {
+			result[length] = fn(array[length]);
+		}
+		return result;
+	}
+
+	/**
+	 * A simple `Array#map`-like wrapper to work with domain name strings or email
+	 * addresses.
+	 * @private
+	 * @param {String} domain The domain name or email address.
+	 * @param {Function} callback The function that gets called for every
+	 * character.
+	 * @returns {Array} A new string of characters returned by the callback
+	 * function.
+	 */
+	function mapDomain(string, fn) {
+		var parts = string.split('@');
+		var result = '';
+		if (parts.length > 1) {
+			// In email addresses, only the domain name should be punycoded. Leave
+			// the local part (i.e. everything up to `@`) intact.
+			result = parts[0] + '@';
+			string = parts[1];
+		}
+		// Avoid `split(regex)` for IE8 compatibility. See #17.
+		string = string.replace(regexSeparators, '\x2E');
+		var labels = string.split('.');
+		var encoded = map(labels, fn).join('.');
+		return result + encoded;
+	}
+
+	/**
+	 * Creates an array containing the numeric code points of each Unicode
+	 * character in the string. While JavaScript uses UCS-2 internally,
+	 * this function will convert a pair of surrogate halves (each of which
+	 * UCS-2 exposes as separate characters) into a single code point,
+	 * matching UTF-16.
+	 * @see `punycode.ucs2.encode`
+	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+	 * @memberOf punycode.ucs2
+	 * @name decode
+	 * @param {String} string The Unicode input string (UCS-2).
+	 * @returns {Array} The new array of code points.
+	 */
+	function ucs2decode(string) {
+		var output = [],
+		    counter = 0,
+		    length = string.length,
+		    value,
+		    extra;
+		while (counter < length) {
+			value = string.charCodeAt(counter++);
+			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
+				// high surrogate, and there is a next character
+				extra = string.charCodeAt(counter++);
+				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
+					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
+				} else {
+					// unmatched surrogate; only append this code unit, in case the next
+					// code unit is the high surrogate of a surrogate pair
+					output.push(value);
+					counter--;
+				}
+			} else {
+				output.push(value);
+			}
+		}
+		return output;
+	}
+
+	/**
+	 * Creates a string based on an array of numeric code points.
+	 * @see `punycode.ucs2.decode`
+	 * @memberOf punycode.ucs2
+	 * @name encode
+	 * @param {Array} codePoints The array of numeric code points.
+	 * @returns {String} The new Unicode string (UCS-2).
+	 */
+	function ucs2encode(array) {
+		return map(array, function(value) {
+			var output = '';
+			if (value > 0xFFFF) {
+				value -= 0x10000;
+				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
+				value = 0xDC00 | value & 0x3FF;
+			}
+			output += stringFromCharCode(value);
+			return output;
+		}).join('');
+	}
+
+	/**
+	 * Converts a basic code point into a digit/integer.
+	 * @see `digitToBasic()`
+	 * @private
+	 * @param {Number} codePoint The basic numeric code point value.
+	 * @returns {Number} The numeric value of a basic code point (for use in
+	 * representing integers) in the range `0` to `base - 1`, or `base` if
+	 * the code point does not represent a value.
+	 */
+	function basicToDigit(codePoint) {
+		if (codePoint - 48 < 10) {
+			return codePoint - 22;
+		}
+		if (codePoint - 65 < 26) {
+			return codePoint - 65;
+		}
+		if (codePoint - 97 < 26) {
+			return codePoint - 97;
+		}
+		return base;
+	}
+
+	/**
+	 * Converts a digit/integer into a basic code point.
+	 * @see `basicToDigit()`
+	 * @private
+	 * @param {Number} digit The numeric value of a basic code point.
+	 * @returns {Number} The basic code point whose value (when used for
+	 * representing integers) is `digit`, which needs to be in the range
+	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
+	 * used; else, the lowercase form is used. The behavior is undefined
+	 * if `flag` is non-zero and `digit` has no uppercase form.
+	 */
+	function digitToBasic(digit, flag) {
+		//  0..25 map to ASCII a..z or A..Z
+		// 26..35 map to ASCII 0..9
+		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
+	}
+
+	/**
+	 * Bias adaptation function as per section 3.4 of RFC 3492.
+	 * https://tools.ietf.org/html/rfc3492#section-3.4
+	 * @private
+	 */
+	function adapt(delta, numPoints, firstTime) {
+		var k = 0;
+		delta = firstTime ? floor(delta / damp) : delta >> 1;
+		delta += floor(delta / numPoints);
+		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
+			delta = floor(delta / baseMinusTMin);
+		}
+		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
+	}
+
+	/**
+	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
+	 * symbols.
+	 * @memberOf punycode
+	 * @param {String} input The Punycode string of ASCII-only symbols.
+	 * @returns {String} The resulting string of Unicode symbols.
+	 */
+	function decode(input) {
+		// Don't use UCS-2
+		var output = [],
+		    inputLength = input.length,
+		    out,
+		    i = 0,
+		    n = initialN,
+		    bias = initialBias,
+		    basic,
+		    j,
+		    index,
+		    oldi,
+		    w,
+		    k,
+		    digit,
+		    t,
+		    /** Cached calculation results */
+		    baseMinusT;
+
+		// Handle the basic code points: let `basic` be the number of input code
+		// points before the last delimiter, or `0` if there is none, then copy
+		// the first basic code points to the output.
+
+		basic = input.lastIndexOf(delimiter);
+		if (basic < 0) {
+			basic = 0;
+		}
+
+		for (j = 0; j < basic; ++j) {
+			// if it's not a basic code point
+			if (input.charCodeAt(j) >= 0x80) {
+				error('not-basic');
+			}
+			output.push(input.charCodeAt(j));
+		}
+
+		// Main decoding loop: start just after the last delimiter if any basic code
+		// points were copied; start at the beginning otherwise.
+
+		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
+
+			// `index` is the index of the next character to be consumed.
+			// Decode a generalized variable-length integer into `delta`,
+			// which gets added to `i`. The overflow checking is easier
+			// if we increase `i` as we go, then subtract off its starting
+			// value at the end to obtain `delta`.
+			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
+
+				if (index >= inputLength) {
+					error('invalid-input');
+				}
+
+				digit = basicToDigit(input.charCodeAt(index++));
+
+				if (digit >= base || digit > floor((maxInt - i) / w)) {
+					error('overflow');
+				}
+
+				i += digit * w;
+				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+
+				if (digit < t) {
+					break;
+				}
+
+				baseMinusT = base - t;
+				if (w > floor(maxInt / baseMinusT)) {
+					error('overflow');
+				}
+
+				w *= baseMinusT;
+
+			}
+
+			out = output.length + 1;
+			bias = adapt(i - oldi, out, oldi == 0);
+
+			// `i` was supposed to wrap around from `out` to `0`,
+			// incrementing `n` each time, so we'll fix that now:
+			if (floor(i / out) > maxInt - n) {
+				error('overflow');
+			}
+
+			n += floor(i / out);
+			i %= out;
+
+			// Insert `n` at position `i` of the output
+			output.splice(i++, 0, n);
+
+		}
+
+		return ucs2encode(output);
+	}
+
+	/**
+	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
+	 * Punycode string of ASCII-only symbols.
+	 * @memberOf punycode
+	 * @param {String} input The string of Unicode symbols.
+	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
+	 */
+	function encode(input) {
+		var n,
+		    delta,
+		    handledCPCount,
+		    basicLength,
+		    bias,
+		    j,
+		    m,
+		    q,
+		    k,
+		    t,
+		    currentValue,
+		    output = [],
+		    /** `inputLength` will hold the number of code points in `input`. */
+		    inputLength,
+		    /** Cached calculation results */
+		    handledCPCountPlusOne,
+		    baseMinusT,
+		    qMinusT;
+
+		// Convert the input in UCS-2 to Unicode
+		input = ucs2decode(input);
+
+		// Cache the length
+		inputLength = input.length;
+
+		// Initialize the state
+		n = initialN;
+		delta = 0;
+		bias = initialBias;
+
+		// Handle the basic code points
+		for (j = 0; j < inputLength; ++j) {
+			currentValue = input[j];
+			if (currentValue < 0x80) {
+				output.push(stringFromCharCode(currentValue));
+			}
+		}
+
+		handledCPCount = basicLength = output.length;
+
+		// `handledCPCount` is the number of code points that have been handled;
+		// `basicLength` is the number of basic code points.
+
+		// Finish the basic string - if it is not empty - with a delimiter
+		if (basicLength) {
+			output.push(delimiter);
+		}
+
+		// Main encoding loop:
+		while (handledCPCount < inputLength) {
+
+			// All non-basic code points < n have been handled already. Find the next
+			// larger one:
+			for (m = maxInt, j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+				if (currentValue >= n && currentValue < m) {
+					m = currentValue;
+				}
+			}
+
+			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
+			// but guard against overflow
+			handledCPCountPlusOne = handledCPCount + 1;
+			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
+				error('overflow');
+			}
+
+			delta += (m - n) * handledCPCountPlusOne;
+			n = m;
+
+			for (j = 0; j < inputLength; ++j) {
+				currentValue = input[j];
+
+				if (currentValue < n && ++delta > maxInt) {
+					error('overflow');
+				}
+
+				if (currentValue == n) {
+					// Represent delta as a generalized variable-length integer
+					for (q = delta, k = base; /* no condition */; k += base) {
+						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
+						if (q < t) {
+							break;
+						}
+						qMinusT = q - t;
+						baseMinusT = base - t;
+						output.push(
+							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
+						);
+						q = floor(qMinusT / baseMinusT);
+					}
+
+					output.push(stringFromCharCode(digitToBasic(q, 0)));
+					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
+					delta = 0;
+					++handledCPCount;
+				}
+			}
+
+			++delta;
+			++n;
+
+		}
+		return output.join('');
+	}
+
+	/**
+	 * Converts a Punycode string representing a domain name or an email address
+	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
+	 * it doesn't matter if you call it on a string that has already been
+	 * converted to Unicode.
+	 * @memberOf punycode
+	 * @param {String} input The Punycoded domain name or email address to
+	 * convert to Unicode.
+	 * @returns {String} The Unicode representation of the given Punycode
+	 * string.
+	 */
+	function toUnicode(input) {
+		return mapDomain(input, function(string) {
+			return regexPunycode.test(string)
+				? decode(string.slice(4).toLowerCase())
+				: string;
+		});
+	}
+
+	/**
+	 * Converts a Unicode string representing a domain name or an email address to
+	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
+	 * i.e. it doesn't matter if you call it with a domain that's already in
+	 * ASCII.
+	 * @memberOf punycode
+	 * @param {String} input The domain name or email address to convert, as a
+	 * Unicode string.
+	 * @returns {String} The Punycode representation of the given domain name or
+	 * email address.
+	 */
+	function toASCII(input) {
+		return mapDomain(input, function(string) {
+			return regexNonASCII.test(string)
+				? 'xn--' + encode(string)
+				: string;
+		});
+	}
+
+	/*--------------------------------------------------------------------------*/
+
+	/** Define the public API */
+	punycode = {
+		/**
+		 * A string representing the current Punycode.js version number.
+		 * @memberOf punycode
+		 * @type String
+		 */
+		'version': '1.4.1',
+		/**
+		 * An object of methods to convert from JavaScript's internal character
+		 * representation (UCS-2) to Unicode code points, and back.
+		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
+		 * @memberOf punycode
+		 * @type Object
+		 */
+		'ucs2': {
+			'decode': ucs2decode,
+			'encode': ucs2encode
+		},
+		'decode': decode,
+		'encode': encode,
+		'toASCII': toASCII,
+		'toUnicode': toUnicode
+	};
+
+	/** Expose `punycode` */
+	// Some AMD build optimizers, like r.js, check for specific condition patterns
+	// like the following:
+	if (
+		true
+	) {
+		!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
+			return punycode;
+		}.call(exports, __webpack_require__, exports, module),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else if (freeExports && freeModule) {
+		if (module.exports == freeExports) {
+			// in Node.js, io.js, or RingoJS v0.8.0+
+			freeModule.exports = punycode;
+		} else {
+			// in Narwhal or RingoJS v0.7.0-
+			for (key in punycode) {
+				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
+			}
+		}
+	} else {
+		// in Rhino or a web browser
+		root.punycode = punycode;
+	}
+
+}(this));
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)(module), __webpack_require__(4)))
+
+/***/ }),
+/* 240 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+// If obj.hasOwnProperty has been overridden, then calling
+// obj.hasOwnProperty(prop) will break.
+// See: https://github.com/joyent/node/issues/1707
+function hasOwnProperty(obj, prop) {
+  return Object.prototype.hasOwnProperty.call(obj, prop);
+}
+
+module.exports = function(qs, sep, eq, options) {
+  sep = sep || '&';
+  eq = eq || '=';
+  var obj = {};
+
+  if (typeof qs !== 'string' || qs.length === 0) {
+    return obj;
+  }
+
+  var regexp = /\+/g;
+  qs = qs.split(sep);
+
+  var maxKeys = 1000;
+  if (options && typeof options.maxKeys === 'number') {
+    maxKeys = options.maxKeys;
+  }
+
+  var len = qs.length;
+  // maxKeys <= 0 means that we should not limit keys count
+  if (maxKeys > 0 && len > maxKeys) {
+    len = maxKeys;
+  }
+
+  for (var i = 0; i < len; ++i) {
+    var x = qs[i].replace(regexp, '%20'),
+        idx = x.indexOf(eq),
+        kstr, vstr, k, v;
+
+    if (idx >= 0) {
+      kstr = x.substr(0, idx);
+      vstr = x.substr(idx + 1);
+    } else {
+      kstr = x;
+      vstr = '';
+    }
+
+    k = decodeURIComponent(kstr);
+    v = decodeURIComponent(vstr);
+
+    if (!hasOwnProperty(obj, k)) {
+      obj[k] = v;
+    } else if (isArray(obj[k])) {
+      obj[k].push(v);
+    } else {
+      obj[k] = [obj[k], v];
+    }
+  }
+
+  return obj;
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+
+/***/ }),
+/* 241 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+// Copyright Joyent, Inc. and other Node contributors.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the
+// "Software"), to deal in the Software without restriction, including
+// without limitation the rights to use, copy, modify, merge, publish,
+// distribute, sublicense, and/or sell copies of the Software, and to permit
+// persons to whom the Software is furnished to do so, subject to the
+// following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
+// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+// USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+
+var stringifyPrimitive = function(v) {
+  switch (typeof v) {
+    case 'string':
+      return v;
+
+    case 'boolean':
+      return v ? 'true' : 'false';
+
+    case 'number':
+      return isFinite(v) ? v : '';
+
+    default:
+      return '';
+  }
+};
+
+module.exports = function(obj, sep, eq, name) {
+  sep = sep || '&';
+  eq = eq || '=';
+  if (obj === null) {
+    obj = undefined;
+  }
+
+  if (typeof obj === 'object') {
+    return map(objectKeys(obj), function(k) {
+      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
+      if (isArray(obj[k])) {
+        return map(obj[k], function(v) {
+          return ks + encodeURIComponent(stringifyPrimitive(v));
+        }).join(sep);
+      } else {
+        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
+      }
+    }).join(sep);
+
+  }
+
+  if (!name) return '';
+  return encodeURIComponent(stringifyPrimitive(name)) + eq +
+         encodeURIComponent(stringifyPrimitive(obj));
+};
+
+var isArray = Array.isArray || function (xs) {
+  return Object.prototype.toString.call(xs) === '[object Array]';
+};
+
+function map (xs, f) {
+  if (xs.map) return xs.map(f);
+  var res = [];
+  for (var i = 0; i < xs.length; i++) {
+    res.push(f(xs[i], i));
+  }
+  return res;
+}
+
+var objectKeys = Object.keys || function (obj) {
+  var res = [];
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
+  }
+  return res;
+};
+
+
+/***/ }),
+/* 242 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  isString: function(arg) {
+    return typeof(arg) === 'string';
+  },
+  isObject: function(arg) {
+    return typeof(arg) === 'object' && arg !== null;
+  },
+  isNull: function(arg) {
+    return arg === null;
+  },
+  isNullOrUndefined: function(arg) {
+    return arg == null;
+  }
+};
+
+
+/***/ }),
+/* 243 */
+/***/ (function(module, exports) {
+
+module.exports = function isBuffer(arg) {
+  return arg && typeof arg === 'object'
+    && typeof arg.copy === 'function'
+    && typeof arg.fill === 'function'
+    && typeof arg.readUInt8 === 'function';
+}
+
+/***/ }),
+/* 244 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var indexOf = __webpack_require__(488);
+
+var Object_keys = function (obj) {
+    if (Object.keys) return Object.keys(obj)
+    else {
+        var res = [];
+        for (var key in obj) res.push(key)
+        return res;
+    }
+};
+
+var forEach = function (xs, fn) {
+    if (xs.forEach) return xs.forEach(fn)
+    else for (var i = 0; i < xs.length; i++) {
+        fn(xs[i], i, xs);
+    }
+};
+
+var defineProp = (function() {
+    try {
+        Object.defineProperty({}, '_', {});
+        return function(obj, name, value) {
+            Object.defineProperty(obj, name, {
+                writable: true,
+                enumerable: false,
+                configurable: true,
+                value: value
+            })
+        };
+    } catch(e) {
+        return function(obj, name, value) {
+            obj[name] = value;
+        };
+    }
+}());
+
+var globals = ['Array', 'Boolean', 'Date', 'Error', 'EvalError', 'Function',
+'Infinity', 'JSON', 'Math', 'NaN', 'Number', 'Object', 'RangeError',
+'ReferenceError', 'RegExp', 'String', 'SyntaxError', 'TypeError', 'URIError',
+'decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape',
+'eval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'undefined', 'unescape'];
+
+function Context() {}
+Context.prototype = {};
+
+var Script = exports.Script = function NodeScript (code) {
+    if (!(this instanceof Script)) return new Script(code);
+    this.code = code;
+};
+
+Script.prototype.runInContext = function (context) {
+    if (!(context instanceof Context)) {
+        throw new TypeError("needs a 'context' argument.");
+    }
+    
+    var iframe = document.createElement('iframe');
+    if (!iframe.style) iframe.style = {};
+    iframe.style.display = 'none';
+    
+    document.body.appendChild(iframe);
+    
+    var win = iframe.contentWindow;
+    var wEval = win.eval, wExecScript = win.execScript;
+
+    if (!wEval && wExecScript) {
+        // win.eval() magically appears when this is called in IE:
+        wExecScript.call(win, 'null');
+        wEval = win.eval;
+    }
+    
+    forEach(Object_keys(context), function (key) {
+        win[key] = context[key];
+    });
+    forEach(globals, function (key) {
+        if (context[key]) {
+            win[key] = context[key];
+        }
+    });
+    
+    var winKeys = Object_keys(win);
+
+    var res = wEval.call(win, this.code);
+    
+    forEach(Object_keys(win), function (key) {
+        // Avoid copying circular objects like `top` and `window` by only
+        // updating existing context properties or new properties in the `win`
+        // that was only introduced after the eval.
+        if (key in context || indexOf(winKeys, key) === -1) {
+            context[key] = win[key];
+        }
+    });
+
+    forEach(globals, function (key) {
+        if (!(key in context)) {
+            defineProp(context, key, win[key]);
+        }
+    });
+    
+    document.body.removeChild(iframe);
+    
+    return res;
+};
+
+Script.prototype.runInThisContext = function () {
+    return eval(this.code); // maybe...
+};
+
+Script.prototype.runInNewContext = function (context) {
+    var ctx = Script.createContext(context);
+    var res = this.runInContext(ctx);
+
+    forEach(Object_keys(ctx), function (key) {
+        context[key] = ctx[key];
+    });
+
+    return res;
+};
+
+forEach(Object_keys(Script.prototype), function (name) {
+    exports[name] = Script[name] = function (code) {
+        var s = Script(code);
+        return s[name].apply(s, [].slice.call(arguments, 1));
+    };
+});
+
+exports.createScript = function (code) {
+    return exports.Script(code);
+};
+
+exports.createContext = Script.createContext = function (context) {
+    var copy = new Context();
+    if(typeof context === 'object') {
+        forEach(Object_keys(context), function (key) {
+            copy[key] = context[key];
+        });
+    }
+    return copy;
+};
+
+
+/***/ }),
+/* 245 */
+/***/ (function(module, exports) {
+
+function webpackEmptyContext(req) {
+	throw new Error("Cannot find module '" + req + "'.");
+}
+webpackEmptyContext.keys = function() { return []; };
+webpackEmptyContext.resolve = webpackEmptyContext;
+module.exports = webpackEmptyContext;
+webpackEmptyContext.id = 245;
+
+/***/ }),
+/* 246 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Created by CCristi on 8/5/16.
+ */
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+let ContextProvider = exports.ContextProvider = function () {
+  /**
+   * @param {Object} runtimeContext
+   */
+  function ContextProvider(runtimeContext) {
+    _classCallCheck(this, ContextProvider);
+
+    this._context = runtimeContext;
+  }
+
+  /**
+   * @param {Object} event
+   * @returns {ContextProvider}
+   */
+
+
+  _createClass(ContextProvider, [{
+    key: 'fillContextWithEventData',
+    value: function fillContextWithEventData(event) {
+      this._context[ContextProvider.FRAMEWORK_NAMESPACE_KEY] = {};
+      this._context.getDeepFrameworkOption = function (option) {
+        return this[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option];
+      };
+
+      [ContextProvider.MAIN_REQUEST_ID, ContextProvider.LAMBDA_DEPTH_LEVEL].forEach(option => {
+        if (event.hasOwnProperty(option)) {
+          this._context[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option] = event[option];
+        }
+      });
+
+      // moving _deep_auth_context_ from event to lambda context
+      if (event.hasOwnProperty(ContextProvider.DEEP_AUTH_CONTEXT_KEY) && !this._context.hasOwnProperty('identity')) {
+        this._context.identity = event[ContextProvider.DEEP_AUTH_CONTEXT_KEY];
+
+        delete event[ContextProvider.DEEP_AUTH_CONTEXT_KEY];
+      }
+
+      return this;
+    }
+
+    /**
+     * @returns {Object}
+     */
+
+  }, {
+    key: 'context',
+    get: function get() {
+      return this._context;
+    }
+
+    /**
+     * @returns {String}
+     */
+
+  }], [{
+    key: 'FRAMEWORK_NAMESPACE_KEY',
+    get: function get() {
+      return 'deepFramework';
+    }
+
+    /**
+     * @returns {String}
+     */
+
+  }, {
+    key: 'MAIN_REQUEST_ID',
+    get: function get() {
+      return 'mainRequestId';
+    }
+
+    /**
+     * @returns {String}
+     */
+
+  }, {
+    key: 'LAMBDA_DEPTH_LEVEL',
+    get: function get() {
+      return 'lambdaDepthLevel';
+    }
+
+    /**
+     * @returns {String}
+     */
+
+  }, {
+    key: 'DEEP_AUTH_CONTEXT_KEY',
+    get: function get() {
+      return '_deep_auth_context_';
+    }
+  }]);
+
+  return ContextProvider;
+}();
+
+/***/ }),
+/* 247 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/**
+ * Created by AlexanderC on 11/5/15.
+ */
+
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Framework = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _deepKernel = __webpack_require__(21);
+
+var _deepKernel2 = _interopRequireDefault(_deepKernel);
+
+var _deepCore = __webpack_require__(3);
+
+var _deepCore2 = _interopRequireDefault(_deepCore);
+
+var _ContextProvider = __webpack_require__(246);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+let Framework = exports.Framework = function () {
+  /**
+   * @param {Object} servicesMap
+   * @param {String} context
+   */
+  function Framework(servicesMap, context) {
+    _classCallCheck(this, Framework);
+
+    this._context = context;
+    this._services = this._resolveServicesMap(servicesMap);
+    this._version = __webpack_require__(660).version;
+    this._kernelsMap = {};
+  }
+
+  /**
+   * @returns {string}
+   */
+
+
+  _createClass(Framework, [{
+    key: 'LambdaHandler',
+
+
+    /**
+     * @param {DeepFramework.Core.AWS.Lambda.Runtime|Handler|*} Handler
+     * @returns {{handler: Function}}
+     */
+    value: function LambdaHandler(Handler) {
+      return {
+        handler: (event, context, callback) => {
+          this.KernelFromLambdaContext(context, event).bootstrap(deepKernel => {
+            new Handler(deepKernel).run(event, context, callback);
+          });
+        }
+      };
+    }
+
+    /**
+     *
+     * @todo: improve it
+     *
+     * @param {Object} lambdaContext
+     * @param {Object} lambdaEvent
+     * @returns {Kernel}
+     *
+     * @sample:
+     * ```
+     * exports.handler = function (event, context) {
+     *   DeepFramework.KernelFromLambdaContext(context).loadFromFile("_config.json", function (deepKernel) {
+     *     new Handler(deepKernel).run(event, context);
+     *   });
+     * };
+     * KernelFromLambdaContext
+     * ```
+     */
+
+  }, {
+    key: 'KernelFromLambdaContext',
+    value: function KernelFromLambdaContext(lambdaContext, lambdaEvent) {
+      let contextProvider = new _ContextProvider.ContextProvider(lambdaContext).fillContextWithEventData(lambdaEvent);
+
+      let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
+
+      if (lambdaContext.hasOwnProperty('identity') && lambdaContext.identity.cognitoIdentityPoolId && lambdaContext.identity.cognitoIdentityId) {
+
+        identityId = lambdaContext.identity.cognitoIdentityId;
+      }
+
+      let kernel = this._kernelCached(identityId);
+
+      kernel.runtimeContext = lambdaContext; // @todo: remove "runtimeContext" on next major release
+      kernel.contextProvider = contextProvider;
+
+      return kernel;
+    }
+
+    /**
+     * @param {String} id
+     * @returns {Kernel}
+     * @constructor
+     */
+
+  }, {
+    key: '_kernelCached',
+    value: function _kernelCached(id) {
+      if (this._kernelsMap.hasOwnProperty(id)) {
+        return this._kernelsMap[id];
+      }
+
+      this._kernelsMap[id] = this._createKernel();
+
+      return this._kernelsMap[id];
+    }
+
+    /**
+     * @todo: remove method in next release (back compatibility)
+     *
+     * @returns {Kernel}
+     * @constructor
+     */
+
+  }, {
+    key: '_resolveServicesMap',
+
+
+    /**
+     * @param {Object} servicesMap
+     * @returns {Object}
+     * @private
+     */
+    value: function _resolveServicesMap(servicesMap) {
+      let services = {};
+
+      for (let serviceName in servicesMap) {
+        if (!servicesMap.hasOwnProperty(serviceName)) {
+          continue;
+        }
+
+        let serviceObj = servicesMap[serviceName];
+
+        if (typeof serviceObj === 'string') {
+          serviceObj = !(function webpackMissingModule() { var e = new Error("Cannot find module \".\""); e.code = 'MODULE_NOT_FOUND'; throw e; }());
+        }
+
+        services[serviceName] = serviceObj;
+      }
+
+      return services;
+    }
+
+    /**
+     * @returns {Kernel}
+     * @private
+     */
+
+  }, {
+    key: '_createKernel',
+    value: function _createKernel() {
+      return new _deepKernel2.default(this._services, this._context);
+    }
+
+    /**
+     * @returns {String}
+     */
+
+  }, {
+    key: 'context',
+
+
+    /**
+     * @returns {String}
+     */
+    get: function get() {
+      return this._context;
+    }
+
+    /**
+     * @returns {String}
+     */
+
+  }, {
+    key: 'version',
+    get: function get() {
+      return this._version;
+    }
+  }, {
+    key: 'Kernel',
+    get: function get() {
+      return this._kernelCached(Framework.ANONYMOUS_IDENTITY_KEY);
+    }
+
+    /**
+     * @returns {Function}
+     * @constructor
+     */
+
+  }, {
+    key: 'Core',
+    get: function get() {
+      return _deepCore2.default;
+    }
+  }], [{
+    key: 'ANONYMOUS_IDENTITY_KEY',
+    get: function get() {
+      return 'anonymous';
+    }
+  }, {
+    key: 'BACKEND_CONTEXT',
+    get: function get() {
+      return _deepKernel2.default.BACKEND_CONTEXT;
+    }
+
+    /**
+     * @returns {String}
+     */
+
+  }, {
+    key: 'FRONTEND_CONTEXT',
+    get: function get() {
+      return _deepKernel2.default.FRONTEND_CONTEXT;
+    }
+  }]);
+
+  return Framework;
+}();
+
+/***/ }),
+/* 248 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {/**
+ * Created by AlexanderC on 6/11/15.
+ */
+
+
+
+window.__DEEP_DEV_SERVER = global.__DEEP_DEV_SERVER = ['localhost', '127.0.0.1', '0.0.0.0', '::1'].indexOf(window.location.hostname) !== -1;
+
+if (/MSIE|Trident/.test(window.navigator.userAgent)) {
+  __webpack_require__(235);
+}
+
+const DeepFramework = __webpack_require__(234);
+
+module.exports = DeepFramework;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ }),
+/* 249 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(global) {var globalScope = typeof window === 'undefined' ? global : window;
+globalScope.AWS = __webpack_require__(18);
+
+__webpack_require__(255);
+__webpack_require__(250);
+__webpack_require__(251);
+__webpack_require__(252);
+__webpack_require__(253);
+__webpack_require__(254);
+__webpack_require__(256);
+__webpack_require__(257);
+__webpack_require__(258);
+__webpack_require__(259);
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ }),
+/* 250 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.Conflict = (function() {
+
+    /**
+     * When the local and remote copies of a dataset are in conflict, this object is returned to the synchronize callback.
+     * @param remoteRecord the record from remote storage
+     * @param localRecord the record from local storage
+     * @prop {string} key
+     * @prop {CognitoSyncRecord} remoteRecord
+     * @prop {CognitoSyncRecord} localRecord
+     * @constructor
+     */
+
+    var CognitoSyncConflict = function(remoteRecord, localRecord) {
+
+        if (!remoteRecord || !localRecord) { throw new Error('Remote and local records cannot be null.'); }
+        if (!remoteRecord.getKey || !localRecord.getKey) { throw new Error('Records are not record objects.'); }
+        if (remoteRecord.getKey() !== localRecord.getKey()) { throw new Error('Remote and local keys do not match.'); }
+
+        this.key = remoteRecord.getKey();
+        this.remoteRecord = remoteRecord;
+        this.localRecord = localRecord;
+
+    };
+
+    /**
+     * Get the key of the records in conflict.
+     * @returns {string} the record's key
+     */
+
+    CognitoSyncConflict.prototype.getKey = function() {
+        return this.key;
+    };
+
+    /**
+     * Get the remote record that is in conflict.
+     * @returns {CognitoSyncRecord} the record
+     */
+
+    CognitoSyncConflict.prototype.getRemoteRecord = function() {
+        return this.remoteRecord;
+    };
+
+    /**
+     * Get the local record that is in conflict.
+     * @returns {CognitoSyncRecord} the record
+     */
+
+    CognitoSyncConflict.prototype.getLocalRecord = function() {
+        return this.localRecord;
+    };
+
+    /**
+     * Resolves conflict with remote record.
+     * @returns {CognitoSyncRecord} the resulting record
+     */
+
+    CognitoSyncConflict.prototype.resolveWithRemoteRecord = function() {
+        this.remoteRecord.setModified(false);
+        return this.remoteRecord;
+    };
+
+    /**
+     * Resolves conflict with local record.
+     * @returns {CognitoSyncRecord} resolved record
+     */
+
+    CognitoSyncConflict.prototype.resolveWithLocalRecord = function() {
+        this.localRecord.setSyncCount(this.remoteRecord.getSyncCount());
+        this.localRecord.setModified(true);
+        return this.localRecord;
+    };
+
+    /**
+     * Resolves conflict with a new value.
+     * @param newValue new value of the record
+     * @returns {CognitoSyncRecord} resolved record
+     */
+
+    CognitoSyncConflict.prototype.resolveWithValue = function(newValue) {
+        return new AWS.CognitoSyncManager.Record({
+            Key: this.remoteRecord.getKey(),
+            Value: newValue,
+            SyncCount: this.remoteRecord.getSyncCount(),
+            LastModifiedDate: new Date(),
+            LastModifiedBy: this.localRecord.getLastModifiedBy(),
+            DeviceLastModifiedDate: new Date(),
+            Modified: true
+        });
+    };
+
+    return CognitoSyncConflict;
+
+})();
+
+/***/ }),
+/* 251 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.Dataset = (function() {
+
+    /**
+     * Constructs a new dataset class.
+     * @param {string} datasetName
+     * @param provider
+     * @param {AWS.CognitoSyncLocalStorage} local
+     * @param {AWS.CognitoSyncRemoteStorage} remote
+     * @param {function} logger
+     * @constructor
+     */
+
+    var CognitoSyncDataset = function(datasetName, provider, local, remote, logger) {
+
+        this.MAX_RETRY = 3;
+
+        this.datasetName = datasetName;
+        this.provider = provider;
+        this.local = local;
+        this.remote = remote;
+        this.logger = logger || function(){};
+
+    };
+
+    /**
+     * Validates the record key to ensure it is not empty and shorter than 128 characters.
+     * @param {String} key The key to validate.
+     * @returns {boolean}
+     */
+
+    CognitoSyncDataset.prototype.validateKey = function(key) {
+        var namePattern = new RegExp('^[a-zA-Z0-9_.:-]{1,128}$');
+        return namePattern.test(key);
+    };
+
+    /**
+     * Writes a record to local storage.
+     * @param {string} key
+     * @param {string} value
+     * @param {function} callback Callback(Error, Record)
+     */
+
+    CognitoSyncDataset.prototype.put = function(key, value, callback) {
+        var valueType = typeof value;
+        if (!this.validateKey(key)) { return callback(new Error('Invalid key.')); }
+        if (valueType !== 'string') {
+            return callback(new Error('The value type must be a string but was ' + valueType + '.'));
+        }
+        this.local.putValue(this.getIdentityId(), this.datasetName, key, value, callback);
+    };
+
+    /**
+     * Writes a record as null, to be cleaned up on the next synchronization.
+     * @param {string} key The key to remove.
+     * @param {function} callback Callback(Error, Record)
+     */
+
+    CognitoSyncDataset.prototype.remove = function(key, callback) {
+        if (!this.validateKey(key)) { return callback(new Error('Invalid key.')); }
+        this.local.putValue(this.getIdentityId(), this.datasetName, key, null, callback);
+    };
+
+    /**
+     * Gets a record's value from local storage.
+     * @param {string} key
+     * @param {function} callback Callback(Error, Value)
+     */
+
+    CognitoSyncDataset.prototype.get = function(key, callback) {
+        if (!this.validateKey(key)) { return callback(new Error('Invalid key.')); }
+        this.local.getValue(this.getIdentityId(), this.datasetName, key, callback);
+    };
+
+    /**
+     * Gets all records in a dataset from local storage.
+     * @param {function} callback Callback(Error, Records)
+     */
+
+    CognitoSyncDataset.prototype.getAllRecords = function(callback) {
+        this.local.getRecords(this.getIdentityId(), this.datasetName, callback);
+    };
+
+    /**
+     * Returns the amount of data stored on the server.
+     * @param callback
+     */
+
+    CognitoSyncDataset.prototype.getDataStorage = function(callback) {
+
+        this.getDatasetMetadata(function(err, meta) {
+            if (err) { return callback(err); }
+            if (!meta) { return callback(null, 0); }
+            return callback(null, meta.getDataStorage());
+        });
+
+    };
+
+    /**
+     * Returns if a specific record has changed.
+     * @param key
+     * @param callback
+     */
+
+    CognitoSyncDataset.prototype.isChanged = function(key, callback) {
+        if (!this.validateKey(key)) { return callback(new Error('Invalid key.')); }
+        this.local.getRecord(this.getIdentityId(), this.datasetName, key, function(err, record) {
+            callback(null, (record && record.isModified()));
+        });
+    };
+
+    /**
+     * Returns the dataset metadata.
+     * @param callback
+     */
+
+    CognitoSyncDataset.prototype.getDatasetMetadata = function(callback) {
+        this.local.getDatasetMetadata(this.getIdentityId(), this.datasetName, callback);
+    };
+
+    /**
+     * Resolves conflicts using the records provided.
+     * @param resolvedRecords
+     * @param callback
+     */
+
+    CognitoSyncDataset.prototype.resolve = function(resolvedRecords, callback) {
+        this.local.putRecords(this.getIdentityId(), this.datasetName, resolvedRecords, callback);
+    };
+
+    /**
+     * Puts all values into the dataset.
+     * @param values
+     * @param callback
+     * @returns {*}
+     */
+
+    CognitoSyncDataset.prototype.putAll = function(values, callback) {
+
+        var isValid = true;
+
+        for (var key in values) {
+            if (values.hasOwnProperty(key)) {
+                if (!this.validateKey(key)) { isValid = false; }
+            }
+        }
+
+        if (!isValid) { return callback(new Error('Object contains invalid keys.')); }
+
+        this.local.putAllValues(this.getIdentityId(), this.datasetName, values, callback);
+
+    };
+
+    /**
+     * Returns all records from a dataset.
+     * @param callback
+     */
+
+    CognitoSyncDataset.prototype.getAll = function(callback) {
+
+        var map = {};
+        var record;
+
+        this.local.getRecords(this.getIdentityId(), this.datasetName, function(err, records) {
+
+            if (err) { return callback(err); }
+
+            for (var r in records) {
+                if (records.hasOwnProperty(r)) {
+                    record = records[r];
+                    if (!record.isDeleted()) { map[record.getKey()] = record.getValue(); }
+                }
+            }
+
+            callback(null, map);
+
+        });
+
+    };
+
+    /**
+     * Returns the current user's identity id.
+     * @returns {string};
+     */
+
+    CognitoSyncDataset.prototype.getIdentityId = function() {
+        return this.provider.identityId;
+    };
+
+    /**
+     * Returns the records that have been modified.
+     * @param callback
+     */
+
+    CognitoSyncDataset.prototype.getModifiedRecords = function(callback) {
+        this.local.getModifiedRecords(this.getIdentityId(), this.datasetName, callback);
+    };
+
+    /**
+     * Returns a list of datasets that have been merged.
+     * @param callback
+     */
+
+    CognitoSyncDataset.prototype.getLocalMergedDatasets = function(callback) {
+
+        var mergedDatasets = [];
+        var prefix = this.datasetName + '.';
+        var dataset;
+
+        this.local.getDatasets(this.getIdentityId(), function(err, datasets) {
+
+            for (var d in datasets) {
+                if (datasets.hasOwnProperty(d)) {
+
+                    dataset = datasets[d];
+
+                    if (dataset.getDatasetName().indexOf(prefix) === 0) {
+                        mergedDatasets.push(dataset.getDatasetName());
+                    }
+
+                }
+            }
+
+            callback(null, mergedDatasets);
+
+        });
+
+    };
+
+    /**
+     * Starts the synchronization process.
+     * @param callback
+     * @param retry
+     */
+
+    CognitoSyncDataset.prototype.synchronize = function(callback, retry) {
+
+        var root = this;
+
+        // Validate callback object.
+        callback = callback || {};
+        callback.onSuccess = callback.onSuccess || function(dataset, updates) {};
+        callback.onFailure = callback.onFailure || function(err) {};
+        callback.onConflict = callback.onConflict || function(dataset, conflicts, callback) { return callback(false); };
+        callback.onDatasetDeleted = callback.onDatasetDeleted || function(dataset, deletedDataset, callback) { return callback(false); };
+        callback.onDatasetsMerged = callback.onDatasetsMerged || function(dataset, merges, callback) { return callback(false); };
+
+        // Validate/initialize retry count.
+        if (retry === undefined) { retry = this.MAX_RETRY; }
+
+        root.logger('Starting synchronization... (retries: ' + retry + ')');
+
+        if (retry < 0) {
+            return callback.onFailure(new Error('Synchronize failed: exceeded maximum retry count.'));
+        }
+
+        // First check if any datasets have been merged locally.
+
+        this.getLocalMergedDatasets(function(err, mergedDatasets) {
+
+            if (err) { callback.onFailure(err); }
+
+            root.logger('Checking for locally merged datasets... found ' + mergedDatasets.length + '.');
+
+            // Detect if merged datasets.
+            if (mergedDatasets.length > 0) {
+
+                root.logger('Deferring to .onDatasetsMerged.');
+
+                return callback.onDatasetsMerged(root, mergedDatasets, function(isContinue) {
+
+                    if (!isContinue) {
+
+                        // Merges were not handled by callback. Cancel sync.
+                        return callback.onFailure(new Error('Synchronization cancelled by onDatasetsMerged() callback returning false.'));
+
+                    } else {
+
+                        // Merges are handled within callback. Restart sync.
+                        return root.synchronize(callback, --retry);
+
+                    }
+
+                });
+
+            } else {
+
+                // Get the last sync count so we can tell the server what to diff.
+
+                root.local.getLastSyncCount(root.getIdentityId(), root.datasetName, function(err, syncCount) {
+
+                    if (err) { return callback.onFailure(err); }
+
+                    root.logger('Detecting last sync count... ' + syncCount);
+
+                    if (syncCount == -1) {
+
+                        // Dataset has been deleted locally
+                        root.remote.deleteDataset(root.datasetName, function(err, data) {
+                            if (err) { return callback.onFailure(err); }
+                            root.local.purgeDataset(root.getIdentityId(), root.datasetName, function(err) {
+                               if (err) { return callback.onFailure(err); }
+                               return callback.onSuccess(root);
+                            });
+                        });
+
+                    } else {
+
+                        // Get all the remote records that have changed since the latest sync count.
+
+                        root.remote.listUpdates(root.datasetName, syncCount, function(err, remoteRecords) {
+
+                            if (err) { return callback.onFailure(err); }
+
+                            root.logger('Fetching remote updates... found ' + remoteRecords.records.length + '.');
+
+                            var mergedNameList = remoteRecords.getMergedDatasetNameList();
+
+                            root.logger('Checking for remote merged datasets... found ' + mergedNameList.length + '.');
+
+                            if (mergedNameList.length > 0) {
+
+                                root.logger('Deferring to .onDatasetsMerged.');
+
+                                // Merged datasets exist. Use callback to determine action.
+                                return callback.onDatasetsMerged(root, mergedNameList, function(doContinue) {
+                                    if (!doContinue) { callback.onFailure(new Error('Cancelled due to .onDatasetsMerged result.')); }
+                                    else { root._synchronizeInternal(callback, --retry); }
+                                });
+                            }
+
+                            // Check if dataset doesn't exist or is deleted.
+
+                            if (syncCount !== 0 && !remoteRecords || remoteRecords.isDeleted()) {
+
+                                return callback.onDatasetDeleted(root, remoteRecords.getDatasetName(), function(doContinue) {
+
+                                    root.logger('Dataset should be deleted. Deferring to .onDatasetDeleted.');
+
+                                    if (doContinue) {
+                                        root.logger('.onDatasetDeleted returned true, purging dataset locally.');
+                                        return root.local.purgeDataset(root.getIdentityId(), root.datasetName, function(err) {
+                                            if (err) { return callback.onFailure(err); }
+                                            return root._synchronizeInternal(callback, --retry);
+                                        });
+                                    } else {
+                                        root.logger('.onDatasetDeleted returned false, cancelling sync.');
+                                        return callback.onFailure(new Error('Cancelled due to .onDatasetDeleted result.'));
+                                    }
+
+                                });
+
+                            }
+
+                            var updatedRemoteRecords = remoteRecords.getRecords();
+                            var lastSyncCount = remoteRecords.getSyncCount();
+                            var sessionToken = remoteRecords.getSyncSessionToken();
+
+                            // Check if there have been any updates since the last sync count.
+
+                            root.logger('Checking for remote updates since last sync count... found ' + updatedRemoteRecords.length + '.');
+
+                            if (updatedRemoteRecords.length > 0) {
+
+                                root._synchronizeResolveLocal(updatedRemoteRecords, function(err, conflicts) {
+
+                                    if (err) { return callback.onFailure(err); }
+
+                                    root.logger('Checking for conflicts... found ' + conflicts.length + '.');
+
+                                    if (conflicts.length > 0) {
+
+                                        root.logger('Conflicts detected. Deferring to .onConflict.');
+
+                                        callback.onConflict(root, conflicts, function(isContinue) {
+
+                                            if (!isContinue) {
+
+                                                root.logger('.onConflict returned false. Cancelling sync.');
+                                                return callback.onFailure(new Error('Sync cancelled. Conflict callback returned false.'));
+
+                                            } else {
+
+                                                // Update remote records or we will just hit another sync conflict next go around.
+
+                                                root._synchronizePushRemote(sessionToken, syncCount, function(){
+                                                    return root.synchronize(callback, --retry);
+                                                });
+
+                                            }
+
+                                        });
+
+                                    } else {
+
+                                        // No conflicts, update local records.
+                                        root.logger('No conflicts. Updating local records.');
+
+                                        root.local.putRecords(root.getIdentityId(), root.datasetName, updatedRemoteRecords, function(err) {
+
+                                            if (err) { return callback.onFailure(err); }
+
+                                            // Update the local sync count to match.
+
+                                            root.local.updateLastSyncCount(root.getIdentityId(), root.datasetName, lastSyncCount, function(err) {
+
+                                                if (err) { return callback.onFailure(err); }
+
+                                                root.logger('Finished resolving records. Restarting sync.');
+
+                                                // Callback returned true, starting sync.
+                                                return root.synchronize(callback, --retry);
+
+                                            });
+                                        });
+
+                                    }
+
+                                });
+
+
+                            } else {
+
+                                // Nothing updated remotely. Push local changes to remote.
+                                root.logger('Nothing updated remotely. Pushing local changes to remote.');
+
+                                root._synchronizePushRemote(sessionToken, lastSyncCount, function(err) {
+
+                                    if (err) {
+                                        root.logger('Remote push failed. Likely concurrent sync conflict. Retrying...');
+                                        return root.synchronize(callback, --retry);
+                                    }
+
+                                    root.logger('Sync successful.');
+                                    return callback.onSuccess(root, updatedRemoteRecords);
+
+                                });
+
+                            }
+                        });
+
+                    }
+
+                });
+
+            }
+
+        });
+    };
+
+    /**
+     * An internal function for helping the synchronization call to resolve local conflicts.
+     * @param remoteRecords
+     * @param callback
+     * @private
+     */
+
+    CognitoSyncDataset.prototype._synchronizeResolveLocal = function(remoteRecords, callback) {
+
+        // Step two of the synchronization flow.
+        // The dataset exists remotely so we need to determine if there are any deletions or conflicts.
+        // Once everything is resolved, we update the local records.
+
+        var root = this;
+        var conflicts = [];
+
+        // Make sure there are remote records that need resolving.
+
+        if (remoteRecords && remoteRecords.length > 0) {
+
+            // Get the local records so we can compare them to the remote records.
+
+            root.local.getRecords(root.getIdentityId(), root.datasetName, function(err, localRecords) {
+
+                var localMap = {};
+                var i, key, local;
+
+                // Build a map of the local records array for easier key lookup.
+
+                for (i=0; i<localRecords.length; i++) {
+                    localMap[localRecords[i].getKey()] = localRecords[i];
+                }
+
+                // Compare local and remote records.
+
+                for (i=0; i<remoteRecords.length; i++) {
+
+                    key = remoteRecords[i].getKey();
+                    local = localMap[key];
+
+                    if (local && local.isModified() && local.getValue() !== remoteRecords[i].getValue()) {
+                        conflicts.push(new AWS.CognitoSyncManager.Conflict(remoteRecords[i], local));
+                    }
+
+                }
+
+                return callback(null, conflicts);
+
+            });
+
+        } else {
+
+            // There are no remote records. Nothing to resolve.
+            return callback(null, conflicts);
+
+        }
+
+    };
+
+    /**
+     * An internal function for helping the synchronization call to push changes to the server.
+     * @param sessionToken
+     * @param syncCount
+     * @param callback
+     * @private
+     */
+
+    CognitoSyncDataset.prototype._synchronizePushRemote = function(sessionToken, syncCount, callback) {
+
+        // Step three of the synchronization flow.
+        // The local dataset has modifications so we need to push the local changes to remote.
+        // Then we need to update the local metadata and update/verify the sync count.
+
+        var root = this;
+
+        // Push changes to remote.
+
+        this.getModifiedRecords(function(err, localChanges) {
+
+            if (localChanges.length > 0) {
+
+                root.remote.putRecords(root.datasetName, localChanges, sessionToken, function(err, records) {
+
+                    if (err) { callback(err); }
+
+                    // Update local metadata.
+                    root.local.putRecords(root.getIdentityId(), root.datasetName, records, function(err) {
+
+                        if (err) { return callback(err); }
+
+                        var newSyncCount = 0;
+
+                        // Calculate new sync count.
+
+                        for (var r in records) {
+                            if (records.hasOwnProperty(r)) {
+                                newSyncCount = newSyncCount < records[r].getSyncCount() ? records[r].getSyncCount() : newSyncCount;
+                            }
+                        }
+
+                        root.local.updateLastSyncCount(root.getIdentityId(), root.datasetName, newSyncCount, function(err) {
+                            if (err) { return callback(err); }
+                            return callback(null, true);
+                        });
+
+                    });
+
+                });
+
+            } else {
+
+                // Nothing to change.
+                return callback(null, true);
+
+            }
+
+        });
+
+    };
+
+    return CognitoSyncDataset;
+
+})();
+
+
+/***/ }),
+/* 252 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
+ * Constructs a new CognitoSyncDatasetMetadata object.
+ * @param metadata the serialized metadata
+ * @constructor
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.DatasetMetadata = (function(){
+
+    var CognitoSyncDatasetMetadata = function(metadata) {
+
+        metadata = metadata || {};
+
+        // Assign object.
+        this.datasetName = metadata.DatasetName || '';
+        this.creationDate = new Date(metadata.CreationDate) || new Date();
+        this.lastModifiedDate = new Date(metadata.LastModifiedDate) || new Date();
+        this.lastModifiedBy = metadata.LastModifiedBy || '';
+        this.dataStorage = metadata.DataStorage || 0;
+        this.recordCount = metadata.NumRecords || 0;
+
+        // Meta metadata.
+        this.lastSyncCount = metadata.LastSyncCount || 0;
+        this.lastSyncDate = metadata.LastSyncDate ? new Date(metadata.LastSyncDate) : new Date();
+
+        // Validate object.
+        if (this.dataStorage < 0) { throw new RangeError('Storage size cannot be negative.'); }
+        if (this.recordCount < 0) { throw new RangeError('Record count cannot be negative.'); }
+
+    };
+
+    /**
+     * Get the dataset name.
+     * @returns {string} the dataset's name.
+     */
+
+    CognitoSyncDatasetMetadata.prototype.getDatasetName = function() {
+        return this.datasetName;
+    };
+
+    /**
+     * Sets the dataset name.
+     * @param {string} datasetName the name of the dataset
+     * @returns {CognitoSyncDatasetMetadata} the dataset object
+     */
+
+    CognitoSyncDatasetMetadata.prototype.setDatasetName = function(datasetName) {
+        this.datasetName = datasetName;
+        return this;
+    };
+
+    /**
+     * Get the dataset's creation date.
+     * @returns {Date} the creation date
+     */
+
+    CognitoSyncDatasetMetadata.prototype.getCreationDate = function() {
+        return this.creationDate;
+    };
+
+    /**
+     * Sets the dataset creation date.
+     * @param {Date} creationDate
+     * @returns {CognitoSyncDatasetMetadata}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.setCreationDate = function(creationDate) {
+        this.creationDate = new Date(creationDate);
+        return this;
+    };
+
+    /**
+     * Gets the dataset last modified date.
+     * @returns {Date}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.getLastModifiedDate = function() {
+        return this.lastModifiedDate;
+    };
+
+    /**
+     * Sets the dataset last modified date.
+     * @param modifiedDate
+     * @returns {CognitoSyncDatasetMetadata}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.setLastModifiedDate = function(modifiedDate) {
+        this.lastModifiedDate = new Date(modifiedDate);
+        return this;
+    };
+
+    /**
+     * Returns the user/device who last modified the dataset.
+     * @returns {String}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.getLastModifiedBy = function() {
+        return this.lastModifiedBy;
+    };
+
+    /**
+     * Sets the user/device who last modified the dataset.
+     * @param {String} modifiedBy
+     * @returns {CognitoSyncDatasetMetadata}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.setLastModifiedBy = function(modifiedBy) {
+        this.lastModifiedBy = modifiedBy;
+        return this;
+    };
+
+    /**
+     * Gets the data storage size.
+     * @returns {number}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.getDataStorage = function() {
+        return this.dataStorage;
+    };
+
+    /**
+     * Sets the data storage size.
+     * @param {Number} storageSize
+     * @returns {CognitoSyncDatasetMetadata}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.setDataStorage = function(storageSize) {
+        this.dataStorage = storageSize;
+        return this;
+    };
+
+    /**
+     * Gets the record count.
+     * @returns {number}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.getRecordCount = function() {
+        return this.recordCount;
+    };
+
+    /**
+     * Sets the record count.
+     * @param {Number} recordCount
+     * @returns {CognitoSyncDatasetMetadata}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.setRecordCount = function(recordCount) {
+        this.recordCount = recordCount;
+        return this;
+    };
+
+    /**
+     * Gets the last sync count.
+     * @returns {number}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.getLastSyncCount = function() {
+        return this.lastSyncCount;
+    };
+
+    /**
+     * Sets the last sync count.
+     * @param {Number} syncCount
+     * @returns {CognitoSyncDatasetMetadata}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.setLastSyncCount = function(syncCount) {
+        this.lastSyncCount = syncCount;
+        return this;
+    };
+
+    /**
+     * Gets the last sync date.
+     * @returns {Date}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.getLastSyncDate = function() {
+        return this.lastSyncDate;
+    };
+
+    /**
+     * Sets the last sync date.
+     * @param {Date} syncDate
+     * @returns {CognitoSyncDatasetMetadata}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.setLastSyncDate = function(syncDate) {
+        this.lastSyncDate = syncDate;
+        return this;
+    };
+
+    /**
+     * Returns a JSON string of the metadata object.
+     * @returns {String}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.toString = function() {
+        return JSON.stringify(this.toJSON());
+    };
+
+    /**
+     * Returns a flat object representing the metadata.
+     * @returns {Object}
+     */
+
+    CognitoSyncDatasetMetadata.prototype.toJSON = function() {
+        return {
+            DatasetName: this.datasetName,
+            CreationDate: this.creationDate,
+            LastModifiedDate: this.lastModifiedDate,
+            LastModifiedBy: this.lastModifiedBy,
+            DataStorage: this.dataStorage,
+            NumRecords: this.recordCount,
+            LastSyncCount: this.lastSyncCount,
+            LastSyncDate: this.lastSyncDate
+        };
+    };
+
+    return CognitoSyncDatasetMetadata;
+
+})();
+
+
+/***/ }),
+/* 253 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.DatasetUpdates = (function() {
+
+    /**
+     * Constructs a new dataset update class.
+     * @param datasetName
+     * @constructor
+     */
+
+    var CognitoSyncDatasetUpdates = function (datasetName) {
+
+        this.datasetName = datasetName;
+        this.records = [];
+        this.syncCount = 0;
+        this.syncSessionToken = '';
+        this.exists = true;
+        this.deleted = false;
+        this.mergedDatasetNameList = [];
+
+    };
+
+    CognitoSyncDatasetUpdates.prototype.getDatasetName = function () {
+        return this.datasetName;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.setDatasetName = function (datasetName) {
+        this.datasetName = datasetName;
+        return this;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.getRecords = function () {
+        return this.records;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.addRecord = function (record) {
+        this.records.push(record);
+        return this;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.getSyncCount = function () {
+        return this.syncCount;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.setSyncCount = function (syncCount) {
+        this.syncCount = syncCount;
+        return this;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.getSyncSessionToken = function () {
+        return this.syncSessionToken;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.setSyncSessionToken = function (syncToken) {
+        this.syncSessionToken = syncToken;
+        return this;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.isExists = function () {
+        return this.exists;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.setExists = function (exists) {
+        this.exists = exists;
+        return this;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.isDeleted = function () {
+        return this.deleted;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.setDeleted = function (deleted) {
+        this.deleted = deleted;
+        return this;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.getMergedDatasetNameList = function () {
+        return this.mergedDatasetNameList;
+    };
+
+    CognitoSyncDatasetUpdates.prototype.setMergedDatasetNameList = function (mergedList) {
+        this.mergedDatasetNameList = mergedList;
+        return this;
+    };
+
+    return CognitoSyncDatasetUpdates;
+
+})();
+
+
+/***/ }),
+/* 254 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.LocalStorage = (function() {
+
+    /**
+     * Constructs a new local storage class.
+     * @param options
+     * @constructor
+     */
+
+    var CognitoSyncLocalStorage = function (options) {
+
+        options = options || {};
+
+        this.store = null;
+        this.meta = null;
+
+        // Choose a data store
+        if (options.DataStore) { this.store = new options.DataStore(); }
+        else { this.store = new AWS.CognitoSyncManager.StoreInMemory(); }
+
+    };
+
+    /**
+     * Returns the string used to store dataset metadata.
+     * @param identityId
+     * @param datasetName
+     * @returns {string}
+     */
+
+    CognitoSyncLocalStorage.prototype.getMetadataKey = function (identityId, datasetName) {
+        return identityId + '.' + datasetName;
+    };
+
+    /**
+     * Load the metadata cache from the local store.
+     * @param identityId
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.loadMetadataCache = function (identityId, callback) {
+
+        var root = this;
+
+        this.store.get('_internal', '_metadata', identityId, function (err, data) {
+
+            if (err) {
+                return callback(err, null);
+            }
+            if (!data) {
+                data = {};
+            }
+
+            root.meta = data;
+            callback(null, data);
+
+        });
+
+    };
+
+    /**
+     * Save the metadata cache to the local store.
+     * @param identityId
+     * @param metadata
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.saveMetadataCache = function (identityId, metadata, callback) {
+        this.store.set('_internal', '_metadata', identityId, metadata, function (err) {
+            if (err) {
+                return callback(err);
+            }
+            return callback(null, metadata);
+        });
+    };
+
+    /**
+     * Creates a new dataset.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     * @returns {CognitoSyncLocalStorage}
+     */
+
+    CognitoSyncLocalStorage.prototype.createDataset = function (identityId, datasetName, callback) {
+
+        var root = this;
+
+        this.getDatasetMetadata(identityId, datasetName, function (err, metadata) {
+
+            var stamp = new Date().getTime();
+
+            if (!metadata) {
+
+                metadata = new AWS.CognitoSyncManager.DatasetMetadata({
+                    DatasetName: datasetName,
+                    CreationDate: stamp,
+                    LastModifiedDate: stamp
+                });
+
+                root.setDatasetMetadata(identityId, datasetName, metadata, function (err, data) {
+                    // No-op. Silent update.
+                });
+
+                callback(null, datasetName);
+
+            } else {
+                callback(null, datasetName);
+            }
+
+        });
+
+        return this;
+
+    };
+
+    /**
+     * Returns the dataset metadata.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     * @returns {CognitoSyncLocalStorage}
+     */
+
+    CognitoSyncLocalStorage.prototype.getDatasetMetadata = function (identityId, datasetName, callback) {
+
+        var key = this.getMetadataKey(identityId, datasetName);
+
+        if (this.meta !== null) {
+
+            // Meta data is already loaded. Look it up and return.
+            if (this.meta[key]) {
+                callback(null, new AWS.CognitoSyncManager.DatasetMetadata(this.meta[key]));
+            }
+            else {
+                callback(null, undefined);
+            }
+
+        } else {
+
+            // Load metadata from cache.
+            this.loadMetadataCache(identityId, function (err, cache) {
+                if (cache[key]) {
+                    callback(null, new AWS.CognitoSyncManager.DatasetMetadata(cache[key]));
+                }
+                else {
+                    callback(null, undefined);
+                }
+            });
+
+        }
+
+        return this;
+
+    };
+
+    /**
+     * Sets a dataset's metadata.
+     * @param identityId
+     * @param datasetName
+     * @param metadata
+     * @param callback
+     * @returns {CognitoSyncLocalStorage}
+     */
+
+    CognitoSyncLocalStorage.prototype.setDatasetMetadata = function (identityId, datasetName, metadata, callback) {
+
+        // Write metadata.
+        this.meta[this.getMetadataKey(identityId, datasetName)] = metadata.toJSON();
+
+        // Save metadata.
+        this.saveMetadataCache(identityId, this.meta, callback);
+
+        return this;
+
+    };
+
+
+    /**
+     * Returns a record's value from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param key
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.getValue = function (identityId, datasetName, key, callback) {
+
+        this.getRecord(identityId, datasetName, key, function (err, record) {
+
+            if (!record) {
+                return callback(null, undefined);
+            }
+
+            return callback(null, record.getValue());
+
+        });
+
+    };
+
+    /**
+     * Sets a record's value from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param key
+     * @param value
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.putValue = function (identityId, datasetName, key, value, callback) {
+
+        var root = this;
+
+        this.getRecord(identityId, datasetName, key, function (err, record) {
+
+
+            if (record && record.getValue() == value) {
+                // Record hasn't changed. All done.
+                return callback(null, record);
+            }
+
+            // If record doesn't exist, create a new instance.
+            if (!record) {
+                record = new AWS.CognitoSyncManager.Record();
+            }
+
+            // Update the record with the new properties.
+            record.setKey(key)
+                .setValue(value)
+                .setModified(true)
+                .setSyncCount(record ? record.getSyncCount() : 0)
+                .setDeviceLastModifiedDate(new Date());
+
+            root.store.set(identityId, datasetName, key, record.toJSON(), function (err) {
+
+                if (err) {
+                    return callback(err);
+                }
+
+                root.updateLastModifiedTimestamp(identityId, datasetName, function (err) {
+                    return callback(err, record);
+                });
+
+            });
+
+        });
+
+    };
+
+    /**
+     * Returns a map of values for a dataset from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.getValueMap = function (identityId, datasetName, callback) {
+
+        var values = {};
+        var record;
+
+        this.getRecords(identityId, datasetName, function (err, records) {
+
+            for (var r in records) {
+                if (records.hasOwnProperty(r)) {
+                    record = records[r];
+                    if (!record.isDeleted()) {
+                        values[record.getKey()] = record.getValue();
+                    }
+                }
+            }
+
+            callback(null, values);
+
+        });
+
+    };
+
+    /**
+     * Sets multiple records in a dataset in the local store.
+     * @param identityId
+     * @param datasetName
+     * @param values
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.putAllValues = function (identityId, datasetName, values, callback) {
+
+        var root = this;
+
+        var remain = [];
+
+        // Build a list of each value to put.
+
+        for (var v in values) {
+            if (values.hasOwnProperty(v)) {
+                remain.push(v);
+            }
+        }
+
+        var request = function (err) {
+
+            var item;
+
+            if (err) {
+                return callback(err);
+            }
+
+            if (remain.length > 0) {
+
+                // Put each item in the request.
+                item = remain.shift();
+                root.putValue(identityId, datasetName, item, values[item], request);
+
+            } else {
+
+                // Nothing else to update. Break the loop.
+                callback(null, true);
+
+            }
+
+        };
+
+        request(null, null);
+
+    };
+
+    /**
+     * Returns a list of datasets in the local store.
+     * @param identityId
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.getDatasets = function (identityId, callback) {
+
+        var datasets = [];
+
+        if (this.meta !== null) {
+
+            for (var m in this.meta) {
+                if (this.meta.hasOwnProperty(m)) {
+                    datasets.push(new AWS.CognitoSyncManager.DatasetMetadata(this.meta[m]));
+                }
+            }
+
+            return callback(null, datasets);
+
+        } else {
+
+            // Meta data is not loaded. Load it.
+            this.loadMetadataCache(identityId, function (err, metadata) {
+
+                for (var m in metadata) {
+                    if (metadata.hasOwnProperty(m)) {
+                        datasets.push(new AWS.CognitoSyncManager.DatasetMetadata(metadata[m]));
+                    }
+                }
+
+                return callback(null, datasets);
+
+            });
+
+        }
+
+    };
+
+    /**
+     * Updates dataset metadata and saves to the cache.
+     * @param identityId
+     * @param metadata
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.updateDatasetMetadata = function (identityId, metadata, callback) {
+
+        var root = this;
+
+        this.getDatasetMetadata(identityId, metadata.getDatasetName(), function (err, local) {
+
+            if (err) { callback(err); }
+
+            if (!local) { local = new AWS.CognitoSyncManager.DatasetMetadata(); }
+
+            local.setDatasetName(metadata.getDatasetName())
+                .setCreationDate(metadata.getCreationDate())
+                .setLastModifiedDate(metadata.getLastModifiedDate())
+                .setLastModifiedBy(metadata.getLastModifiedBy())
+                .setLastSyncCount(metadata.getLastSyncCount())
+                .setRecordCount(metadata.getRecordCount())
+                .setDataStorage(metadata.getDataStorage());
+
+            // Save the updated metadata to the in-memory store.
+
+            root.meta[root.getMetadataKey(identityId, metadata.getDatasetName())] = local.toJSON();
+
+            // Save the updated metadata to the on-disk store.
+
+            root.saveMetadataCache(identityId, root.meta, function (err) {
+                if (err) { return callback(err); }
+                return callback(null, local);
+            });
+
+        });
+
+    };
+
+    /**
+     * Returns a record from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param key
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.getRecord = function (identityId, datasetName, key, callback) {
+        this.store.get(identityId, datasetName, key, function (err, record) {
+            if (record) { return callback(null, new AWS.CognitoSyncManager.Record(record)); }
+            return callback(new Error('Key doesn\'t exist.'), null);
+        });
+    };
+
+    /**
+     * Returns all records from a dataset in the local store.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.getRecords = function (identityId, datasetName, callback) {
+
+        var records = [];
+
+        this.store.getAll(identityId, datasetName, function (err, local) {
+
+            for (var l in local) {
+                if (local.hasOwnProperty(l)) {
+                    records.push(new AWS.CognitoSyncManager.Record(local[l]));
+                }
+            }
+
+            callback(null, records);
+
+        });
+
+    };
+
+    /**
+     * Puts multiple records into a dataset in the local store.
+     * @param identityId
+     * @param datasetName
+     * @param records
+     * @param callback
+     * @returns {CognitoSyncLocalStorage}
+     */
+
+    CognitoSyncLocalStorage.prototype.putRecords = function (identityId, datasetName, records, callback) {
+
+        var root = this;
+        records = records || [];
+        records = records.slice();
+
+        var request = function () {
+
+            if (records.length > 0) {
+
+                root.updateAndClearRecord(identityId, datasetName, records.shift(), function (err) {
+
+                    if (err) { return callback(err); }
+                    if (records.length === 0) { return callback(null, true); }
+
+                    request();
+
+                });
+
+            }
+
+        };
+
+        request();
+
+    };
+
+    /**
+     * Deletes a dataset from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.deleteDataset = function (identityId, datasetName, callback) {
+
+        var root = this;
+
+        // Delete the records.
+
+        this.store.removeAll(identityId, datasetName, function (err) {
+
+            if (err) { return callback(err); }
+
+            // Update dataset metadata.
+
+            root.getDatasetMetadata(identityId, datasetName, function (err, metadata) {
+
+                if (err) { return callback(err); }
+
+                metadata.setLastModifiedDate(new Date());
+                metadata.setLastSyncCount(-1);
+
+                root.updateDatasetMetadata(identityId, metadata, function (err) {
+                    if (err) { return callback(err); }
+                    return callback(null, true);
+                });
+
+            });
+
+        });
+
+    };
+
+    /**
+     * Removes dataset from local storage. Does not remove dataset from remote storage.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.purgeDataset = function (identityId, datasetName, callback) {
+
+        var root = this;
+
+        // Delete records.
+        this.deleteDataset(identityId, datasetName, function (err) {
+
+            if (err) { callback(err); }
+
+            // Delete metadata.
+            delete(root.meta[root.getMetadataKey(identityId, datasetName)]);
+
+            // Save metadata.
+            root.saveMetadataCache(identityId, root.meta, callback);
+
+        });
+
+    };
+
+    /**
+     * Returns the last sync count for a dataset in the local store.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.getLastSyncCount = function (identityId, datasetName, callback) {
+
+        this.getDatasetMetadata(identityId, datasetName, function (err, metadata) {
+
+            if (metadata) { return callback(null, metadata.getLastSyncCount()); }
+
+            callback(new Error('Dataset doesn\'t exist.'), null);
+
+        });
+
+    };
+
+    /**
+     * Returns the modified records in a dataset from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.getModifiedRecords = function (identityId, datasetName, callback) {
+
+        var modified = [];
+
+        this.getRecords(identityId, datasetName, function (err, records) {
+
+            for (var i = 0; i < records.length; i++) {
+
+                if (records[i].isModified()) {
+                    modified.push(records[i]);
+                }
+
+            }
+
+            callback(null, modified);
+
+        });
+
+    };
+
+    /**
+     * Updates the last sync count for a dataset in the local store.
+     * @param identityId
+     * @param datasetName
+     * @param lastSyncCount
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.updateLastSyncCount = function (identityId, datasetName, lastSyncCount, callback) {
+
+        var root = this;
+
+        this.getDatasetMetadata(identityId, datasetName, function (err, meta) {
+
+            if (err) {
+                callback(err);
+            }
+
+            meta.setLastSyncCount(lastSyncCount).setLastSyncDate(new Date());
+
+            root.updateDatasetMetadata(identityId, meta, function (err) {
+                if (err) {
+                    callback(err);
+                }
+                callback(null, true);
+            });
+
+        });
+
+    };
+
+    /**
+     * Removes all data from the local store.
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.wipeData = function (callback) {
+        this.store.wipe(callback);
+    };
+
+    /**
+     * Modifies the date a dataset was last modified in the local store.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.updateLastModifiedTimestamp = function (identityId, datasetName, callback) {
+
+        var root = this;
+
+        this.getDatasetMetadata(identityId, datasetName, function (err, meta) {
+
+            if (err) {
+                return callback(err);
+            }
+
+            meta.setLastModifiedDate(new Date());
+
+            root.updateDatasetMetadata(identityId, meta, function (err) {
+                if (err) {
+                    return callback(err);
+                }
+                return callback(null, true);
+            });
+
+        });
+
+    };
+
+    /**
+     * Removes a record from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param record
+     */
+
+    CognitoSyncLocalStorage.prototype.removeRecord = function (identityId, datasetName, record) {
+        this.store.remove(identityId, datasetName, record, function (err) {
+            if (err) { return callback(err); }
+            return callback(null, true);
+        });
+    };
+
+    /**
+     * Saves a record to the local store.
+     * @param identityId
+     * @param datasetName
+     * @param record
+     * @param callback
+     */
+
+    CognitoSyncLocalStorage.prototype.updateAndClearRecord = function (identityId, datasetName, record, callback) {
+        this.store.set(identityId, datasetName, record.getKey(), record.toJSON(), function (err) {
+            if (err) { return callback(err); }
+            return callback(null, true);
+        });
+    };
+
+    return CognitoSyncLocalStorage;
+
+})();
+
+
+/***/ }),
+/* 255 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+if (AWS === undefined) {
+    throw new Error("AWS SDK must be loaded before loading the Sync Manager.");
+} else {
+
+    /**
+     * Constructs a new Cognito Sync Manager class.
+     * @constructor
+     */
+
+
+    AWS.CognitoSyncManager = function (options) {
+
+        options = options || {};
+
+        var USER_AGENT = 'CognitoJavaScriptSDK/1';
+
+        this.provider = AWS.config.credentials;
+        this.identityPoolId = this.provider.params.IdentityPoolId;
+        this.region = AWS.config.region;
+
+        // Hook to set identityId from cache if it's null in AWS credentials
+        if (!this.provider.identityId && this.provider.params.IdentityId) {
+            this.provider.identityId = this.provider.params.IdentityId;
+        }
+
+        // Setup logger.
+        this.logger = options.log;
+        if (typeof this.logger !== 'function') {
+            this.logger = function () {
+            };
+        }
+
+        // Initialize local store.
+        this.local = new AWS.CognitoSyncManager.LocalStorage({DataStore: options.DataStore ? options.DataStore : AWS.CognitoSyncManager.StoreLocalStorage});
+
+        // Initialize remote store.
+        this.remote = new AWS.CognitoSyncManager.RemoteStorage(this.identityPoolId, this.provider);
+        this.remote.setUserAgent(USER_AGENT);
+
+    };
+
+    /**
+     * Returns a dataset object, creating it if it doesn't already exist.
+     * @param {string} datasetName
+     * @param {function} callback
+     */
+
+    AWS.CognitoSyncManager.prototype.openOrCreateDataset = function (datasetName, callback) {
+
+        var root = this;
+        var namePattern = new RegExp('^[a-zA-Z0-9_.:-]{1,128}$');
+
+        // Validate the proposed dataset name.
+
+        if (namePattern.test(datasetName)) {
+
+            this.local.createDataset(this.getIdentityId(), datasetName, function (err, data) {
+                if (err) {
+                    return callback(err, null);
+                }
+                callback(null, new AWS.CognitoSyncManager.Dataset(data, root.provider, root.local, root.remote, root.logger));
+            });
+
+        } else {
+
+            callback(new Error('Dataset name must match the pattern ' + namePattern.toString()));
+
+        }
+
+    };
+
+    /**
+     * Returns a list of datasets.
+     * @param {function} callback
+     */
+
+    AWS.CognitoSyncManager.prototype.listDatasets = function (callback) {
+        this.local.getDatasets(this.getIdentityId(), callback);
+    };
+
+    /**
+     * Replaces the local dataset metadata with the latest remote metadata.
+     * @param callback
+     */
+
+    AWS.CognitoSyncManager.prototype.refreshDatasetMetadata = function (callback) {
+
+        var root = this;
+
+        this.remote.getDatasets(function (err, datasets) {
+
+            var metadata = [];
+
+            var request = function (ds) {
+                root.local.updateDatasetMetadata(root.getIdentityId(), ds, response);
+            };
+
+            var response = function (err, md) {
+                metadata.push(md);
+                if (datasets.length > 0) {
+                    request(datasets.shift());
+                }
+                else {
+                    callback(null, metadata);
+                }
+            };
+
+            if (datasets.length > 0) {
+                request(datasets.shift(), callback);
+            } else {
+                callback(null, []);
+            }
+
+        });
+    };
+
+    /**
+     * Removes the local storage and invalidates the cached identity id.
+     */
+
+    AWS.CognitoSyncManager.prototype.wipeData = function () {
+        this.provider.clearCachedId();
+        this.local.wipeData();
+    };
+
+    /**
+     * Returns the cached identity id.
+     * @returns {string}
+     */
+
+    AWS.CognitoSyncManager.prototype.getIdentityId = function () {
+        return this.provider.identityId;
+    };
+
+}
+
+/***/ }),
+/* 256 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.Record = (function() {
+
+    /**
+     * Constructs a new remote storage class.
+     * @param {Object} data
+     * @param {string} data.Key - The record's key
+     * @param {string} data.Value - The record's key
+     * @param {number} data.SyncCount
+     * @param {Date} data.LastModifiedDate
+     * @param {string} data.LastModifiedBy
+     * @param {Date} data.DeviceLastModifiedDate
+     * @param {boolean} data.Modified
+     * @constructor
+     */
+
+    var CognitoSyncRecord = function (data) {
+
+        data = data || {};
+
+        // Assign object
+        this.key = data.Key || '';
+        this.value = data.Value || '';
+        this.syncCount = data.SyncCount || 0;
+        this.lastModifiedDate = data.LastModifiedDate ? new Date(data.LastModifiedDate) : new Date();
+        this.lastModifiedBy = data.LastModifiedBy || '';
+        this.deviceLastModifiedDate = data.DeviceLastModifiedDate ? new Date(data.DeviceLastModifiedDate) : new Date();
+        this.modified = data.Modified || false;
+
+    };
+
+    /**
+     * Returns the record's key.
+     * @returns {string}
+     */
+
+    CognitoSyncRecord.prototype.getKey = function () {
+        return this.key;
+    };
+
+    /**
+     * Sets the record's key.
+     * @param key
+     * @returns {CognitoSyncRecord}
+     */
+
+    CognitoSyncRecord.prototype.setKey = function (key) {
+        this.key = key;
+        return this;
+    };
+
+    /**
+     * Returns the record's value.
+     * @returns {string}
+     */
+
+    CognitoSyncRecord.prototype.getValue = function () {
+        return this.value;
+    };
+
+    /**
+     * Sets the record's value.
+     * @param value
+     * @returns {CognitoSyncRecord}
+     */
+
+    CognitoSyncRecord.prototype.setValue = function (value) {
+        this.value = value;
+        return this;
+    };
+
+    /**
+     * Returns the current sync count.
+     * @returns {number}
+     */
+
+    CognitoSyncRecord.prototype.getSyncCount = function () {
+        return this.syncCount;
+    };
+
+    /**
+     * Sets the current sync count.
+     * @param syncCount
+     * @returns {CognitoSyncRecord}
+     */
+
+    CognitoSyncRecord.prototype.setSyncCount = function (syncCount) {
+        this.syncCount = syncCount;
+        return this;
+    };
+
+    /**
+     * Returns the date the record was last modified.
+     * @returns {Date}
+     */
+
+    CognitoSyncRecord.prototype.getLastModifiedDate = function () {
+        return new Date(this.lastModifiedDate);
+    };
+
+    /**
+     * Sets the date the record was last modified.
+     * @param modifiedDate
+     * @returns {CognitoSyncRecord}
+     */
+
+    CognitoSyncRecord.prototype.setLastModifiedDate = function (modifiedDate) {
+        this.lastModifiedDate = new Date(modifiedDate);
+        return this;
+    };
+
+    /**
+     * Returns the user/device who last modified the record.
+     * @returns {string}
+     */
+
+    CognitoSyncRecord.prototype.getLastModifiedBy = function () {
+        return this.lastModifiedBy;
+    };
+
+    /**
+     * Sets the user/device who last modified the record.
+     * @param modifiedBy
+     * @returns {CognitoSyncRecord}
+     */
+
+    CognitoSyncRecord.prototype.setLastModifiedBy = function (modifiedBy) {
+        this.lastModifiedBy = modifiedBy;
+        return this;
+    };
+
+    /**
+     * Returns the date when the record was last modified on the local device.
+     * @returns {Date}
+     */
+
+    CognitoSyncRecord.prototype.getDeviceLastModifiedDate = function () {
+        return new Date(this.deviceLastModifiedDate);
+    };
+
+    /**
+     * Sets the date when the record was last modified on the local device.
+     * @param modifiedDate
+     * @returns {CognitoSyncRecord}
+     */
+
+    CognitoSyncRecord.prototype.setDeviceLastModifiedDate = function (modifiedDate) {
+        this.deviceLastModifiedDate = new Date(modifiedDate);
+        return this;
+    };
+
+    /**
+     * Returns if the record has been modified.
+     * @returns {boolean}
+     */
+
+    CognitoSyncRecord.prototype.isModified = function () {
+        return this.modified;
+    };
+
+    /**
+     * Sets if the record has been modified.
+     * @param modified
+     * @returns {CognitoSyncRecord}
+     */
+
+    CognitoSyncRecord.prototype.setModified = function (modified) {
+        this.modified = modified;
+        return this;
+    };
+
+    /**
+     * Returns if the record has been deleted locally.
+     * @returns {boolean}
+     */
+
+    CognitoSyncRecord.prototype.isDeleted = function () {
+        return this.value === null;
+    };
+
+    /**
+     * Returns a string representation of the record.
+     * @returns {string}
+     */
+
+    CognitoSyncRecord.prototype.toString = function () {
+        return JSON.stringify(this);
+    };
+
+    /**
+     * Returns a flat object representing the record.
+     * @returns {object}
+     */
+
+    CognitoSyncRecord.prototype.toJSON = function () {
+        return {
+            Key: this.key,
+            Value: this.value,
+            SyncCount: this.syncCount,
+            LastModifiedDate: this.lastModifiedDate,
+            LastModifiedBy: this.lastModifiedBy,
+            DeviceLastModifiedDate: this.deviceLastModifiedDate,
+            Modified: this.modified
+        };
+    };
+
+    return CognitoSyncRecord;
+
+})();
+
+
+/***/ }),
+/* 257 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.RemoteStorage = (function() {
+
+    /**
+     * Constructs a new remote storage class.
+     * @param {string} identityPoolId
+     * @param provider
+     * @constructor
+     */
+
+    var CognitoSyncRemoteStorage = function (identityPoolId, provider) {
+
+        this.identityPoolId = identityPoolId;
+        this.provider = provider;
+        this.client = new AWS.CognitoSync();
+
+    };
+
+    CognitoSyncRemoteStorage.prototype.userAgent = '';
+
+    /**
+     * Gets the current identity ID from the AWS credentials provider.
+     * @returns {string}
+     */
+
+    CognitoSyncRemoteStorage.prototype.getIdentityId = function () {
+        return this.provider.identityId;
+    };
+
+    /**
+     * Returns a list of datasets.
+     * @param {function} callback Callback(Error, Datasets)
+     */
+
+    CognitoSyncRemoteStorage.prototype.getDatasets = function (callback) {
+
+        var root = this;
+        var datasets = [];
+        var nextToken = null;
+
+        // Define the request function. Will be called once per page of results.
+
+        var fetch = function (token, cb) {
+            root.client.listDatasets({
+                IdentityId: root.getIdentityId(),
+                IdentityPoolId: root.identityPoolId,
+                MaxResults: 64,
+                NextToken: token
+            }, cb);
+        };
+
+        // Define the response function. Will be called after each request returns.
+
+        var process = function (err, data) {
+
+            var results = data.Datasets || [];
+
+            // Add the new page of results to the list of datasets.
+
+            for (var i = 0; i < results.length; i++) {
+                datasets.push(new AWS.CognitoSyncManager.DatasetMetadata(results[i]));
+            }
+
+            // Get the NextToken. If it exists, fetch the next page of results, otherwise callback.
+
+            nextToken = data.NextToken;
+
+            if (nextToken) {
+                fetch(nextToken, process);
+            }
+            else {
+                callback(null, datasets);
+            }
+
+        };
+
+        // Start the first fetch.
+
+        fetch(nextToken, process);
+
+    };
+
+    /**
+     * Lists all updates on the remote store since the given sync count.
+     * @param {string} datasetName
+     * @param {number} lastSyncCount
+     * @param {function} callback Callback(Error, Updates)
+     */
+
+    CognitoSyncRemoteStorage.prototype.listUpdates = function (datasetName, lastSyncCount, callback) {
+
+        var root = this;
+        var nextToken = null;
+        var updatedRecords = new AWS.CognitoSyncManager.DatasetUpdates(datasetName);
+
+        var request = function (token, cb) {
+            root.client.listRecords({
+                DatasetName: datasetName,
+                IdentityId: root.getIdentityId(),
+                IdentityPoolId: root.identityPoolId,
+                LastSyncCount: lastSyncCount,
+                MaxResults: 1024,
+                NextToken: token
+            }, cb);
+        };
+
+        var response = function (err, data) {
+
+            if (err) { return callback(err); }
+
+            data = data || {};
+
+            var results = data.Records || [], r;
+
+            for (var i = 0; i < results.length; i++) {
+                r = new AWS.CognitoSyncManager.Record(results[i]);
+                r.setModified(false);
+                updatedRecords.addRecord(r);
+            }
+
+            updatedRecords.setSyncSessionToken(data.SyncSessionToken)
+                .setSyncCount(data.DatasetSyncCount)
+                .setExists(data.DatasetExists)
+                .setDeleted(data.DatasetDeletedAfterRequestedSyncCount);
+
+            if (data.MergedDatasetNames) {
+                updatedRecords.setMergedDatasetNameList(data.MergedDatasetNames);
+            }
+
+            nextToken = data.NextToken;
+
+            if (nextToken) {
+                request(nextToken, response);
+            } else {
+                callback(null, updatedRecords);
+            }
+
+        };
+
+
+        request(null, response);
+
+    };
+
+    /**
+     * Write records to the remote data store.
+     * @param {string} datasetName
+     * @param {array} records
+     * @param {string} syncSessionToken
+     * @param {function} callback
+     */
+
+    CognitoSyncRemoteStorage.prototype.putRecords = function (datasetName, records, syncSessionToken, callback) {
+
+        var root = this;
+
+        var patches = [];
+        var record;
+
+        for (var r in records) {
+            if (records.hasOwnProperty(r)) {
+
+                record = records[r];
+
+                patches.push({
+                    Key: record.getKey(),
+                    Op: record.getValue() ? 'replace' : 'remove',
+                    SyncCount: record.getSyncCount(),
+                    DeviceLastModifiedDate: record.getDeviceLastModifiedDate(),
+                    Value: record.getValue()
+                });
+
+            }
+        }
+
+        this.client.updateRecords({
+            DatasetName: datasetName,
+            IdentityId: root.getIdentityId(),
+            IdentityPoolId: root.identityPoolId,
+            SyncSessionToken: syncSessionToken,
+            RecordPatches: patches
+        }, function (err, data) {
+
+            var dsName = typeof datasetName === 'string' ? datasetName : '(invalid dataset name)';
+
+            if (err) {
+                return callback(new Error('Failed to update records in dataset: ' + dsName + ' (' + err.message + ')'), null);
+            }
+
+            var records = [], r;
+
+            for (var i = 0; i < data.Records.length; i++) {
+                r = new AWS.CognitoSyncManager.Record(data.Records[i]);
+                r.setModified(false);
+                records.push(r);
+            }
+
+            return callback(null, records);
+
+        });
+
+    };
+
+    /**
+     * Delete the dataset from the remote data store.
+     * @param {string} datasetName
+     * @param {function} callback Callback(Error, IsSuccessful)
+     */
+
+    CognitoSyncRemoteStorage.prototype.deleteDataset = function (datasetName, callback) {
+
+        this.client.deleteDataset({
+            DatasetName: datasetName,
+            IdentityId: this.getIdentityId(),
+            IdentityPoolId: this.identityPoolId
+        }, function (err, data) {
+
+            if (err) {
+                return callback(new Error('Failed to delete dataset.'), null);
+            }
+
+            return callback(null, data);
+
+        });
+
+    };
+
+    /**
+     * Gets the dataset metdata from the remote data store.
+     * @param {string} datasetName
+     * @param {function} callback Callback(Error, Metadata)
+     */
+
+    CognitoSyncRemoteStorage.prototype.getDatasetMetadata = function (datasetName, callback) {
+
+        this.client.describeDataset({
+            DatasetName: datasetName,
+            IdentityId: this.getIdentityId(),
+            IdentityPoolId: this.identityPoolId
+        }, function (err, data) {
+
+            if (err) {
+                return callback(new Error('Failed to get dataset metadata.'), null);
+            }
+
+            return callback(null, new AWS.CognitoSyncManager.DatasetMetadata(data.Dataset));
+
+        });
+
+    };
+
+    CognitoSyncRemoteStorage.prototype.setUserAgent = function (userAgent) {
+        this.userAgent = userAgent;
+    };
+
+    return CognitoSyncRemoteStorage;
+
+})();
+
+/***/ }),
+/* 258 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.StoreInMemory = (function() {
+
+    /**
+     * Storage adapter for using the browser's memory as the Cognito Sync data cache.
+     * @prop {object} store A reference to an object in memory.
+     * @constructor
+     */
+
+    var CognitoSyncStoreInMemory = function () {
+        this.store = {};
+    };
+
+    /**
+     * Constructs the key by combining the identity ID and the dataset name.
+     * @param identityId
+     * @param datasetName
+     * @returns {string}
+     */
+
+    CognitoSyncStoreInMemory.prototype.makeKey = function (identityId, datasetName) {
+        return identityId + '.' + datasetName;
+    };
+
+    /**
+     * Gets an item from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param key
+     * @param callback
+     */
+
+    CognitoSyncStoreInMemory.prototype.get = function (identityId, datasetName, key, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        if (!identityId || !datasetName) {
+            return callback(new Error('You must provide an identity id and dataset name.'), null);
+        }
+
+        if (this.store[k] && this.store[k][key]) {
+            return callback(null, this.store[k][key]);
+        }
+
+        return callback(null, undefined);
+
+    };
+
+    /**
+     * Gets a dataset from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncStoreInMemory.prototype.getAll = function (identityId, datasetName, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        if (!identityId || !datasetName) {
+            return callback(new Error('You must provide an identity id and dataset name.'), null);
+        }
+
+        return callback(null, this.store[k]);
+
+    };
+
+    /**
+     * Sets a record in the local store.
+     * @param identityId
+     * @param datasetName
+     * @param key
+     * @param value
+     * @param callback
+     */
+
+    CognitoSyncStoreInMemory.prototype.set = function (identityId, datasetName, key, value, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        var entry = this.store[k] || {};
+        entry[key] = value;
+
+        this.store[k] = entry;
+
+        return callback(null, entry);
+
+    };
+
+    /**
+     * Sets an entire dataset in the local store.
+     * @param identityId
+     * @param datasetName
+     * @param obj
+     * @param callback
+     */
+
+    CognitoSyncStoreInMemory.prototype.setAll = function (identityId, datasetName, obj, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+        this.store[k] = obj;
+
+        return callback(null, obj);
+
+    };
+
+    /**
+     * Removes a record from the local store.
+     * @param identityId
+     * @param datasetName
+     * @param key
+     * @param callback
+     */
+
+    CognitoSyncStoreInMemory.prototype.remove = function (identityId, datasetName, key, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        var records = JSON.parse(this.store[k]);
+        if (!records) {
+            records = {};
+        }
+
+        delete(records[key]);
+
+        this.store[k] = JSON.stringify(records);
+
+        return callback(null, true);
+
+    };
+
+    /**
+     * Removes dataset from local store.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncStoreInMemory.prototype.removeAll = function (identityId, datasetName, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+        delete(this.store[k]);
+
+        return callback(null, true);
+
+    };
+
+    /**
+     * Clears the local store, including cached values.
+     * @param callback
+     */
+
+    CognitoSyncStoreInMemory.prototype.wipe = function (callback) {
+        this.store = {};
+        return callback(null, true);
+    };
+
+    return CognitoSyncStoreInMemory;
+
+})();
+
+/***/ }),
+/* 259 */
+/***/ (function(module, exports) {
+
+/**
+ * Copyright 2014 Amazon.com,
+ * Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Amazon Software License (the "License").
+ * You may not use this file except in compliance with the
+ * License. A copy of the License is located at
+ *
+ *     http://aws.amazon.com/asl/
+ *
+ * or in the "license" file accompanying this file. This file is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, express or implied. See the License
+ * for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+AWS = AWS || {};
+AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
+
+AWS.CognitoSyncManager.StoreLocalStorage = (function() {
+
+    /**
+     * Storage adapter for using the browser's local storage as the Cognito Sync data cache.
+     * @prop {window.localStorage} store A reference to the browser's local storage API.
+     * @constructor
+     */
+
+    var CognitoSyncStoreLocalStorage = function () {
+        this.store = this._isAvailable() ? window.localStorage : new AWS.CognitoSyncManager.StoreInMemory();
+    };
+
+    /**
+     * Constructs the key by combining the identity ID and the dataset name.
+     * @param {string} identityId
+     * @param {string} datasetName
+     * @returns {string}
+     */
+
+    CognitoSyncStoreLocalStorage.prototype.makeKey = function (identityId, datasetName) {
+        return identityId + '.' + datasetName;
+    };
+
+    /**
+     * Returns a value from local storage.
+     * @param {string} identityId The identity that owns the dataset.
+     * @param {string} datasetName The name of the dataset.
+     * @param {string} key The key of the record to return.
+     * @param {function} callback
+     */
+
+    CognitoSyncStoreLocalStorage.prototype.get = function (identityId, datasetName, key, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        if (!identityId || !datasetName) {
+            return callback(new Error('You must provide an identity id and dataset name.'), null);
+        }
+
+        var records = JSON.parse(this.store.getItem(k));
+
+        if (records && records[key]) {
+            return callback(null, records[key]);
+        }
+
+        return callback(null, undefined);
+
+    };
+
+    /**
+     * Gets all records from local storage.
+     * @param identityId
+     * @param datasetName
+     * @param callback Callback(Error, Items)
+     */
+
+    CognitoSyncStoreLocalStorage.prototype.getAll = function (identityId, datasetName, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        if (!identityId || !datasetName) {
+            return callback(new Error('You must provide an identity id and dataset name.'), null);
+        }
+
+        return callback(null, JSON.parse(this.store.getItem(k)));
+
+    };
+
+    /**
+     * Sets a value in local storage.
+     * @param identityId
+     * @param datasetName
+     * @param key
+     * @param value
+     * @param callback Callback(Error, Records)
+     */
+
+    CognitoSyncStoreLocalStorage.prototype.set = function (identityId, datasetName, key, value, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        var records = JSON.parse(this.store.getItem(k));
+        if (!records) {
+            records = {};
+        }
+
+        records[key] = value;
+
+        this.store.setItem(k, JSON.stringify(records));
+
+        callback(null, records);
+
+        return this;
+
+    };
+
+    /**
+     * Sets all values of a dataset.
+     * @param identityId
+     * @param datasetName
+     * @param obj
+     * @param callback Callback(Error, Object)
+     */
+
+    CognitoSyncStoreLocalStorage.prototype.setAll = function (identityId, datasetName, obj, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        this.store.setItem(k, JSON.stringify(obj));
+
+        return callback(null, obj);
+
+    };
+
+    /**
+     * Removes an item from local storage.
+     * @param identityId
+     * @param datasetName
+     * @param key
+     * @param callback
+     */
+
+    CognitoSyncStoreLocalStorage.prototype.remove = function (identityId, datasetName, key, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+
+        var records = JSON.parse(this.store.getItem(k));
+        if (!records) {
+            records = {};
+        }
+
+        delete(records[key]);
+
+        this.store.setItem(k, JSON.stringify(records));
+
+        return callback(null, true);
+
+    };
+
+    /**
+     * Removes dataset from local storage.
+     * @param identityId
+     * @param datasetName
+     * @param callback
+     */
+
+    CognitoSyncStoreLocalStorage.prototype.removeAll = function (identityId, datasetName, callback) {
+
+        var k = this.makeKey(identityId, datasetName);
+        this.store.removeItem(k);
+
+        return callback(null, true);
+
+    };
+
+    /**
+     * Clears local storage, including cached values.
+     * @param callback
+     */
+
+    CognitoSyncStoreLocalStorage.prototype.wipe = function (callback) {
+
+        // We don't want to remove the cached identity id. Remove all other keys.
+        // Remove own keys only
+
+        var ownKeysRegExp = /^[\w-]+:[0-9a-f-]+\..+$/;
+
+        for (var prop in this.store) {
+            if (this.store.hasOwnProperty(prop)) {
+                if (ownKeysRegExp.test(prop)) {
+                    this.store.removeItem(prop);
+                }
+            }
+        }
+
+        // exception from ownKeysRegExp
+        this.store.removeItem(this.makeKey('_internal', '_metadata'));
+
+        if (callback) {
+            return callback(null, true);
+        }
+        return this;
+
+    };
+
+    /**
+     * Checks for localStorage availability.
+     */
+
+    CognitoSyncStoreLocalStorage.prototype._isAvailable = function () {
+        var uid = new Date();
+        var result;
+
+        try {
+            window.localStorage.setItem(uid, uid);
+            result = window.localStorage.getItem(uid) == uid;
+            window.localStorage.removeItem(uid);
+        } catch (exception) {
+            result = false;
+        }
+
+        return result;
+    };
+
+    return CognitoSyncStoreLocalStorage;
+
+})();
+
+/***/ }),
+/* 260 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var asn1 = __webpack_require__(43);
+var inherits = __webpack_require__(2);
+
+var api = exports;
+
+api.define = function define(name, body) {
+  return new Entity(name, body);
+};
+
+function Entity(name, body) {
+  this.name = name;
+  this.body = body;
+
+  this.decoders = {};
+  this.encoders = {};
+};
+
+Entity.prototype._createNamed = function createNamed(base) {
+  var named;
+  try {
+    named = __webpack_require__(244).runInThisContext(
+      '(function ' + this.name + '(entity) {\n' +
+      '  this._initNamed(entity);\n' +
+      '})'
+    );
+  } catch (e) {
+    named = function (entity) {
+      this._initNamed(entity);
+    };
+  }
+  inherits(named, base);
+  named.prototype._initNamed = function initnamed(entity) {
+    base.call(this, entity);
+  };
+
+  return new named(this);
+};
+
+Entity.prototype._getDecoder = function _getDecoder(enc) {
+  enc = enc || 'der';
+  // Lazily create decoder
+  if (!this.decoders.hasOwnProperty(enc))
+    this.decoders[enc] = this._createNamed(asn1.decoders[enc]);
+  return this.decoders[enc];
+};
+
+Entity.prototype.decode = function decode(data, enc, options) {
+  return this._getDecoder(enc).decode(data, options);
+};
+
+Entity.prototype._getEncoder = function _getEncoder(enc) {
+  enc = enc || 'der';
+  // Lazily create encoder
+  if (!this.encoders.hasOwnProperty(enc))
+    this.encoders[enc] = this._createNamed(asn1.encoders[enc]);
+  return this.encoders[enc];
+};
+
+Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
+  return this._getEncoder(enc).encode(data, reporter);
+};
+
+
+/***/ }),
+/* 261 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var Reporter = __webpack_require__(44).Reporter;
+var EncoderBuffer = __webpack_require__(44).EncoderBuffer;
+var DecoderBuffer = __webpack_require__(44).DecoderBuffer;
+var assert = __webpack_require__(28);
+
+// Supported tags
+var tags = [
+  'seq', 'seqof', 'set', 'setof', 'objid', 'bool',
+  'gentime', 'utctime', 'null_', 'enum', 'int', 'objDesc',
+  'bitstr', 'bmpstr', 'charstr', 'genstr', 'graphstr', 'ia5str', 'iso646str',
+  'numstr', 'octstr', 'printstr', 't61str', 'unistr', 'utf8str', 'videostr'
+];
+
+// Public methods list
+var methods = [
+  'key', 'obj', 'use', 'optional', 'explicit', 'implicit', 'def', 'choice',
+  'any', 'contains'
+].concat(tags);
+
+// Overrided methods list
+var overrided = [
+  '_peekTag', '_decodeTag', '_use',
+  '_decodeStr', '_decodeObjid', '_decodeTime',
+  '_decodeNull', '_decodeInt', '_decodeBool', '_decodeList',
+
+  '_encodeComposite', '_encodeStr', '_encodeObjid', '_encodeTime',
+  '_encodeNull', '_encodeInt', '_encodeBool'
+];
+
+function Node(enc, parent) {
+  var state = {};
+  this._baseState = state;
+
+  state.enc = enc;
+
+  state.parent = parent || null;
+  state.children = null;
+
+  // State
+  state.tag = null;
+  state.args = null;
+  state.reverseArgs = null;
+  state.choice = null;
+  state.optional = false;
+  state.any = false;
+  state.obj = false;
+  state.use = null;
+  state.useDecoder = null;
+  state.key = null;
+  state['default'] = null;
+  state.explicit = null;
+  state.implicit = null;
+  state.contains = null;
+
+  // Should create new instance on each method
+  if (!state.parent) {
+    state.children = [];
+    this._wrap();
+  }
+}
+module.exports = Node;
+
+var stateProps = [
+  'enc', 'parent', 'children', 'tag', 'args', 'reverseArgs', 'choice',
+  'optional', 'any', 'obj', 'use', 'alteredUse', 'key', 'default', 'explicit',
+  'implicit', 'contains'
+];
+
+Node.prototype.clone = function clone() {
+  var state = this._baseState;
+  var cstate = {};
+  stateProps.forEach(function(prop) {
+    cstate[prop] = state[prop];
+  });
+  var res = new this.constructor(cstate.parent);
+  res._baseState = cstate;
+  return res;
+};
+
+Node.prototype._wrap = function wrap() {
+  var state = this._baseState;
+  methods.forEach(function(method) {
+    this[method] = function _wrappedMethod() {
+      var clone = new this.constructor(this);
+      state.children.push(clone);
+      return clone[method].apply(clone, arguments);
+    };
+  }, this);
+};
+
+Node.prototype._init = function init(body) {
+  var state = this._baseState;
+
+  assert(state.parent === null);
+  body.call(this);
+
+  // Filter children
+  state.children = state.children.filter(function(child) {
+    return child._baseState.parent === this;
+  }, this);
+  assert.equal(state.children.length, 1, 'Root node can have only one child');
+};
+
+Node.prototype._useArgs = function useArgs(args) {
+  var state = this._baseState;
+
+  // Filter children and args
+  var children = args.filter(function(arg) {
+    return arg instanceof this.constructor;
+  }, this);
+  args = args.filter(function(arg) {
+    return !(arg instanceof this.constructor);
+  }, this);
+
+  if (children.length !== 0) {
+    assert(state.children === null);
+    state.children = children;
+
+    // Replace parent to maintain backward link
+    children.forEach(function(child) {
+      child._baseState.parent = this;
+    }, this);
+  }
+  if (args.length !== 0) {
+    assert(state.args === null);
+    state.args = args;
+    state.reverseArgs = args.map(function(arg) {
+      if (typeof arg !== 'object' || arg.constructor !== Object)
+        return arg;
+
+      var res = {};
+      Object.keys(arg).forEach(function(key) {
+        if (key == (key | 0))
+          key |= 0;
+        var value = arg[key];
+        res[value] = key;
+      });
+      return res;
+    });
+  }
+};
+
+//
+// Overrided methods
+//
+
+overrided.forEach(function(method) {
+  Node.prototype[method] = function _overrided() {
+    var state = this._baseState;
+    throw new Error(method + ' not implemented for encoding: ' + state.enc);
+  };
+});
+
+//
+// Public methods
+//
+
+tags.forEach(function(tag) {
+  Node.prototype[tag] = function _tagMethod() {
+    var state = this._baseState;
+    var args = Array.prototype.slice.call(arguments);
+
+    assert(state.tag === null);
+    state.tag = tag;
+
+    this._useArgs(args);
+
+    return this;
+  };
+});
+
+Node.prototype.use = function use(item) {
+  assert(item);
+  var state = this._baseState;
+
+  assert(state.use === null);
+  state.use = item;
+
+  return this;
+};
+
+Node.prototype.optional = function optional() {
+  var state = this._baseState;
+
+  state.optional = true;
+
+  return this;
+};
+
+Node.prototype.def = function def(val) {
+  var state = this._baseState;
+
+  assert(state['default'] === null);
+  state['default'] = val;
+  state.optional = true;
+
+  return this;
+};
+
+Node.prototype.explicit = function explicit(num) {
+  var state = this._baseState;
+
+  assert(state.explicit === null && state.implicit === null);
+  state.explicit = num;
+
+  return this;
+};
+
+Node.prototype.implicit = function implicit(num) {
+  var state = this._baseState;
+
+  assert(state.explicit === null && state.implicit === null);
+  state.implicit = num;
+
+  return this;
+};
+
+Node.prototype.obj = function obj() {
+  var state = this._baseState;
+  var args = Array.prototype.slice.call(arguments);
+
+  state.obj = true;
+
+  if (args.length !== 0)
+    this._useArgs(args);
+
+  return this;
+};
+
+Node.prototype.key = function key(newKey) {
+  var state = this._baseState;
+
+  assert(state.key === null);
+  state.key = newKey;
+
+  return this;
+};
+
+Node.prototype.any = function any() {
+  var state = this._baseState;
+
+  state.any = true;
+
+  return this;
+};
+
+Node.prototype.choice = function choice(obj) {
+  var state = this._baseState;
+
+  assert(state.choice === null);
+  state.choice = obj;
+  this._useArgs(Object.keys(obj).map(function(key) {
+    return obj[key];
+  }));
+
+  return this;
+};
+
+Node.prototype.contains = function contains(item) {
+  var state = this._baseState;
+
+  assert(state.use === null);
+  state.contains = item;
+
+  return this;
+};
+
+//
+// Decoding
+//
+
+Node.prototype._decode = function decode(input, options) {
+  var state = this._baseState;
+
+  // Decode root node
+  if (state.parent === null)
+    return input.wrapResult(state.children[0]._decode(input, options));
+
+  var result = state['default'];
+  var present = true;
+
+  var prevKey = null;
+  if (state.key !== null)
+    prevKey = input.enterKey(state.key);
+
+  // Check if tag is there
+  if (state.optional) {
+    var tag = null;
+    if (state.explicit !== null)
+      tag = state.explicit;
+    else if (state.implicit !== null)
+      tag = state.implicit;
+    else if (state.tag !== null)
+      tag = state.tag;
+
+    if (tag === null && !state.any) {
+      // Trial and Error
+      var save = input.save();
+      try {
+        if (state.choice === null)
+          this._decodeGeneric(state.tag, input, options);
+        else
+          this._decodeChoice(input, options);
+        present = true;
+      } catch (e) {
+        present = false;
+      }
+      input.restore(save);
+    } else {
+      present = this._peekTag(input, tag, state.any);
+
+      if (input.isError(present))
+        return present;
+    }
+  }
+
+  // Push object on stack
+  var prevObj;
+  if (state.obj && present)
+    prevObj = input.enterObject();
+
+  if (present) {
+    // Unwrap explicit values
+    if (state.explicit !== null) {
+      var explicit = this._decodeTag(input, state.explicit);
+      if (input.isError(explicit))
+        return explicit;
+      input = explicit;
+    }
+
+    var start = input.offset;
+
+    // Unwrap implicit and normal values
+    if (state.use === null && state.choice === null) {
+      if (state.any)
+        var save = input.save();
+      var body = this._decodeTag(
+        input,
+        state.implicit !== null ? state.implicit : state.tag,
+        state.any
+      );
+      if (input.isError(body))
+        return body;
+
+      if (state.any)
+        result = input.raw(save);
+      else
+        input = body;
+    }
+
+    if (options && options.track && state.tag !== null)
+      options.track(input.path(), start, input.length, 'tagged');
+
+    if (options && options.track && state.tag !== null)
+      options.track(input.path(), input.offset, input.length, 'content');
+
+    // Select proper method for tag
+    if (state.any)
+      result = result;
+    else if (state.choice === null)
+      result = this._decodeGeneric(state.tag, input, options);
+    else
+      result = this._decodeChoice(input, options);
+
+    if (input.isError(result))
+      return result;
+
+    // Decode children
+    if (!state.any && state.choice === null && state.children !== null) {
+      state.children.forEach(function decodeChildren(child) {
+        // NOTE: We are ignoring errors here, to let parser continue with other
+        // parts of encoded data
+        child._decode(input, options);
+      });
+    }
+
+    // Decode contained/encoded by schema, only in bit or octet strings
+    if (state.contains && (state.tag === 'octstr' || state.tag === 'bitstr')) {
+      var data = new DecoderBuffer(result);
+      result = this._getUse(state.contains, input._reporterState.obj)
+          ._decode(data, options);
+    }
+  }
+
+  // Pop object
+  if (state.obj && present)
+    result = input.leaveObject(prevObj);
+
+  // Set key
+  if (state.key !== null && (result !== null || present === true))
+    input.leaveKey(prevKey, state.key, result);
+  else if (prevKey !== null)
+    input.exitKey(prevKey);
+
+  return result;
+};
+
+Node.prototype._decodeGeneric = function decodeGeneric(tag, input, options) {
+  var state = this._baseState;
+
+  if (tag === 'seq' || tag === 'set')
+    return null;
+  if (tag === 'seqof' || tag === 'setof')
+    return this._decodeList(input, tag, state.args[0], options);
+  else if (/str$/.test(tag))
+    return this._decodeStr(input, tag, options);
+  else if (tag === 'objid' && state.args)
+    return this._decodeObjid(input, state.args[0], state.args[1], options);
+  else if (tag === 'objid')
+    return this._decodeObjid(input, null, null, options);
+  else if (tag === 'gentime' || tag === 'utctime')
+    return this._decodeTime(input, tag, options);
+  else if (tag === 'null_')
+    return this._decodeNull(input, options);
+  else if (tag === 'bool')
+    return this._decodeBool(input, options);
+  else if (tag === 'objDesc')
+    return this._decodeStr(input, tag, options);
+  else if (tag === 'int' || tag === 'enum')
+    return this._decodeInt(input, state.args && state.args[0], options);
+
+  if (state.use !== null) {
+    return this._getUse(state.use, input._reporterState.obj)
+        ._decode(input, options);
+  } else {
+    return input.error('unknown tag: ' + tag);
+  }
+};
+
+Node.prototype._getUse = function _getUse(entity, obj) {
+
+  var state = this._baseState;
+  // Create altered use decoder if implicit is set
+  state.useDecoder = this._use(entity, obj);
+  assert(state.useDecoder._baseState.parent === null);
+  state.useDecoder = state.useDecoder._baseState.children[0];
+  if (state.implicit !== state.useDecoder._baseState.implicit) {
+    state.useDecoder = state.useDecoder.clone();
+    state.useDecoder._baseState.implicit = state.implicit;
+  }
+  return state.useDecoder;
+};
+
+Node.prototype._decodeChoice = function decodeChoice(input, options) {
+  var state = this._baseState;
+  var result = null;
+  var match = false;
+
+  Object.keys(state.choice).some(function(key) {
+    var save = input.save();
+    var node = state.choice[key];
+    try {
+      var value = node._decode(input, options);
+      if (input.isError(value))
+        return false;
+
+      result = { type: key, value: value };
+      match = true;
+    } catch (e) {
+      input.restore(save);
+      return false;
+    }
+    return true;
+  }, this);
+
+  if (!match)
+    return input.error('Choice not matched');
+
+  return result;
+};
+
+//
+// Encoding
+//
+
+Node.prototype._createEncoderBuffer = function createEncoderBuffer(data) {
+  return new EncoderBuffer(data, this.reporter);
+};
+
+Node.prototype._encode = function encode(data, reporter, parent) {
+  var state = this._baseState;
+  if (state['default'] !== null && state['default'] === data)
+    return;
+
+  var result = this._encodeValue(data, reporter, parent);
+  if (result === undefined)
+    return;
+
+  if (this._skipDefault(result, reporter, parent))
+    return;
+
+  return result;
+};
+
+Node.prototype._encodeValue = function encode(data, reporter, parent) {
+  var state = this._baseState;
+
+  // Decode root node
+  if (state.parent === null)
+    return state.children[0]._encode(data, reporter || new Reporter());
+
+  var result = null;
+
+  // Set reporter to share it with a child class
+  this.reporter = reporter;
+
+  // Check if data is there
+  if (state.optional && data === undefined) {
+    if (state['default'] !== null)
+      data = state['default']
+    else
+      return;
+  }
+
+  // Encode children first
+  var content = null;
+  var primitive = false;
+  if (state.any) {
+    // Anything that was given is translated to buffer
+    result = this._createEncoderBuffer(data);
+  } else if (state.choice) {
+    result = this._encodeChoice(data, reporter);
+  } else if (state.contains) {
+    content = this._getUse(state.contains, parent)._encode(data, reporter);
+    primitive = true;
+  } else if (state.children) {
+    content = state.children.map(function(child) {
+      if (child._baseState.tag === 'null_')
+        return child._encode(null, reporter, data);
+
+      if (child._baseState.key === null)
+        return reporter.error('Child should have a key');
+      var prevKey = reporter.enterKey(child._baseState.key);
+
+      if (typeof data !== 'object')
+        return reporter.error('Child expected, but input is not object');
+
+      var res = child._encode(data[child._baseState.key], reporter, data);
+      reporter.leaveKey(prevKey);
+
+      return res;
+    }, this).filter(function(child) {
+      return child;
+    });
+    content = this._createEncoderBuffer(content);
+  } else {
+    if (state.tag === 'seqof' || state.tag === 'setof') {
+      // TODO(indutny): this should be thrown on DSL level
+      if (!(state.args && state.args.length === 1))
+        return reporter.error('Too many args for : ' + state.tag);
+
+      if (!Array.isArray(data))
+        return reporter.error('seqof/setof, but data is not Array');
+
+      var child = this.clone();
+      child._baseState.implicit = null;
+      content = this._createEncoderBuffer(data.map(function(item) {
+        var state = this._baseState;
+
+        return this._getUse(state.args[0], data)._encode(item, reporter);
+      }, child));
+    } else if (state.use !== null) {
+      result = this._getUse(state.use, parent)._encode(data, reporter);
+    } else {
+      content = this._encodePrimitive(state.tag, data);
+      primitive = true;
+    }
+  }
+
+  // Encode data itself
+  var result;
+  if (!state.any && state.choice === null) {
+    var tag = state.implicit !== null ? state.implicit : state.tag;
+    var cls = state.implicit === null ? 'universal' : 'context';
+
+    if (tag === null) {
+      if (state.use === null)
+        reporter.error('Tag could be ommited only for .use()');
+    } else {
+      if (state.use === null)
+        result = this._encodeComposite(tag, primitive, cls, content);
+    }
+  }
+
+  // Wrap in explicit
+  if (state.explicit !== null)
+    result = this._encodeComposite(state.explicit, false, 'context', result);
+
+  return result;
+};
+
+Node.prototype._encodeChoice = function encodeChoice(data, reporter) {
+  var state = this._baseState;
+
+  var node = state.choice[data.type];
+  if (!node) {
+    assert(
+        false,
+        data.type + ' not found in ' +
+            JSON.stringify(Object.keys(state.choice)));
+  }
+  return node._encode(data.value, reporter);
+};
+
+Node.prototype._encodePrimitive = function encodePrimitive(tag, data) {
+  var state = this._baseState;
+
+  if (/str$/.test(tag))
+    return this._encodeStr(data, tag);
+  else if (tag === 'objid' && state.args)
+    return this._encodeObjid(data, state.reverseArgs[0], state.args[1]);
+  else if (tag === 'objid')
+    return this._encodeObjid(data, null, null);
+  else if (tag === 'gentime' || tag === 'utctime')
+    return this._encodeTime(data, tag);
+  else if (tag === 'null_')
+    return this._encodeNull();
+  else if (tag === 'int' || tag === 'enum')
+    return this._encodeInt(data, state.args && state.reverseArgs[0]);
+  else if (tag === 'bool')
+    return this._encodeBool(data);
+  else if (tag === 'objDesc')
+    return this._encodeStr(data, tag);
+  else
+    throw new Error('Unsupported tag: ' + tag);
+};
+
+Node.prototype._isNumstr = function isNumstr(str) {
+  return /^[0-9 ]*$/.test(str);
+};
+
+Node.prototype._isPrintstr = function isPrintstr(str) {
+  return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
+};
+
+
+/***/ }),
+/* 262 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var inherits = __webpack_require__(2);
+
+function Reporter(options) {
+  this._reporterState = {
+    obj: null,
+    path: [],
+    options: options || {},
+    errors: []
+  };
+}
+exports.Reporter = Reporter;
+
+Reporter.prototype.isError = function isError(obj) {
+  return obj instanceof ReporterError;
+};
+
+Reporter.prototype.save = function save() {
+  var state = this._reporterState;
+
+  return { obj: state.obj, pathLen: state.path.length };
+};
+
+Reporter.prototype.restore = function restore(data) {
+  var state = this._reporterState;
+
+  state.obj = data.obj;
+  state.path = state.path.slice(0, data.pathLen);
+};
+
+Reporter.prototype.enterKey = function enterKey(key) {
+  return this._reporterState.path.push(key);
+};
+
+Reporter.prototype.exitKey = function exitKey(index) {
+  var state = this._reporterState;
+
+  state.path = state.path.slice(0, index - 1);
+};
+
+Reporter.prototype.leaveKey = function leaveKey(index, key, value) {
+  var state = this._reporterState;
+
+  this.exitKey(index);
+  if (state.obj !== null)
+    state.obj[key] = value;
+};
+
+Reporter.prototype.path = function path() {
+  return this._reporterState.path.join('/');
+};
+
+Reporter.prototype.enterObject = function enterObject() {
+  var state = this._reporterState;
+
+  var prev = state.obj;
+  state.obj = {};
+  return prev;
+};
+
+Reporter.prototype.leaveObject = function leaveObject(prev) {
+  var state = this._reporterState;
+
+  var now = state.obj;
+  state.obj = prev;
+  return now;
+};
+
+Reporter.prototype.error = function error(msg) {
+  var err;
+  var state = this._reporterState;
+
+  var inherited = msg instanceof ReporterError;
+  if (inherited) {
+    err = msg;
+  } else {
+    err = new ReporterError(state.path.map(function(elem) {
+      return '[' + JSON.stringify(elem) + ']';
+    }).join(''), msg.message || msg, msg.stack);
+  }
+
+  if (!state.options.partial)
+    throw err;
+
+  if (!inherited)
+    state.errors.push(err);
+
+  return err;
+};
+
+Reporter.prototype.wrapResult = function wrapResult(result) {
+  var state = this._reporterState;
+  if (!state.options.partial)
+    return result;
+
+  return {
+    result: this.isError(result) ? null : result,
+    errors: state.errors
+  };
+};
+
+function ReporterError(path, msg) {
+  this.path = path;
+  this.rethrow(msg);
+};
+inherits(ReporterError, Error);
+
+ReporterError.prototype.rethrow = function rethrow(msg) {
+  this.message = msg + ' at: ' + (this.path || '(shallow)');
+  if (Error.captureStackTrace)
+    Error.captureStackTrace(this, ReporterError);
+
+  if (!this.stack) {
+    try {
+      // IE only adds stack when thrown
+      throw new Error(this.message);
+    } catch (e) {
+      this.stack = e.stack;
+    }
+  }
+  return this;
+};
+
+
+/***/ }),
+/* 263 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var constants = __webpack_require__(129);
+
+exports.tagClass = {
+  0: 'universal',
+  1: 'application',
+  2: 'context',
+  3: 'private'
+};
+exports.tagClassByName = constants._reverse(exports.tagClass);
+
+exports.tag = {
+  0x00: 'end',
+  0x01: 'bool',
+  0x02: 'int',
+  0x03: 'bitstr',
+  0x04: 'octstr',
+  0x05: 'null_',
+  0x06: 'objid',
+  0x07: 'objDesc',
+  0x08: 'external',
+  0x09: 'real',
+  0x0a: 'enum',
+  0x0b: 'embed',
+  0x0c: 'utf8str',
+  0x0d: 'relativeOid',
+  0x10: 'seq',
+  0x11: 'set',
+  0x12: 'numstr',
+  0x13: 'printstr',
+  0x14: 't61str',
+  0x15: 'videostr',
+  0x16: 'ia5str',
+  0x17: 'utctime',
+  0x18: 'gentime',
+  0x19: 'graphstr',
+  0x1a: 'iso646str',
+  0x1b: 'genstr',
+  0x1c: 'unistr',
+  0x1d: 'charstr',
+  0x1e: 'bmpstr'
+};
+exports.tagByName = constants._reverse(exports.tag);
+
+
+/***/ }),
+/* 264 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var decoders = exports;
+
+decoders.der = __webpack_require__(130);
+decoders.pem = __webpack_require__(265);
+
+
+/***/ }),
+/* 265 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var inherits = __webpack_require__(2);
+var Buffer = __webpack_require__(0).Buffer;
+
+var DERDecoder = __webpack_require__(130);
+
+function PEMDecoder(entity) {
+  DERDecoder.call(this, entity);
+  this.enc = 'pem';
+};
+inherits(PEMDecoder, DERDecoder);
+module.exports = PEMDecoder;
+
+PEMDecoder.prototype.decode = function decode(data, options) {
+  var lines = data.toString().split(/[\r\n]+/g);
+
+  var label = options.label.toUpperCase();
+
+  var re = /^-----(BEGIN|END) ([^-]+)-----$/;
+  var start = -1;
+  var end = -1;
+  for (var i = 0; i < lines.length; i++) {
+    var match = lines[i].match(re);
+    if (match === null)
+      continue;
+
+    if (match[2] !== label)
+      continue;
+
+    if (start === -1) {
+      if (match[1] !== 'BEGIN')
+        break;
+      start = i;
+    } else {
+      if (match[1] !== 'END')
+        break;
+      end = i;
+      break;
+    }
+  }
+  if (start === -1 || end === -1)
+    throw new Error('PEM section not found for: ' + label);
+
+  var base64 = lines.slice(start + 1, end).join('');
+  // Remove excessive symbols
+  base64.replace(/[^a-z0-9\+\/=]+/gi, '');
+
+  var input = new Buffer(base64, 'base64');
+  return DERDecoder.prototype.decode.call(this, input, options);
+};
+
+
+/***/ }),
+/* 266 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var encoders = exports;
+
+encoders.der = __webpack_require__(131);
+encoders.pem = __webpack_require__(267);
+
+
+/***/ }),
+/* 267 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var inherits = __webpack_require__(2);
+
+var DEREncoder = __webpack_require__(131);
+
+function PEMEncoder(entity) {
+  DEREncoder.call(this, entity);
+  this.enc = 'pem';
+};
+inherits(PEMEncoder, DEREncoder);
+module.exports = PEMEncoder;
+
+PEMEncoder.prototype.encode = function encode(data, options) {
+  var buf = DEREncoder.prototype.encode.call(this, data);
+
+  var p = buf.toString('base64');
+  var out = [ '-----BEGIN ' + options.label + '-----' ];
+  for (var i = 0; i < p.length; i += 64)
+    out.push(p.slice(i, i + 64));
+  out.push('-----END ' + options.label + '-----');
+  return out.join('\n');
+};
+
+
+/***/ }),
+/* 268 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -42044,7 +47361,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 236 */
+/* 269 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -42052,7 +47369,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 237 */
+/* 270 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -42804,7 +48121,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 238 */
+/* 271 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -43232,7 +48549,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 239 */
+/* 272 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -43253,7 +48570,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 240 */
+/* 273 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -44244,7 +49561,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 241 */
+/* 274 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -44265,7 +49582,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 242 */
+/* 275 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -44691,7 +50008,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 243 */
+/* 276 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -45294,7 +50611,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 244 */
+/* 277 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -45306,7 +50623,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 245 */
+/* 278 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -45561,7 +50878,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 246 */
+/* 279 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(31);
@@ -45572,7 +50889,7 @@ if (true) module.exports = AWS;
 if (typeof self !== 'undefined') self.AWS = AWS;
 
 /***/ }),
-/* 247 */
+/* 280 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(31);
@@ -45584,7 +50901,7 @@ apiLoader.services['cognitosync'] = {};
 AWS.CognitoSync = Service.defineService('cognitosync', ['2014-06-30']);
 Object.defineProperty(apiLoader.services['cognitosync'], '2014-06-30', {
   get: function get() {
-    var model = __webpack_require__(237);
+    var model = __webpack_require__(270);
     return model;
   },
   enumerable: true,
@@ -45595,7 +50912,7 @@ module.exports = AWS.CognitoSync;
 
 
 /***/ }),
-/* 248 */
+/* 281 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(31);
@@ -45607,8 +50924,8 @@ apiLoader.services['lambda'] = {};
 AWS.Lambda = Service.defineService('lambda', ['2014-11-11', '2015-03-31']);
 Object.defineProperty(apiLoader.services['lambda'], '2014-11-11', {
   get: function get() {
-    var model = __webpack_require__(238);
-    model.paginators = __webpack_require__(239).pagination;
+    var model = __webpack_require__(271);
+    model.paginators = __webpack_require__(272).pagination;
     return model;
   },
   enumerable: true,
@@ -45616,8 +50933,8 @@ Object.defineProperty(apiLoader.services['lambda'], '2014-11-11', {
 });
 Object.defineProperty(apiLoader.services['lambda'], '2015-03-31', {
   get: function get() {
-    var model = __webpack_require__(240);
-    model.paginators = __webpack_require__(241).pagination;
+    var model = __webpack_require__(273);
+    model.paginators = __webpack_require__(274).pagination;
     return model;
   },
   enumerable: true,
@@ -45628,7 +50945,7 @@ module.exports = AWS.Lambda;
 
 
 /***/ }),
-/* 249 */
+/* 282 */
 /***/ (function(module, exports, __webpack_require__) {
 
 __webpack_require__(31);
@@ -45638,11 +50955,11 @@ var apiLoader = __webpack_require__(30);
 
 apiLoader.services['sqs'] = {};
 AWS.SQS = Service.defineService('sqs', ['2012-11-05']);
-__webpack_require__(265);
+__webpack_require__(298);
 Object.defineProperty(apiLoader.services['sqs'], '2012-11-05', {
   get: function get() {
-    var model = __webpack_require__(243);
-    model.paginators = __webpack_require__(244).pagination;
+    var model = __webpack_require__(276);
+    model.paginators = __webpack_require__(277).pagination;
     return model;
   },
   enumerable: true,
@@ -45653,12 +50970,12 @@ module.exports = AWS.SQS;
 
 
 /***/ }),
-/* 250 */
+/* 283 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
-__webpack_require__(127);
-__webpack_require__(128);
+__webpack_require__(133);
+__webpack_require__(134);
 var PromisesDependency;
 
 /**
@@ -46192,11 +51509,11 @@ AWS.config = new AWS.Config();
 
 
 /***/ }),
-/* 251 */
+/* 284 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
-var CognitoIdentity = __webpack_require__(126);
+var CognitoIdentity = __webpack_require__(132);
 var STS = __webpack_require__(59);
 
 /**
@@ -46575,7 +51892,7 @@ AWS.CognitoIdentityCredentials = AWS.util.inherit(AWS.Credentials, {
 
 
 /***/ }),
-/* 252 */
+/* 285 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -46670,7 +51987,7 @@ AWS.SAMLCredentials = AWS.util.inherit(AWS.Credentials, {
 
 
 /***/ }),
-/* 253 */
+/* 286 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -46796,7 +52113,7 @@ AWS.TemporaryCredentials = AWS.util.inherit(AWS.Credentials, {
 
 
 /***/ }),
-/* 254 */
+/* 287 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -46912,11 +52229,11 @@ AWS.WebIdentityCredentials = AWS.util.inherit(AWS.Credentials, {
 
 
 /***/ }),
-/* 255 */
+/* 288 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
-var SequentialExecutor = __webpack_require__(138);
+var SequentialExecutor = __webpack_require__(144);
 /**
  * The namespace used to register global event listeners for request building
  * and sending.
@@ -47386,7 +52703,7 @@ AWS.EventListeners = {
   }),
 
   Json: new SequentialExecutor().addNamedListeners(function(add) {
-    var svc = __webpack_require__(82);
+    var svc = __webpack_require__(86);
     add('BUILD', 'build', svc.buildRequest);
     add('EXTRACT_DATA', 'extractData', svc.extractData);
     add('EXTRACT_ERROR', 'extractError', svc.extractError);
@@ -47400,21 +52717,21 @@ AWS.EventListeners = {
   }),
 
   RestJson: new SequentialExecutor().addNamedListeners(function(add) {
-    var svc = __webpack_require__(136);
+    var svc = __webpack_require__(142);
     add('BUILD', 'build', svc.buildRequest);
     add('EXTRACT_DATA', 'extractData', svc.extractData);
     add('EXTRACT_ERROR', 'extractError', svc.extractError);
   }),
 
   RestXml: new SequentialExecutor().addNamedListeners(function(add) {
-    var svc = __webpack_require__(137);
+    var svc = __webpack_require__(143);
     add('BUILD', 'build', svc.buildRequest);
     add('EXTRACT_DATA', 'extractData', svc.extractData);
     add('EXTRACT_ERROR', 'extractError', svc.extractError);
   }),
 
   Query: new SequentialExecutor().addNamedListeners(function(add) {
-    var svc = __webpack_require__(135);
+    var svc = __webpack_require__(141);
     add('BUILD', 'build', svc.buildRequest);
     add('EXTRACT_DATA', 'extractData', svc.extractData);
     add('EXTRACT_ERROR', 'extractError', svc.extractError);
@@ -47423,12 +52740,12 @@ AWS.EventListeners = {
 
 
 /***/ }),
-/* 256 */
+/* 289 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
-var EventEmitter = __webpack_require__(42).EventEmitter;
-__webpack_require__(129);
+var EventEmitter = __webpack_require__(41).EventEmitter;
+__webpack_require__(135);
 
 /**
  * @api private
@@ -47561,7 +52878,7 @@ AWS.HttpClient.streamsApiVersion = 1;
 
 
 /***/ }),
-/* 257 */
+/* 290 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -47825,10 +53142,10 @@ AWS.ParamValidator = AWS.util.inherit({
 
 
 /***/ }),
-/* 258 */
+/* 291 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var util = __webpack_require__(5);
+var util = __webpack_require__(6);
 
 function QueryParamSerializer() {
 }
@@ -47912,11 +53229,11 @@ module.exports = QueryParamSerializer;
 
 
 /***/ }),
-/* 259 */
+/* 292 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var util = __webpack_require__(5);
-var regionConfig = __webpack_require__(260);
+var util = __webpack_require__(6);
+var regionConfig = __webpack_require__(293);
 
 function generateRegionPrefix(region) {
   if (!region) return null;
@@ -47987,7 +53304,7 @@ module.exports = configureEndpoint;
 
 
 /***/ }),
-/* 260 */
+/* 293 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -48054,11 +53371,11 @@ module.exports = {
 };
 
 /***/ }),
-/* 261 */
+/* 294 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {var AWS = __webpack_require__(1);
-var AcceptorStateMachine = __webpack_require__(274);
+var AcceptorStateMachine = __webpack_require__(307);
 var inherit = AWS.util.inherit;
 var domain = AWS.util.domain;
 var jmespath = __webpack_require__(106);
@@ -48847,10 +54164,10 @@ AWS.util.addPromises(AWS.Request);
 
 AWS.util.mixin(AWS.Request, AWS.SequentialExecutor);
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 262 */
+/* 295 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -49045,7 +54362,7 @@ AWS.ResourceWaiter = inherit({
 
 
 /***/ }),
-/* 263 */
+/* 296 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -49252,7 +54569,7 @@ AWS.Response = inherit({
 
 
 /***/ }),
-/* 264 */
+/* 297 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -49273,7 +54590,7 @@ AWS.util.update(AWS.CognitoIdentity.prototype, {
 
 
 /***/ }),
-/* 265 */
+/* 298 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -49410,7 +54727,7 @@ AWS.util.update(AWS.SQS.prototype, {
 
 
 /***/ }),
-/* 266 */
+/* 299 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -49463,7 +54780,7 @@ AWS.util.update(AWS.STS.prototype, {
 
 
 /***/ }),
-/* 267 */
+/* 300 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -49584,7 +54901,7 @@ module.exports = AWS.Signers.Presign;
 
 
 /***/ }),
-/* 268 */
+/* 301 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -49619,16 +54936,16 @@ AWS.Signers.RequestSigner.getVersion = function getVersion(version) {
   throw new Error('Unknown signing version ' + version);
 };
 
-__webpack_require__(270);
-__webpack_require__(139);
-__webpack_require__(271);
-__webpack_require__(272);
-__webpack_require__(269);
-__webpack_require__(267);
+__webpack_require__(303);
+__webpack_require__(145);
+__webpack_require__(304);
+__webpack_require__(305);
+__webpack_require__(302);
+__webpack_require__(300);
 
 
 /***/ }),
-/* 269 */
+/* 302 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -49806,7 +55123,7 @@ module.exports = AWS.Signers.S3;
 
 
 /***/ }),
-/* 270 */
+/* 303 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -49857,13 +55174,13 @@ module.exports = AWS.Signers.V2;
 
 
 /***/ }),
-/* 271 */
+/* 304 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
 var inherit = AWS.util.inherit;
 
-__webpack_require__(139);
+__webpack_require__(145);
 
 /**
  * @api private
@@ -49885,11 +55202,11 @@ module.exports = AWS.Signers.V3Https;
 
 
 /***/ }),
-/* 272 */
+/* 305 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
-var v4Credentials = __webpack_require__(273);
+var v4Credentials = __webpack_require__(306);
 var inherit = AWS.util.inherit;
 
 /**
@@ -50096,7 +55413,7 @@ module.exports = AWS.Signers.V4;
 
 
 /***/ }),
-/* 273 */
+/* 306 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var AWS = __webpack_require__(1);
@@ -50199,7 +55516,7 @@ module.exports = {
 
 
 /***/ }),
-/* 274 */
+/* 307 */
 /***/ (function(module, exports) {
 
 function AcceptorStateMachine(states, state) {
@@ -50247,11 +55564,11 @@ module.exports = AcceptorStateMachine;
 
 
 /***/ }),
-/* 275 */
+/* 308 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var util = __webpack_require__(5);
-var Shape = __webpack_require__(41);
+var util = __webpack_require__(6);
+var Shape = __webpack_require__(45);
 
 function DomXmlParser() { }
 
@@ -50439,11 +55756,11 @@ module.exports = DomXmlParser;
 
 
 /***/ }),
-/* 276 */
+/* 309 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var util = __webpack_require__(5);
-var builder = __webpack_require__(657);
+var util = __webpack_require__(6);
+var builder = __webpack_require__(659);
 
 function XmlBuilder() { }
 
@@ -50531,5285 +55848,14 @@ module.exports = XmlBuilder;
 
 
 /***/ }),
-/* 277 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-// This file should be ES5 compatible
-/* eslint prefer-spread:0, no-var:0, prefer-reflect:0, no-magic-numbers:0 */
-
-module.exports = (function () {
-	// Import Events
-	var events = __webpack_require__(42)
-
-	// Export Domain
-	var domain = {}
-	domain.createDomain = domain.create = function () {
-		var d = new events.EventEmitter()
-
-		function emitError (e) {
-			d.emit('error', e)
-		}
-
-		d.add = function (emitter) {
-			emitter.on('error', emitError)
-		}
-		d.remove = function (emitter) {
-			emitter.removeListener('error', emitError)
-		}
-		d.bind = function (fn) {
-			return function () {
-				var args = Array.prototype.slice.call(arguments)
-				try {
-					fn.apply(null, args)
-				}
-				catch (err) {
-					emitError(err)
-				}
-			}
-		}
-		d.intercept = function (fn) {
-			return function (err) {
-				if ( err ) {
-					emitError(err)
-				}
-				else {
-					var args = Array.prototype.slice.call(arguments, 1)
-					try {
-						fn.apply(null, args)
-					}
-					catch (err) {
-						emitError(err)
-					}
-				}
-			}
-		}
-		d.run = function (fn) {
-			try {
-				fn()
-			}
-			catch (err) {
-				emitError(err)
-			}
-			return this
-		}
-		d.dispose = function () {
-			this.removeAllListeners()
-			return this
-		}
-		d.enter = d.exit = function () {
-			return this
-		}
-		return d
-	}
-	return domain
-}).call(this)
-
-
-/***/ }),
-/* 278 */
-/***/ (function(module, exports) {
-
-exports.lookup = exports.resolve4 =
-exports.resolve6 = exports.resolveCname =
-exports.resolveMx = exports.resolveNs =
-exports.resolveTxt = exports.resolveSrv =
-exports.resolveNaptr = exports.reverse =
-exports.resolve =
-function () {
-  if (!arguments.length) return;
-
-  var callback = arguments[arguments.length - 1];
-  if (callback && typeof callback === 'function') {
-    callback(null, '0.0.0.0')
-  }
-}
-
-
-
-/***/ }),
-/* 279 */
-/***/ (function(module, exports) {
-
-
-
-/***/ }),
-/* 280 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;/*! https://mths.be/punycode v1.4.1 by @mathias */
-;(function(root) {
-
-	/** Detect free variables */
-	var freeExports = typeof exports == 'object' && exports &&
-		!exports.nodeType && exports;
-	var freeModule = typeof module == 'object' && module &&
-		!module.nodeType && module;
-	var freeGlobal = typeof global == 'object' && global;
-	if (
-		freeGlobal.global === freeGlobal ||
-		freeGlobal.window === freeGlobal ||
-		freeGlobal.self === freeGlobal
-	) {
-		root = freeGlobal;
-	}
-
-	/**
-	 * The `punycode` object.
-	 * @name punycode
-	 * @type Object
-	 */
-	var punycode,
-
-	/** Highest positive signed 32-bit float value */
-	maxInt = 2147483647, // aka. 0x7FFFFFFF or 2^31-1
-
-	/** Bootstring parameters */
-	base = 36,
-	tMin = 1,
-	tMax = 26,
-	skew = 38,
-	damp = 700,
-	initialBias = 72,
-	initialN = 128, // 0x80
-	delimiter = '-', // '\x2D'
-
-	/** Regular expressions */
-	regexPunycode = /^xn--/,
-	regexNonASCII = /[^\x20-\x7E]/, // unprintable ASCII chars + non-ASCII chars
-	regexSeparators = /[\x2E\u3002\uFF0E\uFF61]/g, // RFC 3490 separators
-
-	/** Error messages */
-	errors = {
-		'overflow': 'Overflow: input needs wider integers to process',
-		'not-basic': 'Illegal input >= 0x80 (not a basic code point)',
-		'invalid-input': 'Invalid input'
-	},
-
-	/** Convenience shortcuts */
-	baseMinusTMin = base - tMin,
-	floor = Math.floor,
-	stringFromCharCode = String.fromCharCode,
-
-	/** Temporary variable */
-	key;
-
-	/*--------------------------------------------------------------------------*/
-
-	/**
-	 * A generic error utility function.
-	 * @private
-	 * @param {String} type The error type.
-	 * @returns {Error} Throws a `RangeError` with the applicable error message.
-	 */
-	function error(type) {
-		throw new RangeError(errors[type]);
-	}
-
-	/**
-	 * A generic `Array#map` utility function.
-	 * @private
-	 * @param {Array} array The array to iterate over.
-	 * @param {Function} callback The function that gets called for every array
-	 * item.
-	 * @returns {Array} A new array of values returned by the callback function.
-	 */
-	function map(array, fn) {
-		var length = array.length;
-		var result = [];
-		while (length--) {
-			result[length] = fn(array[length]);
-		}
-		return result;
-	}
-
-	/**
-	 * A simple `Array#map`-like wrapper to work with domain name strings or email
-	 * addresses.
-	 * @private
-	 * @param {String} domain The domain name or email address.
-	 * @param {Function} callback The function that gets called for every
-	 * character.
-	 * @returns {Array} A new string of characters returned by the callback
-	 * function.
-	 */
-	function mapDomain(string, fn) {
-		var parts = string.split('@');
-		var result = '';
-		if (parts.length > 1) {
-			// In email addresses, only the domain name should be punycoded. Leave
-			// the local part (i.e. everything up to `@`) intact.
-			result = parts[0] + '@';
-			string = parts[1];
-		}
-		// Avoid `split(regex)` for IE8 compatibility. See #17.
-		string = string.replace(regexSeparators, '\x2E');
-		var labels = string.split('.');
-		var encoded = map(labels, fn).join('.');
-		return result + encoded;
-	}
-
-	/**
-	 * Creates an array containing the numeric code points of each Unicode
-	 * character in the string. While JavaScript uses UCS-2 internally,
-	 * this function will convert a pair of surrogate halves (each of which
-	 * UCS-2 exposes as separate characters) into a single code point,
-	 * matching UTF-16.
-	 * @see `punycode.ucs2.encode`
-	 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-	 * @memberOf punycode.ucs2
-	 * @name decode
-	 * @param {String} string The Unicode input string (UCS-2).
-	 * @returns {Array} The new array of code points.
-	 */
-	function ucs2decode(string) {
-		var output = [],
-		    counter = 0,
-		    length = string.length,
-		    value,
-		    extra;
-		while (counter < length) {
-			value = string.charCodeAt(counter++);
-			if (value >= 0xD800 && value <= 0xDBFF && counter < length) {
-				// high surrogate, and there is a next character
-				extra = string.charCodeAt(counter++);
-				if ((extra & 0xFC00) == 0xDC00) { // low surrogate
-					output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
-				} else {
-					// unmatched surrogate; only append this code unit, in case the next
-					// code unit is the high surrogate of a surrogate pair
-					output.push(value);
-					counter--;
-				}
-			} else {
-				output.push(value);
-			}
-		}
-		return output;
-	}
-
-	/**
-	 * Creates a string based on an array of numeric code points.
-	 * @see `punycode.ucs2.decode`
-	 * @memberOf punycode.ucs2
-	 * @name encode
-	 * @param {Array} codePoints The array of numeric code points.
-	 * @returns {String} The new Unicode string (UCS-2).
-	 */
-	function ucs2encode(array) {
-		return map(array, function(value) {
-			var output = '';
-			if (value > 0xFFFF) {
-				value -= 0x10000;
-				output += stringFromCharCode(value >>> 10 & 0x3FF | 0xD800);
-				value = 0xDC00 | value & 0x3FF;
-			}
-			output += stringFromCharCode(value);
-			return output;
-		}).join('');
-	}
-
-	/**
-	 * Converts a basic code point into a digit/integer.
-	 * @see `digitToBasic()`
-	 * @private
-	 * @param {Number} codePoint The basic numeric code point value.
-	 * @returns {Number} The numeric value of a basic code point (for use in
-	 * representing integers) in the range `0` to `base - 1`, or `base` if
-	 * the code point does not represent a value.
-	 */
-	function basicToDigit(codePoint) {
-		if (codePoint - 48 < 10) {
-			return codePoint - 22;
-		}
-		if (codePoint - 65 < 26) {
-			return codePoint - 65;
-		}
-		if (codePoint - 97 < 26) {
-			return codePoint - 97;
-		}
-		return base;
-	}
-
-	/**
-	 * Converts a digit/integer into a basic code point.
-	 * @see `basicToDigit()`
-	 * @private
-	 * @param {Number} digit The numeric value of a basic code point.
-	 * @returns {Number} The basic code point whose value (when used for
-	 * representing integers) is `digit`, which needs to be in the range
-	 * `0` to `base - 1`. If `flag` is non-zero, the uppercase form is
-	 * used; else, the lowercase form is used. The behavior is undefined
-	 * if `flag` is non-zero and `digit` has no uppercase form.
-	 */
-	function digitToBasic(digit, flag) {
-		//  0..25 map to ASCII a..z or A..Z
-		// 26..35 map to ASCII 0..9
-		return digit + 22 + 75 * (digit < 26) - ((flag != 0) << 5);
-	}
-
-	/**
-	 * Bias adaptation function as per section 3.4 of RFC 3492.
-	 * https://tools.ietf.org/html/rfc3492#section-3.4
-	 * @private
-	 */
-	function adapt(delta, numPoints, firstTime) {
-		var k = 0;
-		delta = firstTime ? floor(delta / damp) : delta >> 1;
-		delta += floor(delta / numPoints);
-		for (/* no initialization */; delta > baseMinusTMin * tMax >> 1; k += base) {
-			delta = floor(delta / baseMinusTMin);
-		}
-		return floor(k + (baseMinusTMin + 1) * delta / (delta + skew));
-	}
-
-	/**
-	 * Converts a Punycode string of ASCII-only symbols to a string of Unicode
-	 * symbols.
-	 * @memberOf punycode
-	 * @param {String} input The Punycode string of ASCII-only symbols.
-	 * @returns {String} The resulting string of Unicode symbols.
-	 */
-	function decode(input) {
-		// Don't use UCS-2
-		var output = [],
-		    inputLength = input.length,
-		    out,
-		    i = 0,
-		    n = initialN,
-		    bias = initialBias,
-		    basic,
-		    j,
-		    index,
-		    oldi,
-		    w,
-		    k,
-		    digit,
-		    t,
-		    /** Cached calculation results */
-		    baseMinusT;
-
-		// Handle the basic code points: let `basic` be the number of input code
-		// points before the last delimiter, or `0` if there is none, then copy
-		// the first basic code points to the output.
-
-		basic = input.lastIndexOf(delimiter);
-		if (basic < 0) {
-			basic = 0;
-		}
-
-		for (j = 0; j < basic; ++j) {
-			// if it's not a basic code point
-			if (input.charCodeAt(j) >= 0x80) {
-				error('not-basic');
-			}
-			output.push(input.charCodeAt(j));
-		}
-
-		// Main decoding loop: start just after the last delimiter if any basic code
-		// points were copied; start at the beginning otherwise.
-
-		for (index = basic > 0 ? basic + 1 : 0; index < inputLength; /* no final expression */) {
-
-			// `index` is the index of the next character to be consumed.
-			// Decode a generalized variable-length integer into `delta`,
-			// which gets added to `i`. The overflow checking is easier
-			// if we increase `i` as we go, then subtract off its starting
-			// value at the end to obtain `delta`.
-			for (oldi = i, w = 1, k = base; /* no condition */; k += base) {
-
-				if (index >= inputLength) {
-					error('invalid-input');
-				}
-
-				digit = basicToDigit(input.charCodeAt(index++));
-
-				if (digit >= base || digit > floor((maxInt - i) / w)) {
-					error('overflow');
-				}
-
-				i += digit * w;
-				t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-
-				if (digit < t) {
-					break;
-				}
-
-				baseMinusT = base - t;
-				if (w > floor(maxInt / baseMinusT)) {
-					error('overflow');
-				}
-
-				w *= baseMinusT;
-
-			}
-
-			out = output.length + 1;
-			bias = adapt(i - oldi, out, oldi == 0);
-
-			// `i` was supposed to wrap around from `out` to `0`,
-			// incrementing `n` each time, so we'll fix that now:
-			if (floor(i / out) > maxInt - n) {
-				error('overflow');
-			}
-
-			n += floor(i / out);
-			i %= out;
-
-			// Insert `n` at position `i` of the output
-			output.splice(i++, 0, n);
-
-		}
-
-		return ucs2encode(output);
-	}
-
-	/**
-	 * Converts a string of Unicode symbols (e.g. a domain name label) to a
-	 * Punycode string of ASCII-only symbols.
-	 * @memberOf punycode
-	 * @param {String} input The string of Unicode symbols.
-	 * @returns {String} The resulting Punycode string of ASCII-only symbols.
-	 */
-	function encode(input) {
-		var n,
-		    delta,
-		    handledCPCount,
-		    basicLength,
-		    bias,
-		    j,
-		    m,
-		    q,
-		    k,
-		    t,
-		    currentValue,
-		    output = [],
-		    /** `inputLength` will hold the number of code points in `input`. */
-		    inputLength,
-		    /** Cached calculation results */
-		    handledCPCountPlusOne,
-		    baseMinusT,
-		    qMinusT;
-
-		// Convert the input in UCS-2 to Unicode
-		input = ucs2decode(input);
-
-		// Cache the length
-		inputLength = input.length;
-
-		// Initialize the state
-		n = initialN;
-		delta = 0;
-		bias = initialBias;
-
-		// Handle the basic code points
-		for (j = 0; j < inputLength; ++j) {
-			currentValue = input[j];
-			if (currentValue < 0x80) {
-				output.push(stringFromCharCode(currentValue));
-			}
-		}
-
-		handledCPCount = basicLength = output.length;
-
-		// `handledCPCount` is the number of code points that have been handled;
-		// `basicLength` is the number of basic code points.
-
-		// Finish the basic string - if it is not empty - with a delimiter
-		if (basicLength) {
-			output.push(delimiter);
-		}
-
-		// Main encoding loop:
-		while (handledCPCount < inputLength) {
-
-			// All non-basic code points < n have been handled already. Find the next
-			// larger one:
-			for (m = maxInt, j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-				if (currentValue >= n && currentValue < m) {
-					m = currentValue;
-				}
-			}
-
-			// Increase `delta` enough to advance the decoder's <n,i> state to <m,0>,
-			// but guard against overflow
-			handledCPCountPlusOne = handledCPCount + 1;
-			if (m - n > floor((maxInt - delta) / handledCPCountPlusOne)) {
-				error('overflow');
-			}
-
-			delta += (m - n) * handledCPCountPlusOne;
-			n = m;
-
-			for (j = 0; j < inputLength; ++j) {
-				currentValue = input[j];
-
-				if (currentValue < n && ++delta > maxInt) {
-					error('overflow');
-				}
-
-				if (currentValue == n) {
-					// Represent delta as a generalized variable-length integer
-					for (q = delta, k = base; /* no condition */; k += base) {
-						t = k <= bias ? tMin : (k >= bias + tMax ? tMax : k - bias);
-						if (q < t) {
-							break;
-						}
-						qMinusT = q - t;
-						baseMinusT = base - t;
-						output.push(
-							stringFromCharCode(digitToBasic(t + qMinusT % baseMinusT, 0))
-						);
-						q = floor(qMinusT / baseMinusT);
-					}
-
-					output.push(stringFromCharCode(digitToBasic(q, 0)));
-					bias = adapt(delta, handledCPCountPlusOne, handledCPCount == basicLength);
-					delta = 0;
-					++handledCPCount;
-				}
-			}
-
-			++delta;
-			++n;
-
-		}
-		return output.join('');
-	}
-
-	/**
-	 * Converts a Punycode string representing a domain name or an email address
-	 * to Unicode. Only the Punycoded parts of the input will be converted, i.e.
-	 * it doesn't matter if you call it on a string that has already been
-	 * converted to Unicode.
-	 * @memberOf punycode
-	 * @param {String} input The Punycoded domain name or email address to
-	 * convert to Unicode.
-	 * @returns {String} The Unicode representation of the given Punycode
-	 * string.
-	 */
-	function toUnicode(input) {
-		return mapDomain(input, function(string) {
-			return regexPunycode.test(string)
-				? decode(string.slice(4).toLowerCase())
-				: string;
-		});
-	}
-
-	/**
-	 * Converts a Unicode string representing a domain name or an email address to
-	 * Punycode. Only the non-ASCII parts of the domain name will be converted,
-	 * i.e. it doesn't matter if you call it with a domain that's already in
-	 * ASCII.
-	 * @memberOf punycode
-	 * @param {String} input The domain name or email address to convert, as a
-	 * Unicode string.
-	 * @returns {String} The Punycode representation of the given domain name or
-	 * email address.
-	 */
-	function toASCII(input) {
-		return mapDomain(input, function(string) {
-			return regexNonASCII.test(string)
-				? 'xn--' + encode(string)
-				: string;
-		});
-	}
-
-	/*--------------------------------------------------------------------------*/
-
-	/** Define the public API */
-	punycode = {
-		/**
-		 * A string representing the current Punycode.js version number.
-		 * @memberOf punycode
-		 * @type String
-		 */
-		'version': '1.4.1',
-		/**
-		 * An object of methods to convert from JavaScript's internal character
-		 * representation (UCS-2) to Unicode code points, and back.
-		 * @see <https://mathiasbynens.be/notes/javascript-encoding>
-		 * @memberOf punycode
-		 * @type Object
-		 */
-		'ucs2': {
-			'decode': ucs2decode,
-			'encode': ucs2encode
-		},
-		'decode': decode,
-		'encode': encode,
-		'toASCII': toASCII,
-		'toUnicode': toUnicode
-	};
-
-	/** Expose `punycode` */
-	// Some AMD build optimizers, like r.js, check for specific condition patterns
-	// like the following:
-	if (
-		true
-	) {
-		!(__WEBPACK_AMD_DEFINE_RESULT__ = function() {
-			return punycode;
-		}.call(exports, __webpack_require__, exports, module),
-				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
-	} else if (freeExports && freeModule) {
-		if (module.exports == freeExports) {
-			// in Node.js, io.js, or RingoJS v0.8.0+
-			freeModule.exports = punycode;
-		} else {
-			// in Narwhal or RingoJS v0.7.0-
-			for (key in punycode) {
-				punycode.hasOwnProperty(key) && (freeExports[key] = punycode[key]);
-			}
-		}
-	} else {
-		// in Rhino or a web browser
-		root.punycode = punycode;
-	}
-
-}(this));
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)(module), __webpack_require__(4)))
-
-/***/ }),
-/* 281 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-// If obj.hasOwnProperty has been overridden, then calling
-// obj.hasOwnProperty(prop) will break.
-// See: https://github.com/joyent/node/issues/1707
-function hasOwnProperty(obj, prop) {
-  return Object.prototype.hasOwnProperty.call(obj, prop);
-}
-
-module.exports = function(qs, sep, eq, options) {
-  sep = sep || '&';
-  eq = eq || '=';
-  var obj = {};
-
-  if (typeof qs !== 'string' || qs.length === 0) {
-    return obj;
-  }
-
-  var regexp = /\+/g;
-  qs = qs.split(sep);
-
-  var maxKeys = 1000;
-  if (options && typeof options.maxKeys === 'number') {
-    maxKeys = options.maxKeys;
-  }
-
-  var len = qs.length;
-  // maxKeys <= 0 means that we should not limit keys count
-  if (maxKeys > 0 && len > maxKeys) {
-    len = maxKeys;
-  }
-
-  for (var i = 0; i < len; ++i) {
-    var x = qs[i].replace(regexp, '%20'),
-        idx = x.indexOf(eq),
-        kstr, vstr, k, v;
-
-    if (idx >= 0) {
-      kstr = x.substr(0, idx);
-      vstr = x.substr(idx + 1);
-    } else {
-      kstr = x;
-      vstr = '';
-    }
-
-    k = decodeURIComponent(kstr);
-    v = decodeURIComponent(vstr);
-
-    if (!hasOwnProperty(obj, k)) {
-      obj[k] = v;
-    } else if (isArray(obj[k])) {
-      obj[k].push(v);
-    } else {
-      obj[k] = [obj[k], v];
-    }
-  }
-
-  return obj;
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-
-/***/ }),
-/* 282 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-// Copyright Joyent, Inc. and other Node contributors.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the
-// "Software"), to deal in the Software without restriction, including
-// without limitation the rights to use, copy, modify, merge, publish,
-// distribute, sublicense, and/or sell copies of the Software, and to permit
-// persons to whom the Software is furnished to do so, subject to the
-// following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN
-// NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
-// DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
-// OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
-// USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-
-
-var stringifyPrimitive = function(v) {
-  switch (typeof v) {
-    case 'string':
-      return v;
-
-    case 'boolean':
-      return v ? 'true' : 'false';
-
-    case 'number':
-      return isFinite(v) ? v : '';
-
-    default:
-      return '';
-  }
-};
-
-module.exports = function(obj, sep, eq, name) {
-  sep = sep || '&';
-  eq = eq || '=';
-  if (obj === null) {
-    obj = undefined;
-  }
-
-  if (typeof obj === 'object') {
-    return map(objectKeys(obj), function(k) {
-      var ks = encodeURIComponent(stringifyPrimitive(k)) + eq;
-      if (isArray(obj[k])) {
-        return map(obj[k], function(v) {
-          return ks + encodeURIComponent(stringifyPrimitive(v));
-        }).join(sep);
-      } else {
-        return ks + encodeURIComponent(stringifyPrimitive(obj[k]));
-      }
-    }).join(sep);
-
-  }
-
-  if (!name) return '';
-  return encodeURIComponent(stringifyPrimitive(name)) + eq +
-         encodeURIComponent(stringifyPrimitive(obj));
-};
-
-var isArray = Array.isArray || function (xs) {
-  return Object.prototype.toString.call(xs) === '[object Array]';
-};
-
-function map (xs, f) {
-  if (xs.map) return xs.map(f);
-  var res = [];
-  for (var i = 0; i < xs.length; i++) {
-    res.push(f(xs[i], i));
-  }
-  return res;
-}
-
-var objectKeys = Object.keys || function (obj) {
-  var res = [];
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) res.push(key);
-  }
-  return res;
-};
-
-
-/***/ }),
-/* 283 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  isString: function(arg) {
-    return typeof(arg) === 'string';
-  },
-  isObject: function(arg) {
-    return typeof(arg) === 'object' && arg !== null;
-  },
-  isNull: function(arg) {
-    return arg === null;
-  },
-  isNullOrUndefined: function(arg) {
-    return arg == null;
-  }
-};
-
-
-/***/ }),
-/* 284 */
-/***/ (function(module, exports) {
-
-module.exports = function isBuffer(arg) {
-  return arg && typeof arg === 'object'
-    && typeof arg.copy === 'function'
-    && typeof arg.fill === 'function'
-    && typeof arg.readUInt8 === 'function';
-}
-
-/***/ }),
-/* 285 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var indexOf = __webpack_require__(486);
-
-var Object_keys = function (obj) {
-    if (Object.keys) return Object.keys(obj)
-    else {
-        var res = [];
-        for (var key in obj) res.push(key)
-        return res;
-    }
-};
-
-var forEach = function (xs, fn) {
-    if (xs.forEach) return xs.forEach(fn)
-    else for (var i = 0; i < xs.length; i++) {
-        fn(xs[i], i, xs);
-    }
-};
-
-var defineProp = (function() {
-    try {
-        Object.defineProperty({}, '_', {});
-        return function(obj, name, value) {
-            Object.defineProperty(obj, name, {
-                writable: true,
-                enumerable: false,
-                configurable: true,
-                value: value
-            })
-        };
-    } catch(e) {
-        return function(obj, name, value) {
-            obj[name] = value;
-        };
-    }
-}());
-
-var globals = ['Array', 'Boolean', 'Date', 'Error', 'EvalError', 'Function',
-'Infinity', 'JSON', 'Math', 'NaN', 'Number', 'Object', 'RangeError',
-'ReferenceError', 'RegExp', 'String', 'SyntaxError', 'TypeError', 'URIError',
-'decodeURI', 'decodeURIComponent', 'encodeURI', 'encodeURIComponent', 'escape',
-'eval', 'isFinite', 'isNaN', 'parseFloat', 'parseInt', 'undefined', 'unescape'];
-
-function Context() {}
-Context.prototype = {};
-
-var Script = exports.Script = function NodeScript (code) {
-    if (!(this instanceof Script)) return new Script(code);
-    this.code = code;
-};
-
-Script.prototype.runInContext = function (context) {
-    if (!(context instanceof Context)) {
-        throw new TypeError("needs a 'context' argument.");
-    }
-    
-    var iframe = document.createElement('iframe');
-    if (!iframe.style) iframe.style = {};
-    iframe.style.display = 'none';
-    
-    document.body.appendChild(iframe);
-    
-    var win = iframe.contentWindow;
-    var wEval = win.eval, wExecScript = win.execScript;
-
-    if (!wEval && wExecScript) {
-        // win.eval() magically appears when this is called in IE:
-        wExecScript.call(win, 'null');
-        wEval = win.eval;
-    }
-    
-    forEach(Object_keys(context), function (key) {
-        win[key] = context[key];
-    });
-    forEach(globals, function (key) {
-        if (context[key]) {
-            win[key] = context[key];
-        }
-    });
-    
-    var winKeys = Object_keys(win);
-
-    var res = wEval.call(win, this.code);
-    
-    forEach(Object_keys(win), function (key) {
-        // Avoid copying circular objects like `top` and `window` by only
-        // updating existing context properties or new properties in the `win`
-        // that was only introduced after the eval.
-        if (key in context || indexOf(winKeys, key) === -1) {
-            context[key] = win[key];
-        }
-    });
-
-    forEach(globals, function (key) {
-        if (!(key in context)) {
-            defineProp(context, key, win[key]);
-        }
-    });
-    
-    document.body.removeChild(iframe);
-    
-    return res;
-};
-
-Script.prototype.runInThisContext = function () {
-    return eval(this.code); // maybe...
-};
-
-Script.prototype.runInNewContext = function (context) {
-    var ctx = Script.createContext(context);
-    var res = this.runInContext(ctx);
-
-    forEach(Object_keys(ctx), function (key) {
-        context[key] = ctx[key];
-    });
-
-    return res;
-};
-
-forEach(Object_keys(Script.prototype), function (name) {
-    exports[name] = Script[name] = function (code) {
-        var s = Script(code);
-        return s[name].apply(s, [].slice.call(arguments, 1));
-    };
-});
-
-exports.createScript = function (code) {
-    return exports.Script(code);
-};
-
-exports.createContext = Script.createContext = function (context) {
-    var copy = new Context();
-    if(typeof context === 'object') {
-        forEach(Object_keys(context), function (key) {
-            copy[key] = context[key];
-        });
-    }
-    return copy;
-};
-
-
-/***/ }),
-/* 286 */
-/***/ (function(module, exports) {
-
-function webpackEmptyContext(req) {
-	throw new Error("Cannot find module '" + req + "'.");
-}
-webpackEmptyContext.keys = function() { return []; };
-webpackEmptyContext.resolve = webpackEmptyContext;
-module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 286;
-
-/***/ }),
-/* 287 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Created by CCristi on 8/5/16.
- */
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-let ContextProvider = exports.ContextProvider = function () {
-  /**
-   * @param {Object} runtimeContext
-   */
-  function ContextProvider(runtimeContext) {
-    _classCallCheck(this, ContextProvider);
-
-    this._context = runtimeContext;
-  }
-
-  /**
-   * @param {Object} event
-   * @returns {ContextProvider}
-   */
-
-
-  _createClass(ContextProvider, [{
-    key: 'fillContextWithEventData',
-    value: function fillContextWithEventData(event) {
-      this._context[ContextProvider.FRAMEWORK_NAMESPACE_KEY] = {};
-      this._context.getDeepFrameworkOption = function (option) {
-        return this[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option];
-      };
-
-      [ContextProvider.MAIN_REQUEST_ID, ContextProvider.LAMBDA_DEPTH_LEVEL].forEach(option => {
-        if (event.hasOwnProperty(option)) {
-          this._context[ContextProvider.FRAMEWORK_NAMESPACE_KEY][option] = event[option];
-        }
-      });
-
-      // moving _deep_auth_context_ from event to lambda context
-      if (event.hasOwnProperty(ContextProvider.DEEP_AUTH_CONTEXT_KEY) && !this._context.hasOwnProperty('identity')) {
-        this._context.identity = event[ContextProvider.DEEP_AUTH_CONTEXT_KEY];
-
-        delete event[ContextProvider.DEEP_AUTH_CONTEXT_KEY];
-      }
-
-      return this;
-    }
-
-    /**
-     * @returns {Object}
-     */
-
-  }, {
-    key: 'context',
-    get: function get() {
-      return this._context;
-    }
-
-    /**
-     * @returns {String}
-     */
-
-  }], [{
-    key: 'FRAMEWORK_NAMESPACE_KEY',
-    get: function get() {
-      return 'deepFramework';
-    }
-
-    /**
-     * @returns {String}
-     */
-
-  }, {
-    key: 'MAIN_REQUEST_ID',
-    get: function get() {
-      return 'mainRequestId';
-    }
-
-    /**
-     * @returns {String}
-     */
-
-  }, {
-    key: 'LAMBDA_DEPTH_LEVEL',
-    get: function get() {
-      return 'lambdaDepthLevel';
-    }
-
-    /**
-     * @returns {String}
-     */
-
-  }, {
-    key: 'DEEP_AUTH_CONTEXT_KEY',
-    get: function get() {
-      return '_deep_auth_context_';
-    }
-  }]);
-
-  return ContextProvider;
-}();
-
-/***/ }),
-/* 288 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/**
- * Created by AlexanderC on 11/5/15.
- */
-
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Framework = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _deepKernel = __webpack_require__(21);
-
-var _deepKernel2 = _interopRequireDefault(_deepKernel);
-
-var _deepCore = __webpack_require__(3);
-
-var _deepCore2 = _interopRequireDefault(_deepCore);
-
-var _ContextProvider = __webpack_require__(287);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-let Framework = exports.Framework = function () {
-  /**
-   * @param {Object} servicesMap
-   * @param {String} context
-   */
-  function Framework(servicesMap, context) {
-    _classCallCheck(this, Framework);
-
-    this._context = context;
-    this._services = this._resolveServicesMap(servicesMap);
-    this._version = __webpack_require__(658).version;
-    this._kernelsMap = {};
-  }
-
-  /**
-   * @returns {string}
-   */
-
-
-  _createClass(Framework, [{
-    key: 'LambdaHandler',
-
-
-    /**
-     * @param {DeepFramework.Core.AWS.Lambda.Runtime|Handler|*} Handler
-     * @returns {{handler: Function}}
-     */
-    value: function LambdaHandler(Handler) {
-      return {
-        handler: (event, context, callback) => {
-          this.KernelFromLambdaContext(context, event).bootstrap(deepKernel => {
-            new Handler(deepKernel).run(event, context, callback);
-          });
-        }
-      };
-    }
-
-    /**
-     *
-     * @todo: improve it
-     *
-     * @param {Object} lambdaContext
-     * @param {Object} lambdaEvent
-     * @returns {Kernel}
-     *
-     * @sample:
-     * ```
-     * exports.handler = function (event, context) {
-     *   DeepFramework.KernelFromLambdaContext(context).loadFromFile("_config.json", function (deepKernel) {
-     *     new Handler(deepKernel).run(event, context);
-     *   });
-     * };
-     * KernelFromLambdaContext
-     * ```
-     */
-
-  }, {
-    key: 'KernelFromLambdaContext',
-    value: function KernelFromLambdaContext(lambdaContext, lambdaEvent) {
-      let contextProvider = new _ContextProvider.ContextProvider(lambdaContext).fillContextWithEventData(lambdaEvent);
-
-      let identityId = Framework.ANONYMOUS_IDENTITY_KEY;
-
-      if (lambdaContext.hasOwnProperty('identity') && lambdaContext.identity.cognitoIdentityPoolId && lambdaContext.identity.cognitoIdentityId) {
-
-        identityId = lambdaContext.identity.cognitoIdentityId;
-      }
-
-      let kernel = this._kernelCached(identityId);
-
-      kernel.runtimeContext = lambdaContext; // @todo: remove "runtimeContext" on next major release
-      kernel.contextProvider = contextProvider;
-
-      return kernel;
-    }
-
-    /**
-     * @param {String} id
-     * @returns {Kernel}
-     * @constructor
-     */
-
-  }, {
-    key: '_kernelCached',
-    value: function _kernelCached(id) {
-      if (this._kernelsMap.hasOwnProperty(id)) {
-        return this._kernelsMap[id];
-      }
-
-      this._kernelsMap[id] = this._createKernel();
-
-      return this._kernelsMap[id];
-    }
-
-    /**
-     * @todo: remove method in next release (back compatibility)
-     *
-     * @returns {Kernel}
-     * @constructor
-     */
-
-  }, {
-    key: '_resolveServicesMap',
-
-
-    /**
-     * @param {Object} servicesMap
-     * @returns {Object}
-     * @private
-     */
-    value: function _resolveServicesMap(servicesMap) {
-      let services = {};
-
-      for (let serviceName in servicesMap) {
-        if (!servicesMap.hasOwnProperty(serviceName)) {
-          continue;
-        }
-
-        let serviceObj = servicesMap[serviceName];
-
-        if (typeof serviceObj === 'string') {
-          serviceObj = !(function webpackMissingModule() { var e = new Error("Cannot find module \".\""); e.code = 'MODULE_NOT_FOUND'; throw e; }());
-        }
-
-        services[serviceName] = serviceObj;
-      }
-
-      return services;
-    }
-
-    /**
-     * @returns {Kernel}
-     * @private
-     */
-
-  }, {
-    key: '_createKernel',
-    value: function _createKernel() {
-      return new _deepKernel2.default(this._services, this._context);
-    }
-
-    /**
-     * @returns {String}
-     */
-
-  }, {
-    key: 'context',
-
-
-    /**
-     * @returns {String}
-     */
-    get: function get() {
-      return this._context;
-    }
-
-    /**
-     * @returns {String}
-     */
-
-  }, {
-    key: 'version',
-    get: function get() {
-      return this._version;
-    }
-  }, {
-    key: 'Kernel',
-    get: function get() {
-      return this._kernelCached(Framework.ANONYMOUS_IDENTITY_KEY);
-    }
-
-    /**
-     * @returns {Function}
-     * @constructor
-     */
-
-  }, {
-    key: 'Core',
-    get: function get() {
-      return _deepCore2.default;
-    }
-  }], [{
-    key: 'ANONYMOUS_IDENTITY_KEY',
-    get: function get() {
-      return 'anonymous';
-    }
-  }, {
-    key: 'BACKEND_CONTEXT',
-    get: function get() {
-      return _deepKernel2.default.BACKEND_CONTEXT;
-    }
-
-    /**
-     * @returns {String}
-     */
-
-  }, {
-    key: 'FRONTEND_CONTEXT',
-    get: function get() {
-      return _deepKernel2.default.FRONTEND_CONTEXT;
-    }
-  }]);
-
-  return Framework;
-}();
-
-/***/ }),
-/* 289 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {/**
- * Created by AlexanderC on 6/11/15.
- */
-
-
-
-window.__DEEP_DEV_SERVER = global.__DEEP_DEV_SERVER = ['localhost', '127.0.0.1', '0.0.0.0', '::1'].indexOf(window.location.hostname) !== -1;
-
-if (/MSIE|Trident/.test(window.navigator.userAgent)) {
-  __webpack_require__(234);
-}
-
-const DeepFramework = __webpack_require__(233);
-
-module.exports = DeepFramework;
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ }),
-/* 290 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(global) {var globalScope = typeof window === 'undefined' ? global : window;
-globalScope.AWS = __webpack_require__(18);
-
-__webpack_require__(296);
-__webpack_require__(291);
-__webpack_require__(292);
-__webpack_require__(293);
-__webpack_require__(294);
-__webpack_require__(295);
-__webpack_require__(297);
-__webpack_require__(298);
-__webpack_require__(299);
-__webpack_require__(300);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ }),
-/* 291 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.Conflict = (function() {
-
-    /**
-     * When the local and remote copies of a dataset are in conflict, this object is returned to the synchronize callback.
-     * @param remoteRecord the record from remote storage
-     * @param localRecord the record from local storage
-     * @prop {string} key
-     * @prop {CognitoSyncRecord} remoteRecord
-     * @prop {CognitoSyncRecord} localRecord
-     * @constructor
-     */
-
-    var CognitoSyncConflict = function(remoteRecord, localRecord) {
-
-        if (!remoteRecord || !localRecord) { throw new Error('Remote and local records cannot be null.'); }
-        if (!remoteRecord.getKey || !localRecord.getKey) { throw new Error('Records are not record objects.'); }
-        if (remoteRecord.getKey() !== localRecord.getKey()) { throw new Error('Remote and local keys do not match.'); }
-
-        this.key = remoteRecord.getKey();
-        this.remoteRecord = remoteRecord;
-        this.localRecord = localRecord;
-
-    };
-
-    /**
-     * Get the key of the records in conflict.
-     * @returns {string} the record's key
-     */
-
-    CognitoSyncConflict.prototype.getKey = function() {
-        return this.key;
-    };
-
-    /**
-     * Get the remote record that is in conflict.
-     * @returns {CognitoSyncRecord} the record
-     */
-
-    CognitoSyncConflict.prototype.getRemoteRecord = function() {
-        return this.remoteRecord;
-    };
-
-    /**
-     * Get the local record that is in conflict.
-     * @returns {CognitoSyncRecord} the record
-     */
-
-    CognitoSyncConflict.prototype.getLocalRecord = function() {
-        return this.localRecord;
-    };
-
-    /**
-     * Resolves conflict with remote record.
-     * @returns {CognitoSyncRecord} the resulting record
-     */
-
-    CognitoSyncConflict.prototype.resolveWithRemoteRecord = function() {
-        this.remoteRecord.setModified(false);
-        return this.remoteRecord;
-    };
-
-    /**
-     * Resolves conflict with local record.
-     * @returns {CognitoSyncRecord} resolved record
-     */
-
-    CognitoSyncConflict.prototype.resolveWithLocalRecord = function() {
-        this.localRecord.setSyncCount(this.remoteRecord.getSyncCount());
-        this.localRecord.setModified(true);
-        return this.localRecord;
-    };
-
-    /**
-     * Resolves conflict with a new value.
-     * @param newValue new value of the record
-     * @returns {CognitoSyncRecord} resolved record
-     */
-
-    CognitoSyncConflict.prototype.resolveWithValue = function(newValue) {
-        return new AWS.CognitoSyncManager.Record({
-            Key: this.remoteRecord.getKey(),
-            Value: newValue,
-            SyncCount: this.remoteRecord.getSyncCount(),
-            LastModifiedDate: new Date(),
-            LastModifiedBy: this.localRecord.getLastModifiedBy(),
-            DeviceLastModifiedDate: new Date(),
-            Modified: true
-        });
-    };
-
-    return CognitoSyncConflict;
-
-})();
-
-/***/ }),
-/* 292 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.Dataset = (function() {
-
-    /**
-     * Constructs a new dataset class.
-     * @param {string} datasetName
-     * @param provider
-     * @param {AWS.CognitoSyncLocalStorage} local
-     * @param {AWS.CognitoSyncRemoteStorage} remote
-     * @param {function} logger
-     * @constructor
-     */
-
-    var CognitoSyncDataset = function(datasetName, provider, local, remote, logger) {
-
-        this.MAX_RETRY = 3;
-
-        this.datasetName = datasetName;
-        this.provider = provider;
-        this.local = local;
-        this.remote = remote;
-        this.logger = logger || function(){};
-
-    };
-
-    /**
-     * Validates the record key to ensure it is not empty and shorter than 128 characters.
-     * @param {String} key The key to validate.
-     * @returns {boolean}
-     */
-
-    CognitoSyncDataset.prototype.validateKey = function(key) {
-        var namePattern = new RegExp('^[a-zA-Z0-9_.:-]{1,128}$');
-        return namePattern.test(key);
-    };
-
-    /**
-     * Writes a record to local storage.
-     * @param {string} key
-     * @param {string} value
-     * @param {function} callback Callback(Error, Record)
-     */
-
-    CognitoSyncDataset.prototype.put = function(key, value, callback) {
-        var valueType = typeof value;
-        if (!this.validateKey(key)) { return callback(new Error('Invalid key.')); }
-        if (valueType !== 'string') {
-            return callback(new Error('The value type must be a string but was ' + valueType + '.'));
-        }
-        this.local.putValue(this.getIdentityId(), this.datasetName, key, value, callback);
-    };
-
-    /**
-     * Writes a record as null, to be cleaned up on the next synchronization.
-     * @param {string} key The key to remove.
-     * @param {function} callback Callback(Error, Record)
-     */
-
-    CognitoSyncDataset.prototype.remove = function(key, callback) {
-        if (!this.validateKey(key)) { return callback(new Error('Invalid key.')); }
-        this.local.putValue(this.getIdentityId(), this.datasetName, key, null, callback);
-    };
-
-    /**
-     * Gets a record's value from local storage.
-     * @param {string} key
-     * @param {function} callback Callback(Error, Value)
-     */
-
-    CognitoSyncDataset.prototype.get = function(key, callback) {
-        if (!this.validateKey(key)) { return callback(new Error('Invalid key.')); }
-        this.local.getValue(this.getIdentityId(), this.datasetName, key, callback);
-    };
-
-    /**
-     * Gets all records in a dataset from local storage.
-     * @param {function} callback Callback(Error, Records)
-     */
-
-    CognitoSyncDataset.prototype.getAllRecords = function(callback) {
-        this.local.getRecords(this.getIdentityId(), this.datasetName, callback);
-    };
-
-    /**
-     * Returns the amount of data stored on the server.
-     * @param callback
-     */
-
-    CognitoSyncDataset.prototype.getDataStorage = function(callback) {
-
-        this.getDatasetMetadata(function(err, meta) {
-            if (err) { return callback(err); }
-            if (!meta) { return callback(null, 0); }
-            return callback(null, meta.getDataStorage());
-        });
-
-    };
-
-    /**
-     * Returns if a specific record has changed.
-     * @param key
-     * @param callback
-     */
-
-    CognitoSyncDataset.prototype.isChanged = function(key, callback) {
-        if (!this.validateKey(key)) { return callback(new Error('Invalid key.')); }
-        this.local.getRecord(this.getIdentityId(), this.datasetName, key, function(err, record) {
-            callback(null, (record && record.isModified()));
-        });
-    };
-
-    /**
-     * Returns the dataset metadata.
-     * @param callback
-     */
-
-    CognitoSyncDataset.prototype.getDatasetMetadata = function(callback) {
-        this.local.getDatasetMetadata(this.getIdentityId(), this.datasetName, callback);
-    };
-
-    /**
-     * Resolves conflicts using the records provided.
-     * @param resolvedRecords
-     * @param callback
-     */
-
-    CognitoSyncDataset.prototype.resolve = function(resolvedRecords, callback) {
-        this.local.putRecords(this.getIdentityId(), this.datasetName, resolvedRecords, callback);
-    };
-
-    /**
-     * Puts all values into the dataset.
-     * @param values
-     * @param callback
-     * @returns {*}
-     */
-
-    CognitoSyncDataset.prototype.putAll = function(values, callback) {
-
-        var isValid = true;
-
-        for (var key in values) {
-            if (values.hasOwnProperty(key)) {
-                if (!this.validateKey(key)) { isValid = false; }
-            }
-        }
-
-        if (!isValid) { return callback(new Error('Object contains invalid keys.')); }
-
-        this.local.putAllValues(this.getIdentityId(), this.datasetName, values, callback);
-
-    };
-
-    /**
-     * Returns all records from a dataset.
-     * @param callback
-     */
-
-    CognitoSyncDataset.prototype.getAll = function(callback) {
-
-        var map = {};
-        var record;
-
-        this.local.getRecords(this.getIdentityId(), this.datasetName, function(err, records) {
-
-            if (err) { return callback(err); }
-
-            for (var r in records) {
-                if (records.hasOwnProperty(r)) {
-                    record = records[r];
-                    if (!record.isDeleted()) { map[record.getKey()] = record.getValue(); }
-                }
-            }
-
-            callback(null, map);
-
-        });
-
-    };
-
-    /**
-     * Returns the current user's identity id.
-     * @returns {string};
-     */
-
-    CognitoSyncDataset.prototype.getIdentityId = function() {
-        return this.provider.identityId;
-    };
-
-    /**
-     * Returns the records that have been modified.
-     * @param callback
-     */
-
-    CognitoSyncDataset.prototype.getModifiedRecords = function(callback) {
-        this.local.getModifiedRecords(this.getIdentityId(), this.datasetName, callback);
-    };
-
-    /**
-     * Returns a list of datasets that have been merged.
-     * @param callback
-     */
-
-    CognitoSyncDataset.prototype.getLocalMergedDatasets = function(callback) {
-
-        var mergedDatasets = [];
-        var prefix = this.datasetName + '.';
-        var dataset;
-
-        this.local.getDatasets(this.getIdentityId(), function(err, datasets) {
-
-            for (var d in datasets) {
-                if (datasets.hasOwnProperty(d)) {
-
-                    dataset = datasets[d];
-
-                    if (dataset.getDatasetName().indexOf(prefix) === 0) {
-                        mergedDatasets.push(dataset.getDatasetName());
-                    }
-
-                }
-            }
-
-            callback(null, mergedDatasets);
-
-        });
-
-    };
-
-    /**
-     * Starts the synchronization process.
-     * @param callback
-     * @param retry
-     */
-
-    CognitoSyncDataset.prototype.synchronize = function(callback, retry) {
-
-        var root = this;
-
-        // Validate callback object.
-        callback = callback || {};
-        callback.onSuccess = callback.onSuccess || function(dataset, updates) {};
-        callback.onFailure = callback.onFailure || function(err) {};
-        callback.onConflict = callback.onConflict || function(dataset, conflicts, callback) { return callback(false); };
-        callback.onDatasetDeleted = callback.onDatasetDeleted || function(dataset, deletedDataset, callback) { return callback(false); };
-        callback.onDatasetsMerged = callback.onDatasetsMerged || function(dataset, merges, callback) { return callback(false); };
-
-        // Validate/initialize retry count.
-        if (retry === undefined) { retry = this.MAX_RETRY; }
-
-        root.logger('Starting synchronization... (retries: ' + retry + ')');
-
-        if (retry < 0) {
-            return callback.onFailure(new Error('Synchronize failed: exceeded maximum retry count.'));
-        }
-
-        // First check if any datasets have been merged locally.
-
-        this.getLocalMergedDatasets(function(err, mergedDatasets) {
-
-            if (err) { callback.onFailure(err); }
-
-            root.logger('Checking for locally merged datasets... found ' + mergedDatasets.length + '.');
-
-            // Detect if merged datasets.
-            if (mergedDatasets.length > 0) {
-
-                root.logger('Deferring to .onDatasetsMerged.');
-
-                return callback.onDatasetsMerged(root, mergedDatasets, function(isContinue) {
-
-                    if (!isContinue) {
-
-                        // Merges were not handled by callback. Cancel sync.
-                        return callback.onFailure(new Error('Synchronization cancelled by onDatasetsMerged() callback returning false.'));
-
-                    } else {
-
-                        // Merges are handled within callback. Restart sync.
-                        return root.synchronize(callback, --retry);
-
-                    }
-
-                });
-
-            } else {
-
-                // Get the last sync count so we can tell the server what to diff.
-
-                root.local.getLastSyncCount(root.getIdentityId(), root.datasetName, function(err, syncCount) {
-
-                    if (err) { return callback.onFailure(err); }
-
-                    root.logger('Detecting last sync count... ' + syncCount);
-
-                    if (syncCount == -1) {
-
-                        // Dataset has been deleted locally
-                        root.remote.deleteDataset(root.datasetName, function(err, data) {
-                            if (err) { return callback.onFailure(err); }
-                            root.local.purgeDataset(root.getIdentityId(), root.datasetName, function(err) {
-                               if (err) { return callback.onFailure(err); }
-                               return callback.onSuccess(root);
-                            });
-                        });
-
-                    } else {
-
-                        // Get all the remote records that have changed since the latest sync count.
-
-                        root.remote.listUpdates(root.datasetName, syncCount, function(err, remoteRecords) {
-
-                            if (err) { return callback.onFailure(err); }
-
-                            root.logger('Fetching remote updates... found ' + remoteRecords.records.length + '.');
-
-                            var mergedNameList = remoteRecords.getMergedDatasetNameList();
-
-                            root.logger('Checking for remote merged datasets... found ' + mergedNameList.length + '.');
-
-                            if (mergedNameList.length > 0) {
-
-                                root.logger('Deferring to .onDatasetsMerged.');
-
-                                // Merged datasets exist. Use callback to determine action.
-                                return callback.onDatasetsMerged(root, mergedNameList, function(doContinue) {
-                                    if (!doContinue) { callback.onFailure(new Error('Cancelled due to .onDatasetsMerged result.')); }
-                                    else { root._synchronizeInternal(callback, --retry); }
-                                });
-                            }
-
-                            // Check if dataset doesn't exist or is deleted.
-
-                            if (syncCount !== 0 && !remoteRecords || remoteRecords.isDeleted()) {
-
-                                return callback.onDatasetDeleted(root, remoteRecords.getDatasetName(), function(doContinue) {
-
-                                    root.logger('Dataset should be deleted. Deferring to .onDatasetDeleted.');
-
-                                    if (doContinue) {
-                                        root.logger('.onDatasetDeleted returned true, purging dataset locally.');
-                                        return root.local.purgeDataset(root.getIdentityId(), root.datasetName, function(err) {
-                                            if (err) { return callback.onFailure(err); }
-                                            return root._synchronizeInternal(callback, --retry);
-                                        });
-                                    } else {
-                                        root.logger('.onDatasetDeleted returned false, cancelling sync.');
-                                        return callback.onFailure(new Error('Cancelled due to .onDatasetDeleted result.'));
-                                    }
-
-                                });
-
-                            }
-
-                            var updatedRemoteRecords = remoteRecords.getRecords();
-                            var lastSyncCount = remoteRecords.getSyncCount();
-                            var sessionToken = remoteRecords.getSyncSessionToken();
-
-                            // Check if there have been any updates since the last sync count.
-
-                            root.logger('Checking for remote updates since last sync count... found ' + updatedRemoteRecords.length + '.');
-
-                            if (updatedRemoteRecords.length > 0) {
-
-                                root._synchronizeResolveLocal(updatedRemoteRecords, function(err, conflicts) {
-
-                                    if (err) { return callback.onFailure(err); }
-
-                                    root.logger('Checking for conflicts... found ' + conflicts.length + '.');
-
-                                    if (conflicts.length > 0) {
-
-                                        root.logger('Conflicts detected. Deferring to .onConflict.');
-
-                                        callback.onConflict(root, conflicts, function(isContinue) {
-
-                                            if (!isContinue) {
-
-                                                root.logger('.onConflict returned false. Cancelling sync.');
-                                                return callback.onFailure(new Error('Sync cancelled. Conflict callback returned false.'));
-
-                                            } else {
-
-                                                // Update remote records or we will just hit another sync conflict next go around.
-
-                                                root._synchronizePushRemote(sessionToken, syncCount, function(){
-                                                    return root.synchronize(callback, --retry);
-                                                });
-
-                                            }
-
-                                        });
-
-                                    } else {
-
-                                        // No conflicts, update local records.
-                                        root.logger('No conflicts. Updating local records.');
-
-                                        root.local.putRecords(root.getIdentityId(), root.datasetName, updatedRemoteRecords, function(err) {
-
-                                            if (err) { return callback.onFailure(err); }
-
-                                            // Update the local sync count to match.
-
-                                            root.local.updateLastSyncCount(root.getIdentityId(), root.datasetName, lastSyncCount, function(err) {
-
-                                                if (err) { return callback.onFailure(err); }
-
-                                                root.logger('Finished resolving records. Restarting sync.');
-
-                                                // Callback returned true, starting sync.
-                                                return root.synchronize(callback, --retry);
-
-                                            });
-                                        });
-
-                                    }
-
-                                });
-
-
-                            } else {
-
-                                // Nothing updated remotely. Push local changes to remote.
-                                root.logger('Nothing updated remotely. Pushing local changes to remote.');
-
-                                root._synchronizePushRemote(sessionToken, lastSyncCount, function(err) {
-
-                                    if (err) {
-                                        root.logger('Remote push failed. Likely concurrent sync conflict. Retrying...');
-                                        return root.synchronize(callback, --retry);
-                                    }
-
-                                    root.logger('Sync successful.');
-                                    return callback.onSuccess(root, updatedRemoteRecords);
-
-                                });
-
-                            }
-                        });
-
-                    }
-
-                });
-
-            }
-
-        });
-    };
-
-    /**
-     * An internal function for helping the synchronization call to resolve local conflicts.
-     * @param remoteRecords
-     * @param callback
-     * @private
-     */
-
-    CognitoSyncDataset.prototype._synchronizeResolveLocal = function(remoteRecords, callback) {
-
-        // Step two of the synchronization flow.
-        // The dataset exists remotely so we need to determine if there are any deletions or conflicts.
-        // Once everything is resolved, we update the local records.
-
-        var root = this;
-        var conflicts = [];
-
-        // Make sure there are remote records that need resolving.
-
-        if (remoteRecords && remoteRecords.length > 0) {
-
-            // Get the local records so we can compare them to the remote records.
-
-            root.local.getRecords(root.getIdentityId(), root.datasetName, function(err, localRecords) {
-
-                var localMap = {};
-                var i, key, local;
-
-                // Build a map of the local records array for easier key lookup.
-
-                for (i=0; i<localRecords.length; i++) {
-                    localMap[localRecords[i].getKey()] = localRecords[i];
-                }
-
-                // Compare local and remote records.
-
-                for (i=0; i<remoteRecords.length; i++) {
-
-                    key = remoteRecords[i].getKey();
-                    local = localMap[key];
-
-                    if (local && local.isModified() && local.getValue() !== remoteRecords[i].getValue()) {
-                        conflicts.push(new AWS.CognitoSyncManager.Conflict(remoteRecords[i], local));
-                    }
-
-                }
-
-                return callback(null, conflicts);
-
-            });
-
-        } else {
-
-            // There are no remote records. Nothing to resolve.
-            return callback(null, conflicts);
-
-        }
-
-    };
-
-    /**
-     * An internal function for helping the synchronization call to push changes to the server.
-     * @param sessionToken
-     * @param syncCount
-     * @param callback
-     * @private
-     */
-
-    CognitoSyncDataset.prototype._synchronizePushRemote = function(sessionToken, syncCount, callback) {
-
-        // Step three of the synchronization flow.
-        // The local dataset has modifications so we need to push the local changes to remote.
-        // Then we need to update the local metadata and update/verify the sync count.
-
-        var root = this;
-
-        // Push changes to remote.
-
-        this.getModifiedRecords(function(err, localChanges) {
-
-            if (localChanges.length > 0) {
-
-                root.remote.putRecords(root.datasetName, localChanges, sessionToken, function(err, records) {
-
-                    if (err) { callback(err); }
-
-                    // Update local metadata.
-                    root.local.putRecords(root.getIdentityId(), root.datasetName, records, function(err) {
-
-                        if (err) { return callback(err); }
-
-                        var newSyncCount = 0;
-
-                        // Calculate new sync count.
-
-                        for (var r in records) {
-                            if (records.hasOwnProperty(r)) {
-                                newSyncCount = newSyncCount < records[r].getSyncCount() ? records[r].getSyncCount() : newSyncCount;
-                            }
-                        }
-
-                        root.local.updateLastSyncCount(root.getIdentityId(), root.datasetName, newSyncCount, function(err) {
-                            if (err) { return callback(err); }
-                            return callback(null, true);
-                        });
-
-                    });
-
-                });
-
-            } else {
-
-                // Nothing to change.
-                return callback(null, true);
-
-            }
-
-        });
-
-    };
-
-    return CognitoSyncDataset;
-
-})();
-
-
-/***/ }),
-/* 293 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-/**
- * Constructs a new CognitoSyncDatasetMetadata object.
- * @param metadata the serialized metadata
- * @constructor
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.DatasetMetadata = (function(){
-
-    var CognitoSyncDatasetMetadata = function(metadata) {
-
-        metadata = metadata || {};
-
-        // Assign object.
-        this.datasetName = metadata.DatasetName || '';
-        this.creationDate = new Date(metadata.CreationDate) || new Date();
-        this.lastModifiedDate = new Date(metadata.LastModifiedDate) || new Date();
-        this.lastModifiedBy = metadata.LastModifiedBy || '';
-        this.dataStorage = metadata.DataStorage || 0;
-        this.recordCount = metadata.NumRecords || 0;
-
-        // Meta metadata.
-        this.lastSyncCount = metadata.LastSyncCount || 0;
-        this.lastSyncDate = metadata.LastSyncDate ? new Date(metadata.LastSyncDate) : new Date();
-
-        // Validate object.
-        if (this.dataStorage < 0) { throw new RangeError('Storage size cannot be negative.'); }
-        if (this.recordCount < 0) { throw new RangeError('Record count cannot be negative.'); }
-
-    };
-
-    /**
-     * Get the dataset name.
-     * @returns {string} the dataset's name.
-     */
-
-    CognitoSyncDatasetMetadata.prototype.getDatasetName = function() {
-        return this.datasetName;
-    };
-
-    /**
-     * Sets the dataset name.
-     * @param {string} datasetName the name of the dataset
-     * @returns {CognitoSyncDatasetMetadata} the dataset object
-     */
-
-    CognitoSyncDatasetMetadata.prototype.setDatasetName = function(datasetName) {
-        this.datasetName = datasetName;
-        return this;
-    };
-
-    /**
-     * Get the dataset's creation date.
-     * @returns {Date} the creation date
-     */
-
-    CognitoSyncDatasetMetadata.prototype.getCreationDate = function() {
-        return this.creationDate;
-    };
-
-    /**
-     * Sets the dataset creation date.
-     * @param {Date} creationDate
-     * @returns {CognitoSyncDatasetMetadata}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.setCreationDate = function(creationDate) {
-        this.creationDate = new Date(creationDate);
-        return this;
-    };
-
-    /**
-     * Gets the dataset last modified date.
-     * @returns {Date}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.getLastModifiedDate = function() {
-        return this.lastModifiedDate;
-    };
-
-    /**
-     * Sets the dataset last modified date.
-     * @param modifiedDate
-     * @returns {CognitoSyncDatasetMetadata}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.setLastModifiedDate = function(modifiedDate) {
-        this.lastModifiedDate = new Date(modifiedDate);
-        return this;
-    };
-
-    /**
-     * Returns the user/device who last modified the dataset.
-     * @returns {String}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.getLastModifiedBy = function() {
-        return this.lastModifiedBy;
-    };
-
-    /**
-     * Sets the user/device who last modified the dataset.
-     * @param {String} modifiedBy
-     * @returns {CognitoSyncDatasetMetadata}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.setLastModifiedBy = function(modifiedBy) {
-        this.lastModifiedBy = modifiedBy;
-        return this;
-    };
-
-    /**
-     * Gets the data storage size.
-     * @returns {number}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.getDataStorage = function() {
-        return this.dataStorage;
-    };
-
-    /**
-     * Sets the data storage size.
-     * @param {Number} storageSize
-     * @returns {CognitoSyncDatasetMetadata}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.setDataStorage = function(storageSize) {
-        this.dataStorage = storageSize;
-        return this;
-    };
-
-    /**
-     * Gets the record count.
-     * @returns {number}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.getRecordCount = function() {
-        return this.recordCount;
-    };
-
-    /**
-     * Sets the record count.
-     * @param {Number} recordCount
-     * @returns {CognitoSyncDatasetMetadata}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.setRecordCount = function(recordCount) {
-        this.recordCount = recordCount;
-        return this;
-    };
-
-    /**
-     * Gets the last sync count.
-     * @returns {number}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.getLastSyncCount = function() {
-        return this.lastSyncCount;
-    };
-
-    /**
-     * Sets the last sync count.
-     * @param {Number} syncCount
-     * @returns {CognitoSyncDatasetMetadata}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.setLastSyncCount = function(syncCount) {
-        this.lastSyncCount = syncCount;
-        return this;
-    };
-
-    /**
-     * Gets the last sync date.
-     * @returns {Date}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.getLastSyncDate = function() {
-        return this.lastSyncDate;
-    };
-
-    /**
-     * Sets the last sync date.
-     * @param {Date} syncDate
-     * @returns {CognitoSyncDatasetMetadata}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.setLastSyncDate = function(syncDate) {
-        this.lastSyncDate = syncDate;
-        return this;
-    };
-
-    /**
-     * Returns a JSON string of the metadata object.
-     * @returns {String}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.toString = function() {
-        return JSON.stringify(this.toJSON());
-    };
-
-    /**
-     * Returns a flat object representing the metadata.
-     * @returns {Object}
-     */
-
-    CognitoSyncDatasetMetadata.prototype.toJSON = function() {
-        return {
-            DatasetName: this.datasetName,
-            CreationDate: this.creationDate,
-            LastModifiedDate: this.lastModifiedDate,
-            LastModifiedBy: this.lastModifiedBy,
-            DataStorage: this.dataStorage,
-            NumRecords: this.recordCount,
-            LastSyncCount: this.lastSyncCount,
-            LastSyncDate: this.lastSyncDate
-        };
-    };
-
-    return CognitoSyncDatasetMetadata;
-
-})();
-
-
-/***/ }),
-/* 294 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.DatasetUpdates = (function() {
-
-    /**
-     * Constructs a new dataset update class.
-     * @param datasetName
-     * @constructor
-     */
-
-    var CognitoSyncDatasetUpdates = function (datasetName) {
-
-        this.datasetName = datasetName;
-        this.records = [];
-        this.syncCount = 0;
-        this.syncSessionToken = '';
-        this.exists = true;
-        this.deleted = false;
-        this.mergedDatasetNameList = [];
-
-    };
-
-    CognitoSyncDatasetUpdates.prototype.getDatasetName = function () {
-        return this.datasetName;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.setDatasetName = function (datasetName) {
-        this.datasetName = datasetName;
-        return this;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.getRecords = function () {
-        return this.records;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.addRecord = function (record) {
-        this.records.push(record);
-        return this;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.getSyncCount = function () {
-        return this.syncCount;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.setSyncCount = function (syncCount) {
-        this.syncCount = syncCount;
-        return this;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.getSyncSessionToken = function () {
-        return this.syncSessionToken;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.setSyncSessionToken = function (syncToken) {
-        this.syncSessionToken = syncToken;
-        return this;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.isExists = function () {
-        return this.exists;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.setExists = function (exists) {
-        this.exists = exists;
-        return this;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.isDeleted = function () {
-        return this.deleted;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.setDeleted = function (deleted) {
-        this.deleted = deleted;
-        return this;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.getMergedDatasetNameList = function () {
-        return this.mergedDatasetNameList;
-    };
-
-    CognitoSyncDatasetUpdates.prototype.setMergedDatasetNameList = function (mergedList) {
-        this.mergedDatasetNameList = mergedList;
-        return this;
-    };
-
-    return CognitoSyncDatasetUpdates;
-
-})();
-
-
-/***/ }),
-/* 295 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.LocalStorage = (function() {
-
-    /**
-     * Constructs a new local storage class.
-     * @param options
-     * @constructor
-     */
-
-    var CognitoSyncLocalStorage = function (options) {
-
-        options = options || {};
-
-        this.store = null;
-        this.meta = null;
-
-        // Choose a data store
-        if (options.DataStore) { this.store = new options.DataStore(); }
-        else { this.store = new AWS.CognitoSyncManager.StoreInMemory(); }
-
-    };
-
-    /**
-     * Returns the string used to store dataset metadata.
-     * @param identityId
-     * @param datasetName
-     * @returns {string}
-     */
-
-    CognitoSyncLocalStorage.prototype.getMetadataKey = function (identityId, datasetName) {
-        return identityId + '.' + datasetName;
-    };
-
-    /**
-     * Load the metadata cache from the local store.
-     * @param identityId
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.loadMetadataCache = function (identityId, callback) {
-
-        var root = this;
-
-        this.store.get('_internal', '_metadata', identityId, function (err, data) {
-
-            if (err) {
-                return callback(err, null);
-            }
-            if (!data) {
-                data = {};
-            }
-
-            root.meta = data;
-            callback(null, data);
-
-        });
-
-    };
-
-    /**
-     * Save the metadata cache to the local store.
-     * @param identityId
-     * @param metadata
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.saveMetadataCache = function (identityId, metadata, callback) {
-        this.store.set('_internal', '_metadata', identityId, metadata, function (err) {
-            if (err) {
-                return callback(err);
-            }
-            return callback(null, metadata);
-        });
-    };
-
-    /**
-     * Creates a new dataset.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     * @returns {CognitoSyncLocalStorage}
-     */
-
-    CognitoSyncLocalStorage.prototype.createDataset = function (identityId, datasetName, callback) {
-
-        var root = this;
-
-        this.getDatasetMetadata(identityId, datasetName, function (err, metadata) {
-
-            var stamp = new Date().getTime();
-
-            if (!metadata) {
-
-                metadata = new AWS.CognitoSyncManager.DatasetMetadata({
-                    DatasetName: datasetName,
-                    CreationDate: stamp,
-                    LastModifiedDate: stamp
-                });
-
-                root.setDatasetMetadata(identityId, datasetName, metadata, function (err, data) {
-                    // No-op. Silent update.
-                });
-
-                callback(null, datasetName);
-
-            } else {
-                callback(null, datasetName);
-            }
-
-        });
-
-        return this;
-
-    };
-
-    /**
-     * Returns the dataset metadata.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     * @returns {CognitoSyncLocalStorage}
-     */
-
-    CognitoSyncLocalStorage.prototype.getDatasetMetadata = function (identityId, datasetName, callback) {
-
-        var key = this.getMetadataKey(identityId, datasetName);
-
-        if (this.meta !== null) {
-
-            // Meta data is already loaded. Look it up and return.
-            if (this.meta[key]) {
-                callback(null, new AWS.CognitoSyncManager.DatasetMetadata(this.meta[key]));
-            }
-            else {
-                callback(null, undefined);
-            }
-
-        } else {
-
-            // Load metadata from cache.
-            this.loadMetadataCache(identityId, function (err, cache) {
-                if (cache[key]) {
-                    callback(null, new AWS.CognitoSyncManager.DatasetMetadata(cache[key]));
-                }
-                else {
-                    callback(null, undefined);
-                }
-            });
-
-        }
-
-        return this;
-
-    };
-
-    /**
-     * Sets a dataset's metadata.
-     * @param identityId
-     * @param datasetName
-     * @param metadata
-     * @param callback
-     * @returns {CognitoSyncLocalStorage}
-     */
-
-    CognitoSyncLocalStorage.prototype.setDatasetMetadata = function (identityId, datasetName, metadata, callback) {
-
-        // Write metadata.
-        this.meta[this.getMetadataKey(identityId, datasetName)] = metadata.toJSON();
-
-        // Save metadata.
-        this.saveMetadataCache(identityId, this.meta, callback);
-
-        return this;
-
-    };
-
-
-    /**
-     * Returns a record's value from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param key
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.getValue = function (identityId, datasetName, key, callback) {
-
-        this.getRecord(identityId, datasetName, key, function (err, record) {
-
-            if (!record) {
-                return callback(null, undefined);
-            }
-
-            return callback(null, record.getValue());
-
-        });
-
-    };
-
-    /**
-     * Sets a record's value from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param key
-     * @param value
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.putValue = function (identityId, datasetName, key, value, callback) {
-
-        var root = this;
-
-        this.getRecord(identityId, datasetName, key, function (err, record) {
-
-
-            if (record && record.getValue() == value) {
-                // Record hasn't changed. All done.
-                return callback(null, record);
-            }
-
-            // If record doesn't exist, create a new instance.
-            if (!record) {
-                record = new AWS.CognitoSyncManager.Record();
-            }
-
-            // Update the record with the new properties.
-            record.setKey(key)
-                .setValue(value)
-                .setModified(true)
-                .setSyncCount(record ? record.getSyncCount() : 0)
-                .setDeviceLastModifiedDate(new Date());
-
-            root.store.set(identityId, datasetName, key, record.toJSON(), function (err) {
-
-                if (err) {
-                    return callback(err);
-                }
-
-                root.updateLastModifiedTimestamp(identityId, datasetName, function (err) {
-                    return callback(err, record);
-                });
-
-            });
-
-        });
-
-    };
-
-    /**
-     * Returns a map of values for a dataset from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.getValueMap = function (identityId, datasetName, callback) {
-
-        var values = {};
-        var record;
-
-        this.getRecords(identityId, datasetName, function (err, records) {
-
-            for (var r in records) {
-                if (records.hasOwnProperty(r)) {
-                    record = records[r];
-                    if (!record.isDeleted()) {
-                        values[record.getKey()] = record.getValue();
-                    }
-                }
-            }
-
-            callback(null, values);
-
-        });
-
-    };
-
-    /**
-     * Sets multiple records in a dataset in the local store.
-     * @param identityId
-     * @param datasetName
-     * @param values
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.putAllValues = function (identityId, datasetName, values, callback) {
-
-        var root = this;
-
-        var remain = [];
-
-        // Build a list of each value to put.
-
-        for (var v in values) {
-            if (values.hasOwnProperty(v)) {
-                remain.push(v);
-            }
-        }
-
-        var request = function (err) {
-
-            var item;
-
-            if (err) {
-                return callback(err);
-            }
-
-            if (remain.length > 0) {
-
-                // Put each item in the request.
-                item = remain.shift();
-                root.putValue(identityId, datasetName, item, values[item], request);
-
-            } else {
-
-                // Nothing else to update. Break the loop.
-                callback(null, true);
-
-            }
-
-        };
-
-        request(null, null);
-
-    };
-
-    /**
-     * Returns a list of datasets in the local store.
-     * @param identityId
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.getDatasets = function (identityId, callback) {
-
-        var datasets = [];
-
-        if (this.meta !== null) {
-
-            for (var m in this.meta) {
-                if (this.meta.hasOwnProperty(m)) {
-                    datasets.push(new AWS.CognitoSyncManager.DatasetMetadata(this.meta[m]));
-                }
-            }
-
-            return callback(null, datasets);
-
-        } else {
-
-            // Meta data is not loaded. Load it.
-            this.loadMetadataCache(identityId, function (err, metadata) {
-
-                for (var m in metadata) {
-                    if (metadata.hasOwnProperty(m)) {
-                        datasets.push(new AWS.CognitoSyncManager.DatasetMetadata(metadata[m]));
-                    }
-                }
-
-                return callback(null, datasets);
-
-            });
-
-        }
-
-    };
-
-    /**
-     * Updates dataset metadata and saves to the cache.
-     * @param identityId
-     * @param metadata
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.updateDatasetMetadata = function (identityId, metadata, callback) {
-
-        var root = this;
-
-        this.getDatasetMetadata(identityId, metadata.getDatasetName(), function (err, local) {
-
-            if (err) { callback(err); }
-
-            if (!local) { local = new AWS.CognitoSyncManager.DatasetMetadata(); }
-
-            local.setDatasetName(metadata.getDatasetName())
-                .setCreationDate(metadata.getCreationDate())
-                .setLastModifiedDate(metadata.getLastModifiedDate())
-                .setLastModifiedBy(metadata.getLastModifiedBy())
-                .setLastSyncCount(metadata.getLastSyncCount())
-                .setRecordCount(metadata.getRecordCount())
-                .setDataStorage(metadata.getDataStorage());
-
-            // Save the updated metadata to the in-memory store.
-
-            root.meta[root.getMetadataKey(identityId, metadata.getDatasetName())] = local.toJSON();
-
-            // Save the updated metadata to the on-disk store.
-
-            root.saveMetadataCache(identityId, root.meta, function (err) {
-                if (err) { return callback(err); }
-                return callback(null, local);
-            });
-
-        });
-
-    };
-
-    /**
-     * Returns a record from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param key
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.getRecord = function (identityId, datasetName, key, callback) {
-        this.store.get(identityId, datasetName, key, function (err, record) {
-            if (record) { return callback(null, new AWS.CognitoSyncManager.Record(record)); }
-            return callback(new Error('Key doesn\'t exist.'), null);
-        });
-    };
-
-    /**
-     * Returns all records from a dataset in the local store.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.getRecords = function (identityId, datasetName, callback) {
-
-        var records = [];
-
-        this.store.getAll(identityId, datasetName, function (err, local) {
-
-            for (var l in local) {
-                if (local.hasOwnProperty(l)) {
-                    records.push(new AWS.CognitoSyncManager.Record(local[l]));
-                }
-            }
-
-            callback(null, records);
-
-        });
-
-    };
-
-    /**
-     * Puts multiple records into a dataset in the local store.
-     * @param identityId
-     * @param datasetName
-     * @param records
-     * @param callback
-     * @returns {CognitoSyncLocalStorage}
-     */
-
-    CognitoSyncLocalStorage.prototype.putRecords = function (identityId, datasetName, records, callback) {
-
-        var root = this;
-        records = records || [];
-        records = records.slice();
-
-        var request = function () {
-
-            if (records.length > 0) {
-
-                root.updateAndClearRecord(identityId, datasetName, records.shift(), function (err) {
-
-                    if (err) { return callback(err); }
-                    if (records.length === 0) { return callback(null, true); }
-
-                    request();
-
-                });
-
-            }
-
-        };
-
-        request();
-
-    };
-
-    /**
-     * Deletes a dataset from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.deleteDataset = function (identityId, datasetName, callback) {
-
-        var root = this;
-
-        // Delete the records.
-
-        this.store.removeAll(identityId, datasetName, function (err) {
-
-            if (err) { return callback(err); }
-
-            // Update dataset metadata.
-
-            root.getDatasetMetadata(identityId, datasetName, function (err, metadata) {
-
-                if (err) { return callback(err); }
-
-                metadata.setLastModifiedDate(new Date());
-                metadata.setLastSyncCount(-1);
-
-                root.updateDatasetMetadata(identityId, metadata, function (err) {
-                    if (err) { return callback(err); }
-                    return callback(null, true);
-                });
-
-            });
-
-        });
-
-    };
-
-    /**
-     * Removes dataset from local storage. Does not remove dataset from remote storage.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.purgeDataset = function (identityId, datasetName, callback) {
-
-        var root = this;
-
-        // Delete records.
-        this.deleteDataset(identityId, datasetName, function (err) {
-
-            if (err) { callback(err); }
-
-            // Delete metadata.
-            delete(root.meta[root.getMetadataKey(identityId, datasetName)]);
-
-            // Save metadata.
-            root.saveMetadataCache(identityId, root.meta, callback);
-
-        });
-
-    };
-
-    /**
-     * Returns the last sync count for a dataset in the local store.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.getLastSyncCount = function (identityId, datasetName, callback) {
-
-        this.getDatasetMetadata(identityId, datasetName, function (err, metadata) {
-
-            if (metadata) { return callback(null, metadata.getLastSyncCount()); }
-
-            callback(new Error('Dataset doesn\'t exist.'), null);
-
-        });
-
-    };
-
-    /**
-     * Returns the modified records in a dataset from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.getModifiedRecords = function (identityId, datasetName, callback) {
-
-        var modified = [];
-
-        this.getRecords(identityId, datasetName, function (err, records) {
-
-            for (var i = 0; i < records.length; i++) {
-
-                if (records[i].isModified()) {
-                    modified.push(records[i]);
-                }
-
-            }
-
-            callback(null, modified);
-
-        });
-
-    };
-
-    /**
-     * Updates the last sync count for a dataset in the local store.
-     * @param identityId
-     * @param datasetName
-     * @param lastSyncCount
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.updateLastSyncCount = function (identityId, datasetName, lastSyncCount, callback) {
-
-        var root = this;
-
-        this.getDatasetMetadata(identityId, datasetName, function (err, meta) {
-
-            if (err) {
-                callback(err);
-            }
-
-            meta.setLastSyncCount(lastSyncCount).setLastSyncDate(new Date());
-
-            root.updateDatasetMetadata(identityId, meta, function (err) {
-                if (err) {
-                    callback(err);
-                }
-                callback(null, true);
-            });
-
-        });
-
-    };
-
-    /**
-     * Removes all data from the local store.
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.wipeData = function (callback) {
-        this.store.wipe(callback);
-    };
-
-    /**
-     * Modifies the date a dataset was last modified in the local store.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.updateLastModifiedTimestamp = function (identityId, datasetName, callback) {
-
-        var root = this;
-
-        this.getDatasetMetadata(identityId, datasetName, function (err, meta) {
-
-            if (err) {
-                return callback(err);
-            }
-
-            meta.setLastModifiedDate(new Date());
-
-            root.updateDatasetMetadata(identityId, meta, function (err) {
-                if (err) {
-                    return callback(err);
-                }
-                return callback(null, true);
-            });
-
-        });
-
-    };
-
-    /**
-     * Removes a record from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param record
-     */
-
-    CognitoSyncLocalStorage.prototype.removeRecord = function (identityId, datasetName, record) {
-        this.store.remove(identityId, datasetName, record, function (err) {
-            if (err) { return callback(err); }
-            return callback(null, true);
-        });
-    };
-
-    /**
-     * Saves a record to the local store.
-     * @param identityId
-     * @param datasetName
-     * @param record
-     * @param callback
-     */
-
-    CognitoSyncLocalStorage.prototype.updateAndClearRecord = function (identityId, datasetName, record, callback) {
-        this.store.set(identityId, datasetName, record.getKey(), record.toJSON(), function (err) {
-            if (err) { return callback(err); }
-            return callback(null, true);
-        });
-    };
-
-    return CognitoSyncLocalStorage;
-
-})();
-
-
-/***/ }),
-/* 296 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-if (AWS === undefined) {
-    throw new Error("AWS SDK must be loaded before loading the Sync Manager.");
-} else {
-
-    /**
-     * Constructs a new Cognito Sync Manager class.
-     * @constructor
-     */
-
-
-    AWS.CognitoSyncManager = function (options) {
-
-        options = options || {};
-
-        var USER_AGENT = 'CognitoJavaScriptSDK/1';
-
-        this.provider = AWS.config.credentials;
-        this.identityPoolId = this.provider.params.IdentityPoolId;
-        this.region = AWS.config.region;
-
-        // Hook to set identityId from cache if it's null in AWS credentials
-        if (!this.provider.identityId && this.provider.params.IdentityId) {
-            this.provider.identityId = this.provider.params.IdentityId;
-        }
-
-        // Setup logger.
-        this.logger = options.log;
-        if (typeof this.logger !== 'function') {
-            this.logger = function () {
-            };
-        }
-
-        // Initialize local store.
-        this.local = new AWS.CognitoSyncManager.LocalStorage({DataStore: options.DataStore ? options.DataStore : AWS.CognitoSyncManager.StoreLocalStorage});
-
-        // Initialize remote store.
-        this.remote = new AWS.CognitoSyncManager.RemoteStorage(this.identityPoolId, this.provider);
-        this.remote.setUserAgent(USER_AGENT);
-
-    };
-
-    /**
-     * Returns a dataset object, creating it if it doesn't already exist.
-     * @param {string} datasetName
-     * @param {function} callback
-     */
-
-    AWS.CognitoSyncManager.prototype.openOrCreateDataset = function (datasetName, callback) {
-
-        var root = this;
-        var namePattern = new RegExp('^[a-zA-Z0-9_.:-]{1,128}$');
-
-        // Validate the proposed dataset name.
-
-        if (namePattern.test(datasetName)) {
-
-            this.local.createDataset(this.getIdentityId(), datasetName, function (err, data) {
-                if (err) {
-                    return callback(err, null);
-                }
-                callback(null, new AWS.CognitoSyncManager.Dataset(data, root.provider, root.local, root.remote, root.logger));
-            });
-
-        } else {
-
-            callback(new Error('Dataset name must match the pattern ' + namePattern.toString()));
-
-        }
-
-    };
-
-    /**
-     * Returns a list of datasets.
-     * @param {function} callback
-     */
-
-    AWS.CognitoSyncManager.prototype.listDatasets = function (callback) {
-        this.local.getDatasets(this.getIdentityId(), callback);
-    };
-
-    /**
-     * Replaces the local dataset metadata with the latest remote metadata.
-     * @param callback
-     */
-
-    AWS.CognitoSyncManager.prototype.refreshDatasetMetadata = function (callback) {
-
-        var root = this;
-
-        this.remote.getDatasets(function (err, datasets) {
-
-            var metadata = [];
-
-            var request = function (ds) {
-                root.local.updateDatasetMetadata(root.getIdentityId(), ds, response);
-            };
-
-            var response = function (err, md) {
-                metadata.push(md);
-                if (datasets.length > 0) {
-                    request(datasets.shift());
-                }
-                else {
-                    callback(null, metadata);
-                }
-            };
-
-            if (datasets.length > 0) {
-                request(datasets.shift(), callback);
-            } else {
-                callback(null, []);
-            }
-
-        });
-    };
-
-    /**
-     * Removes the local storage and invalidates the cached identity id.
-     */
-
-    AWS.CognitoSyncManager.prototype.wipeData = function () {
-        this.provider.clearCachedId();
-        this.local.wipeData();
-    };
-
-    /**
-     * Returns the cached identity id.
-     * @returns {string}
-     */
-
-    AWS.CognitoSyncManager.prototype.getIdentityId = function () {
-        return this.provider.identityId;
-    };
-
-}
-
-/***/ }),
-/* 297 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.Record = (function() {
-
-    /**
-     * Constructs a new remote storage class.
-     * @param {Object} data
-     * @param {string} data.Key - The record's key
-     * @param {string} data.Value - The record's key
-     * @param {number} data.SyncCount
-     * @param {Date} data.LastModifiedDate
-     * @param {string} data.LastModifiedBy
-     * @param {Date} data.DeviceLastModifiedDate
-     * @param {boolean} data.Modified
-     * @constructor
-     */
-
-    var CognitoSyncRecord = function (data) {
-
-        data = data || {};
-
-        // Assign object
-        this.key = data.Key || '';
-        this.value = data.Value || '';
-        this.syncCount = data.SyncCount || 0;
-        this.lastModifiedDate = data.LastModifiedDate ? new Date(data.LastModifiedDate) : new Date();
-        this.lastModifiedBy = data.LastModifiedBy || '';
-        this.deviceLastModifiedDate = data.DeviceLastModifiedDate ? new Date(data.DeviceLastModifiedDate) : new Date();
-        this.modified = data.Modified || false;
-
-    };
-
-    /**
-     * Returns the record's key.
-     * @returns {string}
-     */
-
-    CognitoSyncRecord.prototype.getKey = function () {
-        return this.key;
-    };
-
-    /**
-     * Sets the record's key.
-     * @param key
-     * @returns {CognitoSyncRecord}
-     */
-
-    CognitoSyncRecord.prototype.setKey = function (key) {
-        this.key = key;
-        return this;
-    };
-
-    /**
-     * Returns the record's value.
-     * @returns {string}
-     */
-
-    CognitoSyncRecord.prototype.getValue = function () {
-        return this.value;
-    };
-
-    /**
-     * Sets the record's value.
-     * @param value
-     * @returns {CognitoSyncRecord}
-     */
-
-    CognitoSyncRecord.prototype.setValue = function (value) {
-        this.value = value;
-        return this;
-    };
-
-    /**
-     * Returns the current sync count.
-     * @returns {number}
-     */
-
-    CognitoSyncRecord.prototype.getSyncCount = function () {
-        return this.syncCount;
-    };
-
-    /**
-     * Sets the current sync count.
-     * @param syncCount
-     * @returns {CognitoSyncRecord}
-     */
-
-    CognitoSyncRecord.prototype.setSyncCount = function (syncCount) {
-        this.syncCount = syncCount;
-        return this;
-    };
-
-    /**
-     * Returns the date the record was last modified.
-     * @returns {Date}
-     */
-
-    CognitoSyncRecord.prototype.getLastModifiedDate = function () {
-        return new Date(this.lastModifiedDate);
-    };
-
-    /**
-     * Sets the date the record was last modified.
-     * @param modifiedDate
-     * @returns {CognitoSyncRecord}
-     */
-
-    CognitoSyncRecord.prototype.setLastModifiedDate = function (modifiedDate) {
-        this.lastModifiedDate = new Date(modifiedDate);
-        return this;
-    };
-
-    /**
-     * Returns the user/device who last modified the record.
-     * @returns {string}
-     */
-
-    CognitoSyncRecord.prototype.getLastModifiedBy = function () {
-        return this.lastModifiedBy;
-    };
-
-    /**
-     * Sets the user/device who last modified the record.
-     * @param modifiedBy
-     * @returns {CognitoSyncRecord}
-     */
-
-    CognitoSyncRecord.prototype.setLastModifiedBy = function (modifiedBy) {
-        this.lastModifiedBy = modifiedBy;
-        return this;
-    };
-
-    /**
-     * Returns the date when the record was last modified on the local device.
-     * @returns {Date}
-     */
-
-    CognitoSyncRecord.prototype.getDeviceLastModifiedDate = function () {
-        return new Date(this.deviceLastModifiedDate);
-    };
-
-    /**
-     * Sets the date when the record was last modified on the local device.
-     * @param modifiedDate
-     * @returns {CognitoSyncRecord}
-     */
-
-    CognitoSyncRecord.prototype.setDeviceLastModifiedDate = function (modifiedDate) {
-        this.deviceLastModifiedDate = new Date(modifiedDate);
-        return this;
-    };
-
-    /**
-     * Returns if the record has been modified.
-     * @returns {boolean}
-     */
-
-    CognitoSyncRecord.prototype.isModified = function () {
-        return this.modified;
-    };
-
-    /**
-     * Sets if the record has been modified.
-     * @param modified
-     * @returns {CognitoSyncRecord}
-     */
-
-    CognitoSyncRecord.prototype.setModified = function (modified) {
-        this.modified = modified;
-        return this;
-    };
-
-    /**
-     * Returns if the record has been deleted locally.
-     * @returns {boolean}
-     */
-
-    CognitoSyncRecord.prototype.isDeleted = function () {
-        return this.value === null;
-    };
-
-    /**
-     * Returns a string representation of the record.
-     * @returns {string}
-     */
-
-    CognitoSyncRecord.prototype.toString = function () {
-        return JSON.stringify(this);
-    };
-
-    /**
-     * Returns a flat object representing the record.
-     * @returns {object}
-     */
-
-    CognitoSyncRecord.prototype.toJSON = function () {
-        return {
-            Key: this.key,
-            Value: this.value,
-            SyncCount: this.syncCount,
-            LastModifiedDate: this.lastModifiedDate,
-            LastModifiedBy: this.lastModifiedBy,
-            DeviceLastModifiedDate: this.deviceLastModifiedDate,
-            Modified: this.modified
-        };
-    };
-
-    return CognitoSyncRecord;
-
-})();
-
-
-/***/ }),
-/* 298 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.RemoteStorage = (function() {
-
-    /**
-     * Constructs a new remote storage class.
-     * @param {string} identityPoolId
-     * @param provider
-     * @constructor
-     */
-
-    var CognitoSyncRemoteStorage = function (identityPoolId, provider) {
-
-        this.identityPoolId = identityPoolId;
-        this.provider = provider;
-        this.client = new AWS.CognitoSync();
-
-    };
-
-    CognitoSyncRemoteStorage.prototype.userAgent = '';
-
-    /**
-     * Gets the current identity ID from the AWS credentials provider.
-     * @returns {string}
-     */
-
-    CognitoSyncRemoteStorage.prototype.getIdentityId = function () {
-        return this.provider.identityId;
-    };
-
-    /**
-     * Returns a list of datasets.
-     * @param {function} callback Callback(Error, Datasets)
-     */
-
-    CognitoSyncRemoteStorage.prototype.getDatasets = function (callback) {
-
-        var root = this;
-        var datasets = [];
-        var nextToken = null;
-
-        // Define the request function. Will be called once per page of results.
-
-        var fetch = function (token, cb) {
-            root.client.listDatasets({
-                IdentityId: root.getIdentityId(),
-                IdentityPoolId: root.identityPoolId,
-                MaxResults: 64,
-                NextToken: token
-            }, cb);
-        };
-
-        // Define the response function. Will be called after each request returns.
-
-        var process = function (err, data) {
-
-            var results = data.Datasets || [];
-
-            // Add the new page of results to the list of datasets.
-
-            for (var i = 0; i < results.length; i++) {
-                datasets.push(new AWS.CognitoSyncManager.DatasetMetadata(results[i]));
-            }
-
-            // Get the NextToken. If it exists, fetch the next page of results, otherwise callback.
-
-            nextToken = data.NextToken;
-
-            if (nextToken) {
-                fetch(nextToken, process);
-            }
-            else {
-                callback(null, datasets);
-            }
-
-        };
-
-        // Start the first fetch.
-
-        fetch(nextToken, process);
-
-    };
-
-    /**
-     * Lists all updates on the remote store since the given sync count.
-     * @param {string} datasetName
-     * @param {number} lastSyncCount
-     * @param {function} callback Callback(Error, Updates)
-     */
-
-    CognitoSyncRemoteStorage.prototype.listUpdates = function (datasetName, lastSyncCount, callback) {
-
-        var root = this;
-        var nextToken = null;
-        var updatedRecords = new AWS.CognitoSyncManager.DatasetUpdates(datasetName);
-
-        var request = function (token, cb) {
-            root.client.listRecords({
-                DatasetName: datasetName,
-                IdentityId: root.getIdentityId(),
-                IdentityPoolId: root.identityPoolId,
-                LastSyncCount: lastSyncCount,
-                MaxResults: 1024,
-                NextToken: token
-            }, cb);
-        };
-
-        var response = function (err, data) {
-
-            if (err) { return callback(err); }
-
-            data = data || {};
-
-            var results = data.Records || [], r;
-
-            for (var i = 0; i < results.length; i++) {
-                r = new AWS.CognitoSyncManager.Record(results[i]);
-                r.setModified(false);
-                updatedRecords.addRecord(r);
-            }
-
-            updatedRecords.setSyncSessionToken(data.SyncSessionToken)
-                .setSyncCount(data.DatasetSyncCount)
-                .setExists(data.DatasetExists)
-                .setDeleted(data.DatasetDeletedAfterRequestedSyncCount);
-
-            if (data.MergedDatasetNames) {
-                updatedRecords.setMergedDatasetNameList(data.MergedDatasetNames);
-            }
-
-            nextToken = data.NextToken;
-
-            if (nextToken) {
-                request(nextToken, response);
-            } else {
-                callback(null, updatedRecords);
-            }
-
-        };
-
-
-        request(null, response);
-
-    };
-
-    /**
-     * Write records to the remote data store.
-     * @param {string} datasetName
-     * @param {array} records
-     * @param {string} syncSessionToken
-     * @param {function} callback
-     */
-
-    CognitoSyncRemoteStorage.prototype.putRecords = function (datasetName, records, syncSessionToken, callback) {
-
-        var root = this;
-
-        var patches = [];
-        var record;
-
-        for (var r in records) {
-            if (records.hasOwnProperty(r)) {
-
-                record = records[r];
-
-                patches.push({
-                    Key: record.getKey(),
-                    Op: record.getValue() ? 'replace' : 'remove',
-                    SyncCount: record.getSyncCount(),
-                    DeviceLastModifiedDate: record.getDeviceLastModifiedDate(),
-                    Value: record.getValue()
-                });
-
-            }
-        }
-
-        this.client.updateRecords({
-            DatasetName: datasetName,
-            IdentityId: root.getIdentityId(),
-            IdentityPoolId: root.identityPoolId,
-            SyncSessionToken: syncSessionToken,
-            RecordPatches: patches
-        }, function (err, data) {
-
-            var dsName = typeof datasetName === 'string' ? datasetName : '(invalid dataset name)';
-
-            if (err) {
-                return callback(new Error('Failed to update records in dataset: ' + dsName + ' (' + err.message + ')'), null);
-            }
-
-            var records = [], r;
-
-            for (var i = 0; i < data.Records.length; i++) {
-                r = new AWS.CognitoSyncManager.Record(data.Records[i]);
-                r.setModified(false);
-                records.push(r);
-            }
-
-            return callback(null, records);
-
-        });
-
-    };
-
-    /**
-     * Delete the dataset from the remote data store.
-     * @param {string} datasetName
-     * @param {function} callback Callback(Error, IsSuccessful)
-     */
-
-    CognitoSyncRemoteStorage.prototype.deleteDataset = function (datasetName, callback) {
-
-        this.client.deleteDataset({
-            DatasetName: datasetName,
-            IdentityId: this.getIdentityId(),
-            IdentityPoolId: this.identityPoolId
-        }, function (err, data) {
-
-            if (err) {
-                return callback(new Error('Failed to delete dataset.'), null);
-            }
-
-            return callback(null, data);
-
-        });
-
-    };
-
-    /**
-     * Gets the dataset metdata from the remote data store.
-     * @param {string} datasetName
-     * @param {function} callback Callback(Error, Metadata)
-     */
-
-    CognitoSyncRemoteStorage.prototype.getDatasetMetadata = function (datasetName, callback) {
-
-        this.client.describeDataset({
-            DatasetName: datasetName,
-            IdentityId: this.getIdentityId(),
-            IdentityPoolId: this.identityPoolId
-        }, function (err, data) {
-
-            if (err) {
-                return callback(new Error('Failed to get dataset metadata.'), null);
-            }
-
-            return callback(null, new AWS.CognitoSyncManager.DatasetMetadata(data.Dataset));
-
-        });
-
-    };
-
-    CognitoSyncRemoteStorage.prototype.setUserAgent = function (userAgent) {
-        this.userAgent = userAgent;
-    };
-
-    return CognitoSyncRemoteStorage;
-
-})();
-
-/***/ }),
-/* 299 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.StoreInMemory = (function() {
-
-    /**
-     * Storage adapter for using the browser's memory as the Cognito Sync data cache.
-     * @prop {object} store A reference to an object in memory.
-     * @constructor
-     */
-
-    var CognitoSyncStoreInMemory = function () {
-        this.store = {};
-    };
-
-    /**
-     * Constructs the key by combining the identity ID and the dataset name.
-     * @param identityId
-     * @param datasetName
-     * @returns {string}
-     */
-
-    CognitoSyncStoreInMemory.prototype.makeKey = function (identityId, datasetName) {
-        return identityId + '.' + datasetName;
-    };
-
-    /**
-     * Gets an item from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param key
-     * @param callback
-     */
-
-    CognitoSyncStoreInMemory.prototype.get = function (identityId, datasetName, key, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        if (!identityId || !datasetName) {
-            return callback(new Error('You must provide an identity id and dataset name.'), null);
-        }
-
-        if (this.store[k] && this.store[k][key]) {
-            return callback(null, this.store[k][key]);
-        }
-
-        return callback(null, undefined);
-
-    };
-
-    /**
-     * Gets a dataset from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncStoreInMemory.prototype.getAll = function (identityId, datasetName, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        if (!identityId || !datasetName) {
-            return callback(new Error('You must provide an identity id and dataset name.'), null);
-        }
-
-        return callback(null, this.store[k]);
-
-    };
-
-    /**
-     * Sets a record in the local store.
-     * @param identityId
-     * @param datasetName
-     * @param key
-     * @param value
-     * @param callback
-     */
-
-    CognitoSyncStoreInMemory.prototype.set = function (identityId, datasetName, key, value, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        var entry = this.store[k] || {};
-        entry[key] = value;
-
-        this.store[k] = entry;
-
-        return callback(null, entry);
-
-    };
-
-    /**
-     * Sets an entire dataset in the local store.
-     * @param identityId
-     * @param datasetName
-     * @param obj
-     * @param callback
-     */
-
-    CognitoSyncStoreInMemory.prototype.setAll = function (identityId, datasetName, obj, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-        this.store[k] = obj;
-
-        return callback(null, obj);
-
-    };
-
-    /**
-     * Removes a record from the local store.
-     * @param identityId
-     * @param datasetName
-     * @param key
-     * @param callback
-     */
-
-    CognitoSyncStoreInMemory.prototype.remove = function (identityId, datasetName, key, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        var records = JSON.parse(this.store[k]);
-        if (!records) {
-            records = {};
-        }
-
-        delete(records[key]);
-
-        this.store[k] = JSON.stringify(records);
-
-        return callback(null, true);
-
-    };
-
-    /**
-     * Removes dataset from local store.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncStoreInMemory.prototype.removeAll = function (identityId, datasetName, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-        delete(this.store[k]);
-
-        return callback(null, true);
-
-    };
-
-    /**
-     * Clears the local store, including cached values.
-     * @param callback
-     */
-
-    CognitoSyncStoreInMemory.prototype.wipe = function (callback) {
-        this.store = {};
-        return callback(null, true);
-    };
-
-    return CognitoSyncStoreInMemory;
-
-})();
-
-/***/ }),
-/* 300 */
-/***/ (function(module, exports) {
-
-/**
- * Copyright 2014 Amazon.com,
- * Inc. or its affiliates. All Rights Reserved.
- *
- * Licensed under the Amazon Software License (the "License").
- * You may not use this file except in compliance with the
- * License. A copy of the License is located at
- *
- *     http://aws.amazon.com/asl/
- *
- * or in the "license" file accompanying this file. This file is
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
- * CONDITIONS OF ANY KIND, express or implied. See the License
- * for the specific language governing permissions and
- * limitations under the License.
- */
-
-AWS = AWS || {};
-AWS.CognitoSyncManager = AWS.CognitoSyncManager || {};
-
-AWS.CognitoSyncManager.StoreLocalStorage = (function() {
-
-    /**
-     * Storage adapter for using the browser's local storage as the Cognito Sync data cache.
-     * @prop {window.localStorage} store A reference to the browser's local storage API.
-     * @constructor
-     */
-
-    var CognitoSyncStoreLocalStorage = function () {
-        this.store = this._isAvailable() ? window.localStorage : new AWS.CognitoSyncManager.StoreInMemory();
-    };
-
-    /**
-     * Constructs the key by combining the identity ID and the dataset name.
-     * @param {string} identityId
-     * @param {string} datasetName
-     * @returns {string}
-     */
-
-    CognitoSyncStoreLocalStorage.prototype.makeKey = function (identityId, datasetName) {
-        return identityId + '.' + datasetName;
-    };
-
-    /**
-     * Returns a value from local storage.
-     * @param {string} identityId The identity that owns the dataset.
-     * @param {string} datasetName The name of the dataset.
-     * @param {string} key The key of the record to return.
-     * @param {function} callback
-     */
-
-    CognitoSyncStoreLocalStorage.prototype.get = function (identityId, datasetName, key, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        if (!identityId || !datasetName) {
-            return callback(new Error('You must provide an identity id and dataset name.'), null);
-        }
-
-        var records = JSON.parse(this.store.getItem(k));
-
-        if (records && records[key]) {
-            return callback(null, records[key]);
-        }
-
-        return callback(null, undefined);
-
-    };
-
-    /**
-     * Gets all records from local storage.
-     * @param identityId
-     * @param datasetName
-     * @param callback Callback(Error, Items)
-     */
-
-    CognitoSyncStoreLocalStorage.prototype.getAll = function (identityId, datasetName, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        if (!identityId || !datasetName) {
-            return callback(new Error('You must provide an identity id and dataset name.'), null);
-        }
-
-        return callback(null, JSON.parse(this.store.getItem(k)));
-
-    };
-
-    /**
-     * Sets a value in local storage.
-     * @param identityId
-     * @param datasetName
-     * @param key
-     * @param value
-     * @param callback Callback(Error, Records)
-     */
-
-    CognitoSyncStoreLocalStorage.prototype.set = function (identityId, datasetName, key, value, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        var records = JSON.parse(this.store.getItem(k));
-        if (!records) {
-            records = {};
-        }
-
-        records[key] = value;
-
-        this.store.setItem(k, JSON.stringify(records));
-
-        callback(null, records);
-
-        return this;
-
-    };
-
-    /**
-     * Sets all values of a dataset.
-     * @param identityId
-     * @param datasetName
-     * @param obj
-     * @param callback Callback(Error, Object)
-     */
-
-    CognitoSyncStoreLocalStorage.prototype.setAll = function (identityId, datasetName, obj, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        this.store.setItem(k, JSON.stringify(obj));
-
-        return callback(null, obj);
-
-    };
-
-    /**
-     * Removes an item from local storage.
-     * @param identityId
-     * @param datasetName
-     * @param key
-     * @param callback
-     */
-
-    CognitoSyncStoreLocalStorage.prototype.remove = function (identityId, datasetName, key, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-
-        var records = JSON.parse(this.store.getItem(k));
-        if (!records) {
-            records = {};
-        }
-
-        delete(records[key]);
-
-        this.store.setItem(k, JSON.stringify(records));
-
-        return callback(null, true);
-
-    };
-
-    /**
-     * Removes dataset from local storage.
-     * @param identityId
-     * @param datasetName
-     * @param callback
-     */
-
-    CognitoSyncStoreLocalStorage.prototype.removeAll = function (identityId, datasetName, callback) {
-
-        var k = this.makeKey(identityId, datasetName);
-        this.store.removeItem(k);
-
-        return callback(null, true);
-
-    };
-
-    /**
-     * Clears local storage, including cached values.
-     * @param callback
-     */
-
-    CognitoSyncStoreLocalStorage.prototype.wipe = function (callback) {
-
-        // We don't want to remove the cached identity id. Remove all other keys.
-        // Remove own keys only
-
-        var ownKeysRegExp = /^[\w-]+:[0-9a-f-]+\..+$/;
-
-        for (var prop in this.store) {
-            if (this.store.hasOwnProperty(prop)) {
-                if (ownKeysRegExp.test(prop)) {
-                    this.store.removeItem(prop);
-                }
-            }
-        }
-
-        // exception from ownKeysRegExp
-        this.store.removeItem(this.makeKey('_internal', '_metadata'));
-
-        if (callback) {
-            return callback(null, true);
-        }
-        return this;
-
-    };
-
-    /**
-     * Checks for localStorage availability.
-     */
-
-    CognitoSyncStoreLocalStorage.prototype._isAvailable = function () {
-        var uid = new Date();
-        var result;
-
-        try {
-            window.localStorage.setItem(uid, uid);
-            result = window.localStorage.getItem(uid) == uid;
-            window.localStorage.removeItem(uid);
-        } catch (exception) {
-            result = false;
-        }
-
-        return result;
-    };
-
-    return CognitoSyncStoreLocalStorage;
-
-})();
-
-/***/ }),
-/* 301 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var asn1 = __webpack_require__(44);
-var inherits = __webpack_require__(2);
-
-var api = exports;
-
-api.define = function define(name, body) {
-  return new Entity(name, body);
-};
-
-function Entity(name, body) {
-  this.name = name;
-  this.body = body;
-
-  this.decoders = {};
-  this.encoders = {};
-};
-
-Entity.prototype._createNamed = function createNamed(base) {
-  var named;
-  try {
-    named = __webpack_require__(285).runInThisContext(
-      '(function ' + this.name + '(entity) {\n' +
-      '  this._initNamed(entity);\n' +
-      '})'
-    );
-  } catch (e) {
-    named = function (entity) {
-      this._initNamed(entity);
-    };
-  }
-  inherits(named, base);
-  named.prototype._initNamed = function initnamed(entity) {
-    base.call(this, entity);
-  };
-
-  return new named(this);
-};
-
-Entity.prototype._getDecoder = function _getDecoder(enc) {
-  enc = enc || 'der';
-  // Lazily create decoder
-  if (!this.decoders.hasOwnProperty(enc))
-    this.decoders[enc] = this._createNamed(asn1.decoders[enc]);
-  return this.decoders[enc];
-};
-
-Entity.prototype.decode = function decode(data, enc, options) {
-  return this._getDecoder(enc).decode(data, options);
-};
-
-Entity.prototype._getEncoder = function _getEncoder(enc) {
-  enc = enc || 'der';
-  // Lazily create encoder
-  if (!this.encoders.hasOwnProperty(enc))
-    this.encoders[enc] = this._createNamed(asn1.encoders[enc]);
-  return this.encoders[enc];
-};
-
-Entity.prototype.encode = function encode(data, enc, /* internal */ reporter) {
-  return this._getEncoder(enc).encode(data, reporter);
-};
-
-
-/***/ }),
-/* 302 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var Reporter = __webpack_require__(45).Reporter;
-var EncoderBuffer = __webpack_require__(45).EncoderBuffer;
-var DecoderBuffer = __webpack_require__(45).DecoderBuffer;
-var assert = __webpack_require__(28);
-
-// Supported tags
-var tags = [
-  'seq', 'seqof', 'set', 'setof', 'objid', 'bool',
-  'gentime', 'utctime', 'null_', 'enum', 'int', 'objDesc',
-  'bitstr', 'bmpstr', 'charstr', 'genstr', 'graphstr', 'ia5str', 'iso646str',
-  'numstr', 'octstr', 'printstr', 't61str', 'unistr', 'utf8str', 'videostr'
-];
-
-// Public methods list
-var methods = [
-  'key', 'obj', 'use', 'optional', 'explicit', 'implicit', 'def', 'choice',
-  'any', 'contains'
-].concat(tags);
-
-// Overrided methods list
-var overrided = [
-  '_peekTag', '_decodeTag', '_use',
-  '_decodeStr', '_decodeObjid', '_decodeTime',
-  '_decodeNull', '_decodeInt', '_decodeBool', '_decodeList',
-
-  '_encodeComposite', '_encodeStr', '_encodeObjid', '_encodeTime',
-  '_encodeNull', '_encodeInt', '_encodeBool'
-];
-
-function Node(enc, parent) {
-  var state = {};
-  this._baseState = state;
-
-  state.enc = enc;
-
-  state.parent = parent || null;
-  state.children = null;
-
-  // State
-  state.tag = null;
-  state.args = null;
-  state.reverseArgs = null;
-  state.choice = null;
-  state.optional = false;
-  state.any = false;
-  state.obj = false;
-  state.use = null;
-  state.useDecoder = null;
-  state.key = null;
-  state['default'] = null;
-  state.explicit = null;
-  state.implicit = null;
-  state.contains = null;
-
-  // Should create new instance on each method
-  if (!state.parent) {
-    state.children = [];
-    this._wrap();
-  }
-}
-module.exports = Node;
-
-var stateProps = [
-  'enc', 'parent', 'children', 'tag', 'args', 'reverseArgs', 'choice',
-  'optional', 'any', 'obj', 'use', 'alteredUse', 'key', 'default', 'explicit',
-  'implicit', 'contains'
-];
-
-Node.prototype.clone = function clone() {
-  var state = this._baseState;
-  var cstate = {};
-  stateProps.forEach(function(prop) {
-    cstate[prop] = state[prop];
-  });
-  var res = new this.constructor(cstate.parent);
-  res._baseState = cstate;
-  return res;
-};
-
-Node.prototype._wrap = function wrap() {
-  var state = this._baseState;
-  methods.forEach(function(method) {
-    this[method] = function _wrappedMethod() {
-      var clone = new this.constructor(this);
-      state.children.push(clone);
-      return clone[method].apply(clone, arguments);
-    };
-  }, this);
-};
-
-Node.prototype._init = function init(body) {
-  var state = this._baseState;
-
-  assert(state.parent === null);
-  body.call(this);
-
-  // Filter children
-  state.children = state.children.filter(function(child) {
-    return child._baseState.parent === this;
-  }, this);
-  assert.equal(state.children.length, 1, 'Root node can have only one child');
-};
-
-Node.prototype._useArgs = function useArgs(args) {
-  var state = this._baseState;
-
-  // Filter children and args
-  var children = args.filter(function(arg) {
-    return arg instanceof this.constructor;
-  }, this);
-  args = args.filter(function(arg) {
-    return !(arg instanceof this.constructor);
-  }, this);
-
-  if (children.length !== 0) {
-    assert(state.children === null);
-    state.children = children;
-
-    // Replace parent to maintain backward link
-    children.forEach(function(child) {
-      child._baseState.parent = this;
-    }, this);
-  }
-  if (args.length !== 0) {
-    assert(state.args === null);
-    state.args = args;
-    state.reverseArgs = args.map(function(arg) {
-      if (typeof arg !== 'object' || arg.constructor !== Object)
-        return arg;
-
-      var res = {};
-      Object.keys(arg).forEach(function(key) {
-        if (key == (key | 0))
-          key |= 0;
-        var value = arg[key];
-        res[value] = key;
-      });
-      return res;
-    });
-  }
-};
-
-//
-// Overrided methods
-//
-
-overrided.forEach(function(method) {
-  Node.prototype[method] = function _overrided() {
-    var state = this._baseState;
-    throw new Error(method + ' not implemented for encoding: ' + state.enc);
-  };
-});
-
-//
-// Public methods
-//
-
-tags.forEach(function(tag) {
-  Node.prototype[tag] = function _tagMethod() {
-    var state = this._baseState;
-    var args = Array.prototype.slice.call(arguments);
-
-    assert(state.tag === null);
-    state.tag = tag;
-
-    this._useArgs(args);
-
-    return this;
-  };
-});
-
-Node.prototype.use = function use(item) {
-  assert(item);
-  var state = this._baseState;
-
-  assert(state.use === null);
-  state.use = item;
-
-  return this;
-};
-
-Node.prototype.optional = function optional() {
-  var state = this._baseState;
-
-  state.optional = true;
-
-  return this;
-};
-
-Node.prototype.def = function def(val) {
-  var state = this._baseState;
-
-  assert(state['default'] === null);
-  state['default'] = val;
-  state.optional = true;
-
-  return this;
-};
-
-Node.prototype.explicit = function explicit(num) {
-  var state = this._baseState;
-
-  assert(state.explicit === null && state.implicit === null);
-  state.explicit = num;
-
-  return this;
-};
-
-Node.prototype.implicit = function implicit(num) {
-  var state = this._baseState;
-
-  assert(state.explicit === null && state.implicit === null);
-  state.implicit = num;
-
-  return this;
-};
-
-Node.prototype.obj = function obj() {
-  var state = this._baseState;
-  var args = Array.prototype.slice.call(arguments);
-
-  state.obj = true;
-
-  if (args.length !== 0)
-    this._useArgs(args);
-
-  return this;
-};
-
-Node.prototype.key = function key(newKey) {
-  var state = this._baseState;
-
-  assert(state.key === null);
-  state.key = newKey;
-
-  return this;
-};
-
-Node.prototype.any = function any() {
-  var state = this._baseState;
-
-  state.any = true;
-
-  return this;
-};
-
-Node.prototype.choice = function choice(obj) {
-  var state = this._baseState;
-
-  assert(state.choice === null);
-  state.choice = obj;
-  this._useArgs(Object.keys(obj).map(function(key) {
-    return obj[key];
-  }));
-
-  return this;
-};
-
-Node.prototype.contains = function contains(item) {
-  var state = this._baseState;
-
-  assert(state.use === null);
-  state.contains = item;
-
-  return this;
-};
-
-//
-// Decoding
-//
-
-Node.prototype._decode = function decode(input, options) {
-  var state = this._baseState;
-
-  // Decode root node
-  if (state.parent === null)
-    return input.wrapResult(state.children[0]._decode(input, options));
-
-  var result = state['default'];
-  var present = true;
-
-  var prevKey = null;
-  if (state.key !== null)
-    prevKey = input.enterKey(state.key);
-
-  // Check if tag is there
-  if (state.optional) {
-    var tag = null;
-    if (state.explicit !== null)
-      tag = state.explicit;
-    else if (state.implicit !== null)
-      tag = state.implicit;
-    else if (state.tag !== null)
-      tag = state.tag;
-
-    if (tag === null && !state.any) {
-      // Trial and Error
-      var save = input.save();
-      try {
-        if (state.choice === null)
-          this._decodeGeneric(state.tag, input, options);
-        else
-          this._decodeChoice(input, options);
-        present = true;
-      } catch (e) {
-        present = false;
-      }
-      input.restore(save);
-    } else {
-      present = this._peekTag(input, tag, state.any);
-
-      if (input.isError(present))
-        return present;
-    }
-  }
-
-  // Push object on stack
-  var prevObj;
-  if (state.obj && present)
-    prevObj = input.enterObject();
-
-  if (present) {
-    // Unwrap explicit values
-    if (state.explicit !== null) {
-      var explicit = this._decodeTag(input, state.explicit);
-      if (input.isError(explicit))
-        return explicit;
-      input = explicit;
-    }
-
-    var start = input.offset;
-
-    // Unwrap implicit and normal values
-    if (state.use === null && state.choice === null) {
-      if (state.any)
-        var save = input.save();
-      var body = this._decodeTag(
-        input,
-        state.implicit !== null ? state.implicit : state.tag,
-        state.any
-      );
-      if (input.isError(body))
-        return body;
-
-      if (state.any)
-        result = input.raw(save);
-      else
-        input = body;
-    }
-
-    if (options && options.track && state.tag !== null)
-      options.track(input.path(), start, input.length, 'tagged');
-
-    if (options && options.track && state.tag !== null)
-      options.track(input.path(), input.offset, input.length, 'content');
-
-    // Select proper method for tag
-    if (state.any)
-      result = result;
-    else if (state.choice === null)
-      result = this._decodeGeneric(state.tag, input, options);
-    else
-      result = this._decodeChoice(input, options);
-
-    if (input.isError(result))
-      return result;
-
-    // Decode children
-    if (!state.any && state.choice === null && state.children !== null) {
-      state.children.forEach(function decodeChildren(child) {
-        // NOTE: We are ignoring errors here, to let parser continue with other
-        // parts of encoded data
-        child._decode(input, options);
-      });
-    }
-
-    // Decode contained/encoded by schema, only in bit or octet strings
-    if (state.contains && (state.tag === 'octstr' || state.tag === 'bitstr')) {
-      var data = new DecoderBuffer(result);
-      result = this._getUse(state.contains, input._reporterState.obj)
-          ._decode(data, options);
-    }
-  }
-
-  // Pop object
-  if (state.obj && present)
-    result = input.leaveObject(prevObj);
-
-  // Set key
-  if (state.key !== null && (result !== null || present === true))
-    input.leaveKey(prevKey, state.key, result);
-  else if (prevKey !== null)
-    input.exitKey(prevKey);
-
-  return result;
-};
-
-Node.prototype._decodeGeneric = function decodeGeneric(tag, input, options) {
-  var state = this._baseState;
-
-  if (tag === 'seq' || tag === 'set')
-    return null;
-  if (tag === 'seqof' || tag === 'setof')
-    return this._decodeList(input, tag, state.args[0], options);
-  else if (/str$/.test(tag))
-    return this._decodeStr(input, tag, options);
-  else if (tag === 'objid' && state.args)
-    return this._decodeObjid(input, state.args[0], state.args[1], options);
-  else if (tag === 'objid')
-    return this._decodeObjid(input, null, null, options);
-  else if (tag === 'gentime' || tag === 'utctime')
-    return this._decodeTime(input, tag, options);
-  else if (tag === 'null_')
-    return this._decodeNull(input, options);
-  else if (tag === 'bool')
-    return this._decodeBool(input, options);
-  else if (tag === 'objDesc')
-    return this._decodeStr(input, tag, options);
-  else if (tag === 'int' || tag === 'enum')
-    return this._decodeInt(input, state.args && state.args[0], options);
-
-  if (state.use !== null) {
-    return this._getUse(state.use, input._reporterState.obj)
-        ._decode(input, options);
-  } else {
-    return input.error('unknown tag: ' + tag);
-  }
-};
-
-Node.prototype._getUse = function _getUse(entity, obj) {
-
-  var state = this._baseState;
-  // Create altered use decoder if implicit is set
-  state.useDecoder = this._use(entity, obj);
-  assert(state.useDecoder._baseState.parent === null);
-  state.useDecoder = state.useDecoder._baseState.children[0];
-  if (state.implicit !== state.useDecoder._baseState.implicit) {
-    state.useDecoder = state.useDecoder.clone();
-    state.useDecoder._baseState.implicit = state.implicit;
-  }
-  return state.useDecoder;
-};
-
-Node.prototype._decodeChoice = function decodeChoice(input, options) {
-  var state = this._baseState;
-  var result = null;
-  var match = false;
-
-  Object.keys(state.choice).some(function(key) {
-    var save = input.save();
-    var node = state.choice[key];
-    try {
-      var value = node._decode(input, options);
-      if (input.isError(value))
-        return false;
-
-      result = { type: key, value: value };
-      match = true;
-    } catch (e) {
-      input.restore(save);
-      return false;
-    }
-    return true;
-  }, this);
-
-  if (!match)
-    return input.error('Choice not matched');
-
-  return result;
-};
-
-//
-// Encoding
-//
-
-Node.prototype._createEncoderBuffer = function createEncoderBuffer(data) {
-  return new EncoderBuffer(data, this.reporter);
-};
-
-Node.prototype._encode = function encode(data, reporter, parent) {
-  var state = this._baseState;
-  if (state['default'] !== null && state['default'] === data)
-    return;
-
-  var result = this._encodeValue(data, reporter, parent);
-  if (result === undefined)
-    return;
-
-  if (this._skipDefault(result, reporter, parent))
-    return;
-
-  return result;
-};
-
-Node.prototype._encodeValue = function encode(data, reporter, parent) {
-  var state = this._baseState;
-
-  // Decode root node
-  if (state.parent === null)
-    return state.children[0]._encode(data, reporter || new Reporter());
-
-  var result = null;
-
-  // Set reporter to share it with a child class
-  this.reporter = reporter;
-
-  // Check if data is there
-  if (state.optional && data === undefined) {
-    if (state['default'] !== null)
-      data = state['default']
-    else
-      return;
-  }
-
-  // Encode children first
-  var content = null;
-  var primitive = false;
-  if (state.any) {
-    // Anything that was given is translated to buffer
-    result = this._createEncoderBuffer(data);
-  } else if (state.choice) {
-    result = this._encodeChoice(data, reporter);
-  } else if (state.contains) {
-    content = this._getUse(state.contains, parent)._encode(data, reporter);
-    primitive = true;
-  } else if (state.children) {
-    content = state.children.map(function(child) {
-      if (child._baseState.tag === 'null_')
-        return child._encode(null, reporter, data);
-
-      if (child._baseState.key === null)
-        return reporter.error('Child should have a key');
-      var prevKey = reporter.enterKey(child._baseState.key);
-
-      if (typeof data !== 'object')
-        return reporter.error('Child expected, but input is not object');
-
-      var res = child._encode(data[child._baseState.key], reporter, data);
-      reporter.leaveKey(prevKey);
-
-      return res;
-    }, this).filter(function(child) {
-      return child;
-    });
-    content = this._createEncoderBuffer(content);
-  } else {
-    if (state.tag === 'seqof' || state.tag === 'setof') {
-      // TODO(indutny): this should be thrown on DSL level
-      if (!(state.args && state.args.length === 1))
-        return reporter.error('Too many args for : ' + state.tag);
-
-      if (!Array.isArray(data))
-        return reporter.error('seqof/setof, but data is not Array');
-
-      var child = this.clone();
-      child._baseState.implicit = null;
-      content = this._createEncoderBuffer(data.map(function(item) {
-        var state = this._baseState;
-
-        return this._getUse(state.args[0], data)._encode(item, reporter);
-      }, child));
-    } else if (state.use !== null) {
-      result = this._getUse(state.use, parent)._encode(data, reporter);
-    } else {
-      content = this._encodePrimitive(state.tag, data);
-      primitive = true;
-    }
-  }
-
-  // Encode data itself
-  var result;
-  if (!state.any && state.choice === null) {
-    var tag = state.implicit !== null ? state.implicit : state.tag;
-    var cls = state.implicit === null ? 'universal' : 'context';
-
-    if (tag === null) {
-      if (state.use === null)
-        reporter.error('Tag could be ommited only for .use()');
-    } else {
-      if (state.use === null)
-        result = this._encodeComposite(tag, primitive, cls, content);
-    }
-  }
-
-  // Wrap in explicit
-  if (state.explicit !== null)
-    result = this._encodeComposite(state.explicit, false, 'context', result);
-
-  return result;
-};
-
-Node.prototype._encodeChoice = function encodeChoice(data, reporter) {
-  var state = this._baseState;
-
-  var node = state.choice[data.type];
-  if (!node) {
-    assert(
-        false,
-        data.type + ' not found in ' +
-            JSON.stringify(Object.keys(state.choice)));
-  }
-  return node._encode(data.value, reporter);
-};
-
-Node.prototype._encodePrimitive = function encodePrimitive(tag, data) {
-  var state = this._baseState;
-
-  if (/str$/.test(tag))
-    return this._encodeStr(data, tag);
-  else if (tag === 'objid' && state.args)
-    return this._encodeObjid(data, state.reverseArgs[0], state.args[1]);
-  else if (tag === 'objid')
-    return this._encodeObjid(data, null, null);
-  else if (tag === 'gentime' || tag === 'utctime')
-    return this._encodeTime(data, tag);
-  else if (tag === 'null_')
-    return this._encodeNull();
-  else if (tag === 'int' || tag === 'enum')
-    return this._encodeInt(data, state.args && state.reverseArgs[0]);
-  else if (tag === 'bool')
-    return this._encodeBool(data);
-  else if (tag === 'objDesc')
-    return this._encodeStr(data, tag);
-  else
-    throw new Error('Unsupported tag: ' + tag);
-};
-
-Node.prototype._isNumstr = function isNumstr(str) {
-  return /^[0-9 ]*$/.test(str);
-};
-
-Node.prototype._isPrintstr = function isPrintstr(str) {
-  return /^[A-Za-z0-9 '\(\)\+,\-\.\/:=\?]*$/.test(str);
-};
-
-
-/***/ }),
-/* 303 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var inherits = __webpack_require__(2);
-
-function Reporter(options) {
-  this._reporterState = {
-    obj: null,
-    path: [],
-    options: options || {},
-    errors: []
-  };
-}
-exports.Reporter = Reporter;
-
-Reporter.prototype.isError = function isError(obj) {
-  return obj instanceof ReporterError;
-};
-
-Reporter.prototype.save = function save() {
-  var state = this._reporterState;
-
-  return { obj: state.obj, pathLen: state.path.length };
-};
-
-Reporter.prototype.restore = function restore(data) {
-  var state = this._reporterState;
-
-  state.obj = data.obj;
-  state.path = state.path.slice(0, data.pathLen);
-};
-
-Reporter.prototype.enterKey = function enterKey(key) {
-  return this._reporterState.path.push(key);
-};
-
-Reporter.prototype.exitKey = function exitKey(index) {
-  var state = this._reporterState;
-
-  state.path = state.path.slice(0, index - 1);
-};
-
-Reporter.prototype.leaveKey = function leaveKey(index, key, value) {
-  var state = this._reporterState;
-
-  this.exitKey(index);
-  if (state.obj !== null)
-    state.obj[key] = value;
-};
-
-Reporter.prototype.path = function path() {
-  return this._reporterState.path.join('/');
-};
-
-Reporter.prototype.enterObject = function enterObject() {
-  var state = this._reporterState;
-
-  var prev = state.obj;
-  state.obj = {};
-  return prev;
-};
-
-Reporter.prototype.leaveObject = function leaveObject(prev) {
-  var state = this._reporterState;
-
-  var now = state.obj;
-  state.obj = prev;
-  return now;
-};
-
-Reporter.prototype.error = function error(msg) {
-  var err;
-  var state = this._reporterState;
-
-  var inherited = msg instanceof ReporterError;
-  if (inherited) {
-    err = msg;
-  } else {
-    err = new ReporterError(state.path.map(function(elem) {
-      return '[' + JSON.stringify(elem) + ']';
-    }).join(''), msg.message || msg, msg.stack);
-  }
-
-  if (!state.options.partial)
-    throw err;
-
-  if (!inherited)
-    state.errors.push(err);
-
-  return err;
-};
-
-Reporter.prototype.wrapResult = function wrapResult(result) {
-  var state = this._reporterState;
-  if (!state.options.partial)
-    return result;
-
-  return {
-    result: this.isError(result) ? null : result,
-    errors: state.errors
-  };
-};
-
-function ReporterError(path, msg) {
-  this.path = path;
-  this.rethrow(msg);
-};
-inherits(ReporterError, Error);
-
-ReporterError.prototype.rethrow = function rethrow(msg) {
-  this.message = msg + ' at: ' + (this.path || '(shallow)');
-  if (Error.captureStackTrace)
-    Error.captureStackTrace(this, ReporterError);
-
-  if (!this.stack) {
-    try {
-      // IE only adds stack when thrown
-      throw new Error(this.message);
-    } catch (e) {
-      this.stack = e.stack;
-    }
-  }
-  return this;
-};
-
-
-/***/ }),
-/* 304 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var constants = __webpack_require__(143);
-
-exports.tagClass = {
-  0: 'universal',
-  1: 'application',
-  2: 'context',
-  3: 'private'
-};
-exports.tagClassByName = constants._reverse(exports.tagClass);
-
-exports.tag = {
-  0x00: 'end',
-  0x01: 'bool',
-  0x02: 'int',
-  0x03: 'bitstr',
-  0x04: 'octstr',
-  0x05: 'null_',
-  0x06: 'objid',
-  0x07: 'objDesc',
-  0x08: 'external',
-  0x09: 'real',
-  0x0a: 'enum',
-  0x0b: 'embed',
-  0x0c: 'utf8str',
-  0x0d: 'relativeOid',
-  0x10: 'seq',
-  0x11: 'set',
-  0x12: 'numstr',
-  0x13: 'printstr',
-  0x14: 't61str',
-  0x15: 'videostr',
-  0x16: 'ia5str',
-  0x17: 'utctime',
-  0x18: 'gentime',
-  0x19: 'graphstr',
-  0x1a: 'iso646str',
-  0x1b: 'genstr',
-  0x1c: 'unistr',
-  0x1d: 'charstr',
-  0x1e: 'bmpstr'
-};
-exports.tagByName = constants._reverse(exports.tag);
-
-
-/***/ }),
-/* 305 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var decoders = exports;
-
-decoders.der = __webpack_require__(144);
-decoders.pem = __webpack_require__(306);
-
-
-/***/ }),
-/* 306 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var inherits = __webpack_require__(2);
-var Buffer = __webpack_require__(0).Buffer;
-
-var DERDecoder = __webpack_require__(144);
-
-function PEMDecoder(entity) {
-  DERDecoder.call(this, entity);
-  this.enc = 'pem';
-};
-inherits(PEMDecoder, DERDecoder);
-module.exports = PEMDecoder;
-
-PEMDecoder.prototype.decode = function decode(data, options) {
-  var lines = data.toString().split(/[\r\n]+/g);
-
-  var label = options.label.toUpperCase();
-
-  var re = /^-----(BEGIN|END) ([^-]+)-----$/;
-  var start = -1;
-  var end = -1;
-  for (var i = 0; i < lines.length; i++) {
-    var match = lines[i].match(re);
-    if (match === null)
-      continue;
-
-    if (match[2] !== label)
-      continue;
-
-    if (start === -1) {
-      if (match[1] !== 'BEGIN')
-        break;
-      start = i;
-    } else {
-      if (match[1] !== 'END')
-        break;
-      end = i;
-      break;
-    }
-  }
-  if (start === -1 || end === -1)
-    throw new Error('PEM section not found for: ' + label);
-
-  var base64 = lines.slice(start + 1, end).join('');
-  // Remove excessive symbols
-  base64.replace(/[^a-z0-9\+\/=]+/gi, '');
-
-  var input = new Buffer(base64, 'base64');
-  return DERDecoder.prototype.decode.call(this, input, options);
-};
-
-
-/***/ }),
-/* 307 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var encoders = exports;
-
-encoders.der = __webpack_require__(145);
-encoders.pem = __webpack_require__(308);
-
-
-/***/ }),
-/* 308 */
-/***/ (function(module, exports, __webpack_require__) {
-
-var inherits = __webpack_require__(2);
-
-var DEREncoder = __webpack_require__(145);
-
-function PEMEncoder(entity) {
-  DEREncoder.call(this, entity);
-  this.enc = 'pem';
-};
-inherits(PEMEncoder, DEREncoder);
-module.exports = PEMEncoder;
-
-PEMEncoder.prototype.encode = function encode(data, options) {
-  var buf = DEREncoder.prototype.encode.call(this, data);
-
-  var p = buf.toString('base64');
-  var out = [ '-----BEGIN ' + options.label + '-----' ];
-  for (var i = 0; i < p.length; i += 64)
-    out.push(p.slice(i, i + 64));
-  out.push('-----END ' + options.label + '-----');
-  return out.join('\n');
-};
-
-
-/***/ }),
-/* 309 */
+/* 310 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var aws4 = exports,
-    url = __webpack_require__(86),
-    querystring = __webpack_require__(84),
+    url = __webpack_require__(83),
+    querystring = __webpack_require__(81),
     crypto = __webpack_require__(23),
-    lru = __webpack_require__(310),
+    lru = __webpack_require__(311),
     credentialsCache = lru(1000)
 
 // http://docs.amazonwebservices.com/general/latest/gr/signature-version-4.html
@@ -56141,7 +56187,7 @@ aws4.sign = function(request, credentials) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 310 */
+/* 311 */
 /***/ (function(module, exports) {
 
 module.exports = function(size) {
@@ -56243,7 +56289,7 @@ function DoublyLinkedNode(key, val) {
 
 
 /***/ }),
-/* 311 */
+/* 312 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -56364,7 +56410,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 312 */
+/* 313 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(module, global) {var __WEBPACK_AMD_DEFINE_RESULT__;;(function(undefined) {
@@ -57029,7 +57075,7 @@ function fromByteArray (uint8) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)(module), __webpack_require__(4)))
 
 /***/ }),
-/* 313 */
+/* 314 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(61)
@@ -57173,7 +57219,7 @@ exports.createDecipheriv = createDecipheriv
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 314 */
+/* 315 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var aes = __webpack_require__(61)
@@ -57302,7 +57348,7 @@ exports.createCipher = createCipher
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 315 */
+/* 316 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var zeros = new Buffer(16)
@@ -57407,13 +57453,13 @@ function xor (a, b) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 316 */
+/* 317 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ebtk = __webpack_require__(70)
 var aes = __webpack_require__(87)
-var DES = __webpack_require__(317)
-var desModes = __webpack_require__(318)
+var DES = __webpack_require__(318)
+var desModes = __webpack_require__(319)
 var aesModes = __webpack_require__(62)
 function createCipher (suite, password) {
   var keyLen, ivLen
@@ -57486,7 +57532,7 @@ exports.listCiphers = exports.getCiphers = getCiphers
 
 
 /***/ }),
-/* 317 */
+/* 318 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var CipherBase = __webpack_require__(33)
@@ -57536,7 +57582,7 @@ DES.prototype._final = function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 318 */
+/* 319 */
 /***/ (function(module, exports) {
 
 exports['des-ecb'] = {
@@ -57566,21 +57612,21 @@ exports['des-ede'] = {
 
 
 /***/ }),
-/* 319 */
+/* 320 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(155)
 
 
 /***/ }),
-/* 320 */
+/* 321 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var createHash = __webpack_require__(34)
-var stream = __webpack_require__(85)
+var stream = __webpack_require__(82)
 var inherits = __webpack_require__(2)
-var sign = __webpack_require__(321)
-var verify = __webpack_require__(322)
+var sign = __webpack_require__(322)
+var verify = __webpack_require__(323)
 
 var algorithms = __webpack_require__(155)
 Object.keys(algorithms).forEach(function (key) {
@@ -57671,7 +57717,7 @@ module.exports = {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 321 */
+/* 322 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
@@ -57823,7 +57869,7 @@ module.exports.makeKey = makeKey
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 322 */
+/* 323 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// much of this based on https://github.com/indutny/self-signed/blob/gh-pages/lib/rsa.js
@@ -57913,7 +57959,7 @@ module.exports = verify
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 323 */
+/* 324 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {(function(e){var b=function(){this._version="v1.0.0-rc.1";this._parser=(new (window.UAParser||exports.UAParser)).getResult();this._fontDetective=new Detector;this.options=this.getDefaultOptions();return this};b.prototype.getDefaultOptions=function(){return{getUserAgent:!0,getCPU:!0,getCurrentResolution:!0,getAvailableResolution:!0,getColorDepth:!0,getDeviceXDPI:!0,getDeviceYDPI:!0,getPlugins:!0,getFonts:!0,hasCookies:!0,hasLocalStorage:!0,hasSessionStorage:!0,getTimeZone:!0,getLanguage:!0,getSystemLanguage:!0,
@@ -58030,7 +58076,7 @@ typeof window?window:this);
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 324 */
+/* 325 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -58199,7 +58245,7 @@ Emitter.prototype.hasListeners = function(event){
 
 
 /***/ }),
-/* 325 */
+/* 326 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var elliptic = __webpack_require__(10);
@@ -58328,7 +58374,7 @@ function formatReturnValue(bn, enc, len) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 326 */
+/* 327 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58369,14 +58415,14 @@ exports.hash = hash;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 327 */
+/* 328 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Buffer = __webpack_require__(0).Buffer
-var sha = __webpack_require__(330)
-var sha256 = __webpack_require__(331)
-var rng = __webpack_require__(329)
-var md5 = __webpack_require__(328)
+var sha = __webpack_require__(331)
+var sha256 = __webpack_require__(332)
+var rng = __webpack_require__(330)
+var md5 = __webpack_require__(329)
 
 var algorithms = {
   sha1: sha,
@@ -58472,7 +58518,7 @@ each(['createCredentials'
 
 
 /***/ }),
-/* 328 */
+/* 329 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -58641,7 +58687,7 @@ module.exports = function md5(buf) {
 
 
 /***/ }),
-/* 329 */
+/* 330 */
 /***/ (function(module, exports) {
 
 // Original code adapted from Robert Kieffer.
@@ -58678,7 +58724,7 @@ module.exports = function md5(buf) {
 
 
 /***/ }),
-/* 330 */
+/* 331 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /*
@@ -58785,7 +58831,7 @@ module.exports = function sha1(buf) {
 
 
 /***/ }),
-/* 331 */
+/* 332 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -58870,7 +58916,7 @@ module.exports = function sha256(buf) {
 
 
 /***/ }),
-/* 332 */
+/* 333 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -58891,7 +58937,7 @@ var _deepKernel = __webpack_require__(21);
 
 var _deepKernel2 = _interopRequireDefault(_deepKernel);
 
-var _path = __webpack_require__(43);
+var _path = __webpack_require__(42);
 
 var _path2 = _interopRequireDefault(_path);
 
@@ -59039,7 +59085,7 @@ let Asset = exports.Asset = function (_Kernel$ContainerAwar) {
 }(_deepKernel2.default.ContainerAware);
 
 /***/ }),
-/* 333 */
+/* 334 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59049,12 +59095,12 @@ let Asset = exports.Asset = function (_Kernel$ContainerAwar) {
 
 
 
-var _Asset = __webpack_require__(332);
+var _Asset = __webpack_require__(333);
 
 module.exports = _Asset.Asset;
 
 /***/ }),
-/* 334 */
+/* 335 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59081,7 +59127,7 @@ var _deepCore2 = _interopRequireDefault(_deepCore);
 
 var _Exception = __webpack_require__(160);
 
-var _SharedCache = __webpack_require__(344);
+var _SharedCache = __webpack_require__(345);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -59261,10 +59307,10 @@ let Cache = exports.Cache = function (_Kernel$ContainerAwar) {
           DriverPrototype = __webpack_require__(159).InMemoryDriver;
           break;
         case 'redis':
-          DriverPrototype = __webpack_require__(342).RedisDriver;
+          DriverPrototype = __webpack_require__(343).RedisDriver;
           break;
         case 'local-storage':
-          DriverPrototype = __webpack_require__(341).LocalStorageDriver;
+          DriverPrototype = __webpack_require__(342).LocalStorageDriver;
 
           // fallback to in-memory driver if localStorage is not available
           if (!DriverPrototype.isAvailable()) {
@@ -59272,10 +59318,10 @@ let Cache = exports.Cache = function (_Kernel$ContainerAwar) {
           }
           break;
         case 's3fs':
-          DriverPrototype = __webpack_require__(343).S3FSDriver;
+          DriverPrototype = __webpack_require__(344).S3FSDriver;
           break;
         case 'cloud-front':
-          DriverPrototype = __webpack_require__(335).CloudFrontDriver;
+          DriverPrototype = __webpack_require__(336).CloudFrontDriver;
           break;
         default:
           throw new _Exception.Exception(`Missing driver ${name}`);
@@ -59298,7 +59344,7 @@ let Cache = exports.Cache = function (_Kernel$ContainerAwar) {
 }(_deepKernel2.default.ContainerAware);
 
 /***/ }),
-/* 335 */
+/* 336 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59319,7 +59365,7 @@ var _get2 = function get(object, property, receiver) { if (object === null) obje
 
 var _AbstractFsDriver2 = __webpack_require__(158);
 
-var _MethodNotAvailableException = __webpack_require__(337);
+var _MethodNotAvailableException = __webpack_require__(338);
 
 var _SharedKey = __webpack_require__(161);
 
@@ -59520,7 +59566,7 @@ let CloudFrontDriver = exports.CloudFrontDriver = function (_AbstractFsDriver) {
 }(_AbstractFsDriver2.AbstractFsDriver);
 
 /***/ }),
-/* 336 */
+/* 337 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59579,7 +59625,7 @@ let DriverException = exports.DriverException = function (_Exception) {
 }(_Exception2.Exception);
 
 /***/ }),
-/* 337 */
+/* 338 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59621,7 +59667,7 @@ let MethodNotAvailableException = exports.MethodNotAvailableException = function
 }(_Exception2.Exception);
 
 /***/ }),
-/* 338 */
+/* 339 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59663,7 +59709,7 @@ let MissingCacheException = exports.MissingCacheException = function (_Exception
 }(_Exception2.Exception);
 
 /***/ }),
-/* 339 */
+/* 340 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59702,7 +59748,7 @@ let NoFlushException = exports.NoFlushException = function (_Exception) {
 }(_Exception2.Exception);
 
 /***/ }),
-/* 340 */
+/* 341 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59764,7 +59810,7 @@ let RedisClusterException = exports.RedisClusterException = function (_Exception
 }(_Exception2.Exception);
 
 /***/ }),
-/* 341 */
+/* 342 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -59783,7 +59829,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _AbstractDriver2 = __webpack_require__(64);
 
-var _store = __webpack_require__(625);
+var _store = __webpack_require__(627);
 
 var _store2 = _interopRequireDefault(_store);
 
@@ -60017,7 +60063,7 @@ let LocalStorageDriver = exports.LocalStorageDriver = function (_AbstractDriver)
 }(_AbstractDriver2.AbstractDriver);
 
 /***/ }),
-/* 342 */
+/* 343 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60036,13 +60082,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _AbstractDriver2 = __webpack_require__(64);
 
-var _RedisClusterException = __webpack_require__(340);
+var _RedisClusterException = __webpack_require__(341);
 
-var _ioredis = __webpack_require__(659);
+var _ioredis = __webpack_require__(661);
 
 var _ioredis2 = _interopRequireDefault(_ioredis);
 
-var _ecad = __webpack_require__(463);
+var _ecad = __webpack_require__(465);
 
 var _ecad2 = _interopRequireDefault(_ecad);
 
@@ -60338,10 +60384,10 @@ let RedisDriver = exports.RedisDriver = function (_AbstractDriver) {
 
   return RedisDriver;
 }(_AbstractDriver2.AbstractDriver);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 343 */
+/* 344 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60529,7 +60575,7 @@ let S3FSDriver = exports.S3FSDriver = function (_AbstractFsDriver) {
 }(_AbstractFsDriver2.AbstractFsDriver);
 
 /***/ }),
-/* 344 */
+/* 345 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60693,7 +60739,7 @@ let SharedCache = exports.SharedCache = function () {
 }();
 
 /***/ }),
-/* 345 */
+/* 346 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60705,12 +60751,12 @@ let SharedCache = exports.SharedCache = function () {
 
 
 
-var _Cache = __webpack_require__(334);
+var _Cache = __webpack_require__(335);
 
 module.exports = _Cache.Cache;
 
 /***/ }),
-/* 346 */
+/* 347 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60752,7 +60798,7 @@ let InvalidArnException = exports.InvalidArnException = function (_Exception) {
 }(_Exception2.Exception);
 
 /***/ }),
-/* 347 */
+/* 348 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60885,7 +60931,7 @@ let Factory = exports.Factory = function () {
 }();
 
 /***/ }),
-/* 348 */
+/* 349 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -60995,7 +61041,7 @@ let Context = exports.Context = function () {
 }();
 
 /***/ }),
-/* 349 */
+/* 350 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61109,7 +61155,7 @@ let ErrorResponse = exports.ErrorResponse = function (_Response) {
 }(_Response2.Response);
 
 /***/ }),
-/* 350 */
+/* 351 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61151,7 +61197,7 @@ let InvalidCognitoIdentityException = exports.InvalidCognitoIdentityException = 
 }(_Exception2.Exception);
 
 /***/ }),
-/* 351 */
+/* 352 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61190,7 +61236,7 @@ let MissingRuntimeContextException = exports.MissingRuntimeContextException = fu
 }(_Exception2.Exception);
 
 /***/ }),
-/* 352 */
+/* 353 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61226,7 +61272,7 @@ let MissingUserContextException = exports.MissingUserContextException = function
 }(_Exception2.Exception);
 
 /***/ }),
-/* 353 */
+/* 354 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61245,7 +61291,7 @@ exports.Request = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _qs = __webpack_require__(215);
+var _qs = __webpack_require__(216);
 
 var _qs2 = _interopRequireDefault(_qs);
 
@@ -61327,7 +61373,7 @@ let Request = exports.Request = function () {
 }();
 
 /***/ }),
-/* 354 */
+/* 355 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61398,7 +61444,7 @@ let Resolver = exports.Resolver = function () {
 }();
 
 /***/ }),
-/* 355 */
+/* 356 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61418,19 +61464,19 @@ var _Interface2 = __webpack_require__(94);
 
 var _Response = __webpack_require__(165);
 
-var _ErrorResponse = __webpack_require__(349);
+var _ErrorResponse = __webpack_require__(350);
 
-var _Request = __webpack_require__(353);
+var _Request = __webpack_require__(354);
 
-var _InvalidCognitoIdentityException = __webpack_require__(350);
+var _InvalidCognitoIdentityException = __webpack_require__(351);
 
-var _MissingUserContextException = __webpack_require__(352);
+var _MissingUserContextException = __webpack_require__(353);
 
-var _Context = __webpack_require__(348);
+var _Context = __webpack_require__(349);
 
 var _Sandbox = __webpack_require__(169);
 
-var _Resolver = __webpack_require__(354);
+var _Resolver = __webpack_require__(355);
 
 var _awsSdk = __webpack_require__(18);
 
@@ -61879,7 +61925,7 @@ let Runtime = exports.Runtime = function (_Interface) {
 }(_Interface2.Interface);
 
 /***/ }),
-/* 356 */
+/* 357 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61917,7 +61963,7 @@ let DatabaseOperationException = exports.DatabaseOperationException = function (
 }(_Exception2.Exception);
 
 /***/ }),
-/* 357 */
+/* 358 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -61963,7 +62009,7 @@ let ResourceNotFoundException = exports.ResourceNotFoundException = function (_E
 }(_Exception2.Exception);
 
 /***/ }),
-/* 358 */
+/* 359 */
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -61972,10 +62018,10 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 358;
+webpackEmptyContext.id = 359;
 
 /***/ }),
-/* 359 */
+/* 360 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62141,7 +62187,7 @@ let MethodsProxy = exports.MethodsProxy = function () {
 }();
 
 /***/ }),
-/* 360 */
+/* 361 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62236,7 +62282,7 @@ let ObjectStorage = exports.ObjectStorage = function () {
 }();
 
 /***/ }),
-/* 361 */
+/* 362 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62316,7 +62362,7 @@ let ObjectVector = exports.ObjectVector = function () {
 }();
 
 /***/ }),
-/* 362 */
+/* 363 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62333,7 +62379,7 @@ exports.UniversalRequire = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _path = __webpack_require__(43);
+var _path = __webpack_require__(42);
 
 var _path2 = _interopRequireDefault(_path);
 
@@ -62389,7 +62435,7 @@ let UniversalRequire = exports.UniversalRequire = function () {
         };
       }
 
-      __webpack_require__(363);
+      __webpack_require__(364);
 
       return window.__deepRequireBrowser__;
     }
@@ -62404,7 +62450,7 @@ let UniversalRequire = exports.UniversalRequire = function () {
 }();
 
 /***/ }),
-/* 363 */
+/* 364 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62584,7 +62630,7 @@ window.__deepRequireBrowser__ = window.__deepRequireBrowser__ || function (docum
 }(document);
 
 /***/ }),
-/* 364 */
+/* 365 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62601,11 +62647,11 @@ exports.DI = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _bottlejs = __webpack_require__(312);
+var _bottlejs = __webpack_require__(313);
 
 var _bottlejs2 = _interopRequireDefault(_bottlejs);
 
-var _MissingServiceException = __webpack_require__(366);
+var _MissingServiceException = __webpack_require__(367);
 
 var _deepCore = __webpack_require__(3);
 
@@ -62744,7 +62790,7 @@ let DI = exports.DI = function () {
 }();
 
 /***/ }),
-/* 365 */
+/* 366 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62796,7 +62842,7 @@ let Exception = exports.Exception = function (_Core$Exception$Excep) {
 }(_deepCore2.default.Exception.Exception);
 
 /***/ }),
-/* 366 */
+/* 367 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62811,7 +62857,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MissingServiceException = undefined;
 
-var _Exception2 = __webpack_require__(365);
+var _Exception2 = __webpack_require__(366);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -62838,7 +62884,7 @@ let MissingServiceException = exports.MissingServiceException = function (_Excep
 }(_Exception2.Exception);
 
 /***/ }),
-/* 367 */
+/* 368 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62850,12 +62896,12 @@ let MissingServiceException = exports.MissingServiceException = function (_Excep
 
 
 
-var _DI = __webpack_require__(364);
+var _DI = __webpack_require__(365);
 
 module.exports = _DI.DI;
 
 /***/ }),
-/* 368 */
+/* 369 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62969,7 +63015,7 @@ let AbstractContext = exports.AbstractContext = function () {
 }();
 
 /***/ }),
-/* 369 */
+/* 370 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -62994,7 +63040,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 let ClientJS = function ClientJS() {};
 
 if (typeof window !== 'undefined') {
-  __webpack_require__(323);
+  __webpack_require__(324);
   ClientJS = window.ClientJS;
 }
 
@@ -63161,7 +63207,7 @@ let ClientSession = exports.ClientSession = function (_ClientJS) {
 }(ClientJS);
 
 /***/ }),
-/* 370 */
+/* 371 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63182,7 +63228,7 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _BackendContext2 = __webpack_require__(170);
 
-var _ClientSession = __webpack_require__(369);
+var _ClientSession = __webpack_require__(370);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -63259,7 +63305,7 @@ let FrontendContext = exports.FrontendContext = function (_BackendContext) {
 }(_BackendContext2.BackendContext);
 
 /***/ }),
-/* 371 */
+/* 372 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63314,7 +63360,7 @@ let ConsoleDriver = exports.ConsoleDriver = function (_AbstractDriver) {
 }(_AbstractDriver2.AbstractDriver);
 
 /***/ }),
-/* 372 */
+/* 373 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63388,7 +63434,7 @@ let UUID = exports.UUID = function () {
 }();
 
 /***/ }),
-/* 373 */
+/* 374 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63407,7 +63453,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _AbstractDriver2 = __webpack_require__(171);
 
-var _UUID = __webpack_require__(372);
+var _UUID = __webpack_require__(373);
 
 var _awsSdk = __webpack_require__(18);
 
@@ -63618,7 +63664,7 @@ let KinesisDriver = exports.KinesisDriver = function (_AbstractDriver) {
 }(_AbstractDriver2.AbstractDriver);
 
 /***/ }),
-/* 374 */
+/* 375 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63639,13 +63685,13 @@ var _deepKernel = __webpack_require__(21);
 
 var _deepKernel2 = _interopRequireDefault(_deepKernel);
 
-var _ConsoleDriver = __webpack_require__(371);
+var _ConsoleDriver = __webpack_require__(372);
 
-var _KinesisDriver = __webpack_require__(373);
+var _KinesisDriver = __webpack_require__(374);
 
 var _BackendContext = __webpack_require__(170);
 
-var _FrontendContext = __webpack_require__(370);
+var _FrontendContext = __webpack_require__(371);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -63749,7 +63795,7 @@ let Event = exports.Event = function (_Kernel$ContainerAwar) {
 }(_deepKernel2.default.ContainerAware);
 
 /***/ }),
-/* 375 */
+/* 376 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63761,12 +63807,12 @@ let Event = exports.Event = function (_Kernel$ContainerAwar) {
 
 
 
-var _Event = __webpack_require__(374);
+var _Event = __webpack_require__(375);
 
 module.exports = _Event.Event;
 
 /***/ }),
-/* 376 */
+/* 377 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63887,7 +63933,7 @@ let ComplexDriver = exports.ComplexDriver = function (_AbstractDriver) {
 }(_AbstractDriver2.AbstractDriver);
 
 /***/ }),
-/* 377 */
+/* 378 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -63906,9 +63952,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 var _AbstractDriver2 = __webpack_require__(36);
 
-var _ComplexDriver = __webpack_require__(376);
+var _ComplexDriver = __webpack_require__(377);
 
-var _ScopeDriver = __webpack_require__(378);
+var _ScopeDriver = __webpack_require__(379);
 
 var _FsDriver = __webpack_require__(173);
 
@@ -64028,7 +64074,7 @@ let KernelDriver = exports.KernelDriver = function (_AbstractDriver) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 378 */
+/* 379 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64137,7 +64183,7 @@ let ScopeDriver = exports.ScopeDriver = function (_AbstractDriver) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 379 */
+/* 380 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64154,7 +64200,7 @@ exports.Loader = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _KernelDriver = __webpack_require__(377);
+var _KernelDriver = __webpack_require__(378);
 
 var _AsyncConfig = __webpack_require__(172);
 
@@ -64240,7 +64286,7 @@ let Loader = exports.Loader = function () {
 }();
 
 /***/ }),
-/* 380 */
+/* 381 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64261,7 +64307,7 @@ var _get = function get(object, property, receiver) { if (object === null) objec
 
 var _Injectable = __webpack_require__(95);
 
-var _InvalidDeepIdentifierException = __webpack_require__(381);
+var _InvalidDeepIdentifierException = __webpack_require__(382);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -64436,7 +64482,7 @@ let ContainerAware = exports.ContainerAware = function (_MicroserviceInjectab) {
 }(_Injectable.Injectable);
 
 /***/ }),
-/* 381 */
+/* 382 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64480,7 +64526,7 @@ let InvalidDeepIdentifierException = exports.InvalidDeepIdentifierException = fu
 }(_Exception2.Exception);
 
 /***/ }),
-/* 382 */
+/* 383 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64522,7 +64568,7 @@ let MissingMicroserviceException = exports.MissingMicroserviceException = functi
 }(_Exception2.Exception);
 
 /***/ }),
-/* 383 */
+/* 384 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -64545,7 +64591,7 @@ var _deepCore = __webpack_require__(3);
 
 var _deepCore2 = _interopRequireDefault(_deepCore);
 
-var _deepDi = __webpack_require__(367);
+var _deepDi = __webpack_require__(368);
 
 var _deepDi2 = _interopRequireDefault(_deepDi);
 
@@ -64553,13 +64599,13 @@ var _Exception = __webpack_require__(50);
 
 var _Instance = __webpack_require__(175);
 
-var _MissingMicroserviceException = __webpack_require__(382);
+var _MissingMicroserviceException = __webpack_require__(383);
 
 var _Injectable = __webpack_require__(95);
 
-var _ContainerAware = __webpack_require__(380);
+var _ContainerAware = __webpack_require__(381);
 
-var _waitUntil = __webpack_require__(647);
+var _waitUntil = __webpack_require__(649);
 
 var _waitUntil2 = _interopRequireDefault(_waitUntil);
 
@@ -64567,7 +64613,7 @@ var _util = __webpack_require__(19);
 
 var _util2 = _interopRequireDefault(_util);
 
-var _Loader = __webpack_require__(379);
+var _Loader = __webpack_require__(380);
 
 var _AsyncConfig = __webpack_require__(172);
 
@@ -65389,10 +65435,10 @@ let Kernel = exports.Kernel = function () {
 
   return Kernel;
 }();
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 384 */
+/* 385 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65431,7 +65477,7 @@ let MissingWorkingMicroserviceException = exports.MissingWorkingMicroserviceExce
 }(_Exception2.Exception);
 
 /***/ }),
-/* 385 */
+/* 386 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65709,7 +65755,7 @@ let ConsoleDriver = exports.ConsoleDriver = function (_AbstractDriver) {
 }(_AbstractDriver2.AbstractDriver);
 
 /***/ }),
-/* 386 */
+/* 387 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65752,7 +65798,7 @@ let FailedToDeleteSqsMessagesException = exports.FailedToDeleteSqsMessagesExcept
 }(_LogDriverException2.LogDriverException);
 
 /***/ }),
-/* 387 */
+/* 388 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65795,7 +65841,7 @@ let FailedToReceiveSqsMessageException = exports.FailedToReceiveSqsMessageExcept
 }(_LogDriverException2.LogDriverException);
 
 /***/ }),
-/* 388 */
+/* 389 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65838,7 +65884,7 @@ let FailedToSendBatchSqsMessageException = exports.FailedToSendBatchSqsMessageEx
 }(_LogDriverException2.LogDriverException);
 
 /***/ }),
-/* 389 */
+/* 390 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65882,7 +65928,7 @@ let FailedToSendSqsMessageException = exports.FailedToSendSqsMessageException = 
 }(_LogDriverException2.LogDriverException);
 
 /***/ }),
-/* 390 */
+/* 391 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65925,7 +65971,7 @@ let InvalidSqsQueueUrlException = exports.InvalidSqsQueueUrlException = function
 }(_LogDriverException2.LogDriverException);
 
 /***/ }),
-/* 391 */
+/* 392 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -65968,7 +66014,7 @@ let RumEventValidationException = exports.RumEventValidationException = function
 }(_LogDriverException2.LogDriverException);
 
 /***/ }),
-/* 392 */
+/* 393 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66010,7 +66056,7 @@ let UnknownRumEventException = exports.UnknownRumEventException = function (_Log
 }(_LogDriverException2.LogDriverException);
 
 /***/ }),
-/* 393 */
+/* 394 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66027,13 +66073,13 @@ exports.EventFactory = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _FrameworkEvent = __webpack_require__(394);
+var _FrameworkEvent = __webpack_require__(395);
 
-var _FrontendEvent = __webpack_require__(395);
+var _FrontendEvent = __webpack_require__(396);
 
 var _AbstractEvent = __webpack_require__(96);
 
-var _UnknownRumEventException = __webpack_require__(392);
+var _UnknownRumEventException = __webpack_require__(393);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -66074,7 +66120,7 @@ let EventFactory = exports.EventFactory = function () {
 }();
 
 /***/ }),
-/* 394 */
+/* 395 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66179,7 +66225,7 @@ let FrameworkEvent = exports.FrameworkEvent = function (_AbstractEvent) {
 }(_AbstractEvent2.AbstractEvent);
 
 /***/ }),
-/* 395 */
+/* 396 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66304,7 +66350,7 @@ let FrontendEvent = exports.FrontendEvent = function (_AbstractEvent) {
 }(_AbstractEvent2.AbstractEvent);
 
 /***/ }),
-/* 396 */
+/* 397 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66325,11 +66371,11 @@ var _AbstractDriver2 = __webpack_require__(51);
 
 var _Log = __webpack_require__(66);
 
-var _raven = __webpack_require__(217);
+var _raven = __webpack_require__(218);
 
 var _raven2 = _interopRequireDefault(_raven);
 
-var _url = __webpack_require__(86);
+var _url = __webpack_require__(83);
 
 var _url2 = _interopRequireDefault(_url);
 
@@ -66451,7 +66497,7 @@ let RavenBrowserDriver = exports.RavenBrowserDriver = function (_AbstractDriver)
 }(_AbstractDriver2.AbstractDriver);
 
 /***/ }),
-/* 397 */
+/* 398 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66472,7 +66518,7 @@ var _AbstractDriver2 = __webpack_require__(51);
 
 var _Log = __webpack_require__(66);
 
-var _raven = __webpack_require__(217);
+var _raven = __webpack_require__(218);
 
 var _raven2 = _interopRequireDefault(_raven);
 
@@ -66595,7 +66641,7 @@ let RavenDriver = exports.RavenDriver = function (_AbstractDriver) {
 }(_AbstractDriver2.AbstractDriver);
 
 /***/ }),
-/* 398 */
+/* 399 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -66618,19 +66664,19 @@ var _awsSdk2 = _interopRequireDefault(_awsSdk);
 
 var _AbstractDriver2 = __webpack_require__(51);
 
-var _FailedToSendSqsMessageException = __webpack_require__(389);
+var _FailedToSendSqsMessageException = __webpack_require__(390);
 
-var _FailedToSendBatchSqsMessageException = __webpack_require__(388);
+var _FailedToSendBatchSqsMessageException = __webpack_require__(389);
 
-var _FailedToReceiveSqsMessageException = __webpack_require__(387);
+var _FailedToReceiveSqsMessageException = __webpack_require__(388);
 
-var _FailedToDeleteSqsMessagesException = __webpack_require__(386);
+var _FailedToDeleteSqsMessagesException = __webpack_require__(387);
 
-var _InvalidSqsQueueUrlException = __webpack_require__(390);
+var _InvalidSqsQueueUrlException = __webpack_require__(391);
 
-var _RumEventValidationException = __webpack_require__(391);
+var _RumEventValidationException = __webpack_require__(392);
 
-var _EventFactory = __webpack_require__(393);
+var _EventFactory = __webpack_require__(394);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -66980,7 +67026,7 @@ let RumSqsDriver = exports.RumSqsDriver = function (_AbstractDriver) {
 }(_AbstractDriver2.AbstractDriver);
 
 /***/ }),
-/* 399 */
+/* 400 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67032,7 +67078,7 @@ let Exception = exports.Exception = function (_Core$Exception$Excep) {
 }(_deepCore2.default.Exception.Exception);
 
 /***/ }),
-/* 400 */
+/* 401 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67049,7 +67095,7 @@ var _Log = __webpack_require__(66);
 module.exports = _Log.Log;
 
 /***/ }),
-/* 401 */
+/* 402 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67092,7 +67138,7 @@ let MissingResourceException = exports.MissingResourceException = function (_Exc
 }(_Exception2.Exception);
 
 /***/ }),
-/* 402 */
+/* 403 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67113,9 +67159,9 @@ var _deepKernel = __webpack_require__(21);
 
 var _deepKernel2 = _interopRequireDefault(_deepKernel);
 
-var _Instance = __webpack_require__(416);
+var _Instance = __webpack_require__(417);
 
-var _MissingResourceException = __webpack_require__(401);
+var _MissingResourceException = __webpack_require__(402);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -67321,7 +67367,7 @@ let Resource = exports.Resource = function (_Kernel$ContainerAwar) {
 }(_deepKernel2.default.ContainerAware);
 
 /***/ }),
-/* 403 */
+/* 404 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67360,7 +67406,7 @@ let AsyncCallNotAvailableException = exports.AsyncCallNotAvailableException = fu
 }(_Exception2.Exception);
 
 /***/ }),
-/* 404 */
+/* 405 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67399,7 +67445,7 @@ let CachedRequestException = exports.CachedRequestException = function (_Excepti
 }(_Exception2.Exception);
 
 /***/ }),
-/* 405 */
+/* 406 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67441,7 +67487,7 @@ let LambdaParamsCompatibilityException = exports.LambdaParamsCompatibilityExcept
 }(_Exception2.Exception);
 
 /***/ }),
-/* 406 */
+/* 407 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67480,7 +67526,7 @@ let LoadCredentialsException = exports.LoadCredentialsException = function (_Exc
 }(_Exception2.Exception);
 
 /***/ }),
-/* 407 */
+/* 408 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67523,7 +67569,7 @@ let MissingActionException = exports.MissingActionException = function (_Excepti
 }(_Exception2.Exception);
 
 /***/ }),
-/* 408 */
+/* 409 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67559,7 +67605,7 @@ let MissingCacheImplementationException = exports.MissingCacheImplementationExce
 }(_Exception2.Exception);
 
 /***/ }),
-/* 409 */
+/* 410 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67598,7 +67644,7 @@ let MissingLambdaLocalPathException = exports.MissingLambdaLocalPathException = 
 }(_Exception2.Exception);
 
 /***/ }),
-/* 410 */
+/* 411 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67637,7 +67683,7 @@ let MissingLocalLambdaExecWrapperException = exports.MissingLocalLambdaExecWrapp
 }(_Exception2.Exception);
 
 /***/ }),
-/* 411 */
+/* 412 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67673,7 +67719,7 @@ let MissingSecurityServiceException = exports.MissingSecurityServiceException = 
 }(_Exception2.Exception);
 
 /***/ }),
-/* 412 */
+/* 413 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67709,7 +67755,7 @@ let NotAuthenticatedException = exports.NotAuthenticatedException = function (_E
 }(_Exception2.Exception);
 
 /***/ }),
-/* 413 */
+/* 414 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67749,7 +67795,7 @@ let SourceNotAvailableException = exports.SourceNotAvailableException = function
 }(_Exception2.Exception);
 
 /***/ }),
-/* 414 */
+/* 415 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67794,7 +67840,7 @@ let UnknownMethodException = exports.UnknownMethodException = function (_Excepti
 }(_Exception2.Exception);
 
 /***/ }),
-/* 415 */
+/* 416 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67851,7 +67897,7 @@ let ValidationError = exports.ValidationError = function (_Exception) {
 }(_Exception2.Exception);
 
 /***/ }),
-/* 416 */
+/* 417 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -67868,7 +67914,7 @@ exports.Instance = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _MissingActionException = __webpack_require__(407);
+var _MissingActionException = __webpack_require__(408);
 
 var _Action = __webpack_require__(97);
 
@@ -68180,7 +68226,7 @@ let Instance = exports.Instance = function () {
 }();
 
 /***/ }),
-/* 417 */
+/* 418 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68205,13 +68251,13 @@ var _Request2 = __webpack_require__(176);
 
 var _Action = __webpack_require__(97);
 
-var _superagent = __webpack_require__(224);
+var _superagent = __webpack_require__(225);
 
 var _superagent2 = _interopRequireDefault(_superagent);
 
-var _MissingLocalLambdaExecWrapperException = __webpack_require__(410);
+var _MissingLocalLambdaExecWrapperException = __webpack_require__(411);
 
-var _MissingLambdaLocalPathException = __webpack_require__(409);
+var _MissingLambdaLocalPathException = __webpack_require__(410);
 
 var _urlParse = __webpack_require__(124);
 
@@ -68366,7 +68412,7 @@ let LocalRequest = exports.LocalRequest = function (_Request) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 418 */
+/* 419 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68452,7 +68498,7 @@ let RetryManager = exports.RetryManager = function () {
 }();
 
 /***/ }),
-/* 419 */
+/* 420 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
@@ -68479,10 +68525,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 419;
+webpackContext.id = 420;
 
 /***/ }),
-/* 420 */
+/* 421 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68494,12 +68540,80 @@ webpackContext.id = 419;
 
 
 
-var _Resource = __webpack_require__(402);
+var _Resource = __webpack_require__(403);
 
 module.exports = _Resource.Resource;
 
 /***/ }),
-/* 421 */
+/* 422 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.BackendUserProvider = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _AbstractUserProvider2 = __webpack_require__(178);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+let BackendUserProvider = exports.BackendUserProvider = function (_AbstractUserProvider) {
+  _inherits(BackendUserProvider, _AbstractUserProvider);
+
+  /**
+   * @param {String} userModelName
+   * @param {*} deepDb
+   */
+  function BackendUserProvider(userModelName, deepDb) {
+    _classCallCheck(this, BackendUserProvider);
+
+    var _this = _possibleConstructorReturn(this, (BackendUserProvider.__proto__ || Object.getPrototypeOf(BackendUserProvider)).call(this));
+
+    _this.userModelName = userModelName;
+    _this.deepDb = deepDb;
+    return _this;
+  }
+
+  /**
+   * @param {String} id
+   * @param {Function} callback
+   */
+
+
+  _createClass(BackendUserProvider, [{
+    key: 'loadUserByIdentityId',
+    value: function loadUserByIdentityId(id, callback) {
+      let userModel = null;
+
+      if (this.deepDb.has(this.userModelName)) {
+        userModel = this.deepDb.get(this.userModelName);
+      }
+
+      if (!userModel) {
+        callback(null, null);
+        return;
+      }
+
+      userModel.findOneById(id, (error, item) => {
+        callback(error, item && item.get());
+      });
+    }
+  }]);
+
+  return BackendUserProvider;
+}(_AbstractUserProvider2.AbstractUserProvider);
+
+/***/ }),
+/* 423 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68516,7 +68630,7 @@ exports.CredentialsManager = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _TokenManager = __webpack_require__(180);
+var _TokenManager = __webpack_require__(181);
 
 var _awsSdk = __webpack_require__(18);
 
@@ -68524,7 +68638,7 @@ var _awsSdk2 = _interopRequireDefault(_awsSdk);
 
 var _IdentityProviderTokenExpiredException = __webpack_require__(103);
 
-var _AuthException = __webpack_require__(422);
+var _AuthException = __webpack_require__(424);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -68820,7 +68934,7 @@ let CredentialsManager = exports.CredentialsManager = function () {
 }();
 
 /***/ }),
-/* 422 */
+/* 424 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68862,7 +68976,7 @@ let AuthException = exports.AuthException = function (_Exception) {
 }(_Exception2.Exception);
 
 /***/ }),
-/* 423 */
+/* 425 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68905,7 +69019,7 @@ let CreateCognitoDatasetException = exports.CreateCognitoDatasetException = func
 }(_Exception2.Exception);
 
 /***/ }),
-/* 424 */
+/* 426 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68948,7 +69062,7 @@ let DescribeIdentityException = exports.DescribeIdentityException = function (_E
 }(_Exception2.Exception);
 
 /***/ }),
-/* 425 */
+/* 427 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -68991,7 +69105,7 @@ let IdentityProviderMismatchException = exports.IdentityProviderMismatchExceptio
 }(_Exception2.Exception);
 
 /***/ }),
-/* 426 */
+/* 428 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69033,7 +69147,7 @@ let InvalidProviderIdentityException = exports.InvalidProviderIdentityException 
 }(_Exception2.Exception);
 
 /***/ }),
-/* 427 */
+/* 429 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69076,7 +69190,7 @@ let LoadUserException = exports.LoadUserException = function (_Exception) {
 }(_Exception2.Exception);
 
 /***/ }),
-/* 428 */
+/* 430 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69115,7 +69229,7 @@ let MissingIdentityImplementationException = exports.MissingIdentityImplementati
 }(_Exception2.Exception);
 
 /***/ }),
-/* 429 */
+/* 431 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69157,7 +69271,7 @@ let MissingLoginProviderException = exports.MissingLoginProviderException = func
 }(_Exception2.Exception);
 
 /***/ }),
-/* 430 */
+/* 432 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69193,7 +69307,7 @@ let MissingRefreshTokenException = exports.MissingRefreshTokenException = functi
 }(_IdentityProviderTokenExpiredException.IdentityProviderTokenExpiredException);
 
 /***/ }),
-/* 431 */
+/* 433 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69237,7 +69351,7 @@ let PutCognitoRecordException = exports.PutCognitoRecordException = function (_E
 }(_Exception2.Exception);
 
 /***/ }),
-/* 432 */
+/* 434 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69280,7 +69394,79 @@ let SynchronizeCognitoDatasetException = exports.SynchronizeCognitoDatasetExcept
 }(_Exception2.Exception);
 
 /***/ }),
-/* 433 */
+/* 435 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.FrontendUserProvider = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _LoadUserException = __webpack_require__(429);
+
+var _AbstractUserProvider2 = __webpack_require__(178);
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+let FrontendUserProvider = exports.FrontendUserProvider = function (_AbstractUserProvider) {
+  _inherits(FrontendUserProvider, _AbstractUserProvider);
+
+  /**
+   * @param {String} retrieveUserResource
+   * @param {Object} deepResourceService
+   */
+  function FrontendUserProvider(retrieveUserResource, deepResourceService) {
+    _classCallCheck(this, FrontendUserProvider);
+
+    var _this = _possibleConstructorReturn(this, (FrontendUserProvider.__proto__ || Object.getPrototypeOf(FrontendUserProvider)).call(this));
+
+    _this._retrieveUserResource = retrieveUserResource;
+    _this._deepResource = deepResourceService;
+    return _this;
+  }
+
+  /**
+   * @param {String} id
+   * @param {Function} callback
+   */
+
+
+  _createClass(FrontendUserProvider, [{
+    key: 'loadUserByIdentityId',
+    value: function loadUserByIdentityId(id, callback) {
+      if (!this._retrieveUserResource) {
+        callback(null, null);
+        return;
+      }
+
+      let retrieveUserResource = this._deepResource.get(this._retrieveUserResource);
+
+      // authScope(null) forces deep-resource to use cognito default credentials
+      retrieveUserResource.request({ Id: id }).authScope(null).retry(3).disableCache().send(response => {
+        if (response.error) {
+          callback(new _LoadUserException.LoadUserException(id, response.error), null);
+          return;
+        }
+
+        return callback(null, response.data);
+      });
+    }
+  }]);
+
+  return FrontendUserProvider;
+}(_AbstractUserProvider2.AbstractUserProvider);
+
+/***/ }),
+/* 436 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69362,7 +69548,7 @@ let AbstractImplementation = exports.AbstractImplementation = function (_Core$OO
 }(_deepCore2.default.OOP.Interface);
 
 /***/ }),
-/* 434 */
+/* 437 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69383,7 +69569,7 @@ var _awsSdk = __webpack_require__(18);
 
 var _awsSdk2 = _interopRequireDefault(_awsSdk);
 
-var _AbstractImplementation = __webpack_require__(433);
+var _AbstractImplementation = __webpack_require__(436);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -69455,7 +69641,7 @@ let UserPoolImplementation = exports.UserPoolImplementation = function (_Abstrac
 }(_AbstractImplementation.AbstractImplementation);
 
 /***/ }),
-/* 435 */
+/* 438 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69518,7 +69704,7 @@ let LocalIdentityProvider = exports.LocalIdentityProvider = function (_IdentityP
 }(_IdentityProvider2.IdentityProvider);
 
 /***/ }),
-/* 436 */
+/* 439 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69535,7 +69721,7 @@ exports.LocalToken = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Token2 = __webpack_require__(179);
+var _Token2 = __webpack_require__(180);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -69638,7 +69824,7 @@ let LocalToken = exports.LocalToken = function (_Token) {
 }(_Token2.Token);
 
 /***/ }),
-/* 437 */
+/* 440 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69716,7 +69902,7 @@ let RoleProvider = exports.RoleProvider = function () {
 }();
 
 /***/ }),
-/* 438 */
+/* 441 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69733,7 +69919,7 @@ exports.RoleResolver = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _RoleVoter = __webpack_require__(441);
+var _RoleVoter = __webpack_require__(443);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -69782,71 +69968,7 @@ let RoleResolver = exports.RoleResolver = function () {
 }();
 
 /***/ }),
-/* 439 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.UserProvider = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _LoadUserException = __webpack_require__(427);
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-/**
- * Loads user from db
- */
-let UserProvider = exports.UserProvider = function () {
-  /**
-   * @param {String} retrieveUserResource
-   * @param {Object} deepResourceService
-   */
-  function UserProvider(retrieveUserResource, deepResourceService) {
-    _classCallCheck(this, UserProvider);
-
-    this._retrieveUserResource = retrieveUserResource;
-    this._deepResource = deepResourceService;
-  }
-
-  /**
-   * @param {String} id
-   * @param {Function} callback
-   */
-
-
-  _createClass(UserProvider, [{
-    key: 'loadUserByIdentityId',
-    value: function loadUserByIdentityId(id, callback) {
-      if (!this._retrieveUserResource) {
-        callback(null, null);
-        return;
-      }
-
-      let retrieveUserResource = this._deepResource.get(this._retrieveUserResource);
-
-      // authScope(null) forces deep-resource to use cognito default credentials
-      retrieveUserResource.request({ Id: id }).authScope(null).retry(3).disableCache().send(response => {
-        if (response.error) {
-          callback(new _LoadUserException.LoadUserException(id, response.error), null);
-          return;
-        }
-
-        return callback(null, response.data);
-      });
-    }
-  }]);
-
-  return UserProvider;
-}();
-
-/***/ }),
-/* 440 */
+/* 442 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69867,7 +69989,7 @@ var _deepCore = __webpack_require__(3);
 
 var _deepCore2 = _interopRequireDefault(_deepCore);
 
-var _VoterInterface2 = __webpack_require__(181);
+var _VoterInterface2 = __webpack_require__(182);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -69938,7 +70060,7 @@ let BaseVoter = exports.BaseVoter = function (_VoterInterface) {
 }(_VoterInterface2.VoterInterface);
 
 /***/ }),
-/* 441 */
+/* 443 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -69955,9 +70077,9 @@ exports.RoleVoter = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _VoterInterface2 = __webpack_require__(181);
+var _VoterInterface2 = __webpack_require__(182);
 
-var _BaseVoter = __webpack_require__(440);
+var _BaseVoter = __webpack_require__(442);
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -70047,7 +70169,7 @@ let RoleVoter = exports.RoleVoter = function (_VoterInterface) {
 }(_VoterInterface2.VoterInterface);
 
 /***/ }),
-/* 442 */
+/* 444 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70059,12 +70181,12 @@ let RoleVoter = exports.RoleVoter = function (_VoterInterface) {
 
 
 
-var _Security = __webpack_require__(178);
+var _Security = __webpack_require__(179);
 
 module.exports = _Security.Security;
 
 /***/ }),
-/* 443 */
+/* 445 */
 /***/ (function(module, exports) {
 
 function webpackEmptyContext(req) {
@@ -70073,10 +70195,10 @@ function webpackEmptyContext(req) {
 webpackEmptyContext.keys = function() { return []; };
 webpackEmptyContext.resolve = webpackEmptyContext;
 module.exports = webpackEmptyContext;
-webpackEmptyContext.id = 443;
+webpackEmptyContext.id = 445;
 
 /***/ }),
-/* 444 */
+/* 446 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70115,7 +70237,7 @@ let InvalidJoiSchemaException = exports.InvalidJoiSchemaException = function (_E
 }(_Exception2.Exception);
 
 /***/ }),
-/* 445 */
+/* 447 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70158,7 +70280,7 @@ let InvalidSchemaException = exports.InvalidSchemaException = function (_Excepti
 }(_Exception2.Exception);
 
 /***/ }),
-/* 446 */
+/* 448 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70218,7 +70340,7 @@ let ObjectValidationFailedException = exports.ObjectValidationFailedException = 
 }(_Exception2.Exception);
 
 /***/ }),
-/* 447 */
+/* 449 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70257,7 +70379,7 @@ let ValidationSchemaNotFoundException = exports.ValidationSchemaNotFoundExceptio
 }(_Exception2.Exception);
 
 /***/ }),
-/* 448 */
+/* 450 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70278,11 +70400,11 @@ var _joi = __webpack_require__(26);
 
 var _joi2 = _interopRequireDefault(_joi);
 
-var _vogelsPolyfill = __webpack_require__(451);
+var _vogelsPolyfill = __webpack_require__(453);
 
 var _vogelsPolyfill2 = _interopRequireDefault(_vogelsPolyfill);
 
-var _uriRegexp = __webpack_require__(450);
+var _uriRegexp = __webpack_require__(452);
 
 var _uriRegexp2 = _interopRequireDefault(_uriRegexp);
 
@@ -70441,7 +70563,7 @@ let Joi = exports.Joi = function () {
 }();
 
 /***/ }),
-/* 449 */
+/* 451 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70638,7 +70760,7 @@ exports.default = internals.rfc3986;
 module.exports = exports['default'];
 
 /***/ }),
-/* 450 */
+/* 452 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70652,7 +70774,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _rfc = __webpack_require__(449);
+var _rfc = __webpack_require__(451);
 
 var _rfc2 = _interopRequireDefault(_rfc);
 
@@ -70678,7 +70800,7 @@ exports.default = {
 module.exports = exports['default'];
 
 /***/ }),
-/* 451 */
+/* 453 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70739,11 +70861,11 @@ exports.default = typeof window !== 'undefined' ? {
       return _joiVector(_joi2.default.string());
     }
   }
-} : __webpack_require__(661);
+} : __webpack_require__(663);
 module.exports = exports['default'];
 
 /***/ }),
-/* 452 */
+/* 454 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70760,13 +70882,13 @@ exports.ObjectToJoi = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _Joi = __webpack_require__(448);
+var _Joi = __webpack_require__(450);
 
 var _joi = __webpack_require__(26);
 
 var _joi2 = _interopRequireDefault(_joi);
 
-var _InvalidSchemaException = __webpack_require__(445);
+var _InvalidSchemaException = __webpack_require__(447);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -70849,7 +70971,7 @@ let ObjectToJoi = exports.ObjectToJoi = function () {
 }();
 
 /***/ }),
-/* 453 */
+/* 455 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -70870,19 +70992,19 @@ var _deepKernel = __webpack_require__(21);
 
 var _deepKernel2 = _interopRequireDefault(_deepKernel);
 
-var _ObjectToJoi = __webpack_require__(452);
+var _ObjectToJoi = __webpack_require__(454);
 
-var _ValidationSchemaNotFoundException = __webpack_require__(447);
+var _ValidationSchemaNotFoundException = __webpack_require__(449);
 
-var _InvalidJoiSchemaException = __webpack_require__(444);
+var _InvalidJoiSchemaException = __webpack_require__(446);
 
 var _joi = __webpack_require__(26);
 
 var _joi2 = _interopRequireDefault(_joi);
 
-var _ObjectValidationFailedException = __webpack_require__(446);
+var _ObjectValidationFailedException = __webpack_require__(448);
 
-var _path = __webpack_require__(43);
+var _path = __webpack_require__(42);
 
 var _path2 = _interopRequireDefault(_path);
 
@@ -71231,10 +71353,10 @@ let Validation = exports.Validation = function (_Kernel$ContainerAwar) {
 
   return Validation;
 }(_deepKernel2.default.ContainerAware);
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 454 */
+/* 456 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71246,12 +71368,12 @@ let Validation = exports.Validation = function (_Kernel$ContainerAwar) {
 
 
 
-var _Validation = __webpack_require__(453);
+var _Validation = __webpack_require__(455);
 
 module.exports = _Validation.Validation;
 
 /***/ }),
-/* 455 */
+/* 457 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71323,7 +71445,7 @@ proto._update = function _update(inp, inOff, out, outOff) {
 
 
 /***/ }),
-/* 456 */
+/* 458 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71471,7 +71593,7 @@ Cipher.prototype._finalDecrypt = function _finalDecrypt() {
 
 
 /***/ }),
-/* 457 */
+/* 459 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71621,7 +71743,7 @@ DES.prototype._decrypt = function _decrypt(state, lStart, rStart, out, off) {
 
 
 /***/ }),
-/* 458 */
+/* 460 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71683,7 +71805,7 @@ EDE.prototype._unpad = DES.prototype._unpad;
 
 
 /***/ }),
-/* 459 */
+/* 461 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -71946,13 +72068,13 @@ exports.padSplit = function padSplit(num, size, group) {
 
 
 /***/ }),
-/* 460 */
+/* 462 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(Buffer) {var generatePrime = __webpack_require__(182)
-var primes = __webpack_require__(462)
+/* WEBPACK VAR INJECTION */(function(Buffer) {var generatePrime = __webpack_require__(183)
+var primes = __webpack_require__(464)
 
-var DH = __webpack_require__(461)
+var DH = __webpack_require__(463)
 
 function getDiffieHellman (mod) {
   var prime = new Buffer(primes[mod].prime, 'hex')
@@ -71995,18 +72117,18 @@ exports.createDiffieHellman = exports.DiffieHellman = createDiffieHellman
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 461 */
+/* 463 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var BN = __webpack_require__(7);
-var MillerRabin = __webpack_require__(204);
+var MillerRabin = __webpack_require__(205);
 var millerRabin = new MillerRabin();
 var TWENTYFOUR = new BN(24);
 var ELEVEN = new BN(11);
 var TEN = new BN(10);
 var THREE = new BN(3);
 var SEVEN = new BN(7);
-var primes = __webpack_require__(182);
+var primes = __webpack_require__(183);
 var randomBytes = __webpack_require__(58);
 module.exports = DH;
 
@@ -72166,7 +72288,7 @@ function formatReturnValue(bn, enc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 462 */
+/* 464 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -72205,12 +72327,12 @@ module.exports = {
 };
 
 /***/ }),
-/* 463 */
+/* 465 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var net = __webpack_require__(140);
-var Step = __webpack_require__(624);
-var retry = __webpack_require__(614);
+var net = __webpack_require__(126);
+var Step = __webpack_require__(626);
+var retry = __webpack_require__(616);
 
 var Ecad = function(options) {
     options.timeout = options.timeout || 3000;
@@ -72324,7 +72446,7 @@ module.exports = Ecad;
 
 
 /***/ }),
-/* 464 */
+/* 466 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -72706,7 +72828,7 @@ BasePoint.prototype.dblp = function dblp(k) {
 
 
 /***/ }),
-/* 465 */
+/* 467 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73146,7 +73268,7 @@ Point.prototype.mixedAdd = Point.prototype.add;
 
 
 /***/ }),
-/* 466 */
+/* 468 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -73333,7 +73455,7 @@ Point.prototype.getX = function getX() {
 
 
 /***/ }),
-/* 467 */
+/* 469 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74278,7 +74400,7 @@ JPoint.prototype.isInfinity = function isInfinity() {
 
 
 /***/ }),
-/* 468 */
+/* 470 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74451,7 +74573,7 @@ defineCurve('ed25519', {
 
 var pre;
 try {
-  pre = __webpack_require__(475);
+  pre = __webpack_require__(477);
 } catch (e) {
   pre = undefined;
 }
@@ -74490,20 +74612,20 @@ defineCurve('secp256k1', {
 
 
 /***/ }),
-/* 469 */
+/* 471 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var BN = __webpack_require__(7);
-var HmacDRBG = __webpack_require__(483);
+var HmacDRBG = __webpack_require__(485);
 var elliptic = __webpack_require__(10);
 var utils = elliptic.utils;
 var assert = utils.assert;
 
-var KeyPair = __webpack_require__(470);
-var Signature = __webpack_require__(471);
+var KeyPair = __webpack_require__(472);
+var Signature = __webpack_require__(473);
 
 function EC(options) {
   if (!(this instanceof EC))
@@ -74737,7 +74859,7 @@ EC.prototype.getKeyRecoveryParam = function(e, signature, Q, enc) {
 
 
 /***/ }),
-/* 470 */
+/* 472 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -74863,7 +74985,7 @@ KeyPair.prototype.inspect = function inspect() {
 
 
 /***/ }),
-/* 471 */
+/* 473 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75005,7 +75127,7 @@ Signature.prototype.toDER = function toDER(enc) {
 
 
 /***/ }),
-/* 472 */
+/* 474 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75016,8 +75138,8 @@ var elliptic = __webpack_require__(10);
 var utils = elliptic.utils;
 var assert = utils.assert;
 var parseBytes = utils.parseBytes;
-var KeyPair = __webpack_require__(473);
-var Signature = __webpack_require__(474);
+var KeyPair = __webpack_require__(475);
+var Signature = __webpack_require__(476);
 
 function EDDSA(curve) {
   assert(curve === 'ed25519', 'only tested with ed25519 so far');
@@ -75130,7 +75252,7 @@ EDDSA.prototype.isPoint = function isPoint(val) {
 
 
 /***/ }),
-/* 473 */
+/* 475 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75233,7 +75355,7 @@ module.exports = KeyPair;
 
 
 /***/ }),
-/* 474 */
+/* 476 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -75306,7 +75428,7 @@ module.exports = Signature;
 
 
 /***/ }),
-/* 475 */
+/* 477 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -76092,7 +76214,7 @@ module.exports = {
 
 
 /***/ }),
-/* 476 */
+/* 478 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -76101,7 +76223,7 @@ module.exports = {
 var utils = exports;
 var BN = __webpack_require__(7);
 var minAssert = __webpack_require__(28);
-var minUtils = __webpack_require__(205);
+var minUtils = __webpack_require__(206);
 
 utils.assert = minAssert;
 utils.toArray = minUtils.toArray;
@@ -76219,7 +76341,7 @@ utils.intFromLE = intFromLE;
 
 
 /***/ }),
-/* 477 */
+/* 479 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -76234,7 +76356,7 @@ module.exports = {
 				"spec": ">=6.0.0 <7.0.0",
 				"type": "range"
 			},
-			"/Users/AlexanderC/Desktop/Projects/deep-framework/src/deep-framework/node_modules/browserify-sign"
+			"/Users/mgoria/Documents/workspace/MitocGroup/deep-framework/src/deep-framework/node_modules/browserify-sign"
 		]
 	],
 	"_from": "elliptic@>=6.0.0 <7.0.0",
@@ -76269,7 +76391,7 @@ module.exports = {
 	"_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
 	"_shrinkwrap": null,
 	"_spec": "elliptic@^6.0.0",
-	"_where": "/Users/AlexanderC/Desktop/Projects/deep-framework/src/deep-framework/node_modules/browserify-sign",
+	"_where": "/Users/mgoria/Documents/workspace/MitocGroup/deep-framework/src/deep-framework/node_modules/browserify-sign",
 	"author": {
 		"name": "Fedor Indutny",
 		"email": "fedor@indutny.com"
@@ -76346,7 +76468,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 478 */
+/* 480 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var hash = __webpack_require__(25);
@@ -76443,7 +76565,7 @@ BlockHash.prototype._pad = function pad() {
 
 
 /***/ }),
-/* 479 */
+/* 481 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var hmac = exports;
@@ -76497,7 +76619,7 @@ Hmac.prototype.digest = function digest(enc) {
 
 
 /***/ }),
-/* 480 */
+/* 482 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var hash = __webpack_require__(25);
@@ -76647,7 +76769,7 @@ var sh = [
 
 
 /***/ }),
-/* 481 */
+/* 483 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var hash = __webpack_require__(25);
@@ -77217,7 +77339,7 @@ function g1_512_lo(xh, xl) {
 
 
 /***/ }),
-/* 482 */
+/* 484 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var utils = exports;
@@ -77480,14 +77602,14 @@ exports.shr64_lo = shr64_lo;
 
 
 /***/ }),
-/* 483 */
+/* 485 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 var hash = __webpack_require__(25);
-var utils = __webpack_require__(205);
+var utils = __webpack_require__(206);
 var assert = __webpack_require__(28);
 
 function HmacDRBG(options) {
@@ -77600,7 +77722,7 @@ HmacDRBG.prototype.generate = function generate(len, enc, add, addEnc) {
 
 
 /***/ }),
-/* 484 */
+/* 486 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// Declare internals
@@ -77739,7 +77861,7 @@ internals.safeCharCodes = (function () {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 485 */
+/* 487 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -77829,7 +77951,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 486 */
+/* 488 */
 /***/ (function(module, exports) {
 
 
@@ -77844,14 +77966,14 @@ module.exports = function(arr, obj){
 };
 
 /***/ }),
-/* 487 */
+/* 489 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(488);
+module.exports = __webpack_require__(490);
 
 
 /***/ }),
-/* 488 */
+/* 490 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {/**
@@ -77898,7 +78020,7 @@ module.exports = __webpack_require__(488);
  * @version     1.2.0 Drop Node 0.8, fix style, switch to lab/code
  */
 
-var Dns = __webpack_require__(278);
+var Dns = __webpack_require__(237);
 
 var internals = {
     defaultThreshold: 16,
@@ -79249,10 +79371,10 @@ isEmail.diagnoses = (function exportDiagnoses () {
 
 module.exports = isEmail;
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 489 */
+/* 491 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
@@ -79546,7 +79668,7 @@ module.exports = new internals.Array();
 
 
 /***/ }),
-/* 490 */
+/* 492 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// Load modules
@@ -79650,7 +79772,7 @@ module.exports = new internals.Binary();
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 491 */
+/* 493 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
@@ -79686,7 +79808,7 @@ internals.Function.prototype._base = function (value, state, options) {
 module.exports = new internals.Function();
 
 /***/ }),
-/* 492 */
+/* 494 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
@@ -79701,14 +79823,14 @@ var Ref = __webpack_require__(53);
 
 var internals = {
     alternatives: __webpack_require__(107),
-    array: __webpack_require__(489),
-    boolean: __webpack_require__(184),
-    binary: __webpack_require__(490),
+    array: __webpack_require__(491),
+    boolean: __webpack_require__(185),
+    binary: __webpack_require__(492),
     date: __webpack_require__(108),
-    func: __webpack_require__(491),
-    number: __webpack_require__(185),
-    object: __webpack_require__(186),
-    string: __webpack_require__(187)
+    func: __webpack_require__(493),
+    number: __webpack_require__(186),
+    object: __webpack_require__(187),
+    string: __webpack_require__(188)
 };
 
 
@@ -79821,7 +79943,7 @@ module.exports = internals.root();
 
 
 /***/ }),
-/* 493 */
+/* 495 */
 /***/ (function(module, exports) {
 
 // Load modules
@@ -79933,7 +80055,7 @@ exports.errors = {
 
 
 /***/ }),
-/* 494 */
+/* 496 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27),
@@ -79946,14 +80068,14 @@ module.exports = DataView;
 
 
 /***/ }),
-/* 495 */
+/* 497 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var hashClear = __webpack_require__(544),
-    hashDelete = __webpack_require__(545),
-    hashGet = __webpack_require__(546),
-    hashHas = __webpack_require__(547),
-    hashSet = __webpack_require__(548);
+var hashClear = __webpack_require__(546),
+    hashDelete = __webpack_require__(547),
+    hashGet = __webpack_require__(548),
+    hashHas = __webpack_require__(549),
+    hashSet = __webpack_require__(550);
 
 /**
  * Creates a hash object.
@@ -79984,7 +80106,7 @@ module.exports = Hash;
 
 
 /***/ }),
-/* 496 */
+/* 498 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27),
@@ -79997,7 +80119,7 @@ module.exports = Promise;
 
 
 /***/ }),
-/* 497 */
+/* 499 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27),
@@ -80010,12 +80132,12 @@ module.exports = Set;
 
 
 /***/ }),
-/* 498 */
+/* 500 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var MapCache = __webpack_require__(110),
-    setCacheAdd = __webpack_require__(568),
-    setCacheHas = __webpack_require__(569);
+    setCacheAdd = __webpack_require__(570),
+    setCacheHas = __webpack_require__(571);
 
 /**
  *
@@ -80043,7 +80165,7 @@ module.exports = SetCache;
 
 
 /***/ }),
-/* 499 */
+/* 501 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var root = __webpack_require__(20);
@@ -80055,7 +80177,7 @@ module.exports = Uint8Array;
 
 
 /***/ }),
-/* 500 */
+/* 502 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getNative = __webpack_require__(27),
@@ -80068,7 +80190,7 @@ module.exports = WeakMap;
 
 
 /***/ }),
-/* 501 */
+/* 503 */
 /***/ (function(module, exports) {
 
 /**
@@ -80095,7 +80217,7 @@ module.exports = apply;
 
 
 /***/ }),
-/* 502 */
+/* 504 */
 /***/ (function(module, exports) {
 
 /**
@@ -80124,7 +80246,7 @@ module.exports = arrayEvery;
 
 
 /***/ }),
-/* 503 */
+/* 505 */
 /***/ (function(module, exports) {
 
 /**
@@ -80155,10 +80277,10 @@ module.exports = arrayFilter;
 
 
 /***/ }),
-/* 504 */
+/* 506 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseTimes = __webpack_require__(528),
+var baseTimes = __webpack_require__(530),
     isArguments = __webpack_require__(115),
     isArray = __webpack_require__(16),
     isBuffer = __webpack_require__(116),
@@ -80210,7 +80332,7 @@ module.exports = arrayLikeKeys;
 
 
 /***/ }),
-/* 505 */
+/* 507 */
 /***/ (function(module, exports) {
 
 /**
@@ -80237,7 +80359,7 @@ module.exports = arrayMap;
 
 
 /***/ }),
-/* 506 */
+/* 508 */
 /***/ (function(module, exports) {
 
 /**
@@ -80263,7 +80385,7 @@ module.exports = arrayPush;
 
 
 /***/ }),
-/* 507 */
+/* 509 */
 /***/ (function(module, exports) {
 
 /**
@@ -80292,10 +80414,10 @@ module.exports = arraySome;
 
 
 /***/ }),
-/* 508 */
+/* 510 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var copyObject = __webpack_require__(195),
+var copyObject = __webpack_require__(196),
     keys = __webpack_require__(57);
 
 /**
@@ -80315,7 +80437,7 @@ module.exports = baseAssign;
 
 
 /***/ }),
-/* 509 */
+/* 511 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isObject = __webpack_require__(17);
@@ -80351,11 +80473,11 @@ module.exports = baseCreate;
 
 
 /***/ }),
-/* 510 */
+/* 512 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseForOwn = __webpack_require__(513),
-    createBaseEach = __webpack_require__(534);
+var baseForOwn = __webpack_require__(515),
+    createBaseEach = __webpack_require__(536);
 
 /**
  * The base implementation of `_.forEach` without support for iteratee shorthands.
@@ -80371,10 +80493,10 @@ module.exports = baseEach;
 
 
 /***/ }),
-/* 511 */
+/* 513 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseEach = __webpack_require__(510);
+var baseEach = __webpack_require__(512);
 
 /**
  * The base implementation of `_.every` without support for iteratee shorthands.
@@ -80398,10 +80520,10 @@ module.exports = baseEvery;
 
 
 /***/ }),
-/* 512 */
+/* 514 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var createBaseFor = __webpack_require__(535);
+var createBaseFor = __webpack_require__(537);
 
 /**
  * The base implementation of `baseForOwn` which iterates over `object`
@@ -80420,10 +80542,10 @@ module.exports = baseFor;
 
 
 /***/ }),
-/* 513 */
+/* 515 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseFor = __webpack_require__(512),
+var baseFor = __webpack_require__(514),
     keys = __webpack_require__(57);
 
 /**
@@ -80442,10 +80564,10 @@ module.exports = baseForOwn;
 
 
 /***/ }),
-/* 514 */
+/* 516 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayPush = __webpack_require__(506),
+var arrayPush = __webpack_require__(508),
     isArray = __webpack_require__(16);
 
 /**
@@ -80468,7 +80590,7 @@ module.exports = baseGetAllKeys;
 
 
 /***/ }),
-/* 515 */
+/* 517 */
 /***/ (function(module, exports) {
 
 /**
@@ -80487,7 +80609,7 @@ module.exports = baseHasIn;
 
 
 /***/ }),
-/* 516 */
+/* 518 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(54),
@@ -80511,14 +80633,14 @@ module.exports = baseIsArguments;
 
 
 /***/ }),
-/* 517 */
+/* 519 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Stack = __webpack_require__(188),
-    equalArrays = __webpack_require__(197),
-    equalByTag = __webpack_require__(536),
-    equalObjects = __webpack_require__(537),
-    getTag = __webpack_require__(199),
+var Stack = __webpack_require__(189),
+    equalArrays = __webpack_require__(198),
+    equalByTag = __webpack_require__(538),
+    equalObjects = __webpack_require__(539),
+    getTag = __webpack_require__(200),
     isArray = __webpack_require__(16),
     isBuffer = __webpack_require__(116),
     isTypedArray = __webpack_require__(119);
@@ -80600,11 +80722,11 @@ module.exports = baseIsEqualDeep;
 
 
 /***/ }),
-/* 518 */
+/* 520 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Stack = __webpack_require__(188),
-    baseIsEqual = __webpack_require__(192);
+var Stack = __webpack_require__(189),
+    baseIsEqual = __webpack_require__(193);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -80668,13 +80790,13 @@ module.exports = baseIsMatch;
 
 
 /***/ }),
-/* 519 */
+/* 521 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isFunction = __webpack_require__(78),
-    isMasked = __webpack_require__(550),
+    isMasked = __webpack_require__(552),
     isObject = __webpack_require__(17),
-    toSource = __webpack_require__(203);
+    toSource = __webpack_require__(204);
 
 /**
  * Used to match `RegExp`
@@ -80721,7 +80843,7 @@ module.exports = baseIsNative;
 
 
 /***/ }),
-/* 520 */
+/* 522 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var baseGetTag = __webpack_require__(54),
@@ -80787,14 +80909,14 @@ module.exports = baseIsTypedArray;
 
 
 /***/ }),
-/* 521 */
+/* 523 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseMatches = __webpack_require__(522),
-    baseMatchesProperty = __webpack_require__(523),
+var baseMatches = __webpack_require__(524),
+    baseMatchesProperty = __webpack_require__(525),
     identity = __webpack_require__(114),
     isArray = __webpack_require__(16),
-    property = __webpack_require__(586);
+    property = __webpack_require__(588);
 
 /**
  * The base implementation of `_.iteratee`.
@@ -80824,12 +80946,12 @@ module.exports = baseIteratee;
 
 
 /***/ }),
-/* 522 */
+/* 524 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsMatch = __webpack_require__(518),
-    getMatchData = __webpack_require__(539),
-    matchesStrictComparable = __webpack_require__(202);
+var baseIsMatch = __webpack_require__(520),
+    getMatchData = __webpack_require__(541),
+    matchesStrictComparable = __webpack_require__(203);
 
 /**
  * The base implementation of `_.matches` which doesn't clone `source`.
@@ -80852,15 +80974,15 @@ module.exports = baseMatches;
 
 
 /***/ }),
-/* 523 */
+/* 525 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseIsEqual = __webpack_require__(192),
-    get = __webpack_require__(582),
-    hasIn = __webpack_require__(583),
+var baseIsEqual = __webpack_require__(193),
+    get = __webpack_require__(584),
+    hasIn = __webpack_require__(585),
     isKey = __webpack_require__(112),
-    isStrictComparable = __webpack_require__(201),
-    matchesStrictComparable = __webpack_require__(202),
+    isStrictComparable = __webpack_require__(202),
+    matchesStrictComparable = __webpack_require__(203),
     toKey = __webpack_require__(76);
 
 /** Used to compose bitmasks for value comparisons. */
@@ -80891,7 +81013,7 @@ module.exports = baseMatchesProperty;
 
 
 /***/ }),
-/* 524 */
+/* 526 */
 /***/ (function(module, exports) {
 
 /**
@@ -80911,10 +81033,10 @@ module.exports = baseProperty;
 
 
 /***/ }),
-/* 525 */
+/* 527 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGet = __webpack_require__(191);
+var baseGet = __webpack_require__(192);
 
 /**
  * A specialized version of `baseProperty` which supports deep paths.
@@ -80933,12 +81055,12 @@ module.exports = basePropertyDeep;
 
 
 /***/ }),
-/* 526 */
+/* 528 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var identity = __webpack_require__(114),
-    overRest = __webpack_require__(567),
-    setToString = __webpack_require__(571);
+    overRest = __webpack_require__(569),
+    setToString = __webpack_require__(573);
 
 /**
  * The base implementation of `_.rest` which doesn't validate or coerce arguments.
@@ -80956,11 +81078,11 @@ module.exports = baseRest;
 
 
 /***/ }),
-/* 527 */
+/* 529 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var constant = __webpack_require__(580),
-    defineProperty = __webpack_require__(196),
+var constant = __webpack_require__(582),
+    defineProperty = __webpack_require__(197),
     identity = __webpack_require__(114);
 
 /**
@@ -80984,7 +81106,7 @@ module.exports = baseSetToString;
 
 
 /***/ }),
-/* 528 */
+/* 530 */
 /***/ (function(module, exports) {
 
 /**
@@ -81010,11 +81132,11 @@ module.exports = baseTimes;
 
 
 /***/ }),
-/* 529 */
+/* 531 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(72),
-    arrayMap = __webpack_require__(505),
+    arrayMap = __webpack_require__(507),
     isArray = __webpack_require__(16),
     isSymbol = __webpack_require__(118);
 
@@ -81053,7 +81175,7 @@ module.exports = baseToString;
 
 
 /***/ }),
-/* 530 */
+/* 532 */
 /***/ (function(module, exports) {
 
 /**
@@ -81073,7 +81195,7 @@ module.exports = baseUnary;
 
 
 /***/ }),
-/* 531 */
+/* 533 */
 /***/ (function(module, exports) {
 
 /**
@@ -81092,7 +81214,7 @@ module.exports = cacheHas;
 
 
 /***/ }),
-/* 532 */
+/* 534 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var root = __webpack_require__(20);
@@ -81104,11 +81226,11 @@ module.exports = coreJsData;
 
 
 /***/ }),
-/* 533 */
+/* 535 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseRest = __webpack_require__(526),
-    isIterateeCall = __webpack_require__(200);
+var baseRest = __webpack_require__(528),
+    isIterateeCall = __webpack_require__(201);
 
 /**
  * Creates a function like `_.assign`.
@@ -81147,7 +81269,7 @@ module.exports = createAssigner;
 
 
 /***/ }),
-/* 534 */
+/* 536 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var isArrayLike = __webpack_require__(55);
@@ -81185,7 +81307,7 @@ module.exports = createBaseEach;
 
 
 /***/ }),
-/* 535 */
+/* 537 */
 /***/ (function(module, exports) {
 
 /**
@@ -81216,15 +81338,15 @@ module.exports = createBaseFor;
 
 
 /***/ }),
-/* 536 */
+/* 538 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(72),
-    Uint8Array = __webpack_require__(499),
+    Uint8Array = __webpack_require__(501),
     eq = __webpack_require__(77),
-    equalArrays = __webpack_require__(197),
-    mapToArray = __webpack_require__(561),
-    setToArray = __webpack_require__(570);
+    equalArrays = __webpack_require__(198),
+    mapToArray = __webpack_require__(563),
+    setToArray = __webpack_require__(572);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1,
@@ -81334,10 +81456,10 @@ module.exports = equalByTag;
 
 
 /***/ }),
-/* 537 */
+/* 539 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var getAllKeys = __webpack_require__(538);
+var getAllKeys = __webpack_require__(540);
 
 /** Used to compose bitmasks for value comparisons. */
 var COMPARE_PARTIAL_FLAG = 1;
@@ -81429,11 +81551,11 @@ module.exports = equalObjects;
 
 
 /***/ }),
-/* 538 */
+/* 540 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGetAllKeys = __webpack_require__(514),
-    getSymbols = __webpack_require__(541),
+var baseGetAllKeys = __webpack_require__(516),
+    getSymbols = __webpack_require__(543),
     keys = __webpack_require__(57);
 
 /**
@@ -81451,10 +81573,10 @@ module.exports = getAllKeys;
 
 
 /***/ }),
-/* 539 */
+/* 541 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var isStrictComparable = __webpack_require__(201),
+var isStrictComparable = __webpack_require__(202),
     keys = __webpack_require__(57);
 
 /**
@@ -81481,7 +81603,7 @@ module.exports = getMatchData;
 
 
 /***/ }),
-/* 540 */
+/* 542 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var Symbol = __webpack_require__(72);
@@ -81533,11 +81655,11 @@ module.exports = getRawTag;
 
 
 /***/ }),
-/* 541 */
+/* 543 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayFilter = __webpack_require__(503),
-    stubArray = __webpack_require__(587);
+var arrayFilter = __webpack_require__(505),
+    stubArray = __webpack_require__(589);
 
 /** Used for built-in method references. */
 var objectProto = Object.prototype;
@@ -81569,7 +81691,7 @@ module.exports = getSymbols;
 
 
 /***/ }),
-/* 542 */
+/* 544 */
 /***/ (function(module, exports) {
 
 /**
@@ -81588,10 +81710,10 @@ module.exports = getValue;
 
 
 /***/ }),
-/* 543 */
+/* 545 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var castPath = __webpack_require__(194),
+var castPath = __webpack_require__(195),
     isArguments = __webpack_require__(115),
     isArray = __webpack_require__(16),
     isIndex = __webpack_require__(111),
@@ -81633,7 +81755,7 @@ module.exports = hasPath;
 
 
 /***/ }),
-/* 544 */
+/* 546 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var nativeCreate = __webpack_require__(75);
@@ -81654,7 +81776,7 @@ module.exports = hashClear;
 
 
 /***/ }),
-/* 545 */
+/* 547 */
 /***/ (function(module, exports) {
 
 /**
@@ -81677,7 +81799,7 @@ module.exports = hashDelete;
 
 
 /***/ }),
-/* 546 */
+/* 548 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var nativeCreate = __webpack_require__(75);
@@ -81713,7 +81835,7 @@ module.exports = hashGet;
 
 
 /***/ }),
-/* 547 */
+/* 549 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var nativeCreate = __webpack_require__(75);
@@ -81742,7 +81864,7 @@ module.exports = hashHas;
 
 
 /***/ }),
-/* 548 */
+/* 550 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var nativeCreate = __webpack_require__(75);
@@ -81771,7 +81893,7 @@ module.exports = hashSet;
 
 
 /***/ }),
-/* 549 */
+/* 551 */
 /***/ (function(module, exports) {
 
 /**
@@ -81792,10 +81914,10 @@ module.exports = isKeyable;
 
 
 /***/ }),
-/* 550 */
+/* 552 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var coreJsData = __webpack_require__(532);
+var coreJsData = __webpack_require__(534);
 
 /** Used to detect methods masquerading as native. */
 var maskSrcKey = (function() {
@@ -81818,7 +81940,7 @@ module.exports = isMasked;
 
 
 /***/ }),
-/* 551 */
+/* 553 */
 /***/ (function(module, exports) {
 
 /**
@@ -81837,7 +81959,7 @@ module.exports = listCacheClear;
 
 
 /***/ }),
-/* 552 */
+/* 554 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assocIndexOf = __webpack_require__(73);
@@ -81878,7 +82000,7 @@ module.exports = listCacheDelete;
 
 
 /***/ }),
-/* 553 */
+/* 555 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assocIndexOf = __webpack_require__(73);
@@ -81903,7 +82025,7 @@ module.exports = listCacheGet;
 
 
 /***/ }),
-/* 554 */
+/* 556 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assocIndexOf = __webpack_require__(73);
@@ -81925,7 +82047,7 @@ module.exports = listCacheHas;
 
 
 /***/ }),
-/* 555 */
+/* 557 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var assocIndexOf = __webpack_require__(73);
@@ -81957,10 +82079,10 @@ module.exports = listCacheSet;
 
 
 /***/ }),
-/* 556 */
+/* 558 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var Hash = __webpack_require__(495),
+var Hash = __webpack_require__(497),
     ListCache = __webpack_require__(71),
     Map = __webpack_require__(109);
 
@@ -81984,7 +82106,7 @@ module.exports = mapCacheClear;
 
 
 /***/ }),
-/* 557 */
+/* 559 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getMapData = __webpack_require__(74);
@@ -82008,7 +82130,7 @@ module.exports = mapCacheDelete;
 
 
 /***/ }),
-/* 558 */
+/* 560 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getMapData = __webpack_require__(74);
@@ -82030,7 +82152,7 @@ module.exports = mapCacheGet;
 
 
 /***/ }),
-/* 559 */
+/* 561 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getMapData = __webpack_require__(74);
@@ -82052,7 +82174,7 @@ module.exports = mapCacheHas;
 
 
 /***/ }),
-/* 560 */
+/* 562 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var getMapData = __webpack_require__(74);
@@ -82080,7 +82202,7 @@ module.exports = mapCacheSet;
 
 
 /***/ }),
-/* 561 */
+/* 563 */
 /***/ (function(module, exports) {
 
 /**
@@ -82104,10 +82226,10 @@ module.exports = mapToArray;
 
 
 /***/ }),
-/* 562 */
+/* 564 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var memoize = __webpack_require__(585);
+var memoize = __webpack_require__(587);
 
 /** Used as the maximum memoize cache size. */
 var MAX_MEMOIZE_SIZE = 500;
@@ -82136,10 +82258,10 @@ module.exports = memoizeCapped;
 
 
 /***/ }),
-/* 563 */
+/* 565 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var overArg = __webpack_require__(566);
+var overArg = __webpack_require__(568);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeKeys = overArg(Object.keys, Object);
@@ -82148,10 +82270,10 @@ module.exports = nativeKeys;
 
 
 /***/ }),
-/* 564 */
+/* 566 */
 /***/ (function(module, exports, __webpack_require__) {
 
-/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(198);
+/* WEBPACK VAR INJECTION */(function(module) {var freeGlobal = __webpack_require__(199);
 
 /** Detect free variable `exports`. */
 var freeExports = typeof exports == 'object' && exports && !exports.nodeType && exports;
@@ -82177,7 +82299,7 @@ module.exports = nodeUtil;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(22)(module)))
 
 /***/ }),
-/* 565 */
+/* 567 */
 /***/ (function(module, exports) {
 
 /** Used for built-in method references. */
@@ -82205,7 +82327,7 @@ module.exports = objectToString;
 
 
 /***/ }),
-/* 566 */
+/* 568 */
 /***/ (function(module, exports) {
 
 /**
@@ -82226,10 +82348,10 @@ module.exports = overArg;
 
 
 /***/ }),
-/* 567 */
+/* 569 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var apply = __webpack_require__(501);
+var apply = __webpack_require__(503);
 
 /* Built-in method references for those with the same name as other `lodash` methods. */
 var nativeMax = Math.max;
@@ -82268,7 +82390,7 @@ module.exports = overRest;
 
 
 /***/ }),
-/* 568 */
+/* 570 */
 /***/ (function(module, exports) {
 
 /** Used to stand-in for `undefined` hash values. */
@@ -82293,7 +82415,7 @@ module.exports = setCacheAdd;
 
 
 /***/ }),
-/* 569 */
+/* 571 */
 /***/ (function(module, exports) {
 
 /**
@@ -82313,7 +82435,7 @@ module.exports = setCacheHas;
 
 
 /***/ }),
-/* 570 */
+/* 572 */
 /***/ (function(module, exports) {
 
 /**
@@ -82337,11 +82459,11 @@ module.exports = setToArray;
 
 
 /***/ }),
-/* 571 */
+/* 573 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseSetToString = __webpack_require__(527),
-    shortOut = __webpack_require__(572);
+var baseSetToString = __webpack_require__(529),
+    shortOut = __webpack_require__(574);
 
 /**
  * Sets the `toString` method of `func` to return `string`.
@@ -82357,7 +82479,7 @@ module.exports = setToString;
 
 
 /***/ }),
-/* 572 */
+/* 574 */
 /***/ (function(module, exports) {
 
 /** Used to detect hot functions by number of calls within a span of milliseconds. */
@@ -82400,7 +82522,7 @@ module.exports = shortOut;
 
 
 /***/ }),
-/* 573 */
+/* 575 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ListCache = __webpack_require__(71);
@@ -82421,7 +82543,7 @@ module.exports = stackClear;
 
 
 /***/ }),
-/* 574 */
+/* 576 */
 /***/ (function(module, exports) {
 
 /**
@@ -82445,7 +82567,7 @@ module.exports = stackDelete;
 
 
 /***/ }),
-/* 575 */
+/* 577 */
 /***/ (function(module, exports) {
 
 /**
@@ -82465,7 +82587,7 @@ module.exports = stackGet;
 
 
 /***/ }),
-/* 576 */
+/* 578 */
 /***/ (function(module, exports) {
 
 /**
@@ -82485,7 +82607,7 @@ module.exports = stackHas;
 
 
 /***/ }),
-/* 577 */
+/* 579 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var ListCache = __webpack_require__(71),
@@ -82525,10 +82647,10 @@ module.exports = stackSet;
 
 
 /***/ }),
-/* 578 */
+/* 580 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var memoizeCapped = __webpack_require__(562);
+var memoizeCapped = __webpack_require__(564);
 
 /** Used to match property names within property paths. */
 var reLeadingDot = /^\./,
@@ -82559,12 +82681,12 @@ module.exports = stringToPath;
 
 
 /***/ }),
-/* 579 */
+/* 581 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var assignValue = __webpack_require__(189),
-    copyObject = __webpack_require__(195),
-    createAssigner = __webpack_require__(533),
+var assignValue = __webpack_require__(190),
+    copyObject = __webpack_require__(196),
+    createAssigner = __webpack_require__(535),
     isArrayLike = __webpack_require__(55),
     isPrototype = __webpack_require__(113),
     keys = __webpack_require__(57);
@@ -82623,7 +82745,7 @@ module.exports = assign;
 
 
 /***/ }),
-/* 580 */
+/* 582 */
 /***/ (function(module, exports) {
 
 /**
@@ -82655,14 +82777,14 @@ module.exports = constant;
 
 
 /***/ }),
-/* 581 */
+/* 583 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var arrayEvery = __webpack_require__(502),
-    baseEvery = __webpack_require__(511),
-    baseIteratee = __webpack_require__(521),
+var arrayEvery = __webpack_require__(504),
+    baseEvery = __webpack_require__(513),
+    baseIteratee = __webpack_require__(523),
     isArray = __webpack_require__(16),
-    isIterateeCall = __webpack_require__(200);
+    isIterateeCall = __webpack_require__(201);
 
 /**
  * Checks if `predicate` returns truthy for **all** elements of `collection`.
@@ -82717,10 +82839,10 @@ module.exports = every;
 
 
 /***/ }),
-/* 582 */
+/* 584 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseGet = __webpack_require__(191);
+var baseGet = __webpack_require__(192);
 
 /**
  * Gets the value at `path` of `object`. If the resolved value is
@@ -82756,11 +82878,11 @@ module.exports = get;
 
 
 /***/ }),
-/* 583 */
+/* 585 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseHasIn = __webpack_require__(515),
-    hasPath = __webpack_require__(543);
+var baseHasIn = __webpack_require__(517),
+    hasPath = __webpack_require__(545);
 
 /**
  * Checks if `path` is a direct or inherited property of `object`.
@@ -82796,11 +82918,11 @@ module.exports = hasIn;
 
 
 /***/ }),
-/* 584 */
+/* 586 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseKeys = __webpack_require__(193),
-    getTag = __webpack_require__(199),
+var baseKeys = __webpack_require__(194),
+    getTag = __webpack_require__(200),
     isArguments = __webpack_require__(115),
     isArray = __webpack_require__(16),
     isArrayLike = __webpack_require__(55),
@@ -82879,7 +83001,7 @@ module.exports = isEmpty;
 
 
 /***/ }),
-/* 585 */
+/* 587 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var MapCache = __webpack_require__(110);
@@ -82958,11 +83080,11 @@ module.exports = memoize;
 
 
 /***/ }),
-/* 586 */
+/* 588 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseProperty = __webpack_require__(524),
-    basePropertyDeep = __webpack_require__(525),
+var baseProperty = __webpack_require__(526),
+    basePropertyDeep = __webpack_require__(527),
     isKey = __webpack_require__(112),
     toKey = __webpack_require__(76);
 
@@ -82996,7 +83118,7 @@ module.exports = property;
 
 
 /***/ }),
-/* 587 */
+/* 589 */
 /***/ (function(module, exports) {
 
 /**
@@ -83025,7 +83147,7 @@ module.exports = stubArray;
 
 
 /***/ }),
-/* 588 */
+/* 590 */
 /***/ (function(module, exports) {
 
 /**
@@ -83049,10 +83171,10 @@ module.exports = stubFalse;
 
 
 /***/ }),
-/* 589 */
+/* 591 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var baseToString = __webpack_require__(529);
+var baseToString = __webpack_require__(531);
 
 /**
  * Converts `value` to a string. An empty string is returned for `null`
@@ -83083,20 +83205,20 @@ module.exports = toString;
 
 
 /***/ }),
-/* 590 */
+/* 592 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var map = {
-	"./en-au": 206,
-	"./en-au.js": 206,
-	"./en-ca": 207,
-	"./en-ca.js": 207,
-	"./en-gb": 208,
-	"./en-gb.js": 208,
-	"./en-ie": 209,
-	"./en-ie.js": 209,
-	"./en-nz": 210,
-	"./en-nz.js": 210
+	"./en-au": 207,
+	"./en-au.js": 207,
+	"./en-ca": 208,
+	"./en-ca.js": 208,
+	"./en-gb": 209,
+	"./en-gb.js": 209,
+	"./en-ie": 210,
+	"./en-ie.js": 210,
+	"./en-nz": 211,
+	"./en-nz.js": 211
 };
 function webpackContext(req) {
 	return __webpack_require__(webpackContextResolve(req));
@@ -83112,10 +83234,10 @@ webpackContext.keys = function webpackContextKeys() {
 };
 webpackContext.resolve = webpackContextResolve;
 module.exports = webpackContext;
-webpackContext.id = 590;
+webpackContext.id = 592;
 
 /***/ }),
-/* 591 */
+/* 593 */
 /***/ (function(module, exports) {
 
 module.exports = {
@@ -83134,7 +83256,7 @@ module.exports = {
 };
 
 /***/ }),
-/* 592 */
+/* 594 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83142,9 +83264,9 @@ module.exports = {
 // Fedor, you are amazing.
 
 
-var asn1 = __webpack_require__(44)
+var asn1 = __webpack_require__(43)
 
-exports.certificate = __webpack_require__(593)
+exports.certificate = __webpack_require__(595)
 
 var RSAPrivateKey = asn1.define('RSAPrivateKey', function () {
   this.seq().obj(
@@ -83263,7 +83385,7 @@ exports.signature = asn1.define('signature', function () {
 
 
 /***/ }),
-/* 593 */
+/* 595 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -83272,7 +83394,7 @@ exports.signature = asn1.define('signature', function () {
 
 
 
-var asn = __webpack_require__(44)
+var asn = __webpack_require__(43)
 
 var Time = asn.define('Time', function () {
   this.choice({
@@ -83358,7 +83480,7 @@ module.exports = X509Certificate
 
 
 /***/ }),
-/* 594 */
+/* 596 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {// adapted from https://github.com/apatil/pemstrip
@@ -83395,7 +83517,7 @@ module.exports = function (okey, password) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 595 */
+/* 597 */
 /***/ (function(module, exports) {
 
 var MAX_ALLOC = Math.pow(2, 30) - 1 // default in iojs
@@ -83419,11 +83541,11 @@ module.exports = function (iterations, keylen) {
 
 
 /***/ }),
-/* 596 */
+/* 598 */
 /***/ (function(module, exports, __webpack_require__) {
 
-exports.publicEncrypt = __webpack_require__(598);
-exports.privateDecrypt = __webpack_require__(597);
+exports.publicEncrypt = __webpack_require__(600);
+exports.privateDecrypt = __webpack_require__(599);
 
 exports.privateEncrypt = function privateEncrypt(key, buf) {
   return exports.publicEncrypt(key, buf, true);
@@ -83434,16 +83556,16 @@ exports.publicDecrypt = function publicDecrypt(key, buf) {
 };
 
 /***/ }),
-/* 597 */
+/* 599 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(79);
-var mgf = __webpack_require__(212);
-var xor = __webpack_require__(214);
+var mgf = __webpack_require__(213);
+var xor = __webpack_require__(215);
 var bn = __webpack_require__(7);
 var crt = __webpack_require__(88);
 var createHash = __webpack_require__(34);
-var withPublic = __webpack_require__(213);
+var withPublic = __webpack_require__(214);
 module.exports = function privateDecrypt(private_key, enc, reverse) {
   var padding;
   if (private_key.padding) {
@@ -83548,16 +83670,16 @@ function compare(a, b){
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 598 */
+/* 600 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var parseKeys = __webpack_require__(79);
 var randomBytes = __webpack_require__(58);
 var createHash = __webpack_require__(34);
-var mgf = __webpack_require__(212);
-var xor = __webpack_require__(214);
+var mgf = __webpack_require__(213);
+var xor = __webpack_require__(215);
 var bn = __webpack_require__(7);
-var withPublic = __webpack_require__(213);
+var withPublic = __webpack_require__(214);
 var crt = __webpack_require__(88);
 
 var constants = {
@@ -83649,12 +83771,12 @@ function nonZero(len, crypto) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 599 */
+/* 601 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
 
-var Utils = __webpack_require__(216);
+var Utils = __webpack_require__(217);
 
 
 // Declare internals
@@ -83837,12 +83959,12 @@ module.exports = function (str, options) {
 
 
 /***/ }),
-/* 600 */
+/* 602 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
 
-var Utils = __webpack_require__(216);
+var Utils = __webpack_require__(217);
 
 
 // Declare internals
@@ -83997,7 +84119,7 @@ module.exports = function (obj, options) {
 
 
 /***/ }),
-/* 601 */
+/* 603 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84065,7 +84187,7 @@ exports.parse = querystring;
 
 
 /***/ }),
-/* 602 */
+/* 604 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84082,7 +84204,7 @@ module.exports = RavenConfigError;
 
 
 /***/ }),
-/* 603 */
+/* 605 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -84126,22 +84248,22 @@ module.exports = {
 
 
 /***/ }),
-/* 604 */
+/* 606 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {/*global XDomainRequest:false, __DEV__:false*/
 
 
-var TraceKit = __webpack_require__(605);
-var stringify = __webpack_require__(606);
-var RavenConfigError = __webpack_require__(602);
-var utils = __webpack_require__(218);
+var TraceKit = __webpack_require__(607);
+var stringify = __webpack_require__(608);
+var RavenConfigError = __webpack_require__(604);
+var utils = __webpack_require__(219);
 
 var isError = utils.isError,
     isObject = utils.isObject;
 
-var wrapConsoleMethod = __webpack_require__(603).wrapMethod;
+var wrapConsoleMethod = __webpack_require__(605).wrapMethod;
 
 var dsnKeys = 'source protocol user pass host port path'.split(' '),
     dsnPattern = /^(?:(\w+):)?\/\/(?:(\w+)(:\w+)?@)?([\w\.-]+)(?::(\d+))?(\/.*)/;
@@ -86165,13 +86287,13 @@ module.exports = Raven;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 605 */
+/* 607 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
-var utils = __webpack_require__(218);
+var utils = __webpack_require__(219);
 
 /*
  TraceKit - Cross brower stack traces
@@ -86787,7 +86909,7 @@ module.exports = TraceKit;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 606 */
+/* 608 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86841,14 +86963,14 @@ function serializer(replacer, cycleReplacer) {
 
 
 /***/ }),
-/* 607 */
+/* 609 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(29);
 
 
 /***/ }),
-/* 608 */
+/* 610 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86860,7 +86982,7 @@ module.exports = __webpack_require__(29);
 
 module.exports = PassThrough;
 
-var Transform = __webpack_require__(220);
+var Transform = __webpack_require__(221);
 
 /*<replacement>*/
 var util = __webpack_require__(47);
@@ -86880,7 +87002,7 @@ PassThrough.prototype._transform = function (chunk, encoding, cb) {
 };
 
 /***/ }),
-/* 609 */
+/* 611 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -86950,28 +87072,28 @@ BufferList.prototype.concat = function (n) {
 };
 
 /***/ }),
-/* 610 */
+/* 612 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(122).PassThrough
 
 
 /***/ }),
-/* 611 */
+/* 613 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(122).Transform
 
 
 /***/ }),
-/* 612 */
+/* 614 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(121);
 
 
 /***/ }),
-/* 613 */
+/* 615 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -87016,16 +87138,16 @@ module.exports = function required(port, protocol) {
 
 
 /***/ }),
-/* 614 */
+/* 616 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(615);
+module.exports = __webpack_require__(617);
 
 /***/ }),
-/* 615 */
+/* 617 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var RetryOperation = __webpack_require__(616);
+var RetryOperation = __webpack_require__(618);
 
 exports.operation = function(options) {
   var timeouts = exports.timeouts(options);
@@ -87077,7 +87199,7 @@ exports._createTimeout = function(attempt, opts) {
 };
 
 /***/ }),
-/* 616 */
+/* 618 */
 /***/ (function(module, exports) {
 
 function RetryOperation(timeouts) {
@@ -87191,7 +87313,7 @@ RetryOperation.prototype.mainError = function() {
 };
 
 /***/ }),
-/* 617 */
+/* 619 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -87408,7 +87530,7 @@ module.exports = ripemd160
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 618 */
+/* 620 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -87598,10 +87720,10 @@ module.exports = ripemd160
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4), __webpack_require__(5)))
 
 /***/ }),
-/* 619 */
+/* 621 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var exports = module.exports = function SHA (algorithm) {
@@ -87613,16 +87735,16 @@ var exports = module.exports = function SHA (algorithm) {
   return new Algorithm()
 }
 
-exports.sha = __webpack_require__(620)
-exports.sha1 = __webpack_require__(621)
-exports.sha224 = __webpack_require__(622)
-exports.sha256 = __webpack_require__(222)
-exports.sha384 = __webpack_require__(623)
-exports.sha512 = __webpack_require__(223)
+exports.sha = __webpack_require__(622)
+exports.sha1 = __webpack_require__(623)
+exports.sha224 = __webpack_require__(624)
+exports.sha256 = __webpack_require__(223)
+exports.sha384 = __webpack_require__(625)
+exports.sha512 = __webpack_require__(224)
 
 
 /***/ }),
-/* 620 */
+/* 622 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -87722,7 +87844,7 @@ module.exports = Sha
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 621 */
+/* 623 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/*
@@ -87827,7 +87949,7 @@ module.exports = Sha1
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 622 */
+/* 624 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
@@ -87839,7 +87961,7 @@ module.exports = Sha1
  */
 
 var inherits = __webpack_require__(2)
-var Sha256 = __webpack_require__(222)
+var Sha256 = __webpack_require__(223)
 var Hash = __webpack_require__(38)
 
 var W = new Array(64)
@@ -87886,11 +88008,11 @@ module.exports = Sha224
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 623 */
+/* 625 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {var inherits = __webpack_require__(2)
-var SHA512 = __webpack_require__(223)
+var SHA512 = __webpack_require__(224)
 var Hash = __webpack_require__(38)
 
 var W = new Array(160)
@@ -87949,7 +88071,7 @@ module.exports = Sha384
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(0).Buffer))
 
 /***/ }),
-/* 624 */
+/* 626 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process, module) {/*
@@ -88105,34 +88227,34 @@ if (typeof module !== 'undefined' && "exports" in module) {
   module.exports = Step;
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(22)(module)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5), __webpack_require__(22)(module)))
 
 /***/ }),
-/* 625 */
+/* 627 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var engine = __webpack_require__(628)
+var engine = __webpack_require__(630)
 
-var storages = __webpack_require__(629)
-var plugins = [__webpack_require__(626)]
+var storages = __webpack_require__(631)
+var plugins = [__webpack_require__(628)]
 
 module.exports = engine.createStore(storages, plugins)
 
 
 /***/ }),
-/* 626 */
+/* 628 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = json2Plugin
 
 function json2Plugin() {
-	__webpack_require__(627)
+	__webpack_require__(629)
 	return {}
 }
 
 
 /***/ }),
-/* 627 */
+/* 629 */
 /***/ (function(module, exports) {
 
 //  json2.js
@@ -88643,7 +88765,7 @@ if (typeof JSON !== "object") {
 }());
 
 /***/ }),
-/* 628 */
+/* 630 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(39)
@@ -88865,22 +88987,22 @@ function createStore(storages, plugins) {
 
 
 /***/ }),
-/* 629 */
+/* 631 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = {
 	// Listed in order of usage preference
-	'localStorage': __webpack_require__(631),
-	'oldFF-globalStorage': __webpack_require__(633),
-	'oldIE-userDataStorage': __webpack_require__(634),
-	'cookieStorage': __webpack_require__(630),
-	'sessionStorage': __webpack_require__(635),
-	'memoryStorage': __webpack_require__(632),
+	'localStorage': __webpack_require__(633),
+	'oldFF-globalStorage': __webpack_require__(635),
+	'oldIE-userDataStorage': __webpack_require__(636),
+	'cookieStorage': __webpack_require__(632),
+	'sessionStorage': __webpack_require__(637),
+	'memoryStorage': __webpack_require__(634),
 }
 
 
 /***/ }),
-/* 630 */
+/* 632 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // cookieStorage is useful Safari private browser mode, where localStorage
@@ -88947,7 +89069,7 @@ function _has(key) {
 
 
 /***/ }),
-/* 631 */
+/* 633 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(39)
@@ -88991,7 +89113,7 @@ function clearAll() {
 
 
 /***/ }),
-/* 632 */
+/* 634 */
 /***/ (function(module, exports) {
 
 // memoryStorage is a useful last fallback to ensure that the store
@@ -89036,7 +89158,7 @@ function clearAll(key) {
 
 
 /***/ }),
-/* 633 */
+/* 635 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // oldFF-globalStorage provides storage for Firefox
@@ -89084,7 +89206,7 @@ function clearAll() {
 
 
 /***/ }),
-/* 634 */
+/* 636 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // oldIE-userDataStorage provides storage for Internet Explorer
@@ -89217,7 +89339,7 @@ function _makeIEStorageElFunction() {
 
 
 /***/ }),
-/* 635 */
+/* 637 */
 /***/ (function(module, exports, __webpack_require__) {
 
 var util = __webpack_require__(39)
@@ -89261,7 +89383,7 @@ function clearAll() {
 
 
 /***/ }),
-/* 636 */
+/* 638 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -89282,7 +89404,7 @@ module.exports = isFunction;
 
 
 /***/ }),
-/* 637 */
+/* 639 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -89879,7 +90001,7 @@ RequestBase.prototype._setTimeouts = function() {
 
 
 /***/ }),
-/* 638 */
+/* 640 */
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -89887,7 +90009,7 @@ RequestBase.prototype._setTimeouts = function() {
  * Module dependencies.
  */
 
-var utils = __webpack_require__(640);
+var utils = __webpack_require__(642);
 
 /**
  * Expose `ResponseBase`.
@@ -90018,7 +90140,7 @@ ResponseBase.prototype._setStatusProperties = function(status){
 
 
 /***/ }),
-/* 639 */
+/* 641 */
 /***/ (function(module, exports) {
 
 var ERROR_CODES = [
@@ -90047,7 +90169,7 @@ module.exports = function shouldRetry(err, res) {
 
 
 /***/ }),
-/* 640 */
+/* 642 */
 /***/ (function(module, exports) {
 
 
@@ -90120,7 +90242,7 @@ exports.cleanHeader = function(header, shouldStripCookie){
 };
 
 /***/ }),
-/* 641 */
+/* 643 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Load modules
@@ -90357,7 +90479,7 @@ internals.Topo.prototype._sort = function () {
 
 
 /***/ }),
-/* 642 */
+/* 644 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -90418,7 +90540,7 @@ module.exports = function lolcation(loc) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 643 */
+/* 645 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {
@@ -90492,11 +90614,11 @@ function config (name) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
-/* 644 */
+/* 646 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var v1 = __webpack_require__(645);
-var v4 = __webpack_require__(646);
+var v1 = __webpack_require__(647);
+var v4 = __webpack_require__(648);
 
 var uuid = v4;
 uuid.v1 = v1;
@@ -90506,14 +90628,14 @@ module.exports = uuid;
 
 
 /***/ }),
-/* 645 */
+/* 647 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Unique ID creation requires a high quality random # generator.  We feature
 // detect to determine the best RNG source, normalizing to a function that
 // returns 128-bits of randomness, since that's what's usually required
-var rng = __webpack_require__(226);
-var bytesToUuid = __webpack_require__(225);
+var rng = __webpack_require__(227);
+var bytesToUuid = __webpack_require__(226);
 
 // **`v1()` - Generate time-based UUID**
 //
@@ -90615,11 +90737,11 @@ module.exports = v1;
 
 
 /***/ }),
-/* 646 */
+/* 648 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var rng = __webpack_require__(226);
-var bytesToUuid = __webpack_require__(225);
+var rng = __webpack_require__(227);
+var bytesToUuid = __webpack_require__(226);
 
 function v4(options, buf, offset) {
   var i = buf && offset || 0;
@@ -90650,7 +90772,7 @@ module.exports = v4;
 
 
 /***/ }),
-/* 647 */
+/* 649 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(process) {module.exports = exports = function waitUntil(interval, times, condition, cb) {
@@ -90735,10 +90857,10 @@ WaitUntil.prototype.done = function(cb) {
     return self;
 };
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
-/* 648 */
+/* 650 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -90776,20 +90898,20 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 649 */
+/* 651 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
 (function() {
   var XMLBuilder, XMLDeclaration, XMLDocType, XMLElement, XMLStringifier;
 
-  XMLStringifier = __webpack_require__(655);
+  XMLStringifier = __webpack_require__(657);
 
-  XMLDeclaration = __webpack_require__(229);
+  XMLDeclaration = __webpack_require__(230);
 
-  XMLDocType = __webpack_require__(230);
+  XMLDocType = __webpack_require__(231);
 
-  XMLElement = __webpack_require__(231);
+  XMLElement = __webpack_require__(232);
 
   module.exports = XMLBuilder = (function() {
     function XMLBuilder(name, options) {
@@ -90851,7 +90973,7 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 650 */
+/* 652 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -90925,7 +91047,7 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 651 */
+/* 653 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -90977,7 +91099,7 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 652 */
+/* 654 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -91067,7 +91189,7 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 653 */
+/* 655 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -91129,7 +91251,7 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 654 */
+/* 656 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -91184,7 +91306,7 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 655 */
+/* 657 */
 /***/ (function(module, exports) {
 
 // Generated by CoffeeScript 1.9.1
@@ -91360,7 +91482,7 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 656 */
+/* 658 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
@@ -91415,16 +91537,16 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 657 */
+/* 659 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // Generated by CoffeeScript 1.9.1
 (function() {
   var XMLBuilder, assign;
 
-  assign = __webpack_require__(579);
+  assign = __webpack_require__(581);
 
-  XMLBuilder = __webpack_require__(649);
+  XMLBuilder = __webpack_require__(651);
 
   module.exports.create = function(name, xmldec, doctype, options) {
     options = assign({}, xmldec, doctype, options);
@@ -91435,12 +91557,12 @@ WaitUntil.prototype.done = function(cb) {
 
 
 /***/ }),
-/* 658 */
+/* 660 */
 /***/ (function(module, exports) {
 
 module.exports = {
 	"name": "deep-framework",
-	"version": "1.12.18",
+	"version": "1.12.19",
 	"description": "DEEP Framework",
 	"keywords": [
 		"digital enterprise end-to-end platform",
@@ -91548,26 +91670,26 @@ module.exports = {
 };
 
 /***/ }),
-/* 659 */
+/* 661 */
 /***/ (function(module, exports) {
 
 module.exports = null;
 
 
 /***/ }),
-/* 660 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
-/* 661 */
-/***/ (function(module, exports) {
-
-/* (ignored) */
-
-/***/ }),
 /* 662 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 663 */
+/***/ (function(module, exports) {
+
+/* (ignored) */
+
+/***/ }),
+/* 664 */
 /***/ (function(module, exports) {
 
 /* (ignored) */
