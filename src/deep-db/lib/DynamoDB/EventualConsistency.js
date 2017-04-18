@@ -119,6 +119,20 @@ export class EventualConsistency {
   }
 
   /**
+   * @param {String} modelName
+   * @param {*} model
+   *
+   * @returns {EventualConsistency|*}
+   */
+  extendModel(modelName, model) {
+    this._modelsToExtend[modelName] = model;
+    
+    this._extendModels();
+    
+    return this;
+  }
+
+  /**
    * @private
    */
   _extendModels() {
@@ -126,8 +140,10 @@ export class EventualConsistency {
     let tablesNames = this._kernel.config.tablesNames;
 
     for (let modelName in this._modelsToExtend) {
-      if (!this._modelsToExtend.hasOwnProperty(modelName) ||
-        !queuesMapping.hasOwnProperty(modelName)) { // weird case that should be covered
+      if (!this._modelsToExtend.hasOwnProperty(modelName)
+        || this._modelsToExtend[modelName]
+          .hasOwnProperty(EventualConsistency.DEEP_DB_EC_MODEL_NAME_PROPERTY)
+        || !queuesMapping.hasOwnProperty(modelName)) { // weird case that should be covered
         continue;
       }
 
