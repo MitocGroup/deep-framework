@@ -9,7 +9,6 @@ import Core from 'deep-core';
 import {Exception} from './Exception/Exception';
 import {Token} from './Token';
 import {LocalToken} from './LocalToken';
-import {AbstractUserProvider} from './AbstractUserProvider';
 import {FrontendUserProvider} from './FrontendUserProvider';
 import {BackendUserProvider} from './BackendUserProvider';
 import {IdentityProvider} from './IdentityProvider';
@@ -53,7 +52,7 @@ export class Security extends Kernel.ContainerAware {
   }
 
   /**
-   * @returns {AbstractUserProvider}
+   * @returns {*}
    */
   get userProvider() {
     if (!this._userProvider) {
