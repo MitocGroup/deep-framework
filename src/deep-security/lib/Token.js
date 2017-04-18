@@ -442,7 +442,8 @@ export class Token {
    */
   get isAnonymous() {
     if (this.lambdaContext) {
-      return this._identityLogins.length <= 0;
+      // @todo: find a better way instead of describe identity
+      return false; //this._identityLogins.length <= 0;
     } else {
       return !this.identityProvider;
     }
@@ -473,9 +474,11 @@ export class Token {
     };
 
     if (this.lambdaContext) {
-      this._describeIdentity(this.identityId).then(() => {
-        this._loadUser(argsHandler);
-      }).catch(argsHandler);
+      this._loadUser(argsHandler);
+
+      // this._describeIdentity(this.identityId).then(() => {
+      //   this._loadUser(argsHandler);
+      // }).catch(argsHandler);
     } else {
       this._loadUser(argsHandler);
     }

@@ -9,7 +9,8 @@ import Core from 'deep-core';
 import {Exception} from './Exception/Exception';
 import {Token} from './Token';
 import {LocalToken} from './LocalToken';
-import {UserProvider} from './UserProvider';
+import {FrontendUserProvider} from './FrontendUserProvider';
+import {BackendUserProvider} from './BackendUserProvider';
 import {IdentityProvider} from './IdentityProvider';
 import {LocalIdentityProvider} from './LocalIdentityProvider';
 import {RoleResolver} from './RoleResolver';
@@ -37,6 +38,7 @@ export class Security extends Kernel.ContainerAware {
     this._token = null;
     this._userProvider = null;
     this._userProviderEndpoint = null;
+    this._userModelName = null;
     this._roleProviderEndpoint = null;
     this._roleResolver = null;
     this._roleProvider = null;
@@ -50,11 +52,15 @@ export class Security extends Kernel.ContainerAware {
   }
 
   /**
-   * @returns {UserProvider}
+   * @returns {*}
    */
   get userProvider() {
     if (!this._userProvider) {
-      this._userProvider = new UserProvider(this._userProviderEndpoint, this._resourceService);
+      if (this.kernel.isFrontend) {
+        this._userProvider = new FrontendUserProvider(this._userProviderEndpoint, this._resourceService);
+      } else {
+        this._userProvider = new BackendUserProvider(this.container.get('db').get(this._userModelName));
+      }
     }
 
     return this._userProvider;
@@ -94,6 +100,7 @@ export class Security extends Kernel.ContainerAware {
     this._identityPoolId = kernel.config.identityPoolId;
     this._identityProviders = kernel.config.identityProviders || {};
     this._userProviderEndpoint = globals.userProviderEndpoint || null;
+    this._userModelName = globals.userModelName || 'User';
     this._roleProviderEndpoint = globals.roleProviderEndpoint || null;
 
     callback();
