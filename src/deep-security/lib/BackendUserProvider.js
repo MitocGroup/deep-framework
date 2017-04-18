@@ -4,12 +4,14 @@ import {AbstractUserProvider} from './AbstractUserProvider';
 
 export class BackendUserProvider extends AbstractUserProvider {
   /**
-   * @param {String} userModel
+   * @param {String} userModelName
+   * @param {*} deepDb
    */
-  constructor(userModel) {
+  constructor(userModelName, deepDb) {
     super();
 
-    this._userModel = userModel;
+    this.userModelName = userModelName;
+    this.deepDb = deepDb;
   }
 
   /**
@@ -17,12 +19,18 @@ export class BackendUserProvider extends AbstractUserProvider {
    * @param {Function} callback
    */
   loadUserByIdentityId(id, callback) {
-    if (!this._userModel) {
+    let userModel = null;
+
+    if (this.deepDb.has(this.userModelName)) {
+      userModel = this.deepDb.get(this.userModelName);
+    }
+
+    if (!userModel) {
       callback(null, null);
       return;
     }
 
-    this._userModel.findOneById(id, (error, item) => {
+    userModel.findOneById(id, (error, item) => {
       callback(error, item && item.get());
     });
   }

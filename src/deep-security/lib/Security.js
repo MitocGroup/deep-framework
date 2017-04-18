@@ -59,7 +59,7 @@ export class Security extends Kernel.ContainerAware {
       if (this.kernel.isFrontend) {
         this._userProvider = new FrontendUserProvider(this._userProviderEndpoint, this._resourceService);
       } else {
-        this._userProvider = new BackendUserProvider(this.container.get('db').get(this._userModelName));
+        this._userProvider = new BackendUserProvider(this._userModelName, this.container.get('db'));
       }
     }
 
