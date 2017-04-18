@@ -56,6 +56,7 @@ module.exports = function () {
     target: 'web',
     devtool: false,
     node: {
+      crypto: true,
       global: true,
       process: true,
       __filename: 'mock',
