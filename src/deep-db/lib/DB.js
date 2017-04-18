@@ -32,9 +32,11 @@ export class DB extends Kernel.ContainerAware {
 
     this._tablesNames = tablesNames;
     this._forcePartitionField = forcePartitionField;
+    this._dynamoDBPartitionKey = null;
 
     this._validation = new Validation(models, forcePartitionField, nonPartitionedModels);
-    this._models = this._rawModelsToVogels(models);
+    this._rawModels = this._rawModelsVector(models);
+    this._models = {};
   }
 
   /**
@@ -45,10 +47,27 @@ export class DB extends Kernel.ContainerAware {
   }
 
   /**
+   * @returns {String[]}
+   */
+  get rawModels() {
+    return this._rawModels;
+  }
+
+  /**
    * @returns {Vogels[]}
    */
   get models() {
-    return this._models;
+    if (this._rawModels.length <= Object.keys(this._models).length) {
+      return this._models;
+    }
+    
+    let result = {};
+    
+    this._rawModels.map(modelName => {
+      result[modelName] = this.get(modelName);
+    });
+    
+    return result;
   }
 
   /**
@@ -56,7 +75,7 @@ export class DB extends Kernel.ContainerAware {
    * @returns {Boolean}
    */
   has(modelName) {
-    return typeof this._models[modelName] !== 'undefined';
+    return this._rawModels.indexOf(modelName) !== -1;
   }
 
   /**
@@ -71,12 +90,17 @@ export class DB extends Kernel.ContainerAware {
         throw new ModelNotFoundException(modelName);
       }
     }
+    
+    if (!this._models.hasOwnProperty(modelName)) {
+      this._models[modelName] = this._rawModelToVogels(modelName);
+    }
+    
+    this._ensureModelPartitioned(modelName);
 
     let model = this._models[modelName];
 
-    if (this.kernel && this.kernel.isRumEnabled) {
-
-      // inject logService into extended model to log RUM events
+    // inject logService into extended model to log RUM events
+    if (this.kernel && this.kernel.isRumEnabled && !model.hasOwnProperty('logService')) {
       model.logService = this.kernel.get('log');
     }
 
@@ -94,10 +118,13 @@ export class DB extends Kernel.ContainerAware {
       throw new ModelNotFoundException(modelName);
     }
 
-    options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);
-    options[modelName] = options;
+    const tableOptions = {};
+    tableOptions[modelName] = Utils._extend(
+      DB.DEFAULT_TABLE_OPTIONS, 
+      options
+    );
 
-    Vogels.createTables(options, (error) => {
+    Vogels.createTables(tableOptions, (error) => {
       if (error) {
         throw new FailedToCreateTableException(modelName);
       }
@@ -115,19 +142,14 @@ export class DB extends Kernel.ContainerAware {
    */
   assureTables(callback, options = {}) {
     let allModelsOptions = {};
-    let allModelNames = [];
-
-    for (let modelName in this._models) {
-      if (!this._models.hasOwnProperty(modelName)) {
-        continue;
-      }
-
+    let allModelNames = this._rawModels.map(modelName => {
       allModelsOptions[modelName] = Utils._extend(
         DB.DEFAULT_TABLE_OPTIONS,
         options.hasOwnProperty(modelName) ? options[modelName] : {}
       );
-      allModelNames.push(modelName);
-    }
+      
+      return modelName;
+    });
 
     Vogels.createTables(allModelsOptions, (error) => {
       if (error) {
@@ -151,7 +173,7 @@ export class DB extends Kernel.ContainerAware {
 
     this._validation.boot(kernel, () => {
       this._tablesNames = kernel.config.tablesNames;
-      this._models = this._rawModelsToVogels(kernel.config.models);
+      this._rawModels = this._rawModelsVector(kernel.config.models);
 
       if (this._localBackend) {
         this._enableLocalDB(() => {
@@ -330,10 +352,10 @@ export class DB extends Kernel.ContainerAware {
 
   /**
    * @param {Array} rawModels
-   * @returns {Object}
+   * @returns {String[]}
    */
-  _rawModelsToVogels(rawModels) {
-    let models = {};
+  _rawModelsVector(rawModels) {
+    let modelsVector = [];
 
     for (let modelKey in rawModels) {
       if (!rawModels.hasOwnProperty(modelKey)) {
@@ -346,15 +368,57 @@ export class DB extends Kernel.ContainerAware {
         if (!backendModels.hasOwnProperty(modelName)) {
           continue;
         }
-
-        models[modelName] = new ExtendModel(Vogels.define(
-          modelName,
-          this._wrapModelSchema(modelName)
-        )).inject();
+        
+        modelsVector.push(modelName);
       }
     }
 
+    return modelsVector;
+  }
+  
+  /**
+   * @param {String} modelName
+   *
+   * @returns {*}
+   *
+   * @private
+   */
+  _rawModelToVogels(modelName) {
+    return new ExtendModel(Vogels.define(
+      modelName,
+      this._wrapModelSchema(modelName)
+    )).inject();
+  }
+
+  /**
+   * @param {Array} rawModels
+   * @returns {Object}
+   */
+  _rawModelsToVogels(rawModels) {
+    let models = {};
+    
+    this._rawModelsVector(rawModels)
+      .map(modelName => {
+        models[modelName] = this._rawModelToVogels(modelName);
+      });
+
     return models;
+  }
+  
+  /**
+   * @param {String} modelName
+   * 
+   * @private
+   */
+  _ensureModelPartitioned(modelName) {
+    if (this._dynamoDBPartitionKey 
+      && this._models.hasOwnProperty(modelName) 
+      && this.validation.isPartitionedModel(modelName)) {
+
+      this._models[modelName].setPartition(
+        this._dynamoDBPartitionKey
+      );
+    }
   }
 
   /**
@@ -362,15 +426,11 @@ export class DB extends Kernel.ContainerAware {
    * @returns {DB}
    */
   setDynamoDBPartitionKey(partitionKey) {
-    for (let modelName in this._models) {
-      if (!this._models.hasOwnProperty(modelName) || !this.validation.isPartitionedModel(modelName)) {
-        continue;
-      }
-      
-      let modelInstance = this._models[modelName];
-
-      modelInstance.setPartition(partitionKey);
-    }
+    this._dynamoDBPartitionKey = partitionKey;
+    
+    Object.keys(this._models).map(modelName => {
+      this._ensureModelPartitioned(modelName);
+    });
 
     return this;
   }
@@ -389,9 +449,9 @@ export class DB extends Kernel.ContainerAware {
 
     if (this._usePartitionField && this.validation.isPartitionedModel(name)) {
       schema.hashKey = ExtendModel.PARTITION_FIELD;
-      schema.rangeKey = 'Id';
+      schema.rangeKey = DB.DEFAULT_KEY_FIELD;
     } else {
-      schema.hashKey = 'Id';
+      schema.hashKey = DB.DEFAULT_KEY_FIELD;
     }
 
     return schema;
@@ -424,6 +484,13 @@ export class DB extends Kernel.ContainerAware {
    */
   get _security() {
     return this.container.get('security');
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get DEFAULT_KEY_FIELD() {
+    return 'Id';
   }
 
   /**
