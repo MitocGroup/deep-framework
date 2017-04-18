@@ -118,13 +118,11 @@ export class DB extends Kernel.ContainerAware {
       throw new ModelNotFoundException(modelName);
     }
 
-    const tableOptions = {};
-    tableOptions[modelName] = Utils._extend(
-      DB.DEFAULT_TABLE_OPTIONS, 
-      options
-    );
+    this.get(modelName); // ensure DynamoDB model initialized
+    options = Utils._extend(DB.DEFAULT_TABLE_OPTIONS, options);
+    options[modelName] = options;
 
-    Vogels.createTables(tableOptions, (error) => {
+    Vogels.createTables(options, (error) => {
       if (error) {
         throw new FailedToCreateTableException(modelName);
       }
@@ -142,14 +140,19 @@ export class DB extends Kernel.ContainerAware {
    */
   assureTables(callback, options = {}) {
     let allModelsOptions = {};
-    let allModelNames = this._rawModels.map(modelName => {
+    let allModelNames = [];
+
+    for (let modelName in this.models) {
+      if (!this.models.hasOwnProperty(modelName)) {
+        continue;
+      }
+
       allModelsOptions[modelName] = Utils._extend(
         DB.DEFAULT_TABLE_OPTIONS,
         options.hasOwnProperty(modelName) ? options[modelName] : {}
       );
-      
-      return modelName;
-    });
+      allModelNames.push(modelName);
+    }
 
     Vogels.createTables(allModelsOptions, (error) => {
       if (error) {
