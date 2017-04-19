@@ -54,6 +54,10 @@ module.exports = function () {
       }),
       new UglifyJSPlugin({
         comments: false,
+        mangle: {
+          keep_quoted: true,
+          keep_fnames: true,
+        },
       }),
     ],
     watch: false,
