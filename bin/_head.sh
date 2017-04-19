@@ -8,7 +8,7 @@ publish_npm_package() {
     name=$(basename $1)
 
     if [ -z $2 ] || ! $2; then
-        cd $1 && rm -rf node_modules/ && npm install --production --no-bin-links --no-optional && "${npm}" version $3 && "${npm}" publish
+        cd $1 && rm -rf node_modules/ && cp -R lib lib.es6 && npm install --production --no-bin-links --no-optional && "${npm}" version $3 && "${npm}" publish
     else
         cd $1 && "${npm}" version $3
     fi
