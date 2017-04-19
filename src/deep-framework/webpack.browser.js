@@ -54,10 +54,14 @@ module.exports = function () {
       }),
       new UglifyJSPlugin({
         comments: false,
-        mangle: {
-          keep_quoted: true,
-          keep_fnames: true,
-        },
+        mangle: false,
+        
+        // @todo uncomment when fixed
+        // @see Safari bug https://github.com/mishoo/UglifyJS2/issues/1753
+        // mangle: {
+        //   keep_quoted: true,
+        //   keep_fnames: true,
+        // },
       }),
     ],
     watch: false,
