@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-
-npm link webpack aws-sdk
-npm install --no-bin-links lodash store raven-js aws4-browser node-libs-browser
+npm install --no-bin-links \
+  webpack aws-sdk lodash store \
+  raven-js aws4-browser node-libs-browser \
+  uglifyjs-webpack-plugin mishoo/UglifyJS2#harmony
 webpack --config webpack.browser.js --progress --color --profile --json > browser/stats.json 
