@@ -377,16 +377,22 @@ export class Request {
    * @private
    */
   static _stringifyResponse(response) {
-    return JSON.stringify({
+    let objToStr = {
       _class: response.constructor.name,
-      data: {
+      data: response.rawData,
+      error: response.rawError,
+      headers: response.headers,
+    };
+
+    if (response.constructor.name === SuperagentResponse.name) {
+      objToStr.data = {
         body: response.rawData.body,
         status: response.rawData.status,
         headers: response.rawData.headers
-      },
-      error: response.rawError,
-      headers: response.headers,
-    });
+      };
+    }
+
+    return JSON.stringify(objToStr);
   }
 
   /**
