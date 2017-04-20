@@ -4,6 +4,16 @@
 
 'use strict';
 
+import AWSXRay from 'aws-xray-sdk-core';
+import AWS from 'aws-sdk';
+import https from 'https';
+
+// @todo add support for lambda env variables and add this one DEEP_X_RAY_ENABLED
+if (process.env.DEEP_X_RAY_ENABLED) {
+  AWS = AWSXRay.captureAWS(AWS);
+  // https = AWSXRay.captureHTTPs(https); // @todo: fix `ReferenceError: https is not defined`
+}
+
 import Kernel from 'deep-kernel';
 import DeepCore from 'deep-core';
 import {ContextProvider} from './ContextProvider';
