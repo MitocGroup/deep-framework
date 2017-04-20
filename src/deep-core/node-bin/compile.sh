@@ -15,6 +15,7 @@ elif [ -d 'lib/' ] && [ "$OSTYPE" != "win32" ] && [ "$OSTYPE" != "win64" ]; then
   ### Transpile to ES5 when running on local and not on Windows ###
   #################################################################
   deepify compile es6 lib --out-dir lib.compiled -x .js;
+  DEEP_FORCE_NODE6=1 deepify compile es6 lib --out-dir lib.es6 -x .js;
 elif [ "$OSTYPE" == "win32" ] || [ "$OSTYPE" == "win64" ]; then
 
   #####################################################
