@@ -1,16 +1,16 @@
 'use strict';
 
 import {LoadUserException} from './Exception/LoadUserException';
+import {AbstractUserProvider} from './AbstractUserProvider';
 
-/**
- * Loads user from db
- */
-export class UserProvider {
+export class FrontendUserProvider extends AbstractUserProvider {
   /**
    * @param {String} retrieveUserResource
    * @param {Object} deepResourceService
    */
   constructor(retrieveUserResource, deepResourceService) {
+    super();
+
     this._retrieveUserResource = retrieveUserResource;
     this._deepResource = deepResourceService;
   }

@@ -13,6 +13,7 @@ import {Exception as CoreException} from 'deep-core';
 import {Security} from './Security';
 import {TokenManager} from './TokenManager';
 import {CredentialsManager} from './CredentialsManager';
+import {IdentityProvider} from './IdentityProvider';
 
 /**
  * Security token holds details about logged user
@@ -167,14 +168,10 @@ export class Token {
           return resolve(null);
         }
 
-        let providerObj = JSON.parse(rawProvider);
+        let providerSnapshot = JSON.parse(rawProvider);
+        let providerInstance = IdentityProvider.createFromSnapshot(providerSnapshot);
 
-        providerObj.tokenExpirationTime = new Date(providerObj.tokenExpirationTime);
-        providerObj.isTokenValid = function () { // do not use arrow function, `this` context should not be overwritten
-          return this.tokenExpirationTime > new Date();
-        };
-
-        resolve(providerObj.isTokenValid() ? providerObj : null);
+        resolve(providerInstance.isTokenValid() ? providerInstance : null);
       });
     });
   }
@@ -385,6 +382,14 @@ export class Token {
    * @private
    */
   _fillFromTokenSnapshot(tokenSnapshot) {
+    let providerSnapshot = tokenSnapshot.identityProvider;
+
+    if (providerSnapshot) {
+      if (!this._identityProvider && this._lambdaContext) {
+        this._identityProvider = IdentityProvider.createFromSnapshot(providerSnapshot);
+      }
+    }
+
     if (this._credentialsManager.validCredentials(tokenSnapshot.credentials)) {
       this._credentialsManager.systemCredentials = tokenSnapshot.credentials;
       this._credentialsManager.rolesCredentials = tokenSnapshot.rolesCredentials;
@@ -398,18 +403,11 @@ export class Token {
    * @private
    */
   _saveToken() {
-    if (this._credentialsManager.identityProvider) {
-      let identityProviderObj = {
-        name: this._identityProvider.name,
-        userToken: this._identityProvider.userToken,
-        tokenExpirationTime: this._identityProvider.tokenExpirationTime,
-        userId: this._identityProvider.userId,
-      };
-
+    if (this.identityProvider) {
       this._cacheService.set(
         Token.IDENTITY_PROVIDER_CACHE_KEY,
-        JSON.stringify(identityProviderObj),
-        parseInt((identityProviderObj.tokenExpirationTime.getTime() - Date.now()) / 1000)
+        JSON.stringify(this._identityProvider.toJSON()),
+        parseInt((this.identityProvider.tokenExpirationTime.getTime() - Date.now()) / 1000)
       );
     }
 
@@ -444,7 +442,8 @@ export class Token {
    */
   get isAnonymous() {
     if (this.lambdaContext) {
-      return this._identityLogins.length <= 0;
+      // @todo: find a better way instead of describe identity
+      return false; //this._identityLogins.length <= 0;
     } else {
       return !this.identityProvider;
     }
@@ -475,9 +474,11 @@ export class Token {
     };
 
     if (this.lambdaContext) {
-      this._describeIdentity(this.identityId).then(() => {
-        this._loadUser(argsHandler);
-      }).catch(argsHandler);
+      this._loadUser(argsHandler);
+
+      // this._describeIdentity(this.identityId).then(() => {
+      //   this._loadUser(argsHandler);
+      // }).catch(argsHandler);
     } else {
       this._loadUser(argsHandler);
     }
@@ -585,6 +586,7 @@ export class Token {
       credentials: this._credentialsManager.systemCredentials,
       rolesCredentials: this._credentialsManager.rolesCredentials,
       identityId: this.identityId,
+      identityProvider: this._identityProvider.toJSON(),
     };
   }
 

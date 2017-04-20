@@ -7,8 +7,13 @@
 import {MissingLoginProviderException} from './Exception/MissingLoginProviderException';
 import {IdentityProviderMismatchException} from './Exception/IdentityProviderMismatchException';
 import {InvalidProviderIdentityException} from './Exception/InvalidProviderIdentityException';
+import {MissingIdentityImplementationException} from './Exception/MissingIdentityImplementationException';
+import {UserPoolImplementation} from './IdentityImplementation/UserPoolImplementation';
+import {MissingRefreshTokenException} from './Exception/MissingRefreshTokenException';
 
 /**
+ * @todo: split identity providers implementations
+ * 
  * 3rd Party identity provider (Amazon, Facebook, Google, etc.)
  */
 export class IdentityProvider {
@@ -24,7 +29,10 @@ export class IdentityProvider {
       throw new MissingLoginProviderException(providerName);
     }
 
-    if (identityMetadata.provider && identityMetadata.provider !== providerName) {
+    if (identityMetadata.provider
+      && identityMetadata.provider !== providerName
+      && providerName !== IdentityProvider.SNAPSHOT_PROVIDER) {
+
       throw new IdentityProviderMismatchException(providerName, identityMetadata.provider);
     }
 
@@ -35,7 +43,29 @@ export class IdentityProvider {
     this._tokenExpTime = new Date(normalizedMetadata.expireTime);
     this._userId = normalizedMetadata.userId;
     this._providers = providers;
-    this._name = providerDomain;
+    this._refreshToken = normalizedMetadata.refreshToken;
+    this._domain = providerDomain;
+    this._clientName = normalizedMetadata.clientName;
+    this._name = providerName;
+  }
+
+  /**
+   * @param {Object} metadata
+   * @returns {IdentityProvider}
+   */
+  static createFromSnapshot(metadata) {
+    let provider = new IdentityProvider(null, IdentityProvider.SNAPSHOT_PROVIDER, metadata);
+
+    provider.fillFromSnapshot(metadata);
+
+    return provider;
+  }
+
+  /**
+   * @param {String} name
+   */
+  set name(name) {
+    this._name = name;
   }
 
   /**
@@ -62,6 +92,8 @@ export class IdentityProvider {
       case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
         domainRegexp = /^cognito\-idp\.[\w\d\-]+\.amazonaws\.com\/[\w\d\-]+$/;
         break;
+      case IdentityProvider.SNAPSHOT_PROVIDER:
+        return IdentityProvider.SNAPSHOT_PROVIDER;
     }
 
     if (!domainRegexp) {
@@ -93,6 +125,8 @@ export class IdentityProvider {
     let expiresIn  = null;
     let expireTime = null;
     let userId = null;
+    let refreshToken = null;
+    let clientName = null;
 
     switch(providerName) {
       case IdentityProvider.FACEBOOK_PROVIDER:
@@ -102,9 +136,12 @@ export class IdentityProvider {
         break;
 
       case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
-        let idTokenInstance = identityMetadata.getSignInUserSession().getIdToken();
+        let userSession = identityMetadata.getSignInUserSession();
+        let idTokenInstance = userSession.getIdToken();
+        refreshToken = userSession.getRefreshToken().getToken();
         token = idTokenInstance.getJwtToken();
         expireTime = idTokenInstance.getExpiration() * 1000;
+        clientName = identityMetadata.pool.getClientId();
         break;
 
       case IdentityProvider.AMAZON_PROVIDER:
@@ -118,6 +155,10 @@ export class IdentityProvider {
         token = identityMetadata.access_token;
         userId = identityMetadata.user_id;
         break;
+
+      // backend identity provider has the same structure as normalized metadata. see `toJSON` method
+      case IdentityProvider.SNAPSHOT_PROVIDER:
+        return identityMetadata;
     }
 
     userId = userId || null;
@@ -130,7 +171,7 @@ export class IdentityProvider {
       throw new InvalidProviderIdentityException(providerName);
     }
 
-    return {token, userId, expireTime};
+    return {token, userId, expireTime, refreshToken, clientName};
   }
 
   /**
@@ -150,8 +191,22 @@ export class IdentityProvider {
   /**
    * @returns {String}
    */
+  get domain() {
+    return this._domain;
+  }
+
+  /**
+   * @returns {String}
+   */
   get userToken() {
     return this._userToken;
+  }
+
+  /**
+   * @param {String} userToken
+   */
+  set userToken(userToken) {
+    this._userToken = userToken;
   }
 
   /**
@@ -159,6 +214,27 @@ export class IdentityProvider {
    */
   get tokenExpirationTime() {
     return this._tokenExpTime;
+  }
+
+  /**
+   * @param {Date} tokenExpirationTime
+   */
+  set tokenExpirationTime(tokenExpirationTime) {
+    this._tokenExpTime = tokenExpirationTime instanceof Date ? tokenExpirationTime : new Date(tokenExpirationTime);
+  }
+
+  /**
+   * @returns {String}
+   */
+  get refreshToken() {
+    return this._refreshToken;
+  }
+
+  /**
+   * @returns {String}
+   */
+  get clientName() {
+    return this._clientName;
   }
 
   /**
@@ -170,6 +246,57 @@ export class IdentityProvider {
     }
 
     return false;
+  }
+
+  /**
+   * @param {Object} idpSnapshot
+   * 
+   * @returns {IdentityProvider}
+   */
+  fillFromSnapshot(idpSnapshot) {
+    this._name = idpSnapshot.name;
+    this._refreshToken = idpSnapshot.refreshToken;
+    this._clientName = idpSnapshot.clientName;
+    this._userToken = idpSnapshot.token;
+    this._tokenExpTime = new Date(idpSnapshot.expireTime);
+
+    return this;
+  }
+
+  /**
+   * return normalizedMetadata compatible structure, see `_normalizeIdentityMetadata` method
+   * @returns {{name: *, refreshToken: *}}
+   */
+  toJSON() {
+    return {
+      token: this._userToken,
+      expireTime: this._tokenExpTime.getTime(),
+      userId: this._userId,
+      refreshToken: this._refreshToken,
+      name: this._name,
+      clientName: this._clientName,
+    };
+  }
+
+  /**
+   * @returns {Promise}
+   */
+  refresh() {
+    if (!this._refreshToken) {
+      return Promise.reject(new MissingRefreshTokenException());
+    }
+
+    let implementation = null;
+
+    switch (this._name) {
+      case IdentityProvider.COGNITO_USER_POOL_PROVIDER:
+        implementation = new UserPoolImplementation(this);
+        break;
+      default:
+        throw new MissingIdentityImplementationException(this._name);
+    }
+
+    return implementation.refreshIdentity();
   }
 
   /**
@@ -224,5 +351,12 @@ export class IdentityProvider {
    */
   static get AUTH0_PROVIDER() {
     return 'auth0';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SNAPSHOT_PROVIDER() {
+    return 'snapshot';
   }
 }

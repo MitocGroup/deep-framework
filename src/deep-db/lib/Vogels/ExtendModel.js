@@ -25,8 +25,8 @@ export class ExtendModel {
    * @private
    */
   _registerQueryWrappers() {
-    this._model.setPartition = function(partion) {
-      this[ExtendModel.PARTITION_KEY] = partion;
+    this._model.setPartition = function(partition) {
+      this[ExtendModel.PARTITION_KEY] = partition;
     };
 
     this._model.getPartition = function() {

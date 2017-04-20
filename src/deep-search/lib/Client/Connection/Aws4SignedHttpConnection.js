@@ -6,6 +6,7 @@
 
 import HttpConnection from 'elasticsearch/src/lib/connectors/http';
 import aws4 from 'aws4';
+import util from 'util';
 
 /**
  * Aws4 Signed Http Connection Factory
@@ -30,7 +31,15 @@ export class Aws4SignedHttpConnection extends HttpConnection {
 
     params = super.makeReqParams(params);
     params.headers = params.headers || {};
-    let signParams = Object.assign(params, {service: 'es'});
+
+    let signParams = {
+      service: 'es',
+      region: Aws4SignedHttpConnection.getEsDomainRegion(params.hostname),
+      host: params.hostname,
+      method: params.method,
+      path: params.path,
+      headers: util._extend(params.headers, {}),
+    };
 
     if (body) {
       signParams.body = body;
@@ -52,6 +61,20 @@ export class Aws4SignedHttpConnection extends HttpConnection {
    */
   _createAws4Signature(optsToSign) {
     return aws4.sign(optsToSign, this._awsCredentials);
+  }
+
+  /**
+   * @param {String} esDomainHostname
+   * @returns {String}
+   */
+  static getEsDomainRegion(esDomainHostname) {
+    let regionParts = esDomainHostname.match(/\.([^\.]+)\.es\.amazonaws\.com$/i);
+
+    if (regionParts && regionParts.length >= 2) {
+      return regionParts[1];
+    }
+
+    throw new Error(`Invalid ES domain hostname "${esDomainHostname}".`);
   }
 
   /**

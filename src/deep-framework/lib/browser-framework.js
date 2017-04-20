@@ -4,17 +4,15 @@
 
 'use strict';
 
-if (typeof window !== 'undefined') {
-  window.global = window.global || {};
+window.__DEEP_DEV_SERVER = global.__DEEP_DEV_SERVER = [
+  'localhost', '127.0.0.1',
+  '0.0.0.0', '::1',
+].indexOf(window.location.hostname) !== -1;
 
-  window.__DEEP_DEV_SERVER = window.global.__DEEP_DEV_SERVER = [
-    'localhost', '127.0.0.1',
-    '0.0.0.0', '::1',
-  ].indexOf(window.location.hostname) !== -1;
-
-  if (/MSIE|Trident/.test(window.navigator.userAgent)) {
-    require('./browser-ie-hooks'); 
-  }
-
-  window.DeepFramework = window.DeepFramework || require('./browser-bootstrap');
+if (/MSIE|Trident/.test(window.navigator.userAgent)) {
+  require('./browser-ie-hooks');
 }
+
+const DeepFramework = require('./browser-bootstrap');
+
+module.exports = DeepFramework;
