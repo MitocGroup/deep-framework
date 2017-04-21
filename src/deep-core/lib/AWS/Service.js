@@ -184,6 +184,13 @@ export class Service {
   }
 
   /**
+   * @returns {String}
+   */
+  static get X_RAY() {
+    return 'xray';
+  }
+
+  /**
    * @param {String} service
    * @returns {String}
    */
@@ -229,6 +236,7 @@ export class Service {
       Service.CLOUD_WATCH,
       Service.SIMPLE_EMAIL_SERVICE,
       Service.LAMBDA_EDGE,
+      Service.X_RAY,
     ];
   }
 }
