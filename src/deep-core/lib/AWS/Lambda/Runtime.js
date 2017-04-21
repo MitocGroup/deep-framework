@@ -144,6 +144,10 @@ export class Runtime extends Interface {
         if (validationSchema) {
           this._runValidate(validationSchema);
         } else {
+          if (this._context._lambdaContext.overheadSubSegment) {
+            this._context._lambdaContext.overheadSubSegment.close();
+          }
+
           this.handle(this._request);
         }
       }).catch(e => this.createError(e).send());
@@ -168,6 +172,10 @@ export class Runtime extends Interface {
     }
 
     this.validateInput(validationSchemaName, (validatedData) => {
+      if (this._context._lambdaContext.overheadSubSegment) {
+        this._context._lambdaContext.overheadSubSegment.close();
+      }
+
       this.handle(validatedData);
     });
   }

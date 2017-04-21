@@ -4,14 +4,19 @@
 
 'use strict';
 
+const DEEP_X_RAY_ENABLED = process.env.DEEP_X_RAY_ENABLED == 'true';
+
 import AWSXRay from 'aws-xray-sdk-core';
 import AWS from 'aws-sdk';
 import https from 'https';
 
-// @todo add support for lambda env variables and add this one DEEP_X_RAY_ENABLED
-if (process.env.DEEP_X_RAY_ENABLED) {
-  AWS = AWSXRay.captureAWS(AWS);
-  // https = AWSXRay.captureHTTPs(https); // @todo: fix `ReferenceError: https is not defined`
+if (DEEP_X_RAY_ENABLED) {
+  AWSXRay.captureAWS(AWS);
+
+  // @todo: fix `ReferenceError: https is not defined`
+  if (https) {
+    AWSXRay.captureHTTPs(https);
+  }
 }
 
 import Kernel from 'deep-kernel';
@@ -56,13 +61,35 @@ export class Framework {
    * @returns {{handler: Function}}
    */
   LambdaHandler(Handler) {
-    return {
+    let handler = {
       handler: (event, context, callback) => {
         this.KernelFromLambdaContext(context, event).bootstrap((deepKernel) => {
           new Handler(deepKernel).run(event, context, callback);
         });
       },
     };
+
+    if (DEEP_X_RAY_ENABLED) {
+      handler = {
+        handler: AWSXRay.captureLambda((event, context, callback) => {
+          let contextSegment = context.xrayContext.segment;
+
+          let overheadSubSegment = contextSegment.addNewSubsegment('DeepCustom_FrameworkOverhead');
+          let bootstrapSubSegment = contextSegment.addNewSubsegment('DeepCustom_KernelBootstrap');
+
+          this.KernelFromLambdaContext(context, event).bootstrap((deepKernel) => {
+            bootstrapSubSegment.close();
+
+            // injecting it into context to be closed into /deep-core/lib/AWS/Lambda/Runtime.js
+            context.overheadSubSegment = overheadSubSegment;
+
+            new Handler(deepKernel).run(event, context, callback);
+          });
+        }),
+      };
+    }
+
+    return handler;
   }
 
   /**
