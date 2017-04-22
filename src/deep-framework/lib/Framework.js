@@ -15,7 +15,7 @@ export class Framework {
    */
   constructor(servicesMap, context) {
     this._context = context;
-    this._services = this._resolveServicesMap(servicesMap);
+    this._services = servicesMap;
     this._version = require('../package.json').version;
     this._kernelsMap = {};
   }
@@ -125,31 +125,6 @@ export class Framework {
    */
   get Core() {
     return DeepCore;
-  }
-
-  /**
-   * @param {Object} servicesMap
-   * @returns {Object}
-   * @private
-   */
-  _resolveServicesMap(servicesMap) {
-    let services = {};
-
-    for (let serviceName in servicesMap) {
-      if (!servicesMap.hasOwnProperty(serviceName)) {
-        continue;
-      }
-
-      let serviceObj = servicesMap[serviceName];
-
-      if (typeof serviceObj === 'string') {
-        serviceObj = require(servicesMap[serviceName]);
-      }
-
-      services[serviceName] = serviceObj;
-    }
-
-    return services;
   }
 
   /**
