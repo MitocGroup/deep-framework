@@ -2,8 +2,6 @@
  * Created by AlexanderC on 5/22/15.
  */
 
-/*eslint no-unused-vars: 0*/
-
 'use strict';
 
 import {Framework} from './Framework';
@@ -17,10 +15,9 @@ import DeepValidation from 'deep-validation';
 
 // @todo - fix lodash error "Uncaught TypeError: Cannot read property 'prototype' of undefined" in runInContext method
 //import DeepSearch  from 'deep-search';
-
 //import DeepNotification from 'deep-notification';
 
-let exports = module.exports = new Framework({
+module.exports = new Framework({
   Asset: DeepAsset,
   Cache: DeepCache,
   Security: DeepSecurity,

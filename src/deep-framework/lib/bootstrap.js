@@ -5,18 +5,30 @@
 'use strict';
 
 import {Framework} from './Framework';
+import DeepAsset from 'deep-asset';
+import DeepCache from 'deep-cache';
+import DeepSecurity from 'deep-security';
+import DeepResource from 'deep-resource';
+import DeepLog from 'deep-log';
+import DeepEvent from 'deep-event';
+import DeepValidation from 'deep-validation';
+import DeepSearch from 'deep-search';
+import DeepDb from 'deep-db';
+import DeepFs from 'deep-fs';
+
+//import DeepNotification from 'deep-notification';
 
 module.exports = new Framework({
-  Asset: 'deep-asset',
-  Cache: 'deep-cache',
-  DB: 'deep-db',
-  FS: 'deep-fs',
-  Security: 'deep-security',
-  Resource: 'deep-resource',
-  Log: 'deep-log',
-  Validation: 'deep-validation',
-  Search: 'deep-search',
-  Event: 'deep-event',
+  Asset: DeepAsset,
+  Cache: DeepCache,
+  DB: DeepDb,
+  FS: DeepFs,
+  Security: DeepSecurity,
+  Resource: DeepResource,
+  Log: DeepLog,
+  Validation: DeepValidation,
+  Search: DeepSearch,
+  Event: DeepEvent,
 
   //Notification: 'deep-notification',
 }, Framework.BACKEND_CONTEXT);
