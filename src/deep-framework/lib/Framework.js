@@ -6,17 +6,13 @@
 
 const DEEP_X_RAY_ENABLED = process.env.DEEP_X_RAY_ENABLED == 'true';
 
-import AWSXRay from 'aws-xray-sdk-core';
-import AWS from 'aws-sdk';
-import https from 'https';
+var AWSXRay = require('aws-xray-sdk-core');
+var AWS = require('aws-sdk');
+var https = require('https');
 
 if (DEEP_X_RAY_ENABLED) {
   AWSXRay.captureAWS(AWS);
-
-  // @todo: fix `ReferenceError: https is not defined`
-  if (https) {
-    AWSXRay.captureHTTPs(https);
-  }
+  AWSXRay.captureHTTPs(https);
 }
 
 import Kernel from 'deep-kernel';
@@ -71,8 +67,8 @@ export class Framework {
 
     if (DEEP_X_RAY_ENABLED) {
       handler = {
-        handler: AWSXRay.captureLambda((event, context, callback) => {
-          let contextSegment = context.xrayContext.segment;
+        handler: (event, context, callback) => {
+          let contextSegment = AWSXRay.getSegment();
 
           let overheadSubSegment = contextSegment.addNewSubsegment('DeepCustom_FrameworkOverhead');
           let bootstrapSubSegment = contextSegment.addNewSubsegment('DeepCustom_KernelBootstrap');
@@ -85,7 +81,7 @@ export class Framework {
 
             new Handler(deepKernel).run(event, context, callback);
           });
-        }),
+        },
       };
     }
 
