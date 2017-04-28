@@ -4,6 +4,17 @@
 
 'use strict';
 
+const DEEP_X_RAY_ENABLED = process.env.DEEP_X_RAY_ENABLED == 'true';
+
+var AWSXRay = require('aws-xray-sdk-core');
+var AWS = require('aws-sdk');
+var https = require('https');
+
+if (DEEP_X_RAY_ENABLED) {
+  AWSXRay.captureAWS(AWS);
+  AWSXRay.captureHTTPs(https);
+}
+
 import Kernel from 'deep-kernel';
 import DeepCore from 'deep-core';
 import {ContextProvider} from './ContextProvider';
@@ -46,13 +57,35 @@ export class Framework {
    * @returns {{handler: Function}}
    */
   LambdaHandler(Handler) {
-    return {
+    let handler = {
       handler: (event, context, callback) => {
         this.KernelFromLambdaContext(context, event).bootstrap((deepKernel) => {
           new Handler(deepKernel).run(event, context, callback);
         });
       },
     };
+
+    if (DEEP_X_RAY_ENABLED) {
+      handler = {
+        handler: (event, context, callback) => {
+          let contextSegment = AWSXRay.getSegment();
+
+          let overheadSubSegment = contextSegment.addNewSubsegment('DeepCustom_FrameworkOverhead');
+          let bootstrapSubSegment = contextSegment.addNewSubsegment('DeepCustom_KernelBootstrap');
+
+          this.KernelFromLambdaContext(context, event).bootstrap((deepKernel) => {
+            bootstrapSubSegment.close();
+
+            // injecting it into context to be closed into /deep-core/lib/AWS/Lambda/Runtime.js
+            context.overheadSubSegment = overheadSubSegment;
+
+            new Handler(deepKernel).run(event, context, callback);
+          });
+        },
+      };
+    }
+
+    return handler;
   }
 
   /**
