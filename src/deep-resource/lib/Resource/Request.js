@@ -14,7 +14,6 @@ import Http from 'superagent';
 import AWS from 'aws-sdk';
 import {MissingCacheImplementationException} from './Exception/MissingCacheImplementationException';
 import {CachedRequestException} from './Exception/CachedRequestException';
-import {NotAuthenticatedException} from './Exception/NotAuthenticatedException';
 import aws4 from 'aws4';
 import urlParse from 'url-parse';
 import qs from 'qs';
@@ -979,19 +978,22 @@ export class Request {
       return this;
     }
 
-    if (!securityService.token) {
-      callback(new NotAuthenticatedException(), null);
-      return this;
+    let loadCredentialsFunc = (securityToken) => {
+      securityToken.loadCredentials((error, credentials) => {
+        if (error) {
+          callback(new LoadCredentialsException(error), null);
+          return;
+        }
+
+        callback(null, credentials);
+      }, this._authScope);
+    };
+
+    if (securityService.token) {
+      loadCredentialsFunc(securityService.token);
+    } else {
+      securityService.anonymousLogin(loadCredentialsFunc);
     }
-
-    securityService.token.loadCredentials((error, credentials) => {
-      if (error) {
-        callback(new LoadCredentialsException(error), null);
-        return;
-      }
-
-      callback(null, credentials);
-    }, this._authScope);
 
     return this;
   }
