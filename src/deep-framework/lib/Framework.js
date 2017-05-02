@@ -4,11 +4,11 @@
 
 'use strict';
 
-const DEEP_X_RAY_ENABLED = process.env.DEEP_X_RAY_ENABLED == 'true';
-
 var AWSXRay = require('aws-xray-sdk-core');
 var AWS = require('aws-sdk');
 var https = require('https');
+
+const DEEP_X_RAY_ENABLED = AWSXRay && process.env.DEEP_X_RAY_ENABLED == 'true';
 
 if (DEEP_X_RAY_ENABLED) {
   AWSXRay.captureAWS(AWS);
