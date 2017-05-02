@@ -139,13 +139,13 @@ export class Runtime extends Interface {
 
         this._initDBPartitionKey();
 
-        let validationSchema = this.validationSchema;
+        this._runValidate(this.validationSchema, (validatedData) => {
+          if (this._context._lambdaContext.overheadSubSegment) {
+            this._context._lambdaContext.overheadSubSegment.close();
+          }
 
-        if (validationSchema) {
-          this._runValidate(validationSchema);
-        } else {
-          this.handle(this._request);
-        }
+          this.handle(validatedData);
+        });
       }).catch(e => this.createError(e).send());
     })
       .fail((error) => {
@@ -158,18 +158,22 @@ export class Runtime extends Interface {
 
   /**
    * @param {String} validationSchema
+   * @param {Function} cb
    * @private
    */
-  _runValidate(validationSchema) {
+  _runValidate(validationSchema, cb) {
+    if (!validationSchema) {
+      cb(this._request);
+      return;
+    }
+
     let validationSchemaName = validationSchema;
 
     if (typeof validationSchema !== 'string') {
       validationSchemaName = this._injectValidationSchema(validationSchema);
     }
 
-    this.validateInput(validationSchemaName, (validatedData) => {
-      this.handle(validatedData);
-    });
+    this.validateInput(validationSchemaName, cb);
   }
 
   /**

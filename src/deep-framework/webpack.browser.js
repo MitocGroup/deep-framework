@@ -8,6 +8,9 @@ const NULL_MODULES = [
   'source-map-support',     // @junk (bunyan shim)
   'vertx',                  // @junk (es6-promise uses native implementation)
   'ioredis',                // @junk (deep-cache not implemented)
+  'dynalite',               // @junk (deep-db local runtime)
+  'local-dynamo',           // @junk (deep-db local runtime)
+  'aws-xray-sdk-core',      // @junk (used in backend only)
 ];
 
 module.exports = function () {
@@ -66,7 +69,7 @@ module.exports = function () {
     ],
     watch: false,
     target: 'web',
-    devtool: false,
+    devtool: 'source-map',
     node: {
       crypto: true,
       global: true,

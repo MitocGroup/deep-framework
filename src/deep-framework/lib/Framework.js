@@ -4,6 +4,17 @@
 
 'use strict';
 
+var AWSXRay = require('aws-xray-sdk-core');
+var AWS = require('aws-sdk');
+var https = require('https');
+
+const DEEP_X_RAY_ENABLED = AWSXRay && process.env.DEEP_X_RAY_ENABLED == 'true';
+
+if (DEEP_X_RAY_ENABLED) {
+  AWSXRay.captureAWS(AWS);
+  AWSXRay.captureHTTPs(https);
+}
+
 import Kernel from 'deep-kernel';
 import DeepCore from 'deep-core';
 import {ContextProvider} from './ContextProvider';
@@ -15,7 +26,7 @@ export class Framework {
    */
   constructor(servicesMap, context) {
     this._context = context;
-    this._services = this._resolveServicesMap(servicesMap);
+    this._services = servicesMap;
     this._version = require('../package.json').version;
     this._kernelsMap = {};
   }
@@ -46,13 +57,35 @@ export class Framework {
    * @returns {{handler: Function}}
    */
   LambdaHandler(Handler) {
-    return {
+    let handler = {
       handler: (event, context, callback) => {
         this.KernelFromLambdaContext(context, event).bootstrap((deepKernel) => {
           new Handler(deepKernel).run(event, context, callback);
         });
       },
     };
+
+    if (DEEP_X_RAY_ENABLED) {
+      handler = {
+        handler: (event, context, callback) => {
+          let contextSegment = AWSXRay.getSegment();
+
+          let overheadSubSegment = contextSegment.addNewSubsegment('DeepCustom_FrameworkOverhead');
+          let bootstrapSubSegment = contextSegment.addNewSubsegment('DeepCustom_KernelBootstrap');
+
+          this.KernelFromLambdaContext(context, event).bootstrap((deepKernel) => {
+            bootstrapSubSegment.close();
+
+            // injecting it into context to be closed into /deep-core/lib/AWS/Lambda/Runtime.js
+            context.overheadSubSegment = overheadSubSegment;
+
+            new Handler(deepKernel).run(event, context, callback);
+          });
+        },
+      };
+    }
+
+    return handler;
   }
 
   /**
@@ -125,31 +158,6 @@ export class Framework {
    */
   get Core() {
     return DeepCore;
-  }
-
-  /**
-   * @param {Object} servicesMap
-   * @returns {Object}
-   * @private
-   */
-  _resolveServicesMap(servicesMap) {
-    let services = {};
-
-    for (let serviceName in servicesMap) {
-      if (!servicesMap.hasOwnProperty(serviceName)) {
-        continue;
-      }
-
-      let serviceObj = servicesMap[serviceName];
-
-      if (typeof serviceObj === 'string') {
-        serviceObj = require(servicesMap[serviceName]);
-      }
-
-      services[serviceName] = serviceObj;
-    }
-
-    return services;
   }
 
   /**

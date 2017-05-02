@@ -117,7 +117,7 @@ export class IdentityProvider {
    * @todo: Implement other identity providers
    * @param {String} providerName
    * @param {Object} identityMetadata
-   * @returns {{token: String, userId: String, expireTime: Number}}
+   * @returns {*}
    * @private
    */
   _normalizeIdentityMetadata(providerName, identityMetadata) {
@@ -255,6 +255,7 @@ export class IdentityProvider {
    */
   fillFromSnapshot(idpSnapshot) {
     this._name = idpSnapshot.name;
+    this._domain = idpSnapshot.domain;
     this._refreshToken = idpSnapshot.refreshToken;
     this._clientName = idpSnapshot.clientName;
     this._userToken = idpSnapshot.token;
@@ -265,7 +266,7 @@ export class IdentityProvider {
 
   /**
    * return normalizedMetadata compatible structure, see `_normalizeIdentityMetadata` method
-   * @returns {{name: *, refreshToken: *}}
+   * @returns {*}
    */
   toJSON() {
     return {
@@ -274,6 +275,7 @@ export class IdentityProvider {
       userId: this._userId,
       refreshToken: this._refreshToken,
       name: this._name,
+      domain: this._domain,
       clientName: this._clientName,
     };
   }
