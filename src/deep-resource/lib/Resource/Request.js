@@ -992,7 +992,7 @@ export class Request {
     if (securityService.token) {
       loadCredentialsFunc(securityService.token);
     } else {
-      securityService.anonymousLogin(loadCredentialsFunc);
+      loadCredentialsFunc(securityService.anonymousLogin(() => {}));
     }
 
     return this;
