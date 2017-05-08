@@ -201,7 +201,10 @@ export class Token {
             return reject(error);
           }
 
-          credentialsCache = credentialsCache || {default: Core.AWS.ENV_CREDENTIALS,};
+          credentialsCache = credentialsCache || {};
+
+          // overwrite env credentials each time to avoid their expiration
+          credentialsCache.default = Core.AWS.ENV_CREDENTIALS;
 
           this._sts.config.credentials = credentialsCache.default;
 
