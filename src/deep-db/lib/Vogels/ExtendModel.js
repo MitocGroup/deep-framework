@@ -229,7 +229,7 @@ export class ExtendModel {
 
       findAllBy: function(fieldName, value, cb) {
         return _this.model
-          .deepQuery()
+          .deepQuery(ExtendModel.SCAN_STRATEGY)
           .where(fieldName).equals(value)
           .loadAll()
           .exec(cb);
@@ -237,7 +237,7 @@ export class ExtendModel {
 
       findAllByPaginated: function(fieldName, value, startKey, limit, cb) {
         return _this.model
-          .deepQuery()
+          .deepQuery(ExtendModel.SCAN_STRATEGY)
           .where(fieldName).equals(value)
           .startKey(startKey)
           .limit(limit)
