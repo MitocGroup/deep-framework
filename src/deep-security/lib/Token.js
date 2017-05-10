@@ -204,6 +204,7 @@ export class Token {
           credentialsCache = credentialsCache || {};
 
           // overwrite env credentials each time to avoid their expiration
+          // @todo: check for validity with needsRefresh and refresh if needed to get new env creds from process.env
           credentialsCache.default = Core.AWS.ENV_CREDENTIALS;
 
           this._sts.config.credentials = credentialsCache.default;
