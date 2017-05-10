@@ -211,23 +211,46 @@ export class Security extends Kernel.ContainerAware {
       throw new Exception('Call to warmupBackendLogin method is not allowed from frontend context.');
     }
 
-    if (AWS.config.credentials instanceof AWS.EnvironmentCredentials) {
-      // store lambda default credentials, in order to be able to switch from an account to another
-      Core.AWS.ENV_CREDENTIALS = AWS.config.credentials;
-    }
+    return this._setupValidEnvCredentials().then(envCredentials => {
+      let TokenImplementation = this._localBackend ? LocalToken : Token;
 
-    let TokenImplementation = this._localBackend ? LocalToken : Token;
+      this._token = TokenImplementation.createFromLambdaContext(this._identityPoolId, lambdaContext);
 
-    this._token = TokenImplementation.createFromLambdaContext(this._identityPoolId, lambdaContext);
+      this._token.userProvider = this.userProvider;
+      this._token.logService = this.kernel.get('log');
+      this._token.roleResolver = this.roleResolver;
+      this._token.cacheService = this._cacheService;
 
-    this._token.userProvider = this.userProvider;
-    this._token.logService = this.kernel.get('log');
-    this._token.roleResolver = this.roleResolver;
-    this._token.cacheService = this._cacheService;
+      return this.kernel.config.forceUserIdentity && this.kernel.accountMicroservice ?
+        this._token.loadLambdaCredentials() :
+        Promise.resolve(envCredentials);
+    });
+  }
 
-    return this.kernel.config.forceUserIdentity && this.kernel.accountMicroservice ?
-      this._token.loadLambdaCredentials() :
-      Promise.resolve(Core.AWS.ENV_CREDENTIALS);
+  /**
+   * Store lambda default credentials, in order to be able to switch from an account to another
+   *
+   * @returns {Promise}
+   * @private
+   */
+  _setupValidEnvCredentials() {
+    return new Promise((resolve, reject) => {
+      if (AWS.config.credentials instanceof AWS.EnvironmentCredentials) {
+        Core.AWS.ENV_CREDENTIALS = AWS.config.credentials;
+      }
+
+      if (Core.AWS.ENV_CREDENTIALS && Core.AWS.ENV_CREDENTIALS.needsRefresh()) {
+        Core.AWS.ENV_CREDENTIALS.refresh(error => {
+          if (error) {
+            return reject(new Error(`Error refreshing lambda environmental credentials. ${error}`));
+          }
+
+          return resolve(Core.AWS.ENV_CREDENTIALS);
+        });
+      } else {
+        return resolve(Core.AWS.ENV_CREDENTIALS);
+      }
+    });
   }
 
   /**
