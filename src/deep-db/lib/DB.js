@@ -5,6 +5,7 @@
 'use strict';
 
 import Kernel from 'deep-kernel';
+import Core from 'deep-core';
 import Vogels from 'vogels';
 import {ExtendModel} from './Vogels/ExtendModel';
 import {ModelNotFoundException} from './Exception/ModelNotFoundException';
@@ -214,6 +215,12 @@ export class DB extends Kernel.ContainerAware {
     }
 
     this._fixNodeHttpsIssue();
+
+    // restore env credentials when finishing lambda execution
+    // to avoid security token expired exception on successive calls
+    if (Core.AWS.ENV_CREDENTIALS) {
+      this.overwriteCredentials(Core.AWS.ENV_CREDENTIALS);
+    }
   }
 
   /**
