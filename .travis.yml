@@ -5,7 +5,7 @@ node_js:
   # - 7
 cache:
   bundler: true
-  directories: [node_modules, $(npm root -g), $(npm config get prefix)/bin]
+  directories: [$(npm root -g), $(npm config get prefix)/bin]
 branches:
   only: [master, dev, stage, test]
 before_install: [npm install -g run-jst]
