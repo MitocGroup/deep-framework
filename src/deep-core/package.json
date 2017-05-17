@@ -52,10 +52,9 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "test": "bash node-bin/test.sh",
+    "compile-travis": "bash ../../bin/compile-lib.sh .",
     "compile": "bash node-bin/compile.sh",
-    "prepublish": "npm run compile",
-    "pretest": "npm link deep-kernel deep-validation deep-security deep-resource deep-cache deep-log babel-preset-es2015"
+    "prepublish": "npm run compile"
   },
   "dependencies": {
     "qs": "^5.2.x"
@@ -64,14 +63,7 @@
     "aws-sdk": "2.2.x"
   },
   "devDependencies": {
-    "chai": "^3.5.x",
-    "sinon": "^1.17.x",
-    "sinon-chai": "^2.8.x",
-    "babel-cli": "^6.5.1",
-    "babel-polyfill": "^6.3.14",
-    "babel-preset-es2015": "^6.3.13",
-    "istanbul": "^1.0.0-alpha",
-    "mocha": "^2.4.5"
+
   },
   "preferGlobal": false,
   "analyze": true
