@@ -1,0 +1,140 @@
+--- 
+$:
+  preprocess:
+   '$.coverage.compare.storage.options.1.region': 'eval'
+   '$.coverage.compare.storage.options.1.accessKeyId': 'eval'
+   '$.coverage.compare.storage.options.1.secretAccessKey': 'eval'
+   '$.cache.options.1.region': 'eval'
+   '$.cache.options.1.accessKeyId': 'eval'
+   '$.cache.options.1.secretAccessKey': 'eval'
+  cache:
+    driver: 's3'                                                          # Available drivers: void, s3
+    options:
+      - 's3://travis-metadata/cache/deep-framework'                          # S3 cache directory
+      -                                                                   # S3 client options
+        region: 'process.env.JST_AWS_REGION'
+        accessKeyId: 'process.env.JST_AWS_ACCESS_KEY_ID'
+        secretAccessKey: 'process.env.JST_AWS_SECRET_ACCESS_KEY'
+  npm:
+    scripts:                                                              # Scripts to run after installing dependencies
+      - 'compile-travis'
+    dependencies:                                                           # Dependencies to add/overwrite
+      chai: 'latest'
+  emit:
+    pattern:                                                                # Files to include
+      - /^lib.es6\/.+\.js$/i
+      - /^test\/.+\.js$/i
+    ignore:                                                                 # Files to exclude
+      - /^(.*\/)?node_modules(\/?$)?/i
+  test:
+    mocha:
+      options:                                                              # Mocha options
+        ui: 'bdd'
+        reporter: 'spec'
+    pattern:                                                                # Files to include
+      - /.+\.spec\.js$/i
+    ignore: ~                                                               # Files to exclude
+  coverage:
+    pattern:                                                                # Files to include
+      - /.+\.js$/i
+    ignore:                                                                 # Files to exclude
+      - /.+\.spec\.js$/i
+      - /^(.*\/)?node_modules(\/?$)?/i
+    reporters:                                                              # Istanbul reporters
+      text-summary: ~
+    compare:
+      negative-delta: 3                                                   # Compare coverage info and if negative delta is more than X fail (0.01-100.00)
+      storage:                                              
+        driver: 's3'                                                      # Available drivers: s3, volative
+        options:
+          - 's3://travis-metadata/coverage/deep-framework'                   # S3 storage directory
+          -                                                               # S3 storage options
+            region: 'process.env.JST_AWS_REGION'
+            accessKeyId: 'process.env.JST_AWS_ACCESS_KEY_ID'
+            secretAccessKey: 'process.env.JST_AWS_SECRET_ACCESS_KEY'
+
+### Add other modules here...
+deep-asset:
+  root: src/deep-asset
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+deep-cache:
+  root: src/deep-cache
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+deep-core:
+  root: src/deep-core
+  dependencies: ~
+deep-db:
+  root: src/deep-db
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+     deep-validation: ../deep-validation
+deep-di:
+  root: src/deep-di
+  dependencies:
+     deep-core: ../deep-core
+deep-event:
+  root: src/deep-event
+  dependencies:
+     deep-kernel: ../deep-kernel
+deep-framework:
+  root: src/deep-framework
+  dependencies:
+     deep-asset: ../deep-asset
+     deep-cache: ../deep-cache
+     deep-core: ../deep-core
+     deep-db: ../deep-db
+     deep-di: ../deep-di
+     deep-event: ../deep-event
+     deep-fs: ../deep-fs
+     deep-kernel: ../deep-kernel
+     deep-log: ../deep-log
+     deep-notification: ../deep-notification
+     deep-resource: ../deep-resource
+     deep-search: ../deep-search
+     deep-security: ../deep-security
+     deep-validation: ../deep-validation
+deep-fs:
+  root: src/deep-fs
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+deep-kernel:
+  root: src/deep-kernel
+  dependencies:
+     deep-di: ../deep-di
+     deep-core: ../deep-core
+deep-log:
+  root: src/deep-log
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+deep-notification:
+  root: src/deep-notification
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+deep-resource:
+  root: src/deep-resource
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+deep-search:
+  root: src/deep-search
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+deep-security:
+  root: src/deep-security
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core
+deep-validation:
+  root: src/deep-validation
+  dependencies:
+     deep-kernel: ../deep-kernel
+     deep-core: ../deep-core

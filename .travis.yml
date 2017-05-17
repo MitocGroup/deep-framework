@@ -1,76 +1,13 @@
 language: node_js
-sudo: false
-node_js:
-  - '6.10'
-  - '7.9'
+git: {depth: 1}
+node_js: [6, 7]
 cache:
-  edge: true
-  directories:
-    - $(npm root -g)
-    - node_modules
-    - $(npm config get prefix)/bin
+  bundler: true
+  directories: [node_modules, $(npm root -g), $(npm config get prefix)/bin]
 branches:
-  only:
-    - master
-    - dev
-    - stage
-    - test
-before_install:
-  - (npm list -g babel-cli --depth=0 || npm install -g babel-cli@6.x.x)
-  - (npm list -g babel-polyfill --depth=0 || npm install -g babel-polyfill)
-  - 
-    (if [ ! -d "node_modules/babel-preset-es2015" ]; then npm install
-    babel-preset-es2015; fi)
-  - 
-    (npm list -g deepify@$(npm show deepify version) --depth=0 || npm install -g
-    deepify)
-  - (npm list -g browserify --depth=0 || npm install -g browserify@11.2.x)
-  - (npm list -g mocha@2.5.x --depth=0 || npm install -g mocha@2.5.x)
-  - 
-    (npm list -g istanbul@^1.0.0-alpha --depth=0 || npm install -g
-    istanbul@^1.0.0-alpha)
-  - 
-    (npm list -g codeclimate-test-reporter --depth=0 || npm install -g
-    codeclimate-test-reporter)
-  - 
-    (if [ ! -d "node_modules/istanbul-combine" ]; then npm install
-    istanbul-combine@0.3.x; fi)
-  - '(if [ ! -d "node_modules/fs-extra" ]; then npm install fs-extra@0.x.x; fi)'
-  - '(if [ ! -d "node_modules/github" ]; then npm install github; fi)'
-  - '(if [ ! -d "node_modules/aws-sdk" ]; then npm install aws-sdk; fi)'
-  - '(if [ ! -d "node_modules/s3" ]; then npm install s3; fi)'
-  - npm install -g src/deep-kernel
-  - npm install -g src/deep-core
-  - npm install -g src/deep-validation
-  - npm install -g src/deep-di
-  - npm install -g src/deep-cache
-  - npm install -g src/deep-security
-  - npm install -g src/deep-log
-  - bin/test/prepare_to_test.sh
-  - cp bin/test/package.json .
-after_success:
-  - npm run coverage
-after_script:
-  - npm run remove-coverage
+  only: [master, dev, stage, test]
+before_install: [npm install -g run-jst]
+script: jst run unit
 env:
   global:
-    - secure: 
-        dOXusGiSaTXZsouFbZpv9lSWnUb+iYSJdf7bcjqT5ihUMMHv8X2RDpiFxsL4n/ymEmkTGeMZY3bJhNdViD8S3mN8FMzTGexa/GCqVZvIu+iITI9rYq5XTPRUAP2AOxOa0yccPVr3eJLJ1dx6WA4vsmjpwliLIyJMBwmw4c/Z6CRHX7XNNTsJ60uGrs7LvP1K53avzTO0lRdF0eboOeiAPBM/u9KRRulsOs3v6ktZ3qPqNeMswk71bMafnKrzctl0tcFBk+XowlF6cCs3uRZ0Kj46jQnfXpaNravB2T0snpwFTFnqJqf+3Dux9L7vqhox22wc1vWoaSFqiEvtZ3fKrYwrJaf2Xdsprv9m0SNSCYzRBqrHOWzE9ZDnzY+Om9H6pSnQe1VBDRXkVO7Di1nN/ev4IOnhwizB1iN0dZnMMgvakg/icRhRNKvDIIKRHnjV0l4Mfz4dOi9t3NZhLFl+eUIuti6qbKpedLObUutfVaIK28P627UjCuos1TtZRxRsB0MJEFB6yaMruiIlU1LGksCbbGmQjpi5D8yA5EOWtf1Jtesh8AYn6PNJ6amcCC8KlBo4dKaDAIbjOcYgikoE4cFbcxFj0EZpfMLADcntaOzhvzDwkrNURAEZxja7iNtitLXYIqaKrto4EYAllGH2AhK8kPKnAGyhkgNTStj9Y94=
-    - secure: 
-        bjwCfJAhfHFy5iEobEj7RxxKsVhSeKUQzikvttuT7Zg1PWFO62k4pWBHjA5aure96Pa2tI2p8s+e4LYguIiTAMDBbIdOEVT9Aw+0dVEX7LAt/n8irsrxcgWK76e282OrjW58JILWXPKedKpw1FIcLQm3E0IIORbvJbsPqn1yx2dAeiErjGidmdgwvadnYn8tmFmg6p0g8SkQaA2R+s70VyXuNgLqsxs8Pufe1aczByhsop7I3NLwP2eorx38Y56vTIZ4Mvcs+wyUjSMOx1CsQVvKxUZ2tmcrJ/Tn/kRIn8nLPvHT0fGNMfchYEEUlq/YL4pZSEagQhmmjuyAoEK2I6xsh/fucG3YCYugmhsGC0yf54gUqq6nzTMvekIC9iZKxQXI9uQu+LVvtcBnXhKYYKCtR/nYCOYlp6iSkekrm45RZSp3x3MP++6yXrVifnE1VXro4C9ajZqnQqiWuH0Tp1wJvOJE2uamZRyypjA7tLkG+ahaZtGrbB5UUykiQBFd7ozlCRfg7bfl2HVqh668lBYJd2NobnwF8kYph+VOWtLiTJrN2kukTRkFH6EUPQ4d3DGTT96JIJ3BEbYwRnngJ7Ra95S8IWwT4ZAED0Htl8iiVbLet4/lGEytJEuhUeLAzJZUmCYu9S42Fq70JZ27PTE7YUubdF3MLMNi1/o4JvE=
-    - secure: 
-        d1o58eFI5wCiCOhs+mqSZ7oBch/2GRhZOUSdnKZtMWmXOAX+XPqr8HyUL1O5x1jfST8JTdRyE6b7hIdPJJC12Wds/FZULcHkrmqouJeDMM40P4SmgcoQhYW0NPfnutlIY6r77+/FIqOwo0WESBn/d6dKiDHd/3p9yb/sFQN0uhMBXRK6ld4o+8ziEd1h0vsjjb2W8/mmn+y1baS7/1sJeNvad5QBHLV6ki0MhrocI51iFe/P0nAJWE47lCuOS/yeP94pQ3zdfwK+JJ9kBoTW37Ou01XlYuyhSqsLvEOBstz8mg99yPr10LDZ3UHaA9TligoAVSV712MORIK7vtKRvG+It2T030VgFLGKJQKNiOMa1j6YGitCzCuTYD31wTvKbw65CPaDv285YaM1+sDZfGEp6uSkh8GC3s4fQyJ0Mp/QRxw/BbDflAmqemBuyf5YJ1e3V379FLhrqaLnGsoe0hHTfFrCmMV+opcr90BPBhqZkqO9joGpZhEM3VocNEVxrLzgLUJoka9lBBACv1wV7x5jHuj+lkSsbCFckrhibZv+LQOE+SOhsiloVqRVAovxpiRlJIWYPn5ho9nEOPxDXHOl/I24CD27RSjFAEuYRVNA0N1d6rj0FrRrna02lqfvPt2I7sWYsOzoqsDsUrkYzVs97YSMcS4gRilh1JXqDjA=
-    - secure: 
-        l2NbwnzWbsNv6ndcjBNnpdvbZjA/tOAYzeAYxR8wmQFT9xH5nbYV35e64rwO5HD3TwXlu7a1/cbr+m8nmwL58terVOJXYkx8sEP+9/PEJwFx5+7Wmlfcl+O0HH1EUZBnseLHZl/4xvxvVUZhion29bkMKa42O0S6sf3RiuDS+PbtAYgob6OIFRLPtDKrTk3dzOQX0NdZ1WsN44e/w3ghesXf17NialtMXbgn1iBLOpQ0e+k66DarSILqiGl8uB9iVvgZ101b8wZGJeKN5ACesuADCjJ9tzUM3PQG9SbkunwLQj0sqasYyIV0lZagQIW6fnrw+sP94J4Edpa7vEf9yT+JApRlwBggR8yjxFWliaYfZk32wkj3OdaY+cWEynoTSuWczwPIk6NxjtsCYMt9IMRWafs//TKm0aTF49VqQgDig81xNmlVS6Yg8xzZev+zl5IPAoAh5lmvYM8InfkiwGYxPM6UyYrcqI6+oVNMswnPMElZd7UxClFK/9Iz4PSBkuc7WeJY8DSe6qLx/08UKEhqu3+xGhLXjBtbvIuwXEvPc/E+fuR6Gm+7l575H5QptZUXIExE9AsVtmJxSogP3QE0ChUuwGUOLvpTr3lrWwA1V5b/iLI9aYwnGkRPNFZhjXp2pn8EIevHCl3R92tuQT5+VnG//cyzP3lw64yO0o8=
-    - secure: 
-        o34qXP339uYKig/4k9op0hBqqdYv5G4rS7B7H6XauvVVryRcAu1Ohl9jkzQhaMTkmE8wnIms0zUQNFpjKmdaaO+SarFuN5QpoVXdPiBPYoiYyNoQWcb4b5W3L7JtBgpSbKy85p8+ufeZbN3LvSARUjUkQDDriOBg0uAtrY3/vUyoprGXvFPt/C7lBL33s8aB4g6xDUK2lXXHZmM78mTvFYTP4qQ1rBDoav0ffhJl0+SOXbsGkbAD2cUCIbBJTHeGGrMCHloakZuu0dvyNTwhNYaI8VzThwHxIsWD1tqa6xjDrIe3v+MUSf00Wolq8pre2NEL+cwVgtbkUFHZiJ3LbbmbFtyHb8cbDE0Q8VuvcqCGhr/7hYQzVbVlM8KjOLp5mRoRw4dpSRLVfeVJ7Z6NpoEJn7ON0Z6wK8SqxQbyHJno3By6bPmOBKHwaqgJAr5FsIZp/g7nKIzEhcxtcMUrTXFT0l8YrVLe/Fn8RrczzZj85u5E7wZLiMxhWb9fiQhIdVN8Mfuv9O7RRAkXj2Nv6WuL30G5oKm4Pzhh19RySWMrcrCUGX96e46GoqnHOPZGVBkY53XPROi4HilVtjDmWXIN7ZHY1y32mMfwQZXSxHtYUDQIRvt91JIhkhtP1VB+ZPiXWGSHFLh3WWI+vi+Ix6JT6ucrAs1aJFO5UIF7AiQ=
-    - secure: 
-        xGgb1kN8bBSv55x8NPjw618y18HIzVDic/0k7MOkUzjVK6Fv2uYytDdxlAM1k6tJF4EKBC1V8w76U2+Jy3N7NK0aVAB9zg6j0M8ShF12Mzg+2egtcwnHDuTN4X2niJbxx+9dAnRWWkx+bGfdUKRTVNpRN21B40L9a4oTjM9K1V2f99UQfLvs/nxPYnDGzep0hfoBlKNqypmh6JbRr779VXshbJ8qIvfG08JI+wSxuelHl3bx56lqrHcmAt18+Dvub+Yz5B+4/350EVJYeFjRtpgMOHNYVrlVYz+1Ln9MSYKr+8UPSMbPnOd1P+1TIt67UtmzOEnxasIzluD3XQzyeYRDiX42ruxnfA+jtWPommdUOm/S4hoMBzaxZX2EHlJPYZZ1VKRHu9SGzDBshhfp5sUYG5LlVnZzemmZyplBAsR4nkQC4om/5NlleSn8X2ZTVmM4etBBor3nde+KyvPxKLYpzOyvs4D/LK8D3gXYZXX7a2FftW8x6/hwSOhPhct723S+9NXJBURGSkvekV1yfXDv6+qQAbPjJlfSpwFTxzsolLB/b2uNdd3o8vwuAUMORi0kxNS5dnivVSHQt6FhDKH//lAu9GlW0RkjuFDwKfmzUhaouKz2taEhUOLXSp6EVkSxg0JJjLKPqfKUdj/w1YtSxvz5bbGXG680mq2vFZo=
-    - secure: 
-        zR/A3aBdRwl3PDXaQFRsE1/AY6V/OCm41rh98r4zLmiLnu37FTc+qTmRzc3/vDDKyal4xxndnhfSmpenEbYGu22nUSvy/hHZiTu/VVrRwnZ+la+twl1Eb3vNkUdKVi+3PxlXvIPGhYCCG2xi1Ho9Av9DLe2SIrvvraQP1uRQzc0T4ZZT5BLwbfHqA7tDeqZmlQaIk/jTBiPrwZ8wgv5l7RsNoSA+CsApKPH5ds0OB5k0T/NB8cNJNKTSengW6MIYuot2m4z6FOaQVRKd4zAOCV7APD6QUthrxp4x20ZePAmyvX+GUKtuoghRMo1LP24xxNW2vSA6yogBE3MZDwvvPcWFdhYLeWzafp6hvg/B3Sr/esresM11EirKmPXCfY3zxmT6SCVMnWloP6iM2a/FmEETurSks2XBpue69mrP50Xyoc08RP6mAjQhia9ecbyhWz3e4KYG0ZOmd/qKWbyrKEfpviYCbnmqDw0rpNGXK77OVu4uCYI+0tQtPWMofv8jcfGeySAK9YCqqI4NHdaznknrLLJtc3Na/yu08p4t+nwEYJ70uQ3sCFYaLVOYLpeKg02FPmu2lLaxB16ghtozUZJZU1m1tZWHPEDN/GSncbqmRxFC7fbWdNvV9Irt4zIGRStAFAeDFWmAka50OgNke3K7ZVOjgQxZud6UmutHtwc=
-    - secure: 
-        UMrF49OtTJmZKc7CbmAuX7mUJmmLtQ7UVaVi6Lx2E8jSU76WXQ0zUGPGkA59q6kmChTNqKhEdW558558pVnOdcII3DAiRXr28mDjqPq7y1LCzm6mxYWExtdy6FDo6OtV//UxQ+BmVF8WP9Qt87CPAxSSIj6ivx28qOWKModC6sJFZdwFdEMP3lZMd7SDTaVsKoAnJzl/hffAmg8svjw0Hvz8vOWfjdb5Fk6VQ1CUh6wYWvcOP7jZbcEfIHikXZL5GF2pnHbAPW7z31ts8uYyTEfrUE7x2SQeLL8DVTNXCqaet9tTpNtyrkTNR1rsP2GtaMG/VZjqhjRmx18P/FZe6Pb7ll1xh8xLMwCFLGt52T736FS4IuviGc9U0lrvfm9hyseQQlHmITxetV+DktjfIOiv/QODBJr6qCma6wT7D0QGdHgd7ReDuU2owgnC07BmtqjJn7iBZqTNvSIwQbPjefdMA2FiY5ZYbON0d5eU3jWxi4VcUrRV8jPS82HL7D81LVOKoPs5Ym8ppoLeNEyYLPfb+zSA8oTC8IOI7KYq4Pn71Y1CeeJGrkybD4Hcbb6ymBrLU19Id3fKx7QQ3Htuq3lBKbSBhA1vXO/PLlzQWZtqULcK9or0Rzrq5ro2bFoMgDpqxQNNcOEyuPXEnQWKMq/zXALXYAzGklz9PTVhfGQ=
-notifications:
-  slack:
-    secure: 
-      p5qRyHtn17dfyfue7ZKu1GCr2a+H3Kl8CzxAuSKOQl2eC9ojUfpEwnx12fSJevUM1Hb4bkiu3jyl+UDSKvCchtk/cDvKk/2FERH0Go9J+euLf+3I5HZkVGUI1tks7mGK07lyQmsNrMzWpHt006VkMWNLOdoVzECAIuFuxvufRbWKdXYr2LPPwYkrLxcTTSQ9kwv7EpFySH03zOv+xRPswuAQ0yez6tt1NSu7QwdHW8NCPOm4PK/dnvUT/RPMwpP8IMXG55RDkFW/kOqhh0NjJCtEYNW45vZw24fV8sZKl3BhDAQbKFA2l4ehKaz1mpw97hYIfSFxXPJWxsdkl8sUg4Sfw6BQwazK1+Vd55F6mjLzqQQgVJRpc2h2GVvpr26Mq7k3Myr8BEaYyYsFo/iPVGLPBSQDthG1qOwzG86QSb5zaLdkleLS6OY489x+Zd39tBYmMOvFIBQDf0fe5WJUM8zcnWRue6gNc/8gaiFGXwWAUcwXQlW0DHwONy0y/GfnsKA0PXjHANkzi5jhlhmxWVfy9xiL6zxG6n8kWUxgakPBVieu9VKw9nd9sgmjJAySeTH8D4+6WpPnaTojryZ8cBx6ZUsVVL5cLroQ8ZopIu2tM4rp45GLDDVnr1DuyVW9KOY/tGXEhmXu4HAJs4zoaTHuj4VZe9o7+iFPfzXCPg4=
+  - {secure: JBLgQs9f26x4SbdkJmt21xmyLizobLqrdVHnbPld6ahJEgrbVMpLngZbb6/bIWPJIBG5WJtaGFnvx8qBiL6wIHJsJMdwckI566Q3AM5fL3kdrZ51fYBw34OeXAwu8b81z+tneq17wlzVdpwCUz0ZhmQHi9QATXWZ6Fu7u4fO9JusQ9hG3z0jityGh2BgkIX1a2yK3r+ChTg0WXxg2eE8ujAFQZI+yytmCZllQnRi0wVHM6Y8VIqnu7W4I2tpwkwBtWcwUxVYOIFYbBjQhn5FbEv6Jbm7lScuTYwworiUdCJEO9Yw5KTvEOCE4jeMYA+b4j2EAIXp232I9tQ54TcVgQ4CZTg6wFfynlAJgV0ARFt2b8TVZmEcKJmMMmGXWBFNaJTlXoigB4jYyimARyghU9cnKLpnnB3Q1BhJpIYQoTNacifzpjFbAXKriLmwKbbeVotOp9eem9V4thY0akkQskUU+728LvDmNnyUGI/LrS+mSYzhlIB6oLrwueoAnODAcEF1HTkzJStONrJ0VonBZHxaMHKE36NxtHaIxL5gHs38fOHMVu3/NYOaXMr5mnA5eyVHYAJxs1amr5C4v4RhPzYBhr+Q4u53T4PcBOoOxYILJTDalWcoMonJ60PMPJwItBY/kSdUK+4iof+bK5wg61mkM0/Xw5tJru8TpeVy3dQ=}
