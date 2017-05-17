@@ -44,18 +44,18 @@ describe('Sample suit for ${ lib }', () => {
     console.log(`${ lib }:`);
     console.log(`  root: src/${ lib }`);
     
-    const deepDeps = Object.keys((packageObj.dependencies || {}))
-      .filter(dep => /^deep-[a-z]+$/i.test(dep));
-    
-    if (deepDeps.length > 0) {
-      console.log(`  dependencies:`);
-      
-      deepDeps.map(key => {
-        console.log(`     ${ key }: file:../${ key }`);
-      });
-    } else {
-      console.log(`  dependencies: ~`);
-    }
+    // const deepDeps = Object.keys((packageObj.dependencies || {}))
+    //   .filter(dep => /^deep-[a-z]+$/i.test(dep));
+    // 
+    // if (deepDeps.length > 0) {
+    //   console.log(`  dependencies:`);
+    //   
+    //   deepDeps.map(key => {
+    //     console.log(`     ${ key }: file:../${ key }`);
+    //   });
+    // } else {
+    //   console.log(`  dependencies: ~`);
+    // }
   
     fs.writeFileSync(mainSpecPath, content);
   });
