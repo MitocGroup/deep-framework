@@ -1,0 +1,86 @@
+--- 
+$:
+  preprocess:
+   '$.coverage.compare.storage.options.1.region': 'eval'
+   '$.coverage.compare.storage.options.1.accessKeyId': 'eval'
+   '$.coverage.compare.storage.options.1.secretAccessKey': 'eval'
+   '$.cache.options.1.region': 'eval'
+   '$.cache.options.1.accessKeyId': 'eval'
+   '$.cache.options.1.secretAccessKey': 'eval'
+  cache:
+    driver: 's3'                                                          # Available drivers: void, s3
+    options:
+      - 's3://travis-metadata/cache/deep-framework'                          # S3 cache directory
+      -                                                                   # S3 client options
+        region: 'process.env.JST_AWS_REGION'
+        accessKeyId: 'process.env.JST_AWS_ACCESS_KEY_ID'
+        secretAccessKey: 'process.env.JST_AWS_SECRET_ACCESS_KEY'
+  npm:
+    scripts:                                                              # Scripts to run after installing dependencies
+      - 'compile-travis'
+    dependencies:                                                           # Dependencies to add/overwrite
+      chai: 'latest'
+  emit:
+    pattern:                                                                # Files to include
+      - /^lib.es6\/.+\.js$/i
+      - /^test\/.+\.js$/i
+    ignore:                                                                 # Files to exclude
+      - /^(.*\/)?node_modules(\/?$)?/i
+  test:
+    mocha:
+      options:                                                              # Mocha options
+        ui: 'bdd'
+        reporter: 'spec'
+    pattern:                                                                # Files to include
+      - /.+\.spec\.js$/i
+    ignore: ~                                                               # Files to exclude
+  coverage:
+    pattern:                                                                # Files to include
+      - /.+\.js$/i
+    ignore:                                                                 # Files to exclude
+      - /.+\.spec\.js$/i
+      - /^(.*\/)?node_modules(\/?$)?/i
+    reporters:                                                              # Istanbul reporters
+      text-summary: ~
+    compare:
+      negative-delta: 3                                                   # Compare coverage info and if negative delta is more than X fail (0.01-100.00)
+      storage:                                              
+        driver: 's3'                                                      # Available drivers: s3, volative
+        options:
+          - 's3://travis-metadata/coverage/deep-framework'                   # S3 storage directory
+          -                                                               # S3 storage options
+            region: 'process.env.JST_AWS_REGION'
+            accessKeyId: 'process.env.JST_AWS_ACCESS_KEY_ID'
+            secretAccessKey: 'process.env.JST_AWS_SECRET_ACCESS_KEY'
+
+### Add other modules here...
+deep-asset:
+  root: src/deep-asset
+deep-cache:
+  root: src/deep-cache
+deep-core:
+  root: src/deep-core
+deep-db:
+  root: src/deep-db
+deep-di:
+  root: src/deep-di
+deep-event:
+  root: src/deep-event
+deep-framework:
+  root: src/deep-framework
+deep-fs:
+  root: src/deep-fs
+deep-kernel:
+  root: src/deep-kernel
+deep-log:
+  root: src/deep-log
+deep-notification:
+  root: src/deep-notification
+deep-resource:
+  root: src/deep-resource
+deep-search:
+  root: src/deep-search
+deep-security:
+  root: src/deep-security
+deep-validation:
+  root: src/deep-validation
