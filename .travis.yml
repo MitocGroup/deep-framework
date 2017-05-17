@@ -1,8 +1,6 @@
 language: node_js
 git: {depth: 1}
-node_js:
-  - 6
-  - 7
+node_js: [6, 7]
 cache:
   bundler: true
   directories: [node_modules, $(npm root -g), $(npm config get prefix)/bin]
@@ -12,4 +10,4 @@ before_install: [npm install -g run-jst]
 script: jst run unit
 env:
   global:
-  - {secure: rkSwyNLfGe78bb0q5PyIyxgyc0p723AjsoiAtQ5IHGBcNiayfEOUZlOZUhJ75RG/zK0LafwjAkZGttrNjhOHbNbEW8Sz01+RbvJw1+Gna4DgvbRP4bT/UYtjGUHXSIr3pFqY+WNdexEzcJgf6LWf3ijnynvuXzjV3u5CNwqQygTpo6XnNzLzdEemmtYn1xV4RqDWfENeBNxsnePgPvmWP0xOgmMffPnRZhMyP2PtvW7++BVzZfCDcvEvAmLLTWXWCNh9g8vwWUafmICN3+QzANSdKnu/ZWkVDyhBpelc5RM46CBmklYWvQxW3DD5RRC97Agn/qNDeZNO5FJoXqT1FEOHACXno5QLkBb9j4ssjcMqVu9Bf/I5T3n6JvvTY74ekwhEcSmWPRZIY2JFR4uN507/KZTYxFv39GGgExja2W0iEaMBPgRlAbDc4xoO43FhoH68xxCMyRwMhoZRyRIfATeAgyn/PeUIQE3j9Xg3Y0gEEcfIG9EbnjVixPFCsV9Zo6DRc5nluAiVj2VFU6nr8BkF9poxSc+GQPONpB2bGhuz261Uc/inavaXds+AzWiatibrZKhNq2KPBb8t27E8Kq0Lt+nGE60U+beucRYx6JsuLUh+BNsMhFm/M5Lmhap5S3/xy6OgDELxgVFLIQrWMkKV5EMBaSJ70L9CGtLB5Rs=}
+  - {secure: gzNoNo9EkE7BMtnxFenjMmmByqboXsCRVKvy8+opjYQcelKqkoPp/ee9/lJ3fT2jFpFCyc2vZvE0kTdt+LgeulEdyvlKfO0R8wD9CfsKa/zHw3uaIYyZUlMv5P5FBkt2CnkVp+cO1Pw4maw+aJUK/hfOJ3fnXNwl0V8+v9K10I7cszyCvjk3AyRAgu2S90zf49g9bVINe8oIQ6q9HRwztAo44ABhwlHN7ReR3m3aCYInPBN9hflm9jyFSP3drGUBoakMjzw8V1qul8LxzA+jBown1Hx2BumEdvbIHB3AD4wfik8SLAva2uIaxZKrF2KR+6pgTwH4ihzkCx5GmsbBMZTLgR2/JoUCXhofsACf5JzaT7QQ7DU3M/12m2fd9pPQxB9JBeFgW4fPgfyiVudns5CVRBk+yT9YKUMVgiPpZzPEYKccALBL1msdDI+SSo+V8PBILwZ2+QhyuCRPdWxPk4VN0vLAvthMxSocLN2YJ8z2yTuMz+hzZP7EOxWiUm4RR0dKjv8sNiVOAaWHwqRJ9QUGxS62lqpyYPwMzQgMJE7ufv3J2ty3KEi/j82KQji0bLIAjW+cSV6FmJv/LCbzwmhpYpmaBkdBRfPDSiJ+aYk5IqRe5xX9U1XP8znDlhzM0EXYHK+jb6J3Qr+UUakMp30CR6pqhug7uhZB9nFF13k=}
