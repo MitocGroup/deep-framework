@@ -47,12 +47,11 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
+    "compile-travis": "bash ../../bin/compile-lib.sh .",
     "prepare-browserify": "npm install aws4-browser@^1.0.x",
-    "test": "bash node-bin/test.sh",
     "compile": "bash node-bin/compile.sh",
     "postinstall": "bash node-bin/cleanup.sh && npm run compile",
-    "prepublish": "npm run compile",
-    "pretest": "npm link deep-kernel deep-core babel-preset-es2015"
+    "prepublish": "npm run compile"
   },
   "dependencies": {
     "deep-kernel": "^1.x.x",
@@ -64,9 +63,7 @@
     "aws-sdk": "^2.2.x"
   },
   "devDependencies": {
-    "chai": "^3.5.x",
-    "sinon": "^1.17.x",
-    "sinon-chai": "^2.8.x"
+
   },
   "preferGlobal": false,
   "analyze": true
