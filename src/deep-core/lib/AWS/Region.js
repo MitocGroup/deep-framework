@@ -182,7 +182,31 @@ export class Region {
    * @returns {String}
    */
   static getRegionPrefix(region) {
-    let regionsWithDifferentPrefix = [Region.EU_FRANKFURT, Region.ASIA_PACIFIC_SEOUL];
-    return regionsWithDifferentPrefix.indexOf(region) !== -1 ? '.' : '-';
+    let prefix = null;
+
+    switch (region) {
+      case Region.US_EAST_OHIO:
+      case Region.AP_SOUTH_MUMBAI:
+      case Region.ASIA_PACIFIC_SEOUL:
+      case Region.EU_FRANKFURT:
+      case Region.EU_LONDON:
+        prefix = '.';
+        break;
+      case Region.US_EAST_N_VIRGINIA:
+      case Region.US_WEST_N_CALIFORNIA:
+      case Region.US_WEST_OREGON:
+      case Region.ASIA_PACIFIC_SINGAPORE:
+      case Region.ASIA_PACIFIC_SYDNEY:
+      case Region.ASIA_PACIFIC_TOKYO:
+      case Region.EU_IRELAND:
+      case Region.SOUTH_AMERICA_SAO_PAULO:
+        prefix = '-';
+        break;
+      default:
+        console.warn(`No s3 website endpoint format specified for ${region}. Fallback to '-' separator.`);
+        prefix = '-';
+    }
+
+    return prefix;
   }
 }
