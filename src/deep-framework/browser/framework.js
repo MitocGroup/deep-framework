@@ -1,4 +1,44 @@
 /**
+ * Built on Mon May 22 11:58:16 EEST 2017 by mgoria <mgoria@mitocgroup.com>
+ *
+ * deep-framework@1.12.33
+ * deep-asset@1.12.10
+ * deep-cache@1.12.9
+ * deep-core@1.12.17
+ * deep-db@1.12.18
+ * deep-di@1.12.9
+ * deep-event@1.12.9
+ * deep-fs@1.12.9
+ * deep-kernel@1.12.12
+ * deep-log@1.12.13
+ * deep-notification@1.12.9
+ * deep-resource@1.12.17
+ * deep-search@0.4.16
+ * deep-security@1.12.14
+ * deep-validation@1.12.12
+ **/
+
+/**
+ * Built on Mon May 22 11:54:33 EEST 2017 by mgoria <mgoria@mitocgroup.com>
+ *
+ * deep-framework@1.12.32
+ * deep-asset@1.12.10
+ * deep-cache@1.12.9
+ * deep-core@1.12.17
+ * deep-db@1.12.18
+ * deep-di@1.12.9
+ * deep-event@1.12.9
+ * deep-fs@1.12.9
+ * deep-kernel@1.12.12
+ * deep-log@1.12.13
+ * deep-notification@1.12.9
+ * deep-resource@1.12.17
+ * deep-search@0.4.16
+ * deep-security@1.12.14
+ * deep-validation@1.12.12
+ **/
+
+/**
  * Built on Fri May  5 18:03:31 EEST 2017 by mgoria <mgoria@mitocgroup.com>
  *
  * deep-framework@1.12.31
