@@ -8,7 +8,11 @@ publish_npm_package() {
     name=$(basename $1)
 
     if [ -z $2 ] || ! $2; then
-        cd $1 && rm -rf node_modules/ && npm install --production --no-bin-links --no-optional && "${npm}" version $3 && "${npm}" publish
+        cd $1 && rm -rf node_modules/ &&\
+         "${npm}" install --production --no-bin-links --no-optional --no-shrinkwrap &&\
+          "${npm}" shrinkwrap &&\
+           "${npm}" --no-git-tag-version version $3 &&\
+            "${npm}" publish
     else
         cd $1 && "${npm}" version $3
     fi
