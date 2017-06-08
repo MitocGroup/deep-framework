@@ -42,6 +42,8 @@ $:
       - /^(.*\/)?node_modules(\/?$)?/i
     reporters:                                                              # Istanbul reporters
       text-summary: ~
+      lcovonly:
+        file: ./coverage.lcov
     compare:
       negative-delta: 3                                                   # Compare coverage info and if negative delta is more than X fail (0.01-100.00)
       storage:                                              
