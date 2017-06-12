@@ -10,7 +10,7 @@ $:
   cache:
     driver: 's3'                                                          # Available drivers: void, s3
     options:
-      - 's3://travis-metadata/cache/deep-framework'                          # S3 cache directory
+      - 's3://travis-metadata/cache/MitocGroup/deep-framework'            # S3 cache directory
       -                                                                   # S3 client options
         region: 'process.env.JST_AWS_REGION'
         accessKeyId: 'process.env.JST_AWS_ACCESS_KEY_ID'
@@ -42,12 +42,14 @@ $:
       - /^(.*\/)?node_modules(\/?$)?/i
     reporters:                                                              # Istanbul reporters
       text-summary: ~
+      lcovonly:
+        file: ./coverage.lcov
     compare:
       negative-delta: 3                                                   # Compare coverage info and if negative delta is more than X fail (0.01-100.00)
       storage:                                              
         driver: 's3'                                                      # Available drivers: s3, volative
         options:
-          - 's3://travis-metadata/coverage/deep-framework'                   # S3 storage directory
+          - 's3://travis-metadata/coverage/MitocGroup/deep-framework'     # S3 storage directory
           -                                                               # S3 storage options
             region: 'process.env.JST_AWS_REGION'
             accessKeyId: 'process.env.JST_AWS_ACCESS_KEY_ID'
