@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-npm install --no-bin-links \
+npm install --no-bin-links --no-shrinkwrap  \
   webpack aws-sdk lodash store \
   raven-js aws4-browser node-libs-browser \
   uglifyjs-webpack-plugin mishoo/UglifyJS2#harmony-v2.8.22
