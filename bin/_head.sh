@@ -10,7 +10,6 @@ publish_npm_package() {
     if [ -z $2 ] || ! $2; then
         cd $1 && rm -rf node_modules/ &&\
          "${npm}" install --production --no-bin-links --no-optional --no-shrinkwrap &&\
-          "${npm}" shrinkwrap &&\
            "${npm}" --no-git-tag-version version $3 &&\
             "${npm}" publish
     else
