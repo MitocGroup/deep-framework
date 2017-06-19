@@ -308,8 +308,9 @@ export class DB extends Kernel.ContainerAware {
     docClient.service.config.credentials = credentials;
     dynamoDriver.config.credentials = credentials;
 
-    // reset existent models to make sure old credentials are not cached by each model
-    this._models = {};
+    // force Vogels to update docClient for all models
+    Vogels.dynamoDriver(dynamoDriver);
+    Vogels.documentClient(docClient);
 
     return this;
   }
