@@ -308,9 +308,8 @@ export class DB extends Kernel.ContainerAware {
     docClient.service.config.credentials = credentials;
     dynamoDriver.config.credentials = credentials;
 
-    // force Vogels to update docClient for all models
-    Vogels.dynamoDriver(dynamoDriver);
-    Vogels.documentClient(docClient);
+    // update docClient credentials for each model
+    this._ensureModelsCredentials(credentials);
 
     return this;
   }
@@ -418,7 +417,22 @@ export class DB extends Kernel.ContainerAware {
 
     return models;
   }
-  
+
+  /**
+   * @param {*} credentials
+   *
+   * @private
+   */
+  _ensureModelsCredentials(credentials) {
+    for (let modelName in this._models) {
+      if (!this._models.hasOwnProperty(modelName)) {
+        continue;
+      }
+
+      this._models[modelName].docClient.service.config.credentials = credentials;
+    }
+  }
+
   /**
    * @param {String} modelName
    * 
