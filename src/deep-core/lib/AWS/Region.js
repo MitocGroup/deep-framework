@@ -18,63 +18,77 @@ export class Region {
   /**
    * @returns {String}
    */
-  static get ASIA_PACIFIC_TOKYO() {
+  static get AP_NORTHEAST_TOKYO() {
     return 'ap-northeast-1';
   }
 
   /**
    * @returns {String}
    */
-  static get ASIA_PACIFIC_SEOUL() {
+  static get AP_NORTHEAST_SEOUL() {
     return 'ap-northeast-2';
   }
 
   /**
    * @returns {String}
    */
-  static get ASIA_PACIFIC_SINGAPORE() {
+  static get AP_SOUTHEAST_SINGAPORE() {
     return 'ap-southeast-1';
   }
 
   /**
    * @returns {String}
    */
-  static get ASIA_PACIFIC_SYDNEY() {
+  static get AP_SOUTHEAST_SYDNEY() {
     return 'ap-southeast-2';
   }
 
   /**
    * @returns {String}
    */
-  static get EU_FRANKFURT() {
+  static get AP_SOUTH_MUMBAI() {
+    return 'ap-south-1';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get EU_CENTRAL_FRANKFURT() {
     return 'eu-central-1';
   }
 
   /**
    * @returns {String}
    */
-  static get EU_IRELAND() {
+  static get EU_WEST_IRELAND() {
     return 'eu-west-1';
   }
 
   /**
    * @returns {String}
    */
-  static get EU_LONDON() {
+  static get EU_WEST_LONDON() {
     return 'eu-west-2';
   }
 
   /**
    * @returns {String}
    */
-  static get SOUTH_AMERICA_SAO_PAULO() {
+  static get SA_EAST_SAO_PAULO() {
     return 'sa-east-1';
   }
 
   /**
    * @returns {String}
    */
-  static get US_EAST_N_VIRGINIA() {
+  static get CA_CENTRAL_MONTREAL() {
+    return 'ca-central-1';
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get US_EAST_VIRGINIA() {
     return 'us-east-1';
   }
 
@@ -88,7 +102,7 @@ export class Region {
   /**
    * @returns {String}
    */
-  static get US_WEST_N_CALIFORNIA() {
+  static get US_WEST_CALIFORNIA() {
     return 'us-west-1';
   }
 
@@ -97,13 +111,6 @@ export class Region {
    */
   static get US_WEST_OREGON() {
     return 'us-west-2';
-  }
-
-  /**
-   * @returns {String}
-   */
-  static get AP_SOUTH_MUMBAI() {
-    return 'ap-south-1';
   }
 
   /**
@@ -120,19 +127,20 @@ export class Region {
   static list() {
     return [
       Region.ANY,
-      Region.ASIA_PACIFIC_TOKYO,
-      Region.ASIA_PACIFIC_SEOUL,
-      Region.ASIA_PACIFIC_SYDNEY,
-      Region.ASIA_PACIFIC_SINGAPORE,
-      Region.EU_FRANKFURT,
-      Region.EU_IRELAND,
-      Region.EU_LONDON,
-      Region.SOUTH_AMERICA_SAO_PAULO,
-      Region.US_EAST_N_VIRGINIA,
-      Region.US_EAST_OHIO,
-      Region.US_WEST_N_CALIFORNIA,
-      Region.US_WEST_OREGON,
+      Region.AP_NORTHEAST_TOKYO,
+      Region.AP_NORTHEAST_SEOUL,
+      Region.AP_SOUTHEAST_SYDNEY,
+      Region.AP_SOUTHEAST_SINGAPORE,
       Region.AP_SOUTH_MUMBAI,
+      Region.EU_CENTRAL_FRANKFURT,
+      Region.EU_WEST_IRELAND,
+      Region.EU_WEST_LONDON,
+      Region.SA_EAST_SAO_PAULO,
+      Region.CA_CENTRAL_MONTREAL,
+      Region.US_EAST_VIRGINIA,
+      Region.US_EAST_OHIO,
+      Region.US_WEST_CALIFORNIA,
+      Region.US_WEST_OREGON,
     ];
   }
 
@@ -185,21 +193,22 @@ export class Region {
     let prefix = null;
 
     switch (region) {
+      case Region.CA_CENTRAL_MONTREAL:
       case Region.US_EAST_OHIO:
       case Region.AP_SOUTH_MUMBAI:
-      case Region.ASIA_PACIFIC_SEOUL:
-      case Region.EU_FRANKFURT:
-      case Region.EU_LONDON:
+      case Region.AP_NORTHEAST_SEOUL:
+      case Region.EU_CENTRAL_FRANKFURT:
+      case Region.EU_WEST_LONDON:
         prefix = '.';
         break;
-      case Region.US_EAST_N_VIRGINIA:
-      case Region.US_WEST_N_CALIFORNIA:
+      case Region.US_EAST_VIRGINIA:
+      case Region.US_WEST_CALIFORNIA:
       case Region.US_WEST_OREGON:
-      case Region.ASIA_PACIFIC_SINGAPORE:
-      case Region.ASIA_PACIFIC_SYDNEY:
-      case Region.ASIA_PACIFIC_TOKYO:
-      case Region.EU_IRELAND:
-      case Region.SOUTH_AMERICA_SAO_PAULO:
+      case Region.AP_SOUTHEAST_SINGAPORE:
+      case Region.AP_SOUTHEAST_SYDNEY:
+      case Region.AP_NORTHEAST_TOKYO:
+      case Region.EU_WEST_IRELAND:
+      case Region.SA_EAST_SAO_PAULO:
         prefix = '-';
         break;
       default:

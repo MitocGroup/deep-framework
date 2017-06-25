@@ -86,63 +86,91 @@ export class Region {
   /**
    * @returns {String}
    */
-  static get ASIA_PACIFIC_TOKYO() {
+  static get AP_NORTHEAST_TOKYO() {
     return &apos;ap-northeast-1&apos;;
   }
 
   /**
    * @returns {String}
    */
-  static get ASIA_PACIFIC_SEOUL() {
+  static get AP_NORTHEAST_SEOUL() {
     return &apos;ap-northeast-2&apos;;
   }
 
   /**
    * @returns {String}
    */
-  static get ASIA_PACIFIC_SINGAPORE() {
+  static get AP_SOUTHEAST_SINGAPORE() {
     return &apos;ap-southeast-1&apos;;
   }
 
   /**
    * @returns {String}
    */
-  static get ASIA_PACIFIC_SYDNEY() {
+  static get AP_SOUTHEAST_SYDNEY() {
     return &apos;ap-southeast-2&apos;;
   }
 
   /**
    * @returns {String}
    */
-  static get EU_FRANKFURT() {
+  static get AP_SOUTH_MUMBAI() {
+    return &apos;ap-south-1&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get EU_CENTRAL_FRANKFURT() {
     return &apos;eu-central-1&apos;;
   }
 
   /**
    * @returns {String}
    */
-  static get EU_IRELAND() {
+  static get EU_WEST_IRELAND() {
     return &apos;eu-west-1&apos;;
   }
 
   /**
    * @returns {String}
    */
-  static get SOUTH_AMERICA_SAO_PAULO() {
+  static get EU_WEST_LONDON() {
+    return &apos;eu-west-2&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get SA_EAST_SAO_PAULO() {
     return &apos;sa-east-1&apos;;
   }
 
   /**
    * @returns {String}
    */
-  static get US_EAST_N_VIRGINIA() {
+  static get CA_CENTRAL_MONTREAL() {
+    return &apos;ca-central-1&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get US_EAST_VIRGINIA() {
     return &apos;us-east-1&apos;;
   }
 
   /**
    * @returns {String}
    */
-  static get US_WEST_N_CALIFORNIA() {
+  static get US_EAST_OHIO() {
+    return &apos;us-east-2&apos;;
+  }
+
+  /**
+   * @returns {String}
+   */
+  static get US_WEST_CALIFORNIA() {
     return &apos;us-west-1&apos;;
   }
 
@@ -167,15 +195,19 @@ export class Region {
   static list() {
     return [
       Region.ANY,
-      Region.ASIA_PACIFIC_TOKYO,
-      Region.ASIA_PACIFIC_SEOUL,
-      Region.ASIA_PACIFIC_SYDNEY,
-      Region.ASIA_PACIFIC_SINGAPORE,
-      Region.EU_FRANKFURT,
-      Region.EU_IRELAND,
-      Region.SOUTH_AMERICA_SAO_PAULO,
-      Region.US_EAST_N_VIRGINIA,
-      Region.US_WEST_N_CALIFORNIA,
+      Region.AP_NORTHEAST_TOKYO,
+      Region.AP_NORTHEAST_SEOUL,
+      Region.AP_SOUTHEAST_SYDNEY,
+      Region.AP_SOUTHEAST_SINGAPORE,
+      Region.AP_SOUTH_MUMBAI,
+      Region.EU_CENTRAL_FRANKFURT,
+      Region.EU_WEST_IRELAND,
+      Region.EU_WEST_LONDON,
+      Region.SA_EAST_SAO_PAULO,
+      Region.CA_CENTRAL_MONTREAL,
+      Region.US_EAST_VIRGINIA,
+      Region.US_EAST_OHIO,
+      Region.US_WEST_CALIFORNIA,
       Region.US_WEST_OREGON,
     ];
   }
@@ -226,7 +258,7 @@ export class Region {
    * @returns {String}
    */
   static getRegionPrefix(region) {
-    let regionsWithDifferentPrefix = [Region.EU_FRANKFURT, Region.ASIA_PACIFIC_SEOUL];
+    let regionsWithDifferentPrefix = [Region.EU_CENTRAL_FRANKFURT, Region.AP_NORTHEAST_SEOUL];
     return regionsWithDifferentPrefix.indexOf(region) !== -1 ? &apos;.&apos; : &apos;-&apos;;
   }
 }
