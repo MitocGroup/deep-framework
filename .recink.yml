@@ -1,20 +1,22 @@
 --- 
 $:
   preprocess:
-   '$.coverage.compare.storage.options.1.region': 'eval'
-   '$.coverage.compare.storage.options.1.accessKeyId': 'eval'
-   '$.coverage.compare.storage.options.1.secretAccessKey': 'eval'
-   '$.cache.options.1.region': 'eval'
-   '$.cache.options.1.accessKeyId': 'eval'
-   '$.cache.options.1.secretAccessKey': 'eval'
+    '$.coverage.compare.storage.options.1.region': 'eval'
+    '$.coverage.compare.storage.options.1.accessKeyId': 'eval'
+    '$.coverage.compare.storage.options.1.secretAccessKey': 'eval'
+    '$.cache.options.1.region': 'eval'
+    '$.cache.options.1.accessKeyId': 'eval'
+    '$.cache.options.1.secretAccessKey': 'eval'
+    '$.codeclimate.token': 'eval'
+    '$.snyk.token': 'eval'
   cache:
     driver: 's3'                                                          # Available drivers: void, s3
     options:
       - 's3://travis-metadata/cache/MitocGroup/deep-framework'            # S3 cache directory
       -                                                                   # S3 client options
-        region: 'process.env.JST_AWS_REGION'
-        accessKeyId: 'process.env.JST_AWS_ACCESS_KEY_ID'
-        secretAccessKey: 'process.env.JST_AWS_SECRET_ACCESS_KEY'
+        region: 'process.env.AWS_DEFAULT_REGION'
+        accessKeyId: 'process.env.AWS_ACCESS_KEY_ID'
+        secretAccessKey: 'process.env.AWS_SECRET_ACCESS_KEY'
   npm:
     scripts:                                                              # Scripts to run after installing dependencies
       - 'compile-travis'
@@ -45,15 +47,19 @@ $:
       lcovonly:
         file: ./coverage.lcov
     compare:
-      negative-delta: 3                                                   # Compare coverage info and if negative delta is more than X fail (0.01-100.00)
+      negative-delta: 1                                                   # Compare coverage info and if negative delta is more than X fail (0.01-100.00)
       storage:                                              
         driver: 's3'                                                      # Available drivers: s3, volative
         options:
           - 's3://travis-metadata/coverage/MitocGroup/deep-framework'     # S3 storage directory
           -                                                               # S3 storage options
-            region: 'process.env.JST_AWS_REGION'
-            accessKeyId: 'process.env.JST_AWS_ACCESS_KEY_ID'
-            secretAccessKey: 'process.env.JST_AWS_SECRET_ACCESS_KEY'
+            region: 'process.env.AWS_DEFAULT_REGION'
+            accessKeyId: 'process.env.AWS_ACCESS_KEY_ID'
+            secretAccessKey: 'process.env.AWS_SECRET_ACCESS_KEY'
+  codeclimate:
+    token: 'process.env.CODECLIMATE_REPO_TOKEN'
+  snyk:
+    token: 'process.env.SNYK_API_TOKEN'
 
 ### Add other modules here...
 deep-asset:
