@@ -1225,56 +1225,56 @@ window.esdocSearchIndex = [
   ],
   [
     "lib/aws/region.js~region.asia_pacific_seoul",
-    "class/lib/AWS/Region.js~Region.html#static-get-ASIA_PACIFIC_SEOUL",
-    "lib/AWS/Region.js~Region.ASIA_PACIFIC_SEOUL",
+    "class/lib/AWS/Region.js~Region.html#static-get-AP_NORTHEAST_SEOUL",
+    "lib/AWS/Region.js~Region.AP_NORTHEAST_SEOUL",
     "member"
   ],
   [
     "lib/aws/region.js~region.asia_pacific_singapore",
-    "class/lib/AWS/Region.js~Region.html#static-get-ASIA_PACIFIC_SINGAPORE",
-    "lib/AWS/Region.js~Region.ASIA_PACIFIC_SINGAPORE",
+    "class/lib/AWS/Region.js~Region.html#static-get-AP_SOUTHEAST_SINGAPORE",
+    "lib/AWS/Region.js~Region.AP_SOUTHEAST_SINGAPORE",
     "member"
   ],
   [
     "lib/aws/region.js~region.asia_pacific_sydney",
-    "class/lib/AWS/Region.js~Region.html#static-get-ASIA_PACIFIC_SYDNEY",
-    "lib/AWS/Region.js~Region.ASIA_PACIFIC_SYDNEY",
+    "class/lib/AWS/Region.js~Region.html#static-get-AP_SOUTHEAST_SYDNEY",
+    "lib/AWS/Region.js~Region.AP_SOUTHEAST_SYDNEY",
     "member"
   ],
   [
     "lib/aws/region.js~region.asia_pacific_tokyo",
-    "class/lib/AWS/Region.js~Region.html#static-get-ASIA_PACIFIC_TOKYO",
-    "lib/AWS/Region.js~Region.ASIA_PACIFIC_TOKYO",
+    "class/lib/AWS/Region.js~Region.html#static-get-AP_NORTHEAST_TOKYO",
+    "lib/AWS/Region.js~Region.AP_NORTHEAST_TOKYO",
     "member"
   ],
   [
     "lib/aws/region.js~region.eu_frankfurt",
-    "class/lib/AWS/Region.js~Region.html#static-get-EU_FRANKFURT",
-    "lib/AWS/Region.js~Region.EU_FRANKFURT",
+    "class/lib/AWS/Region.js~Region.html#static-get-EU_CENTRAL_FRANKFURT",
+    "lib/AWS/Region.js~Region.EU_CENTRAL_FRANKFURT",
     "member"
   ],
   [
     "lib/aws/region.js~region.eu_ireland",
-    "class/lib/AWS/Region.js~Region.html#static-get-EU_IRELAND",
-    "lib/AWS/Region.js~Region.EU_IRELAND",
+    "class/lib/AWS/Region.js~Region.html#static-get-EU_WEST_IRELAND",
+    "lib/AWS/Region.js~Region.EU_WEST_IRELAND",
     "member"
   ],
   [
     "lib/aws/region.js~region.south_america_sao_paulo",
-    "class/lib/AWS/Region.js~Region.html#static-get-SOUTH_AMERICA_SAO_PAULO",
-    "lib/AWS/Region.js~Region.SOUTH_AMERICA_SAO_PAULO",
+    "class/lib/AWS/Region.js~Region.html#static-get-SA_EAST_SAO_PAULO",
+    "lib/AWS/Region.js~Region.SA_EAST_SAO_PAULO",
     "member"
   ],
   [
     "lib/aws/region.js~region.us_east_n_virginia",
-    "class/lib/AWS/Region.js~Region.html#static-get-US_EAST_N_VIRGINIA",
-    "lib/AWS/Region.js~Region.US_EAST_N_VIRGINIA",
+    "class/lib/AWS/Region.js~Region.html#static-get-US_EAST_VIRGINIA",
+    "lib/AWS/Region.js~Region.US_EAST_VIRGINIA",
     "member"
   ],
   [
     "lib/aws/region.js~region.us_west_n_california",
-    "class/lib/AWS/Region.js~Region.html#static-get-US_WEST_N_CALIFORNIA",
-    "lib/AWS/Region.js~Region.US_WEST_N_CALIFORNIA",
+    "class/lib/AWS/Region.js~Region.html#static-get-US_WEST_CALIFORNIA",
+    "lib/AWS/Region.js~Region.US_WEST_CALIFORNIA",
     "member"
   ],
   [

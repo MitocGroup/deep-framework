@@ -1,6 +1,6 @@
 {
   "name": "deep-framework",
-  "version": "1.12.39",
+  "version": "1.12.40",
   "description": "DEEP Framework",
   "keywords": [
     "digital enterprise end-to-end platform",
@@ -74,6 +74,9 @@
     "final-prepare-production": "bash hooks/final_prepare_production.sh"
   },
   "dependencies": {
+    "aws-sdk": "^2.70.0",
+    "aws-xray-sdk-core": "MitocGroup/aws-xray-sdk-core",
+    "aws4-browser": "^1.0.0",
     "deep-asset": "^1.x.x",
     "deep-cache": "^1.x.x",
     "deep-core": "^1.x.x",
@@ -89,7 +92,13 @@
     "deep-security": "^1.x.x",
     "deep-validation": "^1.x.x",
     "inherits": "^2.0.x",
-    "aws-xray-sdk-core": "MitocGroup/aws-xray-sdk-core"
+    "lodash": "^4.17.4",
+    "node-libs-browser": "^2.0.0",
+    "raven-js": "^3.16.0",
+    "store": "^2.0.4",
+    "uglify-js": "github:mishoo/UglifyJS2#harmony-v2.8.22",
+    "uglifyjs-webpack-plugin": "^0.4.3",
+    "webpack": "^2.6.1"
   },
   "devDependencies": {},
   "engines": {

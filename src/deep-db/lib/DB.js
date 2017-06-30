@@ -38,6 +38,7 @@ export class DB extends Kernel.ContainerAware {
     this._validation = new Validation(models, forcePartitionField, nonPartitionedModels);
     this._rawModels = this._rawModelsVector(models);
     this._models = {};
+    this._workingCreds = null;
   }
 
   /**
@@ -97,6 +98,7 @@ export class DB extends Kernel.ContainerAware {
     }
     
     this._ensureModelPartitioned(modelName);
+    this._ensureModelCredentials(modelName);
 
     let model = this._models[modelName];
 
@@ -302,11 +304,22 @@ export class DB extends Kernel.ContainerAware {
    * @returns {DB}
    */
   overwriteCredentials(credentials) {
+    this._workingCreds = credentials;
+
     let dynamoDriver = Vogels.dynamoDriver();
     let docClient = Vogels.documentClient();
 
     docClient.service.config.credentials = credentials;
     dynamoDriver.config.credentials = credentials;
+
+    // update docClient credentials for each model
+    for (let modelName in this._models) {
+      if (!this._models.hasOwnProperty(modelName)) {
+        continue;
+      }
+
+      this._ensureModelCredentials(modelName);
+    }
 
     return this;
   }
@@ -414,7 +427,20 @@ export class DB extends Kernel.ContainerAware {
 
     return models;
   }
-  
+
+  /**
+   * @param {String} modelName
+   *
+   * @private
+   */
+  _ensureModelCredentials(modelName) {
+    this._workingCreds = this._workingCreds || Core.AWS.ENV_CREDENTIALS;
+
+    if (this._workingCreds && this._models.hasOwnProperty(modelName)) {
+      this._models[modelName].docClient.service.config.credentials = this._workingCreds;
+    }
+  }
+
   /**
    * @param {String} modelName
    * 
