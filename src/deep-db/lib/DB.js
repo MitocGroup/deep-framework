@@ -447,12 +447,11 @@ export class DB extends Kernel.ContainerAware {
    * @private
    */
   _ensureModelPartitioned(modelName) {
-    if (this._dynamoDBPartitionKey 
-      && this._models.hasOwnProperty(modelName) 
+    if (this._models.hasOwnProperty(modelName) 
       && this.validation.isPartitionedModel(modelName)) {
 
       this._models[modelName].setPartition(
-        this._dynamoDBPartitionKey
+        this._dynamoDBPartitionKey || ExtendModel.ANONYMOUS_PARTITION
       );
     }
   }
