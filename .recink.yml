@@ -10,49 +10,49 @@ $:
     '$.codeclimate.token': 'eval'
     '$.snyk.token': 'eval'
   cache:
-    driver: 's3'                                                          # Available drivers: void, s3
+    driver: 's3'
     options:
-      - 's3://travis-metadata/cache/MitocGroup/deep-framework'            # S3 cache directory
-      -                                                                   # S3 client options
+      - 's3://travis-metadata/cache/MitocGroup/deep-framework'
+      -
         region: 'process.env.AWS_DEFAULT_REGION'
         accessKeyId: 'process.env.AWS_ACCESS_KEY_ID'
         secretAccessKey: 'process.env.AWS_SECRET_ACCESS_KEY'
   npm:
-    scripts:                                                              # Scripts to run after installing dependencies
+    scripts:
       - 'compile-travis'
-    dependencies:                                                           # Dependencies to add/overwrite
+    dependencies:
       chai: 'latest'
   emit:
-    pattern:                                                                # Files to include
+    pattern:
       - /^lib.es6\/.+\.js$/i
       - /^test\/.+\.js$/i
-    ignore:                                                                 # Files to exclude
+    ignore:
       - /^(.*\/)?node_modules(\/?$)?/i
   test:
     mocha:
-      options:                                                              # Mocha options
+      options:
         ui: 'bdd'
         reporter: 'spec'
-    pattern:                                                                # Files to include
+    pattern:
       - /.+\.spec\.js$/i
-    ignore: ~                                                               # Files to exclude
+    ignore: ~
   coverage:
-    pattern:                                                                # Files to include
+    pattern:
       - /.+\.js$/i
-    ignore:                                                                 # Files to exclude
+    ignore:
       - /.+\.spec\.js$/i
       - /^(.*\/)?node_modules(\/?$)?/i
-    reporters:                                                              # Istanbul reporters
+    reporters:
       text-summary: ~
       lcovonly:
         file: ./coverage.lcov
     compare:
-      negative-delta: 1                                                   # Compare coverage info and if negative delta is more than X fail (0.01-100.00)
+      negative-delta: 1
       storage:                                              
-        driver: 's3'                                                      # Available drivers: s3, volative
+        driver: 's3'
         options:
-          - 's3://travis-metadata/coverage/MitocGroup/deep-framework'     # S3 storage directory
-          -                                                               # S3 storage options
+          - 's3://travis-metadata/coverage/MitocGroup/deep-framework'
+          -
             region: 'process.env.AWS_DEFAULT_REGION'
             accessKeyId: 'process.env.AWS_ACCESS_KEY_ID'
             secretAccessKey: 'process.env.AWS_SECRET_ACCESS_KEY'
