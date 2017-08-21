@@ -1,6 +1,6 @@
 'use strict';
 
-const AWS_SERVICES = 'lambda,cognitoidentity,cognitosync,sqs';
+const AWS_SERVICES = 'lambda,cognitoidentity,cognitoidentityserviceprovider,cognitosync,sqs';
 const NULL_MODULES = [
   'mv',                     // @junk (bunyan shim) 
   'safe-json-stringify',    // @junk (bunyan shim)
