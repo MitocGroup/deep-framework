@@ -32,7 +32,7 @@ export class ErrorResponse extends Response {
       errorCode = 400;
       errorObj = {
         errorType: error.name,
-        errorMessage: error.annotate(),
+        errorMessage: typeof error.annotate === 'function' ? error.annotate() : error.message,
         errorStack: error.stack || (new Error(error.message)).stack,
         validationErrors: error.details,
       };
