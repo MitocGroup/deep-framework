@@ -4,7 +4,7 @@
 
 'use strict';
 
-var AWSXRay = require('aws-xray-sdk-core');
+var AWSXRay = require('xray-sdk-core');
 var AWS = require('aws-sdk');
 var https = require('https');
 

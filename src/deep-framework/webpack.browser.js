@@ -10,7 +10,7 @@ const NULL_MODULES = [
   'ioredis',                // @junk (deep-cache not implemented)
   'dynalite',               // @junk (deep-db local runtime)
   'local-dynamo',           // @junk (deep-db local runtime)
-  'aws-xray-sdk-core',      // @junk (used in backend only)
+  'xray-sdk-core',          // @junk (used in backend only)
 ];
 
 module.exports = function () {
