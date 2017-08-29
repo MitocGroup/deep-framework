@@ -284,7 +284,8 @@ export class Validation extends Kernel.ContainerAware {
    * @returns {Boolean}
    */
   isPartitionedModel(modelName) {
-    return this._nonPartitionedModels.indexOf(modelName) === -1;
+    return (this.kernel && this.kernel.accountMicroservice) &&
+      this._nonPartitionedModels.indexOf(modelName) === -1;
   }
 
   /**
