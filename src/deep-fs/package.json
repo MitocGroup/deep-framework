@@ -51,7 +51,7 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "compile-travis": "bash ../../bin/compile-lib.sh .",
+    "compile-travis": "bash node-bin/compile.sh && bash ../../bin/compile-lib.sh .",
     "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile"
   },
