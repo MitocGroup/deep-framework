@@ -51,7 +51,7 @@
     "url": "https://github.com/MitocGroup/deep-framework.git"
   },
   "scripts": {
-    "compile-travis": "bash node-bin/compile.sh && bash ../../bin/compile-lib.sh .",
+    "compile-travis": "bash ../../bin/compile-lib.sh .",
     "compile": "bash node-bin/compile.sh",
     "prepublish": "npm run compile"
   },
@@ -59,9 +59,7 @@
     "deep-kernel": "^1.x.x",
     "deep-core": "^1.x.x",
     "s3fs": "MitocGroup/s3fs",
-    "es6-promise": "^3.0.x"
-  },
-  "optionalDependencies": {
+    "es6-promise": "^3.0.x",
     "relative-fs": "MitocGroup/relative-fs",
     "fs-extra": "^0.26.x"
   },
