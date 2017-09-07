@@ -40,4 +40,4 @@ before_install:
   - npm install -g recink-codeclimate
   - npm install -g recink-snyk
 script:
-  - DEBUG=* recink run unit -c recink-codeclimate -c recink-snyk
+  - recink run unit -c recink-codeclimate -c recink-snyk
