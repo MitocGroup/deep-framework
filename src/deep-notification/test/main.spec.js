@@ -4,7 +4,7 @@ const chai = require('chai');
 const lib = require('../lib.es6/bootstrap.js');
 
 describe('Sample suit for deep-notification', () => {  
-  it('Check bootstrap.js to export an instanceof Function', () => {
-    chai.expect(lib).to.be.instanceof(Function);
+  it('Check bootstrap.js to export an instanceof Object', () => {
+    chai.expect(lib).to.be.an('object')
   });
 });
