@@ -20,8 +20,8 @@ $:
   npm:
     scripts:
       - 'compile-travis'
-    dependencies:
-      chai: 'latest'
+#    dependencies:
+#      chai: 'latest'
   emit:
     pattern:
       - /^lib.es6\/.+\.js$/i
@@ -33,6 +33,8 @@ $:
       options:
         ui: 'bdd'
         reporter: 'spec'
+        check-leaks: true
+        retries: 2
     pattern:
       - /.+\.spec\.js$/i
     ignore: ~
@@ -74,12 +76,8 @@ deep-di:
   root: src/deep-di
 deep-event:
   root: src/deep-event
-deep-framework:
-  root: src/deep-framework
 deep-fs:
   root: src/deep-fs
-deep-kernel:
-  root: src/deep-kernel
 deep-log:
   root: src/deep-log
 deep-notification:
@@ -92,3 +90,7 @@ deep-security:
   root: src/deep-security
 deep-validation:
   root: src/deep-validation
+deep-kernel:
+  root: src/deep-kernel
+deep-framework:
+  root: src/deep-framework

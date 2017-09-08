@@ -1,7 +1,7 @@
 /**
- * Built on Tue Aug 22 12:56:43 EEST 2017 by mgoria <mgoria@mitocgroup.com>
+ * Built on Wed Aug 30 17:06:15 EEST 2017 by mgoria <mgoria@mitocgroup.com>
  *
- * deep-framework@1.12.41
+ * deep-framework@1.12.46
  * deep-asset@1.12.12
  * deep-cache@1.12.11
  * deep-core@1.12.21
@@ -12,10 +12,10 @@
  * deep-kernel@1.12.14
  * deep-log@1.12.15
  * deep-notification@1.12.11
- * deep-resource@1.12.19
+ * deep-resource@1.12.20
  * deep-search@0.4.18
  * deep-security@1.12.16
- * deep-validation@1.12.14
+ * deep-validation@1.12.16
  **/
 
 var DeepFramework =
@@ -1936,7 +1936,7 @@ AWS.util.update(AWS, {
   /**
    * @constant
    */
-  VERSION: '2.101.0',
+  VERSION: '2.105.0',
 
   /**
    * @api private
@@ -32978,7 +32978,8 @@ let Request = function () {
         case 'post':
         case 'put':
         case 'patch':
-          opsToSign.body = JSON.stringify(payload);
+          payload = JSON.stringify(payload);
+          opsToSign.body = payload;
           break;
       }
 
@@ -64220,8 +64221,8 @@ let Resource = exports.Resource = function (_Kernel$ContainerAwar) {
   }, {
     key: 'get',
     value: function get(identifier) {
-      let parsedIdentifier = this._parseResourceIdentifier(this._resolveIdentifier(identifier // it also binds 'working' microservice to this instance
-      ));
+      let parsedIdentifier = this._parseResourceIdentifier(this._resolveIdentifier(identifier) // it also binds 'working' microservice to this instance
+      );
 
       let resourceIdentifier = parsedIdentifier.resource;
       let actionIdentifier = parsedIdentifier.action;
@@ -68257,7 +68258,13 @@ let Validation = exports.Validation = function (_Kernel$ContainerAwar) {
      * @returns {Boolean}
      */
     value: function isPartitionedModel(modelName) {
-      return this._nonPartitionedModels.indexOf(modelName) === -1;
+      let modelIndex = this._nonPartitionedModels.indexOf(modelName);
+
+      if (this.kernel) {
+        return this.kernel.accountMicroservice && modelIndex === -1;
+      } else {
+        return modelIndex === -1;
+      }
     }
 
     /**
@@ -89288,7 +89295,7 @@ function extend() {
 /* 683 */
 /***/ (function(module, exports) {
 
-module.exports = {"name":"deep-framework","version":"1.12.41","description":"DEEP Framework","keywords":["digital enterprise end-to-end platform","amazon web services","platform-as-a-service","deep","aws","paas","cloud","computing","microservices","architecture","serverless","abstracted","core","library","framework","Framework"],"homepage":"https://github.com/MitocGroup/deep-framework","bugs":{"url":"https://github.com/MitocGroup/deep-framework/issues"},"license":"MIT","author":{"name":"Mitoc Group","email":"hello@mitocgroup.com","url":"http://www.mitocgroup.com"},"contributors":[{"name":"AlexanderC","email":"alexanderc@mitocgroup.com"},{"name":"Marcel Goria","email":"mgoria@mitocgroup.com"},{"name":"Veaceslav Cotruta","email":"vcotruta@mitocgroup.com"},{"name":"Max Ponomariov","email":"mponomariov@mitocgroup.com"},{"name":"Alexandru Scripnic","email":"ascripnic@mitocgroup.com"},{"name":"Stefan Hariton","email":"shariton@mitocgroup.com"},{"name":"Dragos Palade","email":"dpalade@mitocgroup.com"}],"main":"lib.compiled/bootstrap.js","repository":{"type":"git","url":"https://github.com/MitocGroup/deep-framework.git"},"scripts":{"compile-travis":"bash ../../bin/compile-lib.sh .","compile":"bash node-bin/compile.sh","prepublish":"npm run compile && npm run browser-build","browser-build":"bash node-bin/browser_build.sh","prepare-production":"bash hooks/prepare_production.sh","final-prepare-production":"bash hooks/final_prepare_production.sh"},"dependencies":{"aws-sdk":"^2.70.0","aws-xray-sdk-core":"MitocGroup/aws-xray-sdk-core","aws4-browser":"^1.0.0","deep-asset":"^1.x.x","deep-cache":"^1.x.x","deep-core":"^1.x.x","deep-db":"^1.x.x","deep-di":"^1.x.x","deep-event":"^1.x.x","deep-fs":"^1.x.x","deep-kernel":"^1.x.x","deep-log":"^1.x.x","deep-notification":"^1.x.x","deep-resource":"^1.x.x","deep-search":"^0.x.x","deep-security":"^1.x.x","deep-validation":"^1.x.x","inherits":"^2.0.x","lodash":"^4.17.4","node-libs-browser":"^2.0.0","raven-js":"^3.16.0","store":"^2.0.4","uglify-js":"github:mishoo/UglifyJS2#harmony-v2.8.22","uglifyjs-webpack-plugin":"^0.4.3","webpack":"^2.6.1"},"devDependencies":{},"engines":{"node":">=0.12","npm":">=2.10"},"preferGlobal":false,"analyze":true,"jspm":{"main":"browser/framework.js"}}
+module.exports = {"name":"deep-framework","version":"1.12.46","description":"DEEP Framework","keywords":["digital enterprise end-to-end platform","amazon web services","platform-as-a-service","deep","aws","paas","cloud","computing","microservices","architecture","serverless","abstracted","core","library","framework","Framework"],"homepage":"https://github.com/MitocGroup/deep-framework","bugs":{"url":"https://github.com/MitocGroup/deep-framework/issues"},"license":"MIT","author":{"name":"Mitoc Group","email":"hello@mitocgroup.com","url":"http://www.mitocgroup.com"},"contributors":[{"name":"AlexanderC","email":"alexanderc@mitocgroup.com"},{"name":"Marcel Goria","email":"mgoria@mitocgroup.com"},{"name":"Veaceslav Cotruta","email":"vcotruta@mitocgroup.com"},{"name":"Max Ponomariov","email":"mponomariov@mitocgroup.com"},{"name":"Alexandru Scripnic","email":"ascripnic@mitocgroup.com"},{"name":"Stefan Hariton","email":"shariton@mitocgroup.com"},{"name":"Dragos Palade","email":"dpalade@mitocgroup.com"}],"main":"lib.compiled/bootstrap.js","repository":{"type":"git","url":"https://github.com/MitocGroup/deep-framework.git"},"scripts":{"compile-travis":"bash ../../bin/compile-lib.sh .","compile":"bash node-bin/compile.sh","prepublish":"npm run compile && npm run browser-build","browser-build":"bash node-bin/browser_build.sh","prepare-production":"bash hooks/prepare_production.sh","final-prepare-production":"bash hooks/final_prepare_production.sh"},"dependencies":{"aws-sdk":"^2.70.0","xray-sdk-core":"MitocGroup/xray-sdk-core","aws4-browser":"^1.0.0","deep-asset":"^1.x.x","deep-cache":"^1.x.x","deep-core":"^1.x.x","deep-db":"^1.x.x","deep-di":"^1.x.x","deep-event":"^1.x.x","deep-fs":"^1.x.x","deep-kernel":"^1.x.x","deep-log":"^1.x.x","deep-notification":"^1.x.x","deep-resource":"^1.x.x","deep-search":"^0.x.x","deep-security":"^1.x.x","deep-validation":"^1.x.x","inherits":"^2.0.x","lodash":"^4.17.4","node-libs-browser":"^2.0.0","raven-js":"^3.16.0","store":"^2.0.4","uglify-js":"github:mishoo/UglifyJS2#harmony-v2.8.22","uglifyjs-webpack-plugin":"^0.4.3","webpack":"^2.6.1"},"devDependencies":{},"engines":{"node":">=0.12","npm":">=2.10"},"preferGlobal":false,"analyze":true,"jspm":{"main":"browser/framework.js"}}
 
 /***/ }),
 /* 684 */

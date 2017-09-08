@@ -21,9 +21,9 @@ export class UserPoolImplementation extends AbstractImplementation {
   refreshIdentity() {
     let payload = {
       AuthFlow: 'REFRESH_TOKEN_AUTH',
+      ClientId: this.clientName,
       AuthParameters: {
         REFRESH_TOKEN: this.refreshToken,
-        ClientId: this.clientName,
       }
     };
 

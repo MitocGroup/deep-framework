@@ -923,7 +923,8 @@ export class Request {
       case 'post':
       case 'put':
       case 'patch':
-        opsToSign.body = JSON.stringify(payload);
+        payload = JSON.stringify(payload);
+        opsToSign.body = payload;
         break;
     }
 

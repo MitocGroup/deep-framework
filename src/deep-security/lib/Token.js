@@ -72,6 +72,7 @@ export class Token {
 
     AWS.config.update({
       cognitoidentity: {region: cognitoRegion},
+      cognitoidentityserviceprovider: {region: cognitoRegion},
       cognitosync: {region: cognitoRegion},
     });
   }
