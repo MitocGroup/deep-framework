@@ -24,7 +24,7 @@ export class Action {
    * @param {String} scope
    * @param {Object} api
    */
-  constructor(resource, name, type, methods, source, region, forceUserIdentity, apiCache, scope, api) {
+  constructor(resource, name, type, methods, source, region, forceUserIdentity, skipCompile, apiCache, scope, api) {
     this._resource = resource;
     this._name = name;
     this._type = type;
@@ -32,6 +32,7 @@ export class Action {
     this._source = source;
     this._region = region;
     this._forceUserIdentity = forceUserIdentity;
+    this._skipCompile = skipCompile;
     this._apiCacheEnabled = apiCache && apiCache.hasOwnProperty('enabled') ? apiCache.enabled : false;
     this._apiCacheTtl = apiCache && apiCache.hasOwnProperty('ttl') ? apiCache.ttl : Request.TTL_INVALIDATE;
     this._scope = scope;
@@ -211,6 +212,13 @@ export class Action {
    */
   get fullName() {
     return `@${this._resource.microservice.identifier}:${this._resource.name}:${this._name}`;
+  }
+
+  /**
+   * @returns {Boolean}
+   */
+  get skipCompile() {
+    return !!this._skipCompile;
   }
 
   /**
