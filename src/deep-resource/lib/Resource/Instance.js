@@ -88,6 +88,7 @@ export class Instance {
         actionMetadata.source,
         actionMetadata.region,
         actionMetadata.forceUserIdentity,
+        actionMetadata.skipCompile || false,
         actionMetadata.apiCache,
         actionMetadata.scope,
         actionMetadata.api
