@@ -12,7 +12,7 @@ _lib="$1"
 # Fixing "spawn sh ENOENT" issue
 cd /
 
-REQUIRED_DEPS=("babel-cli" "babel-plugin-add-module-exports" "babel-preset-node6");
+REQUIRED_DEPS=("aws-sdk" "babel-cli" "babel-plugin-add-module-exports" "babel-preset-node6");
 NPM_BIN=`which npm`
 NPM_GLOBAL_NM=`$NPM_BIN root -g`
 
