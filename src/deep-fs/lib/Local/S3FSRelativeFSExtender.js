@@ -167,7 +167,6 @@ export class S3FSRelativeFSExtender {
           ETag: '55ad340609f4b302',
           MissingMeta: 0,
           VersionId: '55ad340609f4b302',
-          StorageClass: 'REDUCED_REDUNDANCY',
         };
 
         if (callback) {
@@ -206,7 +205,6 @@ export class S3FSRelativeFSExtender {
           LastModified: new Date().getTime(),
           Size: 0,
           ETag: '55ad340609f4b302',
-          StorageClass: 'REDUCED_REDUNDANCY',
           Owner: {
             DisplayName: 's3fs',
             ID: '55ad340609f4b302',
