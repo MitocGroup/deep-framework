@@ -1,96 +1,17 @@
---- 
+---
 $:
   preprocess:
-    '$.coverage.compare.storage.options.1.region': 'eval'
-    '$.coverage.compare.storage.options.1.accessKeyId': 'eval'
-    '$.coverage.compare.storage.options.1.secretAccessKey': 'eval'
-    '$.cache.options.1.region': 'eval'
-    '$.cache.options.1.accessKeyId': 'eval'
-    '$.cache.options.1.secretAccessKey': 'eval'
-    '$.codeclimate.token': 'eval'
-    '$.snyk.token': 'eval'
-  cache:
-    driver: 's3'
-    options:
-      - 's3://travis-metadata/cache/MitocGroup/deep-framework'
-      -
-        region: 'process.env.AWS_DEFAULT_REGION'
-        accessKeyId: 'process.env.AWS_ACCESS_KEY_ID'
-        secretAccessKey: 'process.env.AWS_SECRET_ACCESS_KEY'
-  npm:
-    scripts:
-      - 'compile-travis'
-#    dependencies:
-#      chai: 'latest'
-  emit:
-    pattern:
-      - /^lib.es6\/.+\.js$/i
-      - /^test\/.+\.js$/i
-    ignore:
-      - /^(.*\/)?node_modules(\/?$)?/i
-  test:
-    mocha:
+    '$.cnci.token': 'eval'
+    '$.cnci.ci.options.user': 'eval'
+    '$.cnci.ci.options.token': 'eval'
+    '$.cnci.ci.options.jobName': 'eval'
+    '$.cnci.ci.options.buildNumber': 'eval'
+  cnci:
+    token: 'process.env.token'
+    ci:
+      provider: jenkins
       options:
-        ui: 'bdd'
-        reporter: 'spec'
-        check-leaks: true
-        retries: 2
-    pattern:
-      - /.+\.spec\.js$/i
-    ignore: ~
-  coverage:
-    pattern:
-      - /.+\.js$/i
-    ignore:
-      - /.+\.spec\.js$/i
-      - /^(.*\/)?node_modules(\/?$)?/i
-    reporters:
-      text-summary: ~
-      lcovonly:
-        file: ./coverage.lcov
-    compare:
-      negative-delta: 1
-      storage:                                              
-        driver: 's3'
-        options:
-          - 's3://travis-metadata/coverage/MitocGroup/deep-framework'
-          -
-            region: 'process.env.AWS_DEFAULT_REGION'
-            accessKeyId: 'process.env.AWS_ACCESS_KEY_ID'
-            secretAccessKey: 'process.env.AWS_SECRET_ACCESS_KEY'
-  codeclimate:
-    token: 'process.env.CODECLIMATE_REPO_TOKEN'
-  snyk:
-    token: 'process.env.SNYK_API_TOKEN'
-
-### Add other modules here...
-deep-asset:
-  root: src/deep-asset
-deep-cache:
-  root: src/deep-cache
-deep-core:
-  root: src/deep-core
-deep-db:
-  root: src/deep-db
-deep-di:
-  root: src/deep-di
-deep-event:
-  root: src/deep-event
-deep-fs:
-  root: src/deep-fs
-deep-log:
-  root: src/deep-log
-deep-notification:
-  root: src/deep-notification
-deep-resource:
-  root: src/deep-resource
-deep-search:
-  root: src/deep-search
-deep-security:
-  root: src/deep-security
-deep-validation:
-  root: src/deep-validation
-deep-kernel:
-  root: src/deep-kernel
-deep-framework:
-  root: src/deep-framework
+        user: 'process.env.JENKINS_USER'
+        token: 'process.env.JENKINS_TOKEN'
+        jobName: 'process.env.JOB_NAME'
+        buildNumber: 'process.env.BUILD_NUMBER' 
