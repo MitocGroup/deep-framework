@@ -1,6 +1,11 @@
 --- 
 $:
   preprocess:
+    '$.cnci.token': 'eval'
+    '$.cnci.ci.options.user': 'eval'
+    '$.cnci.ci.options.token': 'eval'
+    '$.cnci.ci.options.jobName': 'eval'
+    '$.cnci.ci.options.buildNumber': 'eval'
     '$.coverage.compare.storage.options.1.region': 'eval'
     '$.coverage.compare.storage.options.1.accessKeyId': 'eval'
     '$.coverage.compare.storage.options.1.secretAccessKey': 'eval'
@@ -9,6 +14,15 @@ $:
     '$.cache.options.1.secretAccessKey': 'eval'
     '$.codeclimate.token': 'eval'
     '$.snyk.token': 'eval'
+  cnci:
+    token: 'process.env.token'
+    ci:
+      provider: jenkins
+      options:
+        user: 'process.env.JENKINS_USER'
+        token: 'process.env.JENKINS_TOKEN'
+        jobName: 'process.env.JOB_NAME'
+        buildNumber: 'process.env.BUILD_NUMBER'
   cache:
     driver: 's3'
     options:
@@ -62,8 +76,6 @@ $:
     token: 'process.env.CODECLIMATE_REPO_TOKEN'
   snyk:
     token: 'process.env.SNYK_API_TOKEN'
-
-### Add other modules here...
 deep-asset:
   root: src/deep-asset
 deep-cache:
