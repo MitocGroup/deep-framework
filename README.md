@@ -116,5 +116,5 @@ This repository is being sponsored by:
 - [Mitoc Group](https://www.mitocgroup.com)
 - [AdTechMedia](https://www.adtechmedia.io)
 
-This code can be used under MIT license:
+This code can be used under MPL v2.0 license:
 > See [LICENSE](https://github.com/MitocGroup/deep-framework/blob/master/LICENSE) for more details.
