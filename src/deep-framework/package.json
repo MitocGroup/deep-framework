@@ -68,10 +68,11 @@
   "scripts": {
     "compile-travis": "bash ../../bin/compile-lib.sh .",
     "compile": "bash node-bin/compile.sh",
-    "prepublish": "npm run compile && npm run browser-build",
+    "prepublish": "npm run snyk-protect && npm run compile && npm run browser-build",
     "browser-build": "bash node-bin/browser_build.sh",
     "prepare-production": "bash hooks/prepare_production.sh",
-    "final-prepare-production": "bash hooks/final_prepare_production.sh"
+    "final-prepare-production": "bash hooks/final_prepare_production.sh",
+    "snyk-protect": "snyk protect"
   },
   "dependencies": {
     "aws-sdk": "^2.70.0",
@@ -98,7 +99,8 @@
     "store": "^2.0.4",
     "uglify-js": "github:mishoo/UglifyJS2#harmony-v2.8.22",
     "uglifyjs-webpack-plugin": "^0.4.3",
-    "webpack": "^2.6.1"
+    "webpack": "^2.6.1",
+    "snyk": "^1.437.3"
   },
   "devDependencies": {},
   "engines": {
@@ -109,5 +111,6 @@
   "analyze": true,
   "jspm": {
     "main": "browser/framework.js"
-  }
+  },
+  "snyk": true
 }
