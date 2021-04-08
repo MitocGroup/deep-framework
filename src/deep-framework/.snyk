@@ -1,0 +1,25 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.19.0
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  'npm:hoek:20180212':
+    - deep-validation > vogels > joi > hoek:
+        patched: '2021-04-08T08:45:32.026Z'
+    - deep-db > vogels > joi > hoek:
+        patched: '2021-04-08T08:45:32.026Z'
+    - deep-validation > vogels > joi > topo > hoek:
+        patched: '2021-04-08T08:45:32.026Z'
+    - deep-db > vogels > joi > topo > hoek:
+        patched: '2021-04-08T08:45:32.026Z'
+    - deep-db > deep-validation > vogels > joi > hoek:
+        patched: '2021-04-08T08:45:32.026Z'
+    - deep-db > deep-validation > vogels > joi > topo > hoek:
+        patched: '2021-04-08T08:45:32.026Z'
+  'npm:lodash:20180130':
+    - deep-validation > vogels > lodash:
+        patched: '2021-04-08T08:45:32.026Z'
+    - deep-db > vogels > lodash:
+        patched: '2021-04-08T08:45:32.026Z'
+    - deep-db > deep-validation > vogels > lodash:
+        patched: '2021-04-08T08:45:32.026Z'
